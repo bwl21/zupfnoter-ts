@@ -44,6 +44,9 @@ docs/
 ```
 
 Neue Dokumente (Specs, ADRs, Konzepte) werden im jeweiligen Phase-Ordner abgelegt.
+Spezifikationen liegen als `docs/<phase>/spec.md`. Die Root-`spec.md` ist ein Index.
+Die aktuelle Arbeits-Spec wird von Ona direkt in `spec.md` verwaltet und nach Abschluss
+in den zugehörigen Phase-Ordner verschoben.
 
 ---
 
