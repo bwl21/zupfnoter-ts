@@ -3,8 +3,8 @@
 Dieses Dokument beschreibt den Implementierungsplan für den TypeScript-Rewrite von
 Zupfnoter (`bwl21/zupfnoter` → `bwl21/zupfnoter-ts`).
 
-Referenz-Dokumentation: `bwl21/zupfnoter`, Branch `feature/voice-styles_and-other-concepts`,
-Ordner `30_sources/SRC_Zupfnoter/docs/`.
+Referenz-Dokumentation: `docs/` in diesem Repository (kopiert aus `bwl21/zupfnoter`,
+Branch `feature/voice-styles_and-other-concepts`, Ordner `30_sources/SRC_Zupfnoter/docs/`).
 
 ---
 
@@ -19,6 +19,31 @@ ABC-Text → Musikmodell (Song) → Layout-Modell (Sheet) → Ausgabe (SVG / PDF
 
 Der bisherige Stack (Opal/Ruby → JavaScript, w2ui, jQuery) wird vollständig durch TypeScript,
 Vue 3 und Vite ersetzt.
+
+---
+
+## Dokumentation (`docs/`)
+
+Referenzdokumente aus dem Legacy-System, nach Phase geordnet:
+
+```
+docs/
+├── phase-0/
+│   ├── architektur_zupfnoter.md       # Gesamtarchitektur und Transformationskette
+│   ├── architecture-vision.md         # Langfristige Architekturvision (TypeScript-Rewrite)
+│   └── refactor-plan.md               # Migrations- und Refactor-Plan
+├── phase-2/
+│   └── konzept_json_serialisierung.md # JSON-Serialisierung der Transformationsstufen
+├── phase-3/
+│   └── konzept_json_serialisierung.md # (gleiche Datei, relevant für Sheet-Tests)
+├── phase-5/
+│   ├── architektur_command_ui.md      # Command-System und UI-Architektur
+│   └── architektur_dropbox.md         # Dropbox-Integration
+└── voice-styles/
+    └── konzept_voice_styles.md        # Voice-Styles-Konzept (post-migration)
+```
+
+Neue Dokumente (Specs, ADRs, Konzepte) werden im jeweiligen Phase-Ordner abgelegt.
 
 ---
 
@@ -224,7 +249,7 @@ interface ZupfnoterConfig {
 
 **Ziel:** ABC-Text in ein `Song`-Objekt transformieren.
 
-Referenz: `abc2svg_to_harpnotes.rb`
+Referenz: `abc2svg_to_harpnotes.rb` (Legacy), `docs/phase-2/konzept_json_serialisierung.md`
 
 - [ ] abc2svg als npm-Paket einbinden (oder als Script-Tag im Browser)
 - [ ] `AbcParser`-Klasse: Wrapper um abc2svg, liefert `AbcModel`
@@ -246,7 +271,7 @@ Referenz: `abc2svg_to_harpnotes.rb`
 
 **Ziel:** `Song` in ein `Sheet`-Objekt transformieren.
 
-Referenz: `harpnotes.rb` (ab Zeile 1302, `Layout::Default`)
+Referenz: `harpnotes.rb` (ab Zeile 1302, `Layout::Default`), `docs/phase-3/konzept_json_serialisierung.md`
 
 #### 3.1 Konfigurationssystem (`Confstack`)
 
@@ -294,7 +319,7 @@ Wird nach Abschluss der Migration als separates Feature implementiert. Siehe Abs
 - [ ] Unit-Tests für Confstack
 - [ ] Unit-Tests für BeatPacker (alle Methoden)
 - [ ] Snapshot-Tests für Layout-Ausgabe (Sheet-JSON)
-- [ ] Referenz-Vergleich mit Legacy-Ausgabe (JSON-Serialisierung, siehe `konzept_json_serialisierung.md`)
+- [ ] Referenz-Vergleich mit Legacy-Ausgabe (JSON-Serialisierung, siehe `docs/phase-3/konzept_json_serialisierung.md`)
 
 ---
 
@@ -331,7 +356,7 @@ Referenz: `svg_engine.rb`, `pdf_engine.rb`
 
 **Ziel:** Vollständige Web-Anwendung mit Editor und Vorschau.
 
-Referenz: `architektur_command_ui.md`, `user-interface.js`
+Referenz: `docs/phase-5/architektur_command_ui.md`, `user-interface.js`
 
 #### 5.1 Layout-Grundstruktur
 
@@ -360,7 +385,7 @@ Referenz: `architektur_command_ui.md`, `user-interface.js`
 
 #### 5.5 Command-System
 
-Referenz: `architektur_command_ui.md`
+Referenz: `docs/phase-5/architektur_command_ui.md`
 
 - [ ] `CommandRegistry`: Registrierung benannter Kommandos
 - [ ] `CommandProcessor`: Ausführung mit Undo/Redo
@@ -369,7 +394,7 @@ Referenz: `architektur_command_ui.md`
 
 #### 5.6 Datei-Integration
 
-Referenz: `architektur_dropbox.md`
+Referenz: `docs/phase-5/architektur_dropbox.md`
 
 - [ ] Lokale Datei öffnen/speichern (File System Access API)
 - [ ] Dropbox-Integration (Dropbox Chooser API)
@@ -406,7 +431,7 @@ Referenz: `architektur_dropbox.md`
 
 **Ziel:** Rechenintensive Operationen aus dem UI-Thread auslagern.
 
-Referenz: `architektur_zupfnoter.md`, Abschnitt 7
+Referenz: `docs/phase-0/architektur_zupfnoter.md`, Abschnitt 7
 
 - [ ] `ZupfnoterWorker` (Web Worker):
   - Nachrichten: `render_harpnotepreview`, `render_pdf`, `parse_abc`
@@ -462,7 +487,7 @@ Das Konfigurationssystem ist ein Stack mit hierarchischer Auflösung (höchste P
 ## Voice Styles (post-migration)
 
 Wird nach Abschluss der Migration (Phasen 0–7) als separates Feature implementiert.
-Referenz: `konzept_voice_styles.md` im Branch `feature/voice-styles_and-other-concepts`.
+Referenz: `docs/voice-styles/konzept_voice_styles.md`.
 
 Kurzbeschreibung: Benannte visuelle Stile (Linienbreite, Notengröße, Farbe) werden
 top-level definiert und pro Extrakt den einzelnen Stimmen zugeordnet. In einer zweiten
@@ -476,7 +501,7 @@ Die Implementierung erweitert `@zupfnoter/types` (neue Interfaces `VoiceStyle`,
 
 ## JSON-Serialisierung der Transformationsstufen
 
-Referenz: `konzept_json_serialisierung.md`
+Referenz: `docs/phase-2/konzept_json_serialisierung.md`
 
 Für Tests und Debugging können alle Zwischenstufen als JSON serialisiert werden:
 
