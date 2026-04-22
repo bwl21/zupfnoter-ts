@@ -40,11 +40,25 @@ fixtures/
 
 ## Fixtures neu erzeugen (Legacy-Export)
 
-Voraussetzung: Laufendes Legacy-System (`bwl21/zupfnoter`).
+Voraussetzung: Laufendes Legacy-System (`bwl21/zupfnoter`,
+Branch `feature/voice-styles_and-other-concepts`).
 
-### 1. Export-Funktion im Legacy-System aktivieren
+### 1. TS-Ausgabe als Referenz erzeugen (optional)
 
-Im Legacy-System (`controller.rb`) nach `load_music_model` und `layouter.layout(...)` 
+Die TS-Pipeline-Ausgabe kann als Vergleichsbasis erzeugt werden:
+
+```bash
+cd packages/core
+npx vitest run src/testing/__tests__/song/dump_ts_output.spec.ts
+# Schreibt: fixtures/song/_ts_output/<name>.json
+```
+
+Diese Dateien sind **nicht** die Referenz-Fixtures — sie zeigen nur, was die TS-Pipeline
+aktuell produziert. Vergleiche sie mit dem Legacy-Export, um Abweichungen zu finden.
+
+### 2. Export-Funktion im Legacy-System aktivieren
+
+Im Legacy-System (`controller.rb`) nach `load_music_model` und `layouter.layout(...)`
 temporär einfügen:
 
 ```ruby
@@ -55,7 +69,7 @@ File.write("song_export.json", @music_model.to_json)
 File.write("sheet_export.json", result.to_json)
 ```
 
-### 2. Export für jede Fixture ausführen
+### 3. Export für jede Fixture ausführen
 
 ```bash
 # Im Legacy-Repo-Verzeichnis:
@@ -68,13 +82,28 @@ for abc in path/to/zupfnoter-ts/fixtures/abc/minimal/*.abc \
 done
 ```
 
-### 3. Fixtures einchecken
+### 4. Fixtures einchecken
 
 ```bash
 git add fixtures/song/ fixtures/sheet/
-git commit -m "fixtures: update legacy reference snapshots
+git commit -m "fixtures: populate legacy reference snapshots
 
 Reason: <Begründung der Änderung>"
+```
+
+### 5. Tests grün machen
+
+Nach dem Befüllen der Fixtures:
+
+```bash
+pnpm --filter @zupfnoter/core run test:unit
+```
+
+Schlagen Tests fehl, zeigt `formatMismatches` den genauen Pfad der Abweichung:
+```
+voices[0].entities[2].pitch:
+  expected: 60
+  actual:   48
 ```
 
 ## Fixture-Format

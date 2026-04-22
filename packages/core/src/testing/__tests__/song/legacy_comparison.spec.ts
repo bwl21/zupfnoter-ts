@@ -3,21 +3,24 @@
  *
  * Each test:
  *   1. Reads an ABC fixture from fixtures/abc/
- *   2. Runs the TS AbcToSong transformer (once implemented)
+ *   2. Runs the real AbcParser + AbcToSong pipeline
  *   3. Compares the result against the JSON fixture in fixtures/song/
- *      using semantic matching (pitch, duration, beat, variant, visible)
+ *      using semantic matching (type, pitch, duration, beat, variant, visible)
  *
- * Fixtures with empty voices[] are treated as placeholders and always pass.
- * Populate them by running the legacy export (see fixtures/README.md).
+ * Fixtures must be populated from the legacy Ruby system before these tests pass.
+ * See fixtures/README.md for export instructions.
+ * A placeholder fixture (voices: []) causes the test to fail immediately.
  */
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { AbcParser } from '../../../AbcParser.js'
+import { AbcToSong } from '../../../AbcToSong.js'
 import { matchSong, formatMismatches } from '../../semanticMatch.js'
-import { loadSongFixture } from '../../fixtureLoader.js'
-import type { SongFixture } from '../../semanticMatch.js'
+import { loadSongFixture, songToFixture } from '../../fixtureLoader.js'
+import { defaultTestConfig } from '../../defaultConfig.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '../../../../../..')
@@ -26,13 +29,12 @@ function readAbc(relativePath: string): string {
   return readFileSync(resolve(REPO_ROOT, relativePath), 'utf-8')
 }
 
-/**
- * Stub: replace with real AbcToSong.transform() once implemented.
- * Returns an empty SongFixture so tests compile and pass as placeholders.
- */
-function transformAbcToSong(_abcText: string): SongFixture {
-  // TODO: replace with: return new AbcToSong().transform(abcText)
-  return { meta_data: {}, voices: [], beat_maps: [] }
+function transformAbcToSong(abcText: string) {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const transformer = new AbcToSong()
+  const song = transformer.transform(model, defaultTestConfig)
+  return songToFixture(song)
 }
 
 // ---------------------------------------------------------------------------

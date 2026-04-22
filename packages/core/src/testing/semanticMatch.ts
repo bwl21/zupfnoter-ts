@@ -116,9 +116,12 @@ function comparePoint(
 export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResult {
   const mismatches: Mismatch[] = []
 
-  // Skip placeholder fixtures
+  // Reject placeholder fixtures — empty voices[] means the fixture was never populated
   if (fixture.voices.length === 0) {
-    return { passed: true, mismatches: [] }
+    return {
+      passed: false,
+      mismatches: [{ path: 'fixture', expected: 'non-empty fixture', actual: 'placeholder (voices: [])' }],
+    }
   }
 
   // Voice count
@@ -183,9 +186,12 @@ export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResul
 export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchResult {
   const mismatches: Mismatch[] = []
 
-  // Skip placeholder fixtures
+  // Reject placeholder fixtures — empty children[] means the fixture was never populated
   if (fixture.children.length === 0) {
-    return { passed: true, mismatches: [] }
+    return {
+      passed: false,
+      mismatches: [{ path: 'fixture', expected: 'non-empty fixture', actual: 'placeholder (children: [])' }],
+    }
   }
 
   // Child count — any deviation is always an error
