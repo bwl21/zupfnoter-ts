@@ -1,0 +1,267 @@
+/**
+ * Semantic comparison helpers for legacy regression tests.
+ *
+ * Rather than exact JSON equality, only domain-relevant fields are checked.
+ * Floating-point positions are compared with configurable tolerances.
+ */
+
+// ---------------------------------------------------------------------------
+// Tolerances (in mm, matching the spec)
+// ---------------------------------------------------------------------------
+
+const POSITION_TOLERANCE = 0.1  // center, from, to
+const SIZE_TOLERANCE = 0.05     // size
+
+// ---------------------------------------------------------------------------
+// Fixture types (shape of the JSON files in fixtures/song/ and fixtures/sheet/)
+// ---------------------------------------------------------------------------
+
+export interface EntityFixture {
+  type: 'Note' | 'Pause' | 'SynchPoint' | 'Goto' | 'MeasureStart' | 'NewPart' | string
+  pitch?: number
+  duration?: number
+  beat?: number
+  variant?: 0 | 1 | 2
+  visible?: boolean
+}
+
+export interface VoiceFixture {
+  entities: EntityFixture[]
+}
+
+export interface SongFixture {
+  _comment?: string
+  meta_data: Record<string, unknown>
+  voices: VoiceFixture[]
+  beat_maps: Record<string, number>[]
+}
+
+export interface DrawableFixture {
+  type: 'Ellipse' | 'FlowLine' | 'Glyph' | 'Annotation' | 'Path' | 'Image' | string
+  // Ellipse
+  center?: [number, number]
+  size?: [number, number]
+  fill?: boolean
+  // FlowLine
+  from?: [number, number]
+  to?: [number, number]
+  style?: 'solid' | 'dashed' | 'dotted' | string
+  // Glyph
+  glyphName?: string
+  // Annotation
+  text?: string
+  // Common
+  color?: string
+}
+
+export interface SheetFixture {
+  _comment?: string
+  children: DrawableFixture[]
+}
+
+// ---------------------------------------------------------------------------
+// Mismatch reporting
+// ---------------------------------------------------------------------------
+
+export interface Mismatch {
+  path: string
+  expected: unknown
+  actual: unknown
+}
+
+export interface MatchResult {
+  passed: boolean
+  mismatches: Mismatch[]
+}
+
+function fail(mismatches: Mismatch[], path: string, expected: unknown, actual: unknown): void {
+  mismatches.push({ path, expected, actual })
+}
+
+// ---------------------------------------------------------------------------
+// Numeric helpers
+// ---------------------------------------------------------------------------
+
+function nearlyEqual(a: number, b: number, tolerance: number): boolean {
+  return Math.abs(a - b) <= tolerance
+}
+
+function comparePoint(
+  actual: [number, number] | undefined,
+  expected: [number, number] | undefined,
+  path: string,
+  tolerance: number,
+  mismatches: Mismatch[],
+): void {
+  if (expected === undefined) return
+  if (actual === undefined) {
+    fail(mismatches, path, expected, undefined)
+    return
+  }
+  if (!nearlyEqual(actual[0], expected[0], tolerance) || !nearlyEqual(actual[1], expected[1], tolerance)) {
+    fail(mismatches, path, expected, actual)
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Song comparison (Stufe 2)
+// ---------------------------------------------------------------------------
+
+/**
+ * Compares a Song output against a fixture.
+ *
+ * Checked per entity: type, pitch, duration, beat, variant, visible.
+ * Skipped: internal IDs, source positions (startPos/endPos).
+ */
+export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResult {
+  const mismatches: Mismatch[] = []
+
+  // Skip placeholder fixtures
+  if (fixture.voices.length === 0) {
+    return { passed: true, mismatches: [] }
+  }
+
+  // Voice count
+  if (actual.voices.length !== fixture.voices.length) {
+    fail(mismatches, 'voices.length', fixture.voices.length, actual.voices.length)
+    return { passed: false, mismatches }
+  }
+
+  for (let vi = 0; vi < fixture.voices.length; vi++) {
+    const actualVoice = actual.voices[vi]
+    const expectedVoice = fixture.voices[vi]
+    const vPath = `voices[${vi}]`
+
+    if (actualVoice.entities.length !== expectedVoice.entities.length) {
+      fail(mismatches, `${vPath}.entities.length`, expectedVoice.entities.length, actualVoice.entities.length)
+      continue
+    }
+
+    for (let ei = 0; ei < expectedVoice.entities.length; ei++) {
+      const ae = actualVoice.entities[ei]
+      const fe = expectedVoice.entities[ei]
+      const ePath = `${vPath}.entities[${ei}]`
+
+      if (ae.type !== fe.type) {
+        fail(mismatches, `${ePath}.type`, fe.type, ae.type)
+      }
+      if (fe.pitch !== undefined && ae.pitch !== fe.pitch) {
+        fail(mismatches, `${ePath}.pitch`, fe.pitch, ae.pitch)
+      }
+      if (fe.duration !== undefined && ae.duration !== fe.duration) {
+        fail(mismatches, `${ePath}.duration`, fe.duration, ae.duration)
+      }
+      if (fe.beat !== undefined && ae.beat !== fe.beat) {
+        fail(mismatches, `${ePath}.beat`, fe.beat, ae.beat)
+      }
+      if (fe.variant !== undefined && ae.variant !== fe.variant) {
+        fail(mismatches, `${ePath}.variant`, fe.variant, ae.variant)
+      }
+      if (fe.visible !== undefined && ae.visible !== fe.visible) {
+        fail(mismatches, `${ePath}.visible`, fe.visible, ae.visible)
+      }
+    }
+  }
+
+  return { passed: mismatches.length === 0, mismatches }
+}
+
+// ---------------------------------------------------------------------------
+// Sheet comparison (Stufe 3)
+// ---------------------------------------------------------------------------
+
+/**
+ * Compares a Sheet output against a fixture.
+ *
+ * Positions (center, from, to) are compared with ±0.1 mm tolerance.
+ * Sizes are compared with ±0.05 mm tolerance.
+ * type, fill, color, style, glyphName, text are compared exactly.
+ * The number of children must match exactly.
+ *
+ * Skipped: confKey, draginfo, internal references.
+ */
+export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchResult {
+  const mismatches: Mismatch[] = []
+
+  // Skip placeholder fixtures
+  if (fixture.children.length === 0) {
+    return { passed: true, mismatches: [] }
+  }
+
+  // Child count — any deviation is always an error
+  if (actual.children.length !== fixture.children.length) {
+    fail(mismatches, 'children.length', fixture.children.length, actual.children.length)
+    return { passed: false, mismatches }
+  }
+
+  for (let i = 0; i < fixture.children.length; i++) {
+    const ac = actual.children[i]
+    const fc = fixture.children[i]
+    const cPath = `children[${i}]`
+
+    // type (exact)
+    if (ac.type !== fc.type) {
+      fail(mismatches, `${cPath}.type`, fc.type, ac.type)
+    }
+
+    // color (exact)
+    if (fc.color !== undefined && ac.color !== fc.color) {
+      fail(mismatches, `${cPath}.color`, fc.color, ac.color)
+    }
+
+    // fill (exact)
+    if (fc.fill !== undefined && ac.fill !== fc.fill) {
+      fail(mismatches, `${cPath}.fill`, fc.fill, ac.fill)
+    }
+
+    // style (exact)
+    if (fc.style !== undefined && ac.style !== fc.style) {
+      fail(mismatches, `${cPath}.style`, fc.style, ac.style)
+    }
+
+    // glyphName (exact)
+    if (fc.glyphName !== undefined && ac.glyphName !== fc.glyphName) {
+      fail(mismatches, `${cPath}.glyphName`, fc.glyphName, ac.glyphName)
+    }
+
+    // text (exact)
+    if (fc.text !== undefined && ac.text !== fc.text) {
+      fail(mismatches, `${cPath}.text`, fc.text, ac.text)
+    }
+
+    // center (±0.1 mm)
+    comparePoint(ac.center, fc.center, `${cPath}.center`, POSITION_TOLERANCE, mismatches)
+
+    // from / to (±0.1 mm)
+    comparePoint(ac.from, fc.from, `${cPath}.from`, POSITION_TOLERANCE, mismatches)
+    comparePoint(ac.to, fc.to, `${cPath}.to`, POSITION_TOLERANCE, mismatches)
+
+    // size (±0.05 mm)
+    if (fc.size !== undefined) {
+      if (ac.size === undefined) {
+        fail(mismatches, `${cPath}.size`, fc.size, undefined)
+      } else if (
+        !nearlyEqual(ac.size[0], fc.size[0], SIZE_TOLERANCE) ||
+        !nearlyEqual(ac.size[1], fc.size[1], SIZE_TOLERANCE)
+      ) {
+        fail(mismatches, `${cPath}.size`, fc.size, ac.size)
+      }
+    }
+  }
+
+  return { passed: mismatches.length === 0, mismatches }
+}
+
+// ---------------------------------------------------------------------------
+// Vitest custom matcher (optional convenience)
+// ---------------------------------------------------------------------------
+
+/**
+ * Formats a MatchResult into a readable error message for test output.
+ */
+export function formatMismatches(result: MatchResult): string {
+  if (result.passed) return 'OK'
+  return result.mismatches
+    .map((m) => `  ${m.path}:\n    expected: ${JSON.stringify(m.expected)}\n    actual:   ${JSON.stringify(m.actual)}`)
+    .join('\n')
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@zupfnoter/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "test:unit": "vitest"
+  },
+  "dependencies": {
+    "@zupfnoter/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.11.0",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18"
+  }
+}

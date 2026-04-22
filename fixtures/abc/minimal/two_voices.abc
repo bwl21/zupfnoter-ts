@@ -1,0 +1,12 @@
+X:1
+T:Two Voices Test
+C:Zupfnoter TS Tests
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1) (V2)
+V:V1 clef=treble-8
+V:V2 clef=treble-8
+[V:V1] C D E F |]
+[V:V2] G, A, B, C |]
