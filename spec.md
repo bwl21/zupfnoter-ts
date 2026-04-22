@@ -1,4 +1,176 @@
-# Spec: Phase 2 – ABC → Song (`@zupfnoter/core`)
+# Spec: Legacy-Vergleichstests aktivieren (Phase 2 – Fixture-Aktivierung)
+
+## Problem
+
+Die `legacy_comparison.spec.ts`-Tests für Song (Stufe 2) und Sheet (Stufe 3) sind
+strukturell vorhanden, testen aber nichts:
+
+1. **Stub statt echter Pipeline**: `transformAbcToSong()` gibt immer `{voices: []}` zurück,
+   statt die echte `AbcParser + AbcToSong`-Pipeline aufzurufen.
+2. **Platzhalter-Fixtures werden still durchgelassen**: `matchSong` gibt `passed: true`
+   zurück, wenn `fixture.voices.length === 0` — d.h. alle Tests sind grün, egal was passiert.
+3. **Fixture-JSONs sind Platzhalter**: Alle `fixtures/song/*.json` enthalten `"voices": []`.
+
+Das Ergebnis: 10 Song-Tests und 10 Sheet-Tests laufen grün, ohne irgendetwas zu prüfen.
+
+---
+
+## Ziel
+
+- Song-Vergleichstests rufen die echte TS-Pipeline auf (`AbcParser + AbcToSong`)
+- Fixture-JSONs enthalten echte Referenzwerte aus dem Legacy-Ruby-System
+- Platzhalter-Fixtures lassen Tests **fehlschlagen** (kein stilles Durchlassen)
+- Sheet-Tests bleiben `it.skip` bis Phase 3 (DefaultLayout) implementiert ist
+
+---
+
+## Anforderungen
+
+### 1. `semanticMatch.ts` — Platzhalter-Check umkehren
+
+`matchSong`: Wenn `fixture.voices.length === 0` → `passed: false` mit Mismatch:
+```
+{ path: 'fixture', expected: 'non-empty fixture', actual: 'placeholder (voices: [])' }
+```
+
+`matchSheet`: Wenn `fixture.children.length === 0` → `passed: false` mit Mismatch:
+```
+{ path: 'fixture', expected: 'non-empty fixture', actual: 'placeholder (children: [])' }
+```
+
+### 2. `legacy_comparison.spec.ts` (Song) — echte Pipeline
+
+Den Stub `transformAbcToSong` ersetzen durch die echte Pipeline:
+
+```typescript
+import { AbcParser } from '../../AbcParser.js'
+import { AbcToSong } from '../../AbcToSong.js'
+import { songToFixture } from '../../fixtureLoader.js'
+import { defaultTestConfig } from '../defaultConfig.js'
+
+function transformAbcToSong(abcText: string): SongFixture {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const transformer = new AbcToSong()
+  const song = transformer.transform(model, defaultTestConfig)
+  return songToFixture(song)
+}
+```
+
+### 3. `fixtureLoader.ts` — `songToFixture()` hinzufügen
+
+Neue Hilfsfunktion, die ein `Song`-Objekt in das `SongFixture`-Format konvertiert.
+Enthält **alle** Entity-Typen (Note, Pause, SynchPoint, MeasureStart, NewPart, Goto,
+Chordsymbol, NoteBoundAnnotation).
+
+```typescript
+export function songToFixture(song: Song): SongFixture {
+  return {
+    meta_data: song.metaData as Record<string, unknown>,
+    voices: song.voices.map((v) => ({
+      entities: v.entities.map((e) => ({
+        type: e.type,
+        pitch: 'pitch' in e ? (e as { pitch: number }).pitch : undefined,
+        duration: 'duration' in e ? (e as { duration: number }).duration : undefined,
+        beat: e.beat,
+        variant: e.variant,
+        visible: e.visible,
+      })),
+    })),
+    beat_maps: song.beatMaps.map((bm) =>
+      Object.fromEntries(Object.entries(bm.entries).map(([k, v]) => [k, v.beat]))
+    ),
+  }
+}
+```
+
+### 4. Fixture-JSONs befüllen (Legacy-Export)
+
+Die 10 Fixture-JSONs in `fixtures/song/` werden aus dem Legacy-Ruby-System exportiert
+(Anleitung in `fixtures/README.md`). Alle Entity-Typen werden eingeschlossen.
+
+Betroffene Dateien:
+- `fixtures/song/single_note.json`
+- `fixtures/song/two_voices.json`
+- `fixtures/song/repeat.json`
+- `fixtures/song/pause.json`
+- `fixtures/song/tuplet.json`
+- `fixtures/song/tie.json`
+- `fixtures/song/decoration.json`
+- `fixtures/song/lyrics.json`
+- `fixtures/song/02_twoStaff.json`
+- `fixtures/song/Twostaff.json`
+
+### 5. `legacy_comparison.spec.ts` (Sheet) — `it.skip` beibehalten
+
+Sheet-Tests bleiben `it.skip` bis Phase 3 implementiert ist. Der Stub bleibt.
+`matchSheet` Platzhalter-Check wird trotzdem auf `passed: false` umgestellt
+(damit Sheet-Tests sofort fehlschlagen, sobald `it.skip` entfernt wird und
+Fixtures noch leer sind).
+
+---
+
+## Fixture-Format Song (vollständig)
+
+Alle Entity-Typen werden in der Fixture abgebildet. Felder, die für einen Typ
+nicht relevant sind, werden weggelassen (nicht `null`).
+
+```json
+{
+  "meta_data": { "title": "...", "meter": "4/4", "key": "C" },
+  "voices": [
+    {
+      "entities": [
+        { "type": "MeasureStart", "beat": 0,   "variant": 0, "visible": true },
+        { "type": "Note",  "pitch": 48, "duration": 96, "beat": 0,  "variant": 0, "visible": true },
+        { "type": "Pause", "duration": 96,               "beat": 96, "variant": 0, "visible": true },
+        { "type": "Goto",  "beat": 192, "variant": 0, "visible": true }
+      ]
+    }
+  ],
+  "beat_maps": [{ "0": 0, "96": 1 }]
+}
+```
+
+---
+
+## Akzeptanzkriterien
+
+1. `pnpm --filter @zupfnoter/core run test:unit` läuft durch.
+2. Song-Vergleichstests rufen die echte `AbcParser + AbcToSong`-Pipeline auf.
+3. Ein leerer Platzhalter (`voices: []` oder `children: []`) lässt den Test **fehlschlagen**.
+4. Alle 10 Song-Fixture-JSONs sind mit echten Werten aus dem Legacy-System befüllt.
+5. Song-Tests sind grün (TS-Ausgabe stimmt mit Legacy-Fixtures überein).
+6. Sheet-Tests sind `it.skip` (kein Fehler, kein grüner Durchlauf).
+7. `AbcToSong.spec.ts` bleibt unverändert und grün.
+
+---
+
+## Branch
+
+`feature/phase-2-fixture-activation` (neu von `main`)
+
+## Implementierungsschritte
+
+1. Branch `feature/phase-2-fixture-activation` von `main` erstellen
+2. `semanticMatch.ts`: Platzhalter-Checks auf `passed: false` umstellen (Song + Sheet)
+3. `fixtureLoader.ts`: `songToFixture()` hinzufügen (alle Entity-Typen)
+4. `legacy_comparison.spec.ts` (Song): Stub durch echte Pipeline ersetzen
+5. `legacy_comparison.spec.ts` (Sheet): alle Tests auf `it.skip` setzen
+6. Legacy-Export durchführen: Fixture-JSONs für alle 10 ABC-Fixtures befüllen
+7. Tests ausführen und grün machen
+
+---
+
+## Nicht in Scope
+
+- `AbcToSong.spec.ts` bleibt unverändert
+- Sheet-Fixtures (`fixtures/sheet/`) werden nicht befüllt (Phase 3)
+- `fixtures/README.md` wird nicht geändert
+
+---
+
+# Archiv: Phase 2 – ABC → Song (`@zupfnoter/core`)
 
 ## Problem
 

@@ -40,3 +40,7 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+# Generated fixture output (dev helper, not reference data)
+fixtures/song/_ts_output/
+fixtures/sheet/_ts_output/
