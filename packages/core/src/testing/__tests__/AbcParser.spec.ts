@@ -41,7 +41,7 @@ describe('AbcParser', () => {
       const model = parser.parse(SINGLE_NOTE_ABC)
 
       expect(model).toBeDefined()
-      expect(model.voices).toBeInstanceOf(Array)
+      expect(Array.isArray(model.voices)).toBe(true)
       expect(model.voices.length).toBeGreaterThanOrEqual(1)
     })
 
@@ -49,7 +49,7 @@ describe('AbcParser', () => {
       const parser = new AbcParser()
       const model = parser.parse(SINGLE_NOTE_ABC)
 
-      expect(model.music_types).toBeInstanceOf(Array)
+      expect(Array.isArray(model.music_types)).toBe(true)
       // abc2svg.C.NOTE === 8
       expect(model.music_types[ABC_TYPE.NOTE]).toBe('note')
     })
@@ -105,7 +105,7 @@ describe('AbcParser', () => {
         // May throw — that's acceptable for truly invalid input
       }
       // errors array is accessible regardless
-      expect(parser.errors).toBeInstanceOf(Array)
+      expect(Array.isArray(parser.errors)).toBe(true)
     })
 
     it('errors array is reset on each parse() call', () => {

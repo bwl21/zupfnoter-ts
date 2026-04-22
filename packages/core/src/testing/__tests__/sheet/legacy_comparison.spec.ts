@@ -20,7 +20,7 @@ import { loadSheetFixture } from '../../fixtureLoader.js'
 import type { SheetFixture } from '../../semanticMatch.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const REPO_ROOT = resolve(__dirname, '../../../../../../..')
+const REPO_ROOT = resolve(__dirname, '../../../../../..')
 
 function readAbc(relativePath: string): string {
   return readFileSync(resolve(REPO_ROOT, relativePath), 'utf-8')

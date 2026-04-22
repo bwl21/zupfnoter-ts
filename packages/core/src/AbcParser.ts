@@ -14,13 +14,15 @@ import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
 import { ABC_TYPE } from './AbcModel.js'
 
 // ---------------------------------------------------------------------------
-// Load abc2svg (CommonJS export, vendored)
+// Load abc2svg via CJS loader (vendored)
+// abc2svg-1.js uses a global module/exports check that fails in ESM context.
+// abc2svg-loader.cjs uses vm.runInNewContext to provide a proper CJS scope.
 // ---------------------------------------------------------------------------
 
 const _require = createRequire(import.meta.url)
 const _dir = dirname(fileURLToPath(import.meta.url))
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-const _abc2svgModule = _require(resolve(_dir, '../vendor/abc2svg-1.js')) as {
+const _abc2svgModule = _require(resolve(_dir, '../vendor/abc2svg-loader.cjs')) as {
   Abc: new (user: Abc2svgUser) => Abc2svgInstance
   abc2svg: { C: Record<string, number>; sym_name: string[] }
 }

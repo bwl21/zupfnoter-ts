@@ -12,7 +12,7 @@ import type { SongFixture, SheetFixture } from './semanticMatch.js'
 
 // Resolve the repo root: packages/core/src/testing/ → ../../../../
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const REPO_ROOT = resolve(__dirname, '../../../../..')
+const REPO_ROOT = resolve(__dirname, '../../../..')
 
 function loadJson<T>(relativePath: string): T {
   const fullPath = resolve(REPO_ROOT, relativePath)
