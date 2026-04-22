@@ -11,7 +11,6 @@ export default mergeConfig(
       root: fileURLToPath(new URL('./', import.meta.url)),
       include: [
         'src/**/*.{spec,test}.{ts,tsx}',
-        'packages/**/*.{spec,test}.{ts,tsx}',
       ],
     },
   }),

@@ -1,0 +1,22 @@
+{
+  "name": "@zupfnoter/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "zupfnoter": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@zupfnoter/core": "workspace:*",
+    "@zupfnoter/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.11.0",
+    "typescript": "~5.9.3"
+  }
+}
