@@ -254,19 +254,22 @@ interface ZupfnoterConfig {
 
 Referenz: `abc2svg_to_harpnotes.rb` (Legacy), `docs/phase-2/konzept_json_serialisierung.md`
 
-- [ ] abc2svg als npm-Paket einbinden (oder als Script-Tag im Browser)
-- [ ] `AbcParser`-Klasse: Wrapper um abc2svg, liefert `AbcModel`
-- [ ] `AbcToSong`-Transformer:
-  - `transform(abcText: string, config: ZupfnoterConfig): Song`
-  - `_transformVoices(abcModel): Voice[]`
-  - `_transformNote(symbol): Note`
-  - `_transformPause(symbol): Pause`
-  - `_transformBar(symbol): MeasureStart`
-  - `_transformGoto(symbol): Goto`
-  - Behandlung von Wiederholungen, Varianten, Tuplets, Bindebögen
-- [ ] `Song`-Klasse mit `updateBeats()` (Beat-Maps berechnen)
-- [ ] Metadaten-Extraktion (T:, C:, M:, K:, Q:)
-- [ ] Unit-Tests mit Referenz-ABC-Dateien
+**abc2svg-Einbindung:** Lokale Vendor-Datei `packages/core/vendor/abc2svg-1.js`
+(heruntergeladen von http://moinejf.free.fr/js/abc2svg-1.js). Nicht als npm-Paket.
+Nur `AbcParser.ts` darf diese Datei importieren.
+
+- [x] abc2svg als lokale Vendor-Datei einbinden (`packages/core/vendor/abc2svg-1.js`)
+- [x] `AbcModel.ts`: Interne Typen für das abc2svg-Datenmodell (nicht Public API)
+- [x] `AbcParser`-Klasse: Wrapper um abc2svg, liefert `AbcModel`
+- [x] `AbcToSong`-Transformer:
+  - `transform(model: AbcModel, config: ZupfnoterConfig): Song`
+  - Note, Pause, SynchPoint, MeasureStart, NewPart, Goto
+  - Chordsymbol, NoteBoundAnnotation (via `extra`)
+  - Wiederholungen, Varianten, Bindebögen, Slurs
+  - Beat-Maps berechnen
+- [x] Metadaten-Extraktion (T:, C:, M:, K:, Q:)
+- [x] Unit-Tests: `AbcParser.spec.ts`, `AbcToSong.spec.ts`
+- [ ] Legacy-Vergleichstests aktivieren (nach Legacy-Export der Fixtures)
 
 ---
 
