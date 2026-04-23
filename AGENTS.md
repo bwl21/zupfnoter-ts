@@ -269,7 +269,15 @@ Nur `AbcParser.ts` darf diese Datei importieren.
   - Beat-Maps berechnen
 - [x] Metadaten-Extraktion (T:, C:, M:, K:, Q:)
 - [x] Unit-Tests: `AbcParser.spec.ts`, `AbcToSong.spec.ts`
-- [ ] Legacy-Vergleichstests aktivieren (nach Legacy-Export der Fixtures)
+- [x] Legacy-Vergleichstests aktivieren (Song-Fixtures aus Legacy-Export befüllt)
+- [ ] `restposition` in `AbcToSong._transformRest()` implementieren:
+  - Konfiguration: `$conf['restposition.default']` → `center` | `next` | `previous`
+  - `center`: Durchschnitt der vorherigen und nächsten Note (Legacy-Default)
+  - `next`: Tonhöhe der nächsten Note
+  - `previous`: Tonhöhe der vorherigen Note
+  - Aktuell hardcodiert: `pitch: 60` (mittleres C)
+  - Nach Implementierung: Pause-Pitch in `tools/legacy-song-to-fixture.mjs` wieder
+    einschalten (Kommentar `// Pause: pitch intentionally omitted`)
 
 ---
 
