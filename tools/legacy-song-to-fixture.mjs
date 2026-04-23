@@ -60,6 +60,11 @@ function convertEntity(e) {
   const type = CLASS_TO_TYPE[e['class']]
   if (!type) return null  // skip unknown types
 
+  // Note: @next_playable, @prev_playable, @sheet_drawable, @companion are intentionally
+  // not converted. These are internal linked-list / back-reference fields in the legacy
+  // Ruby model (circular references, excluded from to_json to prevent stack overflow).
+  // In zupfnoter-ts they are not persistent Song fields — prev/next context is held
+  // transiently in VoiceState during AbcToSong transformation.
   const out = {
     type,
     beat:    e['@beat']    != null ? e['@beat']    * BEAT_FACTOR : undefined,

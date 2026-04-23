@@ -278,6 +278,29 @@ Nur `AbcParser.ts` darf diese Datei importieren.
   - Aktuell hardcodiert: `pitch: 60` (mittleres C)
   - Nach Implementierung: Pause-Pitch in `tools/legacy-song-to-fixture.mjs` wieder
     einschalten (Kommentar `// Pause: pitch intentionally omitted`)
+  - Im Legacy-System (`harpnotes.rb`) werden dafür `@next_playable` und
+    `@prev_playable` auf jeder `MusicEntity` gesetzt (verkettete Liste durch die
+    Stimme). In TS wird das **nicht** als persistentes Feld im `Song`-Objekt
+    abgebildet — stattdessen hält `VoiceState.previousNote` in `AbcToSong` den
+    Zustand während der Transformation. Die nächste Note (`next`) ist zum Zeitpunkt
+    der Pause-Verarbeitung noch nicht bekannt — `center` erfordert daher einen
+    zweiten Pass oder Lookahead über die Stimme.
+
+### Referenzfelder im Legacy-Modell (nicht in TS übernommen)
+
+Im Legacy-System (`harpnotes.rb`) trägt jede `MusicEntity` vier Referenzfelder,
+die in TS bewusst **nicht** als persistente Song-Felder abgebildet werden:
+
+| Legacy-Feld | Zweck | TS-Äquivalent |
+|-------------|-------|---------------|
+| `@next_playable` | Nächste spielbare Entity in der Stimme | Lookahead in `AbcToSong` bei Bedarf |
+| `@prev_playable` | Vorherige spielbare Entity | `VoiceState.previousNote` in `AbcToSong` |
+| `@sheet_drawable` | Rückreferenz Note → Drawable (für SVG-Interaktivität) | `confKey` auf `Drawable` in Phase 4 |
+| `@companion` | NonPlayable → zugehörige Note (beat/pitch-Delegation) | Direkte Felder auf NonPlayable-Typen |
+
+Diese Felder wurden im Legacy-System für den Fixture-Export aus `MusicEntity#to_json`
+ausgeschlossen (zirkuläre Referenzen → Stack Overflow in Opal/JS). Sie haben keine
+Auswirkung auf die normale PDF/SVG-Ausgabe des Legacy-Systems.
 
 ---
 
