@@ -545,6 +545,29 @@ müssen für identische Eingaben identische Schemas erzeugen.
 
 ---
 
+## Offene Architekturentscheidungen
+
+### Laufzeit-Validierung der ZupfnoterConfig
+
+Die `ZupfnoterConfig` wird als JSON-Block in ABC-Dateien eingebettet und kommt damit
+von extern — TypeScript-Typen allein reichen nicht, es braucht Laufzeit-Validierung.
+
+Im Legacy-System ist `_schema` in `src/opal-ajv.rb` die **Single Source of Truth** für
+das Konfigurationsschema (JSON Schema draft-04, validiert via ajv@6).
+
+In `zupfnoter-ts` muss das equivalent abgebildet werden. Optionen:
+- **zod**: Schema als TypeScript-Code, generiert Typen + Laufzeit-Validierung
+- **JSON Schema + ajv@8**: Schema bleibt JSON (kompatibel mit Legacy), Validierung via ajv
+- **Hybrid**: zod-Schema als Single Source of Truth, daraus JSON Schema generieren
+
+⚠️ Wichtig: Das Legacy-Schema (`opal-ajv.rb`) und das TS-Schema müssen inhaltlich
+synchron bleiben. Beim Implementieren der Konfigurationsvalidierung in Phase 3/5:
+1. `_schema` aus `opal-ajv.rb` als Referenz nehmen
+2. Entscheiden ob zod oder JSON Schema die Single Source of Truth wird
+3. Sicherstellen dass alle Felder aus `init_conf.rb` abgedeckt sind
+
+---
+
 ## Technologie-Entscheidungen
 
 | Bereich | Technologie | Begründung |
