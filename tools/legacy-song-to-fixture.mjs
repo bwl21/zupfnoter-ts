@@ -67,7 +67,10 @@ function convertEntity(e) {
     visible: e['@visible'] ?? true,
   }
 
-  // Note: pitch (Pause pitch is not compared — TS and Legacy differ intentionally)
+  // Note: pitch included for comparison.
+  // Pause: pitch intentionally omitted — TS hardcodes pitch=60 (middle C) because
+  // `restposition` (center/next/previous) is not yet implemented in AbcToSong.
+  // Once restposition is implemented, re-enable pitch for Pause here.
   if (type === 'Note' && e['@pitch'] != null) out.pitch = e['@pitch']
   if (e['@duration'] != null) out.duration = e['@duration'] * DURATION_FACTOR
 
