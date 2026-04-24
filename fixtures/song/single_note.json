@@ -1,6 +1,29 @@
 {
-  "_comment": "PLACEHOLDER - run legacy export to populate. See fixtures/README.md",
-  "meta_data": {},
-  "voices": [],
-  "beat_maps": []
+  "meta_data": {
+    "title": "Single Note Test",
+    "composer": "Zupfnoter TS Tests",
+    "meter": "4/4",
+    "key": "C"
+  },
+  "voices": [
+    {
+      "entities": [
+        {
+          "type": "Note",
+          "beat": 0,
+          "variant": 0,
+          "visible": true,
+          "pitch": 48,
+          "duration": 96,
+          "tieStart": false,
+          "tieEnd": false
+        }
+      ]
+    }
+  ],
+  "beat_maps": [
+    {
+      "0": 0
+    }
+  ]
 }

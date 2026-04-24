@@ -1,4 +1,89 @@
-# Spec: Legacy-Vergleichstests aktivieren (Phase 2 – Fixture-Aktivierung)
+# Spec: MusicEntity-Referenzen im TS-Modell (Phase 2 – Nacharbeit)
+
+## Problem
+
+Um Song-JSON aus dem Legacy-System exportieren zu können, wurden in `harpnotes.rb`
+vier Felder aus `MusicEntity#to_json` ausgeschlossen:
+
+```ruby
+skip = ['@constructor', '@toString', '@next_playable', '@prev_playable',
+        '@sheet_drawable', '@companion']
+```
+
+Diese Felder sind zirkuläre Referenzen — sie verursachen einen Stack Overflow bei der
+JSON-Serialisierung in Opal/JavaScript. Im Ruby-System selbst sind sie fachlich relevant:
+
+| Feld | Bedeutung |
+|------|-----------|
+| `@next_playable` | Nächste spielbare Entity in der Stimme (für Flowlines, restposition) |
+| `@prev_playable` | Vorherige spielbare Entity (für restposition center/previous) |
+| `@sheet_drawable` | Rückreferenz auf das gezeichnete Drawable (für Interaktivität) |
+| `@companion` | Referenz von NonPlayable auf zugehörige Note (für beat/pitch-Delegation) |
+
+**Frage:** Müssen diese Felder auch im TS-Modell (`Song`) vorhanden sein, und wenn ja,
+wie werden sie dort abgebildet?
+
+---
+
+## Analyse: TS-Modell vs. Legacy
+
+Im TS-Modell (`@zupfnoter/types`) sind diese Felder **nicht** als Interface-Felder
+definiert. Die Transformation `AbcToSong` baut sie intern auf (`state.previousNote`),
+gibt sie aber nicht als Teil der `Song`-Struktur weiter.
+
+Die Felder werden im Legacy-System in **zwei Phasen** genutzt:
+1. **AbcToSong** (Stufe 1): `prev_playable`/`next_playable` für restposition-Berechnung
+2. **DefaultLayout** (Stufe 2): `sheet_drawable` für Rückreferenz SVG ↔ Note,
+   `companion` für NonPlayable-Positionierung
+
+In TS sind diese Abhängigkeiten anders gelöst:
+- restposition: noch nicht implementiert (pitch=60 hardcodiert)
+- sheet_drawable: wird in Phase 4 (SvgEngine) über `confKey` gelöst
+- companion: NonPlayable hat in TS keinen `companion`-Mechanismus
+
+---
+
+## Anforderungen
+
+### 1. TS-Modell dokumentieren
+
+In `AGENTS.md` festhalten, dass `next_playable`/`prev_playable` im Legacy-System
+für `restposition` gebraucht werden — und wie das in TS gelöst werden soll
+(State in `AbcToSong`, nicht als persistente Felder im Song-Objekt).
+
+### 2. Konverter `legacy-song-to-fixture.mjs` absichern
+
+Der Konverter nutzt `@next_playable`/`@prev_playable` nicht — das ist korrekt,
+weil die Fixtures nur die fachlichen Werte (pitch, duration, beat) vergleichen.
+Einen Kommentar ergänzen, der erklärt warum diese Felder nicht konvertiert werden.
+
+### 3. Legacy-System: Nebenwirkung dokumentieren
+
+Die Änderung an `MusicEntity#to_json` im Legacy-System ist ein Workaround für den
+Fixture-Export. Sie hat keine Auswirkung auf die normale Zupfnoter-Funktionalität
+(PDF/SVG-Ausgabe), weil `to_json` dort nicht verwendet wird.
+
+---
+
+## Akzeptanzkriterien
+
+1. `AGENTS.md` dokumentiert die Rolle von `next_playable`/`prev_playable` im Kontext
+   von `restposition` und wie TS das löst.
+2. `legacy-song-to-fixture.mjs` hat einen Kommentar warum die Referenzfelder
+   nicht konvertiert werden.
+3. Alle Tests bleiben grün.
+
+---
+
+## Implementierungsschritte
+
+1. `AGENTS.md`: Erklärung zu `next_playable`/`prev_playable` bei restposition ergänzen
+2. `legacy-song-to-fixture.mjs`: Kommentar zu ausgelassenen Referenzfeldern
+3. Tests verifizieren
+
+---
+
+# Archiv: Legacy-Vergleichstests aktivieren (Phase 2 – Fixture-Aktivierung)
 
 ## Problem
 

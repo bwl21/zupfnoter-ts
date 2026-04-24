@@ -315,7 +315,10 @@ export class AbcToSong {
       variant: state.variantNo,
       znId: this._makeZnId(sym, voiceIndex),
       duration,
-      pitch: 60, // middle C as layout anchor for rests
+      // TODO: implement restposition (center/next/previous) from config
+      // Legacy: $conf['restposition.default'] determines pitch from surrounding notes
+      // Until implemented, pitch=60 (middle C) is used as a neutral layout anchor.
+      pitch: 60,
       tieStart: false,
       tieEnd: false,
       tuplet: 1,

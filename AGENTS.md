@@ -269,7 +269,38 @@ Nur `AbcParser.ts` darf diese Datei importieren.
   - Beat-Maps berechnen
 - [x] Metadaten-Extraktion (T:, C:, M:, K:, Q:)
 - [x] Unit-Tests: `AbcParser.spec.ts`, `AbcToSong.spec.ts`
-- [ ] Legacy-Vergleichstests aktivieren (nach Legacy-Export der Fixtures)
+- [x] Legacy-Vergleichstests aktivieren (Song-Fixtures aus Legacy-Export befüllt)
+- [ ] `restposition` in `AbcToSong._transformRest()` implementieren:
+  - Konfiguration: `$conf['restposition.default']` → `center` | `next` | `previous`
+  - `center`: Durchschnitt der vorherigen und nächsten Note (Legacy-Default)
+  - `next`: Tonhöhe der nächsten Note
+  - `previous`: Tonhöhe der vorherigen Note
+  - Aktuell hardcodiert: `pitch: 60` (mittleres C)
+  - Nach Implementierung: Pause-Pitch in `tools/legacy-song-to-fixture.mjs` wieder
+    einschalten (Kommentar `// Pause: pitch intentionally omitted`)
+  - Im Legacy-System (`harpnotes.rb`) werden dafür `@next_playable` und
+    `@prev_playable` auf jeder `MusicEntity` gesetzt (verkettete Liste durch die
+    Stimme). In TS wird das **nicht** als persistentes Feld im `Song`-Objekt
+    abgebildet — stattdessen hält `VoiceState.previousNote` in `AbcToSong` den
+    Zustand während der Transformation. Die nächste Note (`next`) ist zum Zeitpunkt
+    der Pause-Verarbeitung noch nicht bekannt — `center` erfordert daher einen
+    zweiten Pass oder Lookahead über die Stimme.
+
+### Referenzfelder im Legacy-Modell (nicht in TS übernommen)
+
+Im Legacy-System (`harpnotes.rb`) trägt jede `MusicEntity` vier Referenzfelder,
+die in TS bewusst **nicht** als persistente Song-Felder abgebildet werden:
+
+| Legacy-Feld | Zweck | TS-Äquivalent |
+|-------------|-------|---------------|
+| `@next_playable` | Nächste spielbare Entity in der Stimme | Lookahead in `AbcToSong` bei Bedarf |
+| `@prev_playable` | Vorherige spielbare Entity | `VoiceState.previousNote` in `AbcToSong` |
+| `@sheet_drawable` | Rückreferenz Note → Drawable (für SVG-Interaktivität) | `confKey` auf `Drawable` in Phase 4 |
+| `@companion` | NonPlayable → zugehörige Note (beat/pitch-Delegation) | Direkte Felder auf NonPlayable-Typen |
+
+Diese Felder wurden im Legacy-System für den Fixture-Export aus `MusicEntity#to_json`
+ausgeschlossen (zirkuläre Referenzen → Stack Overflow in Opal/JS). Sie haben keine
+Auswirkung auf die normale PDF/SVG-Ausgabe des Legacy-Systems.
 
 ---
 
@@ -534,6 +565,29 @@ müssen für identische Eingaben identische Schemas erzeugen.
 | 5 | Vue-Frontend | Phase 4 |
 | 6 | CLI | Phase 3, 4 |
 | 7 | Worker-Architektur | Phase 5 |
+
+---
+
+## Offene Architekturentscheidungen
+
+### Laufzeit-Validierung der ZupfnoterConfig
+
+Die `ZupfnoterConfig` wird als JSON-Block in ABC-Dateien eingebettet und kommt damit
+von extern — TypeScript-Typen allein reichen nicht, es braucht Laufzeit-Validierung.
+
+Im Legacy-System ist `_schema` in `src/opal-ajv.rb` die **Single Source of Truth** für
+das Konfigurationsschema (JSON Schema draft-04, validiert via ajv@6).
+
+In `zupfnoter-ts` muss das equivalent abgebildet werden. Optionen:
+- **zod**: Schema als TypeScript-Code, generiert Typen + Laufzeit-Validierung
+- **JSON Schema + ajv@8**: Schema bleibt JSON (kompatibel mit Legacy), Validierung via ajv
+- **Hybrid**: zod-Schema als Single Source of Truth, daraus JSON Schema generieren
+
+⚠️ Wichtig: Das Legacy-Schema (`opal-ajv.rb`) und das TS-Schema müssen inhaltlich
+synchron bleiben. Beim Implementieren der Konfigurationsvalidierung in Phase 3/5:
+1. `_schema` aus `opal-ajv.rb` als Referenz nehmen
+2. Entscheiden ob zod oder JSON Schema die Single Source of Truth wird
+3. Sicherstellen dass alle Felder aus `init_conf.rb` abgedeckt sind
 
 ---
 
