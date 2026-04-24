@@ -312,10 +312,18 @@ Referenz: `harpnotes.rb` (ab Zeile 1302, `Layout::Default`), `docs/phase-3/konze
 
 #### 3.1 Konfigurationssystem (`Confstack`)
 
-- [ ] `Confstack`-Klasse: Stack mit hierarchischer Auflösung
+- [x] `Confstack`-Klasse: Flat-Stack mit hierarchischer Auflösung (Port von `confstack.rb`)
   - `push(config)` / `pop()`
-  - `get(path: string): unknown` — sucht von oben nach unten
-  - Late-Binding-Unterstützung (Funktionen als Werte)
+  - `get(path: string): unknown` — Punkt-Notation, letzter Treffer von unten gewinnt
+  - `getAll(): ConfigObject` — gesamter Stack als verschachteltes Objekt
+  - `getSubtree(prefix: string): ConfigObject | undefined` — Subtree ab Präfix
+  - `require(path: string): unknown` — wirft bei fehlendem Wert
+  - `set(path, value)` — schreibt direkt in oberste Schicht
+  - `keys(): string[]` — alle Punkt-Pfade
+  - Rekursives Late Binding (Funktionen in Werten, Arrays, Objekten)
+  - Circular-Dependency-Erkennung
+- [x] `buildConfstack(config, extractNr)` — Zupfnoter-spezifischer Stack-Aufbau
+  in `buildConfstack.ts` (bewusst von `Confstack.ts` getrennt)
 - [ ] `resolveVoiceStyle(voiceNr, extractConfig, globalStyles): VoiceStyle | null`
 
 #### 3.2 Beat-Packer (vertikale Kompression)
