@@ -41,6 +41,8 @@ export interface Ellipse extends Drawable {
   size: [number, number]
   fill: FillStyle
   dotted: boolean
+  /** Balken über der Ellipse (für halbe Noten) */
+  hasbarover: boolean
   /** Rückverweis auf die zugehörige Note oder Pause */
   origin?: Note | Pause
 }

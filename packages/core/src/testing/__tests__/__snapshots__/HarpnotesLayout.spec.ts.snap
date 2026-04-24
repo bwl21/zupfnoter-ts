@@ -28,6 +28,7 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
     "confKey": undefined,
     "dotted": true,
     "fill": "filled",
+    "hasbarover": false,
     "lineWidth": 0.5,
     "origin": {
       "barDecorations": [],
