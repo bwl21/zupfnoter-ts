@@ -49,6 +49,26 @@ export interface DurationStyle {
   dotted: boolean
 }
 
+/**
+ * Glyph-Name für Pausenzeichen.
+ * Entspricht den Schlüsseln in `Glyph::GLYPHS` in `harpnotes.rb`.
+ */
+export type GlyphName =
+  | 'rest_1' | 'rest_4' | 'rest_8' | 'rest_16' | 'rest_32' | 'rest_64'
+  | 'fermata' | 'emphasis' | 'breath' | 'error'
+
+/**
+ * Darstellungsstil für eine Pausendauer (Skalierung, Glyph-Name, Punktierung).
+ * Entspricht `REST_TO_GLYPH`-Einträgen in `init_conf.rb`.
+ */
+export interface RestStyle {
+  /** Skalierungsfaktor [x, y] relativ zu REST_SIZE */
+  scale: [number, number]
+  /** Name des Glyphen */
+  glyphName: GlyphName
+  dotted: boolean
+}
+
 // ---------------------------------------------------------------------------
 // Layout-Konfiguration
 // ---------------------------------------------------------------------------
@@ -90,6 +110,8 @@ export interface LayoutConfig {
   }
   FONT_STYLE_DEF: Record<string, FontStyle>
   DURATION_TO_STYLE: Record<DurationKey, DurationStyle>
+  /** Mapping Notendauer → Pausenzeichen-Stil */
+  REST_TO_GLYPH: Record<DurationKey, RestStyle>
   /** Instrument-Bezeichnung (z.B. 'Harp') */
   instrument: string
   packer: { pack_method: 0 | 1 | 2 | 3 | 10; pack_min_increment?: number; pack_max_spreadfactor?: number }

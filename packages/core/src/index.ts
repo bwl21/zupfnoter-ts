@@ -18,3 +18,5 @@ export { buildConfstack } from './buildConfstack.js'
 
 export { computeBeatCompression } from './BeatPacker.js'
 export type { BeatCompressionMap } from './BeatPacker.js'
+
+export { HarpnotesLayout } from './HarpnotesLayout.js'

@@ -18,6 +18,10 @@ import { fileURLToPath } from 'node:url'
 import { matchSheet, formatMismatches } from '../../semanticMatch.js'
 import { loadSheetFixture } from '../../fixtureLoader.js'
 import type { SheetFixture } from '../../semanticMatch.js'
+import { AbcParser } from '../../../AbcParser.js'
+import { AbcToSong } from '../../../AbcToSong.js'
+import { HarpnotesLayout } from '../../../HarpnotesLayout.js'
+import { defaultTestConfig } from '../../defaultConfig.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '../../../../../..')
@@ -27,14 +31,15 @@ function readAbc(relativePath: string): string {
 }
 
 /**
- * Stub: replace with real pipeline once implemented:
- *   const song = new AbcToSong().transform(abcText)
- *   return new DefaultLayout().layout(song, 0, 'A4')
- * Returns an empty SheetFixture so tests compile and pass as placeholders.
+ * Full pipeline: ABC → Song → Sheet.
+ * Fixtures with empty children[] are treated as placeholders and always pass.
  */
-function transformAbcToSheet(_abcText: string): SheetFixture {
-  // TODO: replace with full pipeline
-  return { children: [] }
+function transformAbcToSheet(abcText: string): SheetFixture {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const song = new AbcToSong().transform(model, defaultTestConfig)
+  const sheet = new HarpnotesLayout(defaultTestConfig).layout(song, 0, 'A4')
+  return sheet as unknown as SheetFixture
 }
 
 // ---------------------------------------------------------------------------

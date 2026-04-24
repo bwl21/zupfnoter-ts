@@ -92,7 +92,11 @@ export class AbcToSong {
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 384
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 96
 
-    const voices = model.voices.map((v, idx) => this._transformVoice(v, idx, model))
+    const restpositionConfig = config as unknown as Record<string, Record<string, unknown>>
+    const restpositionDefault =
+      (restpositionConfig['restposition']?.['default'] as string | undefined) ?? 'center'
+
+    const voices = model.voices.map((v, idx) => this._transformVoice(v, idx, model, restpositionDefault))
     const beatMaps = this._buildBeatMaps(voices)
     const metaData = this._extractMetaData(model)
 
@@ -103,7 +107,7 @@ export class AbcToSong {
   // Voice transformation
   // ---------------------------------------------------------------------------
 
-  private _transformVoice(voice: AbcVoice, voiceIndex: number, model: AbcModel): Voice {
+  private _transformVoice(voice: AbcVoice, voiceIndex: number, model: AbcModel, restpositionDefault = 'center'): Voice {
     const wmeasure = voice.voice_properties.meter.wmeasure
     const state = createVoiceState(wmeasure)
 
@@ -121,8 +125,11 @@ export class AbcToSong {
       }
     }
 
-    // Befülle prevPitch/nextPitch auf allen Playables für den CollisionPacker
+    // Befülle prevPitch/nextPitch und prevPlayable/nextPlayable auf allen Playables
     this._annotateNeighbourPitches(entities)
+
+    // Setze Pause-Pitch basierend auf restposition-Konfiguration
+    this._applyRestposition(entities, restpositionDefault)
 
     return {
       index: voiceIndex,
@@ -158,6 +165,40 @@ export class AbcToSong {
         p.nextPitch = next.pitch
         p.nextPlayable = next
       }
+    }
+  }
+
+  /**
+   * Setzt den Pitch jeder Pause basierend auf der restposition-Konfiguration.
+   *
+   * Entspricht `$conf['restposition.default']` im Legacy-System.
+   * Muss nach `_annotateNeighbourPitches` aufgerufen werden.
+   *
+   * - `'center'`: Durchschnitt von prevPlayable.pitch und nextPlayable.pitch
+   * - `'next'`:   nextPlayable.pitch (Fallback: prevPlayable.pitch)
+   * - `'previous'`: prevPlayable.pitch (Fallback: nextPlayable.pitch)
+   */
+  private _applyRestposition(entities: VoiceEntity[], mode: string): void {
+    for (const entity of entities) {
+      if (entity.type !== 'Pause') continue
+      const pause = entity as Pause
+      const prev = pause.prevPlayable
+      const next = pause.nextPlayable
+
+      let pitch: number
+      if (mode === 'next') {
+        pitch = next?.pitch ?? prev?.pitch ?? 60
+      } else if (mode === 'previous') {
+        pitch = prev?.pitch ?? next?.pitch ?? 60
+      } else {
+        // 'center' (default)
+        if (prev && next) {
+          pitch = Math.round((prev.pitch + next.pitch) / 2)
+        } else {
+          pitch = prev?.pitch ?? next?.pitch ?? 60
+        }
+      }
+      pause.pitch = pitch
     }
   }
 
@@ -346,9 +387,7 @@ export class AbcToSong {
       variant: state.variantNo,
       znId: this._makeZnId(sym, voiceIndex),
       duration,
-      // TODO: implement restposition (center/next/previous) from config
-      // Legacy: $conf['restposition.default'] determines pitch from surrounding notes
-      // Until implemented, pitch=60 (middle C) is used as a neutral layout anchor.
+      // Initial pitch=60; overwritten by _applyRestposition() after neighbour annotation.
       pitch: 60,
       tieStart: false,
       tieEnd: false,

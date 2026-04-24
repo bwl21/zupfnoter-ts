@@ -51,6 +51,8 @@ export type {
   FontStyle,
   DurationKey,
   DurationStyle,
+  GlyphName,
+  RestStyle,
   LayoutConfig,
   PrinterConfig,
   BarnumberConfig,
