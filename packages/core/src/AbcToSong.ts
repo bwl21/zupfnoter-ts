@@ -12,6 +12,7 @@ import type {
   Voice,
   VoiceEntity,
   PlayableEntity,
+  Playable,
   Note,
   Pause,
   SynchPoint,
@@ -120,6 +121,9 @@ export class AbcToSong {
       }
     }
 
+    // Befülle prevPitch/nextPitch auf allen Playables für den CollisionPacker
+    this._annotateNeighbourPitches(entities)
+
     return {
       index: voiceIndex,
       name: voice.voice_properties.name,
@@ -127,6 +131,33 @@ export class AbcToSong {
       showFlowline: true,
       showJumpline: true,
       entities,
+    }
+  }
+
+  /**
+   * Setzt Nachbar-Referenzen auf allen Playable-Entitäten einer Stimme:
+   * - `prevPitch` / `nextPitch`: Pitch-Werte für BeatPacker (pack_method 1 + 3)
+   * - `prevPlayable` / `nextPlayable`: Objekt-Referenzen für Layout-Engine
+   *
+   * Entspricht `prev_playable` / `next_playable` im Legacy-System.
+   * Achtung: zirkuläre Referenzen — bei JSON-Serialisierung durch znId ersetzen.
+   */
+  private _annotateNeighbourPitches(entities: VoiceEntity[]): void {
+    const playables = entities.filter(
+      (e): e is Playable => 'pitch' in e && 'duration' in e,
+    )
+    for (let i = 0; i < playables.length; i++) {
+      const p = playables[i]!
+      const prev = playables[i - 1]
+      const next = playables[i + 1]
+      if (prev) {
+        p.prevPitch = prev.pitch
+        p.prevPlayable = prev
+      }
+      if (next) {
+        p.nextPitch = next.pitch
+        p.nextPlayable = next
+      }
     }
   }
 

@@ -328,12 +328,15 @@ Referenz: `harpnotes.rb` (ab Zeile 1302, `Layout::Default`), `docs/phase-3/konze
 
 #### 3.2 Beat-Packer (vertikale Kompression)
 
-- [ ] `BeatPacker`-Interface mit Methode `pack(beats, music): BeatCompressionMap`
-- [ ] Implementierungen:
-  - `StandardPacker` (pack_method 0): Berücksichtigt Notengrößen, Taktanfänge
-  - `CollisionPacker` (pack_method 1): Horizontale Überlappungsprüfung
-  - `LinearPacker` (pack_method 2): `beat * 8`
-- [ ] Manuelle Inkremente (`minc`) pro Zeitposition
+- [x] `computeBeatCompression(song, layoutLines, conf): BeatCompressionMap` — pure Funktion
+  - pack_method 0: Standard (Notengrößen, Taktanfänge, Parts)
+  - pack_method 1: Collision (Pitch-Kollisionserkennung, Inversionen)
+  - pack_method 2: Linear (`beat * 8`)
+  - pack_method 3: Collision v2 (Pitch-Range-Kollision)
+  - pack_method 10: Legacy Standard (via beatMaps)
+- [x] Manuelle Inkremente (`minc`) via `getMincFactor()`
+- [x] `prevPitch`/`nextPitch` auf `Playable` in `@zupfnoter/types`
+- [x] `AbcToSong` befüllt `prevPitch`/`nextPitch`
 
 #### 3.3 Layout-Engine
 
