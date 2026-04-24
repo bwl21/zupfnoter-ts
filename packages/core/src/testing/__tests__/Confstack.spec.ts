@@ -44,9 +44,9 @@ describe('Confstack – Stack-Operationen', () => {
     expect(cs.depth).toBe(0)
   })
 
-  it('pop auf Basis-Schicht wirft', () => {
+  it('pop auf leerem Stack wirft', () => {
     const cs = new Confstack()
-    expect(() => cs.pop()).toThrow('cannot pop the base layer')
+    expect(() => cs.pop()).toThrow('stack is empty')
   })
 
   it('pop stellt vorherigen Zustand wieder her', () => {
@@ -204,13 +204,16 @@ describe('Confstack.set()', () => {
     expect(cs.get('layout.X_SPACING')).toBe(20.0)
   })
 
-  it('set() kann mit pop() rückgängig gemacht werden', () => {
+  it('set() schreibt direkt in die oberste Schicht', () => {
+    // set() entspricht []= in confstack.rb: schreibt in @confstack.last,
+    // ist nicht per pop() rückgängig zu machen (anders als push+pop).
     const cs = new Confstack()
     cs.push({ layout: { X_SPACING: 11.5 } })
     cs.set('layout.X_SPACING', 20.0)
     expect(cs.get('layout.X_SPACING')).toBe(20.0)
     cs.pop()
-    expect(cs.get('layout.X_SPACING')).toBe(11.5)
+    // Nach pop() ist die Schicht weg — kein Wert mehr vorhanden
+    expect(cs.get('layout.X_SPACING')).toBeUndefined()
   })
 })
 

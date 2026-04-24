@@ -1,18 +1,15 @@
 /**
  * Confstack – generischer hierarchischer Konfigurations-Stack.
  *
- * Port von `confstack2.rb` aus dem Legacy-System.
+ * Port von `confstack.rb` aus dem Legacy-System.
  *
- * Jede Schicht ist ein vollständiger Snapshot: `push(hash)` erzeugt einen
- * Deep-Merge der aktuellen obersten Schicht mit dem neuen Hash und legt das
- * Ergebnis oben auf den Stack. `pop()` entfernt die oberste Schicht und
- * stellt damit den vorherigen Zustand wieder her.
+ * Jede Schicht ist ein eigenständiger Hash. `push(hash)` legt ihn oben auf
+ * den Stack. `get(path)` sucht von oben nach unten durch alle Schichten und
+ * gibt den letzten (untersten) Treffer zurück — d.h. spätere pushes haben
+ * niedrigere Priorität als frühere. `pop()` entfernt die oberste Schicht.
  *
- * `get(path)` liest immer aus der obersten Schicht via Punkt-Notation.
  * Late-Binding-Werte (Funktionen) werden beim Zugriff rekursiv aufgelöst.
  */
-
-
 
 // ---------------------------------------------------------------------------
 // Typen
@@ -31,84 +28,80 @@ export type ConfigValue = unknown | ((...args: unknown[]) => unknown)
 /**
  * Stack-basierter Konfigurations-Resolver.
  *
- * Entspricht `Confstack` in `confstack2.rb`.
+ * Entspricht `Confstack` in `confstack.rb`.
  *
- * Jede Schicht ist ein vollständiger Deep-Merge-Snapshot aller bisher
- * gepushten Konfigurationen. `get(path)` liest immer nur die oberste Schicht.
+ * Jede Schicht ist ein eigenständiger Hash. `get(path)` sucht von oben nach
+ * unten und gibt den letzten Treffer zurück (unterste Schicht hat Vorrang,
+ * da sie die Defaults enthält und obere Schichten spezifischere Werte haben).
+ *
+ * Intern wird nach jedem `push`/`pop` ein flaches Result-Objekt berechnet
+ * (`_flatten`), das alle Schlüssel als verschachtelten Hash enthält.
+ * `get()` liest immer aus diesem vorberechneten Result.
  */
 export class Confstack {
-  /** Stack von vollständigen Konfigurations-Snapshots. Basis-Schicht ist immer {}. */
-  private readonly _stack: ConfigObject[] = [{}]
+  private _stack: ConfigObject[] = []
+  private _resultFlat: ConfigObject = {}
+  private _keysFlat: string[] = []
 
   /**
    * Legt eine neue Konfigurationsschicht oben auf den Stack.
-   *
-   * Die neue Schicht ist ein Deep-Merge der aktuellen obersten Schicht mit
-   * `config`. Werte in `config` überschreiben bestehende Werte. Arrays werden
-   * vollständig ersetzt (nicht gemergt).
-   *
-   * Entspricht `push(hash)` in `confstack2.rb`.
+   * Entspricht `push(hash)` in `confstack.rb`.
    */
   push(config: ConfigObject): void {
-    const current = this._stack[this._stack.length - 1]!
-    this._stack.push(deepMerge(deepDup(current) as ConfigObject, config))
+    this._stack.push(config)
+    this._flatten()
   }
 
   /**
    * Entfernt die oberste Schicht vom Stack.
-   * Wirft einen Fehler wenn nur die Basis-Schicht vorhanden ist.
-   *
-   * Entspricht `pop()` in `confstack2.rb`.
+   * Wirft einen Fehler wenn der Stack leer ist.
+   * Entspricht `pop()` in `confstack.rb`.
    */
   pop(): void {
-    if (this._stack.length <= 1) {
-      throw new Error('Confstack.pop(): cannot pop the base layer')
+    if (this._stack.length === 0) {
+      throw new Error('Confstack.pop(): stack is empty')
     }
     this._stack.pop()
+    this._flatten()
   }
 
   /**
-   * Gibt die Anzahl der gepushten Schichten zurück (ohne Basis-Schicht).
+   * Gibt die Anzahl der Schichten zurück.
    */
   get depth(): number {
-    return this._stack.length - 1
+    return this._stack.length
   }
 
   /**
-   * Liest einen Wert per Punkt-Notation aus der obersten Schicht.
+   * Liest einen Wert per Punkt-Notation (z.B. `'layout.ELLIPSE_SIZE'`).
    *
    * Gibt `undefined` zurück wenn der Pfad nicht existiert.
    * Late-Binding-Werte (Funktionen) werden rekursiv aufgelöst.
    *
-   * Entspricht `get(key)` / `[](key)` in `confstack2.rb`.
+   * Entspricht `get(key)` / `[](key)` in `confstack.rb`.
    */
   get(path: string): unknown {
-    const top = this._stack[this._stack.length - 1]!
-    return resolveDependencies(digPath(top, path.split('.')))
+    const value = digPath(this._resultFlat, path.split('.'))
+    return resolveDependencies(value)
   }
 
   /**
-   * Gibt die gesamte oberste Schicht als verschachteltes Objekt zurück.
+   * Gibt den gesamten aufgelösten Stack als verschachteltes Objekt zurück.
    * Late-Binding-Werte werden rekursiv aufgelöst.
    *
-   * Entspricht `get()` ohne Argument in `confstack2.rb`.
+   * Entspricht `get()` ohne Argument in `confstack.rb`.
    */
   getAll(): ConfigObject {
-    const top = this._stack[this._stack.length - 1]!
-    return resolveDependencies(top) as ConfigObject
+    return resolveDependencies(this._resultFlat) as ConfigObject
   }
 
   /**
    * Gibt alle Schlüssel unterhalb eines Präfixes als verschachteltes Objekt zurück.
-   *
-   * Entspricht `get("extract.0")` im Legacy-Code, das einen ganzen Subtree
-   * zurückgibt. Late-Binding-Werte werden rekursiv aufgelöst.
-   *
+   * Late-Binding-Werte werden rekursiv aufgelöst.
    * Gibt `undefined` zurück wenn der Pfad nicht existiert.
    */
   getSubtree(prefix: string): ConfigObject | undefined {
-    const top = this._stack[this._stack.length - 1]!
-    const value = digPath(top, prefix.split('.'))
+    const value = digPath(this._resultFlat, prefix.split('.'))
     if (value === undefined) return undefined
     return resolveDependencies(value) as ConfigObject
   }
@@ -125,37 +118,83 @@ export class Confstack {
   }
 
   /**
-   * Schreibt einen Wert per Punkt-Notation in den Stack.
-   *
-   * Entspricht `[]=(key, value)` in `confstack2.rb`: pusht einen neuen
-   * verschachtelten Hash, sodass `pop()` die Änderung rückgängig machen kann.
+   * Schreibt einen Wert per Punkt-Notation direkt in die oberste Schicht.
+   * Entspricht `[]=(key, value)` in `confstack.rb`.
    */
   set(path: string, value: unknown): void {
-    const parts = path.split('.').reverse()
-    const hash = parts.reduce<unknown>((acc, key) => ({ [key]: acc }), value)
-    this.push(hash as ConfigObject)
+    if (this._stack.length === 0) {
+      this._stack.push({})
+    }
+    const top = this._stack[this._stack.length - 1]!
+    updateNestedValue(top, path.split('.'), value)
+    this._flatten()
   }
 
   /**
-   * Gibt alle verschachtelten Schlüssel der obersten Schicht zurück
-   * (Punkt-Notation, z.B. `['layout.X_SPACING', 'layout.Y_SCALE', ...]`).
-   *
-   * Entspricht `keys()` / `digkeys()` in `confstack2.rb`.
+   * Gibt alle verschachtelten Schlüssel zurück (Punkt-Notation).
+   * Entspricht `keys()` in `confstack.rb`.
    */
   keys(): string[] {
-    const top = this._stack[this._stack.length - 1]!
-    return digKeys(top)
+    return this._keysFlat
   }
 
   /**
-   * Gibt eine flache Darstellung der obersten Schicht zurück (Punkt-Schlüssel).
+   * Gibt eine flache Darstellung des aufgelösten Stacks zurück (Punkt-Schlüssel).
    * Nützlich für Debugging. Late-Binding-Werte werden nicht aufgelöst.
    */
   toFlat(): ConfigObject {
-    const top = this._stack[this._stack.length - 1]!
     const result: ConfigObject = {}
-    for (const key of digKeys(top)) {
-      result[key] = digPath(top, key.split('.'))
+    for (const key of this._keysFlat) {
+      result[key] = digPath(this._resultFlat, key.split('.'))
+    }
+    return result
+  }
+
+  // ---------------------------------------------------------------------------
+  // Interne Methoden
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Berechnet `_resultFlat` und `_keysFlat` neu.
+   *
+   * Entspricht `_flatten()` in `confstack.rb`:
+   * - Sammelt alle Schlüssel aus allen Schichten
+   * - Für jeden Schlüssel: letzter Treffer von unten gewinnt
+   * - Baut daraus einen verschachtelten Hash auf
+   */
+  private _flatten(): void {
+    // Alle Schlüssel aus allen Schichten sammeln (unique)
+    const allKeys = new Set<string>()
+    for (const layer of this._stack) {
+      for (const key of getKeys(layer)) {
+        allKeys.add(key)
+      }
+    }
+    this._keysFlat = Array.from(allKeys)
+
+    // Für jeden Schlüssel: letzten Treffer von unten finden
+    // (confstack.rb: `@confstack.map { |s| _get_one(s, key) }.compact.last`)
+    const flat: ConfigObject = {}
+    for (const key of this._keysFlat) {
+      const value = this._getOne(key)
+      if (value !== undefined) {
+        setNestedValue(flat, key.split('.'), value)
+      }
+    }
+    this._resultFlat = flat
+  }
+
+  /**
+   * Sucht einen Schlüssel in allen Schichten und gibt den letzten Treffer zurück.
+   * Entspricht `_get(key)` in `confstack.rb`.
+   */
+  private _getOne(key: string): unknown {
+    let result: unknown = undefined
+    for (const layer of this._stack) {
+      const value = digPath(layer, key.split('.'))
+      if (value !== undefined) {
+        result = value
+      }
     }
     return result
   }
@@ -173,11 +212,9 @@ export class Confstack {
  * - Objekte werden wertweise aufgelöst.
  * - Primitive Werte werden unverändert zurückgegeben.
  *
- * `callstack` verhindert zirkuläre Abhängigkeiten: Wenn dieselbe
- * Funktionsreferenz während ihrer eigenen Auflösung erneut auftaucht,
- * wird ein Fehler geworfen.
+ * `callstack` verhindert zirkuläre Abhängigkeiten.
  *
- * Entspricht `_resolve_dependencies()` in `confstack2.rb`.
+ * Entspricht `_resolve_dependencies()` in `confstack.rb`.
  */
 function resolveDependencies(value: unknown, callstack: Set<() => unknown> = new Set()): unknown {
   if (typeof value === 'function') {
@@ -210,8 +247,8 @@ function resolveDependencies(value: unknown, callstack: Set<() => unknown> = new
 // ---------------------------------------------------------------------------
 
 /**
- * Liest einen verschachtelten Wert per Pfad-Array (entspricht `dig()` in Ruby).
- * Gibt `undefined` zurück wenn ein Zwischenschritt fehlt.
+ * Liest einen verschachtelten Wert per Pfad-Array (entspricht `dig()` in Ruby /
+ * `_get_one()` in `confstack.rb`).
  */
 function digPath(obj: unknown, parts: string[]): unknown {
   let current = obj
@@ -226,10 +263,10 @@ function digPath(obj: unknown, parts: string[]): unknown {
 
 /**
  * Gibt alle verschachtelten Schlüssel eines Objekts als Punkt-Pfade zurück.
- * Entspricht `digkeys()` in `confstack2.rb`.
+ * Entspricht `_get_keys()` in `confstack.rb`.
  * Arrays und Funktionen werden als Blatt-Werte behandelt.
  */
-function digKeys(obj: ConfigObject, parentKey = ''): string[] {
+function getKeys(obj: ConfigObject, parentKey = ''): string[] {
   const result: string[] = []
   for (const [key, value] of Object.entries(obj)) {
     const fullKey = parentKey ? `${parentKey}.${key}` : key
@@ -240,49 +277,41 @@ function digKeys(obj: ConfigObject, parentKey = ''): string[] {
       !Array.isArray(value) &&
       typeof value !== 'function'
     ) {
-      result.push(...digKeys(value as ConfigObject, fullKey))
+      result.push(...getKeys(value as ConfigObject, fullKey))
     }
   }
   return result
 }
 
 /**
- * Deep-Merge zweier Objekte. `source` überschreibt `target` rekursiv.
- * Arrays werden vollständig ersetzt (nicht gemergt) — wie in Ruby's deep_merge.
+ * Setzt einen Wert in einem verschachtelten Objekt per Pfad-Array.
+ * Entspricht `_add_hash()` in `confstack.rb`.
  */
-function deepMerge(target: ConfigObject, source: ConfigObject): ConfigObject {
-  for (const [key, sourceValue] of Object.entries(source)) {
-    const targetValue = target[key]
-    if (
-      sourceValue !== null &&
-      typeof sourceValue === 'object' &&
-      !Array.isArray(sourceValue) &&
-      targetValue !== null &&
-      typeof targetValue === 'object' &&
-      !Array.isArray(targetValue)
-    ) {
-      target[key] = deepMerge(targetValue as ConfigObject, sourceValue as ConfigObject)
-    } else {
-      target[key] = sourceValue
+function setNestedValue(obj: ConfigObject, parts: string[], value: unknown): void {
+  let current = obj
+  for (let i = 0; i < parts.length - 1; i++) {
+    const part = parts[i]!
+    if (typeof current[part] !== 'object' || current[part] === null || Array.isArray(current[part])) {
+      current[part] = {}
     }
+    current = current[part] as ConfigObject
   }
-  return target
+  current[parts[parts.length - 1]!] = value
 }
 
 /**
- * Erstellt eine tiefe Kopie eines Wertes.
- * Funktionen werden als Referenz kopiert — wie in Ruby wo Procs nicht
- * dupliziert werden (`dup` auf einem Proc gibt dasselbe Objekt zurück).
+ * Aktualisiert einen Wert in einem verschachtelten Objekt per Pfad-Array.
+ * Entspricht `_update_hash()` in `confstack.rb`.
  */
-function deepDup(value: unknown): unknown {
-  if (value === null || typeof value !== 'object') return value
-  if (typeof value === 'function') return value
-  if (Array.isArray(value)) return value.map(deepDup)
-  const result: ConfigObject = {}
-  for (const [k, v] of Object.entries(value as ConfigObject)) {
-    result[k] = deepDup(v)
+function updateNestedValue(obj: ConfigObject, parts: string[], value: unknown): void {
+  if (parts.length === 0) return
+  if (parts.length === 1) {
+    obj[parts[0]!] = value
+    return
   }
-  return result
+  const key = parts[0]!
+  if (typeof obj[key] !== 'object' || obj[key] === null || Array.isArray(obj[key])) {
+    obj[key] = {}
+  }
+  updateNestedValue(obj[key] as ConfigObject, parts.slice(1), value)
 }
-
-
