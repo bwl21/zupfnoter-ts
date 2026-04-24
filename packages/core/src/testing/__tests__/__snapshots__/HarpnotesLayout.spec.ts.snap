@@ -1,0 +1,74 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`HarpnotesLayout > full sheet snapshot > single_note sheet matches snapshot 1`] = `
+{
+  "Annotation": 1,
+  "Ellipse": 1,
+  "Path": 8,
+}
+`;
+
+exports[`HarpnotesLayout > full sheet snapshot > two_voices sheet matches snapshot 1`] = `
+{
+  "Annotation": 3,
+  "Ellipse": 8,
+  "FlowLine": 10,
+  "Path": 8,
+}
+`;
+
+exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
+[
+  {
+    "center": [
+      59.5,
+      15,
+    ],
+    "color": "black",
+    "confKey": undefined,
+    "dotted": true,
+    "fill": "filled",
+    "lineWidth": 0.5,
+    "origin": {
+      "barDecorations": [],
+      "beat": 0,
+      "countNote": null,
+      "decorations": [],
+      "duration": 96,
+      "endPos": [
+        1,
+        1,
+      ],
+      "firstInPart": false,
+      "jumpEnds": [],
+      "jumpStarts": [],
+      "lyrics": null,
+      "measureCount": 0,
+      "measureStart": false,
+      "pitch": 48,
+      "slurEnds": [],
+      "slurStarts": [],
+      "startPos": [
+        1,
+        1,
+      ],
+      "tieEnd": false,
+      "tieStart": false,
+      "time": 0,
+      "tuplet": 1,
+      "tupletEnd": false,
+      "tupletStart": false,
+      "type": "Note",
+      "variant": 0,
+      "visible": true,
+      "znId": "0-88",
+    },
+    "size": [
+      1.05,
+      0.51,
+    ],
+    "type": "Ellipse",
+    "visible": true,
+  },
+]
+`;

@@ -340,22 +340,27 @@ Referenz: `harpnotes.rb` (ab Zeile 1302, `Layout::Default`), `docs/phase-3/konze
 
 #### 3.3 Layout-Engine
 
-- [ ] `DefaultLayout`-Klasse:
-  - `layout(song: Song, printVariantNr: number, pageFormat: 'A3' | 'A4'): Sheet`
-  - `_layoutPrepareOptions(printVariantNr)` — Konfig-Stack aufbauen
-  - `_layoutVoices(...)` — Schleife über aktive Stimmen
-  - `layoutVoice(voice, beatLayout, voiceNr, voiceStyle)` — eine Stimme layouten
-  - `layoutNote(note, voiceStyle): Ellipse`
-  - `layoutPause(pause, voiceStyle): Glyph`
-  - `_layoutVoiceFlowlines(voice, voiceStyle): FlowLine[]`
-  - `_layoutVoiceGotos(voice, voiceStyle): Path[]`
-  - `_layoutVoiceTuplets(voice): Path[]`
-  - `_layoutSynchLines(voices): FlowLine[]`
-  - `_layoutSheetmarks(): Drawable[]`
-  - `_layoutLegend(config): Annotation[]`
-  - `_layoutLyrics(song): Annotation[]`
-  - `_layoutAnnotations(config): Annotation[]`
-  - `_layoutBarnumbers(voice): Annotation[]`
+- [x] `HarpnotesLayout`-Klasse (Port von `Harpnotes::Layout::Default`):
+  - `layout(song: Song, extractNr: number | string, pageFormat: 'A3' | 'A4'): Sheet`
+  - `_layoutPrepareOptions(extractNr)` — Konfig-Stack aufbauen via `buildConfstack`
+  - `_layoutVoices(song, conf)` — Schleife über aktive Stimmen + BeatCompression
+  - `_layoutVoice(voice, beatMap, voiceNr, ...)` — eine Stimme layouten
+  - `_layoutNote(note, beatMap, layout, startpos): Ellipse`
+  - `_layoutPause(pause, beatMap, layout, startpos): Glyph`
+  - `_layoutVoiceFlowlines(voice, beatMap, layout, startpos, style): FlowLine[]`
+  - `_layoutVoiceGotos(voice, beatMap, layout, startpos): Path[]`
+  - `_layoutVoiceTuplets(voice, beatMap, layout, startpos): DrawableElement[]`
+  - `_layoutSynchLines(song, beatMaps, conf): FlowLine[]`
+  - `_layoutSheetmarks(layout): DrawableElement[]`
+  - `_layoutLegend(metaData, conf, extractNr): Annotation[]`
+  - `_layoutLyrics(song, beatMaps, conf): Annotation[]`
+  - `_layoutAnnotations(conf, extractNr): Annotation[]`
+  - `_layoutBarnumbers(voice, beatMap, layout, startpos): Annotation[]`
+  - `_layoutImages(conf, extractNr): Image[]`
+  - `_layoutInstrument(conf, extractNr): DrawableElement[]` (Stub)
+  - `_layoutCutmarks(pageFormat, conf): Path[]`
+- [x] `restposition` in `AbcToSong._applyRestposition()` (center/next/previous)
+- [x] `prevPlayable`/`nextPlayable` auf `Playable` in `@zupfnoter/types`
 
 #### 3.4 Voice Styles
 
@@ -364,10 +369,10 @@ Wird nach Abschluss der Migration als separates Feature implementiert. Siehe Abs
 
 #### 3.5 Tests
 
-- [ ] Unit-Tests für Confstack
-- [ ] Unit-Tests für BeatPacker (alle Methoden)
-- [ ] Snapshot-Tests für Layout-Ausgabe (Sheet-JSON)
-- [ ] Referenz-Vergleich mit Legacy-Ausgabe (JSON-Serialisierung, siehe `docs/phase-3/konzept_json_serialisierung.md`)
+- [x] Unit-Tests für Confstack (50 Tests)
+- [x] Unit-Tests für BeatPacker (13 Tests, alle 5 Methoden)
+- [x] Snapshot-Tests für Layout-Ausgabe (`HarpnotesLayout.spec.ts`, 17 Tests)
+- [ ] Referenz-Vergleich mit Legacy-Ausgabe (wartet auf Legacy-Fixture-Export)
 
 ---
 
