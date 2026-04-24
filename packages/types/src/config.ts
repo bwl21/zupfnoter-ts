@@ -92,7 +92,7 @@ export interface LayoutConfig {
   DURATION_TO_STYLE: Record<DurationKey, DurationStyle>
   /** Instrument-Bezeichnung (z.B. 'Harp') */
   instrument: string
-  packer: { pack_method: 0 | 1 | 2 | 10 }
+  packer: { pack_method: 0 | 1 | 2 | 3 | 10; pack_min_increment?: number; pack_max_spreadfactor?: number }
   /** A3-Ausgabe auf A4-Breite begrenzen */
   limit_a3: boolean
   /** Gitternetz anzeigen */

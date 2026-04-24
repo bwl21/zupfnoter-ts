@@ -59,6 +59,28 @@ export interface Playable extends MusicEntity {
   slurEnds: string[]
   countNote: string | null
   lyrics: string | null
+  /**
+   * Pitch der vorherigen spielbaren Entität in der Stimme.
+   * Wird vom BeatPacker (pack_method 1 + 3) für Kollisionsprüfung genutzt.
+   */
+  prevPitch?: number
+  /**
+   * Pitch der nächsten spielbaren Entität in der Stimme.
+   * Wird vom BeatPacker (pack_method 1 + 3) für Kollisionsprüfung genutzt.
+   */
+  nextPitch?: number
+  /**
+   * Referenz auf das vorherige spielbare Element in der Stimme.
+   * Zirkulär — nicht serialisieren (bei JSON durch znId ersetzen).
+   * Entspricht `prev_playable` im Legacy-System.
+   */
+  prevPlayable?: PlayableEntity
+  /**
+   * Referenz auf das nächste spielbare Element in der Stimme.
+   * Zirkulär — nicht serialisieren (bei JSON durch znId ersetzen).
+   * Entspricht `next_playable` im Legacy-System.
+   */
+  nextPlayable?: PlayableEntity
 }
 
 /**

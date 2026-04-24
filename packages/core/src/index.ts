@@ -15,3 +15,6 @@ export { Confstack } from './Confstack.js'
 export type { ConfigObject, ConfigValue } from './Confstack.js'
 
 export { buildConfstack } from './buildConfstack.js'
+
+export { computeBeatCompression } from './BeatPacker.js'
+export type { BeatCompressionMap } from './BeatPacker.js'
