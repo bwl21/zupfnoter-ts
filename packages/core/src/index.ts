@@ -20,3 +20,9 @@ export { computeBeatCompression } from './BeatPacker.js'
 export type { BeatCompressionMap } from './BeatPacker.js'
 
 export { HarpnotesLayout } from './HarpnotesLayout.js'
+
+export { SvgEngine } from './SvgEngine.js'
+export type { SvgEngineOptions } from './SvgEngine.js'
+
+export { GLYPHS } from './glyphs.js'
+export type { GlyphDef } from './glyphs.js'

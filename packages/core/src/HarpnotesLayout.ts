@@ -273,6 +273,7 @@ export class HarpnotesLayout {
       size: [layout.ELLIPSE_SIZE[0] * style.sizeFactor, layout.ELLIPSE_SIZE[1] * style.sizeFactor],
       fill: style.fill,
       dotted: style.dotted,
+      hasbarover: style.hasbarover ?? false,
       color,
       lineWidth: layout.LINE_THICK,
       visible: note.visible,

@@ -384,16 +384,18 @@ Referenz: `svg_engine.rb`, `pdf_engine.rb`
 
 #### 4.1 SVG-Engine
 
-- [ ] `SvgEngine`-Klasse:
-  - `draw(sheet: Sheet): SVGElement`
-  - `drawEllipse(e: Ellipse): SVGElement`
-  - `drawFlowLine(f: FlowLine): SVGElement`
-  - `drawGlyph(g: Glyph): SVGElement`
-  - `drawAnnotation(a: Annotation): SVGElement`
-  - `drawPath(p: Path): SVGElement`
-  - `drawImage(i: Image): SVGElement`
-- [ ] Interaktivität: Klick → ABC-Quelltext-Selektion (via `confKey`)
-- [ ] Highlighting bei Editor-Selektion
+- [x] `SvgEngine`-Klasse (`packages/core/src/SvgEngine.ts`):
+  - `draw(sheet: Sheet): string` — vollständiger SVG-String
+  - `_drawEllipse` — filled/empty, dotted, hasbarover
+  - `_drawFlowLine` — solid/dashed/dotted
+  - `_drawGlyph` — Pausenzeichen via `glyphs.ts`, skaliert
+  - `_drawAnnotation` — Text, multi-line via tspan
+  - `_drawPath` — Sprunglinien, Tuplet-Klammern
+  - `_drawImage` — eingebettete Bilder
+- [x] Glyph-Definitionen (`packages/core/src/glyphs.ts`): rest_1/2/4/8/16/32/64, fermata, emphasis
+- [x] Unit-Tests: `SvgEngine.spec.ts` (28 Tests)
+- [ ] Interaktivität: Klick → ABC-Quelltext-Selektion (via `confKey`) — Phase 5
+- [ ] Highlighting bei Editor-Selektion — Phase 5
 
 #### 4.2 PDF-Engine
 
