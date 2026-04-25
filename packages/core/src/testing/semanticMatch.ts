@@ -133,6 +133,7 @@ export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResul
   for (let vi = 0; vi < fixture.voices.length; vi++) {
     const actualVoice = actual.voices[vi]
     const expectedVoice = fixture.voices[vi]
+    if (actualVoice === undefined || expectedVoice === undefined) continue
     const vPath = `voices[${vi}]`
 
     if (actualVoice.entities.length !== expectedVoice.entities.length) {
@@ -143,6 +144,7 @@ export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResul
     for (let ei = 0; ei < expectedVoice.entities.length; ei++) {
       const ae = actualVoice.entities[ei]
       const fe = expectedVoice.entities[ei]
+      if (ae === undefined || fe === undefined) continue
       const ePath = `${vPath}.entities[${ei}]`
 
       if (ae.type !== fe.type) {
@@ -203,6 +205,7 @@ export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchRe
   for (let i = 0; i < fixture.children.length; i++) {
     const ac = actual.children[i]
     const fc = fixture.children[i]
+    if (ac === undefined || fc === undefined) continue
     const cPath = `children[${i}]`
 
     // type (exact)
@@ -246,11 +249,17 @@ export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchRe
     if (fc.size !== undefined) {
       if (ac.size === undefined) {
         fail(mismatches, `${cPath}.size`, fc.size, undefined)
-      } else if (
-        !nearlyEqual(ac.size[0], fc.size[0], SIZE_TOLERANCE) ||
-        !nearlyEqual(ac.size[1], fc.size[1], SIZE_TOLERANCE)
-      ) {
-        fail(mismatches, `${cPath}.size`, fc.size, ac.size)
+      } else {
+        const [acW, acH] = ac.size
+        const [fcW, fcH] = fc.size
+        if (
+          acW === undefined || acH === undefined ||
+          fcW === undefined || fcH === undefined ||
+          !nearlyEqual(acW, fcW, SIZE_TOLERANCE) ||
+          !nearlyEqual(acH, fcH, SIZE_TOLERANCE)
+        ) {
+          fail(mismatches, `${cPath}.size`, fc.size, ac.size)
+        }
       }
     }
   }

@@ -1,3 +1,5 @@
+/* oxlint-disable jest/no-disabled-tests -- tests are intentionally skipped pending legacy fixture export */
+/* oxlint-disable jest/valid-expect -- Vitest supports expect(val, msg) for failure messages */
 /**
  * Sheet-level legacy comparison tests (Stufe 3: Song → Drawing-Modell).
  *

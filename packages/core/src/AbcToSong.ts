@@ -16,7 +16,6 @@ import type {
   Note,
   Pause,
   SynchPoint,
-  MeasureStart,
   NewPart,
   Chordsymbol,
   NoteBoundAnnotation,
@@ -26,7 +25,7 @@ import type {
   SongMetaData,
 } from '@zupfnoter/types'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
-import type { AbcModel, AbcVoice, AbcSymbol, AbcNote } from './AbcModel.js'
+import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
 import { ABC_TYPE } from './AbcModel.js'
 
 // ---------------------------------------------------------------------------
@@ -54,6 +53,8 @@ interface VoiceState {
   previousNote: PlayableEntity | null
   slurStack: string[]
   slurCounter: number
+  /** Remaining notes in the current tuplet group (0 = not in a tuplet). */
+  tupletRemaining: number
 }
 
 function createVoiceState(wmeasure: number): VoiceState {
@@ -71,6 +72,7 @@ function createVoiceState(wmeasure: number): VoiceState {
     previousNote: null,
     slurStack: [],
     slurCounter: 0,
+    tupletRemaining: 0,
   }
 }
 
@@ -208,7 +210,7 @@ export class AbcToSong {
     voiceIndex: number,
     typeName: string,
     state: VoiceState,
-    model: AbcModel,
+    _model: AbcModel,
   ): VoiceEntity | VoiceEntity[] | null {
     switch (typeName) {
       case 'note':
@@ -250,7 +252,7 @@ export class AbcToSong {
     const startPos = this._charposToLineCol(sym.istart)
     const endPos = this._charposToLineCol(sym.iend)
     const decorations = this._parseDecorations(sym)
-    const { tuplet, tupletStart, tupletEnd } = this._parseTuplet(sym)
+    const { tuplet, tupletStart, tupletEnd } = this._parseTuplet(sym, state)
     const lyrics = this._parseLyrics(sym)
     const countNote = null
 
@@ -426,13 +428,18 @@ export class AbcToSong {
       state.nextMeasure = true
     }
 
-    // Volta bracket start
-    if (sym.rbstart === 2) {
-      state.variantNo = Math.min(state.variantNo + 1, 2) as 0 | 1 | 2
+    // Volta bracket: set variant by ending number, reset to 0 when bracket closes
+    if (sym.rbstart === 1) {
+      state.variantNo = 1
+    } else if (sym.rbstart === 2) {
+      state.variantNo = 2
+    }
+    if (sym.rbstop) {
+      state.variantNo = 0
     }
 
     // Repeat end → Goto
-    if (sym.bar_type && /^:/.test(sym.bar_type) && state.previousNote) {
+    if (sym.bar_type && sym.bar_type.startsWith(':') && state.previousNote) {
       const repeatStart = state.repetitionStack[state.repetitionStack.length - 1]
       if (repeatStart) {
         const goto: Goto = {
@@ -455,7 +462,7 @@ export class AbcToSong {
     }
 
     // Repeat start → push to stack
-    if (sym.bar_type && /:$/.test(sym.bar_type) && state.previousNote) {
+    if (sym.bar_type && sym.bar_type.endsWith(':') && state.previousNote) {
       state.repetitionStack.push(state.previousNote)
     }
 
@@ -496,15 +503,15 @@ export class AbcToSong {
     state: VoiceState,
     voiceIndex: number,
   ): VoiceEntity[] {
-    if (!sym.extra) return []
+    if (!sym.a_gch) return []
     const result: VoiceEntity[] = []
 
-    for (const extra of sym.extra) {
+    for (const extra of sym.a_gch) {
       const text = extra.text ?? ''
       if (!text) continue
 
-      // Chord symbol: starts with uppercase letter (heuristic)
-      if (/^[A-G]/.test(text)) {
+      // Chord symbol: abc2svg type 'g' (gchordfont), all others are annotations
+      if (extra.type === 'g') {
         const chord: Chordsymbol = {
           type: 'Chordsymbol' as const,
           beat: this._timeToBeat(sym.time),
@@ -612,20 +619,31 @@ export class AbcToSong {
     return `${voiceIndex}-${sym.istart}`
   }
 
-  private _parseDecorations(sym: AbcSymbol): string[] {
-    // abc2svg stores decorations in sym.extra with specific type ids
+  private _parseDecorations(_sym: AbcSymbol): string[] {
+    // abc2svg stores decorations in sym.a_dd[] with specific type ids
     // Phase 2: return empty array — full decoration parsing in later iteration
     return []
   }
 
-  private _parseTuplet(sym: AbcSymbol): { tuplet: number; tupletStart: boolean; tupletEnd: boolean } {
+  private _parseTuplet(sym: AbcSymbol, state: VoiceState): { tuplet: number; tupletStart: boolean; tupletEnd: boolean } {
     const tplet = (sym as Record<string, unknown>)['tplet'] as { r?: number; p?: number } | undefined
-    if (!tplet) return { tuplet: 1, tupletStart: false, tupletEnd: false }
-    return {
-      tuplet: tplet.p ?? 3,
-      tupletStart: true,
-      tupletEnd: false,
+
+    if (tplet) {
+      // This symbol starts a new tuplet group. p = number of notes in the group.
+      const groupSize = tplet.p ?? 3
+      state.tupletRemaining = groupSize
     }
+
+    if (state.tupletRemaining <= 0) {
+      return { tuplet: 1, tupletStart: false, tupletEnd: false }
+    }
+
+    const tuplet = tplet ? (tplet.p ?? 3) : state.tupletRemaining
+    const tupletStart = tplet !== undefined
+    state.tupletRemaining--
+    const tupletEnd = state.tupletRemaining === 0
+
+    return { tuplet, tupletStart, tupletEnd }
   }
 
   private _parseLyrics(sym: AbcSymbol): string | null {

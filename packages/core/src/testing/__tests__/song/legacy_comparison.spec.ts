@@ -1,3 +1,4 @@
+/* oxlint-disable jest/valid-expect -- Vitest supports expect(val, msg) for failure messages */
 /**
  * Song-level legacy comparison tests (Stufe 2: ABC → Musikmodell).
  *
