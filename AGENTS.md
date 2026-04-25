@@ -58,13 +58,13 @@ zupfnoter-ts/
 │   ├── core/          # Transformationskette: ABC → Song → Sheet
 │   └── types/         # Gemeinsame TypeScript-Typen und Interfaces
 ├── apps/
-│   ├── web/           # Vue 3 Frontend (Editor + Preview)
+│   ├── web/           # Vue 3 Frontend (Editor + Preview) — Phase 5
+│   ├── demo/          # Standalone-Demo (ABC-Editor + SVG-Vorschau)
 │   └── cli/           # TypeScript-CLI (PDF/SVG-Export ohne Browser)
-├── src/               # Aktuell: Vue-Scaffold (wird zu apps/web migriert)
 └── AGENTS.md
 ```
 
-Paketnamen: `@zupfnoter/core`, `@zupfnoter/types`, `@zupfnoter/web`, `@zupfnoter/cli`
+Paketnamen: `@zupfnoter/core`, `@zupfnoter/types`, `@zupfnoter/web`, `@zupfnoter/demo`, `@zupfnoter/cli`
 
 Tooling: TypeScript, Vue 3 (Composition API), Vite, Pinia, Vitest, PNPM Workspaces
 

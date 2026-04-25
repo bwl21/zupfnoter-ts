@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm --filter @zupfnoter/web dev",
+    "dev": "pnpm --filter @zupfnoter/demo dev",
     "build": "pnpm -r run build",
     "test:unit": "pnpm -r run test:unit",
     "type-check": "pnpm -r run type-check",
