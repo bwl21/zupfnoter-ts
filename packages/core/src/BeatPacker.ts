@@ -168,7 +168,8 @@ function _packMethod2(song: Song, layoutLines: number[]): BeatCompressionMap {
 function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatCompressionMap {
   const durationToStyle = conf.get('layout.DURATION_TO_STYLE') as Record<DurationKey, DurationStyle>
   const beatResolution = (conf.get('layout.BEAT_RESOLUTION') as number) ?? 384
-  const confMinIncrement = ((conf.get('layout.packer.pack_min_increment') as number) ?? 0) * beatResolution
+  const shortestNote = (conf.get('layout.SHORTEST_NOTE') as number) ?? beatResolution / 4
+  const confMinIncrement = ((conf.get('layout.packer.pack_min_increment') as number) ?? 0) * shortestNote
   const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
 
   const playables = collectRelevantPlayables(song, layoutLines)
@@ -183,7 +184,7 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
     const notes = beats.get(beat)!
     const maxDuration = Math.max(...notes.map(n => n.duration))
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
-    const size = beatResolution * sizeFactor
+    const size = shortestNote * sizeFactor
 
     const isNewPart = notes.some(n => n.firstInPart)
     const measureStart = notes.some(n => n.measureStart)
@@ -217,7 +218,8 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
 function _packMethod10(song: Song, layoutLines: number[], conf: Confstack): BeatCompressionMap {
   const durationToStyle = conf.get('layout.DURATION_TO_STYLE') as Record<DurationKey, DurationStyle>
   const beatResolution = (conf.get('layout.BEAT_RESOLUTION') as number) ?? 384
-  const confMinIncrement = ((conf.get('layout.packer.pack_min_increment') as number) ?? 0) * beatResolution
+  const shortestNote = (conf.get('layout.SHORTEST_NOTE') as number) ?? beatResolution / 4
+  const confMinIncrement = ((conf.get('layout.packer.pack_min_increment') as number) ?? 0) * shortestNote
   const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
 
   // Alle relevanten BeatMaps sammeln
@@ -243,7 +245,7 @@ function _packMethod10(song: Song, layoutLines: number[], conf: Confstack): Beat
 
     const maxDuration = Math.max(...notesOnBeat.map(n => n.duration))
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
-    const size = beatResolution * sizeFactor
+    const size = shortestNote * sizeFactor
 
     const isNewPart = notesOnBeat.some(n => n.firstInPart)
     const measureStart = notesOnBeat.some(n => n.measureStart)
@@ -275,7 +277,8 @@ function _packMethod10(song: Song, layoutLines: number[], conf: Confstack): Beat
 function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatCompressionMap {
   const durationToStyle = conf.get('layout.DURATION_TO_STYLE') as Record<DurationKey, DurationStyle>
   const beatResolution = (conf.get('layout.BEAT_RESOLUTION') as number) ?? 384
-  const confMinIncrement = ((conf.get('layout.packer.pack_min_increment') as number) ?? 0) * beatResolution
+  const shortestNote = (conf.get('layout.SHORTEST_NOTE') as number) ?? beatResolution / 4
+  const confMinIncrement = ((conf.get('layout.packer.pack_min_increment') as number) ?? 0) * shortestNote
   const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
 
   const playables = collectRelevantPlayables(song, layoutLines)
@@ -292,7 +295,7 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
     const notes = beats.get(beat)!
     const maxDuration = Math.max(...notes.map(n => n.duration))
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
-    const size = beatResolution * sizeFactor
+    const size = shortestNote * sizeFactor
 
     let defaultIncrement = (size + lastSize) / 2
     defaultIncrement = Math.max(defaultIncrement, confMinIncrement)
@@ -360,7 +363,8 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
 function _packMethod3(song: Song, layoutLines: number[], conf: Confstack): BeatCompressionMap {
   const durationToStyle = conf.get('layout.DURATION_TO_STYLE') as Record<DurationKey, DurationStyle>
   const beatResolution = (conf.get('layout.BEAT_RESOLUTION') as number) ?? 384
-  const confMinIncrement = ((conf.get('layout.packer.pack_min_increment') as number) ?? 0) * beatResolution
+  const shortestNote = (conf.get('layout.SHORTEST_NOTE') as number) ?? beatResolution / 4
+  const confMinIncrement = ((conf.get('layout.packer.pack_min_increment') as number) ?? 0) * shortestNote
   const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
 
   const playables = collectRelevantPlayables(song, layoutLines)
@@ -407,7 +411,7 @@ function _packMethod3(song: Song, layoutLines: number[], conf: Confstack): BeatC
         const rangeEntry = collisionRange[k]!
         const stackEntry = collisionStack[k]!
         const sizeFactor = getSizeFactor(rangeEntry.note.duration, durationToStyle)
-        const size = beatResolution * sizeFactor
+        const size = shortestNote * sizeFactor
         const collisionType = `${stackEntry.kind}-${rangeEntry.kind}`
         const validTypes = ['note-note', 'note-line', 'line-note', 'dline-line']
         if (
@@ -423,7 +427,7 @@ function _packMethod3(song: Song, layoutLines: number[], conf: Confstack): BeatC
     // 3. Default-Inkrement berechnen
     const maxDuration = Math.max(...notes.map(n => n.duration))
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
-    const sizeIncrement = beatResolution * sizeFactor
+    const sizeIncrement = shortestNote * sizeFactor
 
     let defaultIncrement: number
     if (isFirst || collisions.length > 0) {

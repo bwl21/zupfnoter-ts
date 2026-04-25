@@ -11,7 +11,7 @@ export const defaultTestConfig: ZupfnoterConfig = {
     LINE_THIN: 0.1,
     LINE_MEDIUM: 0.3,
     LINE_THICK: 0.5,
-    Y_SCALE: 1.0,
+    Y_SCALE: 0.1,
     X_SPACING: 11.5,
     X_OFFSET: 2.0,
     PITCH_OFFSET: -43,
