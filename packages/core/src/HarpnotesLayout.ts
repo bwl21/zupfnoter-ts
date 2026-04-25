@@ -165,8 +165,11 @@ export class HarpnotesLayout {
     const layoutlineVoices = (conf.get('extract.layoutlines') as number[] | undefined) ?? activeVoiceNrs
     const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
 
-    // Compute beat compression for all layout voices
-    const beatCompressionMap = computeBeatCompression(song, layoutlineVoices, conf)
+    // Compute beat compression for all layout voices.
+    // layoutlineVoices contains 1-based voice numbers (from config);
+    // computeBeatCompression expects 0-based indices into song.voices.
+    const layoutlineIndices = layoutlineVoices.map(v => v - 1)
+    const beatCompressionMap = computeBeatCompression(song, layoutlineIndices, conf)
 
     const beatMaps = new Map<number, BeatCompressionMap>()
     const voiceElements: DrawableElement[] = []

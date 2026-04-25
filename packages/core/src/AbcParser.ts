@@ -6,26 +6,16 @@
  * leaving this module.
  */
 
-import { createRequire } from 'node:module'
-import { fileURLToPath } from 'node:url'
-import { dirname, resolve } from 'node:path'
-
 import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
 import { ABC_TYPE } from './AbcModel.js'
 
 // ---------------------------------------------------------------------------
-// Load abc2svg via CJS loader (vendored)
-// abc2svg-1.js uses a global module/exports check that fails in ESM context.
-// abc2svg-loader.cjs uses vm.runInNewContext to provide a proper CJS scope.
+// Load abc2svg via browser-compatible ESM wrapper (vendored)
+// abc2svg-1.js is executed inside a Function scope that provides a fake
+// module/exports object — works in both browser and Node.js (no vm/fs needed).
 // ---------------------------------------------------------------------------
 
-const _require = createRequire(import.meta.url)
-const _dir = dirname(fileURLToPath(import.meta.url))
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-const _abc2svgModule = _require(resolve(_dir, '../vendor/abc2svg-loader.cjs')) as {
-  Abc: new (user: Abc2svgUser) => Abc2svgInstance
-  abc2svg: { C: Record<string, number>; sym_name: string[] }
-}
+import _abc2svgModule from '../vendor/abc2svg-browser.js'
 
 // ---------------------------------------------------------------------------
 // Minimal abc2svg type shims (not exported)

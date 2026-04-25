@@ -22,7 +22,7 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
   {
     "center": [
       59.5,
-      15,
+      19.32,
     ],
     "color": "black",
     "confKey": undefined,

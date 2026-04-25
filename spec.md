@@ -17,4 +17,4 @@ Spezifikationen sind nach Phase geordnet in `docs/<phase>/spec.md` abgelegt.
 Neue Specs werden im jeweiligen Phase-Ordner abgelegt.
 Die aktuelle Arbeits-Spec wird von Ona direkt in dieser Datei verwaltet und nach Abschluss archiviert.
 
-
+| [docs/phase-5/demo-view-bugfixes.md](docs/phase-5/demo-view-bugfixes.md) | Demo-View: Browser-Kompatibilität, BeatPacker-Bugs, Y_SCALE |
