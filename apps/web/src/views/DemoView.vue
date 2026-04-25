@@ -229,5 +229,6 @@ h1 {
   margin-top: 0.75rem;
   overflow: auto;
   border: 1px solid #eee;
+  height: 600px;
 }
 </style>
