@@ -47,8 +47,21 @@ export interface AbcNote {
   [key: string]: unknown
 }
 
+/**
+ * A chord symbol or annotation attached to a note symbol.
+ * Corresponds to elements in sym.a_gch[] from abc2svg.
+ *
+ * type values (abc2svg convention):
+ *   'g' = chord symbol (rendered with gchordfont)
+ *   '^' = annotation above
+ *   '_' = annotation below
+ *   '@' = absolute-positioned annotation
+ *   '<' = left-aligned annotation
+ *   '>' = right-aligned annotation
+ */
 export interface AbcExtra {
-  type: number
+  /** Single-character type tag from abc2svg ('g' = chord, '^'/'_'/'@'/'<'/'>' = annotation) */
+  type: string
   text?: string
   [key: string]: unknown
 }
@@ -87,8 +100,8 @@ export interface AbcSymbol {
   /** Symbol is invisible */
   invisible?: boolean
   invis?: boolean
-  /** Extra elements (chord symbols, annotations) */
-  extra?: AbcExtra[]
+  /** Chord symbols and annotations attached to this symbol (abc2svg: a_gch[]) */
+  a_gch?: AbcExtra[]
   [key: string]: unknown
 }
 

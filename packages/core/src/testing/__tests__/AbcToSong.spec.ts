@@ -1,3 +1,4 @@
+/* oxlint-disable jest/no-conditional-expect -- type-narrowing guards are intentional */
 /**
  * AbcToSong unit tests.
  *

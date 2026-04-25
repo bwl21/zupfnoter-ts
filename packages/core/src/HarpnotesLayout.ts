@@ -12,7 +12,6 @@
 import type {
   Song,
   Voice,
-  VoiceEntity,
   PlayableEntity,
   Note,
   Pause,
@@ -574,7 +573,7 @@ export class HarpnotesLayout {
   private _layoutLegend(
     metaData: SongMetaData,
     conf: Confstack,
-    extractNr: number | string,
+    _extractNr: number | string,
   ): Annotation[] {
     const result: Annotation[] = []
     const layout = this._config.layout
@@ -652,7 +651,7 @@ export class HarpnotesLayout {
   // Sheet annotations
   // ---------------------------------------------------------------------------
 
-  private _layoutAnnotations(conf: Confstack, extractNr: number | string): Annotation[] {
+  private _layoutAnnotations(conf: Confstack, _extractNr: number | string): Annotation[] {
     const result: Annotation[] = []
     const layout = this._config.layout
     const notes = conf.get('extract.notes') as Record<string, unknown> | undefined
@@ -744,7 +743,7 @@ export class HarpnotesLayout {
   // Instrument shape (stub — instrument-specific logic post-migration)
   // ---------------------------------------------------------------------------
 
-  private _layoutInstrument(conf: Confstack, extractNr: number | string): DrawableElement[] {
+  private _layoutInstrument(conf: Confstack, _extractNr: number | string): DrawableElement[] {
     const shape = conf.get('extract.instrument_shape') as string | undefined
 
     if (!shape) return []

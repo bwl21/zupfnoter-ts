@@ -1,3 +1,4 @@
+/* oxlint-disable jest/expect-expect -- dev helper: tests write files, no assertions needed */
 /**
  * Dumps the TS pipeline output for all song fixtures to fixtures/song/_ts_output/.
  *

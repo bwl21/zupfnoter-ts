@@ -73,7 +73,7 @@ interface Abc2svgSymbol {
   rbstop?: number
   invisible?: boolean
   invis?: boolean
-  extra?: Array<{ type: number; text?: string; [key: string]: unknown }>
+  a_gch?: Array<{ type: string; text?: string; [key: string]: unknown }>
   next?: Abc2svgSymbol
   [key: string]: unknown
 }
@@ -116,8 +116,6 @@ export class AbcParser {
     this._errors = []
     this._model = null
 
-    const self = this
-
     const user: Abc2svgUser = {
       // Suppress SVG output — we only need the model
       img_out: (_svg: string) => { /* no-op */ },
@@ -129,14 +127,14 @@ export class AbcParser {
           line: line,
           column: col,
         }
-        self._errors.push(err)
+        this._errors.push(err)
       },
 
       // No %%abc-include support in Phase 2
       read_file: (_name: string) => null,
 
       get_abcmodel: (tsfirst, voice_tb, music_types, info) => {
-        self._model = AbcParser._buildModel(tsfirst, voice_tb, music_types, info)
+        this._model = AbcParser._buildModel(tsfirst, voice_tb, music_types, info)
       },
     }
 
