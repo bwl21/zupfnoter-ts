@@ -14,7 +14,17 @@
           "variant": 0,
           "visible": true,
           "pitch": 48,
-          "duration": 48,
+          "duration": 8,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 16,
+          "variant": 0,
+          "visible": true,
+          "pitch": 50,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         },
@@ -23,18 +33,18 @@
           "beat": 32,
           "variant": 0,
           "visible": true,
-          "pitch": 50,
-          "duration": 48,
+          "pitch": 52,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "Note",
-          "beat": 64,
+          "beat": 48,
           "variant": 0,
           "visible": true,
-          "pitch": 52,
-          "duration": 48,
+          "pitch": 53,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -43,18 +53,8 @@
           "beat": 96,
           "variant": 0,
           "visible": true,
-          "pitch": 53,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 192,
-          "variant": 0,
-          "visible": true,
           "pitch": 55,
-          "duration": 96,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         }
@@ -67,7 +67,8 @@
       "32": 32,
       "64": 64,
       "96": 96,
-      "192": 192
+      "192": 192,
+      "entries": {}
     }
   ]
 }

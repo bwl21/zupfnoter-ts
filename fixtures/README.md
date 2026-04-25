@@ -78,11 +78,33 @@ for abc in path/to/zupfnoter-ts/fixtures/abc/minimal/*.abc \
   name=$(basename "$abc" .abc)
   ruby zupfnoter_export.rb "$abc"
   cp song_export.json  path/to/zupfnoter-ts/fixtures/song/${name}.json
-  cp sheet_export.json path/to/zupfnoter-ts/fixtures/sheet/${name}.json
+  cp sheet_export.json /tmp/znout/${name}.sheet.json
 done
 ```
 
-### 4. Fixtures einchecken
+### 4. Song-Fixtures konvertieren
+
+```bash
+for f in /tmp/znout/*.sheet.json; do
+  name=$(basename "$f" .sheet.json)
+  node tools/legacy-song-to-fixture.mjs \
+    /tmp/znout/${name}.song.json \
+    fixtures/song/${name}.json
+done
+```
+
+### 5. Sheet-Fixtures konvertieren
+
+```bash
+for f in /tmp/znout/*.sheet.json; do
+  name=$(basename "$f" .sheet.json)
+  node tools/legacy-sheet-to-fixture.mjs \
+    "$f" \
+    fixtures/sheet/${name}.json
+done
+```
+
+### 6. Fixtures einchecken
 
 ```bash
 git add fixtures/song/ fixtures/sheet/
@@ -91,7 +113,7 @@ git commit -m "fixtures: populate legacy reference snapshots
 Reason: <Begründung der Änderung>"
 ```
 
-### 5. Tests grün machen
+### 7. Tests grün machen
 
 Nach dem Befüllen der Fixtures:
 
@@ -104,6 +126,23 @@ Schlagen Tests fehl, zeigt `formatMismatches` den genauen Pfad der Abweichung:
 voices[0].entities[2].pitch:
   expected: 60
   actual:   48
+```
+
+## TS-Ausgabe als Bootstrap-Referenz
+
+Solange das Legacy-System nicht verfügbar ist, können die Fixtures aus der TS-Pipeline
+selbst erzeugt werden (Bootstrap-Ansatz). Die Ausgabe dient als Regressionsbasis —
+nicht als Verifikation gegen das Legacy-System.
+
+```bash
+# Song-Fixtures (Stufe 2):
+cd packages/core
+npx vitest run src/testing/__tests__/song/dump_ts_output.spec.ts
+cp fixtures/song/_ts_output/*.json fixtures/song/
+
+# Sheet-Fixtures (Stufe 3):
+npx vitest run src/testing/__tests__/sheet/dump_ts_output.spec.ts
+cp fixtures/sheet/_ts_output/*.json fixtures/sheet/
 ```
 
 ## Fixture-Format

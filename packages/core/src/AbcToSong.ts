@@ -81,8 +81,8 @@ function createVoiceState(wmeasure: number): VoiceState {
 // ---------------------------------------------------------------------------
 
 export class AbcToSong {
-  private _beatResolution = 384
-  private _shortestNote = 96
+  private _beatResolution = 192
+  private _shortestNote = 64
 
   /**
    * Transform an AbcModel into a Song.
@@ -91,8 +91,8 @@ export class AbcToSong {
    * @param config  Zupfnoter configuration (for beat resolution etc.)
    */
   transform(model: AbcModel, config: ZupfnoterConfig): Song {
-    this._beatResolution = config.layout.BEAT_RESOLUTION ?? 384
-    this._shortestNote = config.layout.SHORTEST_NOTE ?? 96
+    this._beatResolution = config.layout.BEAT_RESOLUTION ?? 192
+    this._shortestNote = config.layout.SHORTEST_NOTE ?? 64
 
     const restpositionConfig = config as unknown as Record<string, Record<string, unknown>>
     const restpositionDefault =
@@ -598,9 +598,9 @@ export class AbcToSong {
   // Helpers
   // ---------------------------------------------------------------------------
 
-  /** Convert abc2svg duration units to Zupfnoter beat units */
+  /** Convert abc2svg duration units to Zupfnoter duration units (SHORTEST_NOTE scale). */
   private _convertDuration(abcDur: number): number {
-    return Math.round((abcDur * this._beatResolution) / ABC2SVG_DURATION_FACTOR)
+    return Math.min(128, Math.round((abcDur * this._shortestNote) / ABC2SVG_DURATION_FACTOR))
   }
 
   /** Convert abc2svg time position to beat */

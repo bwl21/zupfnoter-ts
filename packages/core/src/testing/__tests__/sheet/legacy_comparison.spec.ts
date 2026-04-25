@@ -1,4 +1,3 @@
-/* oxlint-disable jest/no-disabled-tests -- tests are intentionally skipped pending legacy fixture export */
 /* oxlint-disable jest/valid-expect -- Vitest supports expect(val, msg) for failure messages */
 /**
  * Sheet-level legacy comparison tests (Stufe 3: Song → Drawing-Modell).
@@ -61,7 +60,7 @@ const MINIMAL_FIXTURES = [
 
 describe('Sheet – minimal fixtures', () => {
   for (const name of MINIMAL_FIXTURES) {
-    it.skip(`matches legacy output: ${name}`, () => {
+    it(`matches legacy output: ${name}`, () => {
       const abcText = readAbc(`fixtures/abc/minimal/${name}.abc`)
       const fixture = loadSheetFixture(name)
       const actual = transformAbcToSheet(abcText)
@@ -79,7 +78,7 @@ const LEGACY_FIXTURES = ['02_twoStaff', 'Twostaff'] as const
 
 describe('Sheet – legacy testcases', () => {
   for (const name of LEGACY_FIXTURES) {
-    it.skip(`matches legacy output: ${name}`, () => {
+    it(`matches legacy output: ${name}`, () => {
       const abcText = readAbc(`fixtures/abc/legacy/${name}.abc`)
       const fixture = loadSheetFixture(name)
       const actual = transformAbcToSheet(abcText)

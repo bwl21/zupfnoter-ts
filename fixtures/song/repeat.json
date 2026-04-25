@@ -14,7 +14,17 @@
           "variant": 0,
           "visible": true,
           "pitch": 48,
-          "duration": 96,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 48,
+          "variant": 0,
+          "visible": true,
+          "pitch": 50,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -23,28 +33,18 @@
           "beat": 96,
           "variant": 0,
           "visible": true,
-          "pitch": 50,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 192,
-          "variant": 0,
-          "visible": true,
           "pitch": 52,
-          "duration": 96,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "Note",
-          "beat": 288,
+          "beat": 144,
           "variant": 0,
           "visible": true,
           "pitch": 53,
-          "duration": 96,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -52,7 +52,7 @@
           "type": "Goto",
           "variant": 0,
           "visible": true,
-          "from": 288,
+          "from": 144,
           "to": 0
         }
       ]
@@ -63,7 +63,8 @@
       "0": 0,
       "96": 96,
       "192": 192,
-      "288": 288
+      "288": 288,
+      "entries": {}
     }
   ]
 }
