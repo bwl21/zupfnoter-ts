@@ -1,15 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DemoView from '../views/DemoView.vue'
 
+// Routes will be added in Phase 5
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'demo',
-      component: DemoView,
-    },
-  ],
+  routes: [],
 })
 
 export default router
