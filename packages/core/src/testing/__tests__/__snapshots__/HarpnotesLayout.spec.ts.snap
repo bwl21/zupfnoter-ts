@@ -37,8 +37,8 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
       "decorations": [],
       "duration": 96,
       "endPos": [
-        1,
-        1,
+        9,
+        9,
       ],
       "firstInPart": false,
       "jumpEnds": [],
@@ -50,8 +50,8 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
       "slurEnds": [],
       "slurStarts": [],
       "startPos": [
-        1,
-        1,
+        9,
+        8,
       ],
       "tieEnd": false,
       "tieStart": false,

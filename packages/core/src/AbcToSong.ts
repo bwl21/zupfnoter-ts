@@ -77,22 +77,78 @@ function createVoiceState(wmeasure: number): VoiceState {
 }
 
 // ---------------------------------------------------------------------------
+// Character-offset → [line, col] helpers (module-level pure functions)
+// ---------------------------------------------------------------------------
+
+/**
+ * Pre-compute the character offset of every newline in the source text.
+ * Returns a sorted array of offsets (one entry per '\n').
+ * Called once per transform() to avoid repeated scanning.
+ */
+export function buildNewlineIndex(text: string): number[] {
+  const positions: number[] = []
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '\n') positions.push(i)
+  }
+  return positions
+}
+
+/**
+ * Convert a character offset to a 1-based [line, column] pair.
+ *
+ * Uses binary search on the pre-built newline index for O(log n) lookup.
+ * Offsets beyond the end of the text are clamped to the last position.
+ */
+export function charposToLineCol(offset: number, newlinePositions: number[]): [number, number] {
+  if (newlinePositions.length === 0) return [1, offset + 1]
+
+  // Binary search: find the last newline position < offset
+  let lo = 0
+  let hi = newlinePositions.length - 1
+  let lineIndex = -1  // index into newlinePositions of the preceding newline
+
+  while (lo <= hi) {
+    const mid = (lo + hi) >>> 1
+    const pos = newlinePositions[mid]!
+    if (pos < offset) {
+      lineIndex = mid
+      lo = mid + 1
+    } else {
+      hi = mid - 1
+    }
+  }
+
+  const line = lineIndex + 2                                    // 1-based line number
+  const lineStart = lineIndex >= 0 ? newlinePositions[lineIndex]! + 1 : 0
+  const col = offset - lineStart + 1                            // 1-based column
+
+  return [line, col]
+}
+
+// ---------------------------------------------------------------------------
 // AbcToSong
 // ---------------------------------------------------------------------------
 
 export class AbcToSong {
   private _beatResolution = 384
   private _shortestNote = 96
+  /**
+   * Cumulative newline positions in the ABC source text.
+   * Entry i holds the character offset of the i-th newline (0-based).
+   * Built once per transform() call from model.abcText.
+   */
+  private _newlinePositions: number[] = []
 
   /**
    * Transform an AbcModel into a Song.
    *
-   * @param model   Output of AbcParser.parse()
+   * @param model   Output of AbcParser.parse() — must include model.abcText
    * @param config  Zupfnoter configuration (for beat resolution etc.)
    */
   transform(model: AbcModel, config: ZupfnoterConfig): Song {
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 384
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 96
+    this._newlinePositions = buildNewlineIndex(model.abcText)
 
     const restpositionConfig = config as unknown as Record<string, Record<string, unknown>>
     const restpositionDefault =
@@ -608,11 +664,12 @@ export class AbcToSong {
     return Math.round((time * this._beatResolution) / ABC2SVG_DURATION_FACTOR)
   }
 
-  /** Convert character offset to [line, column] (1-based) */
-  private _charposToLineCol(_offset: number): [number, number] {
-    // Phase 2: return placeholder — full implementation needs the ABC source text
-    // This will be refined when AbcParser passes the source to AbcToSong
-    return [1, 1]
+  /**
+   * Convert a character offset (as reported by abc2svg istart/iend) to
+   * a 1-based [line, column] pair using the pre-built newline index.
+   */
+  private _charposToLineCol(offset: number): [number, number] {
+    return charposToLineCol(offset, this._newlinePositions)
   }
 
   private _makeZnId(sym: AbcSymbol, voiceIndex: number): string {

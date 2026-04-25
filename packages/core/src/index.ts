@@ -9,7 +9,7 @@
 export { AbcParser } from './AbcParser.js'
 export type { AbcParseError } from './AbcParser.js'
 
-export { AbcToSong } from './AbcToSong.js'
+export { AbcToSong, buildNewlineIndex, charposToLineCol } from './AbcToSong.js'
 
 export { Confstack } from './Confstack.js'
 export type { ConfigObject, ConfigValue } from './Confstack.js'

@@ -155,4 +155,6 @@ export interface AbcModel {
   music_type_ids: Record<string, number>
   /** ABC header fields: T, C, M, K, Q, etc. (newline-separated if multiple) */
   info: Record<string, string>
+  /** Original ABC source text — used for character-offset → [line, col] lookup */
+  abcText: string
 }

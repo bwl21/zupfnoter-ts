@@ -134,7 +134,7 @@ export class AbcParser {
       read_file: (_name: string) => null,
 
       get_abcmodel: (tsfirst, voice_tb, music_types, info) => {
-        this._model = AbcParser._buildModel(tsfirst, voice_tb, music_types, info)
+        this._model = AbcParser._buildModel(tsfirst, voice_tb, music_types, info, abcText)
       },
     }
 
@@ -161,6 +161,7 @@ export class AbcParser {
     voice_tb: Abc2svgVoice[],
     music_types: string[],
     info: Record<string, string>,
+    abcText: string,
   ): AbcModel {
     // Build reverse map: type name → numeric id
     const music_type_ids: Record<string, number> = {}
@@ -199,7 +200,7 @@ export class AbcParser {
       }
     })
 
-    return { voices, music_types, music_type_ids, info }
+    return { voices, music_types, music_type_ids, info, abcText }
   }
 
   /** Walk the linked-list of symbols in a voice and collect them into an array */
