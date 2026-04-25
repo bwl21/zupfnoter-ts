@@ -26,3 +26,7 @@ export type { SvgEngineOptions } from './SvgEngine.js'
 
 export { GLYPHS } from './glyphs.js'
 export type { GlyphDef } from './glyphs.js'
+
+export { initConf } from './initConf.js'
+
+export { extractSongConfig, mergeSongConfig, CONFIG_SEPARATOR } from './extractSongConfig.js'

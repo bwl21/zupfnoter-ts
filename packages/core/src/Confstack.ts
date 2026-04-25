@@ -131,6 +131,24 @@ export class Confstack {
   }
 
   /**
+   * Schneidet den Stack auf die angegebene Tiefe zurück.
+   * Schichten oberhalb von `level` werden entfernt.
+   *
+   * Entspricht `reset_to(level)` in `confstack2.rb`:
+   *   `@confstack = @confstack[0 .. level]`
+   *
+   * Typischer Anwendungsfall: Render-Zyklus setzt Stack auf Layer 1 (Defaults)
+   * zurück, bevor die Song-Konfiguration als Layer 2 gepusht wird.
+   *
+   * @param level Ziel-Tiefe (0 = leerer Stack, 1 = nur unterste Schicht, …)
+   */
+  resetTo(level: number): void {
+    if (level < 0) level = 0
+    this._stack = this._stack.slice(0, level)
+    this._flatten()
+  }
+
+  /**
    * Gibt alle verschachtelten Schlüssel zurück (Punkt-Notation).
    * Entspricht `keys()` in `confstack.rb`.
    */

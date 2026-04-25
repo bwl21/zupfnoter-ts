@@ -22,23 +22,24 @@ export interface FontStyle {
 }
 
 /**
- * Schlüssel für Notendauern (abc2svg-Einheiten, 1536 = ganze Note).
+ * Schlüssel für Notendauern auf SHORTEST_NOTE=64-Skala (Legacy-kompatibel).
+ * d64=ganze, d32=halbe, d16=viertel, d8=achtel, d4=16tel, d2=32tel, d1=64tel.
+ * Punktierte Werte: d48=punkt.halbe, d24=punkt.viertel, d12=punkt.achtel, d6=punkt.16tel, d3=punkt.32tel.
  */
 export type DurationKey =
   | 'err'   // Fehler / unbekannt
-  | 'd96'   // 1/16
-  | 'd64'   // 1/24 (Triole)
-  | 'd48'   // 1/32
-  | 'd32'   // 1/48 (Triole)
-  | 'd24'   // 1/64
-  | 'd16'   // 1/96 (Triole)
-  | 'd12'   // 1/128
-  | 'd8'    // 1/192 (Triole)
-  | 'd6'    // 1/256
-  | 'd4'    // 1/384 (Triole)
-  | 'd3'    // 1/512
-  | 'd2'    // 1/768 (Triole)
-  | 'd1'    // 1/1536
+  | 'd64'   // ganze Note
+  | 'd48'   // punktierte halbe
+  | 'd32'   // halbe
+  | 'd24'   // punktierte viertel
+  | 'd16'   // viertel
+  | 'd12'   // punktierte achtel
+  | 'd8'    // achtel
+  | 'd6'    // punktierte 16tel
+  | 'd4'    // 16tel
+  | 'd3'    // punktierte 32tel
+  | 'd2'    // 32tel
+  | 'd1'    // 64tel
 
 /**
  * Darstellungsstil für eine Notendauer (Ellipsengröße, Füllung, Punktierung).
@@ -220,4 +221,6 @@ export interface ZupfnoterConfig {
   layout: LayoutConfig
   extract: Record<string, ExtractConfig>
   printer: PrinterConfig
+  /** Preset-Schnelleinstellungen für den Konfigurations-Editor (addconf). */
+  presets?: Record<string, Record<string, unknown>>
 }

@@ -14,7 +14,7 @@
           "variant": 0,
           "visible": true,
           "pitch": 48,
-          "duration": 96,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         }
@@ -23,7 +23,8 @@
   ],
   "beat_maps": [
     {
-      "0": 0
+      "0": 0,
+      "entries": {}
     }
   ]
 }

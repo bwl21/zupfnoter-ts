@@ -61,15 +61,10 @@ function beatToY(beat: number, beatMap: BeatCompressionMap, layout: LayoutConfig
   return compressed * layout.Y_SCALE + startpos
 }
 
-/** abc2svg duration units → DurationKey */
-function durationToKey(duration: number, shortestNote: number): DurationKey {
-  // abc2svg: whole note = 1536 units. SHORTEST_NOTE maps to 'd96' (1/16 = 96 units at BEAT_RESOLUTION=384)
-  // The key is 'd' + (duration / (1536 / shortestNote))
-  const factor = 1536 / shortestNote
-  const d = Math.round(duration / factor)
-  const key = `d${d}` as DurationKey
-  // Validate against known keys
-  const valid: DurationKey[] = ['d96','d64','d48','d32','d24','d16','d12','d8','d6','d4','d3','d2','d1']
+/** Duration (SHORTEST_NOTE scale) → DurationKey. Duration is already on the correct scale. */
+function durationToKey(duration: number): DurationKey {
+  const key = `d${duration}` as DurationKey
+  const valid: DurationKey[] = ['d64','d48','d32','d24','d16','d12','d8','d6','d4','d3','d2','d1']
   return valid.includes(key) ? key : 'err'
 }
 
@@ -265,7 +260,7 @@ export class HarpnotesLayout {
   ): Ellipse {
     const x = pitchToX(note.pitch, layout)
     const y = beatToY(note.beat, beatMap, layout, startpos)
-    const dKey = durationToKey(note.duration, layout.SHORTEST_NOTE)
+    const dKey = durationToKey(note.duration)
     const style = layout.DURATION_TO_STYLE[dKey] ?? layout.DURATION_TO_STYLE['err']!
     const color = variantToColor(note.variant, layout)
 
@@ -294,7 +289,7 @@ export class HarpnotesLayout {
 
     const x = pitchToX(pause.pitch, layout)
     const y = beatToY(pause.beat, beatMap, layout, startpos)
-    const dKey = durationToKey(pause.duration, layout.SHORTEST_NOTE)
+    const dKey = durationToKey(pause.duration)
     const restStyle = layout.REST_TO_GLYPH?.[dKey] ?? layout.REST_TO_GLYPH?.['err']
     if (!restStyle) return null
 

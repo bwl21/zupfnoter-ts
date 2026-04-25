@@ -1,89 +1,11 @@
 /**
- * Minimal ZupfnoterConfig for use in tests.
- * Only the fields required by AbcToSong are populated.
+ * Default-Konfiguration für Tests.
+ *
+ * Delegiert an `initConf(conf)` — einzige Quelle der Wahrheit.
  */
+import { Confstack } from '../Confstack.js'
+import { initConf } from '../initConf.js'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
 
-export const defaultTestConfig: ZupfnoterConfig = {
-  layout: {
-    ELLIPSE_SIZE: [3.5, 1.7],
-    REST_SIZE: [4.0, 2.0],
-    LINE_THIN: 0.1,
-    LINE_MEDIUM: 0.3,
-    LINE_THICK: 0.5,
-    Y_SCALE: 0.1,
-    X_SPACING: 11.5,
-    X_OFFSET: 2.0,
-    PITCH_OFFSET: -43,
-    SHORTEST_NOTE: 96,
-    BEAT_RESOLUTION: 384,
-    BEAT_PER_DURATION: 1,
-    DRAWING_AREA_SIZE: [400, 282],
-    MM_PER_POINT: 0.3528,
-    color: {
-      color_default: 'black',
-      color_variant1: 'red',
-      color_variant2: 'blue',
-    },
-    FONT_STYLE_DEF: {
-      regular: { textColor: [0, 0, 0], fontSize: 12, fontStyle: 'normal' },
-      bold:    { textColor: [0, 0, 0], fontSize: 12, fontStyle: 'bold' },
-      large:   { textColor: [0, 0, 0], fontSize: 20, fontStyle: 'bold' },
-      small:   { textColor: [0, 0, 0], fontSize: 9,  fontStyle: 'normal' },
-      smaller: { textColor: [0, 0, 0], fontSize: 6,  fontStyle: 'normal' },
-    },
-    DURATION_TO_STYLE: {
-      err: { sizeFactor: 2,    fill: 'filled', dotted: false },
-      d96: { sizeFactor: 0.9,  fill: 'empty',  dotted: false, hasbarover: true  },
-      d64: { sizeFactor: 0.9,  fill: 'empty',  dotted: false, hasbarover: true  },
-      d48: { sizeFactor: 0.7,  fill: 'empty',  dotted: true,  hasbarover: true  },
-      d32: { sizeFactor: 0.7,  fill: 'empty',  dotted: false, hasbarover: false },
-      d24: { sizeFactor: 0.7,  fill: 'filled', dotted: true  },
-      d16: { sizeFactor: 0.7,  fill: 'filled', dotted: false },
-      d12: { sizeFactor: 0.5,  fill: 'filled', dotted: true  },
-      d8:  { sizeFactor: 0.5,  fill: 'filled', dotted: false },
-      d6:  { sizeFactor: 0.3,  fill: 'filled', dotted: true  },
-      d4:  { sizeFactor: 0.3,  fill: 'filled', dotted: false },
-      d3:  { sizeFactor: 0.1,  fill: 'filled', dotted: true  },
-      d2:  { sizeFactor: 0.1,  fill: 'filled', dotted: false },
-      d1:  { sizeFactor: 0.05, fill: 'filled', dotted: false },
-    },
-    REST_TO_GLYPH: {
-      err: { scale: [2,   2  ], glyphName: 'rest_1',  dotted: false },
-      d96: { scale: [0.9, 0.9], glyphName: 'rest_1',  dotted: false },
-      d64: { scale: [0.9, 0.9], glyphName: 'rest_1',  dotted: false },
-      d48: { scale: [0.5, 0.5], glyphName: 'rest_1',  dotted: true  },
-      d32: { scale: [0.5, 0.5], glyphName: 'rest_1',  dotted: false },
-      d24: { scale: [0.4, 0.7], glyphName: 'rest_4',  dotted: true  },
-      d16: { scale: [0.4, 0.7], glyphName: 'rest_4',  dotted: false },
-      d12: { scale: [0.3, 0.5], glyphName: 'rest_8',  dotted: true  },
-      d8:  { scale: [0.3, 0.5], glyphName: 'rest_8',  dotted: false },
-      d6:  { scale: [0.3, 0.4], glyphName: 'rest_16', dotted: true  },
-      d4:  { scale: [0.3, 0.5], glyphName: 'rest_16', dotted: false },
-      d3:  { scale: [0.3, 0.5], glyphName: 'rest_32', dotted: true  },
-      d2:  { scale: [0.3, 0.5], glyphName: 'rest_32', dotted: false },
-      d1:  { scale: [0.3, 0.5], glyphName: 'rest_64', dotted: false },
-    },
-    instrument: 'Harp',
-    packer: { pack_method: 0 },
-    limit_a3: false,
-    grid: false,
-  },
-  extract: {
-    '0': {
-      voices: [1, 2, 3, 4],
-      flowlines: [1, 3],
-      subflowlines: [2, 4],
-      jumplines: [1, 3],
-      synchlines: [[1, 2], [3, 4]],
-      layoutlines: [1, 2, 3, 4],
-      startpos: 15,
-    },
-  },
-  printer: {
-    a3Offset: [0, 0],
-    a4Offset: [0, 0],
-    a4Pages: [0, 1, 2],
-    showBorder: false,
-  },
-}
+const _conf = new Confstack()
+export const defaultTestConfig: ZupfnoterConfig = initConf(_conf)

@@ -1,4 +1,67 @@
 {
-  "_comment": "PLACEHOLDER - run legacy export to populate. See fixtures/README.md",
-  "children": []
+  "children": [
+    {
+      "type": "Ellipse",
+      "center": [
+        60.3,
+        16.4
+      ],
+      "size": [
+        2.4499999999999997,
+        1.19
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        320,
+        7
+      ],
+      "style": "regular",
+      "text": "Single Note Test\nZupfnoter TS Tests\n4/4\nC\n♩=1",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "fill": false,
+      "color": "red"
+    },
+    {
+      "type": "Path",
+      "fill": false,
+      "color": "blue"
+    },
+    {
+      "type": "Path",
+      "fill": false,
+      "color": "red"
+    },
+    {
+      "type": "Path",
+      "fill": false,
+      "color": "blue"
+    },
+    {
+      "type": "Path",
+      "fill": false,
+      "color": "red"
+    },
+    {
+      "type": "Path",
+      "fill": false,
+      "color": "blue"
+    },
+    {
+      "type": "Path",
+      "fill": false,
+      "color": "grey"
+    },
+    {
+      "type": "Path",
+      "fill": false,
+      "color": "grey"
+    }
+  ]
 }

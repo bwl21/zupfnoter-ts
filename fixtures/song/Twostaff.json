@@ -14,7 +14,17 @@
           "variant": 0,
           "visible": true,
           "pitch": 60,
-          "duration": 24,
+          "duration": 4,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 12,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
@@ -23,8 +33,8 @@
           "beat": 24,
           "variant": 0,
           "visible": true,
-          "pitch": 62,
-          "duration": 24,
+          "pitch": 64,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         },
@@ -33,38 +43,28 @@
           "beat": 48,
           "variant": 0,
           "visible": true,
-          "pitch": 64,
-          "duration": 48,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 96,
-          "variant": 0,
-          "visible": true,
           "pitch": 67,
-          "duration": 24,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "Note",
-          "beat": 120,
+          "beat": 60,
           "variant": 0,
           "visible": true,
           "pitch": 69,
-          "duration": 24,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "Note",
-          "beat": 144,
+          "beat": 72,
           "variant": 0,
           "visible": true,
           "pitch": 71,
-          "duration": 48,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         }
@@ -78,7 +78,17 @@
           "variant": 0,
           "visible": true,
           "pitch": 48,
-          "duration": 24,
+          "duration": 4,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 12,
+          "variant": 0,
+          "visible": true,
+          "pitch": 50,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
@@ -87,8 +97,18 @@
           "beat": 24,
           "variant": 0,
           "visible": true,
-          "pitch": 50,
-          "duration": 24,
+          "pitch": 52,
+          "duration": 4,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 36,
+          "variant": 0,
+          "visible": true,
+          "pitch": 54,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
@@ -97,8 +117,18 @@
           "beat": 48,
           "variant": 0,
           "visible": true,
-          "pitch": 52,
-          "duration": 24,
+          "pitch": 55,
+          "duration": 4,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 60,
+          "variant": 0,
+          "visible": true,
+          "pitch": 57,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
@@ -107,48 +137,18 @@
           "beat": 72,
           "variant": 0,
           "visible": true,
-          "pitch": 54,
-          "duration": 24,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 96,
-          "variant": 0,
-          "visible": true,
-          "pitch": 55,
-          "duration": 24,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 120,
-          "variant": 0,
-          "visible": true,
-          "pitch": 57,
-          "duration": 24,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 144,
-          "variant": 0,
-          "visible": true,
           "pitch": 59,
-          "duration": 24,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "Note",
-          "beat": 168,
+          "beat": 84,
           "variant": 0,
           "visible": true,
           "pitch": 60,
-          "duration": 24,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         }
@@ -162,7 +162,27 @@
           "variant": 0,
           "visible": true,
           "pitch": 60,
-          "duration": 48,
+          "duration": 8,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 24,
+          "variant": 0,
+          "visible": true,
+          "pitch": 52,
+          "duration": 4,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 36,
+          "variant": 0,
+          "visible": true,
+          "pitch": 54,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
@@ -171,8 +191,8 @@
           "beat": 48,
           "variant": 0,
           "visible": true,
-          "pitch": 52,
-          "duration": 24,
+          "pitch": 55,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         },
@@ -181,38 +201,45 @@
           "beat": 72,
           "variant": 0,
           "visible": true,
-          "pitch": 54,
-          "duration": 24,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 96,
-          "variant": 0,
-          "visible": true,
-          "pitch": 55,
-          "duration": 48,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 144,
-          "variant": 0,
-          "visible": true,
           "pitch": 59,
-          "duration": 24,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "Note",
-          "beat": 168,
+          "beat": 84,
           "variant": 0,
           "visible": true,
           "pitch": 60,
-          "duration": 24,
+          "duration": 4,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "SynchPoint",
+          "beat": 96,
+          "variant": 0,
+          "visible": true,
+          "duration": 8,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "SynchPoint",
+          "beat": 120,
+          "variant": 0,
+          "visible": true,
+          "duration": 8,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "SynchPoint",
+          "beat": 144,
+          "variant": 0,
+          "visible": true,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -221,7 +248,16 @@
           "beat": 192,
           "variant": 0,
           "visible": true,
-          "duration": 48,
+          "duration": 8,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "SynchPoint",
+          "beat": 216,
+          "variant": 0,
+          "visible": true,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         },
@@ -230,7 +266,7 @@
           "beat": 240,
           "variant": 0,
           "visible": true,
-          "duration": 48,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -239,7 +275,16 @@
           "beat": 288,
           "variant": 0,
           "visible": true,
-          "duration": 96,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "SynchPoint",
+          "beat": 336,
+          "variant": 0,
+          "visible": true,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -248,7 +293,7 @@
           "beat": 384,
           "variant": 0,
           "visible": true,
-          "duration": 48,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -257,7 +302,7 @@
           "beat": 432,
           "variant": 0,
           "visible": true,
-          "duration": 48,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -266,52 +311,7 @@
           "beat": 480,
           "variant": 0,
           "visible": true,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "SynchPoint",
-          "beat": 576,
-          "variant": 0,
-          "visible": true,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "SynchPoint",
-          "beat": 672,
-          "variant": 0,
-          "visible": true,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "SynchPoint",
-          "beat": 768,
-          "variant": 0,
-          "visible": true,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "SynchPoint",
-          "beat": 864,
-          "variant": 0,
-          "visible": true,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "SynchPoint",
-          "beat": 960,
-          "variant": 0,
-          "visible": true,
-          "duration": 96,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         }
@@ -325,7 +325,17 @@
           "variant": 0,
           "visible": true,
           "pitch": 36,
-          "duration": 24,
+          "duration": 4,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 12,
+          "variant": 0,
+          "visible": true,
+          "pitch": 38,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
@@ -334,8 +344,18 @@
           "beat": 24,
           "variant": 0,
           "visible": true,
-          "pitch": 38,
-          "duration": 24,
+          "pitch": 40,
+          "duration": 4,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 36,
+          "variant": 0,
+          "visible": true,
+          "pitch": 42,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
@@ -344,8 +364,18 @@
           "beat": 48,
           "variant": 0,
           "visible": true,
-          "pitch": 40,
-          "duration": 24,
+          "pitch": 43,
+          "duration": 4,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 60,
+          "variant": 0,
+          "visible": true,
+          "pitch": 45,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
@@ -354,8 +384,18 @@
           "beat": 72,
           "variant": 0,
           "visible": true,
-          "pitch": 42,
-          "duration": 24,
+          "pitch": 47,
+          "duration": 4,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 84,
+          "variant": 0,
+          "visible": true,
+          "pitch": 48,
+          "duration": 4,
           "tieStart": false,
           "tieEnd": false
         },
@@ -364,18 +404,8 @@
           "beat": 96,
           "variant": 0,
           "visible": true,
-          "pitch": 43,
-          "duration": 24,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 120,
-          "variant": 0,
-          "visible": true,
-          "pitch": 45,
-          "duration": 24,
+          "pitch": 66,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -384,8 +414,8 @@
           "beat": 144,
           "variant": 0,
           "visible": true,
-          "pitch": 47,
-          "duration": 24,
+          "pitch": 66,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         },
@@ -394,18 +424,35 @@
           "beat": 168,
           "variant": 0,
           "visible": true,
-          "pitch": 48,
-          "duration": 24,
+          "pitch": 66,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
+        },
+        {
+          "type": "Goto",
+          "variant": 0,
+          "visible": true,
+          "from": 168,
+          "to": 0
         },
         {
           "type": "Note",
           "beat": 192,
           "variant": 0,
           "visible": true,
-          "pitch": 66,
-          "duration": 96,
+          "pitch": 59,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 240,
+          "variant": 0,
+          "visible": true,
+          "pitch": 60,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -414,8 +461,8 @@
           "beat": 288,
           "variant": 0,
           "visible": true,
-          "pitch": 66,
-          "duration": 48,
+          "pitch": 59,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
@@ -424,111 +471,64 @@
           "beat": 336,
           "variant": 0,
           "visible": true,
-          "pitch": 66,
-          "duration": 48,
+          "pitch": 59,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
-        },
-        {
-          "type": "Goto",
-          "variant": 0,
-          "visible": true,
-          "from": 336,
-          "to": 0
         },
         {
           "type": "Note",
           "beat": 384,
           "variant": 0,
           "visible": true,
-          "pitch": 59,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 480,
-          "variant": 0,
-          "visible": true,
-          "pitch": 60,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 576,
-          "variant": 0,
-          "visible": true,
-          "pitch": 59,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 672,
-          "variant": 0,
-          "visible": true,
-          "pitch": 59,
-          "duration": 96,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 768,
-          "variant": 0,
-          "visible": true,
           "pitch": 55,
-          "duration": 96,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "Note",
-          "beat": 864,
+          "beat": 432,
           "variant": 0,
           "visible": true,
           "pitch": 66,
-          "duration": 96,
+          "duration": 16,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "SynchPoint",
-          "beat": 960,
+          "beat": 480,
           "variant": 0,
           "visible": true,
-          "duration": 48,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "SynchPoint",
-          "beat": 1008,
+          "beat": 504,
           "variant": 0,
           "visible": true,
-          "duration": 48,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "SynchPoint",
-          "beat": 1056,
+          "beat": 528,
           "variant": 0,
           "visible": true,
-          "duration": 48,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         },
         {
           "type": "SynchPoint",
-          "beat": 1104,
+          "beat": 552,
           "variant": 0,
           "visible": true,
-          "duration": 48,
+          "duration": 8,
           "tieStart": false,
           "tieEnd": false
         }
@@ -542,7 +542,8 @@
       "48": 48,
       "96": 96,
       "120": 120,
-      "144": 144
+      "144": 144,
+      "entries": {}
     },
     {
       "0": 0,
@@ -552,7 +553,8 @@
       "96": 96,
       "120": 120,
       "144": 144,
-      "168": 168
+      "168": 168,
+      "entries": {}
     },
     {
       "0": 0,
@@ -571,7 +573,8 @@
       "672": 672,
       "768": 768,
       "864": 864,
-      "960": 960
+      "960": 960,
+      "entries": {}
     },
     {
       "0": 0,
@@ -594,7 +597,8 @@
       "960": 960,
       "1008": 1008,
       "1056": 1056,
-      "1104": 1104
+      "1104": 1104,
+      "entries": {}
     }
   ]
 }

@@ -16,8 +16,8 @@
  *   done
  *
  * Scale factors (Legacy → TS):
- *   duration: × 6   (Legacy Viertelnote = 16, TS = 96)
- *   beat:     × 2   (Legacy Viertelnote-Abstand = 48, TS = 96)
+ *   duration: × 1   (Legacy Viertelnote = 16, TS = 16 — same scale)
+ *   beat:     × 1   (Legacy Viertelnote-Abstand = 48, TS = 48 — same scale)
  *
  * Entity type mapping:
  *   Harpnotes::Music::Note       → Note
@@ -35,8 +35,8 @@ import { resolve } from 'node:path'
 // Scale factors
 // ---------------------------------------------------------------------------
 
-const DURATION_FACTOR = 6  // Legacy dur 16 → TS dur 96
-const BEAT_FACTOR = 2      // Legacy beat 48 → TS beat 96
+const DURATION_FACTOR = 1  // Legacy dur 16 → TS dur 16 (same scale)
+const BEAT_FACTOR = 1      // Legacy beat 48 → TS beat 48 (same scale)
 
 // ---------------------------------------------------------------------------
 // Type mapping
