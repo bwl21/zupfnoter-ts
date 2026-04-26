@@ -33,10 +33,6 @@ interface Abc2svgUser {
   ) => void
 }
 
-interface Abc2svgInstance {
-  tosvg: (fname: string, source: string) => void
-}
-
 interface Abc2svgVoice {
   id?: string
   nm?: string

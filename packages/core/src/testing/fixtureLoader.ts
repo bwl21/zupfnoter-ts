@@ -4,29 +4,161 @@
  * In Vitest (Node environment) we use fs.readFileSync.
  * The path is resolved relative to the project root via import.meta.url.
  */
-import { readFileSync } from 'node:fs'
-import { resolve, dirname } from 'node:path'
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
+import { resolve, dirname, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import type { Song, Sheet } from '@zupfnoter/types'
-import type { SongFixture, SheetFixture, DrawableFixture } from './semanticMatch.js'
+import type { Song, Sheet, ZupfnoterConfig } from '@zupfnoter/types'
+import { AbcParser } from '../AbcParser.js'
+import { AbcToSong } from '../AbcToSong.js'
+import { HarpnotesLayout } from '../HarpnotesLayout.js'
+import { extractSongConfig, mergeSongConfig } from '../extractSongConfig.js'
+import type { SongFixture, SheetFixture, DrawableFixture, EntityFixture } from './semanticMatch.js'
+import { defaultTestConfig } from './defaultConfig.js'
 
 // Resolve the repo root: packages/core/src/testing/ → ../../../../
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '../../../..')
+const FIXTURE_CASES_ROOT = resolve(REPO_ROOT, 'fixtures/cases')
 
-function loadJson<T>(relativePath: string): T {
-  const fullPath = resolve(REPO_ROOT, relativePath)
-  const raw = readFileSync(fullPath, 'utf-8')
+export type FixtureStage = 'song' | 'sheet' | 'output_svg'
+
+export interface PipelineFixture {
+  name: string
+  id: string
+  dir: string
+  input: {
+    abc: string
+  }
+  config: ZupfnoterConfig
+  song: SongFixture | null
+  sheet: SheetFixture | null
+  output_svg: string | null
+}
+
+export interface FixtureCase {
+  name: string
+  id: string
+  dir: string
+  hasSongFixture: boolean
+  hasSheetFixture: boolean
+}
+
+function loadJson<T>(path: string): T {
+  const raw = readFileSync(path, 'utf-8')
   return JSON.parse(raw) as T
 }
 
+function safeLoadJson<T>(path: string): T | null {
+  try {
+    return loadJson<T>(path)
+  } catch {
+    return null
+  }
+}
+
+function loadText(path: string): string {
+  return readFileSync(path, 'utf-8')
+}
+
+function safeLoadText(path: string): string | null {
+  try {
+    return loadText(path)
+  } catch {
+    return null
+  }
+}
+
+function fixtureCaseDir(name: string): string {
+  return resolve(FIXTURE_CASES_ROOT, name)
+}
+
+function toRepoRelativePath(path: string): string {
+  return relative(REPO_ROOT, path)
+}
+
+export function scanFixtureCases(): FixtureCase[] {
+  if (!existsSync(FIXTURE_CASES_ROOT)) return []
+
+  return readdirSync(FIXTURE_CASES_ROOT)
+    .map((name) => {
+      const dir = fixtureCaseDir(name)
+      return { name, dir }
+    })
+    .filter(({ dir }) => statSync(dir).isDirectory())
+    .filter(({ dir }) => existsSync(resolve(dir, 'input.abc')))
+    .map(({ name, dir }) => ({
+      name,
+      id: name,
+      dir,
+      hasSongFixture: existsSync(resolve(dir, 'song.json')),
+      hasSheetFixture: existsSync(resolve(dir, 'sheet.json')),
+    }))
+    .sort((a, b) => a.id.localeCompare(b.id))
+}
+
+export function fixtureAbcPath(name: string): string {
+  return toRepoRelativePath(resolve(fixtureCaseDir(name), 'input.abc'))
+}
+
+export function readFixtureAbc(name: string): string {
+  return loadText(resolve(fixtureCaseDir(name), 'input.abc'))
+}
+
+/**
+ * Build the effective test config from defaults plus an optional
+ * `%%%%zupfnoter.config` block embedded in the ABC fixture.
+ */
+export function fixtureConfigFromAbc(abcText: string): ZupfnoterConfig {
+  return mergeSongConfig(defaultTestConfig, extractSongConfig(abcText))
+}
+
+export function loadFixture(testCase: FixtureCase): PipelineFixture
+export function loadFixture(name: string): PipelineFixture
+export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixture {
+  const name = typeof testCaseOrName === 'string' ? testCaseOrName : testCaseOrName.name
+  const dir = fixtureCaseDir(name)
+  const abc = loadText(resolve(dir, 'input.abc'))
+  return {
+    name,
+    id: name,
+    dir,
+    input: { abc },
+    config: fixtureConfigFromAbc(abc),
+    song: safeLoadJson<SongFixture>(resolve(dir, 'song.json')),
+    sheet: safeLoadJson<SheetFixture>(resolve(dir, 'sheet.json')),
+    output_svg: safeLoadText(resolve(dir, 'output.svg')),
+  }
+}
+
 export function loadSongFixture(name: string): SongFixture {
-  return loadJson<SongFixture>(`fixtures/song/${name}.json`)
+  return loadJson<SongFixture>(resolve(fixtureCaseDir(name), 'song.json'))
 }
 
 export function loadSheetFixture(name: string): SheetFixture {
-  return loadJson<SheetFixture>(`fixtures/sheet/${name}.json`)
+  return loadJson<SheetFixture>(resolve(fixtureCaseDir(name), 'sheet.json'))
+}
+
+export function transformFixtureToSong(fixture: PipelineFixture): SongFixture {
+  const model = new AbcParser().parse(fixture.input.abc)
+  const song = new AbcToSong().transform(model, fixture.config)
+  return songToFixture(song)
+}
+
+export function transformFixtureToSheet(fixture: PipelineFixture): SheetFixture {
+  const model = new AbcParser().parse(fixture.input.abc)
+  const song = new AbcToSong().transform(model, fixture.config)
+  const sheet = new HarpnotesLayout(fixture.config).layout(song, 0, 'A4')
+  return sheetToFixture(sheet)
+}
+
+export function saveFixtureOutput(fixture: PipelineFixture, stage: FixtureStage, data: unknown): void {
+  const dir = resolve(fixture.dir, '_ts_output')
+  const filename = stage === 'output_svg' ? 'output.svg' : `${stage}.json`
+  const content = typeof data === 'string' ? data : `${JSON.stringify(data, null, 2)}\n`
+
+  mkdirSync(dir, { recursive: true })
+  writeFileSync(resolve(dir, filename), content, 'utf-8')
 }
 
 /**
@@ -40,8 +172,8 @@ export function songToFixture(song: Song): SongFixture {
   return {
     meta_data: song.metaData as Record<string, unknown>,
     voices: song.voices.map((v) => ({
-      entities: v.entities.map((e) => {
-        const entry: Record<string, unknown> = {
+      entities: v.entities.map((e): EntityFixture => {
+        const entry: EntityFixture = {
           type: e.type,
           beat: e.beat,
           variant: e.variant,

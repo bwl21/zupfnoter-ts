@@ -1,54 +1,80 @@
-# my-vue-app
+# zupfnoter-ts
 
-This template should help get you started developing with Vue 3 in Vite.
+TypeScript-Rewrite von Zupfnoter als PNPM-Monorepo.
 
-## Recommended IDE Setup
+Zupfnoter wandelt ABC-Notation in Harfennoten-Blätter um. Die Kernpipeline ist:
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```text
+ABC-Text -> AbcModel -> Song -> Sheet -> SVG/PDF
 ```
 
-### Compile and Hot-Reload for Development
+Begriffsverwendung in diesem Repository:
 
-```sh
-npm run dev
+- `Stufe` bezeichnet eine fachliche Transformationsstufe der Pipeline
+- `Phase` bezeichnet eine Migrations- oder Implementierungsphase des Rewrites
+
+## Repository-Struktur
+
+```text
+packages/
+  core/   Transformationspipeline und Rendering
+  types/  Gemeinsame Typen für Musik-, Drawing- und Config-Modelle
+
+apps/
+  demo/   Laufende Demo-App für ABC-Editor + SVG-Vorschau
+  web/    Geplante Vue-Web-App (Phase 5)
+  cli/    Geplante CLI für SVG/PDF-Export
 ```
 
-### Type-Check, Compile and Minify for Production
+## Architektur
+
+- `@zupfnoter/types` definiert die gemeinsamen Datenmodelle
+- `@zupfnoter/core` implementiert die fachlichen Stufen der Pipeline: Parsing, Transformation, Layout und SVG-Rendering
+- `apps/*` konsumieren die `core`-API und halten möglichst wenig Domänenlogik
+
+Eine Repo-Analyse liegt in [docs/architecture/repo-analysis.md](docs/architecture/repo-analysis.md).
+
+## Wichtige Dokumentation
+
+- [AGENTS.md](AGENTS.md) – Implementierungsplan und Projektregeln
+- [spec.md](spec.md) – Doku-Index für Specs, Konzepte und ADR-nahe Referenzen
+- [docs/glossary.md](docs/glossary.md) – Terminologie- und Übersetzungsregeln
+- [docs/phase-0/architektur_zupfnoter.md](docs/phase-0/architektur_zupfnoter.md) – Legacy-Architektur und Pipeline
+- [docs/phase-0/architecture-vision.md](docs/phase-0/architecture-vision.md) – Zielbild des Rewrites
+
+## Entwicklung
+
+Voraussetzungen:
+
+- Node.js `^20.19.0 || >=22.12.0`
+- PNPM Workspaces
+
+Nützliche Kommandos:
 
 ```sh
-npm run build
+pnpm install
+pnpm dev
+pnpm build
+pnpm test:unit
+pnpm type-check
+pnpm lint
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+`pnpm dev` startet aktuell `@zupfnoter/demo`.
 
-```sh
-npm run test:unit
-```
+## Status
 
-### Lint with [ESLint](https://eslint.org/)
+Bereits weitgehend umgesetzt:
 
-```sh
-npm run lint
-```
+- Stufe 1: `ABC -> Song`
+- Stufe 2: `Song -> Sheet`
+- Stufe 3: `Sheet -> SVG`
+- Snapshot- und Vergleichstests für `core`
+
+Noch offen oder unvollständig:
+
+- PDF-Engine
+- produktive Web-App in `apps/web`
+- CLI-Renderpfad
+- Editor/SVG-Interaktivität
+- Worker-Architektur
