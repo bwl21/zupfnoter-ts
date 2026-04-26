@@ -11,7 +11,7 @@
  * Dispatcht intern auf pack_method 0/1/2/3/10 aus dem Confstack.
  */
 
-import type { Song, Playable, SynchPoint } from '@zupfnoter/types'
+import type { Song, PlayableEntity, SynchPoint } from '@zupfnoter/types'
 import type { DurationKey, DurationStyle } from '@zupfnoter/types'
 import type { Confstack } from './Confstack.js'
 
@@ -60,8 +60,8 @@ export function computeBeatCompression(
  * SynchPoint-Noten werden flach eingebettet.
  * Entspricht dem `relevant_notes`-Block in allen pack-Methoden.
  */
-function collectRelevantPlayables(song: Song, layoutLines: number[]): Playable[] {
-  const playables: Playable[] = []
+function collectRelevantPlayables(song: Song, layoutLines: number[]): PlayableEntity[] {
+  const playables: PlayableEntity[] = []
   for (const voiceId of layoutLines) {
     const voice = song.voices[voiceId]
     if (!voice) continue
@@ -84,8 +84,8 @@ function collectRelevantPlayables(song: Song, layoutLines: number[]): Playable[]
  * Gruppiert Playables nach Beat-Nummer.
  * Entspricht `group_by { |p| p.beat }` in Ruby.
  */
-function groupByBeat(playables: Playable[]): Map<number, Playable[]> {
-  const map = new Map<number, Playable[]>()
+function groupByBeat(playables: PlayableEntity[]): Map<number, PlayableEntity[]> {
+  const map = new Map<number, PlayableEntity[]>()
   for (const p of playables) {
     const group = map.get(p.beat)
     if (group) {
@@ -125,7 +125,7 @@ function getMincFactor(
   return 0
 }
 
-function isPlayable(entity: unknown): entity is Playable {
+function isPlayable(entity: unknown): entity is PlayableEntity {
   return (
     entity !== null &&
     typeof entity === 'object' &&
@@ -135,7 +135,7 @@ function isPlayable(entity: unknown): entity is Playable {
   )
 }
 
-function isSynchPoint(entity: Playable): entity is SynchPoint {
+function isSynchPoint(entity: PlayableEntity): entity is SynchPoint {
   return 'notes' in entity && Array.isArray((entity as SynchPoint).notes)
 }
 
@@ -369,7 +369,7 @@ function _packMethod3(song: Song, layoutLines: number[], conf: Confstack): BeatC
 
   type StackEntry = { beat: number; kind: 'note' | 'line'; inc: number }
   const collisionStack: Record<number, StackEntry> = {}
-  let collisionRange: Record<number, { beat: number; note: Playable; pitch: number; kind: 'note' | 'line' }> = {}
+  let collisionRange: Record<number, { beat: number; note: PlayableEntity; pitch: number; kind: 'note' | 'line' }> = {}
   let newbeat = 0
   let isFirst = true
   const result: BeatCompressionMap = {}
