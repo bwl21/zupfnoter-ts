@@ -6,6 +6,8 @@ Zupfnoter (`bwl21/zupfnoter` → `bwl21/zupfnoter-ts`).
 Referenz-Dokumentation: `docs/` in diesem Repository (kopiert aus `bwl21/zupfnoter`,
 Branch `feature/voice-styles_and-other-concepts`, Ordner `30_sources/SRC_Zupfnoter/docs/`).
 
+Terminologie- und Übersetzungsregeln: [docs/glossary.md](docs/glossary.md)
+
 ---
 
 ## Kontext: Was ist Zupfnoter?
@@ -19,6 +21,18 @@ ABC-Text → Musikmodell (Song) → Layout-Modell (Sheet) → Ausgabe (SVG / PDF
 
 Der bisherige Stack (Opal/Ruby → JavaScript, w2ui, jQuery) wird vollständig durch TypeScript,
 Vue 3 und Vite ersetzt.
+
+Begriffsverwendung in diesem Dokument:
+
+- `Stufe` bezeichnet eine fachliche Transformationsstufe der Pipeline
+- `Phase` bezeichnet eine Migrations- oder Implementierungsphase
+
+## Dokumentationssprache
+
+- Projektdokumentation wird standardmäßig auf Deutsch verfasst.
+- Code-Begriffe, Typnamen, Paketnamen und Dateinamen bleiben unverändert.
+- Übersetzungen ins Englische können später als parallele `*.en.md`-Dateien ergänzt werden.
+- Terminologie richtet sich nach `docs/glossary.md`.
 
 ---
 
@@ -44,9 +58,11 @@ docs/
 ```
 
 Neue Dokumente (Specs, ADRs, Konzepte) werden im jeweiligen Phase-Ordner abgelegt.
-Spezifikationen liegen als `docs/<phase>/spec.md`. Die Root-`spec.md` ist ein Index.
+Spezifikationen liegen bevorzugt als `docs/<phase>/spec.md`; bei größeren Themen sind
+auch ergänzende Dateien wie `spec-<thema>.md` im selben Phase-Ordner zulässig. Die
+Root-`spec.md` ist ein Doku-Index für Specs, Konzepte und referenznahe Architektur-Dokumente.
 Die aktuelle Arbeits-Spec wird von Ona direkt in `spec.md` verwaltet und nach Abschluss
-in den zugehörigen Phase-Ordner verschoben.
+in den zugehörigen Phase-Ordner verschoben oder von dort verlinkt.
 
 ---
 
@@ -88,7 +104,7 @@ Stufe 4: Sheet          → SVG / PDF   (Ausgabe-Engines)
 **Ziel:** Workspace-Struktur aufsetzen, bestehenden Vue-Scaffold einordnen.
 
 - [ ] PNPM Workspaces konfigurieren (`pnpm-workspace.yaml`)
-- [ ] Verzeichnisstruktur `packages/core`, `packages/types`, `apps/web`, `apps/cli` anlegen
+- [ ] Verzeichnisstruktur `packages/core`, `packages/types`, `apps/web`, `apps/demo`, `apps/cli` anlegen
 - [ ] Bestehenden `src/`-Scaffold nach `apps/web/src/` verschieben
 - [ ] Gemeinsame `tsconfig.base.json` erstellen
 - [ ] CI-Grundkonfiguration (lint, type-check, test)
@@ -222,7 +238,7 @@ interface LayoutConfig {
   }
   FONT_STYLE_DEF: Record<string, FontStyle>
   instrument: string
-  packer: { pack_method: 0 | 1 | 2 | 10 }
+  packer: { pack_method: 0 | 1 | 2 | 3 | 10 }
 }
 
 interface ExtractConfig {
@@ -270,14 +286,14 @@ Nur `AbcParser.ts` darf diese Datei importieren.
 - [x] Metadaten-Extraktion (T:, C:, M:, K:, Q:)
 - [x] Unit-Tests: `AbcParser.spec.ts`, `AbcToSong.spec.ts`
 - [x] Legacy-Vergleichstests aktivieren (Song-Fixtures aus Legacy-Export befüllt)
-- [ ] `restposition` in `AbcToSong._transformRest()` implementieren:
+- [x] `restposition` via `AbcToSong._applyRestposition()` implementieren:
   - Konfiguration: `$conf['restposition.default']` → `center` | `next` | `previous`
   - `center`: Durchschnitt der vorherigen und nächsten Note (Legacy-Default)
   - `next`: Tonhöhe der nächsten Note
   - `previous`: Tonhöhe der vorherigen Note
-  - Aktuell hardcodiert: `pitch: 60` (mittleres C)
-  - Nach Implementierung: Pause-Pitch in `tools/legacy-song-to-fixture.mjs` wieder
-    einschalten (Kommentar `// Pause: pitch intentionally omitted`)
+  - Fallback ohne Nachbarn: `pitch: 60` (mittleres C)
+  - Offener Nachlauf: Pause-Pitch in `tools/legacy-song-to-fixture.mjs` wieder
+    einschalten, falls dort noch absichtlich ausgelassen
   - Im Legacy-System (`harpnotes.rb`) werden dafür `@next_playable` und
     `@prev_playable` auf jeder `MusicEntity` gesetzt (verkettete Liste durch die
     Stimme). In TS wird das **nicht** als persistentes Feld im `Song`-Objekt
@@ -324,7 +340,8 @@ Referenz: `harpnotes.rb` (ab Zeile 1302, `Layout::Default`), `docs/phase-3/konze
   - Circular-Dependency-Erkennung
 - [x] `buildConfstack(config, extractNr)` — Zupfnoter-spezifischer Stack-Aufbau
   in `buildConfstack.ts` (bewusst von `Confstack.ts` getrennt)
-- [ ] `resolveVoiceStyle(voiceNr, extractConfig, globalStyles): VoiceStyle | null`
+- [ ] Kein Voice-Style-Resolving in Phase 3 implementieren; Voice Styles bleiben
+  bis nach Abschluss der Migration außerhalb des Kern-Scopes
 
 #### 3.2 Beat-Packer (vertikale Kompression)
 
@@ -359,7 +376,6 @@ Referenz: `harpnotes.rb` (ab Zeile 1302, `Layout::Default`), `docs/phase-3/konze
   - `_layoutImages(conf, extractNr): Image[]`
   - `_layoutInstrument(conf, extractNr): DrawableElement[]` (Stub)
   - `_layoutCutmarks(pageFormat, conf): Path[]`
-- [x] `restposition` in `AbcToSong._applyRestposition()` (center/next/previous)
 - [x] `prevPlayable`/`nextPlayable` auf `Playable` in `@zupfnoter/types`
 
 #### 3.4 Voice Styles
@@ -436,7 +452,8 @@ Referenz: `docs/phase-5/architektur_command_ui.md`, `user-interface.js`
 
 - [ ] JSON-Editor für `ZupfnoterConfig`
 - [ ] Formular-basierter Editor für häufige Einstellungen
-- [ ] Voice-Styles-Editor (Tabelle: Stimme → Stil)
+- [ ] Voice-Styles-Editor (Tabelle: Stimme → Stil) — erst nach separater
+  Implementierung des Post-Migration-Features
 
 #### 5.5 Command-System
 
@@ -521,21 +538,32 @@ Referenz: `docs/phase-0/architektur_zupfnoter.md`, Abschnitt 7
 Das Konfigurationssystem ist ein Stack mit hierarchischer Auflösung (höchste Priorität oben):
 
 ```
-┌─────────────────────────────┐  ← Top
-│ extract.<nr>.layout-Override│
-├─────────────────────────────┤
-│ extract.<nr>.printer-Override│
-├─────────────────────────────┤
-│ Song-Konfiguration (JSON)   │
-├─────────────────────────────┤
-│ Defaults (init_conf)        │
-└─────────────────────────────┘  ← Bottom
+┌──────────────────────────────┐  ← Top
+│ extract.<nr>.layout          │
+├──────────────────────────────┤
+│ extract.<nr>.printer         │
+├──────────────────────────────┤
+│ extract.<nr> Basiswerte      │
+├──────────────────────────────┤
+│ extract.0 Basiswerte         │
+├──────────────────────────────┤
+│ Song-Konfiguration (JSON)    │
+├──────────────────────────────┤
+│ Defaults (init_conf)         │
+└──────────────────────────────┘  ← Bottom
 ```
 
 - `push(config)` / `pop()` für temporäre Overrides während des Layouts
 - `get('layout.ELLIPSE_SIZE')` — Punkt-Notation, sucht von oben
 - Late Binding: Werte können Funktionen sein, die bei Zugriff ausgewertet werden
 - Extract-Vererbung: `extract.N` erbt von `extract.0`, überschreibt nur Abweichungen
+- Effektive Priorität bei `buildConfstack(config, extractNr)`:
+  1. Defaults aus `init_conf`
+  2. Song-Konfiguration aus `%%%%zupfnoter.config`
+  3. Basiswerte aus `extract.0` (falls `extractNr != 0`)
+  4. Basiswerte aus `extract.<nr>`
+  5. `extract.<nr>.printer`
+  6. `extract.<nr>.layout`
 
 ---
 
@@ -633,3 +661,13 @@ synchron bleiben. Beim Implementieren der Konfigurationsvalidierung in Phase 3/5
 - Tests für jede Transformationsstufe mit JSON-Snapshots aus dem Legacy-System
 - Voice Styles sind rückwärtskompatibel: fehlt `voice_styles`, gelten globale `layout.*`-Werte
 - Worker-Nachrichten sind typisiert (kein `any`)
+
+## Verbindliche Invarianten
+
+- `@zupfnoter/types` enthält ausschließlich Typen und Interfaces, keine Laufzeitlogik
+- Externe Stimmennummern in Konfiguration und UI sind 1-basiert
+- Interne Array-Indizes in TypeScript sind 0-basiert
+- `Sheet.activeVoices` verwendet dieselbe 1-basierte Nummernkonvention wie `extract.<nr>.voices`
+- `extract`-Keys sind Strings, die numerische Extrakt-IDs repräsentieren (z. B. `"0"`, `"1"`, `"2"`)
+- `Confstack` ist der einzige zulässige Mechanismus zur Konfigurationsauflösung; kein lokales Mergen in Layout-, Render- oder UI-Code
+- Die TypeScript-Beispielblöcke in diesem Dokument sind Zielschemata zur Orientierung, aber nicht automatisch vollständiger als die aktuellen Quelltypen; bei Widerspruch entscheidet der explizite Phasen-Text plus die implementierten Typen in `packages/types`
