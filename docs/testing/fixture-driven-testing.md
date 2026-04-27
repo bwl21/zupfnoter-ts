@@ -254,77 +254,23 @@ export function compareFixtures(
 
 ## Fixture-Extraktion aus Legacy-System
 
-### Schritt 1: Legacy-Exporter schreiben (Ruby)
+Der Legacy-CLI besitzt einen expliziten Exportmodus. Er liest ABC-Dateien, führt die
+produktive Legacy-Pipeline aus und schreibt pro Testfall `input.abc`, `song.json` und
+`sheet.json` in `fixtures/cases/<test-case>/`.
 
-Im Legacy-Repository (`bwl21/zupfnoter`, Branch `feature/voice-styles_and-other-concepts`):
-
-```ruby
-# tools/export_fixtures.rb
-
-require 'zupfnoter'
-require 'json'
-
-ABC_FILES = [
-  'twostaff',
-  'variations',
-  'synchlines',
-  # ... weitere Testfälle
-]
-
-ABC_FILES.each do |name|
-  abc_path = "fixtures/#{name}/input.abc"
-  next unless File.exist?(abc_path)
-  
-  abc_text = File.read(abc_path)
-  config = extract_config_from_abc(abc_text)
-  
-  # Stufe 1: abc_model (via abc2svg)
-  abc_model = Zupfnoter::Abc.parse(abc_text)
-  
-  # Stufe 2: Song (via Harpnotes::Music)
-  song = Zupfnoter::AbcToSong.transform(abc_model, config)
-  
-  # Stufe 3: Sheet (via Harpnotes::Drawing)
-  sheet = Zupfnoter::HarpnotesLayout.layout(song, 0, 'A3')
-  
-  # Stufe 4: SVG
-  svg = Zupfnoter::SvgEngine.render(sheet)
-  
-  # JSON exportieren (zirkuläre Refs entfernen!)
-  output_dir = "fixtures/#{name}"
-  
-  File.write("#{output_dir}/abc_model.json",
-    JSON.pretty_generate(sanitize_for_json(abc_model)))
-  
-  File.write("#{output_dir}/song.json",
-    JSON.pretty_generate(song.to_json_safe))  # Ohne @references
-  
-  File.write("#{output_dir}/sheet.json",
-    JSON.pretty_generate(sheet.to_json_safe)) # Ohne @drawables
-  
-  File.write("#{output_dir}/output.svg", svg)
-  
-  puts "✓ Exported: #{name}"
-end
-
-def extract_config_from_abc(abc_text)
-  match = abc_text.match(/%%%%zupfnoter\.config\s*({[\s\S]*?})\s*$/m)
-  match ? JSON.parse(match[1]) : {}
-end
-
-def sanitize_for_json(obj)
-  # Entfernt zirkuläre Refs, konvertiert Ruby-Objekte
-  JSON.parse(JSON.generate(obj))
-end
-```
-
-**Aufruf:**
 ```bash
-cd zupfnoter  # Legacy-Repo
-ruby tools/export_fixtures.rb > /path/to/zupfnoter-ts/fixtures/
+cd ../200_zupfnoter/30_sources/SRC_Zupfnoter/src
+node --max_old_space_size=4096 zupfnoter-cli.js \
+  --export-fixtures \
+  "/path/to/zupfnoter-ts/fixtures/cases/*/input.abc" \
+  /path/to/zupfnoter-ts/fixtures/cases
 ```
 
-### Schritt 2: Fixtures versionieren
+Bei Eingaben nach dem Muster `fixtures/cases/<test-case>/input.abc` verwendet der
+Exporter den Elternordner als Testfallnamen. Bei anderen ABC-Dateien wird der
+Dateiname ohne `.abc` als Testfallname verwendet.
+
+### Fixtures versionieren
 
 Nach dem Export:
 
@@ -363,7 +309,10 @@ pnpm test --update packages/core
 
 ```bash
 # Im Legacy-Repo:
-ruby tools/export_fixtures.rb
+node --max_old_space_size=4096 zupfnoter-cli.js \
+  --export-fixtures \
+  "/path/to/zupfnoter-ts/fixtures/cases/*/input.abc" \
+  /path/to/zupfnoter-ts/fixtures/cases
 
 # In zupfnoter-ts:
 git diff fixtures/  # Review

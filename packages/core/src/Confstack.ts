@@ -11,6 +11,8 @@
  * Late-Binding-Werte (Funktionen) werden beim Zugriff rekursiv aufgelöst.
  */
 
+import { requireDefined } from './requireDefined.js'
+
 // ---------------------------------------------------------------------------
 // Typen
 // ---------------------------------------------------------------------------
@@ -125,7 +127,7 @@ export class Confstack {
     if (this._stack.length === 0) {
       this._stack.push({})
     }
-    const top = this._stack[this._stack.length - 1]!
+    const top = requireDefined(this._stack[this._stack.length - 1], 'Confstack.set(): stack is empty')
     updateNestedValue(top, path.split('.'), value)
     this._flatten()
   }
@@ -308,13 +310,14 @@ function getKeys(obj: ConfigObject, parentKey = ''): string[] {
 function setNestedValue(obj: ConfigObject, parts: string[], value: unknown): void {
   let current = obj
   for (let i = 0; i < parts.length - 1; i++) {
-    const part = parts[i]!
+    const part = requireDefined(parts[i], 'Confstack.setNestedValue(): missing path segment')
     if (typeof current[part] !== 'object' || current[part] === null || Array.isArray(current[part])) {
       current[part] = {}
     }
     current = current[part] as ConfigObject
   }
-  current[parts[parts.length - 1]!] = value
+  const last = requireDefined(parts[parts.length - 1], 'Confstack.setNestedValue(): missing final path segment')
+  current[last] = value
 }
 
 /**
@@ -324,10 +327,11 @@ function setNestedValue(obj: ConfigObject, parts: string[], value: unknown): voi
 function updateNestedValue(obj: ConfigObject, parts: string[], value: unknown): void {
   if (parts.length === 0) return
   if (parts.length === 1) {
-    obj[parts[0]!] = value
+    const key = requireDefined(parts[0], 'Confstack.updateNestedValue(): missing path segment')
+    obj[key] = value
     return
   }
-  const key = parts[0]!
+  const key = requireDefined(parts[0], 'Confstack.updateNestedValue(): missing path segment')
   if (typeof obj[key] !== 'object' || obj[key] === null || Array.isArray(obj[key])) {
     obj[key] = {}
   }

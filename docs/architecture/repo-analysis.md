@@ -17,6 +17,9 @@ The core architectural decision is that the system is built around a transformat
 
 The repository is also organized by migration phase. The `docs/` tree and root `spec.md` act as the documentation index and implementation record for the rewrite from the legacy Zupfnoter system to the TypeScript/Vue/Vite stack.
 
+For a compact snapshot of the current implementation state, see
+[current-state.md](current-state.md).
+
 ## 2. Packages And Responsibilities
 
 ### `packages/types`

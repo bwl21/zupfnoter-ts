@@ -37,6 +37,7 @@ import type {
 import { buildConfstack } from './buildConfstack.js'
 import { computeBeatCompression, type BeatCompressionMap } from './BeatPacker.js'
 import type { Confstack } from './Confstack.js'
+import { requireDefined } from './requireDefined.js'
 
 // ---------------------------------------------------------------------------
 // Coordinate helpers (module-level pure functions)
@@ -261,16 +262,22 @@ export class HarpnotesLayout {
     const x = pitchToX(note.pitch, layout)
     const y = beatToY(note.beat, beatMap, layout, startpos)
     const dKey = durationToKey(note.duration)
-    const style = layout.DURATION_TO_STYLE[dKey] ?? layout.DURATION_TO_STYLE['err']!
+    const style = layout.DURATION_TO_STYLE[dKey]
+    const effectiveStyle = style !== undefined
+      ? style
+      : requireDefined(
+        layout.DURATION_TO_STYLE['err'],
+        'HarpnotesLayout._layoutNote(): missing fallback duration style "err"',
+      )
     const color = variantToColor(note.variant, layout)
 
     return {
       type: 'Ellipse',
       center: [x, y],
-      size: [layout.ELLIPSE_SIZE[0] * style.sizeFactor, layout.ELLIPSE_SIZE[1] * style.sizeFactor],
-      fill: style.fill,
-      dotted: style.dotted,
-      hasbarover: style.hasbarover ?? false,
+      size: [layout.ELLIPSE_SIZE[0] * effectiveStyle.sizeFactor, layout.ELLIPSE_SIZE[1] * effectiveStyle.sizeFactor],
+      fill: effectiveStyle.fill,
+      dotted: effectiveStyle.dotted,
+      hasbarover: effectiveStyle.hasbarover ?? false,
       color,
       lineWidth: layout.LINE_THICK,
       visible: note.visible,
