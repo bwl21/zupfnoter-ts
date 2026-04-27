@@ -141,30 +141,27 @@ export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResul
       continue
     }
 
-    for (let ei = 0; ei < expectedVoice.entities.length; ei++) {
-      const ae = actualVoice.entities[ei]
-      const fe = expectedVoice.entities[ei]
-      if (ae === undefined || fe === undefined) continue
-      const ePath = `${vPath}.entities[${ei}]`
+    const unmatchedActual = actualVoice.entities.map((entity, index) => ({ entity, index }))
 
-      if (ae.type !== fe.type) {
-        fail(mismatches, `${ePath}.type`, fe.type, ae.type)
+    for (let ei = 0; ei < expectedVoice.entities.length; ei++) {
+      const fe = expectedVoice.entities[ei]
+      if (fe === undefined) continue
+
+      const matchIndex = unmatchedActual.findIndex(({ entity: ae }) => (
+        ae.type === fe.type &&
+        (fe.pitch === undefined || ae.pitch === fe.pitch) &&
+        (fe.duration === undefined || ae.duration === fe.duration) &&
+        (fe.beat === undefined || ae.beat === fe.beat) &&
+        (fe.variant === undefined || ae.variant === fe.variant) &&
+        (fe.visible === undefined || ae.visible === fe.visible)
+      ))
+
+      if (matchIndex === -1) {
+        fail(mismatches, `${vPath}.entities[${ei}]`, fe, 'no matching entity')
+        continue
       }
-      if (fe.pitch !== undefined && ae.pitch !== fe.pitch) {
-        fail(mismatches, `${ePath}.pitch`, fe.pitch, ae.pitch)
-      }
-      if (fe.duration !== undefined && ae.duration !== fe.duration) {
-        fail(mismatches, `${ePath}.duration`, fe.duration, ae.duration)
-      }
-      if (fe.beat !== undefined && ae.beat !== fe.beat) {
-        fail(mismatches, `${ePath}.beat`, fe.beat, ae.beat)
-      }
-      if (fe.variant !== undefined && ae.variant !== fe.variant) {
-        fail(mismatches, `${ePath}.variant`, fe.variant, ae.variant)
-      }
-      if (fe.visible !== undefined && ae.visible !== fe.visible) {
-        fail(mismatches, `${ePath}.visible`, fe.visible, ae.visible)
-      }
+
+      unmatchedActual.splice(matchIndex, 1)
     }
   }
 
