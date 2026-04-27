@@ -26,6 +26,7 @@ import type {
 import type { ZupfnoterConfig } from '@zupfnoter/types'
 import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
 import { ABC_TYPE } from './AbcModel.js'
+import { requireDefined } from './requireDefined.js'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -54,6 +55,11 @@ interface VoiceState {
   slurCounter: number
   /** Remaining notes in the current tuplet group (0 = not in a tuplet). */
   tupletRemaining: number
+  variantAnchor: PlayableEntity | null
+  pendingVariantEntrySources: PlayableEntity[]
+  pendingVariantExitSources: PlayableEntity[]
+  awaitingVariantContinuation: boolean
+  variantSectionNo: 0 | 1 | 2
 }
 
 function createVoiceState(wmeasure: number): VoiceState {
@@ -72,6 +78,11 @@ function createVoiceState(wmeasure: number): VoiceState {
     slurStack: [],
     slurCounter: 0,
     tupletRemaining: 0,
+    variantAnchor: null,
+    pendingVariantEntrySources: [],
+    pendingVariantExitSources: [],
+    awaitingVariantContinuation: false,
+    variantSectionNo: 0,
   }
 }
 
@@ -82,6 +93,7 @@ function createVoiceState(wmeasure: number): VoiceState {
 export class AbcToSong {
   private _beatResolution = 192
   private _shortestNote = 64
+  private _config: ZupfnoterConfig | null = null
 
   /**
    * Transform an AbcModel into a Song.
@@ -90,6 +102,7 @@ export class AbcToSong {
    * @param config  Zupfnoter configuration (for beat resolution etc.)
    */
   transform(model: AbcModel, config: ZupfnoterConfig): Song {
+    this._config = config
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 192
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 64
 
@@ -100,8 +113,9 @@ export class AbcToSong {
     const voices = model.voices.map((v, idx) => this._transformVoice(v, idx, model, restpositionDefault))
     const beatMaps = this._buildBeatMaps(voices)
     const metaData = this._extractMetaData(model)
+    const harpnoteOptions = this._extractHarpnoteOptions(model)
 
-    return { voices, beatMaps, metaData }
+    return { voices, beatMaps, metaData, harpnoteOptions }
   }
 
   // ---------------------------------------------------------------------------
@@ -117,7 +131,7 @@ export class AbcToSong {
     const entities: VoiceEntity[] = []
 
     for (let i = 0; i < voice.symbols.length; i++) {
-      const sym = voice.symbols[i]!
+      const sym = requireDefined(voice.symbols[i], `AbcToSong: missing symbol at voice ${voiceIndex}, index ${i}`)
       const typeName = model.music_types[sym.type] ?? ''
 
       const result = this._transformSymbol(sym, i, voiceIndex, typeName, state, model)
@@ -155,7 +169,7 @@ export class AbcToSong {
       (e): e is PlayableEntity => 'pitch' in e && 'duration' in e,
     )
     for (let i = 0; i < playables.length; i++) {
-      const p = playables[i]!
+      const p = requireDefined(playables[i], `AbcToSong._annotateNeighbourPitches(): missing playable at index ${i}`)
       const prev = playables[i - 1]
       const next = playables[i + 1]
       if (prev) {
@@ -294,9 +308,9 @@ export class AbcToSong {
     let result: PlayableEntity[]
 
     if (mappedNotes.length === 1) {
-      result = [mappedNotes[0]!]
+      result = [requireDefined(mappedNotes[0], 'AbcToSong._transformNote(): expected note at index 0')]
     } else {
-      const first = mappedNotes[0]!
+      const first = requireDefined(mappedNotes[0], 'AbcToSong._transformNote(): expected first note in synch point')
       const synch: SynchPoint = {
         type: 'SynchPoint' as const,
         beat,
@@ -330,7 +344,7 @@ export class AbcToSong {
       result = [synch]
     }
 
-    const entity = result[0]!
+    const entity = requireDefined(result[0], 'AbcToSong._transformNote(): expected transformed entity')
 
     // Handle ties
     entity.tieEnd = state.tieStarted
@@ -352,8 +366,9 @@ export class AbcToSong {
 
     // Chord symbols and annotations from extra
     const extras = this._transformExtras(sym, entity, state, _voiceIndex)
+    const gotos = this._resolvePendingVariantGotos(entity, state, _voiceIndex, sym)
 
-    return [entity, ...extras]
+    return [entity, ...extras, ...gotos]
   }
 
   // ---------------------------------------------------------------------------
@@ -408,7 +423,9 @@ export class AbcToSong {
     }
 
     state.previousNote = pause
-    return [pause]
+    const extras = this._transformExtras(sym, pause, state, voiceIndex)
+    const gotos = this._resolvePendingVariantGotos(pause, state, voiceIndex, sym)
+    return [pause, ...extras, ...gotos]
   }
 
   // ---------------------------------------------------------------------------
@@ -427,14 +444,32 @@ export class AbcToSong {
       state.nextMeasure = true
     }
 
-    // Volta bracket: set variant by ending number, reset to 0 when bracket closes
-    if (sym.rbstart === 1) {
-      state.variantNo = 1
-    } else if (sym.rbstart === 2) {
-      state.variantNo = 2
+    const isRepeatBar = sym.bar_type?.includes(':') ?? false
+    const hasVariantStart = typeof sym.rbstart === 'number' && sym.rbstart > 0 && !isRepeatBar
+
+    // Volta bracket entry / exit gotos.
+    if (hasVariantStart && state.previousNote) {
+      const nextVariantNo = (state.variantSectionNo + 1) as 1 | 2
+      if (state.variantSectionNo === 0) {
+        state.variantAnchor = state.previousNote
+        state.pendingVariantEntrySources.push(state.previousNote)
+      } else if (state.variantAnchor) {
+        state.pendingVariantExitSources.push(state.previousNote)
+        state.pendingVariantEntrySources.push(state.variantAnchor)
+      }
+      state.awaitingVariantContinuation = false
+      state.variantSectionNo = nextVariantNo
+      state.variantNo = nextVariantNo
     }
-    if (sym.rbstop) {
+    if (sym.rbstop && !isRepeatBar) {
+      if (state.previousNote && state.variantSectionNo > 0) {
+        state.pendingVariantExitSources.push(state.previousNote)
+      }
+      state.awaitingVariantContinuation = state.pendingVariantExitSources.length > 0
       state.variantNo = 0
+      if (state.awaitingVariantContinuation) {
+        state.variantSectionNo = 0
+      }
     }
 
     // Repeat end → Goto
@@ -465,6 +500,10 @@ export class AbcToSong {
       state.repetitionStack.push(state.previousNote)
     }
 
+    if (state.previousNote) {
+      result.push(...this._transformExtras(sym, state.previousNote, state, voiceIndex))
+    }
+
     return result
   }
 
@@ -492,6 +531,49 @@ export class AbcToSong {
     return part
   }
 
+  private _resolvePendingVariantGotos(
+    target: PlayableEntity,
+    state: VoiceState,
+    voiceIndex: number,
+    sym: AbcSymbol,
+  ): Goto[] {
+    const result: Goto[] = []
+    const sources = [...state.pendingVariantEntrySources]
+    state.pendingVariantEntrySources = []
+
+    if (state.awaitingVariantContinuation && state.pendingVariantExitSources.length > 0) {
+      sources.push(...state.pendingVariantExitSources)
+      state.pendingVariantExitSources = []
+      state.awaitingVariantContinuation = false
+      state.variantAnchor = null
+      state.variantSectionNo = 0
+    }
+
+    for (let idx = 0; idx < sources.length; idx++) {
+      const source = requireDefined(
+        sources[idx],
+        `AbcToSong._resolvePendingVariantGotos(): missing source at index ${idx}`,
+      )
+      if (source === target) continue
+        result.push({
+        type: 'Goto' as const,
+        beat: target.beat,
+        time: sym.time,
+        startPos: this._charposToLineCol(sym.istart),
+        endPos: this._charposToLineCol(sym.iend),
+        decorations: [],
+        barDecorations: [],
+        visible: true,
+        variant: 0,
+        znId: `goto-${voiceIndex}-${sym.istart}-${idx}`,
+        from: source,
+        to: target,
+          policy: { isRepeat: true } as GotoPolicy,
+        })
+    }
+
+    return result
+  }
   // ---------------------------------------------------------------------------
   // Extra elements (chord symbols, annotations)
   // ---------------------------------------------------------------------------
@@ -504,8 +586,13 @@ export class AbcToSong {
   ): VoiceEntity[] {
     if (!sym.a_gch) return []
     const result: VoiceEntity[] = []
+    const voiceId = voiceIndex + 1
 
-    for (const extra of sym.a_gch) {
+    for (let extraIndex = 0; extraIndex < sym.a_gch.length; extraIndex++) {
+      const extra = requireDefined(
+        sym.a_gch[extraIndex],
+        `AbcToSong._transformExtras(): missing extra at index ${extraIndex}`,
+      )
       const text = extra.text ?? ''
       if (!text) continue
 
@@ -529,7 +616,9 @@ export class AbcToSong {
         }
         result.push(chord)
       } else {
-        // Annotation
+        const parsedAnnotation = this._parseInlineAnnotation(text, voiceId, companion.time, extraIndex)
+        if (!parsedAnnotation) continue
+
         const annotation: NoteBoundAnnotation = {
           type: 'NoteBoundAnnotation' as const,
           beat: this._timeToBeat(sym.time),
@@ -542,9 +631,11 @@ export class AbcToSong {
           variant: state.variantNo,
           znId: `annot-${voiceIndex}-${sym.istart}`,
           companion,
-          text,
-          position: [0, -3],
-          style: 'small',
+          text: parsedAnnotation.text,
+          position: parsedAnnotation.position,
+          style: parsedAnnotation.style,
+          policy: parsedAnnotation.policy,
+          confKey: parsedAnnotation.confKey,
         }
         result.push(annotation)
       }
@@ -582,15 +673,32 @@ export class AbcToSong {
     return {
       title: info['T']?.split('\n')[0],
       composer: info['C']?.split('\n')[0],
+      filename: info['F']?.split('\n')[0],
       meter: info['M']?.split('\n')[0],
       key: info['K']?.split('\n')[0],
       tempo: info['Q'] ? this._parseTempo(info['Q']) : undefined,
+      tempoDisplay: info['Q']?.split('\n')[0],
+    }
+  }
+
+  private _extractHarpnoteOptions(model: AbcModel): Record<string, unknown> {
+    const info = model.info
+    const lyrics = info['W']
+      ? {
+        text: info['W']
+          .split('\n')
+          .map((line) => line.trimEnd()),
+      }
+      : undefined
+
+    return {
+      ...(lyrics ? { lyrics } : {}),
     }
   }
 
   private _parseTempo(q: string): number | undefined {
     const match = /(\d+)/.exec(q)
-    return match ? parseInt(match[1]!, 10) : undefined
+    return match ? parseInt(requireDefined(match[1], 'AbcToSong._parseTempo(): missing tempo digits'), 10) : undefined
   }
 
   // ---------------------------------------------------------------------------
@@ -649,6 +757,55 @@ export class AbcToSong {
     const lyric = (sym as Record<string, unknown>)['lyric'] as Array<{ text?: string }> | undefined
     if (!lyric || lyric.length === 0) return null
     return lyric.map((l) => l.text ?? '').join('')
+  }
+
+  private _parseInlineAnnotation(
+    rawText: string,
+    voiceId: number,
+    companionTime: number,
+    extraIndex: number,
+  ): { text: string; position: [number, number]; style: string; confKey?: string; policy?: string } | null {
+    const match = rawText.match(/^([!#<>])([^@]+)?(?:@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?))?$/)
+    if (!match) {
+      return {
+        text: rawText,
+        position: [5, -7],
+        style: 'regular',
+        confKey: `notebound.annotation.v_${voiceId}.${companionTime}${extraIndex > 0 ? `.${extraIndex}` : ''}`,
+      }
+    }
+
+    const semantic = requireDefined(match[1], 'AbcToSong._parseInlineAnnotation(): missing semantic marker')
+    const token = match[2]?.trim() ?? ''
+    const inlinePosition = match[3] !== undefined && match[4] !== undefined
+      ? [Number.parseFloat(match[3]), Number.parseFloat(match[4])] as [number, number]
+      : undefined
+
+    if (semantic === '<' || semantic === '>') {
+      return null
+    }
+
+    if (semantic === '!') {
+      return {
+        text: token,
+        position: inlinePosition ?? [5, -7],
+        style: 'regular',
+        confKey: `notebound.annotation.v_${voiceId}.${companionTime}${extraIndex > 0 ? `.${extraIndex}` : ''}`,
+      }
+    }
+
+    const annotations = this._config?.annotations ?? {}
+    const configured = annotations[token]
+    const configuredEntry = configured && typeof configured === 'object'
+      ? configured as { text?: string; pos?: [number, number]; style?: string }
+      : undefined
+
+    return {
+      text: configuredEntry?.text ?? token,
+      position: inlinePosition ?? configuredEntry?.pos ?? [5, -7],
+      style: configuredEntry?.style ?? 'regular',
+      confKey: `notebound.annotation.v_${voiceId}.${companionTime}${extraIndex > 0 ? `.${extraIndex}` : ''}`,
+    }
   }
 
   private _pushSlur(state: VoiceState): string {

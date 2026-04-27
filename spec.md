@@ -29,6 +29,7 @@ können im jeweiligen Phase-Ordner auch ergänzende Dateien wie `spec-<thema>.md
 | [docs/adr/vector-umsetzung.md](docs/adr/vector-umsetzung.md) | ADR: Ruby `Vector` → TypeScript |
 | [docs/phase-5/demo-view-bugfixes.md](docs/phase-5/demo-view-bugfixes.md) | Demo-View: Browser-Kompatibilität, BeatPacker-Bugs, Y_SCALE |
 | [docs/architecture/repo-analysis.md](docs/architecture/repo-analysis.md) | Repo-Analyse und Architekturüberblick |
+| [docs/architecture/current-state.md](docs/architecture/current-state.md) | Aktueller Zustand des Repositories |
 
 Neue Specs werden im jeweiligen Phase-Ordner abgelegt.
 Die aktuelle Arbeits-Spec wird von Ona direkt in dieser Datei verwaltet und nach Abschluss

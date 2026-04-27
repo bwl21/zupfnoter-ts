@@ -55,12 +55,23 @@ Nützliche Kommandos:
 pnpm install
 pnpm dev
 pnpm build
+pnpm test
 pnpm test:unit
+pnpm test:gaps
 pnpm type-check
 pnpm lint
 ```
 
 `pnpm dev` startet aktuell `@zupfnoter/demo`.
+
+Für Fixture- und Legacy-Vergleichsarbeit:
+
+```sh
+npm run test:loadsample -- "<abc-glob>"
+npm run test:gaps
+```
+
+Die ausführliche Dokumentation dazu steht in [fixtures/README.md](fixtures/README.md).
 
 ## Status
 

@@ -183,6 +183,7 @@ export interface GotoPolicy {
   confKey?: string
   level?: number
   distance?: number
+  isRepeat?: boolean
 }
 
 // ---------------------------------------------------------------------------
@@ -229,6 +230,7 @@ export interface SongMetaData {
   meter?: string
   key?: string
   tempo?: number
+  tempoDisplay?: string
 }
 
 /**

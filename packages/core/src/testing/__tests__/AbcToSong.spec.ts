@@ -140,6 +140,20 @@ V:V1 clef=treble-8
       }
     }
   })
+
+  it('preserves annotations attached to rests', () => {
+    const song = transform(`X:1
+T:Pause Annotation Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] \"^rest-label\" z C |]
+`)
+    const annotations = song.voices[0]!.entities.filter((e) => e.type === 'NoteBoundAnnotation')
+    expect(annotations.length).toBe(1)
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -162,6 +176,7 @@ V:V1 clef=treble-8
     const gotos = song.voices[0]!.entities.filter((e) => e.type === 'Goto')
     expect(gotos.length).toBeGreaterThanOrEqual(1)
   })
+
 })
 
 // ---------------------------------------------------------------------------

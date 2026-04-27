@@ -1,7 +1,16 @@
 import { describe, expect, it } from 'vitest'
 
-import { fixtureConfigFromAbc, fixtureAbcPath, loadFixture, scanFixtureCases } from '../fixtureLoader.js'
+import {
+  fixtureConfigFromAbc,
+  fixtureAbcPath,
+  getSheetFixtureTargets,
+  loadFixture,
+  loadSheetExtractFixture,
+  resolveFixtureSheetRenderTarget,
+  scanFixtureCases,
+} from '../fixtureLoader.js'
 import { defaultTestConfig } from '../defaultConfig.js'
+import { formatOpenImplementations, getOpenImplementations } from '../openImplementations.js'
 
 describe('fixtureLoader', () => {
   it('resolves fixture ABC paths by test case name', () => {
@@ -40,6 +49,61 @@ describe('fixtureLoader', () => {
     expect(fixture.config.layout.SHORTEST_NOTE).toBe(defaultTestConfig.layout.SHORTEST_NOTE)
     expect(fixture.song?.voices.length).toBeGreaterThan(0)
     expect(fixture.sheet?.children.length).toBeGreaterThan(0)
+  })
+
+  it('uses extract-specific sheet fixtures when present', () => {
+    const fixture = loadFixture('3015_reference_sheet')
+    const targets = getSheetFixtureTargets(fixture)
+
+    expect(Object.keys(fixture.sheetExtracts)).toContain('0')
+    expect(targets.map((target) => target.extractNr)).toEqual([0])
+    expect(targets[0]?.expected).toEqual(loadSheetExtractFixture('3015_reference_sheet', 0))
+  })
+
+  it('falls back to sheet.json as extract 0 when no extract-specific sheet fixtures exist', () => {
+    const fixture = loadFixture('single_note')
+    const targets = getSheetFixtureTargets(fixture)
+
+    expect(Object.keys(fixture.sheetExtracts)).toEqual([])
+    expect(targets.map((target) => target.extractNr)).toEqual([0])
+    expect(targets[0]?.expected).toEqual(fixture.sheet)
+  })
+
+  it('keeps sheet fixture rendering on the legacy edit-view target', () => {
+    const config = fixtureConfigFromAbc(
+      [
+        'X:1',
+        'T:Produced Extract',
+        'K:C',
+        'C',
+        '%%%%zupfnoter.config',
+        '{"produce":[2,3],"extract":{"0":{"voices":[1]},"2":{"voices":[2]},"3":{"voices":[3]}}}',
+      ].join('\n'),
+    )
+
+    expect(resolveFixtureSheetRenderTarget(config)).toEqual({
+      extractNr: 0,
+      pageFormat: 'A4',
+    })
+  })
+
+  it('falls back to extract 0 when produce is missing', () => {
+    const config = fixtureConfigFromAbc('X:1\nT:No Produce\nK:C\nC\n')
+
+    expect(resolveFixtureSheetRenderTarget(config)).toEqual({
+      extractNr: 0,
+      pageFormat: 'A4',
+    })
+  })
+
+  it('formats the global open-implementation registry by stage', () => {
+    const openSheetImplementations = getOpenImplementations('sheet')
+    const formatted = formatOpenImplementations(openSheetImplementations)
+
+    expect(openSheetImplementations.length).toBeGreaterThan(0)
+    expect(formatted).toContain('Open implementations for this stage (')
+    expect(formatted).toContain('sheet.barnumbers-config')
+    expect(formatted).toContain('Prompt: implement the listed gaps with legacy parity')
   })
 
   it('discovers fixture cases from test case directories', () => {

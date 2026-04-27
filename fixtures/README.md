@@ -13,14 +13,22 @@ fixtures/
     ├── single_note/
     │   ├── input.abc       # ABC-Notation, optional mit %%%%zupfnoter.config
     │   ├── song.json       # Stufe-2-Referenz: Song
-    │   ├── sheet.json      # Stufe-3-Referenz: Sheet
+    │   ├── sheet.json      # Stufe-3-Referenz: Sheet (Fallback/Legacy alias für Extrakt 0)
+    │   ├── sheet.extract-0.json # Stufe-3-Referenz für einen konkreten Extrakt
     │   └── _ts_output/     # generierte TS-Ausgabe, nicht Referenz
     └── ...
 ```
 
 Die Tests scannen `fixtures/cases/*/input.abc` automatisch. Ein neuer Testfall wird
 für Song-Vergleiche aufgenommen, sobald zusätzlich `song.json` existiert; für
-Sheet-Vergleiche entsprechend mit `sheet.json`.
+Sheet-Vergleiche entsprechend mit `sheet.json` oder mindestens einer
+`sheet.extract-<nr>.json`.
+
+Bekannte, noch nicht portierte Legacy-Aspekte werden nicht testfallspezifisch im
+Fixture-Verzeichnis gepflegt, sondern zentral im Testcode als globale Capability-Liste.
+Vergleichstests bleiben aktiv; bei Fehlschlägen wird diese stage-spezifische Liste an die
+Fehlermeldung angehängt, damit sichtbar bleibt, welche Paritätslücken systemweit noch offen
+sind.
 
 ## Bestehende Testfälle
 
@@ -40,7 +48,33 @@ Sheet-Vergleiche entsprechend mit `sheet.json`.
 ## Fixtures neu erzeugen (Legacy-Export)
 
 Voraussetzung: Laufendes Legacy-System (`bwl21/zupfnoter`,
-Branch `feature/voice-styles_and-other-concepts`).
+Branch `feature/voice-styles_and-other-concepts`) mit dem CLI-Modus
+`--export-fixtures`.
+
+Bequemer Wrapper aus diesem Repo:
+
+```bash
+npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
+```
+
+Standardmäßig verwendet der Wrapper den Legacy-CLI-Pfad
+`../200_Zupfnotenprojekte/10_Harfenfreizeit-Monbachtal/zupfnoter-cli.min.js`
+relativ zum Repo-Root.
+
+Falls nötig kann der CLI-Pfad überschrieben werden, entweder per Environment oder
+als zweites Argument:
+
+```bash
+export ZUPFNOTER_LEGACY_CLI=/pfad/zu/zupfnoter-cli.min.js
+npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
+
+npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc" "/pfad/zu/zupfnoter-cli.min.js"
+```
+
+Der Wrapper expandiert den Glob selbst und schreibt standardmäßig nach
+`fixtures/cases/`. Mit `ZUPFNOTER_FIXTURE_OUTDIR` kann das Ziel überschrieben werden.
+Für jede aufgelöste ABC-Datei ruft er die Legacy-CLI einzeln auf als
+`node zupfnoter-cli.min.js --export-fixtures <input.abc> <target-dir>`.
 
 ### 1. TS-Ausgabe als Referenz erzeugen (optional)
 
@@ -55,54 +89,32 @@ npx vitest run src/testing/__tests__/song/dump_ts_output.spec.ts
 Diese Dateien sind **nicht** die Referenz-Fixtures — sie zeigen nur, was die TS-Pipeline
 aktuell produziert. Vergleiche sie mit dem Legacy-Export, um Abweichungen zu finden.
 
-### 2. Export-Funktion im Legacy-System aktivieren
+### 2. Legacy-Fixtures exportieren
 
-Im Legacy-System (`controller.rb`) nach `load_music_model` und `layouter.layout(...)`
-temporär einfügen:
-
-```ruby
-# Nach load_music_model (Zeile ~929):
-File.write("song_export.json", @music_model.to_json)
-
-# Nach layouter.layout(...) (Zeile ~877):
-File.write("sheet_export.json", result.to_json)
-```
-
-### 3. Export für jede Fixture ausführen
+Der Legacy-Exporter nimmt ABC-Dateien und erzeugt pro Datei ein Testfall-Verzeichnis:
 
 ```bash
-# Im Legacy-Repo-Verzeichnis:
-for abc in path/to/zupfnoter-ts/fixtures/cases/*/input.abc; do
-  case_dir=$(dirname "$abc")
-  ruby zupfnoter_export.rb "$abc"
-  cp song_export.json  "$case_dir/song.raw.json"
-  cp sheet_export.json "$case_dir/sheet.raw.json"
-done
+cd ../200_zupfnoter/30_sources/SRC_Zupfnoter/src
+node --max_old_space_size=4096 zupfnoter-cli.js \
+  --export-fixtures \
+  "/path/to/zupfnoter-ts/fixtures/cases/*/input.abc" \
+  /path/to/zupfnoter-ts/fixtures/cases
 ```
 
-### 4. Song-Fixtures konvertieren
+Für jede Eingabedatei wird geschrieben:
 
-```bash
-for f in fixtures/cases/*/song.raw.json; do
-  case_dir=$(dirname "$f")
-  node tools/legacy-song-to-fixture.mjs \
-    "$f" \
-    "$case_dir/song.json"
-done
+```text
+fixtures/cases/<test-case>/input.abc
+fixtures/cases/<test-case>/song.json
+fixtures/cases/<test-case>/sheet.json
+fixtures/cases/<test-case>/sheet.extract-<nr>.json
 ```
 
-### 5. Sheet-Fixtures konvertieren
+Wenn die Eingabe `fixtures/cases/<name>/input.abc` heißt, verwendet der Exporter
+`<name>` als Testfallnamen. Für andere ABC-Dateien wird der Dateiname ohne `.abc`
+als Testfallname verwendet.
 
-```bash
-for f in fixtures/cases/*/sheet.raw.json; do
-  case_dir=$(dirname "$f")
-  node tools/legacy-sheet-to-fixture.mjs \
-    "$f" \
-    "$case_dir/sheet.json"
-done
-```
-
-### 6. Fixtures einchecken
+### 3. Fixtures einchecken
 
 ```bash
 git add fixtures/cases/
@@ -111,12 +123,13 @@ git commit -m "fixtures: populate legacy reference snapshots
 Reason: <Begründung der Änderung>"
 ```
 
-### 7. Tests grün machen
+### 4. Tests grün machen
 
 Nach dem Befüllen der Fixtures:
 
 ```bash
 pnpm --filter @zupfnoter/core run test:unit
+npm run test:gaps
 ```
 
 Schlagen Tests fehl, zeigt `formatMismatches` den genauen Pfad der Abweichung:
@@ -125,6 +138,10 @@ voices[0].entities[2].pitch:
   expected: 60
   actual:   48
 ```
+
+`npm run test:gaps` gibt zusätzlich eine kompakte Prompt-Zusammenfassung der aktuell
+gepflegten Gap-IDs aus, damit `packages/core/src/testing/openImplementations.ts`
+gezielt manuell bereinigt oder ergänzt werden kann.
 
 ## TS-Ausgabe als Bootstrap-Referenz
 
@@ -181,6 +198,11 @@ cp fixtures/cases/<name>/_ts_output/sheet.json fixtures/cases/<name>/sheet.json
   ]
 }
 ```
+
+Bei mehreren zu vergleichenden Extrakten liegen zusätzlich Dateien der Form
+`sheet.extract-<nr>.json` im Testfallordner. Die Sheet-Vergleichstests iterieren über
+diese Extrakt-Fixtures einzeln. Fehlen sie, wird aus Kompatibilitätsgründen `sheet.json`
+als Extrakt-0-Referenz verwendet.
 
 ## Vergleichsstrategie
 

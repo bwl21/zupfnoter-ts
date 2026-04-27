@@ -10,6 +10,7 @@ import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { HarpnotesLayout } from '../../HarpnotesLayout.js'
 import { defaultTestConfig } from '../defaultConfig.js'
+import { loadFixture, transformFixtureToSheet } from '../fixtureLoader.js'
 import type { Ellipse, Glyph, FlowLine, Path, Annotation } from '@zupfnoter/types'
 
 // ---------------------------------------------------------------------------
@@ -194,11 +195,12 @@ describe('HarpnotesLayout', () => {
 
   describe('barnumbers', () => {
     it('produces Annotation elements for bar numbers', () => {
-      const { sheet } = pipeline(ABC_BARNUMBERS)
+      const fixture = loadFixture('3015_reference_sheet')
+      const sheet = transformFixtureToSheet(fixture, 0)
       const annotations = sheet.children.filter(
-        (c): c is Annotation => c.type === 'Annotation' && /^\d+$/.test(c.text),
+        (c): c is Annotation => c.type === 'Annotation' && /^\d+$/.test(c.text ?? ''),
       )
-      expect(annotations.length).toBeGreaterThanOrEqual(1)
+      expect(annotations.length).toBeGreaterThanOrEqual(3)
     })
   })
 
@@ -208,19 +210,44 @@ describe('HarpnotesLayout', () => {
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
       const legend = annotations.find(a => a.text.includes('Legend Test'))
       expect(legend).toBeDefined()
-      expect(legend!.text).toContain('Test Composer')
+      expect(annotations.some(a => a.text.includes('Test Composer'))).toBe(true)
     })
   })
 
   describe('sheetmarks', () => {
-    it('produces Path elements for C and F string markers', () => {
-      const { sheet } = pipeline(ABC_SINGLE_NOTE)
-      const paths = sheet.children.filter((c): c is Path => c.type === 'Path')
-      // C strings are red, F strings are blue
-      const cStrings = paths.filter(p => p.color === 'red')
-      const fStrings = paths.filter(p => p.color === 'blue')
-      expect(cStrings.length).toBeGreaterThan(0)
-      expect(fStrings.length).toBeGreaterThan(0)
+    it('renders configured string names and cutmarks from the reference sheet fixture', () => {
+      const fixture = loadFixture('3015_reference_sheet')
+      const sheet = transformFixtureToSheet(fixture, 0)
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      expect(annotations.some((a) => a.text === 'G' && a.center[1] === 5)).toBe(true)
+      expect(annotations.some((a) => a.text === 'x' && a.center[1] === 4)).toBe(true)
+      expect(annotations.some((a) => a.text === 'x' && a.center[1] === 290)).toBe(true)
+    })
+
+    it('renders grouped lyric blocks from extract.lyrics config', () => {
+      const fixture = loadFixture('3015_reference_sheet')
+      const sheet = transformFixtureToSheet(fixture, 0)
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      expect(annotations.some((a) => a.center[0] === 50 && a.center[1] === 30 && a.text.includes('Notes'))).toBe(true)
+      expect(annotations.some((a) => a.center[0] === 110 && a.center[1] === 225 && a.text.includes('Variant ending'))).toBe(true)
+    })
+
+    it('renders repeat signs and overridden notebound annotations from the reference sheet fixture', () => {
+      const fixture = loadFixture('3015_reference_sheet')
+      const sheet = transformFixtureToSheet(fixture, 0)
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      expect(annotations.some((a) => a.text === '|:' && a.style === 'bold')).toBe(true)
+      expect(annotations.some((a) => a.text === ':|' && a.style === 'bold')).toBe(true)
+      expect(annotations.some((a) => a.text === '(26) Mehrklang mit \nSynchronisationslinie')).toBe(true)
+      expect(annotations.some((a) => a.text === '(27) Abschnittsname')).toBe(true)
+    })
+
+    it('renders the split legend positions from the reference sheet fixture', () => {
+      const fixture = loadFixture('3015_reference_sheet')
+      const sheet = transformFixtureToSheet(fixture, 0)
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      expect(annotations.some((a) => a.center[0] === 325 && a.center[1] === 8 && a.text === 'Zupfnoter Reference Sheet')).toBe(true)
+      expect(annotations.some((a) => a.center[0] === 344 && a.center[1] === 28 && a.text.includes('alle Stimmen'))).toBe(true)
     })
   })
 

@@ -156,6 +156,7 @@ export interface BarnumberConfig {
   apbase?: [number, number]
   apanchor?: string
   style?: string
+  prefix?: string
 }
 
 /**
@@ -178,6 +179,12 @@ export interface AnnotationConfig {
   style: string
 }
 
+export interface PositionedTextConfig {
+  pos?: [number, number]
+  text?: string
+  style?: string
+}
+
 /**
  * Konfiguration für einen Extrakt (eine Druckansicht).
  * Entspricht `extract.<nr>`-Abschnitt in der Zupfnoter-Konfiguration.
@@ -187,6 +194,7 @@ export interface AnnotationConfig {
  */
 export interface ExtractConfig {
   title?: string
+  filenamepart?: string
   /** Aktive Stimmen (1-basiert) */
   voices: number[]
   /** Stimmen, für die Flusslinien gezeichnet werden */
@@ -204,6 +212,12 @@ export interface ExtractConfig {
   barnumbers?: BarnumberConfig
   legend?: LegendConfig
   notes?: Record<string, AnnotationConfig>
+  repeatsigns?: Record<string, unknown>
+  lyrics?: Record<string, unknown>
+  nonflowrest?: boolean
+  countnotes?: Record<string, unknown>
+  stringnames?: Record<string, unknown>
+  notebound?: Record<string, unknown>
   /** Layout-Overrides für diesen Extrakt */
   layout?: Partial<LayoutConfig>
   /** Drucker-Overrides für diesen Extrakt */
@@ -221,6 +235,9 @@ export interface ZupfnoterConfig {
   layout: LayoutConfig
   extract: Record<string, ExtractConfig>
   printer: PrinterConfig
+  /** Reihenfolge der zu erzeugenden Extrakte. Legacy-default für Sheet-Fixtures ist der erste Eintrag. */
+  produce?: number[]
+  annotations?: Record<string, PositionedTextConfig>
   /** Preset-Schnelleinstellungen für den Konfigurations-Editor (addconf). */
   presets?: Record<string, Record<string, unknown>>
 }

@@ -18,6 +18,8 @@ import type {
   SynchPoint,
   Goto,
   SongMetaData,
+  NoteBoundAnnotation,
+  NewPart,
 } from '@zupfnoter/types'
 import type {
   Sheet,
@@ -37,6 +39,7 @@ import type {
 import { buildConfstack } from './buildConfstack.js'
 import { computeBeatCompression, type BeatCompressionMap } from './BeatPacker.js'
 import type { Confstack } from './Confstack.js'
+import { requireDefined } from './requireDefined.js'
 
 // ---------------------------------------------------------------------------
 // Coordinate helpers (module-level pure functions)
@@ -75,6 +78,23 @@ function variantToColor(variant: 0 | 1 | 2, layout: LayoutConfig): string {
   return layout.color.color_default
 }
 
+function parseStringNamesText(text: string | undefined): string[] {
+  return (text ?? '')
+    .split(/\s+/)
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0)
+}
+
+function makeSheetmarkPath(center: [number, number]): [number, number][] {
+  const [x, y] = center
+  return [
+    [x, y],
+    [x - 1, y + 4],
+    [x + 1, y + 4],
+    [x, y],
+  ]
+}
+
 // ---------------------------------------------------------------------------
 // HarpnotesLayout
 // ---------------------------------------------------------------------------
@@ -92,7 +112,7 @@ export class HarpnotesLayout {
    */
   layout(song: Song, extractNr: number | string = 0, pageFormat: 'A3' | 'A4' = 'A4'): Sheet {
     const conf = this._layoutPrepareOptions(extractNr)
-    const layout = this._config.layout
+    const layout = conf.get('layout') as LayoutConfig
 
     // 1. Images
     const resImages = this._layoutImages(conf, extractNr)
@@ -106,28 +126,32 @@ export class HarpnotesLayout {
     // 4. Legend
     const resLegend = this._layoutLegend(song.metaData, conf, extractNr)
 
-    // 5. Sheet annotations
-    const resAnnotations = this._layoutAnnotations(conf, extractNr)
+    // 5. System annotations
+    const resZnAnnotations = this._layoutZnAnnotations(song.metaData)
 
-    // 6. Lyrics (collected from voice elements pass)
+    // 6. Lyrics
     const resLyrics = this._layoutLyrics(song, beatMaps, conf)
 
-    // 7. Sheetmarks
-    const resSheetmarks = this._layoutSheetmarks(layout)
+    // 7. Sheet annotations
+    const resAnnotations = this._layoutAnnotations(conf, extractNr)
 
-    // 8. Cutmarks
+    // 8. Sheetmarks
+    const resSheetmarks = this._layoutSheetmarks(conf)
+
+    // 9. Cutmarks
     const resCutmarks = this._layoutCutmarks(pageFormat, conf)
 
-    // 9. Instrument shape
+    // 10. Instrument shape
     const resInstrument = this._layoutInstrument(conf, extractNr)
 
     const children: DrawableElement[] = [
       ...resImages,
-      ...resSynchLines,
       ...voiceElements,
+      ...resSynchLines,
       ...resLegend,
-      ...resAnnotations,
+      ...resZnAnnotations,
       ...resLyrics,
+      ...resAnnotations,
       ...resSheetmarks,
       ...resCutmarks,
       ...resInstrument,
@@ -152,7 +176,7 @@ export class HarpnotesLayout {
     song: Song,
     conf: Confstack,
   ): { activeVoices: number[]; voiceElements: DrawableElement[]; beatMaps: Map<number, BeatCompressionMap> } {
-    const layout = this._config.layout
+    const layout = conf.get('layout') as LayoutConfig
     const activeVoiceNrs = (conf.get('extract.voices') as number[] | undefined) ?? [1]
     const flowlineVoices = new Set((conf.get('extract.flowlines') as number[] | undefined) ?? [])
     const subflowlineVoices = new Set((conf.get('extract.subflowlines') as number[] | undefined) ?? [])
@@ -187,6 +211,7 @@ export class HarpnotesLayout {
         voice,
         beatCompressionMap,
         voiceNr,
+        conf,
         layout,
         startpos,
         showFlowlines,
@@ -202,7 +227,8 @@ export class HarpnotesLayout {
   private _layoutVoice(
     voice: Voice,
     beatMap: BeatCompressionMap,
-    _voiceNr: number,
+    voiceNr: number,
+    conf: Confstack,
     layout: LayoutConfig,
     startpos: number,
     showFlowlines: boolean,
@@ -210,6 +236,7 @@ export class HarpnotesLayout {
     showJumplines: boolean,
   ): DrawableElement[] {
     const result: DrawableElement[] = []
+    const repeatSignVoices = new Set((conf.get('extract.repeatsigns.voices') as number[] | undefined) ?? [])
 
     // Layout all playables
     for (const entity of voice.entities) {
@@ -236,14 +263,24 @@ export class HarpnotesLayout {
 
     // Gotos (jumplines)
     if (showJumplines) {
-      result.push(...this._layoutVoiceGotos(voice, beatMap, layout, startpos))
+      result.push(...this._layoutVoiceGotos(voice, beatMap, layout, startpos, repeatSignVoices.has(voiceNr)))
     }
 
     // Tuplets
     result.push(...this._layoutVoiceTuplets(voice, beatMap, layout, startpos))
 
-    // Barnumbers
-    result.push(...this._layoutBarnumbers(voice, beatMap, layout, startpos))
+    const { barnumbers, countnotes } = this._layoutBarnumbersCountnotes(
+      voice,
+      beatMap,
+      layout,
+      startpos,
+      voiceNr,
+      conf,
+    )
+    result.push(...barnumbers, ...countnotes)
+
+    result.push(...this._layoutVoiceRepeatSigns(voice, beatMap, layout, startpos, voiceNr, conf))
+    result.push(...this._layoutVoiceNoteboundAnnotations(voice, beatMap, layout, startpos, voiceNr, conf))
 
     return result
   }
@@ -261,16 +298,22 @@ export class HarpnotesLayout {
     const x = pitchToX(note.pitch, layout)
     const y = beatToY(note.beat, beatMap, layout, startpos)
     const dKey = durationToKey(note.duration)
-    const style = layout.DURATION_TO_STYLE[dKey] ?? layout.DURATION_TO_STYLE['err']!
+    const style = layout.DURATION_TO_STYLE[dKey]
+    const effectiveStyle = style !== undefined
+      ? style
+      : requireDefined(
+        layout.DURATION_TO_STYLE['err'],
+        'HarpnotesLayout._layoutNote(): missing fallback duration style "err"',
+      )
     const color = variantToColor(note.variant, layout)
 
     return {
       type: 'Ellipse',
       center: [x, y],
-      size: [layout.ELLIPSE_SIZE[0] * style.sizeFactor, layout.ELLIPSE_SIZE[1] * style.sizeFactor],
-      fill: style.fill,
-      dotted: style.dotted,
-      hasbarover: style.hasbarover ?? false,
+      size: [layout.ELLIPSE_SIZE[0] * effectiveStyle.sizeFactor, layout.ELLIPSE_SIZE[1] * effectiveStyle.sizeFactor],
+      fill: effectiveStyle.fill,
+      dotted: effectiveStyle.dotted,
+      hasbarover: effectiveStyle.hasbarover ?? false,
       color,
       lineWidth: layout.LINE_THICK,
       visible: note.visible,
@@ -357,12 +400,14 @@ export class HarpnotesLayout {
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
+    hideRepeatGotos: boolean,
   ): Path[] {
     const result: Path[] = []
 
     for (const entity of voice.entities) {
       if (entity.type !== 'Goto') continue
       const goto = entity as Goto
+      if (hideRepeatGotos && goto.policy?.isRepeat) continue
 
       const fromNote = goto.from
       const toNote = goto.to
@@ -536,29 +581,47 @@ export class HarpnotesLayout {
   // Sheetmarks
   // ---------------------------------------------------------------------------
 
-  private _layoutSheetmarks(layout: LayoutConfig): DrawableElement[] {
+  private _layoutSheetmarks(conf: Confstack): DrawableElement[] {
     const result: DrawableElement[] = []
-    const width = layout.DRAWING_AREA_SIZE[0]
-    const height = layout.DRAWING_AREA_SIZE[1]
+    const layout = conf.get('layout') as LayoutConfig
+    const vpos = (conf.get('extract.stringnames.vpos') as number[] | undefined) ?? []
+    const style = (conf.get('extract.stringnames.style') as string | undefined) ?? 'small'
+    const labels = parseStringNamesText(conf.get('extract.stringnames.text') as string | undefined)
+    const marks = (conf.get('extract.stringnames.marks.hpos') as number[] | undefined) ?? []
+    const markVpos = (conf.get('extract.stringnames.marks.vpos') as number[] | undefined) ?? []
 
-    // Mark C strings (red) and F strings (blue) across the full pitch range
-    // C = MIDI mod 12 === 0, F = MIDI mod 12 === 5
-    for (let pitch = 0; pitch <= 127; pitch++) {
+    for (const pitch of marks) {
       const x = pitchToX(pitch, layout)
-      if (x < 0 || x > width) continue
+      for (const y of markVpos) {
+        result.push({
+          type: 'Path',
+          path: makeSheetmarkPath([x, y]),
+          fill: true,
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THIN,
+          visible: true,
+        })
+      }
+    }
 
-      const mod = pitch % 12
-      if (mod !== 0 && mod !== 5) continue
-
-      const isC = mod === 0
-      result.push({
-        type: 'Path',
-        path: [[x, 0], [x, height]],
-        fill: false,
-        color: isC ? 'red' : 'blue',
-        lineWidth: layout.LINE_THIN / 2,
-        visible: true,
-      })
+    if (vpos.length > 0 && labels.length > 0) {
+      const startScale = -layout.PITCH_OFFSET
+      for (let index = 0; index < 37; index++) {
+        const pitch = startScale + index
+        const x = pitchToX(pitch, layout)
+        const text = labels[index % labels.length] ?? '~'
+        for (const y of vpos) {
+          result.push({
+            type: 'Annotation',
+            center: [x, y],
+            text,
+            style,
+            color: layout.color.color_default,
+            lineWidth: layout.LINE_THIN,
+            visible: true,
+          })
+        }
+      }
     }
 
     return result
@@ -571,35 +634,75 @@ export class HarpnotesLayout {
   private _layoutLegend(
     metaData: SongMetaData,
     conf: Confstack,
-    _extractNr: number | string,
+    extractNr: number | string,
   ): Annotation[] {
     const result: Annotation[] = []
-    const layout = this._config.layout
+    const layout = conf.get('layout') as LayoutConfig
     const legendConf = conf.get('extract.legend') as Record<string, unknown> | undefined
 
-    const pos = (legendConf?.['pos'] as [number, number] | undefined) ?? [2, 2]
-    const style = (legendConf?.['style'] as string | undefined) ?? 'regular'
+    const titlePos = (legendConf?.['pos'] as [number, number] | undefined) ?? [320, 7]
+    const titleStyle = (legendConf?.['tstyle'] as string | undefined) ?? 'large'
+    const secondaryPos = (legendConf?.['spos'] as [number, number] | undefined) ?? [320, 27]
+    const secondaryStyle = (legendConf?.['style'] as string | undefined) ?? 'regular'
+    const extractTitle = (conf.get('extract.title') as string | undefined) ?? String(extractNr)
 
-    const lines: string[] = []
-    if (metaData.title)    lines.push(metaData.title)
-    if (metaData.composer) lines.push(metaData.composer)
-    if (metaData.meter)    lines.push(metaData.meter)
-    if (metaData.key)      lines.push(metaData.key)
-    if (metaData.tempo)    lines.push(`♩=${metaData.tempo}`)
+    if (metaData.title) {
+      result.push({
+        type: 'Annotation',
+        center: titlePos,
+        text: metaData.title,
+        style: titleStyle,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
+        visible: true,
+      })
+    }
 
-    if (lines.length === 0) return result
+    const meter = metaData.meter ? `Takt: ${metaData.meter}${metaData.tempoDisplay ? ` (${metaData.tempoDisplay})` : ''}` : undefined
+    const key = metaData.key ? `Tonart: ${metaData.key}` : undefined
+    const secondaryText = [extractTitle, metaData.composer ?? '', meter, key]
+      .filter((entry) => entry !== undefined)
+      .join('\n')
 
-    result.push({
-      type: 'Annotation',
-      center: pos,
-      text: lines.join('\n'),
-      style,
-      color: layout.color.color_default,
-      lineWidth: layout.LINE_THIN,
-      visible: true,
-    })
+    if (secondaryText) {
+      result.push({
+        type: 'Annotation',
+        center: secondaryPos,
+        text: secondaryText,
+        style: secondaryStyle,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
+        visible: true,
+      })
+    }
 
     return result
+  }
+
+  private _layoutZnAnnotations(metaData: SongMetaData): Annotation[] {
+    const filename = metaData.filename
+    if (!filename) return []
+
+    return [
+      {
+        type: 'Annotation',
+        center: [150, 289],
+        text: `${filename} - created by Zupfnoter`,
+        style: 'smaller',
+        color: this._config.layout.color.color_default,
+        lineWidth: this._config.layout.LINE_THIN,
+        visible: true,
+      },
+      {
+        type: 'Annotation',
+        center: [325, 289],
+        text: 'Zupfnoter: https://www.zupfnoter.de',
+        style: 'smaller',
+        color: this._config.layout.color.color_default,
+        lineWidth: this._config.layout.LINE_THIN,
+        visible: true,
+      },
+    ]
   }
 
   // ---------------------------------------------------------------------------
@@ -612,9 +715,42 @@ export class HarpnotesLayout {
     conf: Confstack,
   ): Annotation[] {
     const result: Annotation[] = []
-    const layout = this._config.layout
+    const layout = conf.get('layout') as LayoutConfig
     const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
     const activeVoiceNrs = (conf.get('extract.voices') as number[] | undefined) ?? [1]
+    const lyricsConf = (conf.get('extract.lyrics') as Record<string, { verses?: number[]; pos?: [number, number]; style?: string }> | undefined) ?? {}
+    const rawLyrics = song.harpnoteOptions?.['lyrics']
+
+    if (rawLyrics && Object.keys(lyricsConf).length > 0) {
+      const lyricsText = (rawLyrics as { text?: string[] }).text ?? []
+      const verses = lyricsText.join('\n').replace(/\t/g, ' ').replace(/ +/g, ' ').split(/\n\n+/).map((entry) => entry.trim())
+
+      for (const [key, entry] of Object.entries(lyricsConf)) {
+        if (key === 'versepos' || !entry.pos) continue
+
+        const text = (entry.verses ?? [])
+          .map((verseNo) => {
+            if (verseNo === 0) return verses[9998]
+            if (verseNo < 0) return verses[verseNo]
+            return verses[verseNo - 1]
+          })
+          .filter((verse): verse is string => typeof verse === 'string' && verse.length > 0)
+          .join('\n\n')
+
+        if (!text) continue
+        result.push({
+          type: 'Annotation',
+          center: entry.pos,
+          text,
+          style: entry.style ?? 'regular',
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THIN,
+          visible: true,
+        })
+      }
+
+      return result
+    }
 
     for (const voiceNr of activeVoiceNrs) {
       const voice = song.voices[voiceNr - 1]
@@ -651,7 +787,7 @@ export class HarpnotesLayout {
 
   private _layoutAnnotations(conf: Confstack, _extractNr: number | string): Annotation[] {
     const result: Annotation[] = []
-    const layout = this._config.layout
+    const layout = conf.get('layout') as LayoutConfig
     const notes = conf.get('extract.notes') as Record<string, unknown> | undefined
 
     if (!notes) return result
@@ -678,34 +814,59 @@ export class HarpnotesLayout {
   // Barnumbers
   // ---------------------------------------------------------------------------
 
-  private _layoutBarnumbers(
+  private _layoutBarnumbersCountnotes(
     voice: Voice,
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
-  ): Annotation[] {
-    const result: Annotation[] = []
+    voiceNr: number,
+    conf: Confstack,
+  ): { barnumbers: Annotation[]; countnotes: Annotation[] } {
+    const barnumbers: Annotation[] = []
+    const countnotes: Annotation[] = []
+    const barnumberVoices = new Set((conf.get('extract.barnumbers.voices') as number[] | undefined) ?? [])
+    const countnoteVoices = new Set((conf.get('extract.countnotes.voices') as number[] | undefined) ?? [])
 
     for (const entity of voice.entities) {
       if (entity.type !== 'Note' && entity.type !== 'Pause' && entity.type !== 'SynchPoint') continue
       const playable = entity as PlayableEntity
-      if (!playable.measureStart || !playable.measureCount) continue
 
       const x = pitchToX(playable.pitch, layout)
       const y = beatToY(playable.beat, beatMap, layout, startpos)
 
-      result.push({
-        type: 'Annotation',
-        center: [x - layout.ELLIPSE_SIZE[0] - 1, y],
-        text: String(playable.measureCount),
-        style: 'smaller',
-        color: layout.color.color_default,
-        lineWidth: layout.LINE_THIN,
-        visible: playable.visible,
-      })
+      if (countnoteVoices.has(voiceNr) && playable.variant > 0) {
+        const pos = (conf.get('extract.countnotes.pos') as [number, number] | undefined) ?? [3, -2]
+        countnotes.push({
+          type: 'Annotation',
+          center: [x + pos[0], y + pos[1]],
+          text: String(playable.variant),
+          style: (conf.get('extract.countnotes.style') as string | undefined) ?? 'smaller',
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THIN,
+          visible: playable.visible,
+        })
+      }
+
+      if (barnumberVoices.has(voiceNr) && playable.measureStart && playable.measureCount) {
+        const basePos = (conf.get('extract.barnumbers.pos') as [number, number] | undefined) ?? [6, -4]
+        const autoPos = (conf.get('extract.barnumbers.autopos') as boolean | undefined) ?? true
+        const effectivePos: [number, number] = autoPos
+          ? [basePos[0] + layout.ELLIPSE_SIZE[0] - 0.125, basePos[1] + 3.025]
+          : basePos
+
+        barnumbers.push({
+          type: 'Annotation',
+          center: [x + effectivePos[0], y + effectivePos[1]],
+          text: `${(conf.get('extract.barnumbers.prefix') as string | undefined) ?? ''}${playable.measureCount}`,
+          style: (conf.get('extract.barnumbers.style') as string | undefined) ?? 'small_bold',
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THIN,
+          visible: playable.visible,
+        })
+      }
     }
 
-    return result
+    return { barnumbers, countnotes }
   }
 
   // ---------------------------------------------------------------------------
@@ -766,26 +927,138 @@ export class HarpnotesLayout {
   // Cutmarks
   // ---------------------------------------------------------------------------
 
-  private _layoutCutmarks(pageFormat: 'A3' | 'A4', conf: Confstack): Path[] {
+  private _layoutCutmarks(pageFormat: 'A3' | 'A4', conf: Confstack): Annotation[] {
     if (pageFormat === 'A3') return []
 
-    const result: Path[] = []
-    const layout = this._config.layout
+    const result: Annotation[] = []
+    const layout = conf.get('layout') as LayoutConfig
     const a4Pages = (conf.get('printer.a4Pages') as number[] | undefined)
       ?? this._config.printer.a4Pages
     const xSpacing = layout.X_SPACING
-    const height = layout.DRAWING_AREA_SIZE[1]
+    if (a4Pages.length <= 1) return result
 
     for (let i = 1; i < a4Pages.length; i++) {
-      const x = i * 12 * xSpacing
+      const x = 0.25 * xSpacing + layout.X_OFFSET + 12 * xSpacing * i
 
       result.push({
-        type: 'Path',
-        path: [[x, 0], [x, height]],
-        fill: false,
-        color: 'grey',
-        lineWidth: layout.LINE_THIN / 2,
+        type: 'Annotation',
+        center: [x, 4],
+        text: 'x',
+        style: 'small',
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
         visible: true,
+      })
+      result.push({
+        type: 'Annotation',
+        center: [x, 290],
+        text: 'x',
+        style: 'small',
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
+        visible: true,
+      })
+    }
+
+    return result
+  }
+
+  private _layoutVoiceRepeatSigns(
+    voice: Voice,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    voiceNr: number,
+    conf: Confstack,
+  ): Annotation[] {
+    const repeatVoices = new Set((conf.get('extract.repeatsigns.voices') as number[] | undefined) ?? [])
+    if (!repeatVoices.has(voiceNr)) return []
+
+    const leftPos = (conf.get('extract.repeatsigns.left.pos') as [number, number] | undefined) ?? [-7, -2]
+    const rightPos = (conf.get('extract.repeatsigns.right.pos') as [number, number] | undefined) ?? [5, -2]
+    const style = (conf.get('extract.repeatsigns.left.style') as string | undefined)
+      ?? (conf.get('extract.repeatsigns.right.style') as string | undefined)
+      ?? 'bold'
+    const result: Annotation[] = []
+
+    for (const entity of voice.entities) {
+      if (entity.type !== 'Goto') continue
+      const goto = entity as Goto
+
+      result.push({
+        type: 'Annotation',
+        center: [pitchToX(goto.to.pitch, layout) + leftPos[0], beatToY(goto.to.beat, beatMap, layout, startpos) + leftPos[1]],
+        text: (conf.get('extract.repeatsigns.left.text') as string | undefined) ?? '|:',
+        style,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
+        visible: goto.visible,
+      })
+      result.push({
+        type: 'Annotation',
+        center: [pitchToX(goto.from.pitch, layout) + rightPos[0], beatToY(goto.from.beat, beatMap, layout, startpos) + rightPos[1]],
+        text: (conf.get('extract.repeatsigns.right.text') as string | undefined) ?? ':|',
+        style,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
+        visible: goto.visible,
+      })
+    }
+
+    return result
+  }
+
+  private _layoutVoiceNoteboundAnnotations(
+    voice: Voice,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    voiceNr: number,
+    conf: Confstack,
+  ): Annotation[] {
+    const result: Annotation[] = []
+
+    for (const entity of voice.entities) {
+      if (entity.type !== 'NoteBoundAnnotation' && entity.type !== 'NewPart') continue
+
+      const companion = entity.companion
+      const center: [number, number] = [
+        pitchToX(companion.pitch, layout),
+        beatToY(companion.beat, beatMap, layout, startpos),
+      ]
+
+      let text = ''
+      let style = 'regular'
+      let offset: [number, number] = [5, -7]
+      let confBase = ''
+
+      if (entity.type === 'NoteBoundAnnotation') {
+        const annotation = entity as NoteBoundAnnotation
+        text = annotation.text
+        style = annotation.style
+        offset = annotation.position
+        confBase = annotation.confKey ?? `notebound.annotation.v_${voiceNr}.${companion.time}`
+      } else {
+        const part = entity as NewPart
+        text = part.name
+        style = 'bold'
+        offset = [-4, -7]
+        confBase = `notebound.partname.v_${voiceNr}.${companion.time}`
+      }
+
+      const configuredOffset = conf.get(`${confBase}.pos`) as [number, number] | undefined
+      const configuredStyle = conf.get(`${confBase}.style`) as string | undefined
+      const show = conf.get(`${confBase}.show`) as boolean | undefined
+      if (show === false) continue
+
+      result.push({
+        type: 'Annotation',
+        center: [center[0] + (configuredOffset ?? offset)[0], center[1] + (configuredOffset ?? offset)[1]],
+        text,
+        style: configuredStyle ?? style,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
+        visible: companion.visible,
       })
     }
 

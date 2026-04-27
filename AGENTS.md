@@ -6,6 +6,9 @@ Zupfnoter (`bwl21/zupfnoter` → `bwl21/zupfnoter-ts`).
 Referenz-Dokumentation: `docs/` in diesem Repository (kopiert aus `bwl21/zupfnoter`,
 Branch `feature/voice-styles_and-other-concepts`, Ordner `30_sources/SRC_Zupfnoter/docs/`).
 
+Lokale Legacy-Codebasis für Portierungsvergleiche: `../200_zupfnoter/30_sources/SRC_Zupfnoter/`.
+Nicht verwechseln mit `../200_Zupfnotenprojekte/`, das Projektmaterial und Exporte enthält, aber nicht die maßgebliche Legacy-Implementierung.
+
 Terminologie- und Übersetzungsregeln: [docs/glossary.md](docs/glossary.md)
 
 ---
@@ -661,6 +664,17 @@ synchron bleiben. Beim Implementieren der Konfigurationsvalidierung in Phase 3/5
 - Tests für jede Transformationsstufe mit JSON-Snapshots aus dem Legacy-System
 - Voice Styles sind rückwärtskompatibel: fehlt `voice_styles`, gelten globale `layout.*`-Werte
 - Worker-Nachrichten sind typisiert (kein `any`)
+- Bei Commits ist eine detaillierte Commit-Message zu verwenden, die die fachliche Änderung und den Grund der Änderung beschreibt
+
+## TypeScript Safety: No unsafe non-null assertions
+
+- Do not use the non-null assertion operator `!` to silence TypeScript errors.
+- All required configuration values must be explicitly checked at runtime.
+- Use a helper function `requireDefined(...)` instead of `!`.
+
+Rationale: This is required for deterministic behavior and Ruby/TS parity. Runtime
+checks make missing configuration visible at the point of use instead of masking
+differences between the legacy Ruby behavior and the TypeScript implementation.
 
 ## Verbindliche Invarianten
 

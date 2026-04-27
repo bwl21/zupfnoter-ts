@@ -2,18 +2,18 @@
 
 exports[`HarpnotesLayout > full sheet snapshot > single_note sheet matches snapshot 1`] = `
 {
-  "Annotation": 1,
+  "Annotation": 6,
   "Ellipse": 1,
-  "Path": 8,
+  "Path": 3,
 }
 `;
 
 exports[`HarpnotesLayout > full sheet snapshot > two_voices sheet matches snapshot 1`] = `
 {
-  "Annotation": 3,
+  "Annotation": 6,
   "Ellipse": 8,
   "FlowLine": 10,
-  "Path": 8,
+  "Path": 3,
 }
 `;
 

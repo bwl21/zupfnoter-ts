@@ -1,0 +1,327 @@
+X:783
+T:Einsiedler Kreuzweg
+F:783_einsiedler-kreuzweg
+C:Einsiedler Kreuzwegs (Schweiz, 15. Jh.)
+%%scale 0.59
+%%pagewidth 11.18cm
+L:1/4
+Q:1/4=100
+M:4/4
+I:linebreak $
+K:G
+V:1 treble 
+V:1
+ D | B2 ^A B | G2 D D |$ E2 F G | D2 z D | F2 E F |$ G2 D D | G2 A B | A2 z D |$ B2 ^A B | G2 D D | %11
+ E2 F G |$ D2 z [:D | c2 B A |$ B2 A G | A2 G F | G2 z |] %18
+V:2
+ B, | G3 G| B,3 B, |
+ C2 D E | B,4 | D2  C2 | B,2 B,2 |  B,2 F2 | F2z B,  | G4 | E2 B,2 | 
+ C4 | C2 B, [:B, | A2 G F |  G2FE | F2 ED|   B,2 z |]
+%
+W:1. Die Unschuld der Gottmensch vor Menschengericht!
+W:Ans Kreuz fort mit Jesus, wir kennen Ihn nicht!
+W:So schreiet die sämtliche jüdische Rott,
+W:Pilatus verdammt Ihn zum schmählichsten Tod.
+W:
+W:
+W:2. Wie willig nimmst, Jesus, das Kreuholz auf Dich!
+W:Umarmst es begierig zu sterben für mich!
+W:Was macht doch den Kreuztod so schätzbar vor Dir,
+W:die Liebe zum Vater, die Liebe zu mir.
+W:
+W:
+W:3. Man stößt Ihn, man schleppt Ihn zum Stadttore fort,
+W:mit höhnischem Jubel, ach! sehet Ihn dort,
+W:schon kraftlos von Streichen und Schmachen gebückt,
+W:der Kreuzlast erliegen zur Erde gedrückt.
+W:
+W:
+W:4, Den Sohn sieht die Mutter zum Kreuztod geführt,
+W:der Sohn sieht die Mutter von Mitleid gerührt.
+W:Maria und Jesus, zwei Herzen, ein Herz,
+W:o Anblick, o Abschied, o tödlicher Schmerz.
+W:
+W:
+W:5. Simon der Cyrener nimmts Kreuzholz auf sich,
+W:wie kommt es? ist's Mitleid, ist's Liebe für Dich?
+W:Nein Jesu, aus Zwang nur, aus Hass ist's gescheh'n,
+W:nicht eher, am Kreuze Dich sterben zu seh'n.
+W:
+W:
+W:6. Des Bräutigams Antlitz, die schöne Gestalt,
+W:wo ist sie? hier hat sie die Liebe gemalt.
+W:Im Schweißtuch mit Speichel und Wunden und Blut,
+W:der Braut ist das Bildnis ganz liebvoll und gut.
+W:
+W:
+W:7. Das zweite Mal sinkest zu Boden, o Herr!
+W:wie ist doch die Bürde der Sünde so schwer.
+W:Ach Sünder, vergönnt Ihm doch einige Rast,
+W:vermehret nicht immer die schreckliche Last.
+W:
+W:
+W:8. Jerusalems Töchter, weint über mich nicht,
+W:weint über euch selbsten, seht Gottes Gericht!
+W:So straft es die Sünde am schuldlosen Sohn,
+W:drum Schuldige, weinet, dass es euch verschon!
+W:
+W:
+W:9. Was bringt Dich, o Christus, schon wieder zum Fall?
+W:die Schwachheit der Christen, die Fäll' ohne Zahl.
+W:Ach wenn ich der Gnade getreuer nicht bin,
+W:wo bringt mich, wo bringt mich mein Leichtsinn noch hin.
+W:
+W:
+W:10. Der schamhafte Jesus, schau Sünder Ihn an!
+W:dein schamloser Mutwill', du hast es getan.
+W:Du hast Ihm die Wunden, die Schmerzen erweckt,
+W:Ihn schändlich entblösset mit Schmach Ihn bedeckt.
+W:
+W:
+W:11. Man wirft Ihn aufs Kreuz hin und nagelt Ihn an;
+W:wer hat's als die Sünd und die Liebe getan?
+W:Aus Händen und Füßen strömt häufiges Blut,
+W:dem Vater zum Opfer, den Sündern zugut.
+W:
+W:
+W:12. Mein Jesum am Kreuze, mein Gott stirbt für mich,
+W:und ich dein Erlöster, wie liebe ich dich!
+W:Gib dass ich Dich liebe, gekreuzigter Gott,
+W:so wie Du mich liebtest auch bis in den Tod.
+W:
+W:
+W:13. Im Schoße Mariä der Heiland der Welt,
+W:Maria zur Mutter der Menschen bestellt.
+W:Im Tode des Sohnes, welch Marter und Pein,
+W:hat's dich nicht gekostet uns Mutter zu sein.
+W:
+W:
+W:14. Mein Gott und Erlöser ins Grab hingelegt
+W:Ach wenn mich dein Leiden, dein Tod nicht bewegt,
+W:zum besseren Leben, wie wird's mir ergeh'n!
+W:Wie werde ich mit Dir einst zum Leben ersteh'n!
+%
+%
+
+%%%%zupfnoter.config
+
+{
+  "produce"      : [1, 3],
+  "restposition" : {
+    "default"     : "previous",
+    "repeatstart" : "next",
+    "repeatend"   : "default"
+  },
+  "extract"      : {
+    "0" : {
+      "title"        : "Bearbeitungsansicht",
+      "filenamepart" : "-X",
+      "voices"       : [1, 2, 3, 4],
+      "flowlines"    : [1, 2, 3, 4],
+      "subflowlines" : [0],
+      "jumplines"    : [1, 2, 3, 4],
+      "layoutlines"  : [99],
+      "barnumbers"   : {
+        "voices"   : [1, 2, 3, 4],
+        "pos"      : [6, -4],
+        "autopos"  : true,
+        "apbase"   : [1, 0],
+        "style"    : "small_bold",
+        "apanchor" : "center",
+        "prefix"   : ""
+      },
+      "countnotes"   : {
+        "voices"   : [1, 2, 3, 4],
+        "pos"      : [3, -2],
+        "autopos"  : true,
+        "apbase"   : [1, 0],
+        "style"    : "smaller",
+        "apanchor" : "center"
+      },
+      "legend"       : {"pos": [410, 8], "spos": [345, 66], "align": "l"},
+      "lyrics"       : {
+        "1" : {
+          "verses" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          "pos"    : [335, 38],
+          "style"  : "small"
+        },
+        "2" : {
+          "verses" : [11, 12],
+          "pos"    : [337, 230],
+          "style"  : "small"
+        },
+        "3" : {
+          "verses" : [13, 14],
+          "pos"    : [161, 229],
+          "style"  : "small"
+        }
+      },
+      "notes"        : {
+        "T01_number"              : {
+          "pos"   : [410, 17],
+          "text"  : "RBW-{{number}}",
+          "style" : "bold",
+          "align" : "l"
+        },
+        "T01_number_extract"      : {
+          "pos"   : [411, 17],
+          "text"  : "{{extract_filename}}",
+          "style" : "bold"
+        },
+        "T02_copyright_music"     : {
+          "pos"   : [150, 281],
+          "text"  : "Einsiedler Kreuzwegs (Schweiz, 15. Jh.), 14 Stationen mit Liedern. \n„Gottesmänner“ = Jesus als unschuldiges Lamm Gottes vor Pontius Pilatus. \n",
+          "style" : "small"
+        },
+        "T03_copyright_harpnotes" : {
+          "pos"   : [325, 284],
+          "text"  : "© {{current_year}} Notenbild: Bernhard Weichel",
+          "style" : "small"
+        },
+        "T04_to_order"            : {
+          "pos"   : [325, 274],
+          "text"  : "Sonderdruck für Monika Roiderer\nBitte nicht weitergeben",
+          "style" : "small"
+        },
+        "T05_printed_extracts"    : {
+          "pos"   : [410, 22],
+          "text"  : "{{printed_extracts}}",
+          "style" : "smaller",
+          "align" : "l"
+        },
+        "T06_legend"              : {
+          "pos"   : [352, 21],
+          "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}",
+          "style" : "small"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
+        }
+      },
+      "tuplets"      : {"text": "- {{tuplet}} -", "style": "small"},
+      "layout"       : {
+        "LINE_MEDIUM"       : 0.20,
+        "LINE_THICK"        : 0.30,
+        "ELLIPSE_SIZE"      : [3.50, 1.30],
+        "REST_SIZE"         : [4, 1.50],
+        "DRAWING_AREA_SIZE" : [400, 275],
+        "beams"             : false,
+        "packer"            : {
+          "pack_method"           : 0,
+          "pack_max_spreadfactor" : 2,
+          "pack_min_increment"    : 0.20
+        },
+        "jumpline_vcut"     : 5
+      },
+      "printer"      : {"show_border": false},
+      "stringnames"  : {"vpos": [4], "marks": {"vpos": [290]}},
+      "notebound"    : {
+        "flowline"  : {
+          "v_2" : {
+            "12288" : {"cp2": [-5.90, -10.78]},
+            "12672" : {"cp1": [-5.42, 8.71]},
+            "14976" : {"cp1": [-5.31, 32.55]},
+            "18816" : {"cp1": [-5.88, 15.41]},
+            "384"   : {"cp1": [-6.07, 17.84]}
+          }
+        },
+        "barnumber" : {"v_2": {"t_14208": {"pos": [-3.62, -2.70]}}}
+      }
+    },
+    "1" : {
+      "title"        : "Melodie, Begleitung",
+      "filenamepart" : "-A",
+      "notes"        : {"T01_number_extract": {"text": "-A"}},
+      "layout"       : {
+        "limit_a3"     : false,
+        "instrument"   : "25-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [-5, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [55, 79]}
+      },
+      "notebound"    : {
+        "flowline" : {
+          "v_1" : {
+            "12288" : {"cp1": [2.57, 16.74]},
+            "14976" : {"cp1": [3.24, 14.53]},
+            "18816" : {"cp1": [6.03, 88.07]},
+            "384"   : {"cp1": [4.81, 59.44]}
+          }
+        }
+      }
+    },
+    "2" : {
+      "title"        : "Tenor, Bass, Melodie",
+      "filenamepart" : "-B",
+      "voices"       : [1, 3, 4],
+      "notes"        : {"T01_number_extract": {"text": "-B"}},
+      "layout"       : {
+        "limit_a3"     : true,
+        "instrument"   : "37-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [0, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [0, 1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [43, 79]}
+      },
+      "notebound"    : {
+        "flowline" : {
+          "v_1" : {
+            "12288" : {"cp1": [3.71, 29.56]},
+            "12672" : {"cp2": [3.09, -20.84]},
+            "14976" : {"cp1": [4.82, 13.39]},
+            "18816" : {"cp1": [4.44, 37.81], "cp2": [4.27, -9.59]},
+            "384"   : {"cp1": [6.47, 69.76]}
+          }
+        }
+      }
+    },
+    "3" : {
+      "title"        : "Melodie",
+      "filenamepart" : "-M",
+      "voices"       : [1],
+      "notes"        : {"T01_number_extract": {"text": "-M"}},
+      "layout"       : {
+        "limit_a3"     : false,
+        "instrument"   : "25-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [-5, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [55, 79]}
+      },
+      "notebound"    : {}
+    }
+  },
+  "$schema"      : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version"     : "V_1.9.0-10-g85c6eb6",
+  "template"     : {
+    "title"    : "Vorlage Monbachtal 2025",
+    "filebase" : "9999_Vorlage-Monbachtal-2025"
+  }
+}
