@@ -12,7 +12,7 @@
 import { describe, it, expect } from 'vitest'
 import { computeBeatCompression } from '../../BeatPacker.js'
 import { Confstack } from '../../Confstack.js'
-import type { Song, Voice, Playable } from '@zupfnoter/types'
+import type { Song, Voice, Note, PlayableEntity } from '@zupfnoter/types'
 import type { DurationKey, DurationStyle } from '@zupfnoter/types'
 
 // ---------------------------------------------------------------------------
@@ -21,7 +21,6 @@ import type { DurationKey, DurationStyle } from '@zupfnoter/types'
 
 const DURATION_TO_STYLE: Record<DurationKey, DurationStyle> = {
   err: { sizeFactor: 2,    fill: 'filled', dotted: false },
-  d96: { sizeFactor: 1,    fill: 'empty',  dotted: true  },
   d64: { sizeFactor: 1,    fill: 'empty',  dotted: false },
   d48: { sizeFactor: 0.75, fill: 'empty',  dotted: true  },
   d32: { sizeFactor: 0.75, fill: 'empty',  dotted: false },
@@ -56,21 +55,32 @@ function makeConf(packMethod: 0 | 1 | 2 | 3 | 10 = 0): Confstack {
 }
 
 /** Erstellt eine minimale Note für Tests. */
-function makeNote(beat: number, duration: number, opts: Partial<Playable> = {}): Playable {
+function makeNote(beat: number, duration: number, opts: Partial<Note> = {}): Note {
   return {
+    type: 'Note',
     beat,
     time: beat * 10,
     duration,
     pitch: 60,
-    startPos: 0,
-    endPos: 1,
+    startPos: [0, 0],
+    endPos: [0, 1],
     decorations: [],
+    barDecorations: [],
     visible: true,
     variant: 0,
     znId: '',
+    tieStart: false,
+    tieEnd: false,
+    tuplet: 1,
+    tupletStart: false,
+    tupletEnd: false,
     firstInPart: false,
     measureStart: false,
     measureCount: 0,
+    jumpStarts: [],
+    jumpEnds: [],
+    slurStarts: [],
+    slurEnds: [],
     countNote: null,
     lyrics: null,
     ...opts,
@@ -78,7 +88,7 @@ function makeNote(beat: number, duration: number, opts: Partial<Playable> = {}):
 }
 
 /** Erstellt einen minimalen Song mit einer Stimme. */
-function makeSong(notes: Playable[]): Song {
+function makeSong(notes: PlayableEntity[]): Song {
   const voice: Voice = {
     index: 0,
     name: 'V1',
@@ -366,7 +376,7 @@ describe('prevPitch/nextPitch auf Playables', () => {
     const song = transformer.transform(model, defaultTestConfig)
 
     const playables = song.voices[0]!.entities.filter(
-      (e): e is Playable => 'pitch' in e && 'duration' in e,
+      (e): e is PlayableEntity => 'pitch' in e && 'duration' in e,
     )
 
     // Erste Note hat kein prevPitch, aber nextPitch

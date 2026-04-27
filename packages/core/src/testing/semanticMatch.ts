@@ -13,7 +13,7 @@ const POSITION_TOLERANCE = 0.1  // center, from, to
 const SIZE_TOLERANCE = 0.05     // size
 
 // ---------------------------------------------------------------------------
-// Fixture types (shape of the JSON files in fixtures/song/ and fixtures/sheet/)
+// Fixture types (shape of the JSON files in fixtures/cases/<name>/)
 // ---------------------------------------------------------------------------
 
 export interface EntityFixture {

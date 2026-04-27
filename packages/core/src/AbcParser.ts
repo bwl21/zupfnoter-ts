@@ -15,7 +15,7 @@ import { ABC_TYPE } from './AbcModel.js'
 // module/exports object — works in both browser and Node.js (no vm/fs needed).
 // ---------------------------------------------------------------------------
 
-import _abc2svgModule from '../vendor/abc2svg-browser.js'
+import abc2svgSource from '../vendor/abc2svg-1.js?raw'
 
 // ---------------------------------------------------------------------------
 // Minimal abc2svg type shims (not exported)
@@ -33,8 +33,9 @@ interface Abc2svgUser {
   ) => void
 }
 
-interface Abc2svgInstance {
-  tosvg: (fname: string, source: string) => void
+interface Abc2svgExports {
+  abc2svg: { C: Record<string, number>; sym_name: string[]; version: string }
+  Abc: new (user: Abc2svgUser) => { tosvg: (fname: string, source: string) => void }
 }
 
 interface Abc2svgVoice {
@@ -78,6 +79,24 @@ export interface AbcParseError {
   line?: number
   column?: number
 }
+
+function loadAbc2svg(): Abc2svgExports {
+  const mod = { exports: {} as Record<string, unknown> }
+  const fn = new Function('module', 'exports', abc2svgSource)
+  fn(mod, mod.exports)
+
+  if (!mod.exports['Abc'] || !mod.exports['abc2svg']) {
+    const g = globalThis as unknown as Record<string, unknown>
+    if (g['Abc'] && g['abc2svg']) {
+      return { Abc: g['Abc'] as Abc2svgExports['Abc'], abc2svg: g['abc2svg'] as Abc2svgExports['abc2svg'] }
+    }
+    throw new Error('abc2svg failed to load: neither CJS exports nor globals found')
+  }
+
+  return mod.exports as unknown as Abc2svgExports
+}
+
+const _abc2svgModule = loadAbc2svg()
 
 // ---------------------------------------------------------------------------
 // AbcParser

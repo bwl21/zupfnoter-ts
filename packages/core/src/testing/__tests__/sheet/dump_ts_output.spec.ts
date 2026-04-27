@@ -1,6 +1,6 @@
 /* oxlint-disable jest/expect-expect -- dev helper: tests write files, no assertions needed */
 /**
- * Dumps the TS pipeline output for all sheet fixtures to fixtures/sheet/_ts_output/.
+ * Dumps the TS pipeline output for all fixture cases to fixtures/cases/<name>/_ts_output/.
  *
  * Development helper — not a regression test.
  * Run once to see what the TS pipeline currently produces:
@@ -8,45 +8,23 @@
  *   cd packages/core
  *   npx vitest run --reporter=verbose src/testing/__tests__/sheet/dump_ts_output.spec.ts
  *
- * Output: fixtures/sheet/_ts_output/<name>.json
+ * Output: fixtures/cases/<name>/_ts_output/sheet.json
  * Compare with the legacy Ruby export to identify discrepancies before populating
- * the real fixtures in fixtures/sheet/<name>.json.
+ * the real fixtures in fixtures/cases/<name>/sheet.json.
  */
 import { describe, it } from 'vitest'
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
-import { resolve, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 
-import { AbcParser } from '../../../AbcParser.js'
-import { AbcToSong } from '../../../AbcToSong.js'
-import { HarpnotesLayout } from '../../../HarpnotesLayout.js'
-import { sheetToFixture } from '../../fixtureLoader.js'
-import { defaultTestConfig } from '../../defaultConfig.js'
+import { loadFixture, saveFixtureOutput, scanFixtureCases, transformFixtureToSheet } from '../../fixtureLoader.js'
+import type { FixtureCase } from '../../fixtureLoader.js'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const REPO_ROOT = resolve(__dirname, '../../../../../..')
-const OUT_DIR = resolve(REPO_ROOT, 'fixtures/sheet/_ts_output')
-
-function dump(name: string, abcPath: string) {
-  const abc = readFileSync(resolve(REPO_ROOT, abcPath), 'utf-8')
-  const model = new AbcParser().parse(abc)
-  const song = new AbcToSong().transform(model, defaultTestConfig)
-  const sheet = new HarpnotesLayout(defaultTestConfig).layout(song, 0, 'A4')
-  const fixture = sheetToFixture(sheet)
-  mkdirSync(OUT_DIR, { recursive: true })
-  writeFileSync(resolve(OUT_DIR, `${name}.json`), JSON.stringify(fixture, null, 2) + '\n', 'utf-8')
-  console.log(`Written: fixtures/sheet/_ts_output/${name}.json`)
+function dump(testCase: FixtureCase) {
+  const fixture = loadFixture(testCase)
+  saveFixtureOutput(fixture, 'sheet', transformFixtureToSheet(fixture))
+  console.log(`Written: ${testCase.id}/_ts_output/sheet.json`)
 }
 
 describe('dump TS sheet output (dev helper)', () => {
-  it('single_note', () => dump('single_note', 'fixtures/abc/minimal/single_note.abc'))
-  it('two_voices',  () => dump('two_voices',  'fixtures/abc/minimal/two_voices.abc'))
-  it('repeat',      () => dump('repeat',      'fixtures/abc/minimal/repeat.abc'))
-  it('pause',       () => dump('pause',       'fixtures/abc/minimal/pause.abc'))
-  it('tuplet',      () => dump('tuplet',      'fixtures/abc/minimal/tuplet.abc'))
-  it('tie',         () => dump('tie',         'fixtures/abc/minimal/tie.abc'))
-  it('decoration',  () => dump('decoration',  'fixtures/abc/minimal/decoration.abc'))
-  it('lyrics',      () => dump('lyrics',      'fixtures/abc/minimal/lyrics.abc'))
-  it('02_twoStaff', () => dump('02_twoStaff', 'fixtures/abc/legacy/02_twoStaff.abc'))
-  it('Twostaff',    () => dump('Twostaff',    'fixtures/abc/legacy/Twostaff.abc'))
+  for (const testCase of scanFixtureCases()) {
+    it(`writes ${testCase.id}`, () => dump(testCase))
+  }
 })

@@ -393,7 +393,7 @@ describe('buildConfstack()', () => {
       ...defaultTestConfig,
       extract: {
         '0': {
-          ...defaultTestConfig.extract['0'],
+          ...defaultTestConfig.extract['0']!,
           layout: {
             X_SPACING: 99.0,
           },
@@ -410,7 +410,7 @@ describe('buildConfstack()', () => {
       ...defaultTestConfig,
       extract: {
         '0': {
-          ...defaultTestConfig.extract['0'],
+          ...defaultTestConfig.extract['0']!,
           printer: {
             showBorder: true,
           },

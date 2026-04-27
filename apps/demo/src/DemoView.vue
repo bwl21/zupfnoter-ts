@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { AbcParser, AbcToSong, HarpnotesLayout, SvgEngine, Confstack, initConf, extractSongConfig, mergeSongConfig } from '@zupfnoter/core'
+import type { AbcParseError } from '@zupfnoter/core'
+import type { VoiceEntity, Voice } from '@zupfnoter/types'
 
 // ---------------------------------------------------------------------------
 // State
@@ -39,7 +41,7 @@ function renderAbc(text: string): void {
     const parser = new AbcParser()
     const model = parser.parse(text)
     if (parser.errors.length > 0) {
-      const errs = parser.errors.map(e => `[${e.severity}] line ${e.line}: ${e.message}`).join('\n')
+      const errs = parser.errors.map((e: AbcParseError) => `[${e.severity}] line ${e.line}: ${e.message}`).join('\n')
       errorMessage.value = errs
     } else {
       errorMessage.value = ''
@@ -53,8 +55,8 @@ function renderAbc(text: string): void {
       /(<svg[^>]*)\s+width="[^"]*"\s+height="[^"]*"/,
       '$1 width="100%" height="auto"',
     )
-    const noteCounts = song.voices.map((v, i) =>
-      `V${i+1}: ${v.entities.filter(e => e.type === 'Note').length} notes`
+    const noteCounts = song.voices.map((v: Voice, i: number) =>
+      `V${i+1}: ${v.entities.filter((e: VoiceEntity) => e.type === 'Note').length} notes`
     ).join(', ')
     debugInfo.value = `voices=${song.voices.length} | ${noteCounts} | drawables=${sheet.children.length}`
   } catch (err) {

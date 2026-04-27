@@ -12,7 +12,6 @@ import type {
   Voice,
   VoiceEntity,
   PlayableEntity,
-  Playable,
   Note,
   Pause,
   SynchPoint,
@@ -153,7 +152,7 @@ export class AbcToSong {
    */
   private _annotateNeighbourPitches(entities: VoiceEntity[]): void {
     const playables = entities.filter(
-      (e): e is Playable => 'pitch' in e && 'duration' in e,
+      (e): e is PlayableEntity => 'pitch' in e && 'duration' in e,
     )
     for (let i = 0; i < playables.length; i++) {
       const p = playables[i]!
