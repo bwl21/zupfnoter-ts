@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { fixtureConfigFromAbc, fixtureAbcPath, loadFixture, scanFixtureCases } from '../fixtureLoader.js'
 import { defaultTestConfig } from '../defaultConfig.js'
+import { formatOpenImplementations, getOpenImplementations } from '../openImplementations.js'
 
 describe('fixtureLoader', () => {
   it('resolves fixture ABC paths by test case name', () => {
@@ -40,6 +41,15 @@ describe('fixtureLoader', () => {
     expect(fixture.config.layout.SHORTEST_NOTE).toBe(defaultTestConfig.layout.SHORTEST_NOTE)
     expect(fixture.song?.voices.length).toBeGreaterThan(0)
     expect(fixture.sheet?.children.length).toBeGreaterThan(0)
+  })
+
+  it('formats the global open-implementation registry by stage', () => {
+    const openSheetImplementations = getOpenImplementations('sheet')
+    const formatted = formatOpenImplementations(openSheetImplementations)
+
+    expect(openSheetImplementations.length).toBeGreaterThan(0)
+    expect(formatted).toContain('Open implementations for this stage:')
+    expect(formatted).toContain('sheet.barnumbers-config')
   })
 
   it('discovers fixture cases from test case directories', () => {

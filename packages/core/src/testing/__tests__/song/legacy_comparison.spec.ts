@@ -16,16 +16,9 @@ import { describe, it, expect } from 'vitest'
 
 import { matchSong, formatMismatches } from '../../semanticMatch.js'
 import { loadFixture, scanFixtureCases, transformFixtureToSong } from '../../fixtureLoader.js'
+import { formatOpenImplementations, getOpenImplementations } from '../../openImplementations.js'
 
-const UNSUPPORTED_LEGACY_FIXTURES = new Set([
-  // Exercises bar-bound variant annotations and reference-sheet jump lines that are
-  // not fully ported from the legacy pipeline yet.
-  '3015_reference_sheet',
-])
-
-const SONG_FIXTURES = scanFixtureCases().filter(
-  (testCase) => testCase.hasSongFixture && !UNSUPPORTED_LEGACY_FIXTURES.has(testCase.id),
-)
+const SONG_FIXTURES = scanFixtureCases().filter((testCase) => testCase.hasSongFixture)
 
 describe('Song fixtures', () => {
   for (const testCase of SONG_FIXTURES) {
@@ -34,7 +27,10 @@ describe('Song fixtures', () => {
       if (fixture.song === null) throw new Error(`Missing song fixture for ${testCase.id}`)
       const actual = transformFixtureToSong(fixture)
       const result = matchSong(actual, fixture.song)
-      expect(result.passed, formatMismatches(result)).toBe(true)
+      const openImplementations = getOpenImplementations('song')
+      const knownGaps = formatOpenImplementations(openImplementations)
+      const failureMessage = [formatMismatches(result), knownGaps].filter(Boolean).join('\n\n')
+      expect(result.passed, failureMessage).toBe(true)
     })
   }
 })

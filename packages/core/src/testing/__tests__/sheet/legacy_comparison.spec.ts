@@ -15,16 +15,9 @@ import { describe, it, expect } from 'vitest'
 
 import { matchSheet, formatMismatches } from '../../semanticMatch.js'
 import { loadFixture, scanFixtureCases, transformFixtureToSheet } from '../../fixtureLoader.js'
+import { formatOpenImplementations, getOpenImplementations } from '../../openImplementations.js'
 
-const UNSUPPORTED_LEGACY_FIXTURES = new Set([
-  // Exercises bar-bound variant annotations and reference-sheet jump lines that are
-  // not fully ported from the legacy pipeline yet.
-  '3015_reference_sheet',
-])
-
-const SHEET_FIXTURES = scanFixtureCases().filter(
-  (testCase) => testCase.hasSheetFixture && !UNSUPPORTED_LEGACY_FIXTURES.has(testCase.id),
-)
+const SHEET_FIXTURES = scanFixtureCases().filter((testCase) => testCase.hasSheetFixture)
 
 describe('Sheet fixtures', () => {
   for (const testCase of SHEET_FIXTURES) {
@@ -33,7 +26,10 @@ describe('Sheet fixtures', () => {
       if (fixture.sheet === null) throw new Error(`Missing sheet fixture for ${testCase.id}`)
       const actual = transformFixtureToSheet(fixture)
       const result = matchSheet(actual, fixture.sheet)
-      expect(result.passed, formatMismatches(result)).toBe(true)
+      const openImplementations = getOpenImplementations('sheet')
+      const knownGaps = formatOpenImplementations(openImplementations)
+      const failureMessage = [formatMismatches(result), knownGaps].filter(Boolean).join('\n\n')
+      expect(result.passed, failureMessage).toBe(true)
     })
   }
 })

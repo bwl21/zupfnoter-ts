@@ -22,6 +22,12 @@ Die Tests scannen `fixtures/cases/*/input.abc` automatisch. Ein neuer Testfall w
 für Song-Vergleiche aufgenommen, sobald zusätzlich `song.json` existiert; für
 Sheet-Vergleiche entsprechend mit `sheet.json`.
 
+Bekannte, noch nicht portierte Legacy-Aspekte werden nicht testfallspezifisch im
+Fixture-Verzeichnis gepflegt, sondern zentral im Testcode als globale Capability-Liste.
+Vergleichstests bleiben aktiv; bei Fehlschlägen wird diese stage-spezifische Liste an die
+Fehlermeldung angehängt, damit sichtbar bleibt, welche Paritätslücken systemweit noch offen
+sind.
+
 ## Bestehende Testfälle
 
 | Ordner | Testet |
@@ -42,6 +48,31 @@ Sheet-Vergleiche entsprechend mit `sheet.json`.
 Voraussetzung: Laufendes Legacy-System (`bwl21/zupfnoter`,
 Branch `feature/voice-styles_and-other-concepts`) mit dem CLI-Modus
 `--export-fixtures`.
+
+Bequemer Wrapper aus diesem Repo:
+
+```bash
+npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
+```
+
+Standardmäßig verwendet der Wrapper den Legacy-CLI-Pfad
+`../200_Zupfnotenprojekte/10_Harfenfreizeit-Monbachtal/zupfnoter-cli.min.js`
+relativ zum Repo-Root.
+
+Falls nötig kann der CLI-Pfad überschrieben werden, entweder per Environment oder
+als zweites Argument:
+
+```bash
+export ZUPFNOTER_LEGACY_CLI=/pfad/zu/zupfnoter-cli.min.js
+npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
+
+npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc" "/pfad/zu/zupfnoter-cli.min.js"
+```
+
+Der Wrapper expandiert den Glob selbst und schreibt standardmäßig nach
+`fixtures/cases/`. Mit `ZUPFNOTER_FIXTURE_OUTDIR` kann das Ziel überschrieben werden.
+Für jede aufgelöste ABC-Datei ruft er die Legacy-CLI einzeln auf als
+`node zupfnoter-cli.min.js --export-fixtures <input.abc> <target-dir>`.
 
 ### 1. TS-Ausgabe als Referenz erzeugen (optional)
 

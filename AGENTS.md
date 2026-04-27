@@ -661,6 +661,7 @@ synchron bleiben. Beim Implementieren der Konfigurationsvalidierung in Phase 3/5
 - Tests für jede Transformationsstufe mit JSON-Snapshots aus dem Legacy-System
 - Voice Styles sind rückwärtskompatibel: fehlt `voice_styles`, gelten globale `layout.*`-Werte
 - Worker-Nachrichten sind typisiert (kein `any`)
+- Bei Commits ist eine detaillierte Commit-Message zu verwenden, die die fachliche Änderung und den Grund der Änderung beschreibt
 
 ## TypeScript Safety: No unsafe non-null assertions
 
