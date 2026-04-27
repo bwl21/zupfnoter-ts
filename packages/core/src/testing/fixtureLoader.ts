@@ -181,6 +181,16 @@ export function songToFixture(song: Song): SongFixture {
         }
         if ('pitch' in e) entry['pitch'] = (e as { pitch: number }).pitch
         if ('duration' in e) entry['duration'] = (e as { duration: number }).duration
+        if (
+          entry.duration === undefined &&
+          'companion' in e &&
+          e.companion &&
+          typeof e.companion === 'object' &&
+          'duration' in e.companion &&
+          typeof e.companion.duration === 'number'
+        ) {
+          entry.duration = e.companion.duration
+        }
         return entry
       }),
     })),
