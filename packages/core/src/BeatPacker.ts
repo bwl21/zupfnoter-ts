@@ -14,6 +14,7 @@
 import type { Song, PlayableEntity, SynchPoint } from '@zupfnoter/types'
 import type { DurationKey, DurationStyle } from '@zupfnoter/types'
 import type { Confstack } from './Confstack.js'
+import { requireDefined } from './requireDefined.js'
 
 // ---------------------------------------------------------------------------
 // Typen
@@ -180,7 +181,7 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const result: BeatCompressionMap = {}
 
   for (const beat of sortedBeats) {
-    const notes = beats.get(beat)!
+    const notes = requireDefined(beats.get(beat), `BeatPacker._packMethod0(): missing notes for beat ${beat}`)
     const maxDuration = Math.max(...notes.map(n => n.duration))
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
     const size = beatResolution * sizeFactor
@@ -197,7 +198,7 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
     if (isNewPart) increment += defaultIncrement
     if (measureStart) increment += increment / 4
 
-    increment += getMincFactor(notes[0]!.time, defaultIncrement, layoutMinc)
+    increment += getMincFactor(requireDefined(notes[0], 'BeatPacker._packMethod0(): missing first note').time, defaultIncrement, layoutMinc)
 
     newbeat += increment
     result[beat] = newbeat
@@ -255,7 +256,7 @@ function _packMethod10(song: Song, layoutLines: number[], conf: Confstack): Beat
     if (measureStart) increment += increment / 4
     if (isNewPart) increment += increment
 
-    increment += getMincFactor(notesOnBeat[0]!.time, increment, layoutMinc)
+    increment += getMincFactor(requireDefined(notesOnBeat[0], 'BeatPacker._packMethod2(): missing first note').time, increment, layoutMinc)
 
     currentBeat += increment
     result[beat] = currentBeat
@@ -289,7 +290,7 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const result: BeatCompressionMap = {}
 
   for (const beat of sortedBeats) {
-    const notes = beats.get(beat)!
+    const notes = requireDefined(beats.get(beat), `BeatPacker._packMethod10(): missing notes for beat ${beat}`)
     const maxDuration = Math.max(...notes.map(n => n.duration))
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
     const size = beatResolution * sizeFactor
@@ -310,9 +311,12 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
       const prev = note.prevPitch ?? note.pitch
       const next = note.nextPitch ?? note.pitch
       const a = [prev, note.pitch, next]
+      const left = requireDefined(a[0], 'BeatPacker._packMethod10(): missing inversion pitch value')
+      const middle = requireDefined(a[1], 'BeatPacker._packMethod10(): missing inversion pitch value')
+      const right = requireDefined(a[2], 'BeatPacker._packMethod10(): missing inversion pitch value')
       const isMonotone = (
-        (a[0]! >= a[1]! && a[1]! >= a[2]!) ||
-        (a[0]! <= a[1]! && a[1]! <= a[2]!)
+        (left >= middle && middle >= right) ||
+        (left <= middle && middle <= right)
       )
       return !isMonotone
     })
@@ -337,7 +341,7 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
     }
     if (measureStart) increment += increment / 4
 
-    increment += getMincFactor(notes[0]!.time, defaultIncrement, layoutMinc)
+    increment += getMincFactor(requireDefined(notes[0], 'BeatPacker._packMethod10(): missing first note').time, defaultIncrement, layoutMinc)
 
     newbeat += increment
     for (const note of notes) {
@@ -375,7 +379,7 @@ function _packMethod3(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const result: BeatCompressionMap = {}
 
   for (const beat of sortedBeats) {
-    const notes = beats.get(beat)!
+    const notes = requireDefined(beats.get(beat), `BeatPacker._packMethod3(): missing notes for beat ${beat}`)
 
     // 1. Kollisions-Range berechnen: alle Pitches zwischen prevPitch und pitch
     collisionRange = {}
@@ -404,8 +408,8 @@ function _packMethod3(song: Song, layoutLines: number[], conf: Confstack): BeatC
 
     const collisions = collisionCandidateKeys
       .map(k => {
-        const rangeEntry = collisionRange[k]!
-        const stackEntry = collisionStack[k]!
+        const rangeEntry = requireDefined(collisionRange[k], `BeatPacker._packMethod3(): missing collision range entry for pitch ${k}`)
+        const stackEntry = requireDefined(collisionStack[k], `BeatPacker._packMethod3(): missing collision stack entry for pitch ${k}`)
         const sizeFactor = getSizeFactor(rangeEntry.note.duration, durationToStyle)
         const size = beatResolution * sizeFactor
         const collisionType = `${stackEntry.kind}-${rangeEntry.kind}`
@@ -440,7 +444,7 @@ function _packMethod3(song: Song, layoutLines: number[], conf: Confstack): BeatC
     let increment = defaultIncrement
     if (isNewPart) increment += defaultIncrement
     if (measureStart) increment += increment / 4
-    increment += getMincFactor(notes[0]!.time, defaultIncrement, layoutMinc)
+    increment += getMincFactor(requireDefined(notes[0], 'BeatPacker._packMethod3(): missing first note').time, defaultIncrement, layoutMinc)
 
     newbeat += increment
 
@@ -448,7 +452,7 @@ function _packMethod3(song: Song, layoutLines: number[], conf: Confstack): BeatC
     for (const k of Object.keys(collisionRange).map(Number)) {
       collisionStack[k] = {
         beat: newbeat,
-        kind: collisionRange[k]!.kind,
+        kind: requireDefined(collisionRange[k], `BeatPacker._packMethod3(): missing collision range entry for pitch ${k}`).kind,
         inc: increment,
       }
     }
