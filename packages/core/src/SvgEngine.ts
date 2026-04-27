@@ -20,6 +20,7 @@ import type {
   Image,
 } from '@zupfnoter/types'
 import { GLYPHS } from './glyphs.js'
+import { requireDefined } from './requireDefined.js'
 
 // ---------------------------------------------------------------------------
 // Constants (from legacy svg_engine.rb)
@@ -127,7 +128,8 @@ function svgText(
 function pathFromPoints(points: [number, number][]): string {
   if (points.length === 0) return ''
   const [first, ...rest] = points
-  return `M${first![0]},${first![1]} ` + rest.map(([x, y]) => `L${x},${y}`).join(' ')
+  const start = requireDefined(first, 'SvgEngine.pathFromPoints(): expected first point')
+  return `M${start[0]},${start[1]} ` + rest.map(([x, y]) => `L${x},${y}`).join(' ')
 }
 
 function dashArray(style: 'solid' | 'dashed' | 'dotted', lineWidth: number): string | undefined {
@@ -294,7 +296,10 @@ export class SvgEngine {
 
   private _drawAnnotation(el: Annotation): string {
     const [x, y] = el.center
-    const style = this._fontStyles[el.style] ?? this._fontStyles['regular']!
+    let style = this._fontStyles[el.style]
+    if (style === undefined) {
+      style = requireDefined(this._fontStyles['regular'], 'SvgEngine: missing default font style "regular"')
+    }
     const fontSize = style.fontSize
     const fontWeight = style.fontStyle.includes('bold') ? 'bold' : 'normal'
     const fontStyle  = style.fontStyle.includes('italic') ? 'italic' : 'normal'
