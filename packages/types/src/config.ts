@@ -221,6 +221,8 @@ export interface ZupfnoterConfig {
   layout: LayoutConfig
   extract: Record<string, ExtractConfig>
   printer: PrinterConfig
+  /** Reihenfolge der zu erzeugenden Extrakte. Legacy-default für Sheet-Fixtures ist der erste Eintrag. */
+  produce?: number[]
   /** Preset-Schnelleinstellungen für den Konfigurations-Editor (addconf). */
   presets?: Record<string, Record<string, unknown>>
 }

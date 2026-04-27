@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "pnpm --filter @zupfnoter/demo dev",
     "build": "pnpm -r run build",
+    "test": "pnpm -r run test:unit",
+    "test:gaps": "pnpm --filter @zupfnoter/core run test:gaps",
     "test:loadsample": "node ./tools/load-legacy-fixtures.mjs",
     "test:unit": "pnpm -r run test:unit",
     "type-check": "pnpm -r run type-check",

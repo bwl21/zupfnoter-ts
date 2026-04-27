@@ -13,14 +13,16 @@ fixtures/
     ├── single_note/
     │   ├── input.abc       # ABC-Notation, optional mit %%%%zupfnoter.config
     │   ├── song.json       # Stufe-2-Referenz: Song
-    │   ├── sheet.json      # Stufe-3-Referenz: Sheet
+    │   ├── sheet.json      # Stufe-3-Referenz: Sheet (Fallback/Legacy alias für Extrakt 0)
+    │   ├── sheet.extract-0.json # Stufe-3-Referenz für einen konkreten Extrakt
     │   └── _ts_output/     # generierte TS-Ausgabe, nicht Referenz
     └── ...
 ```
 
 Die Tests scannen `fixtures/cases/*/input.abc` automatisch. Ein neuer Testfall wird
 für Song-Vergleiche aufgenommen, sobald zusätzlich `song.json` existiert; für
-Sheet-Vergleiche entsprechend mit `sheet.json`.
+Sheet-Vergleiche entsprechend mit `sheet.json` oder mindestens einer
+`sheet.extract-<nr>.json`.
 
 Bekannte, noch nicht portierte Legacy-Aspekte werden nicht testfallspezifisch im
 Fixture-Verzeichnis gepflegt, sondern zentral im Testcode als globale Capability-Liste.
@@ -105,6 +107,7 @@ Für jede Eingabedatei wird geschrieben:
 fixtures/cases/<test-case>/input.abc
 fixtures/cases/<test-case>/song.json
 fixtures/cases/<test-case>/sheet.json
+fixtures/cases/<test-case>/sheet.extract-<nr>.json
 ```
 
 Wenn die Eingabe `fixtures/cases/<name>/input.abc` heißt, verwendet der Exporter
@@ -126,6 +129,7 @@ Nach dem Befüllen der Fixtures:
 
 ```bash
 pnpm --filter @zupfnoter/core run test:unit
+npm run test:gaps
 ```
 
 Schlagen Tests fehl, zeigt `formatMismatches` den genauen Pfad der Abweichung:
@@ -134,6 +138,10 @@ voices[0].entities[2].pitch:
   expected: 60
   actual:   48
 ```
+
+`npm run test:gaps` gibt zusätzlich eine kompakte Prompt-Zusammenfassung der aktuell
+gepflegten Gap-IDs aus, damit `packages/core/src/testing/openImplementations.ts`
+gezielt manuell bereinigt oder ergänzt werden kann.
 
 ## TS-Ausgabe als Bootstrap-Referenz
 
@@ -190,6 +198,11 @@ cp fixtures/cases/<name>/_ts_output/sheet.json fixtures/cases/<name>/sheet.json
   ]
 }
 ```
+
+Bei mehreren zu vergleichenden Extrakten liegen zusätzlich Dateien der Form
+`sheet.extract-<nr>.json` im Testfallordner. Die Sheet-Vergleichstests iterieren über
+diese Extrakt-Fixtures einzeln. Fehlen sie, wird aus Kompatibilitätsgründen `sheet.json`
+als Extrakt-0-Referenz verwendet.
 
 ## Vergleichsstrategie
 

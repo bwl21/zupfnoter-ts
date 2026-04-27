@@ -17,13 +17,6 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     refs: ['packages/core/src/AbcToSong.ts'],
   },
   {
-    id: 'sheet.extract-produce-selection',
-    stage: 'sheet',
-    scope: 'fixture rendering',
-    summary: 'Fixture rendering always calls HarpnotesLayout.layout(song, 0, \'A4\'); it does not derive extract/page selection from configuration.',
-    refs: ['packages/core/src/testing/fixtureLoader.ts'],
-  },
-  {
     id: 'sheet.repeat-sign-layout',
     stage: 'sheet',
     scope: 'extract.repeatsigns',
@@ -120,14 +113,11 @@ export function getOpenImplementations(
 export function formatOpenImplementations(entries: OpenImplementation[]): string {
   if (entries.length === 0) return ''
 
-  const lines = ['Open implementations for this stage:']
-  for (const entry of entries) {
-    const scope = entry.scope ? ` (${entry.scope})` : ''
-    lines.push(`- ${entry.id}${scope}: ${entry.summary}`)
-    if (entry.refs && entry.refs.length > 0) {
-      lines.push(`  refs: ${entry.refs.join(', ')}`)
-    }
-  }
+  const ids = entries.map((entry) => entry.id)
+  const lines = [
+    `Open implementations for this stage (${entries.length}): ${ids.join(', ')}`,
+    `Prompt: implement the listed gaps with legacy parity, then remove the completed ids from packages/core/src/testing/openImplementations.ts.`,
+  ]
 
   return lines.join('\n')
 }

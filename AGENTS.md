@@ -6,6 +6,9 @@ Zupfnoter (`bwl21/zupfnoter` → `bwl21/zupfnoter-ts`).
 Referenz-Dokumentation: `docs/` in diesem Repository (kopiert aus `bwl21/zupfnoter`,
 Branch `feature/voice-styles_and-other-concepts`, Ordner `30_sources/SRC_Zupfnoter/docs/`).
 
+Lokale Legacy-Codebasis für Portierungsvergleiche: `../200_zupfnoter/30_sources/SRC_Zupfnoter/`.
+Nicht verwechseln mit `../200_Zupfnotenprojekte/`, das Projektmaterial und Exporte enthält, aber nicht die maßgebliche Legacy-Implementierung.
+
 Terminologie- und Übersetzungsregeln: [docs/glossary.md](docs/glossary.md)
 
 ---

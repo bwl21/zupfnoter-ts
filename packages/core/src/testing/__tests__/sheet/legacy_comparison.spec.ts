@@ -14,22 +14,31 @@
 import { describe, it, expect } from 'vitest'
 
 import { matchSheet, formatMismatches } from '../../semanticMatch.js'
-import { loadFixture, scanFixtureCases, transformFixtureToSheet } from '../../fixtureLoader.js'
+import { getSheetFixtureTargets, loadFixture, scanFixtureCases, transformFixtureToSheet } from '../../fixtureLoader.js'
 import { formatOpenImplementations, getOpenImplementations } from '../../openImplementations.js'
 
 const SHEET_FIXTURES = scanFixtureCases().filter((testCase) => testCase.hasSheetFixture)
 
 describe('Sheet fixtures', () => {
   for (const testCase of SHEET_FIXTURES) {
-    it(`matches legacy output: ${testCase.id}`, () => {
-      const fixture = loadFixture(testCase)
-      if (fixture.sheet === null) throw new Error(`Missing sheet fixture for ${testCase.id}`)
-      const actual = transformFixtureToSheet(fixture)
-      const result = matchSheet(actual, fixture.sheet)
-      const openImplementations = getOpenImplementations('sheet')
-      const knownGaps = formatOpenImplementations(openImplementations)
-      const failureMessage = [formatMismatches(result), knownGaps].filter(Boolean).join('\n\n')
-      expect(result.passed, failureMessage).toBe(true)
-    })
+    const fixture = loadFixture(testCase)
+    const targets = getSheetFixtureTargets(fixture)
+
+    for (const target of targets) {
+      it(`matches legacy output: ${testCase.id} [extract ${target.extractNr}]`, () => {
+        const actual = transformFixtureToSheet(fixture, target.extractNr)
+        const result = matchSheet(actual, target.expected)
+        const openImplementations = getOpenImplementations('sheet')
+        const knownGaps = formatOpenImplementations(openImplementations)
+        const failureMessage = [formatMismatches(result), knownGaps].filter(Boolean).join('\n\n')
+        expect(result.passed, failureMessage).toBe(true)
+      })
+    }
+
+    if (targets.length === 0) {
+      it(`matches legacy output: ${testCase.id}`, () => {
+        throw new Error(`Missing sheet fixture for ${testCase.id}`)
+      })
+    }
   }
 })
