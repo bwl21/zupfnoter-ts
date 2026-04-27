@@ -142,8 +142,15 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
         flowlines: [1, 3],
         subflowlines: [2, 4],
         jumplines: [1, 3],
+        repeatsigns: {
+          voices: [],
+          left: { pos: [-7, -2], text: '|:', style: 'bold' },
+          right: { pos: [5, -2], text: ':|', style: 'bold' },
+        },
         layoutlines: [1, 2, 3, 4],
-        legend: { spos: [320, 27], pos: [320, 7] },
+        legend: { spos: [320, 27], pos: [320, 7], tstyle: 'large', align: 'r', style: 'regular' },
+        lyrics: {},
+        nonflowrest: false,
         barnumbers: {
           voices: [],
           pos: [6, -4],
@@ -151,6 +158,21 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
           apanchor: 'box',
           apbase: [1, 1],
           style: 'small_bold',
+          prefix: '',
+        },
+        countnotes: {
+          voices: [],
+          pos: [3, -2],
+          autopos: true,
+          apbase: [1, -0.5],
+          apanchor: 'box',
+          style: 'smaller',
+        },
+        stringnames: {
+          text: 'G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G',
+          vpos: [],
+          style: 'small',
+          marks: { vpos: [11], hpos: [43, 55, 79] },
         },
         notes: {},
         printer: {

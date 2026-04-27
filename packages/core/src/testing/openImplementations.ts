@@ -38,13 +38,6 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     refs: ['packages/core/src/HarpnotesLayout.ts'],
   },
   {
-    id: 'sheet.lyrics-config',
-    stage: 'sheet',
-    scope: 'extract.lyrics',
-    summary: 'Lyrics are laid out with a generic per-note offset and style instead of configured verse groups, positions, and styles.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-  },
-  {
     id: 'sheet.nonflowrest-config',
     stage: 'sheet',
     scope: 'extract.nonflowrest',
@@ -56,13 +49,6 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     stage: 'sheet',
     scope: 'extract.countnotes',
     summary: 'Countnote annotations are not rendered from configuration yet.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-  },
-  {
-    id: 'sheet.stringnames-config',
-    stage: 'sheet',
-    scope: 'extract.stringnames',
-    summary: 'Config-driven string name layout is not implemented yet.',
     refs: ['packages/core/src/HarpnotesLayout.ts'],
   },
   {
@@ -80,24 +66,10 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     refs: ['packages/core/src/HarpnotesLayout.ts'],
   },
   {
-    id: 'sheet.legend-secondary-position',
-    stage: 'sheet',
-    scope: 'extract.legend.spos',
-    summary: 'The secondary legend position used by the legacy renderer is not evaluated yet.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-  },
-  {
     id: 'sheet.filenamepart-and-footers',
     stage: 'sheet',
     scope: 'extract.filenamepart',
     summary: 'Filename-part-driven footer and reference-sheet text behavior is not implemented with legacy parity.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-  },
-  {
-    id: 'sheet.top-level-annotation-definitions',
-    stage: 'sheet',
-    scope: 'top-level annotations',
-    summary: 'Top-level annotation definitions are not yet resolved through the legacy annotation pipeline.',
     refs: ['packages/core/src/HarpnotesLayout.ts'],
   },
 ]
