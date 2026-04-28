@@ -7,9 +7,9 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 11
+- Total open implementations: 10
 - Song gaps: 0
-- Sheet gaps: 11
+- Sheet gaps: 10
 - Known-covered failures: 14
 - New unclassified failures: 0
 
@@ -25,13 +25,6 @@ No open gaps.
   - Summary: Legacy inline directives such as %%%%hnc, %%%%hna, and %%%%hn.legend are not parsed and mapped to the TypeScript config model yet.
   - Prompt: Investigate legacy inline ABC directives such as %%%%hnc, %%%%hna, and %%%%hn.legend, reproduce with the 02_twoStaff sheet legacy comparison test, implement parsing and config mapping with legacy parity, then remove this id from fixtures/openImplementations.ts.
   - Refs: packages/core/src/extractSongConfig.ts, packages/core/src/HarpnotesLayout.ts
-
-- [ ] sheet.barnumbers-config
-  - Fixtures: 3015_reference_sheet
-  - Scope: extract.barnumbers
-  - Summary: Barnumber layout ignores config fields such as pos, autopos, style, and prefix; current output uses a fixed placement and style.
-  - Prompt: Investigate barnumber config parity in 3015_reference_sheet, reproduce with the sheet legacy comparison test, implement the remaining extract.barnumbers behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.nonflowrest-config
   - Fixtures: 3015_reference_sheet, 783_einsiedler-kreuzweg

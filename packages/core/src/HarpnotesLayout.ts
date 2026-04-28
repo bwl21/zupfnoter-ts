@@ -124,6 +124,35 @@ function swapJumplineAnchor(anchor: 'before' | 'after'): 'before' | 'after' {
   return anchor === 'before' ? 'after' : 'before'
 }
 
+function comparePosition(a: number, b: number): 1 | 2 | 3 {
+  if (a < b) return 1
+  if (a > b) return 3
+  return 2
+}
+
+function computeNotePosition(
+  previousX: number,
+  currentX: number,
+  nextX: number,
+): ['l' | 'r', 'l' | 'r'] {
+  if (currentX < 10) return ['r', 'r']
+  if (currentX > 410) return ['l', 'l']
+
+  const key = `${comparePosition(previousX, currentX)}${comparePosition(nextX, currentX)}`
+  const lookup: Record<string, ['l' | 'r', 'l' | 'r']> = {
+    '11': ['r', 'r'],
+    '12': ['r', 'l'],
+    '13': ['r', 'l'],
+    '21': ['r', 'r'],
+    '22': ['r', 'l'],
+    '23': ['l', 'l'],
+    '31': ['l', 'r'],
+    '32': ['l', 'r'],
+    '33': ['l', 'l'],
+  }
+  return lookup[key] ?? ['r', 'l']
+}
+
 function parseStringNamesText(text: string | undefined): string[] {
   return (text ?? '')
     .split(/\s+/)
@@ -987,15 +1016,11 @@ export class HarpnotesLayout {
       }
 
       if (barnumberVoices.has(voiceNr) && playable.measureStart && playable.measureCount) {
-        const basePos = (conf.get('extract.barnumbers.pos') as [number, number] | undefined) ?? [6, -4]
-        const autoPos = (conf.get('extract.barnumbers.autopos') as boolean | undefined) ?? true
-        const effectivePos: [number, number] = autoPos
-          ? [basePos[0] + layout.ELLIPSE_SIZE[0] - 0.125, basePos[1] + 3.025]
-          : basePos
+        const offset = this._barnumberOffset(playable, layout, voiceNr, conf)
 
         barnumbers.push({
           type: 'Annotation',
-          center: [x + effectivePos[0], y + effectivePos[1]],
+          center: [x + offset[0], y + offset[1]],
           text: `${(conf.get('extract.barnumbers.prefix') as string | undefined) ?? ''}${playable.measureCount}`,
           style: (conf.get('extract.barnumbers.style') as string | undefined) ?? 'small_bold',
           color: layout.color.color_default,
@@ -1006,6 +1031,45 @@ export class HarpnotesLayout {
     }
 
     return { barnumbers, countnotes }
+  }
+
+  private _barnumberOffset(
+    playable: PlayableEntity,
+    layout: LayoutConfig,
+    voiceNr: number,
+    conf: Confstack,
+  ): [number, number] {
+    const overrideKey = `extract.notebound.barnumber.v_${voiceNr}.t_${playable.time}`
+    const overridePos = conf.get(`${overrideKey}.pos`) as [number, number] | undefined
+    if (overridePos) return overridePos
+
+    const fixedPos = (conf.get('extract.barnumbers.pos') as [number, number] | undefined) ?? [6, -4]
+    const autoPos = (conf.get('extract.barnumbers.autopos') as boolean | undefined) ?? true
+    if (!autoPos) return fixedPos
+
+    const overrideAlign = conf.get(`${overrideKey}.align`) as 'l' | 'r' | 'auto' | undefined
+    const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
+    const apanchor = (conf.get('extract.barnumbers.apanchor') as string | undefined) ?? 'box'
+    const apbase = (conf.get('extract.barnumbers.apbase') as [number, number] | undefined) ?? [1, 1]
+    const size = playableSize(playable, layout)
+    const sizeWithDot: [number, number] = [
+      size[0] + (playable.type === 'Note' && playable.duration % 3 === 0 ? 1 : 0),
+      size[1],
+    ]
+    const previous = playable.prevPlayable ?? playable
+    const next = playable.nextPlayable ?? playable
+    const previousX = pitchToX(previous.pitch, layout)
+    const currentX = pitchToX(playable.pitch, layout)
+    const nextX = pitchToX(next.pitch, layout)
+    const [defaultSide] = bottomup
+      ? computeNotePosition(nextX, currentX, previousX).reverse() as ['l' | 'r', 'l' | 'r']
+      : computeNotePosition(previousX, currentX, nextX)
+    const side = overrideAlign && overrideAlign !== 'auto' ? overrideAlign : defaultSide
+    const tieOffset = side === 'r' && (playable.tieStart || playable.tieEnd) ? 1 : 0
+    const dsizeY = apanchor === 'center' ? 0 : size[1]
+    const x = tieOffset + (side === 'l' ? -(size[0] + apbase[0]) : sizeWithDot[0] + apbase[0])
+    const y = bottomup ? dsizeY + apbase[1] : -(dsizeY + apbase[1] + 2.7)
+    return [x, y]
   }
 
   // ---------------------------------------------------------------------------

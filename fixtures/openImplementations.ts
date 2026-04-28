@@ -29,15 +29,6 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     prompt: 'Investigate legacy inline ABC directives such as %%%%hnc, %%%%hna, and %%%%hn.legend, reproduce with the 02_twoStaff sheet legacy comparison test, implement parsing and config mapping with legacy parity, then remove this id from fixtures/openImplementations.ts.',
   },
   {
-    id: 'sheet.barnumbers-config',
-    stage: 'sheet',
-    scope: 'extract.barnumbers',
-    summary: 'Barnumber layout ignores config fields such as pos, autopos, style, and prefix; current output uses a fixed placement and style.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['3015_reference_sheet'],
-    prompt: 'Investigate barnumber config parity in 3015_reference_sheet, reproduce with the sheet legacy comparison test, implement the remaining extract.barnumbers behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
-  },
-  {
     id: 'sheet.nonflowrest-config',
     stage: 'sheet',
     scope: 'extract.nonflowrest',
