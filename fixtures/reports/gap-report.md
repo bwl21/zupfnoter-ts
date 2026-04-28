@@ -7,9 +7,9 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 10
+- Total open implementations: 8
 - Song gaps: 0
-- Sheet gaps: 10
+- Sheet gaps: 8
 - Known-covered failures: 14
 - New unclassified failures: 0
 
@@ -25,20 +25,6 @@ No open gaps.
   - Summary: Legacy inline directives such as %%%%hnc, %%%%hna, and %%%%hn.legend are not parsed and mapped to the TypeScript config model yet.
   - Prompt: Investigate legacy inline ABC directives such as %%%%hnc, %%%%hna, and %%%%hn.legend, reproduce with the 02_twoStaff sheet legacy comparison test, implement parsing and config mapping with legacy parity, then remove this id from fixtures/openImplementations.ts.
   - Refs: packages/core/src/extractSongConfig.ts, packages/core/src/HarpnotesLayout.ts
-
-- [ ] sheet.nonflowrest-config
-  - Fixtures: 3015_reference_sheet, 783_einsiedler-kreuzweg
-  - Scope: extract.nonflowrest
-  - Summary: The nonflowrest option is not evaluated when deciding pause and flowline behavior.
-  - Prompt: Investigate nonflowrest parity for the listed fixtures, reproduce with the sheet legacy comparison tests, implement extract.nonflowrest handling in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
-
-- [ ] sheet.countnotes-config
-  - Fixtures: 3015_reference_sheet
-  - Scope: extract.countnotes
-  - Summary: Countnote annotations are not rendered from configuration yet.
-  - Prompt: Investigate countnote parity in 3015_reference_sheet, reproduce with the sheet legacy comparison test, implement the remaining extract.countnotes behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.notebound-annotation-overrides
   - Fixtures: 3015_reference_sheet

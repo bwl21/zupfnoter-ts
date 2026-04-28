@@ -30,6 +30,15 @@ function pipelineWithConfig(abcText: string, config: ZupfnoterConfig) {
   return { song, sheet }
 }
 
+function clonedDefaultConfig(): ZupfnoterConfig {
+  return {
+    ...defaultTestConfig,
+    extract: Object.fromEntries(
+      Object.entries(defaultTestConfig.extract).map(([key, value]) => [key, { ...value }]),
+    ),
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Fixtures
 // ---------------------------------------------------------------------------
@@ -65,6 +74,16 @@ K:C
 %%score (V1)
 V:V1 clef=treble-8
 [V:V1] C z E F |]`
+
+const ABC_TRAILING_PAUSE = `X:1
+T:Trailing Pause Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] C z |]`
 
 const ABC_REPEAT = `X:1
 T:Repeat Test
@@ -187,6 +206,28 @@ describe('HarpnotesLayout', () => {
       expect(glyphs[0]!.center[0]).toBeCloseTo(centeredX, 0)
       expect(glyphs[0]!.center[0]).not.toBeCloseTo(hardcodedX, 0)
     })
+
+    it('hides rests without flowlines unless nonflowrest is enabled', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = [1]
+      extract0.synchlines = []
+      extract0.nonflowrest = false
+
+      const hiddenSheet = pipelineWithConfig(ABC_TRAILING_PAUSE, config).sheet
+      const hiddenRests = hiddenSheet.children.filter((c): c is Glyph => c.type === 'Glyph')
+      expect(hiddenRests[0]?.visible).toBe(false)
+
+      extract0.nonflowrest = true
+      const visibleSheet = pipelineWithConfig(ABC_TRAILING_PAUSE, config).sheet
+      const visibleRests = visibleSheet.children.filter((c): c is Glyph => c.type === 'Glyph')
+      expect(visibleRests[0]?.visible).toBe(true)
+    })
   })
 
   describe('repeat / goto', () => {
@@ -206,6 +247,29 @@ describe('HarpnotesLayout', () => {
         (c): c is Annotation => c.type === 'Annotation' && /^\d+$/.test(c.text ?? ''),
       )
       expect(annotations.length).toBeGreaterThanOrEqual(3)
+    })
+
+    it('renders configured countnotes for each counted playable', () => {
+      const fixture = loadFixture('3015_reference_sheet')
+      const sheet = transformFixtureToSheet(fixture, 0)
+      const countnotes = sheet.children.filter(
+        (c): c is Annotation => c.type === 'Annotation' && c.style === 'smaller' && c.center[0] < 170 && c.center[1] < 200,
+      )
+      expect(countnotes.map((entry) => entry.text)).toEqual([
+        '1-2-3-4',
+        '1-2',
+        '3',
+        '4',
+        'u',
+        'e',
+        '1-2-3',
+        '4',
+        '1',
+        '2-3-4',
+        '1',
+        '2',
+        '3',
+      ])
     })
   })
 
