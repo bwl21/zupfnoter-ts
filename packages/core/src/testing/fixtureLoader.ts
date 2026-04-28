@@ -74,6 +74,10 @@ function fixtureCaseDir(name: string): string {
   return resolve(FIXTURE_CASES_ROOT, name)
 }
 
+function resolveSongFixturePath(dir: string): string {
+  return resolve(dir, 'song.extract-0.json')
+}
+
 function listSheetExtractFiles(dir: string): string[] {
   return readdirSync(dir)
     .filter((name) => /^sheet\.extract-\d+\.json$/.test(name))
@@ -109,7 +113,7 @@ export function scanFixtureCases(): FixtureCase[] {
       name,
       id: name,
       dir,
-      hasSongFixture: existsSync(resolve(dir, 'song.json')),
+      hasSongFixture: existsSync(resolve(dir, 'song.extract-0.json')),
       hasSheetFixture: existsSync(resolve(dir, 'sheet.json')) || listSheetExtractFiles(dir).length > 0,
     }))
     .sort((a, b) => a.id.localeCompare(b.id))
@@ -144,7 +148,7 @@ export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixtu
     dir,
     input: { abc },
     config: fixtureConfigFromAbc(abc),
-    song: safeLoadJson<SongFixture>(resolve(dir, 'song.json')),
+    song: safeLoadJson<SongFixture>(resolveSongFixturePath(dir)),
     sheet: safeLoadJson<SheetFixture>(resolve(dir, 'sheet.json')),
     sheetExtracts,
     output_svg: safeLoadText(resolve(dir, 'output.svg')),
@@ -152,7 +156,7 @@ export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixtu
 }
 
 export function loadSongFixture(name: string): SongFixture {
-  return loadJson<SongFixture>(resolve(fixtureCaseDir(name), 'song.json'))
+  return loadJson<SongFixture>(resolveSongFixturePath(fixtureCaseDir(name)))
 }
 
 export function loadSheetFixture(name: string): SheetFixture {

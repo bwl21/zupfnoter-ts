@@ -5,7 +5,7 @@
  * Each test:
  *   1. Loads an ABC fixture via the central fixture loader
  *   2. Runs the real AbcParser + AbcToSong pipeline with fixture config
- *   3. Compares the result against fixtures/cases/<name>/song.json
+ *   3. Compares the result against fixtures/cases/<name>/song.extract-0.json
  *      using semantic matching (type, pitch, duration, beat, variant, visible)
  *
  * Fixtures must be populated from the legacy Ruby system before these tests pass.

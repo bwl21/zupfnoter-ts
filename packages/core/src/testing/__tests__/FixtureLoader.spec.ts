@@ -5,6 +5,7 @@ import {
   fixtureAbcPath,
   getSheetFixtureTargets,
   loadFixture,
+  loadSongFixture,
   loadSheetExtractFixture,
   resolveFixtureSheetRenderTarget,
   scanFixtureCases,
@@ -60,13 +61,20 @@ describe('fixtureLoader', () => {
     expect(targets[0]?.expected).toEqual(loadSheetExtractFixture('3015_reference_sheet', 0))
   })
 
+  it('loads song fixtures from song.extract-0.json', () => {
+    const fixture = loadFixture('repeat')
+
+    expect(fixture.song?.beat_maps).toEqual(loadSongFixture('repeat').beat_maps)
+    expect(fixture.song?.beat_maps).toEqual([{ '0': 0, '48': 48, '96': 96, '144': 144 }])
+  })
+
   it('falls back to sheet.json as extract 0 when no extract-specific sheet fixtures exist', () => {
     const fixture = loadFixture('single_note')
     const targets = getSheetFixtureTargets(fixture)
 
-    expect(Object.keys(fixture.sheetExtracts)).toEqual([])
+    expect(Object.keys(fixture.sheetExtracts)).toEqual(['0'])
     expect(targets.map((target) => target.extractNr)).toEqual([0])
-    expect(targets[0]?.expected).toEqual(fixture.sheet)
+    expect(targets[0]?.expected).toEqual(fixture.sheetExtracts['0'])
   })
 
   it('keeps sheet fixture rendering on the legacy edit-view target', () => {
@@ -103,7 +111,9 @@ describe('fixtureLoader', () => {
     expect(openSheetImplementations.length).toBeGreaterThan(0)
     expect(formatted).toContain('Open implementations for this stage (')
     expect(formatted).toContain('sheet.barnumbers-config')
-    expect(formatted).toContain('Prompt: implement the listed gaps with legacy parity')
+    expect(formatted).toContain('Entries:')
+    expect(formatted).toContain('fixtures: 3015_reference_sheet')
+    expect(formatted).toContain('prompt: Investigate barnumber config parity')
   })
 
   it('discovers fixture cases from test case directories', () => {

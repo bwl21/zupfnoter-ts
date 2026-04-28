@@ -135,6 +135,29 @@ export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResul
     return { passed: false, mismatches }
   }
 
+  if (actual.beat_maps.length !== fixture.beat_maps.length) {
+    fail(mismatches, 'beat_maps.length', fixture.beat_maps.length, actual.beat_maps.length)
+    return { passed: false, mismatches }
+  }
+
+  for (let bi = 0; bi < fixture.beat_maps.length; bi++) {
+    const actualBeatMap = actual.beat_maps[bi]
+    const expectedBeatMap = fixture.beat_maps[bi]
+    if (actualBeatMap === undefined || expectedBeatMap === undefined) continue
+
+    const normalizedActualBeatMap = normalizeBeatMap(actualBeatMap)
+    const normalizedExpectedBeatMap = normalizeBeatMap(expectedBeatMap)
+
+    if (!compareFixtureValue(normalizedActualBeatMap, normalizedExpectedBeatMap)) {
+      fail(
+        mismatches,
+        `beat_maps[${bi}]`,
+        normalizedExpectedBeatMap,
+        normalizedActualBeatMap,
+      )
+    }
+  }
+
   for (let vi = 0; vi < fixture.voices.length; vi++) {
     const actualVoice = actual.voices[vi]
     const expectedVoice = fixture.voices[vi]
@@ -164,6 +187,12 @@ export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResul
   }
 
   return { passed: mismatches.length === 0, mismatches }
+}
+
+function normalizeBeatMap(beatMap: Record<string, number>): Record<string, number> {
+  return Object.fromEntries(
+    Object.entries(beatMap).filter(([key, value]) => key !== 'entries' && typeof value === 'number'),
+  )
 }
 
 function compareSongEntity(actual: EntityFixture, expected: EntityFixture): boolean {

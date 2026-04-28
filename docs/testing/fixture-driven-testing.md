@@ -1,4 +1,4 @@
-# Fixture-Driven Testing Strategy
+# 	Fixture-Driven Testing Strategy
 
 Diese Datei beschreibt das **Konzept und den Ablauf** des fixture-driven Testings:
 - Vergleichslogik
@@ -20,7 +20,7 @@ ABC-Datei + Config
     ↓
 [Stufe 1: AbcParser]
     ↓
-[Stufe 2: AbcToSong] → fixture: song.json
+[Stufe 2: AbcToSong] → fixture: song.extract-0.json
     ↓
 [Stufe 3: HarpnotesLayout] → fixture: sheet.json oder sheet.extract-<nr>.json
     ↓
@@ -38,14 +38,14 @@ fixtures/
 └── cases/
     ├── <test-case>/
     │   ├── input.abc          # ABC-Notation + optionaler %%%%zupfnoter.config Block
-    │   ├── song.json          # Stufe 2: Song-Modell (Legacy Reference)
+    │   ├── song.extract-0.json # Stufe 2: Song-Modell (kanonische Song-Referenz)
     │   ├── sheet.json         # Stufe 3: Sheet-Modell für Extract 0 (Legacy Reference, Fallback)
     │   ├── sheet.extract-0.json
     │   ├── sheet.extract-1.json
     │   ├── ...
     │   ├── output.svg         # Stufe 4: SVG-String (Legacy Reference, geplant)
     │   └── _ts_output/        # TypeScript-Ausgabe (generiert)
-    │       ├── song.json
+    │       ├── song.extract-0.json
     │       ├── sheet.json
     │       └── output.svg
     └── ...
@@ -56,7 +56,7 @@ fixtures/
 - Legacy Reference: `fixtures/cases/<test-case>/<stufe>.json` (hand-gepflegt oder exportiert)
 - TypeScript Output: `fixtures/cases/<test-case>/_ts_output/<stufe>.json` (generiert)
 - Discovery: Tests scannen `fixtures/cases/*/input.abc`.
-- Stage-Aktivierung: Song-Tests laufen für Testfälle mit `song.json`; Sheet-Tests für Testfälle mit `sheet.json` oder mindestens einer `sheet.extract-<nr>.json`.
+- Stage-Aktivierung: Song-Tests laufen für Testfälle mit `song.extract-0.json`; Sheet-Tests für Testfälle mit `sheet.json` oder mindestens einer `sheet.extract-<nr>.json`.
 - Config: inline im ABC via `%%%%zupfnoter.config`; fehlt der Block, gelten `initConf()`-Defaults.
 - Keine separate `input.config.json`: Fixture-Tests verwenden genau dieselbe Config-Quelle wie die Pipeline.
 - Legacy-ABC-Direktiven wie `%%%%hnc`, `%%%%hna` oder `%%%%hn.legend` sind davon getrennt und müssen bei Bedarf explizit in die TS-Config-Extraktion überführt werden.
@@ -73,7 +73,7 @@ der Fixture-Bestand, welche Song- und Sheet-Vergleiche ausgeführt werden.
 
 ```mermaid
 flowchart TD
-  A[scanFixtureCases] --> B{song.json vorhanden?}
+  A[scanFixtureCases] --> B{song.extract-0.json vorhanden?}
   A --> C{sheet.json oder sheet.extract-N.json vorhanden?}
   B -->|ja| D[Song-Vergleichstest anlegen]
   C -->|ja| E[Sheet-Vergleichstest anlegen]
@@ -105,7 +105,7 @@ sequenceDiagram
   Parser-->>Vitest: AbcModel
   Vitest->>Song: transform(model, config)
   Song-->>Vitest: Song
-  Vitest->>Match: matchSong(actual, song.json)
+  Vitest->>Match: matchSong(actual, song.extract-0.json)
   Match-->>Vitest: passed + mismatches
   Vitest->>Gaps: getOpenImplementations('song')
   Gaps-->>Vitest: bekannte Song-Gaps
@@ -151,7 +151,7 @@ sequenceDiagram
 ```mermaid
 flowchart LR
   A[fixtureLoader] -->|liest| B[input.abc]
-  A -->|lädt| C[song.json]
+  A -->|lädt| C[song.extract-0.json]
   A -->|lädt| D[sheet.json / sheet.extract-N.json]
   A -->|baut| E[effektive Config]
   F[legacy_comparison.spec.ts] -->|steuert| A
@@ -167,7 +167,7 @@ flowchart LR
 ## Fixture-Extraktion aus Legacy-System
 
 Der Legacy-CLI besitzt einen expliziten Exportmodus. Er liest ABC-Dateien, führt die
-produktive Legacy-Pipeline aus und schreibt pro Testfall `input.abc`, `song.json` und
+produktive Legacy-Pipeline aus und schreibt pro Testfall `input.abc`, `song.extract-0.json` und
 für das Sheet entweder `sheet.extract-<nr>.json` oder als Fallback `sheet.json` in
 `fixtures/cases/<test-case>/`.
 
@@ -442,7 +442,7 @@ Deshalb gilt:
 1. **Keine parallelen `*.corrected.json`-Referenzen einführen.**
 2. Den Exporter im Legacy-System prüfen und korrigieren.
 3. Das betroffene Fixture **neu exportieren** und die bestehende Referenzdatei ersetzen:
-   - `song.json`
+   - `song.extract-0.json`
    - `sheet.json`
    - oder `sheet.extract-<nr>.json`
 4. Die generischen Vergleichstests bleiben unverändert.
