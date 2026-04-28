@@ -1,1 +1,2220 @@
-{"children":[{"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"Ellipse", "center":[71.8, 16.1376], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 17.9578], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 20.9441], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 19.1691], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 24.3569], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[48.8, 27.201], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 29.0212], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 32.0075], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[71.8, 30.2325], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 34.8515], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 36.6717], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 39.658], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 37.883], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 43.0708], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[48.8, 45.9149], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 47.7351], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 50.7213], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[71.8, 48.9463], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 53.5654], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 55.3856], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 57.7746], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 61.1875], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[152.3, 64.0315], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 65.8517], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 68.838], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[163.8, 67.063], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 71.682], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[152.3, 73.5022], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 76.4885], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 74.7135], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 79.3326], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 81.1527], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[83.3, 83.5418], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[83.3, 86.3858], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 88.206], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[48.8, 91.1923], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[48.8, 89.4173], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 94.0363], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 95.8565], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 98.8428], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 97.0678], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 102.2556], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[48.8, 105.0997], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 106.9199], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 109.9062], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[71.8, 108.1312], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 112.7502], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 114.5704], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 117.5567], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 115.7817], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 120.9695], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[48.8, 123.8136], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 125.6338], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 128.0228], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[71.8, 130.8669], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 132.687], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 135.6733], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 133.8983], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 139.0862], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[152.3, 141.9302], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 143.7504], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 146.7367], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[163.8, 144.9617], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 149.5807], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[152.3, 151.4009], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 154.3872], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 152.6122], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 157.2313], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 159.0514], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[83.3, 161.4405], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[83.3, 164.2845], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 166.1047], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[48.8, 169.091], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[48.8, 167.316], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 171.935], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[152.3, 173.7552], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 179.7277], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 177.9527], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 183.1406], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[152.3, 185.9847], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 187.8049], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 190.7911], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 189.0161], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 194.204], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[163.8, 197.048], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[152.3, 198.8682], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 201.2572], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 204.1013], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 205.9215], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[83.3, 208.3105], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[83.3, 211.1546], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 212.9748], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 215.961], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[71.8, 214.186], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 218.8051], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[152.3, 220.6253], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 223.6115], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 221.8365], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 227.0244], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[186.8, 229.8684], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 231.6886], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[209.8, 234.6749], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[209.8, 232.8999], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[209.8, 238.0878], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[209.8, 240.9318], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[186.8, 242.752], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 245.7383], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 243.9633], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[163.8, 248.5823], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[152.3, 250.4025], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 252.7915], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 255.6356], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 257.4558], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 260.4421], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[106.3, 258.6671], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[71.8, 266.1302], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 267.9504], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 270.9366], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 269.1616], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[129.3, 274.3495], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[48.8, 277.1935], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[25.8, 279.0137], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[25.8, 282], "size":[2.625, 1.275], "fill":"empty", "color":"black"}, {"type":"Ellipse", "center":[25.8, 280.225], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Annotation", "center":[320, 7], "text":"Zupfnoter test - Twostaff.abc\nZupfnoter test parts\nZupfnoter test pausen\nO Haupt voll Blut und Wunden\nNun danket alle Gott\nHeilig, heilig\nGreen Fields of France\nNothing else Matters\nHighland Cathedral\nHighland Cathedral (Bernhard)\nHighland Cathedral (Bernhard)\nHighland Cathedral\nStern auf den ich schaue\nFür den König", "style":"large", "color":"black"}, {"type":"Annotation", "center":[320, 27], "text":"alle Stimmen\nBernhard Weichel\nBernhard Weichel\nBernhard Weichel\nBWV 244-54\nBWV 252\nBWV 325\nMetallicA\nHarpnotes by Bernhard Weichel\nNotensatz: Bernhard Weichel\nAlbert Frey\nTakt: 4/4 (1/4=120)\nTonart: A", "style":"regular", "color":"black"}, {"type":"Annotation", "center":[150, 289], "text":" - created 2026-04-28 15:40:20 by Zupfnoter v1.17.1-10-g89884bbe [zupfnoter-cli]", "style":"smaller", "color":"black"}, {"type":"Annotation", "center":[325, 289], "text":"Zupfnoter: https://www.zupfnoter.de", "style":"smaller", "color":"black"}, {"type":"Annotation", "center":[380, 289], "text":"621 756 992", "style":"smaller", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Annotation", "center":[143.675, 4], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[143.675, 290], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[281.675, 4], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[281.675, 290], "text":"x", "style":"small", "color":"black"}]}
+{
+  "children": [
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        16.1376
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        17.9578
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        20.9441
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        19.1691
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        24.3569
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        48.8,
+        27.201
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        29.0212
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        32.0075
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        30.2325
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        34.8515
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        36.6717
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        39.658
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        37.883
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        43.0708
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        48.8,
+        45.9149
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        47.7351
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        50.7213
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        48.9463
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        53.5654
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        55.3856
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        57.7746
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        61.1875
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        152.3,
+        64.0315
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        65.8517
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        68.838
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        67.063
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        71.682
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        152.3,
+        73.5022
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        76.4885
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        74.7135
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        79.3326
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        81.1527
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        83.3,
+        83.5418
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        83.3,
+        86.3858
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        88.206
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        48.8,
+        91.1923
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        48.8,
+        89.4173
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        94.0363
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        95.8565
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        98.8428
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        97.0678
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        102.2556
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        48.8,
+        105.0997
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        106.9199
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        109.9062
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        108.1312
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        112.7502
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        114.5704
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        117.5567
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        115.7817
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        120.9695
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        48.8,
+        123.8136
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        125.6338
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        128.0228
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        130.8669
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        132.687
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        135.6733
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        133.8983
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        139.0862
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        152.3,
+        141.9302
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        143.7504
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        146.7367
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        144.9617
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        149.5807
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        152.3,
+        151.4009
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        154.3872
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        152.6122
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        157.2313
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        159.0514
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        83.3,
+        161.4405
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        83.3,
+        164.2845
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        166.1047
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        48.8,
+        169.091
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        48.8,
+        167.316
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        171.935
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        152.3,
+        173.7552
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        179.7277
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        177.9527
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        183.1406
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        152.3,
+        185.9847
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        187.8049
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        190.7911
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        189.0161
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        194.204
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        197.048
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        152.3,
+        198.8682
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        201.2572
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        204.1013
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        205.9215
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        83.3,
+        208.3105
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        83.3,
+        211.1546
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        212.9748
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        215.961
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        214.186
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        218.8051
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        152.3,
+        220.6253
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        223.6115
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        221.8365
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        227.0244
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        186.8,
+        229.8684
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        231.6886
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        209.8,
+        234.6749
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        209.8,
+        232.8999
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        209.8,
+        238.0878
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        209.8,
+        240.9318
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        186.8,
+        242.752
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        245.7383
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        243.9633
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        163.8,
+        248.5823
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        152.3,
+        250.4025
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        252.7915
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        255.6356
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        257.4558
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        260.4421
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        258.6671
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        71.8,
+        266.1302
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        267.9504
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        270.9366
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        269.1616
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        129.3,
+        274.3495
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        48.8,
+        277.1935
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        25.8,
+        279.0137
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        25.8,
+        282
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "empty",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        25.8,
+        280.225
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        320,
+        7
+      ],
+      "text": "Zupfnoter test - Twostaff.abc\nZupfnoter test parts\nZupfnoter test pausen\nO Haupt voll Blut und Wunden\nNun danket alle Gott\nHeilig, heilig\nGreen Fields of France\nNothing else Matters\nHighland Cathedral\nHighland Cathedral (Bernhard)\nHighland Cathedral (Bernhard)\nHighland Cathedral\nStern auf den ich schaue\nFür den König",
+      "style": "large",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        320,
+        27
+      ],
+      "text": "alle Stimmen\nBernhard Weichel\nBernhard Weichel\nBernhard Weichel\nBWV 244-54\nBWV 252\nBWV 325\nMetallicA\nHarpnotes by Bernhard Weichel\nNotensatz: Bernhard Weichel\nAlbert Frey\nTakt: 4/4 (1/4=120)\nTonart: A",
+      "style": "regular",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        150,
+        289
+      ],
+      "text": " - created 2026-04-28 15:47:09 by Zupfnoter v1.17.1-10-g89884bbe [zupfnoter-cli]",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        325,
+        289
+      ],
+      "text": "Zupfnoter: https://www.zupfnoter.de",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        380,
+        289
+      ],
+      "text": "621 756 992",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        143.675,
+        4
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        143.675,
+        290
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        281.675,
+        4
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        281.675,
+        290
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    }
+  ]
+}

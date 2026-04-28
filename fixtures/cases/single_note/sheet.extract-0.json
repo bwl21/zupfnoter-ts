@@ -1,1 +1,119 @@
-{"children":[{"type":"Ellipse", "center":[60.3, 18], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Annotation", "center":[320, 7], "text":"Single Note Test", "style":"large", "color":"black"}, {"type":"Annotation", "center":[320, 27], "text":"alle Stimmen\nZupfnoter TS Tests\nTakt: 4/4 (1/4=120)\nTonart: C", "style":"regular", "color":"black"}, {"type":"Annotation", "center":[150, 289], "text":" - created 2026-04-28 15:40:22 by Zupfnoter v1.17.1-10-g89884bbe [zupfnoter-cli]", "style":"smaller", "color":"black"}, {"type":"Annotation", "center":[325, 289], "text":"Zupfnoter: https://www.zupfnoter.de", "style":"smaller", "color":"black"}, {"type":"Annotation", "center":[380, 289], "text":"305 876 591", "style":"smaller", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Annotation", "center":[143.675, 4], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[143.675, 290], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[281.675, 4], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[281.675, 290], "text":"x", "style":"small", "color":"black"}]}
+{
+  "children": [
+    {
+      "type": "Ellipse",
+      "center": [
+        60.3,
+        18
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        320,
+        7
+      ],
+      "text": "Single Note Test",
+      "style": "large",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        320,
+        27
+      ],
+      "text": "alle Stimmen\nZupfnoter TS Tests\nTakt: 4/4 (1/4=120)\nTonart: C",
+      "style": "regular",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        150,
+        289
+      ],
+      "text": " - created 2026-04-28 15:47:12 by Zupfnoter v1.17.1-10-g89884bbe [zupfnoter-cli]",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        325,
+        289
+      ],
+      "text": "Zupfnoter: https://www.zupfnoter.de",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        380,
+        289
+      ],
+      "text": "305 876 591",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        143.675,
+        4
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        143.675,
+        290
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        281.675,
+        4
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        281.675,
+        290
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    }
+  ]
+}

@@ -1,1 +1,245 @@
-{"children":[{"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"Ellipse", "center":[60.3, 18.75], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[60.3, 16.975], "size":[2.625, 0.25], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[83.3, 24.75], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[106.3, 30.75], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[117.8, 36.75], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Ellipse", "center":[109.7445, 29.2375], "size":[0.6445, 1.2512], "fill":"filled", "color":"white"}, {"type":"Ellipse", "center":[121.6731, 35.3375], "size":[1.0731, 1.7875], "fill":"filled", "color":"white"}, {"type":"Glyph", "center":[60.3, 14.75], "size":[2.1, 1.02], "glyphName":"fermata", "color":"black"}, {"type":"Annotation", "center":[109.3, 27.75], "text":"f", "style":"small_italic", "color":"black"}, {"type":"Annotation", "center":[120.8, 33.75], "text":"p", "style":"small_italic", "color":"black"}, {"type":"Annotation", "center":[320, 7], "text":"Decoration Test", "style":"large", "color":"black"}, {"type":"Annotation", "center":[320, 27], "text":"alle Stimmen\nZupfnoter TS Tests\nTakt: 4/4 (1/4=120)\nTonart: C", "style":"regular", "color":"black"}, {"type":"Annotation", "center":[150, 289], "text":" - created 2026-04-28 15:40:21 by Zupfnoter v1.17.1-10-g89884bbe [zupfnoter-cli]", "style":"smaller", "color":"black"}, {"type":"Annotation", "center":[325, 289], "text":"Zupfnoter: https://www.zupfnoter.de", "style":"smaller", "color":"black"}, {"type":"Annotation", "center":[380, 289], "text":"306 046 766", "style":"smaller", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Annotation", "center":[143.675, 4], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[143.675, 290], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[281.675, 4], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[281.675, 290], "text":"x", "style":"small", "color":"black"}]}
+{
+  "children": [
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        60.3,
+        18.75
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        60.3,
+        16.975
+      ],
+      "size": [
+        2.625,
+        0.25
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        83.3,
+        24.75
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        30.75
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        117.8,
+        36.75
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        109.7445,
+        29.2375
+      ],
+      "size": [
+        0.6445,
+        1.2512
+      ],
+      "fill": "filled",
+      "color": "white"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        121.6731,
+        35.3375
+      ],
+      "size": [
+        1.0731,
+        1.7875
+      ],
+      "fill": "filled",
+      "color": "white"
+    },
+    {
+      "type": "Glyph",
+      "center": [
+        60.3,
+        14.75
+      ],
+      "size": [
+        2.1,
+        1.02
+      ],
+      "glyphName": "fermata",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        109.3,
+        27.75
+      ],
+      "text": "f",
+      "style": "small_italic",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        120.8,
+        33.75
+      ],
+      "text": "p",
+      "style": "small_italic",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        320,
+        7
+      ],
+      "text": "Decoration Test",
+      "style": "large",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        320,
+        27
+      ],
+      "text": "alle Stimmen\nZupfnoter TS Tests\nTakt: 4/4 (1/4=120)\nTonart: C",
+      "style": "regular",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        150,
+        289
+      ],
+      "text": " - created 2026-04-28 15:47:11 by Zupfnoter v1.17.1-10-g89884bbe [zupfnoter-cli]",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        325,
+        289
+      ],
+      "text": "Zupfnoter: https://www.zupfnoter.de",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        380,
+        289
+      ],
+      "text": "306 046 766",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        143.675,
+        4
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        143.675,
+        290
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        281.675,
+        4
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        281.675,
+        290
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    }
+  ]
+}

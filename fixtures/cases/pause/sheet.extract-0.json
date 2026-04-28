@@ -1,1 +1,209 @@
-{"children":[{"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"FlowLine", "style":"solid", "color":"black"}, {"type":"Ellipse", "center":[60.3, 16.2], "size":[1.05, 0.51], "fill":"filled", "color":"black"}, {"type":"Glyph", "center":[71.8, 18.6], "size":[1.2, 0.6], "glyphName":"rest_16", "color":"black"}, {"type":"Ellipse", "center":[83.3, 21.8], "size":[1.75, 0.85], "fill":"filled", "color":"black"}, {"type":"Glyph", "center":[94.8, 25.8], "size":[1.6, 1], "glyphName":"rest_8", "color":"black"}, {"type":"Ellipse", "center":[106.3, 30.8], "size":[2.625, 1.275], "fill":"filled", "color":"black"}, {"type":"Glyph", "center":[106.3, 36.8], "size":[1.6, 1.5], "glyphName":"rest_4", "color":"black"}, {"type":"Annotation", "center":[320, 7], "text":"Pause Test", "style":"large", "color":"black"}, {"type":"Annotation", "center":[320, 27], "text":"alle Stimmen\nZupfnoter TS Tests\nTakt: 4/4 (1/4=120)\nTonart: C", "style":"regular", "color":"black"}, {"type":"Annotation", "center":[150, 289], "text":" - created 2026-04-28 15:40:22 by Zupfnoter v1.17.1-10-g89884bbe [zupfnoter-cli]", "style":"smaller", "color":"black"}, {"type":"Annotation", "center":[325, 289], "text":"Zupfnoter: https://www.zupfnoter.de", "style":"smaller", "color":"black"}, {"type":"Annotation", "center":[380, 289], "text":"305 935 185", "style":"smaller", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Path", "color":"black"}, {"type":"Annotation", "center":[143.675, 4], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[143.675, 290], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[281.675, 4], "text":"x", "style":"small", "color":"black"}, {"type":"Annotation", "center":[281.675, 290], "text":"x", "style":"small", "color":"black"}]}
+{
+  "children": [
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "FlowLine",
+      "style": "solid",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        60.3,
+        16.2
+      ],
+      "size": [
+        1.05,
+        0.51
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Glyph",
+      "center": [
+        71.8,
+        18.6
+      ],
+      "size": [
+        1.2,
+        0.6
+      ],
+      "glyphName": "rest_16",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        83.3,
+        21.8
+      ],
+      "size": [
+        1.75,
+        0.85
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Glyph",
+      "center": [
+        94.8,
+        25.8
+      ],
+      "size": [
+        1.6,
+        1
+      ],
+      "glyphName": "rest_8",
+      "color": "black"
+    },
+    {
+      "type": "Ellipse",
+      "center": [
+        106.3,
+        30.8
+      ],
+      "size": [
+        2.625,
+        1.275
+      ],
+      "fill": "filled",
+      "color": "black"
+    },
+    {
+      "type": "Glyph",
+      "center": [
+        106.3,
+        36.8
+      ],
+      "size": [
+        1.6,
+        1.5
+      ],
+      "glyphName": "rest_4",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        320,
+        7
+      ],
+      "text": "Pause Test",
+      "style": "large",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        320,
+        27
+      ],
+      "text": "alle Stimmen\nZupfnoter TS Tests\nTakt: 4/4 (1/4=120)\nTonart: C",
+      "style": "regular",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        150,
+        289
+      ],
+      "text": " - created 2026-04-28 15:47:11 by Zupfnoter v1.17.1-10-g89884bbe [zupfnoter-cli]",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        325,
+        289
+      ],
+      "text": "Zupfnoter: https://www.zupfnoter.de",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        380,
+        289
+      ],
+      "text": "305 935 185",
+      "style": "smaller",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Path",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        143.675,
+        4
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        143.675,
+        290
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        281.675,
+        4
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    },
+    {
+      "type": "Annotation",
+      "center": [
+        281.675,
+        290
+      ],
+      "text": "x",
+      "style": "small",
+      "color": "black"
+    }
+  ]
+}
