@@ -11,6 +11,7 @@
 
 const POSITION_TOLERANCE = 0.1  // center, from, to
 const SIZE_TOLERANCE = 0.05     // size
+const CREATED_FOOTER_PATTERN = /^(.*) - created(?: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})? by Zupfnoter(?: .*)?$/
 
 // ---------------------------------------------------------------------------
 // Fixture types (shape of the JSON files in fixtures/cases/<name>/)
@@ -224,6 +225,16 @@ function compareFixtureValue(actual: unknown, expected: unknown): boolean {
   return actual === expected
 }
 
+function normalizeSheetText(text: string | undefined): string | undefined {
+  if (text === undefined) return undefined
+  const createdMatch = text.match(CREATED_FOOTER_PATTERN)
+  if (createdMatch) {
+    const filename = createdMatch[1] ?? ''
+    return `${filename} - created by Zupfnoter`
+  }
+  return text
+}
+
 // ---------------------------------------------------------------------------
 // Sheet comparison (Stufe 3)
 // ---------------------------------------------------------------------------
@@ -286,9 +297,13 @@ export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchRe
       fail(mismatches, `${cPath}.glyphName`, fc.glyphName, ac.glyphName)
     }
 
-    // text (exact)
-    if (fc.text !== undefined && ac.text !== fc.text) {
-      fail(mismatches, `${cPath}.text`, fc.text, ac.text)
+    // text (exact, except normalized created-footer timestamps)
+    if (fc.text !== undefined) {
+      const normalizedExpectedText = normalizeSheetText(fc.text)
+      const normalizedActualText = normalizeSheetText(ac.text)
+      if (normalizedActualText !== normalizedExpectedText) {
+        fail(mismatches, `${cPath}.text`, normalizedExpectedText, normalizedActualText)
+      }
     }
 
     // center (±0.1 mm)
