@@ -365,6 +365,11 @@ export class AbcToSong {
     if (state.repetitionStack.length === 0) {
       state.repetitionStack.push(entity)
     }
+    if (state.nextRepeatStart) {
+      entity.firstInPart = true
+      state.repetitionStack.push(entity)
+      state.nextRepeatStart = false
+    }
 
     state.previousNote = entity
 
@@ -428,6 +433,11 @@ export class AbcToSong {
     }
 
     state.previousNote = pause
+    if (state.nextRepeatStart) {
+      pause.firstInPart = true
+      state.repetitionStack.push(pause)
+      state.nextRepeatStart = false
+    }
     const barMarks = this._consumePendingBarMarks(pause, state, voiceIndex, sym)
     const extras = this._transformExtras(sym, pause, state, voiceIndex)
     const gotos = this._resolvePendingVariantGotos(pause, state, voiceIndex, sym)
@@ -507,9 +517,9 @@ export class AbcToSong {
       }
     }
 
-    // Repeat start → push to stack
-    if (sym.bar_type && sym.bar_type.endsWith(':') && state.previousNote) {
-      state.repetitionStack.push(state.previousNote)
+    // Repeat start → mark the next playable as repetition anchor.
+    if (sym.bar_type && sym.bar_type.endsWith(':')) {
+      state.nextRepeatStart = true
     }
 
     if (state.previousNote) {

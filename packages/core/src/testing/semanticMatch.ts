@@ -23,6 +23,10 @@ export interface EntityFixture {
   beat?: number
   variant?: 0 | 1 | 2
   visible?: boolean
+  tieStart?: boolean
+  tieEnd?: boolean
+  from?: number
+  to?: number
 }
 
 export interface VoiceFixture {
@@ -110,8 +114,9 @@ function comparePoint(
 /**
  * Compares a Song output against a fixture.
  *
- * Checked per entity: type, pitch, duration, beat, variant, visible.
- * Skipped: internal IDs, source positions (startPos/endPos).
+ * Checked per entity: all serialized fixture fields.
+ * Skipped: fields not present in the fixture plus internal runtime-only fields
+ * that are never serialized into fixtures.
  */
 export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResult {
   const mismatches: Mismatch[] = []
@@ -147,14 +152,7 @@ export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResul
       const fe = expectedVoice.entities[ei]
       if (fe === undefined) continue
 
-      const matchIndex = unmatchedActual.findIndex(({ entity: ae }) => (
-        ae.type === fe.type &&
-        (fe.pitch === undefined || ae.pitch === fe.pitch) &&
-        (fe.duration === undefined || ae.duration === fe.duration) &&
-        (fe.beat === undefined || ae.beat === fe.beat) &&
-        (fe.variant === undefined || ae.variant === fe.variant) &&
-        (fe.visible === undefined || ae.visible === fe.visible)
-      ))
+      const matchIndex = unmatchedActual.findIndex(({ entity: ae }) => compareSongEntity(ae, fe))
 
       if (matchIndex === -1) {
         fail(mismatches, `${vPath}.entities[${ei}]`, fe, 'no matching entity')
@@ -166,6 +164,35 @@ export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResul
   }
 
   return { passed: mismatches.length === 0, mismatches }
+}
+
+function compareSongEntity(actual: EntityFixture, expected: EntityFixture): boolean {
+  for (const [key, expectedValue] of Object.entries(expected)) {
+    const actualValue = actual[key as keyof EntityFixture]
+    if (!compareFixtureValue(actualValue, expectedValue)) {
+      return false
+    }
+  }
+
+  return true
+}
+
+function compareFixtureValue(actual: unknown, expected: unknown): boolean {
+  if (Array.isArray(expected)) {
+    if (!Array.isArray(actual) || actual.length !== expected.length) return false
+    return expected.every((item, index) => compareFixtureValue(actual[index], item))
+  }
+
+  if (expected !== null && typeof expected === 'object') {
+    if (actual === null || typeof actual !== 'object') return false
+    for (const [key, value] of Object.entries(expected)) {
+      const actualObject = actual as Record<string, unknown>
+      if (!compareFixtureValue(actualObject[key], value)) return false
+    }
+    return true
+  }
+
+  return actual === expected
 }
 
 // ---------------------------------------------------------------------------

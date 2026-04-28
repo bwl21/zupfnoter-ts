@@ -240,6 +240,8 @@ export function songToFixture(song: Song): SongFixture {
         }
         if ('pitch' in e) entry['pitch'] = (e as { pitch: number }).pitch
         if ('duration' in e) entry['duration'] = (e as { duration: number }).duration
+        if ('tieStart' in e) entry['tieStart'] = (e as { tieStart: boolean }).tieStart
+        if ('tieEnd' in e) entry['tieEnd'] = (e as { tieEnd: boolean }).tieEnd
         if (
           entry.duration === undefined &&
           'companion' in e &&
@@ -249,6 +251,10 @@ export function songToFixture(song: Song): SongFixture {
           typeof e.companion.duration === 'number'
         ) {
           entry.duration = e.companion.duration
+        }
+        if (e.type === 'Goto') {
+          entry['from'] = e.from.beat
+          entry['to'] = e.to.beat
         }
         return entry
       }),
