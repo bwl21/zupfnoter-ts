@@ -140,7 +140,7 @@ voices[0].entities[2].pitch:
 ```
 
 `npm run test:gaps` gibt zusätzlich eine kompakte Prompt-Zusammenfassung der aktuell
-gepflegten Gap-IDs aus, damit `packages/core/src/testing/openImplementations.ts`
+gepflegten Gap-IDs aus, damit `fixtures/openImplementations.ts`
 gezielt manuell bereinigt oder ergänzt werden kann.
 
 ## TS-Ausgabe als Bootstrap-Referenz

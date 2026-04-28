@@ -149,7 +149,7 @@ flowchart LR
   F -->|ruft| H[AbcToSong]
   F -->|ruft| I[HarpnotesLayout]
   F -->|vergleicht über| J[semanticMatch]
-  F -->|ergänzt Hinweise aus| K[openImplementations.ts]
+  F -->|ergänzt Hinweise aus| K[fixtures/openImplementations.ts]
 ```
 
 ---
@@ -208,6 +208,17 @@ Wichtig:
 - Wenn man nur wissen will, **welche Fixture-Vergleichsfälle aktuell noch fehlschlagen**, reicht `pnpm test:gaps` in der Regel aus.
 - Wenn man den **vollen normalen Fehlkontext** der eigentlichen Vergleichstests sehen will, braucht man `pnpm test:unit` oder die direkten `legacy_comparison.spec.ts`-Läufe.
 
+Der Report enthält pro Stage jetzt konkrete Einträge mit `id`, `fixtures` und `prompt`:
+
+```text
+[gap-report:sheet]
+Open implementations for this stage (N): ...
+Entries:
+- id: sheet.example-gap
+  fixtures: fixture_a, fixture_b
+  prompt: Investigate ...
+```
+
 ### 3. Watch-Mode für Entwicklung
 
 ```bash
@@ -246,9 +257,9 @@ Siehe `npm run test:loadsample -- "<glob>"` und die ausführliche Beschreibung i
 
 ## Fehlerbehandlung
 
-## Offene Implementierungen (`openImplementations.ts`)
+## Offene Implementierungen (`fixtures/openImplementations.ts`)
 
-Die Datei [packages/core/src/testing/openImplementations.ts](/Users/beweiche/beweiche_noTimeMachine/zupfnoter-ts/packages/core/src/testing/openImplementations.ts:1) ist die zentrale Liste bekannter Paritätslücken zwischen Legacy und TypeScript.
+Die Datei [openImplementations.ts](/Users/beweiche/beweiche_noTimeMachine/zupfnoter-ts/fixtures/openImplementations.ts:1) ist die zentrale Liste bekannter Paritätslücken zwischen Legacy und TypeScript.
 
 Wichtig:
 
@@ -276,12 +287,12 @@ einen Gap-Report aus den Vergleichshelfern. Es erzeugt:
 
 - eine kompakte Zusammenfassung der aktuell eingetragenen Gap-IDs
 - eine Liste direkt nutzbarer Arbeits-Prompts für neue unklassifizierte Fehler
-- die Datei `packages/core/src/testing/open_implementations_template.ts`
+- die Datei `fixtures/reports/open_implementations_template.ts`
 
 Die Template-Datei wird bei jedem Lauf neu geschrieben:
 
 - **leer bzw. leeres Array**: es wurden keine neuen unklassifizierten Fehler gefunden
-- **gefüllt**: es gibt fehlschlagende Legacy-Vergleiche, die noch nicht durch `openImplementations.ts` abgedeckt sind
+- **gefüllt**: es gibt fehlschlagende Legacy-Vergleiche, die noch nicht durch `fixtures/openImplementations.ts` abgedeckt sind
 
 ### Wie kommt ein neuer Eintrag hinein?
 
@@ -294,7 +305,7 @@ Nicht automatisch. Ein neuer Eintrag wird manuell ergänzt, wenn:
 
 Praktisches Vorgehen:
 
-1. `packages/core/src/testing/openImplementations.ts` öffnen
+1. `fixtures/openImplementations.ts` öffnen
 2. im Array `OPEN_IMPLEMENTATIONS` einen neuen Eintrag ergänzen
 3. passende Stufe setzen:
    - `song`
@@ -333,9 +344,9 @@ Typischer Ablauf:
 
 1. `pnpm test:unit`
 2. `pnpm test:gaps`
-3. `packages/core/src/testing/open_implementations_template.ts` ansehen
+3. `fixtures/reports/open_implementations_template.ts` ansehen
 4. für jeden sinnvollen Kandidaten entscheiden:
-   - zu bestehendem Eintrag in `openImplementations.ts` zuordnen
+   - zu bestehendem Eintrag in `fixtures/openImplementations.ts` zuordnen
    - oder als neuen Eintrag manuell übernehmen
    - oder verwerfen, wenn die Ursache ein Exporter-/Fixture-Problem ist
 
@@ -347,7 +358,7 @@ Jeder Template-Eintrag enthält:
 - einen direkt nutzbaren `prompt`
 - die aktuelle `mismatchSummary`
 
-Die kuratierte Hauptdatei `openImplementations.ts` verwendet jetzt dasselbe Grundschema, nur ohne automatisch erzeugte `mismatchSummary`. Dadurch lassen sich sinnvolle Template-Einträge fast 1:1 übernehmen und anschließend manuell verdichten.
+Die kuratierte Hauptdatei `fixtures/openImplementations.ts` verwendet jetzt dasselbe Grundschema, nur ohne automatisch erzeugte `mismatchSummary`. Dadurch lassen sich sinnvolle Template-Einträge fast 1:1 übernehmen und anschließend manuell verdichten.
 
 Der `prompt` ist absichtlich so formuliert, dass man ihn direkt als Arbeitsauftrag für die Implementierung verwenden kann.
 
@@ -358,7 +369,7 @@ Ebenfalls manuell:
 1. Implementierung ergänzen
 2. gezielte Tests ausführen
 3. relevante Legacy-Vergleichstests erneut prüfen
-4. Eintrag aus `openImplementations.ts` entfernen, wenn die Lücke tatsächlich geschlossen ist
+4. Eintrag aus `fixtures/openImplementations.ts` entfernen, wenn die Lücke tatsächlich geschlossen ist
 
 ### Wie prüfe ich, ob die Liste noch aktuell ist?
 
@@ -384,7 +395,7 @@ Ein praktikabler Ablauf ist:
 6. Implementierung ergänzen
 7. gezielte Tests laufen lassen
 8. Legacy-Vergleich erneut prüfen
-9. erledigten Eintrag aus `openImplementations.ts` entfernen
+9. erledigten Eintrag aus `fixtures/openImplementations.ts` entfernen
 
 Damit bleibt die Datei eine explizite, steuerbare Arbeitsliste für die noch fehlende Legacy-Parität.
 
