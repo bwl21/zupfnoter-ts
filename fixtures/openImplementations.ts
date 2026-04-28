@@ -29,15 +29,6 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     prompt: 'Investigate the missing bar-bound variant annotations in the Song model, reproduce with the 3015_reference_sheet song legacy comparison, implement legacy parity in packages/core/src/AbcToSong.ts, then remove this id from fixtures/openImplementations.ts.',
   },
   {
-    id: 'sheet.repeat-sign-layout',
-    stage: 'sheet',
-    scope: 'extract.repeatsigns',
-    summary: 'Legacy repeat sign rendering is not wired to config-driven voice selection yet.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['3015_reference_sheet', '783_einsiedler-kreuzweg'],
-    prompt: 'Investigate repeat-sign layout parity for the listed fixtures, reproduce with the corresponding sheet legacy comparison tests, implement config-driven repeat-sign rendering in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
-  },
-  {
     id: 'sheet.repeat-layout',
     stage: 'sheet',
     scope: 'basic repeat markers and paths',

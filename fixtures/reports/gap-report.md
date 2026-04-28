@@ -7,9 +7,9 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 15
-- Song gaps: 1
-- Sheet gaps: 14
+- Total open implementations: 14
+- Song gaps: 1neuer 
+- Sheet gaps: 13
 - Known-covered failures: 13
 - New unclassified failures: 0
 
@@ -23,13 +23,6 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
   - Refs: packages/core/src/AbcToSong.ts
 
 ## Sheet Gaps
-
-- [ ] sheet.repeat-sign-layout
-  - Fixtures: 3015_reference_sheet, 783_einsiedler-kreuzweg
-  - Scope: extract.repeatsigns
-  - Summary: Legacy repeat sign rendering is not wired to config-driven voice selection yet.
-  - Prompt: Investigate repeat-sign layout parity for the listed fixtures, reproduce with the corresponding sheet legacy comparison tests, implement config-driven repeat-sign rendering in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.repeat-layout
   - Fixtures: repeat

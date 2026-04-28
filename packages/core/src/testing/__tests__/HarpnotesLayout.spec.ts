@@ -12,16 +12,21 @@ import { HarpnotesLayout } from '../../HarpnotesLayout.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 import { loadFixture, transformFixtureToSheet } from '../fixtureLoader.js'
 import type { Ellipse, Glyph, FlowLine, Path, Annotation } from '@zupfnoter/types'
+import type { ZupfnoterConfig } from '@zupfnoter/types'
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 function pipeline(abcText: string) {
+  return pipelineWithConfig(abcText, defaultTestConfig)
+}
+
+function pipelineWithConfig(abcText: string, config: ZupfnoterConfig) {
   const parser = new AbcParser()
   const model = parser.parse(abcText)
-  const song = new AbcToSong().transform(model, defaultTestConfig)
-  const sheet = new HarpnotesLayout(defaultTestConfig).layout(song, 0, 'A4')
+  const song = new AbcToSong().transform(model, config)
+  const sheet = new HarpnotesLayout(config).layout(song, 0, 'A4')
   return { song, sheet }
 }
 
@@ -240,6 +245,49 @@ describe('HarpnotesLayout', () => {
       expect(annotations.some((a) => a.text === ':|' && a.style === 'bold')).toBe(true)
       expect(annotations.some((a) => a.text === '(26) Mehrklang mit \nSynchronisationslinie')).toBe(true)
       expect(annotations.some((a) => a.text === '(27) Abschnittsname')).toBe(true)
+    })
+
+    it('uses the legacy repeat-sign side selection based on neighbouring pitches', () => {
+      const config: ZupfnoterConfig = {
+        ...defaultTestConfig,
+        extract: {
+          ...defaultTestConfig.extract,
+          '0': {
+            ...defaultTestConfig.extract['0'],
+          },
+        },
+      }
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+
+      extract0.repeatsigns = {
+        voices: [1],
+        left: { pos: [-7, -2], text: '|:', style: 'bold' },
+        right: { pos: [5, -2], text: ':|', style: 'bold' },
+      }
+
+      const { sheet } = pipelineWithConfig(
+        `X:1
+T:Repeat Attach Side
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] |: G E D C :|`,
+        config,
+      )
+
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      const beginRepeat = annotations.find((a) => a.text === ':|')
+      const endRepeat = annotations.find((a) => a.text === '|:')
+
+      expect(beginRepeat).toBeDefined()
+      expect(endRepeat).toBeDefined()
+      expect(beginRepeat?.style).toBe('bold')
+      expect(endRepeat?.style).toBe('bold')
+      expect((beginRepeat?.center[0] ?? 0) > (endRepeat?.center[0] ?? 0)).toBe(true)
     })
 
     it('renders the split legend positions from the reference sheet fixture', () => {

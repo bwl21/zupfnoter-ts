@@ -974,38 +974,82 @@ export class HarpnotesLayout {
     const repeatVoices = new Set((conf.get('extract.repeatsigns.voices') as number[] | undefined) ?? [])
     if (!repeatVoices.has(voiceNr)) return []
 
-    const leftPos = (conf.get('extract.repeatsigns.left.pos') as [number, number] | undefined) ?? [-7, -2]
-    const rightPos = (conf.get('extract.repeatsigns.right.pos') as [number, number] | undefined) ?? [5, -2]
-    const style = (conf.get('extract.repeatsigns.left.style') as string | undefined)
-      ?? (conf.get('extract.repeatsigns.right.style') as string | undefined)
-      ?? 'bold'
     const result: Annotation[] = []
 
     for (const entity of voice.entities) {
       if (entity.type !== 'Goto') continue
       const goto = entity as Goto
+      if (!goto.from || !goto.to) continue
 
-      result.push({
-        type: 'Annotation',
-        center: [pitchToX(goto.to.pitch, layout) + leftPos[0], beatToY(goto.to.beat, beatMap, layout, startpos) + leftPos[1]],
-        text: (conf.get('extract.repeatsigns.left.text') as string | undefined) ?? '|:',
-        style,
-        color: layout.color.color_default,
-        lineWidth: layout.LINE_THIN,
-        visible: goto.visible,
-      })
-      result.push({
-        type: 'Annotation',
-        center: [pitchToX(goto.from.pitch, layout) + rightPos[0], beatToY(goto.from.beat, beatMap, layout, startpos) + rightPos[1]],
-        text: (conf.get('extract.repeatsigns.right.text') as string | undefined) ?? ':|',
-        style,
-        color: layout.color.color_default,
-        lineWidth: layout.LINE_THIN,
-        visible: goto.visible,
-      })
+      const begin = this._makeRepeatSignAnnotation(
+        goto,
+        'begin',
+        beatMap,
+        layout,
+        startpos,
+        conf,
+      )
+      const end = this._makeRepeatSignAnnotation(
+        goto,
+        'end',
+        beatMap,
+        layout,
+        startpos,
+        conf,
+      )
+
+      result.push(end, begin)
     }
 
     return result
+  }
+
+  private _makeRepeatSignAnnotation(
+    goto: Goto,
+    pointRole: 'begin' | 'end',
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    conf: Confstack,
+  ): Annotation {
+    const companion = pointRole === 'begin' ? goto.to : goto.from
+    const attachSide = this._repeatSignAttachSide(goto, pointRole)
+    const pos = (
+      conf.get(`extract.repeatsigns.${attachSide}.pos`) as [number, number] | undefined
+    ) ?? (attachSide === 'left' ? [-7, -2] : [5, -2])
+    const text = (
+      conf.get(`extract.repeatsigns.${attachSide}.text`) as string | undefined
+    ) ?? (attachSide === 'left' ? '|:' : ':|')
+    const style = (
+      conf.get(`extract.repeatsigns.${attachSide}.style`) as string | undefined
+    ) ?? 'bold'
+
+    return {
+      type: 'Annotation',
+      center: [
+        pitchToX(companion.pitch, layout) + pos[0],
+        beatToY(companion.beat, beatMap, layout, startpos) + pos[1],
+      ],
+      text,
+      style,
+      color: layout.color.color_default,
+      lineWidth: layout.LINE_THIN,
+      visible: goto.visible,
+    }
+  }
+
+  private _repeatSignAttachSide(goto: Goto, pointRole: 'begin' | 'end'): 'left' | 'right' {
+    if (pointRole === 'begin') {
+      const companion = goto.to
+      if (goto.to === goto.from) return 'left'
+      const nextPitch = companion.nextPitch ?? companion.pitch
+      return companion.pitch <= nextPitch ? 'left' : 'right'
+    }
+
+    const companion = goto.from
+    if (goto.to === goto.from) return 'right'
+    const prevPitch = companion.prevPitch ?? companion.pitch
+    return prevPitch <= companion.pitch ? 'right' : 'left'
   }
 
   private _layoutVoiceNoteboundAnnotations(
