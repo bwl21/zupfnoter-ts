@@ -1,5 +1,15 @@
 # Fixture-Driven Testing Strategy
 
+Diese Datei beschreibt das **Konzept und den Ablauf** des fixture-driven Testings:
+- Vergleichslogik
+- Testfluss
+- Gap-Workflow
+- Pflege von `fixtures/openImplementations.ts`
+
+Für die **praktische Nutzung** der Fixtures, Export-Kommandos und die konkreten
+Arbeitsdateien unter `fixtures/` siehe
+[fixtures/README.md](/Users/beweiche/beweiche_noTimeMachine/zupfnoter-ts/fixtures/README.md:1).
+
 ## Übersicht
 
 Die Test-Strategie basiert auf **Fixtures**, die den Zustand jeder Transformationsstufe

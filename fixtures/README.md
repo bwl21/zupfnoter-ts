@@ -5,6 +5,16 @@ Legacy-System (`bwl21/zupfnoter`, Branch `feature/voice-styles_and-other-concept
 exportiert und sind versioniert. Sie ändern sich nur bei bewussten fachlichen Änderungen
 (Commit-Kommentar muss die Änderung begründen).
 
+Diese Datei beschreibt die **praktische Nutzung** der Fixtures:
+- Verzeichnisstruktur
+- Export
+- konkrete Test-Kommandos
+- generierte Reports unter `fixtures/reports/`
+
+Für das **Konzept** hinter dem fixture-driven Testing, den Ablauf der Vergleichstests
+und den Gap-Workflow siehe
+[docs/testing/fixture-driven-testing.md](/Users/beweiche/beweiche_noTimeMachine/zupfnoter-ts/docs/testing/fixture-driven-testing.md:1).
+
 ## Verzeichnisstruktur
 
 ```
