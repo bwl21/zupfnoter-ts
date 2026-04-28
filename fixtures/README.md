@@ -23,16 +23,14 @@ fixtures/
     ├── single_note/
     │   ├── input.abc       # ABC-Notation, optional mit %%%%zupfnoter.config
     │   ├── song.extract-0.json # Stufe-2-Referenz: Song (extract-unabhängig, kanonischer Dateiname)
-    │   ├── sheet.json      # Stufe-3-Referenz: Sheet (Fallback/Legacy alias für Extrakt 0)
-    │   ├── sheet.extract-0.json # Stufe-3-Referenz für einen konkreten Extrakt
+    │   ├── sheet.extract-0.json # Stufe-3-Referenz für Extrakt 0
     │   └── _ts_output/     # generierte TS-Ausgabe, nicht Referenz
     └── ...
 ```
 
 Die Tests scannen `fixtures/cases/*/input.abc` automatisch. Ein neuer Testfall wird
 für Song-Vergleiche aufgenommen, sobald zusätzlich `song.extract-0.json` existiert; für
-Sheet-Vergleiche entsprechend mit `sheet.json` oder mindestens einer
-`sheet.extract-<nr>.json`.
+Sheet-Vergleiche entsprechend mit mindestens einer `sheet.extract-<nr>.json`.
 
 Bekannte, noch nicht portierte Legacy-Aspekte werden nicht testfallspezifisch im
 Fixture-Verzeichnis gepflegt, sondern zentral im Testcode als globale Capability-Liste.
@@ -116,7 +114,6 @@ Für jede Eingabedatei wird geschrieben:
 ```text
 fixtures/cases/<test-case>/input.abc
 fixtures/cases/<test-case>/song.extract-0.json
-fixtures/cases/<test-case>/sheet.json
 fixtures/cases/<test-case>/sheet.extract-<nr>.json
 ```
 
@@ -169,7 +166,7 @@ cp fixtures/cases/<name>/_ts_output/song.json fixtures/cases/<name>/song.extract
 
 # Sheet-Fixtures (Stufe 3):
 npx vitest run src/testing/__tests__/sheet/dump_ts_output.spec.ts
-cp fixtures/cases/<name>/_ts_output/sheet.json fixtures/cases/<name>/sheet.json
+cp fixtures/cases/<name>/_ts_output/sheet.json fixtures/cases/<name>/sheet.extract-0.json
 ```
 
 ## Fixture-Format
@@ -211,10 +208,8 @@ cp fixtures/cases/<name>/_ts_output/sheet.json fixtures/cases/<name>/sheet.json
 }
 ```
 
-Bei mehreren zu vergleichenden Extrakten liegen zusätzlich Dateien der Form
-`sheet.extract-<nr>.json` im Testfallordner. Die Sheet-Vergleichstests iterieren über
-diese Extrakt-Fixtures einzeln. Fehlen sie, wird aus Kompatibilitätsgründen `sheet.json`
-als Extrakt-0-Referenz verwendet.
+Die Sheet-Referenzen liegen als `sheet.extract-<nr>.json` im Testfallordner.
+Die Sheet-Vergleichstests iterieren über diese Extrakt-Fixtures einzeln.
 
 ## Vergleichsstrategie
 

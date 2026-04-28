@@ -10,7 +10,7 @@
  *
  * Output: fixtures/cases/<name>/_ts_output/sheet.json
  * Compare with the legacy Ruby export to identify discrepancies before populating
- * the real fixtures in fixtures/cases/<name>/sheet.json.
+ * the real fixtures in fixtures/cases/<name>/sheet.extract-0.json.
  */
 import { describe, it } from 'vitest'
 

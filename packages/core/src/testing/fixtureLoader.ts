@@ -32,7 +32,6 @@ export interface PipelineFixture {
   }
   config: ZupfnoterConfig
   song: SongFixture | null
-  sheet: SheetFixture | null
   sheetExtracts: Record<string, SheetFixture>
   output_svg: string | null
 }
@@ -114,7 +113,7 @@ export function scanFixtureCases(): FixtureCase[] {
       id: name,
       dir,
       hasSongFixture: existsSync(resolve(dir, 'song.extract-0.json')),
-      hasSheetFixture: existsSync(resolve(dir, 'sheet.json')) || listSheetExtractFiles(dir).length > 0,
+      hasSheetFixture: listSheetExtractFiles(dir).length > 0,
     }))
     .sort((a, b) => a.id.localeCompare(b.id))
 }
@@ -149,7 +148,6 @@ export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixtu
     input: { abc },
     config: fixtureConfigFromAbc(abc),
     song: safeLoadJson<SongFixture>(resolveSongFixturePath(dir)),
-    sheet: safeLoadJson<SheetFixture>(resolve(dir, 'sheet.json')),
     sheetExtracts,
     output_svg: safeLoadText(resolve(dir, 'output.svg')),
   }
@@ -157,10 +155,6 @@ export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixtu
 
 export function loadSongFixture(name: string): SongFixture {
   return loadJson<SongFixture>(resolveSongFixturePath(fixtureCaseDir(name)))
-}
-
-export function loadSheetFixture(name: string): SheetFixture {
-  return loadJson<SheetFixture>(resolve(fixtureCaseDir(name), 'sheet.json'))
 }
 
 export function loadSheetExtractFixture(name: string, extractNr: number | string): SheetFixture {
@@ -198,21 +192,12 @@ export function transformFixtureToSheet(
 }
 
 export function getSheetFixtureTargets(fixture: PipelineFixture): Array<{ extractNr: number; expected: SheetFixture }> {
-  const extractEntries = Object.entries(fixture.sheetExtracts)
-  if (extractEntries.length > 0) {
-    return extractEntries
-      .map(([extractNr, expected]) => ({
-        extractNr: Number.parseInt(extractNr, 10),
-        expected,
-      }))
-      .sort((a, b) => a.extractNr - b.extractNr)
-  }
-
-  if (fixture.sheet !== null) {
-    return [{ extractNr: 0, expected: fixture.sheet }]
-  }
-
-  return []
+  return Object.entries(fixture.sheetExtracts)
+    .map(([extractNr, expected]) => ({
+      extractNr: Number.parseInt(extractNr, 10),
+      expected,
+    }))
+    .sort((a, b) => a.extractNr - b.extractNr)
 }
 
 export function saveFixtureOutput(fixture: PipelineFixture, stage: FixtureStage, data: unknown): void {

@@ -22,7 +22,7 @@ ABC-Datei + Config
     ↓
 [Stufe 2: AbcToSong] → fixture: song.extract-0.json
     ↓
-[Stufe 3: HarpnotesLayout] → fixture: sheet.json oder sheet.extract-<nr>.json
+[Stufe 3: HarpnotesLayout] → fixture: sheet.extract-<nr>.json
     ↓
 [Stufe 4: SvgEngine] → fixture: output.svg (geplant)
 ```
@@ -39,7 +39,6 @@ fixtures/
     ├── <test-case>/
     │   ├── input.abc          # ABC-Notation + optionaler %%%%zupfnoter.config Block
     │   ├── song.extract-0.json # Stufe 2: Song-Modell (kanonische Song-Referenz)
-    │   ├── sheet.json         # Stufe 3: Sheet-Modell für Extract 0 (Legacy Reference, Fallback)
     │   ├── sheet.extract-0.json
     │   ├── sheet.extract-1.json
     │   ├── ...
@@ -53,10 +52,10 @@ fixtures/
 
 **Konvention:**
 - Input: `fixtures/cases/<test-case>/input.abc`
-- Legacy Reference: `fixtures/cases/<test-case>/<stufe>.json` (hand-gepflegt oder exportiert)
+- Legacy Reference: `fixtures/cases/<test-case>/<stufe>.json` bzw. `sheet.extract-<nr>.json` (hand-gepflegt oder exportiert)
 - TypeScript Output: `fixtures/cases/<test-case>/_ts_output/<stufe>.json` (generiert)
 - Discovery: Tests scannen `fixtures/cases/*/input.abc`.
-- Stage-Aktivierung: Song-Tests laufen für Testfälle mit `song.extract-0.json`; Sheet-Tests für Testfälle mit `sheet.json` oder mindestens einer `sheet.extract-<nr>.json`.
+- Stage-Aktivierung: Song-Tests laufen für Testfälle mit `song.extract-0.json`; Sheet-Tests für Testfälle mit mindestens einer `sheet.extract-<nr>.json`.
 - Config: inline im ABC via `%%%%zupfnoter.config`; fehlt der Block, gelten `initConf()`-Defaults.
 - Keine separate `input.config.json`: Fixture-Tests verwenden genau dieselbe Config-Quelle wie die Pipeline.
 - Legacy-ABC-Direktiven wie `%%%%hnc`, `%%%%hna` oder `%%%%hn.legend` sind davon getrennt und müssen bei Bedarf explizit in die TS-Config-Extraktion überführt werden.
@@ -74,7 +73,7 @@ der Fixture-Bestand, welche Song- und Sheet-Vergleiche ausgeführt werden.
 ```mermaid
 flowchart TD
   A[scanFixtureCases] --> B{song.extract-0.json vorhanden?}
-  A --> C{sheet.json oder sheet.extract-N.json vorhanden?}
+  A --> C{sheet.extract-N.json vorhanden?}
   B -->|ja| D[Song-Vergleichstest anlegen]
   C -->|ja| E[Sheet-Vergleichstest anlegen]
   D --> F[loadFixture]
@@ -114,9 +113,7 @@ sequenceDiagram
 
 ### 3. Ablauf Sheet-Vergleich
 
-Für Sheet-Fixtures gibt es zwei Modi:
-- `sheet.extract-<nr>.json`: explizite Legacy-Referenz pro Extrakt
-- `sheet.json`: Fallback für Extrakt `0`
+Für Sheet-Fixtures ist `sheet.extract-<nr>.json` die explizite Legacy-Referenz pro Extrakt.
 
 ```mermaid
 sequenceDiagram
@@ -152,7 +149,7 @@ sequenceDiagram
 flowchart LR
   A[fixtureLoader] -->|liest| B[input.abc]
   A -->|lädt| C[song.extract-0.json]
-  A -->|lädt| D[sheet.json / sheet.extract-N.json]
+  A -->|lädt| D[sheet.extract-N.json]
   A -->|baut| E[effektive Config]
   F[legacy_comparison.spec.ts] -->|steuert| A
   F -->|ruft| G[AbcParser]
@@ -168,7 +165,7 @@ flowchart LR
 
 Der Legacy-CLI besitzt einen expliziten Exportmodus. Er liest ABC-Dateien, führt die
 produktive Legacy-Pipeline aus und schreibt pro Testfall `input.abc`, `song.extract-0.json` und
-für das Sheet entweder `sheet.extract-<nr>.json` oder als Fallback `sheet.json` in
+für das Sheet `sheet.extract-<nr>.json` in
 `fixtures/cases/<test-case>/`.
 
 ```bash
@@ -443,8 +440,7 @@ Deshalb gilt:
 2. Den Exporter im Legacy-System prüfen und korrigieren.
 3. Das betroffene Fixture **neu exportieren** und die bestehende Referenzdatei ersetzen:
    - `song.extract-0.json`
-   - `sheet.json`
-   - oder `sheet.extract-<nr>.json`
+   - `sheet.extract-<nr>.json`
 4. Die generischen Vergleichstests bleiben unverändert.
 
 Begründung:

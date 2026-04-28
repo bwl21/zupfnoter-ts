@@ -49,7 +49,8 @@ describe('fixtureLoader', () => {
     expect(fixture.input.abc).toContain('T:Single Note Test')
     expect(fixture.config.layout.SHORTEST_NOTE).toBe(defaultTestConfig.layout.SHORTEST_NOTE)
     expect(fixture.song?.voices.length).toBeGreaterThan(0)
-    expect(fixture.sheet?.children.length).toBeGreaterThan(0)
+    expect(Object.keys(fixture.sheetExtracts)).toContain('0')
+    expect(fixture.sheetExtracts['0']?.children.length).toBeGreaterThan(0)
   })
 
   it('uses extract-specific sheet fixtures when present', () => {
@@ -68,7 +69,7 @@ describe('fixtureLoader', () => {
     expect(fixture.song?.beat_maps).toEqual([{ '0': 0, '48': 48, '96': 96, '144': 144 }])
   })
 
-  it('falls back to sheet.json as extract 0 when no extract-specific sheet fixtures exist', () => {
+  it('loads extract-specific sheet fixtures for simple single-extract cases', () => {
     const fixture = loadFixture('single_note')
     const targets = getSheetFixtureTargets(fixture)
 

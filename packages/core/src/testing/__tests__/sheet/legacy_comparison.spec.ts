@@ -5,7 +5,7 @@
  * Each test:
  *   1. Loads an ABC fixture via the central fixture loader
  *   2. Runs the TS pipeline: AbcParser -> AbcToSong -> HarpnotesLayout
- *   3. Compares the Sheet against fixtures/cases/<name>/sheet.json
+ *   3. Compares the Sheet against fixtures/cases/<name>/sheet.extract-<nr>.json
  *      using semantic matching (positions +/-0.1 mm, sizes +/-0.05 mm)
  *
  * Fixtures must be populated from the legacy Ruby system before these tests pass.

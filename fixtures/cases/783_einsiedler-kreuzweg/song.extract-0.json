@@ -1,1 +1,942 @@
-{"meta_data":{"title":"Einsiedler Kreuzweg", "composer":"Einsiedler Kreuzwegs (Schweiz, 15. Jh.)", "meter":"4/4", "key":"G"}, "voices":[{"entities":[{"type":"Note", "beat":0, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":48, "variant":0, "visible":true, "pitch":71, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":144, "variant":0, "visible":true, "pitch":70, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":192, "variant":0, "visible":true, "pitch":71, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":240, "variant":0, "visible":true, "pitch":67, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":336, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":384, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":432, "variant":0, "visible":true, "pitch":64, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":528, "variant":0, "visible":true, "pitch":66, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":576, "variant":0, "visible":true, "pitch":67, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":624, "variant":0, "visible":true, "pitch":62, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Pause", "beat":720, "variant":0, "visible":true, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":768, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":816, "variant":0, "visible":true, "pitch":66, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":912, "variant":0, "visible":true, "pitch":64, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":960, "variant":0, "visible":true, "pitch":66, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1008, "variant":0, "visible":true, "pitch":67, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1104, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1152, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1200, "variant":0, "visible":true, "pitch":67, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1296, "variant":0, "visible":true, "pitch":69, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1344, "variant":0, "visible":true, "pitch":71, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1392, "variant":0, "visible":true, "pitch":69, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Pause", "beat":1488, "variant":0, "visible":true, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1536, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1584, "variant":0, "visible":true, "pitch":71, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1680, "variant":0, "visible":true, "pitch":70, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1728, "variant":0, "visible":true, "pitch":71, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1776, "variant":0, "visible":true, "pitch":67, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1872, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1920, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1968, "variant":0, "visible":true, "pitch":64, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2064, "variant":0, "visible":true, "pitch":66, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2112, "variant":0, "visible":true, "pitch":67, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2160, "variant":0, "visible":true, "pitch":62, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Pause", "beat":2256, "variant":0, "visible":true, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2304, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2352, "variant":0, "visible":true, "pitch":72, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2448, "variant":0, "visible":true, "pitch":71, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2496, "variant":0, "visible":true, "pitch":69, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2544, "variant":0, "visible":true, "pitch":71, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2640, "variant":0, "visible":true, "pitch":69, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2688, "variant":0, "visible":true, "pitch":67, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2736, "variant":0, "visible":true, "pitch":69, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2832, "variant":0, "visible":true, "pitch":67, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2880, "variant":0, "visible":true, "pitch":66, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2928, "variant":0, "visible":true, "pitch":67, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Pause", "beat":3024, "variant":0, "visible":true, "duration":16, "tieStart":false, "tieEnd":false}]}, {"entities":[{"type":"Note", "beat":0, "variant":0, "visible":true, "pitch":59, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":48, "variant":0, "visible":true, "pitch":67, "duration":48, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":192, "variant":0, "visible":true, "pitch":67, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":240, "variant":0, "visible":true, "pitch":59, "duration":48, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":384, "variant":0, "visible":true, "pitch":59, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":432, "variant":0, "visible":true, "pitch":60, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":528, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":576, "variant":0, "visible":true, "pitch":64, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":624, "variant":0, "visible":true, "pitch":59, "duration":64, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":816, "variant":0, "visible":true, "pitch":62, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":912, "variant":0, "visible":true, "pitch":60, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1008, "variant":0, "visible":true, "pitch":59, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1104, "variant":0, "visible":true, "pitch":59, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1200, "variant":0, "visible":true, "pitch":59, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1296, "variant":0, "visible":true, "pitch":66, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1392, "variant":0, "visible":true, "pitch":66, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Pause", "beat":1488, "variant":0, "visible":true, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1536, "variant":0, "visible":true, "pitch":59, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1584, "variant":0, "visible":true, "pitch":67, "duration":64, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1776, "variant":0, "visible":true, "pitch":64, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1872, "variant":0, "visible":true, "pitch":59, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":1968, "variant":0, "visible":true, "pitch":60, "duration":64, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2160, "variant":0, "visible":true, "pitch":60, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2256, "variant":0, "visible":true, "pitch":59, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2304, "variant":0, "visible":true, "pitch":59, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2352, "variant":0, "visible":true, "pitch":69, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2448, "variant":0, "visible":true, "pitch":67, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2496, "variant":0, "visible":true, "pitch":66, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2544, "variant":0, "visible":true, "pitch":67, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2640, "variant":0, "visible":true, "pitch":66, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2688, "variant":0, "visible":true, "pitch":64, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2736, "variant":0, "visible":true, "pitch":66, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2832, "variant":0, "visible":true, "pitch":64, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2880, "variant":0, "visible":true, "pitch":62, "duration":16, "tieStart":false, "tieEnd":false}, {"type":"Note", "beat":2928, "variant":0, "visible":true, "pitch":59, "duration":32, "tieStart":false, "tieEnd":false}, {"type":"Pause", "beat":3024, "variant":0, "visible":true, "duration":16, "tieStart":false, "tieEnd":false}]}], "beat_maps":[{"0":0, "48":48, "144":144, "192":192, "240":240, "336":336, "384":384, "432":432, "528":528, "576":576, "624":624, "720":720, "768":768, "816":816, "912":912, "960":960, "1008":1008, "1104":1104, "1152":1152, "1200":1200, "1296":1296, "1344":1344, "1392":1392, "1488":1488, "1536":1536, "1584":1584, "1680":1680, "1728":1728, "1776":1776, "1872":1872, "1920":1920, "1968":1968, "2064":2064, "2112":2112, "2160":2160, "2256":2256, "2304":2304, "2352":2352, "2448":2448, "2496":2496, "2544":2544, "2640":2640, "2688":2688, "2736":2736, "2832":2832, "2880":2880, "2928":2928, "3024":3024}, {"0":0, "48":48, "192":192, "240":240, "384":384, "432":432, "528":528, "576":576, "624":624, "816":816, "912":912, "1008":1008, "1104":1104, "1200":1200, "1296":1296, "1392":1392, "1488":1488, "1536":1536, "1584":1584, "1776":1776, "1872":1872, "1968":1968, "2160":2160, "2256":2256, "2304":2304, "2352":2352, "2448":2448, "2496":2496, "2544":2544, "2640":2640, "2688":2688, "2736":2736, "2832":2832, "2880":2880, "2928":2928, "3024":3024}]}
+{
+  "meta_data": {
+    "title": "Einsiedler Kreuzweg",
+    "composer": "Einsiedler Kreuzwegs (Schweiz, 15. Jh.)",
+    "meter": "4/4",
+    "key": "G"
+  },
+  "voices": [
+    {
+      "entities": [
+        {
+          "type": "Note",
+          "beat": 0,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 48,
+          "variant": 0,
+          "visible": true,
+          "pitch": 71,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 144,
+          "variant": 0,
+          "visible": true,
+          "pitch": 70,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 192,
+          "variant": 0,
+          "visible": true,
+          "pitch": 71,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 240,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 336,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 384,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 432,
+          "variant": 0,
+          "visible": true,
+          "pitch": 64,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 528,
+          "variant": 0,
+          "visible": true,
+          "pitch": 66,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 576,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 624,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Pause",
+          "beat": 720,
+          "variant": 0,
+          "visible": true,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 768,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 816,
+          "variant": 0,
+          "visible": true,
+          "pitch": 66,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 912,
+          "variant": 0,
+          "visible": true,
+          "pitch": 64,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 960,
+          "variant": 0,
+          "visible": true,
+          "pitch": 66,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1008,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1104,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1152,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1200,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1296,
+          "variant": 0,
+          "visible": true,
+          "pitch": 69,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1344,
+          "variant": 0,
+          "visible": true,
+          "pitch": 71,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1392,
+          "variant": 0,
+          "visible": true,
+          "pitch": 69,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Pause",
+          "beat": 1488,
+          "variant": 0,
+          "visible": true,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1536,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1584,
+          "variant": 0,
+          "visible": true,
+          "pitch": 71,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1680,
+          "variant": 0,
+          "visible": true,
+          "pitch": 70,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1728,
+          "variant": 0,
+          "visible": true,
+          "pitch": 71,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1776,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1872,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1920,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1968,
+          "variant": 0,
+          "visible": true,
+          "pitch": 64,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2064,
+          "variant": 0,
+          "visible": true,
+          "pitch": 66,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2112,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2160,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Pause",
+          "beat": 2256,
+          "variant": 0,
+          "visible": true,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2304,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2352,
+          "variant": 0,
+          "visible": true,
+          "pitch": 72,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2448,
+          "variant": 0,
+          "visible": true,
+          "pitch": 71,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2496,
+          "variant": 0,
+          "visible": true,
+          "pitch": 69,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2544,
+          "variant": 0,
+          "visible": true,
+          "pitch": 71,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2640,
+          "variant": 0,
+          "visible": true,
+          "pitch": 69,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2688,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2736,
+          "variant": 0,
+          "visible": true,
+          "pitch": 69,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2832,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2880,
+          "variant": 0,
+          "visible": true,
+          "pitch": 66,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2928,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Pause",
+          "beat": 3024,
+          "variant": 0,
+          "visible": true,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        }
+      ]
+    },
+    {
+      "entities": [
+        {
+          "type": "Note",
+          "beat": 0,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 48,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 48,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 192,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 240,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 48,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 384,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 432,
+          "variant": 0,
+          "visible": true,
+          "pitch": 60,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 528,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 576,
+          "variant": 0,
+          "visible": true,
+          "pitch": 64,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 624,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 64,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 816,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 912,
+          "variant": 0,
+          "visible": true,
+          "pitch": 60,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1008,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1104,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1200,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1296,
+          "variant": 0,
+          "visible": true,
+          "pitch": 66,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1392,
+          "variant": 0,
+          "visible": true,
+          "pitch": 66,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Pause",
+          "beat": 1488,
+          "variant": 0,
+          "visible": true,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1536,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1584,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 64,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1776,
+          "variant": 0,
+          "visible": true,
+          "pitch": 64,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1872,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 1968,
+          "variant": 0,
+          "visible": true,
+          "pitch": 60,
+          "duration": 64,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2160,
+          "variant": 0,
+          "visible": true,
+          "pitch": 60,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2256,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2304,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2352,
+          "variant": 0,
+          "visible": true,
+          "pitch": 69,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2448,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2496,
+          "variant": 0,
+          "visible": true,
+          "pitch": 66,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2544,
+          "variant": 0,
+          "visible": true,
+          "pitch": 67,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2640,
+          "variant": 0,
+          "visible": true,
+          "pitch": 66,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2688,
+          "variant": 0,
+          "visible": true,
+          "pitch": 64,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2736,
+          "variant": 0,
+          "visible": true,
+          "pitch": 66,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2832,
+          "variant": 0,
+          "visible": true,
+          "pitch": 64,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2880,
+          "variant": 0,
+          "visible": true,
+          "pitch": 62,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Note",
+          "beat": 2928,
+          "variant": 0,
+          "visible": true,
+          "pitch": 59,
+          "duration": 32,
+          "tieStart": false,
+          "tieEnd": false
+        },
+        {
+          "type": "Pause",
+          "beat": 3024,
+          "variant": 0,
+          "visible": true,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": false
+        }
+      ]
+    }
+  ],
+  "beat_maps": [
+    {
+      "0": 0,
+      "48": 48,
+      "144": 144,
+      "192": 192,
+      "240": 240,
+      "336": 336,
+      "384": 384,
+      "432": 432,
+      "528": 528,
+      "576": 576,
+      "624": 624,
+      "720": 720,
+      "768": 768,
+      "816": 816,
+      "912": 912,
+      "960": 960,
+      "1008": 1008,
+      "1104": 1104,
+      "1152": 1152,
+      "1200": 1200,
+      "1296": 1296,
+      "1344": 1344,
+      "1392": 1392,
+      "1488": 1488,
+      "1536": 1536,
+      "1584": 1584,
+      "1680": 1680,
+      "1728": 1728,
+      "1776": 1776,
+      "1872": 1872,
+      "1920": 1920,
+      "1968": 1968,
+      "2064": 2064,
+      "2112": 2112,
+      "2160": 2160,
+      "2256": 2256,
+      "2304": 2304,
+      "2352": 2352,
+      "2448": 2448,
+      "2496": 2496,
+      "2544": 2544,
+      "2640": 2640,
+      "2688": 2688,
+      "2736": 2736,
+      "2832": 2832,
+      "2880": 2880,
+      "2928": 2928,
+      "3024": 3024
+    },
+    {
+      "0": 0,
+      "48": 48,
+      "192": 192,
+      "240": 240,
+      "384": 384,
+      "432": 432,
+      "528": 528,
+      "576": 576,
+      "624": 624,
+      "816": 816,
+      "912": 912,
+      "1008": 1008,
+      "1104": 1104,
+      "1200": 1200,
+      "1296": 1296,
+      "1392": 1392,
+      "1488": 1488,
+      "1536": 1536,
+      "1584": 1584,
+      "1776": 1776,
+      "1872": 1872,
+      "1968": 1968,
+      "2160": 2160,
+      "2256": 2256,
+      "2304": 2304,
+      "2352": 2352,
+      "2448": 2448,
+      "2496": 2496,
+      "2544": 2544,
+      "2640": 2640,
+      "2688": 2688,
+      "2736": 2736,
+      "2832": 2832,
+      "2880": 2880,
+      "2928": 2928,
+      "3024": 3024
+    }
+  ]
+}
