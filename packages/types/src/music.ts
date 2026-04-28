@@ -184,6 +184,10 @@ export interface GotoPolicy {
   level?: number
   distance?: number
   isRepeat?: boolean
+  fromAnchor?: 'before' | 'after'
+  toAnchor?: 'before' | 'after'
+  verticalAnchor?: 'from' | 'to'
+  padding?: number
 }
 
 // ---------------------------------------------------------------------------

@@ -78,6 +78,52 @@ function variantToColor(variant: 0 | 1 | 2, layout: LayoutConfig): string {
   return layout.color.color_default
 }
 
+function playableCenter(
+  playable: PlayableEntity,
+  beatMap: BeatCompressionMap,
+  layout: LayoutConfig,
+  startpos: number,
+): [number, number] {
+  return [
+    pitchToX(playable.pitch, layout),
+    beatToY(playable.beat, beatMap, layout, startpos),
+  ]
+}
+
+function playableSize(playable: PlayableEntity, layout: LayoutConfig): [number, number] {
+  if (playable.type === 'Pause') {
+    const dKey = durationToKey(playable.duration)
+    const restStyle = layout.REST_TO_GLYPH[dKey] ?? layout.REST_TO_GLYPH['err']
+    if (!restStyle) return layout.REST_SIZE
+    return [layout.REST_SIZE[0] * restStyle.scale[0], layout.REST_SIZE[1] * restStyle.scale[1]]
+  }
+
+  const dKey = durationToKey(playable.duration)
+  const style = layout.DURATION_TO_STYLE[dKey] ?? requireDefined(
+    layout.DURATION_TO_STYLE['err'],
+    'HarpnotesLayout.playableSize(): missing fallback duration style "err"',
+  )
+  return [layout.ELLIPSE_SIZE[0] * style.sizeFactor, layout.ELLIPSE_SIZE[1] * style.sizeFactor]
+}
+
+function addPoint(point: [number, number], offset: [number, number]): [number, number] {
+  return [point[0] + offset[0], point[1] + offset[1]]
+}
+
+function orientationX(delta: number): -1 | 1 {
+  return delta < 0 ? -1 : 1
+}
+
+function orientationY(delta: number): -1 | 0 | 1 {
+  if (delta < 0) return -1
+  if (delta > 0) return 1
+  return 0
+}
+
+function swapJumplineAnchor(anchor: 'before' | 'after'): 'before' | 'after' {
+  return anchor === 'before' ? 'after' : 'before'
+}
+
 function parseStringNamesText(text: string | undefined): string[] {
   return (text ?? '')
     .split(/\s+/)
@@ -263,7 +309,7 @@ export class HarpnotesLayout {
 
     // Gotos (jumplines)
     if (showJumplines) {
-      result.push(...this._layoutVoiceGotos(voice, beatMap, layout, startpos, repeatSignVoices.has(voiceNr)))
+      result.push(...this._layoutVoiceGotos(voice, beatMap, layout, startpos, repeatSignVoices.has(voiceNr), conf))
     }
 
     // Tuplets
@@ -401,6 +447,7 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     hideRepeatGotos: boolean,
+    conf: Confstack,
   ): Path[] {
     const result: Path[] = []
 
@@ -413,46 +460,138 @@ export class HarpnotesLayout {
       const toNote = goto.to
       if (!fromNote || !toNote) continue
 
-      const fromX = pitchToX(fromNote.pitch, layout)
-      const fromY = beatToY(fromNote.beat, beatMap, layout, startpos)
-      const toX = pitchToX(toNote.pitch, layout)
-      const toY = beatToY(toNote.beat, beatMap, layout, startpos)
+      const paths = this._makeLegacyJumplinePaths(goto, fromNote, toNote, beatMap, layout, startpos, conf)
+      result.push(...paths)
+    }
 
-      const distance = goto.policy?.distance ?? -10
-      const vertX = fromX + distance
+    return result
+  }
 
-      // Jumpline: from → vertical column → to (L-shaped path)
-      result.push({
+  private _makeLegacyJumplinePaths(
+    goto: Goto,
+    fromNote: PlayableEntity,
+    toNote: PlayableEntity,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    conf: Confstack,
+  ): Path[] {
+    let distance = this._resolveJumplineDistance(goto, conf)
+    if (distance === 0) return []
+    if (distance > 0) distance -= 1
+
+    let fromAnchor = goto.policy?.fromAnchor ?? 'after'
+    let toAnchor = goto.policy?.toAnchor ?? 'before'
+    const verticalAnchor = goto.policy?.verticalAnchor ?? 'from'
+
+    const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
+    if (bottomup) {
+      fromAnchor = swapJumplineAnchor(fromAnchor)
+      toAnchor = swapJumplineAnchor(toAnchor)
+    }
+
+    const anchor = (
+      conf.get('layout.jumpline_anchor') as [number, number] | undefined
+    ) ?? layout.jumpline_anchor
+    const configuredVerticalCut = (
+      conf.get('layout.jumpline_vcut') as number | undefined
+    ) ?? layout.jumpline_vcut ?? 0
+    const verticalCut = this._computeJumplineVerticalCut(fromNote, toNote, configuredVerticalCut)
+    const fromCenter = playableCenter(fromNote, beatMap, layout, startpos)
+    const toCenter = playableCenter(toNote, beatMap, layout, startpos)
+    const fromSize = playableSize(fromNote, layout)
+    const toSize = playableSize(toNote, layout)
+    const verticalOffset = (distance + 0.5) * layout.X_SPACING
+    const verticalBase = verticalAnchor === 'to' ? toCenter : fromCenter
+    const verticalX = verticalBase[0] + verticalOffset
+    const startOrientation = orientationX(verticalX - fromCenter[0])
+    const endOrientation = orientationX(verticalX - toCenter[0])
+    const fromAnchorSign = fromAnchor === 'before' ? -1 : 1
+    const toAnchorSign = toAnchor === 'before' ? -1 : 1
+
+    const startOffset: [number, number] = [
+      (fromSize[0] + anchor[0]) * startOrientation,
+      (fromSize[1] + anchor[1]) * fromAnchorSign,
+    ]
+    const endOffset: [number, number] = [
+      (toSize[0] + anchor[0]) * endOrientation,
+      (toSize[1] + anchor[1]) * toAnchorSign,
+    ]
+
+    const p1 = addPoint(fromCenter, startOffset)
+    const p2: [number, number] = [verticalX, fromCenter[1] + startOffset[1]]
+    const p3: [number, number] = [verticalX, toCenter[1] + endOffset[1]]
+    const p4 = addPoint(toCenter, endOffset)
+    const p4Line = addPoint(p4, [2 * endOrientation, 0])
+    const dy = p3[1] - p2[1]
+    const verticalCutY = verticalCut === 0 ? dy : (dy > 0 ? verticalCut : -verticalCut)
+    const vcp2 = addPoint(p2, [0, verticalCutY])
+    const vcp3 = addPoint(p3, [0, -verticalCutY])
+    const verticalOrientation = orientationY(p2[1] - p3[1])
+    const lineCutEnd = addPoint(vcp2, [0, verticalOrientation])
+
+    return [
+      {
         type: 'Path',
-        path: [
-          [fromX, fromY],
-          [vertX, fromY],
-          [vertX, toY],
-          [toX, toY],
-        ],
+        path: [p1, p2, lineCutEnd, vcp3, p3, p4Line],
         fill: false,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,
         visible: true,
-      })
-
-      // Arrowhead at destination (filled triangle)
-      const arrowSize = 2
-      result.push({
+      },
+      {
         type: 'Path',
         path: [
-          [toX, toY],
-          [toX - arrowSize, toY - arrowSize],
-          [toX + arrowSize, toY - arrowSize],
+          p4,
+          addPoint(p4, [2.5 * endOrientation, 1]),
+          addPoint(p4, [2.5 * endOrientation, -1]),
         ],
         fill: true,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,
         visible: true,
-      })
+      },
+      {
+        type: 'Path',
+        path: verticalCut === 0
+          ? []
+          : [
+            vcp2,
+            addPoint(vcp2, [0.5, 1.5 * verticalOrientation]),
+            addPoint(vcp2, [-0.5, 1.5 * verticalOrientation]),
+          ],
+        fill: true,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THICK,
+        visible: true,
+      },
+    ]
+  }
+
+  private _resolveJumplineDistance(goto: Goto, conf: Confstack): number {
+    const confKey = goto.confKey ?? goto.policy?.confKey
+    if (confKey) {
+      const configuredDistance = conf.get(`extract.${confKey}`) ?? conf.get(confKey)
+      if (typeof configuredDistance === 'number') return configuredDistance
+
+      const legacyKey = confKey.replace(/(.*)\.(\d+)\.(\d+)\.(\w+)$/, '$1.$2.$4')
+      if (legacyKey !== confKey) {
+        const legacyConfiguredDistance = conf.get(`extract.${legacyKey}`) ?? conf.get(legacyKey)
+        if (typeof legacyConfiguredDistance === 'number') return legacyConfiguredDistance
+      }
     }
 
-    return result
+    return goto.policy?.distance ?? 1
+  }
+
+  private _computeJumplineVerticalCut(
+    fromNote: PlayableEntity,
+    toNote: PlayableEntity,
+    configuredVerticalCut: number,
+  ): number {
+    const adjacentToFrom = fromNote.prevPlayable === toNote || fromNote.nextPlayable === toNote
+    const adjacentToTarget = toNote.prevPlayable === fromNote || toNote.nextPlayable === fromNote
+    return adjacentToFrom || adjacentToTarget ? 0 : configuredVerticalCut
   }
 
   // ---------------------------------------------------------------------------

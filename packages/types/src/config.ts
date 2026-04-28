@@ -122,6 +122,12 @@ export interface LayoutConfig {
   limit_a3: boolean
   /** Gitternetz anzeigen */
   grid: boolean
+  /** Jumpline anchor offset relative to the note size. */
+  jumpline_anchor: [number, number]
+  /** Vertical gap for long jumplines; 0 draws an unbroken vertical line. */
+  jumpline_vcut?: number
+  /** Mirror before/after anchors for bottom-up instruments. */
+  bottomup?: boolean
 }
 
 // ---------------------------------------------------------------------------

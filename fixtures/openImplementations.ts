@@ -20,15 +20,6 @@ export interface DetectedFailure {
 
 const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
   {
-    id: 'sheet.reference-jumplines',
-    stage: 'sheet',
-    scope: 'jump line parity',
-    summary: 'Reference-sheet jump lines are not yet ported with legacy parity.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['3015_reference_sheet', '783_einsiedler-kreuzweg'],
-    prompt: 'Investigate jump-line parity for the listed fixtures, reproduce with the sheet legacy comparison tests, implement the remaining legacy jumpline behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
-  },
-  {
     id: 'sheet.legacy-inline-directives',
     stage: 'sheet',
     scope: '%%%%hn* inline directives',

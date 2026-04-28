@@ -7,9 +7,9 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 12
+- Total open implementations: 11
 - Song gaps: 0
-- Sheet gaps: 12
+- Sheet gaps: 11
 - Known-covered failures: 14
 - New unclassified failures: 0
 
@@ -18,13 +18,6 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 No open gaps.
 
 ## Sheet Gaps
-
-- [ ] sheet.reference-jumplines
-  - Fixtures: 3015_reference_sheet, 783_einsiedler-kreuzweg
-  - Scope: jump line parity
-  - Summary: Reference-sheet jump lines are not yet ported with legacy parity.
-  - Prompt: Investigate jump-line parity for the listed fixtures, reproduce with the sheet legacy comparison tests, implement the remaining legacy jumpline behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.legacy-inline-directives
   - Fixtures: 02_twoStaff
