@@ -7,9 +7,9 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 13
+- Total open implementations: 12
 - Song gaps: 0
-- Sheet gaps: 13
+- Sheet gaps: 12
 - Known-covered failures: 12
 - New unclassified failures: 0
 
@@ -18,13 +18,6 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 No open gaps.
 
 ## Sheet Gaps
-
-- [ ] sheet.repeat-layout
-  - Fixtures: repeat
-  - Scope: basic repeat markers and paths
-  - Summary: Basic repeat markers and repeat path rendering are not yet reproduced with full legacy parity.
-  - Prompt: Investigate repeat layout parity in the repeat fixture, reproduce with the sheet legacy comparison test, implement the remaining legacy repeat marker and path behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.reference-jumplines
   - Fixtures: 3015_reference_sheet, 783_einsiedler-kreuzweg
@@ -76,7 +69,7 @@ No open gaps.
   - Refs: packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.sheet-header-legend-and-footers
-  - Fixtures: 3015_reference_sheet, 783_einsiedler-kreuzweg, pause, single_note, tuplet, two_voices
+  - Fixtures: 3015_reference_sheet, repeat, 783_einsiedler-kreuzweg, pause, single_note, tuplet, two_voices
   - Scope: header, legend, cutmarks, footer text
   - Summary: Legacy sheet header, legend, cutmark, and footer text behavior is not yet reproduced with legacy parity, including filename-part-driven text variants.
   - Prompt: Investigate legacy sheet header, legend, cutmark, and footer parity for the listed fixtures, reproduce with the sheet legacy comparison tests, implement the remaining text-block and footer behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.

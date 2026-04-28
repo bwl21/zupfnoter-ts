@@ -817,6 +817,8 @@ export class AbcToSong {
     companionTime: number,
     extraIndex: number,
   ): { text: string; position: [number, number]; style: string; confKey?: string; policy?: string } | null {
+    // Legacy Zupfnoter used @@... as a deprecated pre-JSON marker. The legacy
+    // Song export does not materialize it as a regular NoteBoundAnnotation.
     if (rawText.trim().startsWith('@@')) {
       return null
     }

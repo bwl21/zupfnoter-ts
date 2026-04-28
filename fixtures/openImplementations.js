@@ -1,14 +1,5 @@
 const OPEN_IMPLEMENTATIONS = [
     {
-        id: 'sheet.repeat-layout',
-        stage: 'sheet',
-        scope: 'basic repeat markers and paths',
-        summary: 'Basic repeat markers and repeat path rendering are not yet reproduced with full legacy parity.',
-        refs: ['packages/core/src/HarpnotesLayout.ts'],
-        fixtures: ['repeat'],
-        prompt: 'Investigate repeat layout parity in the repeat fixture, reproduce with the sheet legacy comparison test, implement the remaining legacy repeat marker and path behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
-    },
-    {
         id: 'sheet.reference-jumplines',
         stage: 'sheet',
         scope: 'jump line parity',
@@ -79,6 +70,7 @@ const OPEN_IMPLEMENTATIONS = [
         refs: ['packages/core/src/HarpnotesLayout.ts'],
         fixtures: [
             '3015_reference_sheet',
+            'repeat',
             '783_einsiedler-kreuzweg',
             'pause',
             'single_note',

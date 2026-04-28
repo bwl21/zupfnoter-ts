@@ -20,15 +20,6 @@ export interface DetectedFailure {
 
 const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
   {
-    id: 'sheet.repeat-layout',
-    stage: 'sheet',
-    scope: 'basic repeat markers and paths',
-    summary: 'Basic repeat markers and repeat path rendering are not yet reproduced with full legacy parity.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['repeat'],
-    prompt: 'Investigate repeat layout parity in the repeat fixture, reproduce with the sheet legacy comparison test, implement the remaining legacy repeat marker and path behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
-  },
-  {
     id: 'sheet.reference-jumplines',
     stage: 'sheet',
     scope: 'jump line parity',
@@ -98,10 +89,11 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     summary: 'Legacy sheet header, legend, cutmark, and footer text behavior is not yet reproduced with legacy parity, including filename-part-driven text variants.',
     refs: ['packages/core/src/HarpnotesLayout.ts'],
     fixtures: [
-      '3015_reference_sheet',
-      '783_einsiedler-kreuzweg',
-      'pause',
-      'single_note',
+        '3015_reference_sheet',
+        'repeat',
+        '783_einsiedler-kreuzweg',
+        'pause',
+        'single_note',
       'tuplet',
       'two_voices',
     ],
