@@ -8,13 +8,13 @@ als JSON speichern. Tests vergleichen TypeScript-Ausgabe mit Legacy-Referenzen.
 ```
 ABC-Datei + Config
     ↓
-[Stufe 1: AbcParser] → fixture: abc_model.json
+[Stufe 1: AbcParser]
     ↓
 [Stufe 2: AbcToSong] → fixture: song.json
     ↓
-[Stufe 3: HarpnotesLayout] → fixture: sheet.json
+[Stufe 3: HarpnotesLayout] → fixture: sheet.json oder sheet.extract-<nr>.json
     ↓
-[Stufe 4: SvgEngine] → fixture: output.svg
+[Stufe 4: SvgEngine] → fixture: output.svg (geplant)
 ```
 
 Alle Fixtures liegen unter `fixtures/` und sind **versioniert**.
@@ -29,7 +29,10 @@ fixtures/
     ├── <test-case>/
     │   ├── input.abc          # ABC-Notation + optionaler %%%%zupfnoter.config Block
     │   ├── song.json          # Stufe 2: Song-Modell (Legacy Reference)
-    │   ├── sheet.json         # Stufe 3: Sheet-Modell (Legacy Reference)
+    │   ├── sheet.json         # Stufe 3: Sheet-Modell für Extract 0 (Legacy Reference, Fallback)
+    │   ├── sheet.extract-0.json
+    │   ├── sheet.extract-1.json
+    │   ├── ...
     │   ├── output.svg         # Stufe 4: SVG-String (Legacy Reference, geplant)
     │   └── _ts_output/        # TypeScript-Ausgabe (generiert)
     │       ├── song.json
@@ -43,211 +46,110 @@ fixtures/
 - Legacy Reference: `fixtures/cases/<test-case>/<stufe>.json` (hand-gepflegt oder exportiert)
 - TypeScript Output: `fixtures/cases/<test-case>/_ts_output/<stufe>.json` (generiert)
 - Discovery: Tests scannen `fixtures/cases/*/input.abc`.
-- Stage-Aktivierung: Song-Tests laufen für Testfälle mit `song.json`; Sheet-Tests für Testfälle mit `sheet.json`.
+- Stage-Aktivierung: Song-Tests laufen für Testfälle mit `song.json`; Sheet-Tests für Testfälle mit `sheet.json` oder mindestens einer `sheet.extract-<nr>.json`.
 - Config: inline im ABC via `%%%%zupfnoter.config`; fehlt der Block, gelten `initConf()`-Defaults.
 - Keine separate `input.config.json`: Fixture-Tests verwenden genau dieselbe Config-Quelle wie die Pipeline.
+- Legacy-ABC-Direktiven wie `%%%%hnc`, `%%%%hna` oder `%%%%hn.legend` sind davon getrennt und müssen bei Bedarf explizit in die TS-Config-Extraktion überführt werden.
 
 ---
 
 ## Test-Implementierung
 
-### 1. Basis-Test-Struktur
+### 1. Überblick über den Testablauf
 
-```typescript
-// packages/core/src/testing/__tests__/fixtures.spec.ts
+Die Vergleichstests werden generisch aus `fixtures/cases/*/input.abc` erzeugt.
+Sie enthalten keine fallweise handgeschriebenen Assertions. Stattdessen entscheidet
+der Fixture-Bestand, welche Song- und Sheet-Vergleiche ausgeführt werden.
 
-import { describe, it, expect } from 'vitest'
-import { loadFixture, scanFixtureCases, transformFixtureToSong, transformFixtureToSheet } from '../fixtureLoader'
-import { matchSong, matchSheet, formatMismatches } from '../semanticMatch'
-
-describe('Fixture-Driven Tests', () => {
-  describe('Stufe 2: AbcToSong', () => {
-    for (const testCase of scanFixtureCases().filter((tc) => tc.hasSongFixture)) {
-      it(`matches legacy song.json: ${testCase.id}`, () => {
-      const fixture = loadFixture(testCase)
-      if (fixture.song === null) throw new Error(`Missing song fixture for ${testCase.id}`)
-      const actual = transformFixtureToSong(fixture)
-      const result = matchSong(actual, fixture.song)
-      expect(result.passed, formatMismatches(result)).toBe(true)
-    })
-    }
-  })
-
-  describe('Stufe 3: HarpnotesLayout', () => {
-    for (const testCase of scanFixtureCases().filter((tc) => tc.hasSheetFixture)) {
-      it(`matches legacy sheet.json: ${testCase.id}`, () => {
-      const fixture = loadFixture(testCase)
-      if (fixture.sheet === null) throw new Error(`Missing sheet fixture for ${testCase.id}`)
-      const actual = transformFixtureToSheet(fixture)
-      const result = matchSheet(actual, fixture.sheet)
-      expect(result.passed, formatMismatches(result)).toBe(true)
-    })
-    }
-  })
-})
+```mermaid
+flowchart TD
+  A[scanFixtureCases] --> B{song.json vorhanden?}
+  A --> C{sheet.json oder sheet.extract-N.json vorhanden?}
+  B -->|ja| D[Song-Vergleichstest anlegen]
+  C -->|ja| E[Sheet-Vergleichstest anlegen]
+  D --> F[loadFixture]
+  E --> F
+  F --> G[Config aus input.abc aufbauen]
+  G --> H[TS-Pipeline ausführen]
+  H --> I[semanticMatch gegen Legacy-Fixture]
+  I --> J{Vergleich ok?}
+  J -->|ja| K[Test grün]
+  J -->|nein| L[Mismatch + offene Gaps ausgeben]
 ```
 
-### 2. Fixture-Loader
+### 2. Ablauf Song-Vergleich
 
-```typescript
-// packages/core/src/testing/fixture-loader.ts
+```mermaid
+sequenceDiagram
+  participant Vitest
+  participant Loader as fixtureLoader
+  participant Parser as AbcParser
+  participant Song as AbcToSong
+  participant Match as matchSong
+  participant Gaps as openImplementations
 
-import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync } from 'fs'
-import { resolve } from 'path'
-import type { ZupfnoterConfig } from '@zupfnoter/types'
-import { extractSongConfig, mergeSongConfig } from '../../extractSongConfig'
-import { defaultTestConfig } from './defaultConfig'
-
-export interface FixtureCase {
-  name: string
-  id: string
-  dir: string
-  hasSongFixture: boolean
-  hasSheetFixture: boolean
-}
-
-export interface FixtureSet {
-  name: string
-  id: string
-  dir: string
-  input: {
-    abc: string
-  }
-  config: ZupfnoterConfig
-  song: any
-  sheet: any
-  output_svg: string | null
-}
-
-const FIXTURE_CASES_ROOT = resolve(__dirname, '../../../../fixtures/cases')
-
-export function scanFixtureCases(): FixtureCase[] {
-  return readdirSync(FIXTURE_CASES_ROOT)
-    .map((name) => {
-      const dir = resolve(FIXTURE_CASES_ROOT, name)
-      return {
-        name,
-        id: name,
-        dir,
-        hasSongFixture: existsSync(resolve(dir, 'song.json')),
-        hasSheetFixture: existsSync(resolve(dir, 'sheet.json')),
-      }
-    })
-    .filter((testCase) => existsSync(resolve(testCase.dir, 'input.abc')))
-}
-
-export function loadFixture(testCase: FixtureCase): FixtureSet {
-  const abc = readFileSync(resolve(testCase.dir, 'input.abc'), 'utf-8')
-  return {
-    name: testCase.name,
-    id: testCase.id,
-    dir: testCase.dir,
-    input: { abc },
-    config: mergeSongConfig(defaultTestConfig, extractSongConfig(abc)),
-    song: safeLoadJson(resolve(testCase.dir, 'song.json')),
-    sheet: safeLoadJson(resolve(testCase.dir, 'sheet.json')),
-    output_svg: safeLoadText(resolve(testCase.dir, 'output.svg')),
-  }
-}
-
-export function saveFixtureOutput(
-  fixture: FixtureSet,
-  stage: 'song' | 'sheet' | 'output_svg',
-  data: any
-) {
-  const dir = resolve(fixture.dir, '_ts_output')
-  const filename = stage === 'output_svg' ? 'output.svg' : `${stage}.json`
-  const filepath = resolve(dir, filename)
-  const content = typeof data === 'string' ? data : JSON.stringify(data, null, 2)
-  mkdirSync(dir, { recursive: true })
-  writeFileSync(filepath, content, 'utf-8')
-}
-
-function safeLoadJson(path: string): any {
-  try {
-    return JSON.parse(readFileSync(path, 'utf-8'))
-  } catch {
-    return null
-  }
-}
-
-function safeLoadText(path: string): string | null {
-  try {
-    return readFileSync(path, 'utf-8')
-  } catch {
-    return null
-  }
-}
-
+  Vitest->>Loader: loadFixture(testCase)
+  Loader->>Loader: input.abc lesen
+  Loader->>Loader: %%%%zupfnoter.config mergen
+  Vitest->>Parser: parse(abc)
+  Parser-->>Vitest: AbcModel
+  Vitest->>Song: transform(model, config)
+  Song-->>Vitest: Song
+  Vitest->>Match: matchSong(actual, song.json)
+  Match-->>Vitest: passed + mismatches
+  Vitest->>Gaps: getOpenImplementations('song')
+  Gaps-->>Vitest: bekannte Song-Gaps
+  Vitest-->>Vitest: Erfolg oder Fehler mit Gap-Hinweis
 ```
 
-### 3. Comparison / Semantic Matching
+### 3. Ablauf Sheet-Vergleich
 
-```typescript
-// packages/core/src/testing/compare-fixtures.ts
+Für Sheet-Fixtures gibt es zwei Modi:
+- `sheet.extract-<nr>.json`: explizite Legacy-Referenz pro Extrakt
+- `sheet.json`: Fallback für Extrakt `0`
 
-export interface ComparisonResult {
-  matches: boolean
-  differences: string[]
-}
+```mermaid
+sequenceDiagram
+  participant Vitest
+  participant Loader as fixtureLoader
+  participant Parser as AbcParser
+  participant Song as AbcToSong
+  participant Layout as HarpnotesLayout
+  participant Match as matchSheet
+  participant Gaps as openImplementations
 
-/**
- * Semantischer Vergleich zwischen TypeScript-Ausgabe und Legacy-Reference.
- * Ignoriert irrelevante Unterschiede (z.B. Floating-Point-Präzision, Feld-Ordnung).
- */
-export function compareFixtures(
-  ts_output: any,
-  legacy_reference: any,
-  tolerance = 0.0001
-): ComparisonResult {
-  const differences: string[] = []
-  
-  function compare(a: any, b: any, path: string = '$') {
-    if (a === b) return
-    
-    if (typeof a === 'number' && typeof b === 'number') {
-      if (Math.abs(a - b) > tolerance) {
-        differences.push(`${path}: ${a} != ${b} (delta: ${Math.abs(a - b)})`)
-      }
-      return
-    }
-    
-    if (Array.isArray(a) && Array.isArray(b)) {
-      if (a.length !== b.length) {
-        differences.push(`${path}: array length ${a.length} != ${b.length}`)
-        return
-      }
-      a.forEach((item, i) => compare(item, b[i], `${path}[${i}]`))
-      return
-    }
-    
-    if (typeof a === 'object' && typeof b === 'object' && a !== null && b !== null) {
-      const keysA = Object.keys(a)
-      const keysB = Object.keys(b)
-      const allKeys = new Set([...keysA, ...keysB])
-      
-      allKeys.forEach(key => {
-        if (!(key in a)) {
-          differences.push(`${path}.${key}: missing in ts_output`)
-        } else if (!(key in b)) {
-          differences.push(`${path}.${key}: unexpected in ts_output`)
-        } else {
-          compare(a[key], b[key], `${path}.${key}`)
-        }
-      })
-      return
-    }
-    
-    differences.push(`${path}: ${JSON.stringify(a)} != ${JSON.stringify(b)}`)
-  }
-  
-  compare(ts_output, legacy_reference)
-  
-  return {
-    matches: differences.length === 0,
-    differences
-  }
-}
+  Vitest->>Loader: loadFixture(testCase)
+  Loader-->>Vitest: Fixture + sheetExtracts
+  Vitest->>Loader: getSheetFixtureTargets(fixture)
+  Loader-->>Vitest: [(extractNr, expected), ...]
+  loop pro Extract
+    Vitest->>Parser: parse(abc)
+    Parser-->>Vitest: AbcModel
+    Vitest->>Song: transform(model, config)
+    Song-->>Vitest: Song
+    Vitest->>Layout: layout(song, extractNr, 'A4')
+    Layout-->>Vitest: Sheet
+    Vitest->>Match: matchSheet(actual, expected)
+    Match-->>Vitest: passed + mismatches
+    Vitest->>Gaps: getOpenImplementations('sheet')
+    Gaps-->>Vitest: bekannte Sheet-Gaps
+  end
+```
+
+### 4. Verantwortung der Bausteine
+
+```mermaid
+flowchart LR
+  A[fixtureLoader] -->|liest| B[input.abc]
+  A -->|lädt| C[song.json]
+  A -->|lädt| D[sheet.json / sheet.extract-N.json]
+  A -->|baut| E[effektive Config]
+  F[legacy_comparison.spec.ts] -->|steuert| A
+  F -->|ruft| G[AbcParser]
+  F -->|ruft| H[AbcToSong]
+  F -->|ruft| I[HarpnotesLayout]
+  F -->|vergleicht über| J[semanticMatch]
+  F -->|ergänzt Hinweise aus| K[openImplementations.ts]
 ```
 
 ---
@@ -256,19 +158,22 @@ export function compareFixtures(
 
 Der Legacy-CLI besitzt einen expliziten Exportmodus. Er liest ABC-Dateien, führt die
 produktive Legacy-Pipeline aus und schreibt pro Testfall `input.abc`, `song.json` und
-`sheet.json` in `fixtures/cases/<test-case>/`.
+für das Sheet entweder `sheet.extract-<nr>.json` oder als Fallback `sheet.json` in
+`fixtures/cases/<test-case>/`.
 
 ```bash
-cd ../200_zupfnoter/30_sources/SRC_Zupfnoter/src
-node --max_old_space_size=4096 zupfnoter-cli.js \
-  --export-fixtures \
-  "/path/to/zupfnoter-ts/fixtures/cases/*/input.abc" \
-  /path/to/zupfnoter-ts/fixtures/cases
+npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
 ```
 
-Bei Eingaben nach dem Muster `fixtures/cases/<test-case>/input.abc` verwendet der
-Exporter den Elternordner als Testfallnamen. Bei anderen ABC-Dateien wird der
-Dateiname ohne `.abc` als Testfallname verwendet.
+Der Wrapper expandiert den Glob lokal und ruft die Legacy-CLI pro Datei einzeln in
+dieser Form auf:
+
+```bash
+node zupfnoter-cli.min.js --export-fixtures <input.abc> <target-dir>
+```
+
+Der Standardpfad zur Legacy-CLI ist im Wrapper relativ zum Repository hinterlegt.
+Details und Overrides stehen in `fixtures/README.md`.
 
 ### Fixtures versionieren
 
@@ -284,41 +189,40 @@ git commit -m "docs(fixtures): export legacy references for Phase 2-4 tests"
 
 ## Test-Ausführung
 
-### 1. Alle Fixture-Tests laufen
+### 1. Alle Unit- und Legacy-Vergleichstests laufen
 
 ```bash
-pnpm test --run packages/core
-
-# Oder nur Fixtures:
-pnpm test fixtures.spec.ts
+pnpm test
 ```
 
-### 2. Watch-Mode für Entwicklung
+### 2. Nur den Gap-Report erzeugen
 
 ```bash
-pnpm test --watch packages/core
+pnpm test:gaps
 ```
 
-### 3. Snapshot-Updates (nach Absicht-Änderungen)
+Wichtig:
+
+- `pnpm test:gaps` liest **nicht** die Ergebnisse eines vorherigen `test:unit`-Laufs.
+- Stattdessen führt es einen **eigenen** Report-Testlauf aus, der die aktuellen Fixture-Vergleiche selbst neu berechnet.
+- Wenn man nur wissen will, **welche Fixture-Vergleichsfälle aktuell noch fehlschlagen**, reicht `pnpm test:gaps` in der Regel aus.
+- Wenn man den **vollen normalen Fehlkontext** der eigentlichen Vergleichstests sehen will, braucht man `pnpm test:unit` oder die direkten `legacy_comparison.spec.ts`-Läufe.
+
+### 3. Watch-Mode für Entwicklung
 
 ```bash
-pnpm test --update packages/core
+pnpm --filter @zupfnoter/core run test:unit -- --watch
 ```
 
-### 4. Fixtures neu exportieren (nach Legacy-Änderung)
+### 4. Snapshot-Updates (nach Absicht-Änderungen)
 
 ```bash
-# Im Legacy-Repo:
-node --max_old_space_size=4096 zupfnoter-cli.js \
-  --export-fixtures \
-  "/path/to/zupfnoter-ts/fixtures/cases/*/input.abc" \
-  /path/to/zupfnoter-ts/fixtures/cases
-
-# In zupfnoter-ts:
-git diff fixtures/  # Review
-git add fixtures/
-git commit -m "chore(fixtures): regenerate from legacy"
+pnpm --filter @zupfnoter/core run test:unit -- --update
 ```
+
+### 5. Fixtures neu exportieren (nach Legacy-Änderung)
+
+Siehe `npm run test:loadsample -- "<glob>"` und die ausführliche Beschreibung in `fixtures/README.md`.
 
 ---
 
@@ -328,12 +232,12 @@ git commit -m "chore(fixtures): regenerate from legacy"
 # .github/workflows/test.yml
 
 - name: Run fixture tests
-  run: pnpm test --run packages/core
+  run: pnpm test
 
 - name: Check for snapshot changes
   run: |
     if [[ -n $(git status -s) ]]; then
-      echo "❌ Snapshot changes detected. Run pnpm test --update"
+      echo "❌ Snapshot changes detected. Run pnpm --filter @zupfnoter/core run test:unit -- --update"
       exit 1
     fi
 ```
@@ -342,36 +246,176 @@ git commit -m "chore(fixtures): regenerate from legacy"
 
 ## Fehlerbehandlung
 
+## Offene Implementierungen (`openImplementations.ts`)
+
+Die Datei [packages/core/src/testing/openImplementations.ts](/Users/beweiche/beweiche_noTimeMachine/zupfnoter-ts/packages/core/src/testing/openImplementations.ts:1) ist die zentrale Liste bekannter Paritätslücken zwischen Legacy und TypeScript.
+
+Wichtig:
+
+- Die Liste ist **manuell gepflegt**.
+- Sie ist **keine automatische Fehlerdatenbank**.
+- Sie enthält nur **bewusst identifizierte systematische Lücken**, nicht jede einzelne Testabweichung.
+
+### Wie wird die Datei verwendet?
+
+Die generischen Legacy-Vergleichstests lesen die Datei:
+
+- `packages/core/src/testing/__tests__/song/legacy_comparison.spec.ts`
+- `packages/core/src/testing/__tests__/sheet/legacy_comparison.spec.ts`
+
+Wenn ein Vergleich fehlschlägt, wird die passende Gap-Liste (`song` oder `sheet`) an die Fehlermeldung angehängt. Dadurch sieht man im Testlauf sofort, welche bekannten offenen Punkte für diese Stufe bereits dokumentiert sind.
+
+Zusätzlich gibt es:
+
+```bash
+pnpm test:gaps
+```
+
+Dieses Kommando führt keinen normalen Legacy-Testlauf aus, sondern berechnet selbst
+einen Gap-Report aus den Vergleichshelfern. Es erzeugt:
+
+- eine kompakte Zusammenfassung der aktuell eingetragenen Gap-IDs
+- eine Liste direkt nutzbarer Arbeits-Prompts für neue unklassifizierte Fehler
+- die Datei `packages/core/src/testing/open_implementations_template.ts`
+
+Die Template-Datei wird bei jedem Lauf neu geschrieben:
+
+- **leer bzw. leeres Array**: es wurden keine neuen unklassifizierten Fehler gefunden
+- **gefüllt**: es gibt fehlschlagende Legacy-Vergleiche, die noch nicht durch `openImplementations.ts` abgedeckt sind
+
+### Wie kommt ein neuer Eintrag hinein?
+
+Nicht automatisch. Ein neuer Eintrag wird manuell ergänzt, wenn:
+
+1. ein Testfehler analysiert wurde,
+2. die Ursache eine echte Implementierungslücke ist,
+3. die Lücke nicht bloß ein fehlerhaft exportiertes Fixture ist,
+4. und sie als wiederverwendbare Arbeitsposition sichtbar bleiben soll.
+
+Praktisches Vorgehen:
+
+1. `packages/core/src/testing/openImplementations.ts` öffnen
+2. im Array `OPEN_IMPLEMENTATIONS` einen neuen Eintrag ergänzen
+3. passende Stufe setzen:
+   - `song`
+   - `sheet`
+   - nur in Ausnahmefällen `both`
+4. eine stabile, kurze `id` vergeben, z. B.:
+   - `sheet.barnumbers-config`
+   - `song.bar-bound-variant-annotations`
+5. `scope` so wählen, dass der betroffene Konfig-Pfad oder Fachbereich direkt erkennbar ist
+6. in `summary` knapp beschreiben, **was** fehlt und **woran** man die Abweichung erkennt
+7. in `refs` die relevanten Quelldateien angeben, damit die Abarbeitung direkt an der richtigen Stelle startet
+8. optional einen direkt nutzbaren `prompt` ergänzen, damit die Lücke sofort als Arbeitsauftrag verwendet werden kann
+9. optional `notes` für kuratierte Zusatzhinweise verwenden
+
+Beispiel für einen sinnvollen Eintrag:
+
+- `id`: `sheet.example-gap`
+- `stage`: `sheet`
+- `scope`: `extract.example`
+- `summary`: kurze fachliche Beschreibung der fehlenden Legacy-Parität
+- `refs`: z. B. `packages/core/src/HarpnotesLayout.ts`
+- `prompt`: direkt nutzbarer Arbeitsauftrag inklusive Reproduktion und Entfernung des Eintrags nach Abschluss
+
+Regeln für gute Einträge:
+
+- `id` bleibt stabil und wird nachträglich nicht dauernd umbenannt
+- ein Eintrag beschreibt **eine konkrete Lücke**, nicht einen unscharfen Sammelrest
+- wenn zwei Fehler dieselbe Ursache haben, lieber **ein** sauberer Eintrag statt vieler Duplikate
+- wenn eine Abweichung nur ein einzelnes kaputtes Fixture betrifft, **kein** neuer Gap-Eintrag, sondern Exporter/Fixture prüfen
+
+### Wie nutze ich `open_implementations_template.ts`?
+
+Die Datei ist ein **Vorschlagsbuffer**, kein aktiver Teil der Vergleichstests.
+
+Typischer Ablauf:
+
+1. `pnpm test:unit`
+2. `pnpm test:gaps`
+3. `packages/core/src/testing/open_implementations_template.ts` ansehen
+4. für jeden sinnvollen Kandidaten entscheiden:
+   - zu bestehendem Eintrag in `openImplementations.ts` zuordnen
+   - oder als neuen Eintrag manuell übernehmen
+   - oder verwerfen, wenn die Ursache ein Exporter-/Fixture-Problem ist
+
+Jeder Template-Eintrag enthält:
+
+- eine vorgeschlagene `id`
+- `stage`, `scope`, `refs`
+- eine kurze `summary`
+- einen direkt nutzbaren `prompt`
+- die aktuelle `mismatchSummary`
+
+Die kuratierte Hauptdatei `openImplementations.ts` verwendet jetzt dasselbe Grundschema, nur ohne automatisch erzeugte `mismatchSummary`. Dadurch lassen sich sinnvolle Template-Einträge fast 1:1 übernehmen und anschließend manuell verdichten.
+
+Der `prompt` ist absichtlich so formuliert, dass man ihn direkt als Arbeitsauftrag für die Implementierung verwenden kann.
+
+### Wie kommt ein Eintrag wieder heraus?
+
+Ebenfalls manuell:
+
+1. Implementierung ergänzen
+2. gezielte Tests ausführen
+3. relevante Legacy-Vergleichstests erneut prüfen
+4. Eintrag aus `openImplementations.ts` entfernen, wenn die Lücke tatsächlich geschlossen ist
+
+### Wie prüfe ich, ob die Liste noch aktuell ist?
+
+Empfohlener Ablauf:
+
+1. `pnpm test:unit` ausführen
+2. `pnpm test:gaps` ausführen
+3. vergleichen:
+   - Gibt es fehlschlagende Tests ohne passenden Gap-Eintrag?
+   - Gibt es Gap-Einträge, deren Verhalten inzwischen implementiert und verifiziert ist?
+
+Die Datei ist aktuell genau dann in gutem Zustand, wenn sie die **bekannten systematischen Restlücken** beschreibt, aber keine bereits erledigten Punkte mehr enthält.
+
+### Wie arbeite ich die Liste gezielt ab?
+
+Ein praktikabler Ablauf ist:
+
+1. `pnpm test:unit`
+2. `pnpm test:gaps`
+3. eine Gap-ID auswählen, z. B. `sheet.barnumbers-config`
+4. die referenzierten Stellen im Code öffnen
+5. mit einem kleinen Fixture oder `3015_reference_sheet` reproduzieren
+6. Implementierung ergänzen
+7. gezielte Tests laufen lassen
+8. Legacy-Vergleich erneut prüfen
+9. erledigten Eintrag aus `openImplementations.ts` entfernen
+
+Damit bleibt die Datei eine explizite, steuerbare Arbeitsliste für die noch fehlende Legacy-Parität.
+
 ### Fall 1: Legacy-Referenz ist "falsch"
 
-Wenn die Legacy-Ausgabe einen Bug enthält, den wir in TS korrigieren wollen:
+Im aktuellen Projektmodell gehen wir davon aus:
 
-1. Fixture **nicht updaten**, stattdessen einen **Kommentar** hinzufügen:
-   ```typescript
-   // KNOWN ISSUE: Legacy hatte Bug in BeatPacker für Kollisionen
-   // TS-Version ist korrekt. Fixture wird ignoriert für diesen Fall.
-   it.skip('should match legacy sheet.json (known issue)', () => {
-     // ...
-   })
-   ```
+- Die Legacy-Pipeline ist die fachliche Referenz.
+- Wenn ein Fixture falsch ist, liegt der Fehler zunächst im **Fixture-Exporter**.
 
-2. Neue **korrigierte Referenz** erstellen:
-   ```
-   fixtures/twostaff/sheet.corrected.json
-   ```
+Deshalb gilt:
 
-3. Test gegen korrigierte Version:
-   ```typescript
-   expect(sheet.toJSON()).toEqual(fixtures.sheet_corrected)
-   ```
+1. **Keine parallelen `*.corrected.json`-Referenzen einführen.**
+2. Den Exporter im Legacy-System prüfen und korrigieren.
+3. Das betroffene Fixture **neu exportieren** und die bestehende Referenzdatei ersetzen:
+   - `song.json`
+   - `sheet.json`
+   - oder `sheet.extract-<nr>.json`
+4. Die generischen Vergleichstests bleiben unverändert.
+
+Begründung:
+
+- Die aktuellen Vergleichstests werden generisch aus `fixtures/cases/*` erzeugt.
+- Es gibt bewusst **eine kanonische Referenz pro Fall**.
+- Sonderpfade wie `sheet.corrected.json` würden die Testlogik unnötig komplizieren und mehrere Wahrheiten einführen.
 
 ### Fall 2: TypeScript-Output unterscheidet sich unbeabsichtigt
 
 ```bash
-pnpm test fixtures.spec.ts --reporter=verbose
-
-# Diff anschauen:
-cat fixtures/twostaff/_ts_output/song.diff
+pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts --reporter=verbose
+pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts --reporter=verbose
 ```
 
 ---
@@ -391,4 +435,4 @@ cat fixtures/twostaff/_ts_output/song.diff
 - [x] Phase 2: Song-Fixtures bootstrap + Tests aktivieren
 - [x] Phase 3: Sheet-Fixtures bootstrap + Tests aktivieren  
 - [ ] Phase 4: SVG-Fixtures + Snapshot-Tests
-- [ ] Phase 4: PDF-Fixtures (nur "valides PDF", kein Byte-Vergleich)
+- [ ] Phase 4: PDF-Fixtures (nur "valides PDF", kein Byte-Vergleich) 
