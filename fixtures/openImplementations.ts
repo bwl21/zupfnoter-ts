@@ -29,15 +29,6 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     prompt: 'Investigate legacy inline ABC directives such as %%%%hnc, %%%%hna, and %%%%hn.legend, reproduce with the 02_twoStaff sheet legacy comparison test, implement parsing and config mapping with legacy parity, then remove this id from fixtures/openImplementations.ts.',
   },
   {
-    id: 'sheet.notebound-annotation-overrides',
-    stage: 'sheet',
-    scope: 'extract.notebound.annotation',
-    summary: 'Per-note annotation position overrides from configuration are not applied yet.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['3015_reference_sheet'],
-    prompt: 'Investigate note-bound annotation override parity in 3015_reference_sheet, reproduce with the sheet legacy comparison test, implement extract.notebound.annotation override handling in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
-  },
-  {
     id: 'sheet.notebound-partname-overrides',
     stage: 'sheet',
     scope: 'extract.notebound.partname',

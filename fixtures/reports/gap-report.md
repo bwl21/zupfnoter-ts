@@ -7,9 +7,9 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 8
+- Total open implementations: 7
 - Song gaps: 0
-- Sheet gaps: 8
+- Sheet gaps: 7
 - Known-covered failures: 14
 - New unclassified failures: 0
 
@@ -25,13 +25,6 @@ No open gaps.
   - Summary: Legacy inline directives such as %%%%hnc, %%%%hna, and %%%%hn.legend are not parsed and mapped to the TypeScript config model yet.
   - Prompt: Investigate legacy inline ABC directives such as %%%%hnc, %%%%hna, and %%%%hn.legend, reproduce with the 02_twoStaff sheet legacy comparison test, implement parsing and config mapping with legacy parity, then remove this id from fixtures/openImplementations.ts.
   - Refs: packages/core/src/extractSongConfig.ts, packages/core/src/HarpnotesLayout.ts
-
-- [ ] sheet.notebound-annotation-overrides
-  - Fixtures: 3015_reference_sheet
-  - Scope: extract.notebound.annotation
-  - Summary: Per-note annotation position overrides from configuration are not applied yet.
-  - Prompt: Investigate note-bound annotation override parity in 3015_reference_sheet, reproduce with the sheet legacy comparison test, implement extract.notebound.annotation override handling in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.notebound-partname-overrides
   - Fixtures: 3015_reference_sheet

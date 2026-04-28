@@ -1496,7 +1496,7 @@ export class HarpnotesLayout {
         text = annotation.text
         style = annotation.style
         offset = annotation.position
-        confBase = annotation.confKey ?? `notebound.annotation.v_${voiceNr}.${companion.time}`
+        confBase = `extract.${annotation.confKey ?? `notebound.annotation.v_${voiceNr}.${companion.time}`}`
       } else {
         const part = entity as NewPart
         text = part.name

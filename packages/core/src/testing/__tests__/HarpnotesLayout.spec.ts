@@ -85,6 +85,16 @@ K:C
 V:V1 clef=treble-8
 [V:V1] C z |]`
 
+const ABC_NOTEBOUND_ANNOTATION = `X:1
+T:Notebound Annotation Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] "^override target" C |]`
+
 const ABC_REPEAT = `X:1
 T:Repeat Test
 M:4/4
@@ -301,14 +311,44 @@ describe('HarpnotesLayout', () => {
       expect(annotations.some((a) => a.center[0] === 110 && a.center[1] === 225 && a.text.includes('Variant ending'))).toBe(true)
     })
 
-    it('renders repeat signs and overridden notebound annotations from the reference sheet fixture', () => {
+    it('renders repeat signs from the reference sheet fixture', () => {
       const fixture = loadFixture('3015_reference_sheet')
       const sheet = transformFixtureToSheet(fixture, 0)
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
       expect(annotations.some((a) => a.text === '|:' && a.style === 'bold')).toBe(true)
       expect(annotations.some((a) => a.text === ':|' && a.style === 'bold')).toBe(true)
-      expect(annotations.some((a) => a.text === '(26) Mehrklang mit \nSynchronisationslinie')).toBe(true)
-      expect(annotations.some((a) => a.text === '(27) Abschnittsname')).toBe(true)
+    })
+
+    it('applies extract.notebound.annotation overrides to note-bound annotations', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      extract0.notebound = {
+        annotation: {
+          v_1: {
+            0: {
+              pos: [11, 13],
+              style: 'override_probe',
+            },
+          },
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_NOTEBOUND_ANNOTATION, config)
+      const note = sheet.children.find((c): c is Ellipse => c.type === 'Ellipse')
+      const annotation = sheet.children.find(
+        (c): c is Annotation => c.type === 'Annotation' && c.style === 'override_probe',
+      )
+
+      expect(note).toBeDefined()
+      expect(annotation?.center[0]).toBeCloseTo((note?.center[0] ?? 0) + 11)
+      expect(annotation?.center[1]).toBeCloseTo((note?.center[1] ?? 0) + 13)
     })
 
     it('uses the legacy repeat-sign side selection based on neighbouring pitches', () => {
