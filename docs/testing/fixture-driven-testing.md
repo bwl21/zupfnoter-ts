@@ -286,12 +286,15 @@ Dieses Kommando führt keinen normalen Legacy-Testlauf aus, sondern berechnet se
 einen Gap-Report aus den Vergleichshelfern. Es erzeugt:
 
 - eine kompakte Zusammenfassung der aktuell eingetragenen Gap-IDs
+- die Datei `fixtures/reports/gap-report.md` als lesbare Arbeitsansicht
 - eine Liste direkt nutzbarer Arbeits-Prompts für neue unklassifizierte Fehler
 - die Datei `fixtures/reports/open_implementations_template.ts`
 
-Die Template-Datei wird bei jedem Lauf neu geschrieben:
+Die Report-Dateien werden bei jedem Lauf neu geschrieben:
 
-- **leer bzw. leeres Array**: es wurden keine neuen unklassifizierten Fehler gefunden
+- `gap-report.md`: vollständige, regenerierte Arbeitsliste mit `id`, `fixtures` und `prompt`
+- `open_implementations_template.ts`: Vorschlagsbuffer für neue unklassifizierte Fehler
+- **leeres Template-Array**: es wurden keine neuen unklassifizierten Fehler gefunden
 - **gefüllt**: es gibt fehlschlagende Legacy-Vergleiche, die noch nicht durch `fixtures/openImplementations.ts` abgedeckt sind
 
 ### Wie kommt ein neuer Eintrag hinein?
@@ -361,6 +364,24 @@ Jeder Template-Eintrag enthält:
 Die kuratierte Hauptdatei `fixtures/openImplementations.ts` verwendet jetzt dasselbe Grundschema, nur ohne automatisch erzeugte `mismatchSummary`. Dadurch lassen sich sinnvolle Template-Einträge fast 1:1 übernehmen und anschließend manuell verdichten.
 
 Der `prompt` ist absichtlich so formuliert, dass man ihn direkt als Arbeitsauftrag für die Implementierung verwenden kann.
+
+### Wie nutze ich `gap-report.md`?
+
+Die Datei `fixtures/reports/gap-report.md` ist die lesbare Arbeitsansicht des aktuellen Zustands.
+
+Typischer Ablauf:
+
+1. `pnpm test:gaps`
+2. `fixtures/reports/gap-report.md` öffnen
+3. die offenen Punkte Abschnitt für Abschnitt abarbeiten
+4. erledigte Einträge aus `fixtures/openImplementations.ts` entfernen
+5. `pnpm test:gaps` erneut laufen lassen
+
+Die Datei ist bewusst generiert:
+
+- man kann sie temporär abhaken oder lesen wie eine Checkliste
+- beim nächsten Lauf wird sie vollständig neu erzeugt
+- falsch erledigte Punkte tauchen dadurch automatisch wieder auf
 
 ### Wie kommt ein Eintrag wieder heraus?
 
