@@ -15,7 +15,7 @@ import { describe, it, expect } from 'vitest'
 
 import { matchSheet, formatMismatches } from '../../semanticMatch.js'
 import { getSheetFixtureTargets, loadFixture, scanFixtureCases, transformFixtureToSheet } from '../../fixtureLoader.js'
-import { formatOpenImplementations, getOpenImplementations } from '../../openImplementations.js'
+import { formatOpenImplementations, getOpenImplementations } from '../../../../../../fixtures/openImplementations.js'
 
 const SHEET_FIXTURES = scanFixtureCases().filter((testCase) => testCase.hasSheetFixture)
 

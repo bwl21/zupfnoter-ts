@@ -5,6 +5,16 @@ Legacy-System (`bwl21/zupfnoter`, Branch `feature/voice-styles_and-other-concept
 exportiert und sind versioniert. Sie ändern sich nur bei bewussten fachlichen Änderungen
 (Commit-Kommentar muss die Änderung begründen).
 
+Diese Datei beschreibt die **praktische Nutzung** der Fixtures:
+- Verzeichnisstruktur
+- Export
+- konkrete Test-Kommandos
+- generierte Reports unter `fixtures/reports/`
+
+Für das **Konzept** hinter dem fixture-driven Testing, den Ablauf der Vergleichstests
+und den Gap-Workflow siehe
+[docs/testing/fixture-driven-testing.md](/Users/beweiche/beweiche_noTimeMachine/zupfnoter-ts/docs/testing/fixture-driven-testing.md:1).
+
 ## Verzeichnisstruktur
 
 ```
@@ -140,8 +150,10 @@ voices[0].entities[2].pitch:
 ```
 
 `npm run test:gaps` gibt zusätzlich eine kompakte Prompt-Zusammenfassung der aktuell
-gepflegten Gap-IDs aus, damit `packages/core/src/testing/openImplementations.ts`
-gezielt manuell bereinigt oder ergänzt werden kann.
+gepflegten Gap-IDs aus, schreibt `fixtures/reports/gap-report.md` als lesbare
+Arbeitsliste und erzeugt `fixtures/reports/open_implementations_template.ts`
+für neue unklassifizierte Failures. So kann `fixtures/openImplementations.ts`
+gezielt manuell bereinigt oder ergänzt werden.
 
 ## TS-Ausgabe als Bootstrap-Referenz
 

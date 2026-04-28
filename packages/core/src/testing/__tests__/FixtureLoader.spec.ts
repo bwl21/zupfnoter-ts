@@ -10,7 +10,7 @@ import {
   scanFixtureCases,
 } from '../fixtureLoader.js'
 import { defaultTestConfig } from '../defaultConfig.js'
-import { formatOpenImplementations, getOpenImplementations } from '../openImplementations.js'
+import { formatOpenImplementations, getOpenImplementations } from '../../../../../fixtures/openImplementations.js'
 
 describe('fixtureLoader', () => {
   it('resolves fixture ABC paths by test case name', () => {
