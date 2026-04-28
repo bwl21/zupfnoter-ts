@@ -60,6 +60,8 @@ interface VoiceState {
   pendingVariantExitSources: PlayableEntity[]
   awaitingVariantContinuation: boolean
   variantSectionNo: 0 | 1 | 2
+  pendingVariantEndingText: string | null
+  pendingVariantEndingDuration: number | null
 }
 
 function createVoiceState(wmeasure: number): VoiceState {
@@ -83,6 +85,8 @@ function createVoiceState(wmeasure: number): VoiceState {
     pendingVariantExitSources: [],
     awaitingVariantContinuation: false,
     variantSectionNo: 0,
+    pendingVariantEndingText: null,
+    pendingVariantEndingDuration: null,
   }
 }
 
@@ -365,10 +369,11 @@ export class AbcToSong {
     state.previousNote = entity
 
     // Chord symbols and annotations from extra
+    const barMarks = this._consumePendingBarMarks(entity, state, _voiceIndex, sym)
     const extras = this._transformExtras(sym, entity, state, _voiceIndex)
     const gotos = this._resolvePendingVariantGotos(entity, state, _voiceIndex, sym)
 
-    return [entity, ...extras, ...gotos]
+    return [entity, ...barMarks, ...extras, ...gotos]
   }
 
   // ---------------------------------------------------------------------------
@@ -423,9 +428,10 @@ export class AbcToSong {
     }
 
     state.previousNote = pause
+    const barMarks = this._consumePendingBarMarks(pause, state, voiceIndex, sym)
     const extras = this._transformExtras(sym, pause, state, voiceIndex)
     const gotos = this._resolvePendingVariantGotos(pause, state, voiceIndex, sym)
-    return [pause, ...extras, ...gotos]
+    return [pause, ...barMarks, ...extras, ...gotos]
   }
 
   // ---------------------------------------------------------------------------
@@ -446,6 +452,8 @@ export class AbcToSong {
 
     const isRepeatBar = sym.bar_type?.includes(':') ?? false
     const hasVariantStart = typeof sym.rbstart === 'number' && sym.rbstart > 0 && !isRepeatBar
+    const variantLabel = sym.text?.trim() ?? ''
+    const startsVariantSection = sym.bar_type === '[|:' || hasVariantStart
 
     // Volta bracket entry / exit gotos.
     if (hasVariantStart && state.previousNote) {
@@ -461,7 +469,11 @@ export class AbcToSong {
       state.variantSectionNo = nextVariantNo
       state.variantNo = nextVariantNo
     }
-    if (sym.rbstop && !isRepeatBar) {
+    if (startsVariantSection && state.previousNote) {
+      state.pendingVariantEndingText = variantLabel
+      state.pendingVariantEndingDuration = sym.bar_type === '[|:' ? 64 : null
+    }
+    if (sym.rbstop && !isRepeatBar && !hasVariantStart) {
       if (state.previousNote && state.variantSectionNo > 0) {
         state.pendingVariantExitSources.push(state.previousNote)
       }
@@ -505,6 +517,46 @@ export class AbcToSong {
     }
 
     return result
+  }
+
+  private _consumePendingBarMarks(
+    companion: PlayableEntity,
+    state: VoiceState,
+    voiceIndex: number,
+    sym: AbcSymbol,
+  ): VoiceEntity[] {
+    if (state.pendingVariantEndingText === null) return []
+
+    const annotation: NoteBoundAnnotation & { duration: number } = {
+      type: 'NoteBoundAnnotation' as const,
+      beat: this._timeToBeat(sym.time),
+      time: sym.time,
+      startPos: this._charposToLineCol(sym.istart),
+      endPos: this._charposToLineCol(sym.iend),
+      decorations: [],
+      barDecorations: [],
+      visible: true,
+      variant: 0,
+      znId: `annot-variantend-${voiceIndex}-${sym.istart}`,
+      companion,
+      text: state.pendingVariantEndingText,
+      position: this._getDefaultNoteBoundPosition('variantend', [5, -7]),
+      style: 'regular',
+      policy: 'Goto',
+      confKey: `notebound.variantend.v_${voiceIndex + 1}.${companion.time}`,
+      duration: state.pendingVariantEndingDuration ?? companion.duration,
+    }
+
+    companion.firstInPart = true
+    state.pendingVariantEndingText = null
+    state.pendingVariantEndingDuration = null
+
+    if (state.variantEndings.length === 0) {
+      state.variantEndings.push([])
+    }
+    state.variantEndings[state.variantEndings.length - 1]?.push({ rbstart: companion })
+
+    return [annotation]
   }
 
   // ---------------------------------------------------------------------------
@@ -628,7 +680,7 @@ export class AbcToSong {
           decorations: [],
           barDecorations: [],
           visible: true,
-          variant: state.variantNo,
+          variant: 0,
           znId: `annot-${voiceIndex}-${sym.istart}`,
           companion,
           text: parsedAnnotation.text,
@@ -765,6 +817,10 @@ export class AbcToSong {
     companionTime: number,
     extraIndex: number,
   ): { text: string; position: [number, number]; style: string; confKey?: string; policy?: string } | null {
+    if (rawText.trim().startsWith('@@')) {
+      return null
+    }
+
     const match = rawText.match(/^([!#<>])([^@]+)?(?:@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?))?$/)
     if (!match) {
       return {
@@ -806,6 +862,26 @@ export class AbcToSong {
       style: configuredEntry?.style ?? 'regular',
       confKey: `notebound.annotation.v_${voiceId}.${companionTime}${extraIndex > 0 ? `.${extraIndex}` : ''}`,
     }
+  }
+
+  private _getDefaultNoteBoundPosition(kind: 'annotation' | 'partname' | 'variantend', fallback: [number, number]): [number, number] {
+    const config = this._config as unknown as Record<string, unknown> | null
+    const defaults = config?.['defaults']
+    if (!defaults || typeof defaults !== 'object') return fallback
+    const notebound = (defaults as Record<string, unknown>)['notebound']
+    if (!notebound || typeof notebound !== 'object') return fallback
+    const section = (notebound as Record<string, unknown>)[kind]
+    if (!section || typeof section !== 'object') return fallback
+    const pos = (section as Record<string, unknown>)['pos']
+    if (
+      Array.isArray(pos) &&
+      pos.length === 2 &&
+      typeof pos[0] === 'number' &&
+      typeof pos[1] === 'number'
+    ) {
+      return [pos[0], pos[1]]
+    }
+    return fallback
   }
 
   private _pushSlur(state: VoiceState): string {

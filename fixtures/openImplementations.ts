@@ -20,15 +20,6 @@ export interface DetectedFailure {
 
 const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
   {
-    id: 'song.bar-bound-variant-annotations',
-    stage: 'song',
-    scope: 'Song parity',
-    summary: 'Bar-bound variant annotations from the legacy pipeline are not yet mapped with legacy parity in the Song model.',
-    refs: ['packages/core/src/AbcToSong.ts'],
-    fixtures: ['3015_reference_sheet'],
-    prompt: 'Investigate the missing bar-bound variant annotations in the Song model, reproduce with the 3015_reference_sheet song legacy comparison, implement legacy parity in packages/core/src/AbcToSong.ts, then remove this id from fixtures/openImplementations.ts.',
-  },
-  {
     id: 'sheet.repeat-layout',
     stage: 'sheet',
     scope: 'basic repeat markers and paths',

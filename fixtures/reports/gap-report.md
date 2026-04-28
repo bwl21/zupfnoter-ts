@@ -7,20 +7,15 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 14
-- Song gaps: 1neuer 
+- Total open implementations: 13
+- Song gaps: 0
 - Sheet gaps: 13
-- Known-covered failures: 13
+- Known-covered failures: 12
 - New unclassified failures: 0
 
 ## Song Gaps
 
-- [ ] song.bar-bound-variant-annotations
-  - Fixtures: 3015_reference_sheet
-  - Scope: Song parity
-  - Summary: Bar-bound variant annotations from the legacy pipeline are not yet mapped with legacy parity in the Song model.
-  - Prompt: Investigate the missing bar-bound variant annotations in the Song model, reproduce with the 3015_reference_sheet song legacy comparison, implement legacy parity in packages/core/src/AbcToSong.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/AbcToSong.ts
+No open gaps.
 
 ## Sheet Gaps
 
