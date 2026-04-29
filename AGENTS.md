@@ -718,6 +718,12 @@ differences between the legacy Ruby behavior and the TypeScript implementation.
 - `Confstack` ist der einzige zulässige Mechanismus zur Konfigurationsauflösung; kein lokales Mergen in Layout-, Render- oder UI-Code
 - Die TypeScript-Beispielblöcke in diesem Dokument sind Zielschemata zur Orientierung, aber nicht automatisch vollständiger als die aktuellen Quelltypen; bei Widerspruch entscheidet der explizite Phasen-Text plus die implementierten Typen in `packages/types`
 
+Für Layout heißt das konkret
+- Defaults bleiben in TS semantisch wie Legacy-Defaults, z. B. Y_SCALE: 4, BEAT_RESOLUTION: 192, DURATION_TO_STYLE aus init_conf.rb.
+- Die Umrechnung passiert an derselben Stelle wie Legacy: effektiver Beat-Abstand = Y_SCALE / BEAT_RESOLUTION.
+- Danach kommt der Legacy-Spread-Schritt aus harpnotes.rb: kurze Blätter dürfen bis packer.pack_max_spreadfactor vertikal gestreckt werden.
+- Fixture-Vergleichstests dürfen nur zeigen, wo TS noch von Legacy abweicht; sie sollen keine alternativen Defaults erzwingen.
+- Wenn ein Fixture nur durch geändertes globales Scaling passt, ist das ein Hinweis auf fehlende Legacy-Logik, nicht auf einen neuen Default.
 
 ## TypeScript Comment Style (verbindlich)
 
