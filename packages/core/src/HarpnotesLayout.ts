@@ -471,7 +471,7 @@ export class HarpnotesLayout {
         const note = entity as Note
         const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note))
         playableElements.push(drawable)
-        if (note.decorations.includes('fermata')) {
+        if (note.measureStart || note.decorations.includes('fermata')) {
           playableElements.push(this._layoutMeasureBarover(drawable, layout))
         }
         const noteDecorations = this._layoutDecorations(note, drawable, layout, voiceNr, conf)
@@ -482,6 +482,9 @@ export class HarpnotesLayout {
         const glyph = this._layoutPause(pause, beatMap, layout, startpos, visibleByPlayable.get(pause))
         if (glyph) {
           playableElements.push(glyph)
+          if (pause.measureStart) {
+            playableElements.push(this._layoutMeasureBarover(glyph, layout))
+          }
           const pauseDecorations = this._layoutDecorations(pause, glyph, layout, voiceNr, conf)
           decorationBackgrounds.push(...pauseDecorations.backgrounds)
           decorations.push(...pauseDecorations.decorations)
@@ -492,6 +495,9 @@ export class HarpnotesLayout {
         for (const note of sp.notes) {
           const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(sp))
           playableElements.push(drawable)
+          if (note.measureStart) {
+            playableElements.push(this._layoutMeasureBarover(drawable, layout))
+          }
           decorationRoot ??= drawable
         }
         if (decorationRoot) {
@@ -521,7 +527,7 @@ export class HarpnotesLayout {
     result.push(...this._layoutVoiceTuplets(voice, beatMap, layout, startpos))
     result.push(...playableElements)
 
-    const { barnumbers, countnotes } = this._layoutBarnumbersCountnotes(
+    const { barnumberBackgrounds, barnumbers, countnoteBackgrounds, countnotes } = this._layoutBarnumbersCountnotes(
       voice,
       beatMap,
       layout,
@@ -529,15 +535,19 @@ export class HarpnotesLayout {
       voiceNr,
       conf,
     )
-    result.push(...barnumbers, ...countnotes)
+    result.push(...countnoteBackgrounds, ...countnotes, ...barnumberBackgrounds, ...barnumbers)
     result.push(...decorationBackgrounds, ...decorations)
 
     if (showJumplines) {
       result.push(...gotos)
     }
 
-    result.push(...this._layoutVoiceRepeatSigns(voice, beatMap, layout, startpos, voiceNr, conf))
-    result.push(...this._layoutVoiceNoteboundAnnotations(voice, beatMap, layout, startpos, voiceNr, conf))
+    const repeatSigns = this._layoutVoiceRepeatSigns(voice, beatMap, layout, startpos, voiceNr, conf)
+    const noteboundAnnotations = this._layoutVoiceNoteboundAnnotations(voice, beatMap, layout, startpos, voiceNr, conf)
+    const annotationBackgrounds = [...repeatSigns, ...noteboundAnnotations].map((annotation) => (
+      this._annotationBackground(annotation, 'left', layout, 0.5)
+    ))
+    result.push(...annotationBackgrounds, ...repeatSigns, ...noteboundAnnotations)
 
     return result
   }
@@ -684,7 +694,7 @@ export class HarpnotesLayout {
     return { backgrounds, decorations: result }
   }
 
-  private _layoutMeasureBarover(root: Ellipse, layout: LayoutConfig): Ellipse {
+  private _layoutMeasureBarover(root: Ellipse | Glyph, layout: LayoutConfig): Ellipse {
     const baroverY = root.size[1] + layout.LINE_THICK
     return {
       type: 'Ellipse',
@@ -1348,8 +1358,15 @@ export class HarpnotesLayout {
     startpos: number,
     voiceNr: number,
     conf: Confstack,
-  ): { barnumbers: Annotation[]; countnotes: Annotation[] } {
+  ): {
+    barnumberBackgrounds: Ellipse[]
+    barnumbers: Annotation[]
+    countnoteBackgrounds: Ellipse[]
+    countnotes: Annotation[]
+  } {
+    const barnumberBackgrounds: Ellipse[] = []
     const barnumbers: Annotation[] = []
+    const countnoteBackgrounds: Ellipse[] = []
     const countnotes: Annotation[] = []
     const barnumberVoices = new Set((conf.get('extract.barnumbers.voices') as number[] | undefined) ?? [])
     const countnoteVoices = new Set((conf.get('extract.countnotes.voices') as number[] | undefined) ?? [])
@@ -1368,7 +1385,7 @@ export class HarpnotesLayout {
       if (countnoteVoices.has(voiceNr)) {
         const countnoteText = this._countnoteText(playable, measureStartBeat, voiceNr, conf)
         const offset = this._countnoteOffset(playable, layout, voiceNr, conf)
-        countnotes.push({
+        const annotation: Annotation = {
           type: 'Annotation',
           center: [x + offset[0], y + offset[1]],
           text: countnoteText,
@@ -1376,13 +1393,17 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: playable.visible,
-        })
+        }
+        const side = this._countnoteSide(playable, voiceNr, conf)
+        countnoteBackgrounds.push(this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05))
+        countnotes.push(annotation)
       }
 
       if (barnumberVoices.has(voiceNr) && playable.measureStart && playable.measureCount) {
         const offset = this._barnumberOffset(playable, layout, voiceNr, conf)
+        const side = this._barnumberSide(playable, voiceNr, conf)
 
-        barnumbers.push({
+        const annotation: Annotation = {
           type: 'Annotation',
           center: [x + offset[0], y + offset[1]],
           text: `${(conf.get('extract.barnumbers.prefix') as string | undefined) ?? ''}${playable.measureCount}`,
@@ -1390,11 +1411,13 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: playable.visible,
-        })
+        }
+        barnumberBackgrounds.push(this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, 0.2))
+        barnumbers.push(annotation)
       }
     }
 
-    return { barnumbers, countnotes }
+    return { barnumberBackgrounds, barnumbers, countnoteBackgrounds, countnotes }
   }
 
   private _countnoteText(
@@ -1485,7 +1508,7 @@ export class HarpnotesLayout {
     const autoPos = (conf.get('extract.barnumbers.autopos') as boolean | undefined) ?? true
     if (!autoPos) return fixedPos
 
-    const overrideAlign = conf.get(`${overrideKey}.align`) as 'l' | 'r' | 'auto' | undefined
+    const side = this._barnumberSide(playable, voiceNr, conf)
     const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
     const apanchor = (conf.get('extract.barnumbers.apanchor') as string | undefined) ?? 'box'
     const apbase = (conf.get('extract.barnumbers.apbase') as [number, number] | undefined) ?? [1, 1]
@@ -1499,15 +1522,33 @@ export class HarpnotesLayout {
     const previousX = pitchToX(previous.pitch, layout)
     const currentX = pitchToX(playable.pitch, layout)
     const nextX = pitchToX(next.pitch, layout)
-    const [defaultSide] = bottomup
-      ? computeNotePosition(nextX, currentX, previousX).reverse() as ['l' | 'r', 'l' | 'r']
-      : computeNotePosition(previousX, currentX, nextX)
-    const side = overrideAlign && overrideAlign !== 'auto' ? overrideAlign : defaultSide
     const tieOffset = side === 'r' && (playable.tieStart || playable.tieEnd) ? 1 : 0
     const dsizeY = apanchor === 'center' ? 0 : size[1]
     const x = tieOffset + (side === 'l' ? -(size[0] + apbase[0]) : sizeWithDot[0] + apbase[0])
     const y = bottomup ? dsizeY + apbase[1] : -(dsizeY + apbase[1] + 2.7)
     return [x, y]
+  }
+
+  private _barnumberSide(
+    playable: PlayableEntity,
+    voiceNr: number,
+    conf: Confstack,
+  ): 'l' | 'r' {
+    const overrideKey = `extract.notebound.barnumber.v_${voiceNr}.t_${playable.time}`
+    const overrideAlign = conf.get(`${overrideKey}.align`) as 'l' | 'r' | 'auto' | undefined
+    if (overrideAlign && overrideAlign !== 'auto') return overrideAlign
+
+    const layout = conf.get('layout') as LayoutConfig
+    const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
+    const previous = playable.prevPlayable ?? playable
+    const next = playable.nextPlayable ?? playable
+    const previousX = pitchToX(previous.pitch, layout)
+    const currentX = pitchToX(playable.pitch, layout)
+    const nextX = pitchToX(next.pitch, layout)
+    const [defaultSide] = bottomup
+      ? computeNotePosition(nextX, currentX, previousX).reverse() as ['l' | 'r', 'l' | 'r']
+      : computeNotePosition(previousX, currentX, nextX)
+    return defaultSide
   }
 
   // ---------------------------------------------------------------------------

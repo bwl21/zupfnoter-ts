@@ -312,7 +312,9 @@ describe('HarpnotesLayout', () => {
       }
 
       const { sheet } = pipelineWithConfig(ABC_COUNTNOTES, config)
-      const notes = sheet.children.filter((c): c is Ellipse => c.type === 'Ellipse')
+      const notes = sheet.children.filter((c): c is Ellipse => (
+        c.type === 'Ellipse' && c.origin !== undefined
+      ))
       const countnotes = sheet.children.filter(
         (c): c is Annotation => c.type === 'Annotation' && c.style === 'countnote_probe',
       )
