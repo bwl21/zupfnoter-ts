@@ -46,15 +46,6 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     prompt: 'Investigate legacy sheet header, legend, cutmark, and footer parity for the listed fixtures, reproduce with the sheet legacy comparison tests, implement the remaining text-block and footer behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
   },
   {
-    id: 'sheet.lyrics-layout',
-    stage: 'sheet',
-    scope: 'ABC lyrics layout',
-    summary: 'Plain ABC lyric lines are not yet laid out with full legacy parity.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['lyrics'],
-    prompt: 'Investigate lyrics layout parity in the lyrics fixture, reproduce with the sheet legacy comparison test, implement the remaining lyric placement behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
-  },
-  {
     id: 'sheet.tie-layout',
     stage: 'sheet',
     scope: 'tie and slur layout',
