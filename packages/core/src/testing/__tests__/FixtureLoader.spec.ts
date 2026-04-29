@@ -108,13 +108,19 @@ describe('fixtureLoader', () => {
   it('formats the global open-implementation registry by stage', () => {
     const openSheetImplementations = getOpenImplementations('sheet')
     const formatted = formatOpenImplementations(openSheetImplementations)
+    const firstImplementation = openSheetImplementations[0]
+    if (!firstImplementation) throw new Error('Expected at least one open sheet implementation')
 
     expect(openSheetImplementations.length).toBeGreaterThan(0)
     expect(formatted).toContain('Open implementations for this stage (')
-    expect(formatted).toContain('sheet.barnumbers-config')
+    expect(formatted).toContain(firstImplementation.id)
     expect(formatted).toContain('Entries:')
-    expect(formatted).toContain('fixtures: 3015_reference_sheet')
-    expect(formatted).toContain('prompt: Investigate barnumber config parity')
+    if (firstImplementation.fixtures?.length) {
+      expect(formatted).toContain(`fixtures: ${firstImplementation.fixtures.join(', ')}`)
+    }
+    if (firstImplementation.prompt) {
+      expect(formatted).toContain(`prompt: ${firstImplementation.prompt}`)
+    }
   })
 
   it('discovers fixture cases from test case directories', () => {

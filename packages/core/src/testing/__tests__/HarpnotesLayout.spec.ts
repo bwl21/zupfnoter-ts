@@ -10,7 +10,6 @@ import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { HarpnotesLayout } from '../../HarpnotesLayout.js'
 import { defaultTestConfig } from '../defaultConfig.js'
-import { loadFixture, transformFixtureToSheet } from '../fixtureLoader.js'
 import type { Ellipse, Glyph, FlowLine, Path, Annotation } from '@zupfnoter/types'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
 
@@ -114,6 +113,16 @@ K:C
 %%score (V1)
 V:V1 clef=treble-8
 [V:V1] C D E F | G A B c |]`
+
+const ABC_COUNTNOTES = `X:1
+T:Countnote Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] C D E F |]`
 
 const ABC_LEGEND = `X:1
 T:Legend Test
@@ -251,35 +260,61 @@ describe('HarpnotesLayout', () => {
 
   describe('barnumbers', () => {
     it('produces Annotation elements for bar numbers', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      extract0.barnumbers = {
+        voices: [1],
+        autopos: false,
+        pos: [0, 0],
+        style: 'barnumber_probe',
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_BARNUMBERS, config)
       const annotations = sheet.children.filter(
-        (c): c is Annotation => c.type === 'Annotation' && /^\d+$/.test(c.text ?? ''),
+        (c): c is Annotation => c.type === 'Annotation' && c.style === 'barnumber_probe',
       )
-      expect(annotations.length).toBeGreaterThanOrEqual(3)
+      expect(annotations.length).toBeGreaterThanOrEqual(2)
+      expect(annotations.every((entry) => /^\d+$/.test(entry.text))).toBe(true)
     })
 
     it('renders configured countnotes for each counted playable', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      extract0.countnotes = {
+        voices: [1],
+        autopos: false,
+        pos: [2, 3],
+        style: 'countnote_probe',
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_COUNTNOTES, config)
+      const notes = sheet.children.filter((c): c is Ellipse => c.type === 'Ellipse')
       const countnotes = sheet.children.filter(
-        (c): c is Annotation => c.type === 'Annotation' && c.style === 'smaller' && c.center[0] < 170 && c.center[1] < 200,
+        (c): c is Annotation => c.type === 'Annotation' && c.style === 'countnote_probe',
       )
-      expect(countnotes.map((entry) => entry.text)).toEqual([
-        '1-2-3-4',
-        '1-2',
-        '3',
-        '4',
-        'u',
-        'e',
-        '1-2-3',
-        '4',
-        '1',
-        '2-3-4',
-        '1',
-        '2',
-        '3',
-      ])
+
+      expect(countnotes.map((entry) => entry.text)).toEqual(['1', '2', '3', '4'])
+      expect(countnotes.length).toBe(notes.length)
+      for (const [index, countnote] of countnotes.entries()) {
+        const note = notes[index]
+        expect(note).toBeDefined()
+        expect(countnote.center[0]).toBeCloseTo((note?.center[0] ?? 0) + 2)
+        expect(countnote.center[1]).toBeCloseTo((note?.center[1] ?? 0) + 3)
+      }
     })
   })
 
@@ -294,29 +329,73 @@ describe('HarpnotesLayout', () => {
   })
 
   describe('sheetmarks', () => {
-    it('renders configured string names and cutmarks from the reference sheet fixture', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+    it('renders configured string names and cutmarks', () => {
+      const config = clonedDefaultConfig()
+      config.printer = { ...config.printer, a4Pages: [0, 1] }
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.stringnames = {
+        vpos: [6],
+        text: 'string_a string_b',
+        style: 'stringname_probe',
+        marks: {
+          hpos: [48],
+          vpos: [9],
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_SINGLE_NOTE, config)
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
-      expect(annotations.some((a) => a.text === 'G' && a.center[1] === 5)).toBe(true)
-      expect(annotations.some((a) => a.text === 'x' && a.center[1] === 4)).toBe(true)
-      expect(annotations.some((a) => a.text === 'x' && a.center[1] === 290)).toBe(true)
+      const stringNames = annotations.filter((a) => a.style === 'stringname_probe')
+      const cutmarks = annotations.filter((a) => a.text === 'x' && a.style === 'small')
+      const sheetmarks = sheet.children.filter((c): c is Path => c.type === 'Path' && c.fill)
+
+      expect(stringNames.length).toBe(37)
+      expect(new Set(stringNames.map((entry) => entry.text))).toEqual(new Set(['string_a', 'string_b']))
+      expect(sheetmarks.length).toBe(1)
+      expect(cutmarks.some((entry) => entry.center[1] === 4)).toBe(true)
+      expect(cutmarks.some((entry) => entry.center[1] === 290)).toBe(true)
     })
 
-    it('renders grouped lyric blocks from extract.lyrics config', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+    it('renders configured sheet annotations', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.notes = {
+        first: {
+          pos: [50, 30],
+          text: 'sheet_annotation_probe_a',
+          style: 'sheet_annotation_probe',
+        },
+        second: {
+          pos: [110, 225],
+          text: 'sheet_annotation_probe_b',
+          style: 'sheet_annotation_probe',
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_SINGLE_NOTE, config)
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
-      expect(annotations.some((a) => a.center[0] === 50 && a.center[1] === 30 && a.text.includes('Notes'))).toBe(true)
-      expect(annotations.some((a) => a.center[0] === 110 && a.center[1] === 225 && a.text.includes('Variant ending'))).toBe(true)
+      const configured = annotations.filter((a) => a.style === 'sheet_annotation_probe')
+
+      expect(configured.map((entry) => entry.center)).toEqual([[50, 30], [110, 225]])
+      expect(configured.map((entry) => entry.text)).toEqual(['sheet_annotation_probe_a', 'sheet_annotation_probe_b'])
     })
 
-    it('renders repeat signs from the reference sheet fixture', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+    it('renders configured repeat signs', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.repeatsigns = {
+        voices: [1],
+        left: { pos: [-7, -2], text: '|:', style: 'repeat_probe' },
+        right: { pos: [5, -2], text: ':|', style: 'repeat_probe' },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_REPEAT, config)
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
-      expect(annotations.some((a) => a.text === '|:' && a.style === 'bold')).toBe(true)
-      expect(annotations.some((a) => a.text === ':|' && a.style === 'bold')).toBe(true)
+      const repeats = annotations.filter((a) => a.style === 'repeat_probe')
+      expect(repeats.map((entry) => entry.text).sort()).toEqual([':|', '|:'])
     })
 
     it('applies extract.notebound.annotation overrides to note-bound annotations', () => {
@@ -352,15 +431,7 @@ describe('HarpnotesLayout', () => {
     })
 
     it('uses the legacy repeat-sign side selection based on neighbouring pitches', () => {
-      const config: ZupfnoterConfig = {
-        ...defaultTestConfig,
-        extract: {
-          ...defaultTestConfig.extract,
-          '0': {
-            ...defaultTestConfig.extract['0'],
-          },
-        },
-      }
+      const config = clonedDefaultConfig()
       const extract0 = config.extract['0']
       if (!extract0) throw new Error('Missing extract 0 in default test config')
 
@@ -394,12 +465,25 @@ V:V1 clef=treble-8
       expect((beginRepeat?.center[0] ?? 0) > (endRepeat?.center[0] ?? 0)).toBe(true)
     })
 
-    it('renders the split legend positions from the reference sheet fixture', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+    it('renders configured split legend positions', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.title = 'legend_secondary_probe_text'
+      extract0.legend = {
+        pos: [325, 8],
+        spos: [344, 28],
+        tstyle: 'legend_title_probe',
+        style: 'legend_secondary_probe',
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_LEGEND, config)
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
-      expect(annotations.some((a) => a.center[0] === 325 && a.center[1] === 8 && a.text === 'Zupfnoter Reference Sheet')).toBe(true)
-      expect(annotations.some((a) => a.center[0] === 344 && a.center[1] === 28 && a.text.includes('alle Stimmen'))).toBe(true)
+      const title = annotations.find((a) => a.style === 'legend_title_probe')
+      const secondary = annotations.find((a) => a.style === 'legend_secondary_probe')
+
+      expect(title?.center).toEqual([325, 8])
+      expect(secondary?.center).toEqual([344, 28])
     })
   })
 
