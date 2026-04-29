@@ -7,10 +7,10 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 6
+- Total open implementations: 5
 - Song gaps: 0
-- Sheet gaps: 6
-- Known-covered failures: 14
+- Sheet gaps: 5
+- Known-covered failures: 12
 - New unclassified failures: 0
 
 ## Song Gaps
@@ -31,13 +31,6 @@ No open gaps.
   - Scope: header, legend, cutmarks, footer text
   - Summary: Legacy sheet header, legend, cutmark, and footer text behavior is not yet reproduced with legacy parity, including filename-part-driven text variants.
   - Prompt: Investigate legacy sheet header, legend, cutmark, and footer parity for the listed fixtures, reproduce with the sheet legacy comparison tests, implement the remaining text-block and footer behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
-
-- [ ] sheet.decorations-layout
-  - Fixtures: decoration
-  - Scope: note decorations and symbols
-  - Summary: Legacy decoration rendering is not yet reproduced with full sheet-layout parity.
-  - Prompt: Investigate decoration layout parity in the decoration fixture, reproduce with the sheet legacy comparison test, implement the remaining legacy decoration rendering in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
   - Refs: packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.lyrics-layout

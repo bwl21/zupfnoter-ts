@@ -54,7 +54,7 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
       LINE_THICK: 0.5,
 
       // Koordinatensystem
-      Y_SCALE: 4 / 192,       // = 0.02083... mm pro compressed-beat-unit
+      Y_SCALE: 8 / 192,       // = 0.04166... mm pro compressed-beat-unit
       X_SPACING: 11.5,
       X_OFFSET: 2.8,
       PITCH_OFFSET: -43,
@@ -91,11 +91,11 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
       // d64=ganze, d32=halbe, d16=viertel, d8=achtel, d4=16tel, d2=32tel, d1=64tel
       DURATION_TO_STYLE: {
         err: { sizeFactor: 2,    fill: 'filled', dotted: false },
-        d64: { sizeFactor: 0.9,  fill: 'empty',  dotted: false, hasbarover: true  },
-        d48: { sizeFactor: 0.7,  fill: 'empty',  dotted: true,  hasbarover: true  },
-        d32: { sizeFactor: 0.7,  fill: 'empty',  dotted: false, hasbarover: false },
-        d24: { sizeFactor: 0.7,  fill: 'filled', dotted: true  },
-        d16: { sizeFactor: 0.7,  fill: 'filled', dotted: false },
+        d64: { sizeFactor: 1,     fill: 'empty',  dotted: false, hasbarover: true  },
+        d48: { sizeFactor: 0.75,  fill: 'empty',  dotted: true,  hasbarover: true  },
+        d32: { sizeFactor: 0.75,  fill: 'empty',  dotted: false, hasbarover: false },
+        d24: { sizeFactor: 0.75,  fill: 'filled', dotted: true  },
+        d16: { sizeFactor: 0.75,  fill: 'filled', dotted: false },
         d12: { sizeFactor: 0.5,  fill: 'filled', dotted: true  },
         d8:  { sizeFactor: 0.5,  fill: 'filled', dotted: false },
         d6:  { sizeFactor: 0.3,  fill: 'filled', dotted: true  },
@@ -120,6 +120,35 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
         d3:  { scale: [0.3, 0.5], glyphName: 'rest_32', dotted: true  },
         d2:  { scale: [0.3, 0.5], glyphName: 'rest_32', dotted: false },
         d1:  { scale: [0.3, 0.5], glyphName: 'rest_64', dotted: false },
+      },
+
+      DECORATIIONS_AS_ANNOTATIONS: {
+        '<(':          { text: 'cresc',       pos: [5, 0],   style: 'small_italic' },
+        '<)':          { text: '/cresc',      pos: [5, 0],   style: 'small_italic' },
+        '>(':          { text: 'dimin',       pos: [5, 0],   style: 'small_italic' },
+        '>)':          { text: '/dimin',      pos: [5, 0],   style: 'small_italic' },
+        arpeggio:      { text: 'arpeggio ',   pos: [-20, 0], style: 'small_italic' },
+        coda:          { text: 'Coda',        pos: [0, -5],  style: 'bold', align: 'center', show: 'all' },
+        'crescendo(':  { text: 'cresc',       pos: [5, 0],   style: 'small_italic' },
+        'crescendo)':  { text: '/cresc',      pos: [5, 0],   style: 'small_italic' },
+        'D.C.':        { text: 'D.C.',        pos: [5, 5],   style: 'bold' },
+        'D.C.alfine':  { text: 'D.C. al Fine', pos: [5, 5],  style: 'bold' },
+        'D.S.':        { text: 'D.S.',        pos: [5, 5],   style: 'bold' },
+        dacapo:        { text: 'da Capo',     pos: [5, 5],   style: 'bold' },
+        dacoda:        { text: 'da Coda',     pos: [5, 5],   style: 'bold' },
+        dasegno:       { text: 'da Segno',    pos: [5, 5],   style: 'bold' },
+        'diminuendo(': { text: 'dimin',       pos: [5, 0],   style: 'small_italic' },
+        'diminuendo)': { text: '/dimin',      pos: [5, 0],   style: 'small_italic' },
+        f:             { text: 'f',           pos: [3, 0],   style: 'small_italic' },
+        ff:            { text: 'ff',          pos: [3, 0],   style: 'small_italic' },
+        fff:           { text: 'fff',         pos: [3, 0],   style: 'small_italic' },
+        ffff:          { text: 'ffff',        pos: [3, 0],   style: 'small_italic' },
+        fine:          { text: 'Fine',        pos: [10, 5],  style: 'bold', align: 'center', show: 'all' },
+        p:             { text: 'p',           pos: [3, 0],   style: 'small_italic' },
+        pp:            { text: 'pp',          pos: [3, 0],   style: 'small_italic' },
+        ppp:           { text: 'ppp',         pos: [3, 0],   style: 'small_italic' },
+        pppp:          { text: 'pppp',        pos: [3, 0],   style: 'small_italic' },
+        segno:         { text: 'Segno',       pos: [0, -5],  style: 'bold', align: 'center', show: 'all' },
       },
 
       // Instrument und Packer

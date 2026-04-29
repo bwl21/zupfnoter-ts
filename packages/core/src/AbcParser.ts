@@ -64,6 +64,7 @@ interface Abc2svgSymbol {
   rbstop?: number
   invisible?: boolean
   invis?: boolean
+  a_dd?: Array<{ name?: string; [key: string]: unknown }>
   a_gch?: Array<{ type: string; text?: string; [key: string]: unknown }>
   next?: Abc2svgSymbol
   [key: string]: unknown

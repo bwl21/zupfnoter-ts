@@ -100,6 +100,8 @@ export interface AbcSymbol {
   /** Symbol is invisible */
   invisible?: boolean
   invis?: boolean
+  /** Decorations attached to this symbol (abc2svg: a_dd[]) */
+  a_dd?: Array<{ name?: string; [key: string]: unknown }>
   /** Chord symbols and annotations attached to this symbol (abc2svg: a_gch[]) */
   a_gch?: AbcExtra[]
   [key: string]: unknown

@@ -72,6 +72,14 @@ export interface RestStyle {
   dotted: boolean
 }
 
+export interface DecorationAnnotationConfig {
+  text: string
+  pos: [number, number]
+  style: string
+  align?: 'left' | 'right' | 'center'
+  show?: 'all'
+}
+
 // ---------------------------------------------------------------------------
 // Layout-Konfiguration
 // ---------------------------------------------------------------------------
@@ -115,6 +123,8 @@ export interface LayoutConfig {
   DURATION_TO_STYLE: Record<DurationKey, DurationStyle>
   /** Mapping Notendauer → Pausenzeichen-Stil */
   REST_TO_GLYPH: Record<DurationKey, RestStyle>
+  /** ABC decorations that legacy renders as text annotations instead of glyphs. */
+  DECORATIIONS_AS_ANNOTATIONS: Record<string, DecorationAnnotationConfig>
   /** Instrument-Bezeichnung (z.B. 'Harp') */
   instrument: string
   packer: { pack_method: 0 | 1 | 2 | 3 | 10; pack_min_increment?: number; pack_max_spreadfactor?: number }

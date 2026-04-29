@@ -180,6 +180,34 @@ V:V1 clef=treble-8
 })
 
 // ---------------------------------------------------------------------------
+// decorations
+// ---------------------------------------------------------------------------
+
+describe('AbcToSong – decorations', () => {
+  const ABC = `X:1
+T:Decoration Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] !fermata!C D !f!E !p!F |]
+`
+
+  it('preserves supported note decorations', () => {
+    const song = transform(ABC)
+    const notes = song.voices[0]?.entities.filter((e) => e.type === 'Note') ?? []
+
+    expect(notes.map((note) => note.decorations)).toEqual([
+      ['fermata'],
+      [],
+      ['f'],
+      ['p'],
+    ])
+  })
+})
+
+// ---------------------------------------------------------------------------
 // tie
 // ---------------------------------------------------------------------------
 

@@ -22,7 +22,7 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
   {
     "center": [
       60.3,
-      16.4,
+      18,
     ],
     "color": "black",
     "confKey": undefined,
@@ -65,8 +65,8 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
       "znId": "0-88",
     },
     "size": [
-      2.4499999999999997,
-      1.19,
+      2.625,
+      1.275,
     ],
     "type": "Ellipse",
     "visible": true,

@@ -430,7 +430,9 @@ export class HarpnotesLayout {
     nonflowrest: boolean,
     synchedPlayables: Set<PlayableEntity>,
   ): DrawableElement[] {
-    const result: DrawableElement[] = []
+    const playableElements: DrawableElement[] = []
+    const decorationBackgrounds: Ellipse[] = []
+    const decorations: DrawableElement[] = []
     const repeatSignVoices = new Set((conf.get('extract.repeatsigns.voices') as number[] | undefined) ?? [])
     const visibleByPlayable = this._computePlayableVisibility(
       voice,
@@ -444,18 +446,40 @@ export class HarpnotesLayout {
     for (const entity of voice.entities) {
       if (entity.type === 'Note') {
         const note = entity as Note
-        result.push(this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note)))
+        const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note))
+        playableElements.push(drawable)
+        if (note.decorations.includes('fermata')) {
+          playableElements.push(this._layoutMeasureBarover(drawable, layout))
+        }
+        const noteDecorations = this._layoutDecorations(note, drawable, layout, voiceNr, conf)
+        decorationBackgrounds.push(...noteDecorations.backgrounds)
+        decorations.push(...noteDecorations.decorations)
       } else if (entity.type === 'Pause') {
         const pause = entity as Pause
         const glyph = this._layoutPause(pause, beatMap, layout, startpos, visibleByPlayable.get(pause))
-        if (glyph) result.push(glyph)
+        if (glyph) {
+          playableElements.push(glyph)
+          const pauseDecorations = this._layoutDecorations(pause, glyph, layout, voiceNr, conf)
+          decorationBackgrounds.push(...pauseDecorations.backgrounds)
+          decorations.push(...pauseDecorations.decorations)
+        }
       } else if (entity.type === 'SynchPoint') {
         const sp = entity as SynchPoint
+        let decorationRoot: Ellipse | null = null
         for (const note of sp.notes) {
-          result.push(this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(sp)))
+          const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(sp))
+          playableElements.push(drawable)
+          decorationRoot ??= drawable
+        }
+        if (decorationRoot) {
+          const spDecorations = this._layoutDecorations(sp, decorationRoot, layout, voiceNr, conf)
+          decorationBackgrounds.push(...spDecorations.backgrounds)
+          decorations.push(...spDecorations.decorations)
         }
       }
     }
+
+    const result: DrawableElement[] = []
 
     // Flowlines
     if (showFlowlines) {
@@ -466,12 +490,13 @@ export class HarpnotesLayout {
     }
 
     // Gotos (jumplines)
-    if (showJumplines) {
-      result.push(...this._layoutVoiceGotos(voice, beatMap, layout, startpos, repeatSignVoices.has(voiceNr), conf))
-    }
+    const gotos = showJumplines
+      ? this._layoutVoiceGotos(voice, beatMap, layout, startpos, repeatSignVoices.has(voiceNr), conf)
+      : []
 
     // Tuplets
     result.push(...this._layoutVoiceTuplets(voice, beatMap, layout, startpos))
+    result.push(...playableElements)
 
     const { barnumbers, countnotes } = this._layoutBarnumbersCountnotes(
       voice,
@@ -482,6 +507,11 @@ export class HarpnotesLayout {
       conf,
     )
     result.push(...barnumbers, ...countnotes)
+    result.push(...decorationBackgrounds, ...decorations)
+
+    if (showJumplines) {
+      result.push(...gotos)
+    }
 
     result.push(...this._layoutVoiceRepeatSigns(voice, beatMap, layout, startpos, voiceNr, conf))
     result.push(...this._layoutVoiceNoteboundAnnotations(voice, beatMap, layout, startpos, voiceNr, conf))
@@ -556,6 +586,141 @@ export class HarpnotesLayout {
       visible,
       confKey: pause.confKey,
     }
+  }
+
+  private _layoutDecorations(
+    playable: PlayableEntity,
+    root: Ellipse | Glyph,
+    layout: LayoutConfig,
+    voiceNr: number,
+    conf: Confstack,
+  ): { backgrounds: Ellipse[]; decorations: DrawableElement[] } {
+    const backgrounds: Ellipse[] = []
+    const result: DrawableElement[] = []
+    const annotationDecorations = layout.DECORATIIONS_AS_ANNOTATIONS ?? {}
+    const decorationSize: [number, number] = [root.size[0] * 0.8, root.size[1] * 0.8]
+    const defaultOffset: [number, number] = [
+      0,
+      Math.round(-root.size[1] / 0.8 - (playable.measureStart ? 2 : 1)),
+    ]
+    const decorations = [
+      ...playable.decorations,
+      ...playable.barDecorations,
+    ].filter((decoration) => decoration !== '')
+
+    for (const [index, decoration] of decorations.entries()) {
+      const overrideKey = `extract.notebound.decoration.v_${voiceNr}.t_${playable.time}.${index}`
+      const legacyZnIdOverrideKey = `extract.notebound.decoration.v_${voiceNr}.t_${playable.znId}.${index}`
+      const configuredOffset = (conf.get(`${overrideKey}.pos`) as [number, number] | undefined)
+        ?? (conf.get(`${legacyZnIdOverrideKey}.pos`) as [number, number] | undefined)
+      const offset = configuredOffset ?? defaultOffset
+      const visible = (conf.get(`${overrideKey}.show`) as boolean | undefined)
+        ?? (conf.get(`${legacyZnIdOverrideKey}.show`) as boolean | undefined)
+        ?? true
+      if (!visible) continue
+
+      const center: [number, number] = [root.center[0] + offset[0], root.center[1] + offset[1]]
+      const annotation = annotationDecorations[decoration]
+
+      if (annotation) {
+        const annotationCenter: [number, number] = [
+          center[0] + annotation.pos[0],
+          center[1] + annotation.pos[1],
+        ]
+        const style = (conf.get(`${overrideKey}.style`) as string | undefined)
+          ?? (conf.get(`${legacyZnIdOverrideKey}.style`) as string | undefined)
+          ?? annotation.style
+        const drawable: Annotation = {
+          type: 'Annotation',
+          center: annotationCenter,
+          text: annotation.text,
+          style,
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THIN,
+          visible: true,
+          origin: playable,
+        }
+        backgrounds.push(this._annotationBackground(drawable, annotation.align ?? 'left', layout, 0.2))
+        result.push(drawable)
+      } else {
+        result.push({
+          type: 'Glyph',
+          center,
+          size: decorationSize,
+          glyphName: decoration,
+          dotted: false,
+          fill: 'filled',
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THICK,
+          visible: true,
+          confKey: `${overrideKey}.pos`,
+        })
+      }
+    }
+
+    return { backgrounds, decorations: result }
+  }
+
+  private _layoutMeasureBarover(root: Ellipse, layout: LayoutConfig): Ellipse {
+    const baroverY = root.size[1] + layout.LINE_THICK
+    return {
+      type: 'Ellipse',
+      center: [root.center[0], root.center[1] - baroverY],
+      size: [root.size[0], layout.LINE_THICK / 2],
+      fill: 'filled',
+      dotted: false,
+      hasbarover: false,
+      color: root.color,
+      lineWidth: layout.LINE_THIN,
+      visible: root.visible,
+    }
+  }
+
+  private _annotationBackground(
+    annotation: Annotation,
+    align: 'left' | 'right' | 'center',
+    layout: LayoutConfig,
+    padding: number,
+  ): Ellipse {
+    const size = this._annotationSize(annotation.text, annotation.style, layout)
+    const halfSize: [number, number] = [size[0] * 0.5, size[1] * 0.5]
+    const paddedSize: [number, number] = [halfSize[0] + padding, halfSize[1] + padding]
+    const backgroundX = align === 'left'
+      ? halfSize[0]
+      : align === 'right'
+        ? -halfSize[0]
+        : 0
+    let backgroundY = halfSize[1]
+    if (!/[|gyqp]/.test(annotation.text)) {
+      backgroundY = halfSize[1] - padding * 0.5
+      paddedSize[1] *= 0.7
+    }
+
+    return {
+      type: 'Ellipse',
+      center: [annotation.center[0] + backgroundX, annotation.center[1] + backgroundY],
+      size: paddedSize,
+      fill: 'filled',
+      dotted: false,
+      hasbarover: false,
+      color: 'white',
+      lineWidth: layout.LINE_THIN,
+      visible: true,
+    }
+  }
+
+  private _annotationSize(text: string, style: string, layout: LayoutConfig): [number, number] {
+    if (style === 'small_italic') {
+      const widths: Record<string, number> = {
+        f: 0.889,
+        p: 1.7462,
+      }
+      return [widths[text] ?? text.length * 1.2, 3.175]
+    }
+
+    const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
+    const height = fontSize * layout.MM_PER_POINT
+    return [text.length * height * 0.55, height]
   }
 
   // ---------------------------------------------------------------------------

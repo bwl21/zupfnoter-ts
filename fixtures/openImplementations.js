@@ -26,15 +26,6 @@ const OPEN_IMPLEMENTATIONS = [
         prompt: 'Investigate legacy sheet header, legend, cutmark, and footer parity for the listed fixtures, reproduce with the sheet legacy comparison tests, implement the remaining text-block and footer behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
     },
     {
-        id: 'sheet.decorations-layout',
-        stage: 'sheet',
-        scope: 'note decorations and symbols',
-        summary: 'Legacy decoration rendering is not yet reproduced with full sheet-layout parity.',
-        refs: ['packages/core/src/HarpnotesLayout.ts'],
-        fixtures: ['decoration'],
-        prompt: 'Investigate decoration layout parity in the decoration fixture, reproduce with the sheet legacy comparison test, implement the remaining legacy decoration rendering in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
-    },
-    {
         id: 'sheet.lyrics-layout',
         stage: 'sheet',
         scope: 'ABC lyrics layout',

@@ -790,10 +790,17 @@ export class AbcToSong {
     return `${voiceIndex}-${sym.istart}`
   }
 
-  private _parseDecorations(_sym: AbcSymbol): string[] {
-    // abc2svg stores decorations in sym.a_dd[] with specific type ids
-    // Phase 2: return empty array — full decoration parsing in later iteration
-    return []
+  private _parseDecorations(sym: AbcSymbol): string[] {
+    const supportedDecorations = new Set([
+      '<(', '<)', '>(', '>)', 'arpeggio', 'coda', 'crescendo(', 'crescendo)',
+      'D.C.', 'D.C.alfine', 'D.S.', 'dacapo', 'dacoda', 'dasegno',
+      'diminuendo(', 'diminuendo)', 'f', 'ff', 'fff', 'ffff', 'fine',
+      'p', 'pp', 'ppp', 'pppp', 'segno', 'fermata', 'emphasis', 'breath',
+    ])
+
+    return (sym.a_dd ?? [])
+      .map((decoration) => decoration.name)
+      .filter((name): name is string => typeof name === 'string' && supportedDecorations.has(name))
   }
 
   private _parseTuplet(sym: AbcSymbol, state: VoiceState): { tuplet: number; tupletStart: boolean; tupletEnd: boolean } {

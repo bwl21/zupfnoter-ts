@@ -135,6 +135,16 @@ K:C
 V:V1 clef=treble-8
 [V:V1] C |]`
 
+const ABC_DECORATIONS = `X:1
+T:Decoration Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] !fermata!C D !f!E !p!F |]`
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -364,6 +374,22 @@ describe('HarpnotesLayout', () => {
       expect(placeholderLegend?.center).toEqual([90, 40])
       expect(placeholderLegend?.text).toBe(`Probe Extract\nTest Composer\n1\n-P\n${new Date().getFullYear()}`)
       expect(annotations.some((a) => a.center[0] === 320 && a.center[1] === 27)).toBe(false)
+    })
+  })
+
+  describe('decorations', () => {
+    it('renders glyph and annotation decorations with annotation backgrounds', () => {
+      const { sheet } = pipeline(ABC_DECORATIONS)
+      const glyphs = sheet.children.filter((c): c is Glyph => c.type === 'Glyph')
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      const backgrounds = sheet.children.filter(
+        (c): c is Ellipse => c.type === 'Ellipse' && c.color === 'white',
+      )
+
+      expect(glyphs.some((glyph) => glyph.glyphName === 'fermata')).toBe(true)
+      expect(annotations.some((annotation) => annotation.text === 'f' && annotation.style === 'small_italic')).toBe(true)
+      expect(annotations.some((annotation) => annotation.text === 'p' && annotation.style === 'small_italic')).toBe(true)
+      expect(backgrounds.length).toBe(2)
     })
   })
 
