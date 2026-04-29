@@ -1,3 +1,35 @@
+## Agent Operating Rules (verbindlich)
+
+Diese Regeln steuern das Verhalten von Coding-Agents.
+
+### Priorität
+
+1. User-Anweisung
+2. Diese AGENTS.md
+3. docs/
+4. bestehender Code
+
+### Arbeitsweise
+
+- Kleine, gezielte Änderungen
+- Keine unnötigen Refactorings
+- Bestehende Architektur respektieren
+- Bestehende Patterns beibehalten
+
+### Verboten
+
+- Kein `any` ohne Begründung
+- Kein `!`
+- Kein lokales Config-Merging
+- Keine stillen Architekturänderungen
+
+### Tests
+
+Nach Änderungen möglichst ausführen:
+
+    pnpm test
+    pnpm type-check
+
 # AGENTS.md – Implementierungsplan Zupfnoter-TS
 
 Dieses Dokument beschreibt den Implementierungsplan für den TypeScript-Rewrite von
@@ -685,3 +717,78 @@ differences between the legacy Ruby behavior and the TypeScript implementation.
 - `extract`-Keys sind Strings, die numerische Extrakt-IDs repräsentieren (z. B. `"0"`, `"1"`, `"2"`)
 - `Confstack` ist der einzige zulässige Mechanismus zur Konfigurationsauflösung; kein lokales Mergen in Layout-, Render- oder UI-Code
 - Die TypeScript-Beispielblöcke in diesem Dokument sind Zielschemata zur Orientierung, aber nicht automatisch vollständiger als die aktuellen Quelltypen; bei Widerspruch entscheidet der explizite Phasen-Text plus die implementierten Typen in `packages/types`
+
+
+## TypeScript Comment Style (verbindlich)
+
+### JSDoc verwenden für:
+
+- Interfaces
+- wichtige Properties
+- Einheiten (mm etc.)
+- semantische Bedeutung
+- Rückverweise
+
+  /** Mittelpunkt [x, y] in mm */
+  center: [number, number]
+
+### Inline-Kommentare nur für:
+
+    dotted: boolean // gestrichelt
+
+### Verboten
+
+    center: [number, number] // Mittelpunkt in mm
+
+### Enforcement
+
+- ALWAYS use JSDoc for semantic properties
+- NEVER replace JSDoc with inline comments
+- NEVER downgrade documentation quality
+
+
+## Agent Pitfall Checklist
+
+Vor Abschluss einer Änderung prüfen:
+
+### Scope
+
+- Wurde nur das geändert, was beauftragt war?
+- Wurde kein unnötiges Refactoring gemacht?
+- Wurden keine Dateien „aufgeräumt“, die nicht Teil der Aufgabe waren?
+
+### TypeScript
+
+- Kein `any` eingeführt?
+- Kein `!` eingeführt?
+- Keine Typen abgeschwächt, nur damit der Compiler zufrieden ist?
+- Neue Typen zuerst in `@zupfnoter/types` definiert?
+
+### Kommentare
+
+- JSDoc für semantische Properties verwendet?
+- Keine JSDoc-Kommentare durch Inline-Kommentare ersetzt?
+- Einheiten wie `mm` nicht in Inline-Kommentare verschoben?
+
+### Architektur
+
+- Keine Config direkt gelesen, wenn `Confstack` zuständig ist?
+- Keine lokale Config-Merge-Logik eingebaut?
+- 1-basierte externe Stimmen und 0-basierte interne Indizes nicht vermischt?
+- Keine Legacy-Abweichung ohne Dokumentation eingeführt?
+
+### Tests
+
+- Bestehende Tests nicht gelöscht oder abgeschwächt?
+- Neue Logik mit Tests abgesichert?
+- Snapshots nur bewusst aktualisiert?
+- Falls Tests nicht ausgeführt wurden: wurde das klar im Ergebnis gesagt?
+
+### Ergebnisbericht
+
+Am Ende der Arbeit kurz berichten:
+
+- Was wurde geändert?
+- Welche Dateien wurden geändert?
+- Welche Tests wurden ausgeführt?
+  - Welche Risiken oder offenen Punkte bleiben?
