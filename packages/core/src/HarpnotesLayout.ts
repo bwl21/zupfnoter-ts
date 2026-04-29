@@ -1502,7 +1502,7 @@ export class HarpnotesLayout {
         text = part.name
         style = 'bold'
         offset = [-4, -7]
-        confBase = `notebound.partname.v_${voiceNr}.${companion.time}`
+        confBase = `extract.notebound.partname.v_${voiceNr}.${companion.time}`
       }
 
       const configuredOffset = conf.get(`${confBase}.pos`) as [number, number] | undefined
