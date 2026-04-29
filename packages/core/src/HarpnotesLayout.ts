@@ -104,9 +104,14 @@ function playableCenter(
   startpos: number,
 ): [number, number] {
   return [
-    pitchToX(playable.pitch, layout),
+    playableX(playable, layout),
     beatToY(playable.beat, beatMap, layout, startpos),
   ]
+}
+
+function playableX(playable: PlayableEntity, layout: LayoutConfig): number {
+  const x = pitchToX(playable.pitch, layout)
+  return x + playableHorizontalShift(playable, layout, x)
 }
 
 function playableSize(playable: PlayableEntity, layout: LayoutConfig): [number, number] {
@@ -123,6 +128,33 @@ function playableSize(playable: PlayableEntity, layout: LayoutConfig): [number, 
     'HarpnotesLayout.playableSize(): missing fallback duration style "err"',
   )
   return [layout.ELLIPSE_SIZE[0] * style.sizeFactor, layout.ELLIPSE_SIZE[1] * style.sizeFactor]
+}
+
+function playableDotted(playable: PlayableEntity, layout: LayoutConfig): boolean {
+  const dKey = durationToKey(playable.duration)
+  if (playable.type === 'Pause') {
+    return (layout.REST_TO_GLYPH[dKey] ?? layout.REST_TO_GLYPH['err'])?.dotted ?? false
+  }
+
+  const style = layout.DURATION_TO_STYLE[dKey] ?? layout.DURATION_TO_STYLE['err']
+  return style?.dotted ?? false
+}
+
+function playableHorizontalShift(playable: PlayableEntity, layout: LayoutConfig, x: number): number {
+  if (!layout.limit_a3) return 0
+
+  const size = playableSize(playable, layout)
+  let shift = 0
+  if (x < 5) {
+    shift += size[0]
+  }
+  if (x > 415) {
+    shift -= size[0]
+    if (playableDotted(playable, layout)) {
+      shift -= 1.5
+    }
+  }
+  return shift
 }
 
 function addPoint(point: [number, number], offset: [number, number]): [number, number] {
@@ -316,12 +348,12 @@ export class HarpnotesLayout {
 
     const children: DrawableElement[] = [
       ...resImages,
-      ...voiceElements,
       ...resSynchLines,
+      ...voiceElements,
       ...resLegend,
+      ...resAnnotations,
       ...resZnAnnotations,
       ...resLyrics,
-      ...resAnnotations,
       ...resSheetmarks,
       ...resCutmarks,
       ...resInstrument,
@@ -547,7 +579,15 @@ export class HarpnotesLayout {
       result.push(...this._layoutVoiceFlowlines(voice, beatMap, layout, startpos, 'solid', visibleByPlayable))
     }
     if (showSubflowlines) {
-      result.push(...this._layoutVoiceFlowlines(voice, beatMap, layout, startpos, 'dashed', visibleByPlayable))
+      result.push(...this._layoutVoiceFlowlines(
+        voice,
+        beatMap,
+        layout,
+        startpos,
+        'dotted',
+        visibleByPlayable,
+        synchedPlayables,
+      ))
     }
     result.push(...this._layoutVoiceSlurs(voice, beatMap, layout, startpos, conf))
 
@@ -702,8 +742,6 @@ export class HarpnotesLayout {
     startpos: number,
     visible = note.visible,
   ): Ellipse {
-    const x = pitchToX(note.pitch, layout)
-    const y = beatToY(note.beat, beatMap, layout, startpos)
     const dKey = durationToKey(note.duration)
     const style = layout.DURATION_TO_STYLE[dKey]
     const effectiveStyle = style !== undefined
@@ -713,11 +751,17 @@ export class HarpnotesLayout {
         'HarpnotesLayout._layoutNote(): missing fallback duration style "err"',
       )
     const color = variantToColor(note.variant, layout)
+    const size: [number, number] = [
+      layout.ELLIPSE_SIZE[0] * effectiveStyle.sizeFactor,
+      layout.ELLIPSE_SIZE[1] * effectiveStyle.sizeFactor,
+    ]
+    const x = playableX(note, layout)
+    const y = beatToY(note.beat, beatMap, layout, startpos)
 
     return {
       type: 'Ellipse',
       center: [x, y],
-      size: [layout.ELLIPSE_SIZE[0] * effectiveStyle.sizeFactor, layout.ELLIPSE_SIZE[1] * effectiveStyle.sizeFactor],
+      size,
       fill: effectiveStyle.fill,
       dotted: effectiveStyle.dotted,
       hasbarover: false,
@@ -738,7 +782,7 @@ export class HarpnotesLayout {
   ): Glyph | null {
     if (pause.invisible) return null
 
-    const x = pitchToX(pause.pitch, layout)
+    const x = playableX(pause, layout)
     const y = beatToY(pause.beat, beatMap, layout, startpos)
     const dKey = durationToKey(pause.duration)
     const restStyle = layout.REST_TO_GLYPH?.[dKey] ?? layout.REST_TO_GLYPH?.['err']
@@ -904,8 +948,9 @@ export class HarpnotesLayout {
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
-    style: 'solid' | 'dashed',
+    style: 'solid' | 'dotted',
     visibleByPlayable: Map<PlayableEntity, boolean>,
+    synchedPlayables?: Set<PlayableEntity>,
   ): FlowLine[] {
     const result: FlowLine[] = []
     const playables = voice.entities.filter(
@@ -914,11 +959,9 @@ export class HarpnotesLayout {
 
     let prev: PlayableEntity | null = null
     for (const curr of playables) {
-      if (prev && !curr.firstInPart) {
-        const fromX = pitchToX(prev.pitch, layout)
-        const fromY = beatToY(prev.beat, beatMap, layout, startpos)
-        const toX = pitchToX(curr.pitch, layout)
-        const toY = beatToY(curr.beat, beatMap, layout, startpos)
+      if (prev && !curr.firstInPart && !synchedPlayables?.has(curr)) {
+        const [fromX, fromY] = playableCenter(prev, beatMap, layout, startpos)
+        const [toX, toY] = playableCenter(curr, beatMap, layout, startpos)
 
         result.push({
           type: 'FlowLine',
@@ -1116,10 +1159,8 @@ export class HarpnotesLayout {
         tupletNum = p.tuplet
       }
       if (p.tupletEnd && tupletStart) {
-        const x1 = pitchToX(tupletStart.pitch, layout)
-        const y1 = beatToY(tupletStart.beat, beatMap, layout, startpos)
-        const x2 = pitchToX(p.pitch, layout)
-        const y2 = beatToY(p.beat, beatMap, layout, startpos)
+        const [x1, y1] = playableCenter(tupletStart, beatMap, layout, startpos)
+        const [x2, y2] = playableCenter(p, beatMap, layout, startpos)
         const bracketY = Math.min(y1, y2) - 3
 
         // Bracket path
@@ -1201,9 +1242,9 @@ export class HarpnotesLayout {
 
         result.push({
           type: 'FlowLine',
-          from: [pitchToX(p1.pitch, layout), beatToY(beat, beatMap1, layout, startpos)],
-          to:   [pitchToX(p2.pitch, layout), beatToY(beat, beatMap2, layout, startpos)],
-          style: 'dotted',
+          from: playableCenter(p1, beatMap1, layout, startpos),
+          to:   playableCenter(p2, beatMap2, layout, startpos),
+          style: 'dashed',
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: p1.visible && p2.visible,
@@ -1409,8 +1450,7 @@ export class HarpnotesLayout {
         const playable = entity as PlayableEntity
         if (!playable.lyrics) continue
 
-        const x = pitchToX(playable.pitch, layout)
-        const y = beatToY(playable.beat, beatMap, layout, startpos)
+        const [x, y] = playableCenter(playable, beatMap, layout, startpos)
 
         result.push({
           type: 'Annotation',
@@ -1518,8 +1558,7 @@ export class HarpnotesLayout {
         measureStartBeat = playable.beat
       }
 
-      const x = pitchToX(playable.pitch, layout)
-      const y = beatToY(playable.beat, beatMap, layout, startpos)
+      const [x, y] = playableCenter(playable, beatMap, layout, startpos)
 
       if (countnoteVoices.has(voiceNr)) {
         const countnoteText = this._countnoteText(playable, measureStartBeat, voiceNr, conf)
@@ -1624,9 +1663,9 @@ export class HarpnotesLayout {
     const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
     const previous = playable.prevPlayable ?? playable
     const next = playable.nextPlayable ?? playable
-    const previousX = pitchToX(previous.pitch, layout)
-    const currentX = pitchToX(playable.pitch, layout)
-    const nextX = pitchToX(next.pitch, layout)
+    const previousX = playableX(previous, layout)
+    const currentX = playableX(playable, layout)
+    const nextX = playableX(next, layout)
     const sides = bottomup
       ? computeNotePosition(nextX, currentX, previousX).reverse() as ['l' | 'r', 'l' | 'r']
       : computeNotePosition(previousX, currentX, nextX)
@@ -1658,9 +1697,9 @@ export class HarpnotesLayout {
     ]
     const previous = playable.prevPlayable ?? playable
     const next = playable.nextPlayable ?? playable
-    const previousX = pitchToX(previous.pitch, layout)
-    const currentX = pitchToX(playable.pitch, layout)
-    const nextX = pitchToX(next.pitch, layout)
+    const previousX = playableX(previous, layout)
+    const currentX = playableX(playable, layout)
+    const nextX = playableX(next, layout)
     const tieOffset = side === 'r' && (playable.tieStart || playable.tieEnd) ? 1 : 0
     const dsizeY = apanchor === 'center' ? 0 : size[1]
     const x = tieOffset + (side === 'l' ? -(size[0] + apbase[0]) : sizeWithDot[0] + apbase[0])
@@ -1681,9 +1720,9 @@ export class HarpnotesLayout {
     const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
     const previous = playable.prevPlayable ?? playable
     const next = playable.nextPlayable ?? playable
-    const previousX = pitchToX(previous.pitch, layout)
-    const currentX = pitchToX(playable.pitch, layout)
-    const nextX = pitchToX(next.pitch, layout)
+    const previousX = playableX(previous, layout)
+    const currentX = playableX(playable, layout)
+    const nextX = playableX(next, layout)
     const [defaultSide] = bottomup
       ? computeNotePosition(nextX, currentX, previousX).reverse() as ['l' | 'r', 'l' | 'r']
       : computeNotePosition(previousX, currentX, nextX)
@@ -1848,8 +1887,8 @@ export class HarpnotesLayout {
     return {
       type: 'Annotation',
       center: [
-        pitchToX(companion.pitch, layout) + pos[0],
-        beatToY(companion.beat, beatMap, layout, startpos) + pos[1],
+        playableCenter(companion, beatMap, layout, startpos)[0] + pos[0],
+        playableCenter(companion, beatMap, layout, startpos)[1] + pos[1],
       ],
       text,
       style,
@@ -1888,8 +1927,7 @@ export class HarpnotesLayout {
 
       const companion = entity.companion
       const center: [number, number] = [
-        pitchToX(companion.pitch, layout),
-        beatToY(companion.beat, beatMap, layout, startpos),
+        ...playableCenter(companion, beatMap, layout, startpos),
       ]
 
       let text = ''

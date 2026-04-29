@@ -12,7 +12,7 @@ exports[`HarpnotesLayout > full sheet snapshot > two_voices sheet matches snapsh
 {
   "Annotation": 9,
   "Ellipse": 10,
-  "FlowLine": 10,
+  "FlowLine": 7,
   "Path": 3,
 }
 `;
