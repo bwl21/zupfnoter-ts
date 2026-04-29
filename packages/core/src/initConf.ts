@@ -7,7 +7,7 @@
  *
  * Beat-Parameter (Legacy-kompatibel):
  *   BEAT_RESOLUTION=192, SHORTEST_NOTE=64, BEAT_PER_DURATION=3
- *   Y_SCALE = 4 / BEAT_RESOLUTION = 0.02083... mm pro compressed-beat-unit
+ *   Y_SCALE=4; Layout rechnet wie Legacy mit Y_SCALE / BEAT_RESOLUTION.
  *
  * Initialisierungssequenz:
  *   const conf = new Confstack()
@@ -54,7 +54,7 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
       LINE_THICK: 0.5,
 
       // Koordinatensystem
-      Y_SCALE: 8 / 192,       // = 0.04166... mm pro compressed-beat-unit
+      Y_SCALE: 4,
       X_SPACING: 11.5,
       X_OFFSET: 2.8,
       PITCH_OFFSET: -43,
@@ -91,10 +91,10 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
       // d64=ganze, d32=halbe, d16=viertel, d8=achtel, d4=16tel, d2=32tel, d1=64tel
       DURATION_TO_STYLE: {
         err: { sizeFactor: 2,    fill: 'filled', dotted: false },
-        d96: { sizeFactor: 1,     fill: 'empty',  dotted: true,  hasbarover: true  },
-        d64: { sizeFactor: 1,     fill: 'empty',  dotted: false, hasbarover: true  },
-        d48: { sizeFactor: 0.75,  fill: 'empty',  dotted: true,  hasbarover: true  },
-        d32: { sizeFactor: 0.75,  fill: 'empty',  dotted: false, hasbarover: false },
+        d96: { sizeFactor: 1,     fill: 'empty',  dotted: true  },
+        d64: { sizeFactor: 1,     fill: 'empty',  dotted: false },
+        d48: { sizeFactor: 0.75,  fill: 'empty',  dotted: true  },
+        d32: { sizeFactor: 0.75,  fill: 'empty',  dotted: false },
         d24: { sizeFactor: 0.75,  fill: 'filled', dotted: true  },
         d16: { sizeFactor: 0.75,  fill: 'filled', dotted: false },
         d12: { sizeFactor: 0.5,  fill: 'filled', dotted: true  },

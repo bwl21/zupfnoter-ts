@@ -49,8 +49,6 @@ export interface DurationStyle {
   sizeFactor: number
   fill: FillStyle
   dotted: boolean
-  /** Balken über der Ellipse (für halbe Noten) */
-  hasbarover?: boolean
 }
 
 /**

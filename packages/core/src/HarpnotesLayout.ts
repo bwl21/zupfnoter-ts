@@ -58,10 +58,29 @@ function pitchToX(pitch: number, layout: LayoutConfig): number {
   return (pitch + layout.PITCH_OFFSET) * layout.X_SPACING + layout.X_OFFSET
 }
 
-/** Beat → Y position in mm via BeatCompressionMap */
+/** Beat → Y position in mm via BeatCompressionMap. Legacy uses Y_SCALE / BEAT_RESOLUTION. */
 function beatToY(beat: number, beatMap: BeatCompressionMap, layout: LayoutConfig, startpos: number): number {
   const compressed = beatMap[beat] ?? beat
-  return compressed * layout.Y_SCALE + startpos
+  return compressed * (layout.Y_SCALE / layout.BEAT_RESOLUTION) + startpos
+}
+
+function applyLegacyBeatSpread(beatMap: BeatCompressionMap, layout: LayoutConfig, startpos: number): BeatCompressionMap {
+  const maximalBeat = Math.max(0, ...Object.values(beatMap))
+  if (maximalBeat === 0) return beatMap
+
+  const baseBeatSpacing = layout.Y_SCALE / layout.BEAT_RESOLUTION
+  if (baseBeatSpacing === 0) return beatMap
+
+  const fullBeatSpacing = (layout.DRAWING_AREA_SIZE[1] - startpos) / maximalBeat
+  const maxSpreadFactor = layout.packer.pack_max_spreadfactor ?? 1
+  const effectiveBeatSpacing = Math.min(fullBeatSpacing, maxSpreadFactor * baseBeatSpacing)
+  const factor = effectiveBeatSpacing / baseBeatSpacing
+
+  if (factor === 1) return beatMap
+
+  return Object.fromEntries(
+    Object.entries(beatMap).map(([beat, compressed]) => [beat, compressed * factor]),
+  ) as BeatCompressionMap
 }
 
 /** Duration (SHORTEST_NOTE scale) → DurationKey. Duration is already on the correct scale. */
@@ -307,7 +326,11 @@ export class HarpnotesLayout {
     // layoutlineVoices contains 1-based voice numbers (from config);
     // computeBeatCompression expects 0-based indices into song.voices.
     const layoutlineIndices = layoutlineVoices.map(v => v - 1)
-    const beatCompressionMap = computeBeatCompression(song, layoutlineIndices, conf)
+    const beatCompressionMap = applyLegacyBeatSpread(
+      computeBeatCompression(song, layoutlineIndices, conf),
+      layout,
+      startpos,
+    )
 
     const beatMaps = new Map<number, BeatCompressionMap>()
     const voiceElements: DrawableElement[] = []
@@ -548,7 +571,7 @@ export class HarpnotesLayout {
       size: [layout.ELLIPSE_SIZE[0] * effectiveStyle.sizeFactor, layout.ELLIPSE_SIZE[1] * effectiveStyle.sizeFactor],
       fill: effectiveStyle.fill,
       dotted: effectiveStyle.dotted,
-      hasbarover: effectiveStyle.hasbarover ?? false,
+      hasbarover: false,
       color,
       lineWidth: layout.LINE_THICK,
       visible,
