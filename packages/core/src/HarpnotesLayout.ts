@@ -67,7 +67,7 @@ function beatToY(beat: number, beatMap: BeatCompressionMap, layout: LayoutConfig
 /** Duration (SHORTEST_NOTE scale) → DurationKey. Duration is already on the correct scale. */
 function durationToKey(duration: number): DurationKey {
   const key = `d${duration}` as DurationKey
-  const valid: DurationKey[] = ['d64','d48','d32','d24','d16','d12','d8','d6','d4','d3','d2','d1']
+  const valid: DurationKey[] = ['d96','d64','d48','d32','d24','d16','d12','d8','d6','d4','d3','d2','d1']
   return valid.includes(key) ? key : 'err'
 }
 

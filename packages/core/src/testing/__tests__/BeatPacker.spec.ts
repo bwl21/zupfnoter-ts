@@ -21,6 +21,7 @@ import type { DurationKey, DurationStyle } from '@zupfnoter/types'
 
 const DURATION_TO_STYLE: Record<DurationKey, DurationStyle> = {
   err: { sizeFactor: 2,    fill: 'filled', dotted: false },
+  d96: { sizeFactor: 1,    fill: 'empty',  dotted: true  },
   d64: { sizeFactor: 1,    fill: 'empty',  dotted: false },
   d48: { sizeFactor: 0.75, fill: 'empty',  dotted: true  },
   d32: { sizeFactor: 0.75, fill: 'empty',  dotted: false },

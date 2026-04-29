@@ -91,6 +91,7 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
       // d64=ganze, d32=halbe, d16=viertel, d8=achtel, d4=16tel, d2=32tel, d1=64tel
       DURATION_TO_STYLE: {
         err: { sizeFactor: 2,    fill: 'filled', dotted: false },
+        d96: { sizeFactor: 1,     fill: 'empty',  dotted: true,  hasbarover: true  },
         d64: { sizeFactor: 1,     fill: 'empty',  dotted: false, hasbarover: true  },
         d48: { sizeFactor: 0.75,  fill: 'empty',  dotted: true,  hasbarover: true  },
         d32: { sizeFactor: 0.75,  fill: 'empty',  dotted: false, hasbarover: false },
@@ -105,18 +106,19 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
         d1:  { sizeFactor: 0.05, fill: 'filled', dotted: false },
       },
 
-      // Pausendauer → Glyph-Stil
+      // Pausendauer → Glyph-Stil (Werte aus Legacy init_conf.rb, NICHT harpnotes.rb)
       REST_TO_GLYPH: {
         err: { scale: [2,   2  ], glyphName: 'rest_1',  dotted: false },
-        d64: { scale: [0.9, 0.9], glyphName: 'rest_1',  dotted: false },
-        d48: { scale: [0.5, 0.5], glyphName: 'rest_1',  dotted: true  },
-        d32: { scale: [0.5, 0.5], glyphName: 'rest_1',  dotted: false },
-        d24: { scale: [0.4, 0.7], glyphName: 'rest_4',  dotted: true  },
-        d16: { scale: [0.4, 0.7], glyphName: 'rest_4',  dotted: false },
-        d12: { scale: [0.3, 0.5], glyphName: 'rest_8',  dotted: true  },
-        d8:  { scale: [0.3, 0.5], glyphName: 'rest_8',  dotted: false },
-        d6:  { scale: [0.3, 0.4], glyphName: 'rest_16', dotted: true  },
-        d4:  { scale: [0.3, 0.5], glyphName: 'rest_16', dotted: false },
+        d96: { scale: [1,   0.8], glyphName: 'rest_1',  dotted: true  },
+        d64: { scale: [1,   0.8], glyphName: 'rest_1',  dotted: false },
+        d48: { scale: [0.5, 0.4], glyphName: 'rest_1',  dotted: true  },
+        d32: { scale: [0.5, 0.4], glyphName: 'rest_1',  dotted: false },
+        d24: { scale: [0.4, 0.75], glyphName: 'rest_4',  dotted: true  },
+        d16: { scale: [0.4, 0.75], glyphName: 'rest_4',  dotted: false },
+        d12: { scale: [0.4, 0.5], glyphName: 'rest_8',  dotted: true  },
+        d8:  { scale: [0.4, 0.5], glyphName: 'rest_8',  dotted: false },
+        d6:  { scale: [0.4, 0.3], glyphName: 'rest_16', dotted: true  },
+        d4:  { scale: [0.3, 0.3], glyphName: 'rest_16', dotted: false },
         d3:  { scale: [0.3, 0.5], glyphName: 'rest_32', dotted: true  },
         d2:  { scale: [0.3, 0.5], glyphName: 'rest_32', dotted: false },
         d1:  { scale: [0.3, 0.5], glyphName: 'rest_64', dotted: false },

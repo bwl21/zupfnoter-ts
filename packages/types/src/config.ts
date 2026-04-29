@@ -28,6 +28,7 @@ export interface FontStyle {
  */
 export type DurationKey =
   | 'err'   // Fehler / unbekannt
+  | 'd96'   // punktierte ganze
   | 'd64'   // ganze Note
   | 'd48'   // punktierte halbe
   | 'd32'   // halbe
