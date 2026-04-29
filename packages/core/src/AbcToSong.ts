@@ -735,11 +735,13 @@ export class AbcToSong {
     return {
       title: info['T']?.split('\n')[0],
       composer: info['C']?.split('\n')[0],
+      number: info['X']?.split('\n')[0],
       filename: info['F']?.split('\n')[0],
       meter: info['M']?.split('\n')[0],
       key: info['K']?.split('\n')[0],
       tempo: info['Q'] ? this._parseTempo(info['Q']) : undefined,
       tempoDisplay: info['Q']?.split('\n')[0],
+      checksum: model.checksum,
     }
   }
 

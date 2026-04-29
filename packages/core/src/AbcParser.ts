@@ -80,6 +80,18 @@ export interface AbcParseError {
   column?: number
 }
 
+function computeLegacyChecksum(abcText: string): string {
+  const stripped = abcText.trim()
+  let checksum = 0x12345678
+
+  for (let index = 0; index < stripped.length; index += 1) {
+    checksum += stripped.charCodeAt(index) * (index + 1)
+  }
+
+  const chunks = String(checksum).match(/.{1,3}/g)
+  return chunks ? chunks.join(' ') : String(checksum)
+}
+
 function loadAbc2svg(): Abc2svgExports {
   const mod = { exports: {} as Record<string, unknown> }
   const fn = new Function('module', 'exports', abc2svgSource)
@@ -143,7 +155,13 @@ export class AbcParser {
       read_file: (_name: string) => null,
 
       get_abcmodel: (tsfirst, voice_tb, music_types, info) => {
-        this._model = AbcParser._buildModel(tsfirst, voice_tb, music_types, info)
+        this._model = AbcParser._buildModel(
+          tsfirst,
+          voice_tb,
+          music_types,
+          info,
+          computeLegacyChecksum(abcText),
+        )
       },
     }
 
@@ -170,6 +188,7 @@ export class AbcParser {
     voice_tb: Abc2svgVoice[],
     music_types: string[],
     info: Record<string, string>,
+    checksum: string,
   ): AbcModel {
     // Build reverse map: type name → numeric id
     const music_type_ids: Record<string, number> = {}
@@ -208,7 +227,7 @@ export class AbcParser {
       }
     })
 
-    return { voices, music_types, music_type_ids, info }
+    return { voices, music_types, music_type_ids, info, checksum }
   }
 
   /** Walk the linked-list of symbols in a voice and collect them into an array */

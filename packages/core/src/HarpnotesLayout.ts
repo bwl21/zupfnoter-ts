@@ -232,7 +232,6 @@ export class HarpnotesLayout {
    */
   layout(song: Song, extractNr: number | string = 0, pageFormat: 'A3' | 'A4' = 'A4'): Sheet {
     const conf = this._layoutPrepareOptions(extractNr)
-    const layout = conf.get('layout') as LayoutConfig
 
     // 1. Images
     const resImages = this._layoutImages(conf, extractNr)
@@ -253,7 +252,7 @@ export class HarpnotesLayout {
     const resLyrics = this._layoutLyrics(song, beatMaps, conf)
 
     // 7. Sheet annotations
-    const resAnnotations = this._layoutAnnotations(conf, extractNr)
+    const resAnnotations = this._layoutAnnotations(song.metaData, conf, extractNr)
 
     // 8. Sheetmarks
     const resSheetmarks = this._layoutSheetmarks(conf)
@@ -965,7 +964,7 @@ export class HarpnotesLayout {
       .filter((entry) => entry !== undefined)
       .join('\n')
 
-    if (secondaryText) {
+    if (secondaryText && conf.get('extract.notes.T06_legend') === undefined) {
       result.push({
         type: 'Annotation',
         center: secondaryPos,
@@ -981,8 +980,8 @@ export class HarpnotesLayout {
   }
 
   private _layoutZnAnnotations(metaData: SongMetaData): Annotation[] {
-    const filename = metaData.filename
-    if (!filename) return []
+    const filename = metaData.filename ?? ''
+    const checksum = metaData.checksum ?? ''
 
     return [
       {
@@ -998,6 +997,15 @@ export class HarpnotesLayout {
         type: 'Annotation',
         center: [325, 289],
         text: 'Zupfnoter: https://www.zupfnoter.de',
+        style: 'smaller',
+        color: this._config.layout.color.color_default,
+        lineWidth: this._config.layout.LINE_THIN,
+        visible: true,
+      },
+      {
+        type: 'Annotation',
+        center: [380, 289],
+        text: checksum,
         style: 'smaller',
         color: this._config.layout.color.color_default,
         lineWidth: this._config.layout.LINE_THIN,
@@ -1086,7 +1094,7 @@ export class HarpnotesLayout {
   // Sheet annotations
   // ---------------------------------------------------------------------------
 
-  private _layoutAnnotations(conf: Confstack, _extractNr: number | string): Annotation[] {
+  private _layoutAnnotations(metaData: SongMetaData, conf: Confstack, extractNr: number | string): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
     const notes = conf.get('extract.notes') as Record<string, unknown> | undefined
@@ -1100,7 +1108,7 @@ export class HarpnotesLayout {
       result.push({
         type: 'Annotation',
         center: ann.pos,
-        text: ann.text,
+        text: this._resolveAnnotationPlaceholders(ann.text, metaData, conf, extractNr),
         style: ann.style ?? 'regular',
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
@@ -1109,6 +1117,36 @@ export class HarpnotesLayout {
     }
 
     return result
+  }
+
+  private _resolveAnnotationPlaceholders(
+    text: string,
+    metaData: SongMetaData,
+    conf: Confstack,
+    extractNr: number | string,
+  ): string {
+    const produce = this._config.produce ?? []
+    const printedExtracts = produce
+      .map((nr) => this._config.extract[String(nr)]?.filenamepart)
+      .filter((part): part is string => part !== undefined)
+      .join(' ')
+    const extractFilename = (conf.get('extract.filenamepart') as string | undefined) ?? ''
+    const extractTitle = (conf.get('extract.title') as string | undefined) ?? String(extractNr)
+    const placeholders: Record<string, string> = {
+      composer: metaData.composer ?? '',
+      key: metaData.key ?? '',
+      meter: metaData.meter ?? '',
+      number: metaData.number ?? '',
+      tempo: metaData.tempoDisplay ?? '',
+      title: metaData.title ?? '',
+      extract_title: extractTitle,
+      extract_filename: extractFilename,
+      printed_extracts: printedExtracts,
+      watermark: '',
+      current_year: String(new Date().getFullYear()),
+    }
+
+    return text.replaceAll(/\{\{([^}]+)\}\}/g, (match, key: string) => placeholders[key] ?? match)
   }
 
   // ---------------------------------------------------------------------------

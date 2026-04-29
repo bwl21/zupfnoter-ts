@@ -230,11 +230,13 @@ export interface BeatMap {
 export interface SongMetaData {
   title?: string
   composer?: string
+  number?: string
   filename?: string
   meter?: string
   key?: string
   tempo?: number
   tempoDisplay?: string
+  checksum?: string
 }
 
 /**

@@ -326,6 +326,45 @@ describe('HarpnotesLayout', () => {
       expect(legend).toBeDefined()
       expect(annotations.some(a => a.text.includes('Test Composer'))).toBe(true)
     })
+
+    it('renders the legacy sheet footer annotations', () => {
+      const { song, sheet } = pipeline(ABC_SINGLE_NOTE)
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+
+      expect(
+        annotations.some((a) => a.center[0] === 150 && a.center[1] === 289 && a.text === ' - created by Zupfnoter'),
+      ).toBe(true)
+      expect(
+        annotations.some((a) => a.center[0] === 325 && a.center[1] === 289 && a.text === 'Zupfnoter: https://www.zupfnoter.de'),
+      ).toBe(true)
+      expect(
+        annotations.some((a) => a.center[0] === 380 && a.center[1] === 289 && a.text === song.metaData.checksum),
+      ).toBe(true)
+    })
+
+    it('resolves sheet annotation placeholders and lets notes.T06_legend replace the secondary legend', () => {
+      const config = clonedDefaultConfig()
+      config.produce = [0]
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.title = 'Probe Extract'
+      extract0.filenamepart = '-P'
+      extract0.notes = {
+        T06_legend: {
+          pos: [90, 40],
+          text: '{{extract_title}}\n{{composer}}\n{{number}}\n{{printed_extracts}}\n{{current_year}}',
+          style: 'placeholder_probe',
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_LEGEND, config)
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      const placeholderLegend = annotations.find((a) => a.style === 'placeholder_probe')
+
+      expect(placeholderLegend?.center).toEqual([90, 40])
+      expect(placeholderLegend?.text).toBe(`Probe Extract\nTest Composer\n1\n-P\n${new Date().getFullYear()}`)
+      expect(annotations.some((a) => a.center[0] === 320 && a.center[1] === 27)).toBe(false)
+    })
   })
 
   describe('sheetmarks', () => {

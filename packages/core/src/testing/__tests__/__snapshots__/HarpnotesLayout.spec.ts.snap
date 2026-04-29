@@ -2,7 +2,7 @@
 
 exports[`HarpnotesLayout > full sheet snapshot > single_note sheet matches snapshot 1`] = `
 {
-  "Annotation": 6,
+  "Annotation": 9,
   "Ellipse": 1,
   "Path": 3,
 }
@@ -10,7 +10,7 @@ exports[`HarpnotesLayout > full sheet snapshot > single_note sheet matches snaps
 
 exports[`HarpnotesLayout > full sheet snapshot > two_voices sheet matches snapshot 1`] = `
 {
-  "Annotation": 6,
+  "Annotation": 9,
   "Ellipse": 8,
   "FlowLine": 10,
   "Path": 3,

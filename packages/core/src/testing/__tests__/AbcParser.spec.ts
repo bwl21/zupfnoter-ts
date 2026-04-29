@@ -34,6 +34,17 @@ K:INVALID_KEY_THAT_DOES_NOT_EXIST
 C |]
 `
 
+function expectedLegacyChecksum(abcText: string): string {
+  let checksum = 0x12345678
+  const stripped = abcText.trim()
+
+  for (let index = 0; index < stripped.length; index += 1) {
+    checksum += stripped.charCodeAt(index) * (index + 1)
+  }
+
+  return String(checksum).match(/.{1,3}/g)?.join(' ') ?? String(checksum)
+}
+
 describe('AbcParser', () => {
   describe('parse()', () => {
     it('returns an AbcModel for valid single-voice ABC', () => {
@@ -67,6 +78,13 @@ describe('AbcParser', () => {
       const model = parser.parse(SINGLE_NOTE_ABC)
 
       expect(model.info['T']).toContain('Test')
+    })
+
+    it('computes the legacy source checksum', () => {
+      const parser = new AbcParser()
+      const model = parser.parse(SINGLE_NOTE_ABC)
+
+      expect(model.checksum).toBe(expectedLegacyChecksum(SINGLE_NOTE_ABC))
     })
 
     it('returns two voices for two-voice ABC', () => {
