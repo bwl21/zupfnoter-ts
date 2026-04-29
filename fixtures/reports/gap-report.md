@@ -7,10 +7,10 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 4
+- Total open implementations: 3
 - Song gaps: 0
-- Sheet gaps: 4
-- Known-covered failures: 10
+- Sheet gaps: 3
+- Known-covered failures: 9
 - New unclassified failures: 0
 
 ## Song Gaps
@@ -31,13 +31,6 @@ No open gaps.
   - Scope: header, legend, cutmarks, footer text
   - Summary: Legacy sheet header, legend, cutmark, and footer text behavior is not yet reproduced with legacy parity, including filename-part-driven text variants.
   - Prompt: Investigate legacy sheet header, legend, cutmark, and footer parity for the listed fixtures, reproduce with the sheet legacy comparison tests, implement the remaining text-block and footer behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
-
-- [ ] sheet.tie-layout
-  - Fixtures: tie
-  - Scope: tie and slur layout
-  - Summary: Tie and slur rendering is not yet reproduced with full legacy parity in the sheet layout.
-  - Prompt: Investigate tie and slur layout parity in the tie fixture, reproduce with the sheet legacy comparison test, implement the remaining tie rendering in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
   - Refs: packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.multistaff-layout

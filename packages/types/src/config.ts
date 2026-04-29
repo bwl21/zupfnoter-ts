@@ -131,6 +131,8 @@ export interface LayoutConfig {
   limit_a3: boolean
   /** Gitternetz anzeigen */
   grid: boolean
+  /** Legacy switch for drawing explicit ABC slurs. Ties are always drawn. */
+  SHOW_SLUR?: boolean
   /** Jumpline anchor offset relative to the note size. */
   jumpline_anchor: [number, number]
   /** Vertical gap for long jumplines; 0 draws an unbroken vertical line. */

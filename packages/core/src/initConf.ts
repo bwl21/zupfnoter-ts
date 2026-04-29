@@ -162,6 +162,7 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
       },
       limit_a3: true,
       grid: false,
+      SHOW_SLUR: false,
       bottomup: false,
       jumpline_anchor: [3, 1],
       jumpline_vcut: 0,

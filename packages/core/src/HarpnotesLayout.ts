@@ -129,6 +129,10 @@ function addPoint(point: [number, number], offset: [number, number]): [number, n
   return [point[0] + offset[0], point[1] + offset[1]]
 }
 
+function subtractPoint(a: [number, number], b: [number, number]): [number, number] {
+  return [a[0] - b[0], a[1] - b[1]]
+}
+
 function orientationX(delta: number): -1 | 1 {
   return delta < 0 ? -1 : 1
 }
@@ -232,6 +236,34 @@ function makeSheetmarkPath(center: [number, number]): [number, number][] {
     [x + 1, y + 4],
     [x, y],
   ]
+}
+
+function rotatePoint(point: [number, number], angle: number): [number, number] {
+  const [x, y] = point
+  const cos = Math.cos(angle)
+  const sin = Math.sin(angle)
+  return [x * cos - y * sin, x * sin + y * cos]
+}
+
+function makeLegacySlurPath(p1: [number, number], p2: [number, number]): [number, number][] {
+  const delta = subtractPoint(p2, p1)
+  const length = Math.hypot(delta[0], delta[1])
+  const angle = Math.atan2(delta[1], delta[0])
+  const cpTemplate = rotatePoint([0.3 * length, 0], angle)
+  const cp1 = rotatePoint(cpTemplate, -0.4)
+  const cp2 = addPoint(delta, rotatePoint([-cpTemplate[0], -cpTemplate[1]], 0.4))
+  const points: [number, number][] = []
+
+  for (let i = 0; i <= 12; i++) {
+    const t = i / 12
+    const u = 1 - t
+    points.push([
+      p1[0] + 3 * u * u * t * cp1[0] + 3 * u * t * t * cp2[0] + t * t * t * delta[0],
+      p1[1] + 3 * u * u * t * cp1[1] + 3 * u * t * t * cp2[1] + t * t * t * delta[1],
+    ])
+  }
+
+  return points
 }
 
 // ---------------------------------------------------------------------------
@@ -517,6 +549,7 @@ export class HarpnotesLayout {
     if (showSubflowlines) {
       result.push(...this._layoutVoiceFlowlines(voice, beatMap, layout, startpos, 'dashed', visibleByPlayable))
     }
+    result.push(...this._layoutVoiceSlurs(voice, beatMap, layout, startpos, conf))
 
     // Gotos (jumplines)
     const gotos = showJumplines
@@ -550,6 +583,112 @@ export class HarpnotesLayout {
     result.push(...annotationBackgrounds, ...repeatSigns, ...noteboundAnnotations)
 
     return result
+  }
+
+  private _layoutVoiceSlurs(
+    voice: Voice,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    conf: Confstack,
+  ): Path[] {
+    const result: Path[] = []
+    const playables = voice.entities.filter(
+      (e): e is PlayableEntity => e.type === 'Note' || e.type === 'Pause' || e.type === 'SynchPoint',
+    )
+    const firstPlayable = playables[0]
+    if (!firstPlayable) return result
+
+    const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
+    const showSlur = (conf.get('layout.SHOW_SLUR') as boolean | undefined) ?? false
+    const slurIndex = new Map<string, PlayableEntity>()
+    let tieStart: PlayableEntity = firstPlayable
+
+    for (const playable of playables) {
+      if (playable.tieEnd) {
+        result.push(...this._layoutTiePaths(tieStart, playable, beatMap, layout, startpos, bottomup))
+      }
+
+      if (playable.tieStart) {
+        tieStart = playable
+      }
+
+      for (const id of playable.slurStarts) {
+        slurIndex.set(id, playable)
+      }
+      const firstSlurStart = playable.slurStarts[0]
+      if (firstSlurStart !== undefined) {
+        slurIndex.set(firstSlurStart, playable)
+      }
+
+      if (showSlur) {
+        for (const id of playable.slurEnds) {
+          const beginSlur = slurIndex.get(id) ?? firstPlayable
+          const p1 = addPoint(playableCenter(beginSlur, beatMap, layout, startpos), [3, 0])
+          const p2 = addPoint(playableCenter(playable, beatMap, layout, startpos), [3, 0])
+          result.push({
+            type: 'Path',
+            path: makeLegacySlurPath(p1, p2),
+            fill: false,
+            color: layout.color.color_default,
+            lineWidth: layout.LINE_MEDIUM,
+            visible: true,
+          })
+        }
+      }
+    }
+
+    return result
+  }
+
+  private _layoutTiePaths(
+    tieStart: PlayableEntity,
+    playable: PlayableEntity,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    bottomup: boolean,
+  ): Path[] {
+    if (playable.type === 'SynchPoint' && tieStart.type === 'SynchPoint') {
+      return playable.notes.flatMap((note, index) => {
+        const startNote = tieStart.notes[index]
+        if (!startNote) return []
+        return [
+          this._layoutSingleTiePath(startNote, note, beatMap, layout, startpos, bottomup, playable.variant),
+        ]
+      })
+    }
+
+    return [
+      this._layoutSingleTiePath(tieStart, playable, beatMap, layout, startpos, bottomup, playable.variant),
+    ]
+  }
+
+  private _layoutSingleTiePath(
+    from: PlayableEntity,
+    to: PlayableEntity,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    bottomup: boolean,
+    variant: 0 | 1 | 2,
+  ): Path {
+    const fromCenter = playableCenter(from, beatMap, layout, startpos)
+    const toCenter = playableCenter(to, beatMap, layout, startpos)
+    const fromSize = playableSize(from, layout)
+    const toSize = playableSize(to, layout)
+    const dx = Math.max(fromSize[0], toSize[0]) + 0.5
+    const p1 = addPoint(fromCenter, [dx, -0.5])
+    const p2 = addPoint(toCenter, [dx, 0.5])
+
+    return {
+      type: 'Path',
+      path: bottomup ? makeLegacySlurPath(p2, p1) : makeLegacySlurPath(p1, p2),
+      fill: false,
+      color: variantToColor(variant, layout),
+      lineWidth: layout.LINE_THICK,
+      visible: true,
+    }
   }
 
   // ---------------------------------------------------------------------------
