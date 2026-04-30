@@ -81,6 +81,20 @@ function collectRelevantPlayables(song: Song, layoutLines: number[]): PlayableEn
   return playables
 }
 
+function collectPartStartPlayables(song: Song, layoutLines: number[]): Set<PlayableEntity> {
+  const result = new Set<PlayableEntity>()
+  for (const voiceId of layoutLines) {
+    const voice = song.voices[voiceId]
+    if (!voice) continue
+    for (const entity of voice.entities) {
+      if (entity.type === 'NewPart') {
+        result.add(entity.companion)
+      }
+    }
+  }
+  return result
+}
+
 /**
  * Gruppiert Playables nach Beat-Nummer.
  * Entspricht `group_by { |p| p.beat }` in Ruby.
@@ -172,11 +186,13 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
 
   const playables = collectRelevantPlayables(song, layoutLines)
+  const partStartPlayables = collectPartStartPlayables(song, layoutLines)
   const beats = groupByBeat(playables)
   const sortedBeats = Array.from(beats.keys()).sort((a, b) => a - b)
 
   let newbeat = 0
   let lastSize = 0
+  let breakAfterPart = false
   const result: BeatCompressionMap = {}
 
   for (const beat of sortedBeats) {
@@ -185,7 +201,9 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
     const size = beatResolution * sizeFactor
 
-    const isNewPart = notes.some(n => n.firstInPart)
+    const hasPartStart = notes.some(n => partStartPlayables.has(n))
+    const isContinuationAfterPart = breakAfterPart && !hasPartStart
+    const isNewPart = notes.some(n => n.firstInPart) || hasPartStart || isContinuationAfterPart
     const measureStart = notes.some(n => n.measureStart)
 
     let defaultIncrement = (size + lastSize) / 2
@@ -200,6 +218,7 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
 
     newbeat += increment
     result[beat] = newbeat
+    breakAfterPart = hasPartStart
   }
 
   return result

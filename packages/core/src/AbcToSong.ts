@@ -538,6 +538,13 @@ export class AbcToSong {
       }
     }
 
+    const isInternalBar = sym.bar_type?.includes(':') && sym.time - state.measureStartTime !== state.wmeasure
+    const isInternalRepeatStart = sym.bar_type?.endsWith(':') && isInternalBar
+    const isInternalVariantRepeatEnd = sym.rbstop === 2 && sym.rbstart !== 2 && isInternalBar
+    if (isInternalRepeatStart || isInternalVariantRepeatEnd) {
+      state.nextMeasure = false
+    }
+
     // Repeat end → Goto
     if (sym.bar_type && sym.bar_type.startsWith(':') && state.previousNote) {
       const repeatStart = state.repetitionStack[state.repetitionStack.length - 1]

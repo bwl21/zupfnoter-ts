@@ -1176,7 +1176,7 @@ export class HarpnotesLayout {
       style: 'dashed',
       color: variantToColor(firstNote.variant, layout),
       lineWidth: layout.LINE_THIN,
-      visible,
+      visible: visible === true,
     }
   }
 

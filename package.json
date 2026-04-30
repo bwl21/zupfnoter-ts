@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "commit:gap": "node tools/commit-gap.mjs",
     "dev": "pnpm --filter @zupfnoter/demo dev",
     "build": "pnpm -r run build",
     "test": "pnpm -r run test:unit",
