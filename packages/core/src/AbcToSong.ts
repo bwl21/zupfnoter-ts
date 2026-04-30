@@ -115,11 +115,42 @@ export class AbcToSong {
       (restpositionConfig['restposition']?.['default'] as string | undefined) ?? 'center'
 
     const voices = model.voices.map((v, idx) => this._transformVoice(v, idx, model, restpositionDefault))
+    this._propagateInlineParts(voices)
     const beatMaps = this._buildBeatMaps(voices)
     const metaData = this._extractMetaData(model)
     const harpnoteOptions = this._extractHarpnoteOptions(model)
 
     return { voices, beatMaps, metaData, harpnoteOptions }
+  }
+
+  private _propagateInlineParts(voices: Voice[]): void {
+    const parts = voices.flatMap((voice) =>
+      voice.entities.filter((entity): entity is NewPart => entity.type === 'NewPart'),
+    )
+
+    for (const part of parts) {
+      for (const voice of voices) {
+        const alreadyHasPart = voice.entities.some(
+          (entity) => entity.type === 'NewPart' && entity.beat === part.beat && entity.name === part.name,
+        )
+        if (alreadyHasPart) continue
+
+        const playableIndex = voice.entities.findIndex(
+          (entity) =>
+            (entity.type === 'Note' || entity.type === 'Pause' || entity.type === 'SynchPoint') &&
+            entity.beat === part.beat,
+        )
+        if (playableIndex === -1) continue
+
+        const companion = voice.entities[playableIndex] as PlayableEntity
+        const propagatedPart: NewPart = {
+          ...part,
+          companion,
+          znId: `${part.znId}-v${voice.index}`,
+        }
+        voice.entities.splice(playableIndex + 1, 0, propagatedPart)
+      }
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -201,8 +232,8 @@ export class AbcToSong {
     for (const entity of entities) {
       if (entity.type !== 'Pause') continue
       const pause = entity as Pause
-      const prev = pause.prevPlayable
-      const next = pause.nextPlayable
+      const prev = this._findRestpositionNeighbour(pause.prevPlayable, 'previous')
+      const next = this._findRestpositionNeighbour(pause.nextPlayable, 'next')
 
       let pitch: number
       if (mode === 'next') {
@@ -219,6 +250,17 @@ export class AbcToSong {
       }
       pause.pitch = pitch
     }
+  }
+
+  private _findRestpositionNeighbour(
+    playable: PlayableEntity | undefined,
+    direction: 'previous' | 'next',
+  ): PlayableEntity | undefined {
+    let current = playable
+    while (current?.type === 'Pause') {
+      current = direction === 'previous' ? current.prevPlayable : current.nextPlayable
+    }
+    return current
   }
 
   private _transformSymbol(
@@ -375,10 +417,11 @@ export class AbcToSong {
 
     // Chord symbols and annotations from extra
     const barMarks = this._consumePendingBarMarks(entity, state, _voiceIndex, sym)
+    const part = this._transformInlinePart(sym, entity)
     const extras = this._transformExtras(sym, entity, state, _voiceIndex)
     const gotos = this._resolvePendingVariantGotos(entity, state, _voiceIndex, sym)
 
-    return [entity, ...barMarks, ...extras, ...gotos]
+    return [entity, ...barMarks, ...(part ? [part] : []), ...extras, ...gotos]
   }
 
   // ---------------------------------------------------------------------------
@@ -439,9 +482,10 @@ export class AbcToSong {
       state.nextRepeatStart = false
     }
     const barMarks = this._consumePendingBarMarks(pause, state, voiceIndex, sym)
+    const part = this._transformInlinePart(sym, pause)
     const extras = this._transformExtras(sym, pause, state, voiceIndex)
     const gotos = this._resolvePendingVariantGotos(pause, state, voiceIndex, sym)
-    return [pause, ...barMarks, ...extras, ...gotos]
+    return [pause, ...barMarks, ...(part ? [part] : []), ...extras, ...gotos]
   }
 
   // ---------------------------------------------------------------------------
@@ -591,6 +635,28 @@ export class AbcToSong {
       name: sym.text ?? '',
     }
     return part
+  }
+
+  private _transformInlinePart(sym: AbcSymbol, companion: PlayableEntity): NewPart | null {
+    const part = sym.part
+    if (!part || typeof part !== 'object') return null
+    const partText = (part as { text?: unknown }).text
+    if (typeof partText !== 'string' || partText.length === 0) return null
+
+    return {
+      type: 'NewPart' as const,
+      beat: companion.beat,
+      time: companion.time,
+      startPos: companion.startPos,
+      endPos: companion.endPos,
+      decorations: [],
+      barDecorations: [],
+      visible: true,
+      variant: companion.variant,
+      znId: `part-${sym.istart}`,
+      companion,
+      name: partText,
+    }
   }
 
   private _resolvePendingVariantGotos(
@@ -805,19 +871,22 @@ export class AbcToSong {
 
   private _parseTuplet(sym: AbcSymbol, state: VoiceState): { tuplet: number; tupletStart: boolean; tupletEnd: boolean } {
     const tplet = (sym as Record<string, unknown>)['tplet'] as { r?: number; p?: number } | undefined
+    const inTuplet = (sym as Record<string, unknown>)['in_tuplet'] === true
 
     if (tplet) {
       // This symbol starts a new tuplet group. p = number of notes in the group.
       const groupSize = tplet.p ?? 3
       state.tupletRemaining = groupSize
+    } else if (inTuplet && state.tupletRemaining <= 0) {
+      state.tupletRemaining = 3
     }
 
     if (state.tupletRemaining <= 0) {
       return { tuplet: 1, tupletStart: false, tupletEnd: false }
     }
 
-    const tuplet = tplet ? (tplet.p ?? 3) : state.tupletRemaining
-    const tupletStart = tplet !== undefined
+    const tuplet = tplet ? (tplet.p ?? 3) : 3
+    const tupletStart = tplet !== undefined || (inTuplet && state.tupletRemaining === 3)
     state.tupletRemaining--
     const tupletEnd = state.tupletRemaining === 0
 

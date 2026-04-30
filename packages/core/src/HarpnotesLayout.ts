@@ -277,6 +277,130 @@ function rotatePoint(point: [number, number], angle: number): [number, number] {
   return [x * cos - y * sin, x * sin + y * cos]
 }
 
+interface AnnotatedBezierOptions {
+  cp1: [number, number]
+  cp2: [number, number]
+  pos: [number, number]
+  shape: string[]
+  show: boolean
+}
+
+const DEFAULT_TUPLET_OPTIONS: AnnotatedBezierOptions = {
+  cp1: [5, 2],
+  cp2: [5, -2],
+  pos: [0, 0],
+  shape: ['c'],
+  show: true,
+}
+
+const DEFAULT_FLOWLINE_OPTIONS: AnnotatedBezierOptions = {
+  cp1: [0, 10],
+  cp2: [0, -10],
+  pos: [0, 0],
+  shape: ['c'],
+  show: true,
+}
+
+function normalizePoint(value: unknown, fallback: [number, number]): [number, number] {
+  if (
+    Array.isArray(value) &&
+    typeof value[0] === 'number' &&
+    typeof value[1] === 'number'
+  ) {
+    return [value[0], value[1]]
+  }
+  return fallback
+}
+
+function normalizeStringArray(value: unknown, fallback: string[]): string[] {
+  if (Array.isArray(value) && value.every((entry) => typeof entry === 'string')) {
+    return value
+  }
+  return fallback
+}
+
+function mergeAnnotatedBezierOptions(
+  defaults: AnnotatedBezierOptions,
+  override: unknown,
+): AnnotatedBezierOptions {
+  if (override === undefined || override === null || typeof override !== 'object') return defaults
+  const values = override as Record<string, unknown>
+  return {
+    cp1: normalizePoint(values['cp1'], defaults.cp1),
+    cp2: normalizePoint(values['cp2'], defaults.cp2),
+    pos: normalizePoint(values['pos'], defaults.pos),
+    shape: normalizeStringArray(values['shape'], defaults.shape),
+    show: typeof values['show'] === 'boolean' ? values['show'] : defaults.show,
+  }
+}
+
+function midpoint(a: [number, number], b: [number, number]): [number, number] {
+  return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]
+}
+
+function scalePoint(point: [number, number], factor: number): [number, number] {
+  return [point[0] * factor, point[1] * factor]
+}
+
+function normalizeVector(point: [number, number]): [number, number] {
+  const length = Math.hypot(point[0], point[1])
+  if (length === 0) return [0, 0]
+  return [point[0] / length, point[1] / length]
+}
+
+function cubicPoint(
+  p1: [number, number],
+  cp1: [number, number],
+  cp2: [number, number],
+  delta: [number, number],
+  t: number,
+): [number, number] {
+  const u = 1 - t
+  return [
+    p1[0] + 3 * u * u * t * cp1[0] + 3 * u * t * t * cp2[0] + t * t * t * delta[0],
+    p1[1] + 3 * u * u * t * cp1[1] + 3 * u * t * t * cp2[1] + t * t * t * delta[1],
+  ]
+}
+
+function makeAnnotatedBezierPath(
+  p1: [number, number],
+  p2: [number, number],
+  options: AnnotatedBezierOptions,
+): { path: [number, number][]; anchor: [number, number] } {
+  const delta = subtractPoint(p2, p1)
+  const angle = Math.atan2(delta[1], delta[0])
+  const cp1 = rotatePoint(rotatePoint(options.cp1, angle), -Math.PI * 0.5)
+  const cp2 = addPoint(delta, rotatePoint(rotatePoint(options.cp2, angle), -Math.PI * 0.5))
+
+  const cpa1 = addPoint(p1, cp1)
+  const cpa2 = addPoint(p1, cp2)
+  const cpm1 = midpoint(p1, cpa1)
+  const cpm2 = midpoint(p2, cpa2)
+  const cpmm = midpoint(cpa1, cpa2)
+  const cpmm1 = midpoint(cpm1, cpmm)
+  const cpmm2 = midpoint(cpm2, cpmm)
+  const tangent = subtractPoint(cpmm1, cpmm2)
+  const normal = tangent[0] === 0 && tangent[1] === 0
+    ? [0, 0] as [number, number]
+    : normalizeVector([-tangent[1], tangent[0]])
+  const baseAnchor = cpa1[0] <= p1[0] && p1[0] <= p2[0]
+    ? addPoint(midpoint(cpmm1, cpmm2), addPoint(scalePoint(normal, -2), [-2, -2]))
+    : addPoint(midpoint(cpmm1, cpmm2), addPoint(scalePoint(normal, 2), [0, -2]))
+  const anchor = addPoint(baseAnchor, options.pos)
+
+  const path: [number, number][] = []
+  if (options.shape.includes('c')) {
+    for (let i = 0; i <= 12; i++) {
+      path.push(cubicPoint(p1, cp1, cp2, delta, i / 12))
+    }
+  }
+  if (options.shape.includes('l')) {
+    path.push(p1, cpa1, cpa2, p2)
+  }
+
+  return { path, anchor }
+}
+
 function makeLegacySlurPath(p1: [number, number], p2: [number, number]): [number, number][] {
   const delta = subtractPoint(p2, p1)
   const length = Math.hypot(delta[0], delta[1])
@@ -323,7 +447,7 @@ export class HarpnotesLayout {
     const { activeVoices, voiceElements, beatMaps } = this._layoutVoices(song, conf)
 
     // 3. Synchlines
-    const resSynchLines = this._layoutSynchLines(song, beatMaps, conf)
+    const resSynchLines = this._layoutSynchLines(song, beatMaps, conf, activeVoices)
 
     // 4. Legend
     const resLegend = this._layoutLegend(song.metaData, conf, extractNr)
@@ -383,13 +507,13 @@ export class HarpnotesLayout {
     const flowlineVoices = new Set((conf.get('extract.flowlines') as number[] | undefined) ?? [])
     const subflowlineVoices = new Set((conf.get('extract.subflowlines') as number[] | undefined) ?? [])
     const jumplineVoices = new Set((conf.get('extract.jumplines') as number[] | undefined) ?? [])
-    const layoutlineVoices = (conf.get('extract.layoutlines') as number[] | undefined) ?? activeVoiceNrs
+    const layoutlineVoices = (conf.get('extract.layoutlines') as number[] | undefined) ?? []
     const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
 
     // Compute beat compression for all layout voices.
     // layoutlineVoices contains 1-based voice numbers (from config);
     // computeBeatCompression expects 0-based indices into song.voices.
-    const layoutlineIndices = layoutlineVoices.map(v => v - 1)
+    const layoutlineIndices = Array.from(new Set([...activeVoiceNrs, ...layoutlineVoices])).map(v => v - 1)
     const beatCompressionMap = applyLegacyBeatSpread(
       computeBeatCompression(song, layoutlineIndices, conf),
       layout,
@@ -535,7 +659,7 @@ export class HarpnotesLayout {
         const note = entity as Note
         const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note))
         playableElements.push(drawable)
-        if (note.measureStart || note.decorations.includes('fermata')) {
+        if ((note.measureStart && !this._isLegacyVariantLeadInMeasureStart(note)) || note.decorations.includes('fermata')) {
           playableElements.push(this._layoutMeasureBarover(drawable, layout))
         }
         const noteDecorations = this._layoutDecorations(note, drawable, layout, voiceNr, conf)
@@ -546,7 +670,7 @@ export class HarpnotesLayout {
         const glyph = this._layoutPause(pause, beatMap, layout, startpos, visibleByPlayable.get(pause))
         if (glyph) {
           playableElements.push(glyph)
-          if (pause.measureStart) {
+          if (pause.measureStart && !this._isLegacyVariantLeadInMeasureStart(pause)) {
             playableElements.push(this._layoutMeasureBarover(glyph, layout))
           }
           const pauseDecorations = this._layoutDecorations(pause, glyph, layout, voiceNr, conf)
@@ -556,10 +680,12 @@ export class HarpnotesLayout {
       } else if (entity.type === 'SynchPoint') {
         const sp = entity as SynchPoint
         let decorationRoot: Ellipse | null = null
+        const synchLine = this._layoutSynchPointLine(sp, beatMap, layout, startpos, visibleByPlayable.get(sp))
+        if (synchLine) playableElements.push(synchLine)
         for (const note of sp.notes) {
           const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(sp))
           playableElements.push(drawable)
-          if (note.measureStart) {
+          if (note.measureStart && !this._isLegacyVariantLeadInMeasureStart(note)) {
             playableElements.push(this._layoutMeasureBarover(drawable, layout))
           }
           decorationRoot ??= drawable
@@ -576,7 +702,16 @@ export class HarpnotesLayout {
 
     // Flowlines
     if (showFlowlines) {
-      result.push(...this._layoutVoiceFlowlines(voice, beatMap, layout, startpos, 'solid', visibleByPlayable))
+      result.push(...this._layoutVoiceFlowlines(
+        voice,
+        beatMap,
+        layout,
+        startpos,
+        voiceNr,
+        conf,
+        'solid',
+        visibleByPlayable,
+      ))
     }
     if (showSubflowlines) {
       result.push(...this._layoutVoiceFlowlines(
@@ -584,6 +719,8 @@ export class HarpnotesLayout {
         beatMap,
         layout,
         startpos,
+        voiceNr,
+        conf,
         'dotted',
         visibleByPlayable,
         synchedPlayables,
@@ -597,7 +734,7 @@ export class HarpnotesLayout {
       : []
 
     // Tuplets
-    result.push(...this._layoutVoiceTuplets(voice, beatMap, layout, startpos))
+    result.push(...this._layoutVoiceTuplets(voice, beatMap, layout, startpos, voiceNr, conf))
     result.push(...playableElements)
 
     const { barnumberBackgrounds, barnumbers, countnoteBackgrounds, countnotes } = this._layoutBarnumbersCountnotes(
@@ -617,10 +754,11 @@ export class HarpnotesLayout {
 
     const repeatSigns = this._layoutVoiceRepeatSigns(voice, beatMap, layout, startpos, voiceNr, conf)
     const noteboundAnnotations = this._layoutVoiceNoteboundAnnotations(voice, beatMap, layout, startpos, voiceNr, conf)
-    const annotationBackgrounds = [...repeatSigns, ...noteboundAnnotations].map((annotation) => (
+    const orderedAnnotations = [...noteboundAnnotations, ...repeatSigns]
+    const annotationBackgrounds = orderedAnnotations.map((annotation) => (
       this._annotationBackground(annotation, 'left', layout, 0.5)
     ))
-    result.push(...annotationBackgrounds, ...repeatSigns, ...noteboundAnnotations)
+    result.push(...annotationBackgrounds, ...orderedAnnotations)
 
     return result
   }
@@ -948,34 +1086,98 @@ export class HarpnotesLayout {
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
+    voiceNr: number,
+    conf: Confstack,
     style: 'solid' | 'dotted',
     visibleByPlayable: Map<PlayableEntity, boolean>,
     synchedPlayables?: Set<PlayableEntity>,
-  ): FlowLine[] {
-    const result: FlowLine[] = []
+  ): DrawableElement[] {
+    const result: DrawableElement[] = []
     const playables = voice.entities.filter(
       (e): e is PlayableEntity => e.type === 'Note' || e.type === 'Pause' || e.type === 'SynchPoint',
+    )
+    const noteBoundPlayables = new Set(
+      voice.entities
+        .filter((e): e is NoteBoundAnnotation => e.type === 'NoteBoundAnnotation')
+        .map((e) => e.companion),
     )
 
     let prev: PlayableEntity | null = null
     for (const curr of playables) {
       if (prev && !curr.firstInPart && !synchedPlayables?.has(curr)) {
-        const [fromX, fromY] = playableCenter(prev, beatMap, layout, startpos)
-        const [toX, toY] = playableCenter(curr, beatMap, layout, startpos)
+        if (this._skipLegacyFlowline(prev, curr, style, noteBoundPlayables)) {
+          prev = curr
+          continue
+        }
 
-        result.push({
-          type: 'FlowLine',
-          from: [fromX, fromY],
-          to: [toX, toY],
-          style,
-          color: layout.color.color_default,
-          lineWidth: layout.LINE_THIN,
-          visible: (visibleByPlayable.get(curr) ?? curr.visible) && (visibleByPlayable.get(prev) ?? prev.visible),
-        })
+        const from = playableCenter(prev, beatMap, layout, startpos)
+        const to = playableCenter(curr, beatMap, layout, startpos)
+        const visible = (visibleByPlayable.get(curr) ?? curr.visible) && (visibleByPlayable.get(prev) ?? prev.visible)
+        const override = conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.znId}`)
+          ?? conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.time}`)
+
+        if (override !== undefined) {
+          const options = mergeAnnotatedBezierOptions(DEFAULT_FLOWLINE_OPTIONS, override)
+          if (options.show) {
+            result.push({
+              type: 'Path',
+              path: makeAnnotatedBezierPath(from, to, options).path,
+              fill: false,
+              color: layout.color.color_default,
+              lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
+              visible,
+            })
+          }
+        } else {
+          result.push({
+            type: 'FlowLine',
+            from,
+            to,
+            style,
+            color: layout.color.color_default,
+            lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
+            visible,
+          })
+        }
       }
       prev = curr
     }
     return result
+  }
+
+  private _skipLegacyFlowline(
+    prev: PlayableEntity,
+    curr: PlayableEntity,
+    style: 'solid' | 'dotted',
+    noteBoundPlayables: Set<PlayableEntity>,
+  ): boolean {
+    if (style !== 'solid') return false
+    if (curr.type === 'Pause') {
+      return prev.type === 'Pause' && curr.duration < prev.duration && !noteBoundPlayables.has(curr)
+    }
+    return curr.measureStart === true && prev.variant !== curr.variant
+  }
+
+  private _layoutSynchPointLine(
+    synchPoint: SynchPoint,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    visible: boolean | undefined,
+  ): FlowLine | null {
+    const firstNote = synchPoint.notes[0]
+    const lastNote = synchPoint.notes[synchPoint.notes.length - 1]
+    if (!firstNote || !lastNote || firstNote === lastNote) return null
+
+    return {
+      type: 'FlowLine',
+      from: playableCenter(firstNote, beatMap, layout, startpos),
+      to: playableCenter(lastNote, beatMap, layout, startpos),
+      style: 'dashed',
+      color: variantToColor(firstNote.variant, layout),
+      lineWidth: layout.LINE_THIN,
+      visible,
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -1144,6 +1346,8 @@ export class HarpnotesLayout {
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
+    voiceNr: number,
+    conf: Confstack,
   ): DrawableElement[] {
     const result: DrawableElement[] = []
     const playables = voice.entities.filter(
@@ -1159,35 +1363,40 @@ export class HarpnotesLayout {
         tupletNum = p.tuplet
       }
       if (p.tupletEnd && tupletStart) {
-        const [x1, y1] = playableCenter(tupletStart, beatMap, layout, startpos)
-        const [x2, y2] = playableCenter(p, beatMap, layout, startpos)
-        const bracketY = Math.min(y1, y2) - 3
+        const override = conf.get(`extract.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}`)
+          ?? conf.get(`extract.notebound.tuplet.v_${voiceNr}.${tupletStart.time}`)
+        const options = mergeAnnotatedBezierOptions(DEFAULT_TUPLET_OPTIONS, override)
 
-        // Bracket path
-        result.push({
-          type: 'Path',
-          path: [
-            [x1, y1 - 2],
-            [x1, bracketY],
-            [x2, bracketY],
-            [x2, y2 - 2],
-          ],
-          fill: false,
-          color: layout.color.color_default,
-          lineWidth: layout.LINE_THIN,
-          visible: true,
-        })
+        if (options.show) {
+          const p1 = playableCenter(tupletStart, beatMap, layout, startpos)
+          const p2 = playableCenter(p, beatMap, layout, startpos)
+          const { path, anchor } = makeAnnotatedBezierPath(p1, p2, options)
+          const configuredText = conf.get('extract.tuplets.text')
+          const text = (
+            typeof configuredText === 'string'
+              ? configuredText
+              : String(tupletNum)
+          ).replaceAll('{{tuplet}}', String(tupletNum))
+          const configuredStyle = conf.get('extract.tuplets.style')
 
-        // Tuplet number annotation
-        result.push({
-          type: 'Annotation',
-          center: [(x1 + x2) / 2, bracketY - 1],
-          text: String(tupletNum),
-          style: 'smaller',
-          color: layout.color.color_default,
-          lineWidth: layout.LINE_THIN,
-          visible: true,
-        })
+          result.push({
+            type: 'Path',
+            path,
+            fill: false,
+            color: layout.color.color_default,
+            lineWidth: layout.LINE_THIN,
+            visible: true,
+          })
+          result.push({
+            type: 'Annotation',
+            center: anchor,
+            text,
+            style: typeof configuredStyle === 'string' ? configuredStyle : 'small',
+            color: layout.color.color_default,
+            lineWidth: layout.LINE_THIN,
+            visible: true,
+          })
+        }
 
         tupletStart = null
       }
@@ -1204,14 +1413,17 @@ export class HarpnotesLayout {
     song: Song,
     beatMaps: Map<number, BeatCompressionMap>,
     conf: Confstack,
+    activeVoiceNrs: number[],
   ): FlowLine[] {
     const result: FlowLine[] = []
     const layout = this._config.layout
     const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
     const synchlinePairs = (conf.get('extract.synchlines') as number[][] | undefined) ?? []
+    const activeVoices = new Set(activeVoiceNrs)
 
     for (const [v1Nr, v2Nr] of synchlinePairs) {
       if (v1Nr === undefined || v2Nr === undefined) continue
+      if (!activeVoices.has(v1Nr) || !activeVoices.has(v2Nr)) continue
       const voice1 = song.voices[v1Nr - 1]
       const voice2 = song.voices[v2Nr - 1]
       if (!voice1 || !voice2) continue
@@ -1243,7 +1455,7 @@ export class HarpnotesLayout {
         result.push({
           type: 'FlowLine',
           from: playableCenter(p1, beatMap1, layout, startpos),
-          to:   playableCenter(p2, beatMap2, layout, startpos),
+          to: playableCenter(p2, beatMap2, layout, startpos),
           style: 'dashed',
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
@@ -1550,11 +1762,13 @@ export class HarpnotesLayout {
     const barnumberVoices = new Set((conf.get('extract.barnumbers.voices') as number[] | undefined) ?? [])
     const countnoteVoices = new Set((conf.get('extract.countnotes.voices') as number[] | undefined) ?? [])
     let measureStartBeat: number | null = null
+    let skippedBarnumberMeasureStarts = 0
 
     for (const entity of voice.entities) {
       if (entity.type !== 'Note' && entity.type !== 'Pause' && entity.type !== 'SynchPoint') continue
       const playable = entity as PlayableEntity
-      if (playable.measureStart || measureStartBeat === null) {
+      const skipBarnumberMeasureStart = this._isLegacyVariantLeadInMeasureStart(playable)
+      if ((playable.measureStart && !skipBarnumberMeasureStart) || measureStartBeat === null) {
         measureStartBeat = playable.beat
       }
 
@@ -1573,18 +1787,26 @@ export class HarpnotesLayout {
           visible: playable.visible,
         }
         const side = this._countnoteSide(playable, voiceNr, conf)
-        countnoteBackgrounds.push(this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05))
+        if (countnoteText !== 'e') {
+          countnoteBackgrounds.push(this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05))
+        }
         countnotes.push(annotation)
       }
 
-      if (barnumberVoices.has(voiceNr) && playable.measureStart && playable.measureCount) {
+      if (
+        barnumberVoices.has(voiceNr) &&
+        playable.measureStart &&
+        playable.measureCount &&
+        !skipBarnumberMeasureStart
+      ) {
         const offset = this._barnumberOffset(playable, layout, voiceNr, conf)
         const side = this._barnumberSide(playable, voiceNr, conf)
+        const barnumber = playable.measureCount - skippedBarnumberMeasureStarts
 
         const annotation: Annotation = {
           type: 'Annotation',
           center: [x + offset[0], y + offset[1]],
-          text: `${(conf.get('extract.barnumbers.prefix') as string | undefined) ?? ''}${playable.measureCount}`,
+          text: `${(conf.get('extract.barnumbers.prefix') as string | undefined) ?? ''}${barnumber}`,
           style: (conf.get('extract.barnumbers.style') as string | undefined) ?? 'small_bold',
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
@@ -1593,9 +1815,21 @@ export class HarpnotesLayout {
         barnumberBackgrounds.push(this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, 0.2))
         barnumbers.push(annotation)
       }
+
+      if (skipBarnumberMeasureStart) {
+        skippedBarnumberMeasureStarts += 1
+      }
     }
 
     return { barnumberBackgrounds, barnumbers, countnoteBackgrounds, countnotes }
+  }
+
+  private _isLegacyVariantLeadInMeasureStart(playable: PlayableEntity): boolean {
+    return Boolean(
+      playable.measureStart &&
+      playable.duration < 32 &&
+      playable.nextPlayable?.measureStart,
+    )
   }
 
   private _countnoteText(
@@ -1922,7 +2156,16 @@ export class HarpnotesLayout {
   ): Annotation[] {
     const result: Annotation[] = []
 
-    for (const entity of voice.entities) {
+    const annotationEntities = voice.entities
+      .filter((entity): entity is NoteBoundAnnotation | NewPart =>
+        entity.type === 'NoteBoundAnnotation' || entity.type === 'NewPart',
+      )
+      .sort((a, b) => {
+        if (a.type === b.type) return 0
+        return a.type === 'NewPart' ? -1 : 1
+      })
+
+    for (const entity of annotationEntities) {
       if (entity.type !== 'NoteBoundAnnotation' && entity.type !== 'NewPart') continue
 
       const companion = entity.companion
@@ -1937,6 +2180,7 @@ export class HarpnotesLayout {
 
       if (entity.type === 'NoteBoundAnnotation') {
         const annotation = entity as NoteBoundAnnotation
+        if (annotation.text.length === 0) continue
         text = annotation.text
         style = annotation.style
         offset = annotation.position

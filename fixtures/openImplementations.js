@@ -18,15 +18,6 @@ const OPEN_IMPLEMENTATIONS = [
         prompt: 'Investigate the remaining composite sheet parity in 3015_reference_sheet and 783_einsiedler-kreuzweg, classify the concrete flowline/countnote/tuplet/variant-ending mismatches with the sheet legacy comparison tests, implement the remaining behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
     },
     {
-        id: 'sheet.pause-beat-spacing',
-        stage: 'sheet',
-        scope: 'legacy beat compression for short notes and rests',
-        summary: 'The pause fixture still differs in vertical placement for mixed short notes and rests.',
-        refs: ['packages/core/src/HarpnotesLayout.ts', 'packages/core/src/BeatPacker.ts'],
-        fixtures: ['pause'],
-        prompt: 'Investigate legacy beat compression and vertical placement parity in the pause fixture, reproduce with the sheet legacy comparison test, implement the remaining spacing behavior, then remove this id from fixtures/openImplementations.ts.',
-    },
-    {
         id: 'sheet.tuplet-layout',
         stage: 'sheet',
         scope: 'legacy tuplet bracket and number layout',

@@ -40,6 +40,12 @@ export function buildConfstack(
   // Schicht 2: Basis-Extrakt (extract.0), wenn wir nicht bereits Extrakt 0 sind
   if (extractKey !== '0' && baseExtract) {
     stack.push(extractToLayer(baseExtract))
+    if (baseExtract.printer) {
+      stack.push({ printer: baseExtract.printer as unknown as ConfigObject })
+    }
+    if (baseExtract.layout) {
+      stack.push({ layout: baseExtract.layout as unknown as ConfigObject })
+    }
   }
 
   // Schicht 3: Ziel-Extrakt (ohne layout/printer-Overrides)
