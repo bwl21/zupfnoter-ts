@@ -37,6 +37,8 @@ import { requireDefined } from './requireDefined.js'
 const ABC2SVG_DURATION_FACTOR = 1536
 const INVALID_REMARK_ZNID_MESSAGE = 'illegal character in [r:] (must be of [a-z][a-z0.9_])'
 const REMARK_ZNID_PATTERN = /^[a-z][a-zA-Z0-9_]*$/
+const COUNT_NAMES: Array<string | number> = Array.from({ length: 32 }, (_, index) => index + 1)
+  .flatMap((count) => [count, 'e', 'u', 'e'])
 
 // ---------------------------------------------------------------------------
 // Internal state per voice transformation
@@ -47,6 +49,7 @@ interface VoiceState {
   tieStarted: boolean
   measureCount: number
   measureStartTime: number
+  countBy: number | null
   wmeasure: number
   nextMeasure: boolean
   nextRepeatStart: boolean
@@ -71,12 +74,13 @@ interface VoiceState {
   partTable: Record<number, string>
 }
 
-function createVoiceState(wmeasure: number): VoiceState {
+function createVoiceState(wmeasure: number, countBy: number | null): VoiceState {
   return {
     variantNo: 0,
     tieStarted: false,
     measureCount: 0,
     measureStartTime: 0,
+    countBy,
     wmeasure,
     nextMeasure: false,
     nextRepeatStart: false,
@@ -174,7 +178,8 @@ export class AbcToSong {
 
   private _transformVoice(voice: AbcVoice, voiceIndex: number, model: AbcModel, restpositionDefault = 'center'): Voice {
     const wmeasure = voice.voice_properties.meter.wmeasure
-    const state = createVoiceState(wmeasure)
+    const countBy = voice.voice_properties.meter.a_meter[0]?.bot ?? null
+    const state = createVoiceState(wmeasure, countBy)
     this._currentState = state
 
     this._investigateFirstBar(voice, state, model)
@@ -331,7 +336,6 @@ export class AbcToSong {
     const decorations = this._parseDecorations(sym)
     const { tuplet, tupletStart, tupletEnd } = this._parseTuplet(sym, state)
     const lyrics = this._parseLyrics(sym)
-    const countNote = null
 
     const measureStart = state.nextMeasure
     if (state.nextMeasure) {
@@ -339,6 +343,7 @@ export class AbcToSong {
       state.measureStartTime = sym.time
       state.nextMeasure = false
     }
+    const countNote = this._transformCountNote(sym, sym.dur ?? notes[0]?.dur ?? 384, state)
 
     const mappedNotes: Note[] = notes.map((n) => ({
       type: 'Note' as const,
@@ -461,6 +466,7 @@ export class AbcToSong {
       state.measureStartTime = sym.time
       state.nextMeasure = false
     }
+    const countNote = this._transformCountNote(sym, sym.dur ?? 384, state)
 
     const pause: Pause = {
       type: 'Pause' as const,
@@ -488,7 +494,7 @@ export class AbcToSong {
       jumpEnds: [],
       slurStarts: [],
       slurEnds: [],
-      countNote: null,
+      countNote,
       lyrics: this._parseLyrics(sym),
       invisible: sym.invis ?? sym.invisible ?? false,
     }
@@ -894,6 +900,36 @@ export class AbcToSong {
   /** Convert abc2svg time position to beat */
   private _timeToBeat(time: number): number {
     return Math.round((time * this._beatResolution) / ABC2SVG_DURATION_FACTOR)
+  }
+
+  private _transformCountNote(sym: AbcSymbol, rawDuration: number, state: VoiceState): string {
+    if (state.countBy === null) return 'x'
+
+    const countBase = ABC2SVG_DURATION_FACTOR / state.countBy
+    const countStart = (4 * (sym.time - state.measureStartTime)) / countBase
+    const countEnd = countStart + (4 * rawDuration) / countBase
+
+    if (!Number.isInteger(countStart) || !Number.isInteger(countEnd)) {
+      return Number.isInteger(countStart) ? 'tra' : 'la'
+    }
+
+    let countRange = ''
+    for (let index = countStart; index < countEnd; index++) {
+      countRange += COUNT_NAMES[index] ?? ''
+    }
+
+    countRange = countRange.replace(/(\d+)/g, '<$1>')
+
+    const replaceMap: Array<[RegExp, string]> = [
+      [/^<\d+>.*eue$/, 'eue'],
+      [/^u.*$/, 'e'],
+    ]
+    const replacement = replaceMap.find(([pattern]) => pattern.test(countRange))
+    if (replacement) {
+      countRange = countRange.replace(replacement[1], '')
+    }
+
+    return (countRange.match(/<\d+>|[eu]/g) ?? []).join('-').replace(/[<>]/g, '')
   }
 
   /** Convert character offset to [line, column] (1-based) */

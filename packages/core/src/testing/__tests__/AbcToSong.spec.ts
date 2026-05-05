@@ -5,6 +5,7 @@
  * Tests the full ABC → Song transformation for the minimal fixtures.
  */
 import { describe, it, expect } from 'vitest'
+import type { AbcModel } from '../../AbcModel.js'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { defaultTestConfig } from '../defaultConfig.js'
@@ -14,6 +15,52 @@ function transform(abcText: string) {
   const model = parser.parse(abcText)
   const transformer = new AbcToSong()
   return transformer.transform(model, defaultTestConfig)
+}
+
+function transformWithoutCountBy(abcText: string) {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const voice = model.voices[0]
+  if (voice) {
+    voice.voice_properties.meter.a_meter = []
+  }
+  const transformer = new AbcToSong()
+  return transformer.transform(model, defaultTestConfig)
+}
+
+function transformRawDuration(rawDuration: number) {
+  const musicTypes = Array.from({ length: 18 }, () => '')
+  musicTypes[8] = 'note'
+  const model: AbcModel = {
+    voices: [{
+      voice_properties: {
+        id: 'V1',
+        meter: { wmeasure: 1536, a_meter: [{ bot: 4, top: 4 }] },
+        key: {},
+      },
+      symbols: [{
+        type: 8,
+        time: 0,
+        dur: rawDuration,
+        istart: 0,
+        iend: 1,
+        notes: [{ midi: 60, dur: rawDuration }],
+      }],
+    }],
+    music_types: musicTypes,
+    music_type_ids: { note: 8 },
+    info: {},
+    checksum: '',
+  }
+  const transformer = new AbcToSong()
+  return transformer.transform(model, defaultTestConfig)
+}
+
+function countFromRawDuration(rawDuration: number): string | null | undefined {
+  return transformRawDuration(rawDuration)
+    .voices[0]?.entities
+    .find((entity) => entity.type === 'Note')
+    ?.countNote
 }
 
 // ---------------------------------------------------------------------------
@@ -258,5 +305,67 @@ V:V1 clef=treble-8
     const notes = song.voices[0]!.entities.filter((e) => e.type === 'Note')
     const tieEnd = notes.find((n) => n.type === 'Note' && n.tieEnd)
     expect(tieEnd).toBeDefined()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// countNote
+// ---------------------------------------------------------------------------
+
+describe('AbcToSong – countNote', () => {
+  it('matches legacy count strings for regular durations', () => {
+    expect(countFromRawDuration(384)).toBe('1')
+    expect(countFromRawDuration(192)).toBe('1-e')
+    expect(countFromRawDuration(288)).toBe('1-e-u')
+  })
+
+  it('applies countNote to Note, SynchPoint and Pause', () => {
+    const song = transform(`X:1
+T:Count Note Entity Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] | [CE] z C |]
+`)
+    const synchPoint = song.voices[0]?.entities.find((entity) => entity.type === 'SynchPoint')
+    const pause = song.voices[0]?.entities.find((entity) => entity.type === 'Pause')
+    const note = song.voices[0]?.entities.find((entity) => entity.type === 'Note')
+
+    expect(synchPoint?.countNote).toBe('1')
+    expect(pause?.countNote).toBe('2')
+    expect(note?.countNote).toBe('3')
+  })
+
+  it('uses tra/la for tuplet counts', () => {
+    const song = transform(`X:1
+T:Tuplet Count Note Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] | (3 C D E |]
+`)
+    const notes = song.voices[0]?.entities.filter((entity) => entity.type === 'Note') ?? []
+
+    expect(notes[0]?.countNote).toBe('tra')
+    expect(notes[1]?.countNote).toBe('la')
+  })
+
+  it('uses x when meter count base is missing', () => {
+    const song = transformWithoutCountBy(`X:1
+T:Missing Count Base Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] C |]
+`)
+    const note = song.voices[0]?.entities.find((entity) => entity.type === 'Note')
+
+    expect(note?.countNote).toBe('x')
   })
 })
