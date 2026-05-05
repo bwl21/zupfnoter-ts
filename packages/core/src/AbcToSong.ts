@@ -62,6 +62,10 @@ interface VoiceState {
   variantSectionNo: 0 | 1 | 2
   pendingVariantEndingText: string | null
   pendingVariantEndingDuration: number | null
+  /** Ruby-compatible [r:] remark lookup by voice_element[:time]. */
+  remarkTable: Record<number, string>
+  /** Ruby-compatible P: part lookup by voice_element[:time]. */
+  partTable: Record<number, string>
 }
 
 function createVoiceState(wmeasure: number): VoiceState {
@@ -87,6 +91,8 @@ function createVoiceState(wmeasure: number): VoiceState {
     variantSectionNo: 0,
     pendingVariantEndingText: null,
     pendingVariantEndingDuration: null,
+    remarkTable: {},
+    partTable: {},
   }
 }
 
@@ -98,6 +104,7 @@ export class AbcToSong {
   private _beatResolution = 192
   private _shortestNote = 64
   private _config: ZupfnoterConfig | null = null
+  private _currentState: VoiceState | null = null
 
   /**
    * Transform an AbcModel into a Song.
@@ -160,6 +167,7 @@ export class AbcToSong {
   private _transformVoice(voice: AbcVoice, voiceIndex: number, model: AbcModel, restpositionDefault = 'center'): Voice {
     const wmeasure = voice.voice_properties.meter.wmeasure
     const state = createVoiceState(wmeasure)
+    this._currentState = state
 
     this._investigateFirstBar(voice, state, model)
 
@@ -180,6 +188,7 @@ export class AbcToSong {
 
     // Setze Pause-Pitch basierend auf restposition-Konfiguration
     this._applyRestposition(entities, restpositionDefault)
+    this._currentState = null
 
     return {
       index: voiceIndex,
@@ -288,6 +297,7 @@ export class AbcToSong {
       case 'yspace':
       case 'block':
       case 'remark':
+        return this._transformRemark(sym, state)
       case 'grace':
         return null
       default:
@@ -417,7 +427,7 @@ export class AbcToSong {
 
     // Chord symbols and annotations from extra
     const barMarks = this._consumePendingBarMarks(entity, state, _voiceIndex, sym)
-    const part = this._transformInlinePart(sym, entity)
+    const part = this._transformPartAnnotation(sym, entity, state) ?? this._transformInlinePart(sym, entity)
     const extras = this._transformExtras(sym, entity, state, _voiceIndex)
     const gotos = this._resolvePendingVariantGotos(entity, state, _voiceIndex, sym)
 
@@ -471,7 +481,7 @@ export class AbcToSong {
       slurStarts: [],
       slurEnds: [],
       countNote: null,
-      lyrics: null,
+      lyrics: this._parseLyrics(sym),
       invisible: sym.invis ?? sym.invisible ?? false,
     }
 
@@ -482,7 +492,7 @@ export class AbcToSong {
       state.nextRepeatStart = false
     }
     const barMarks = this._consumePendingBarMarks(pause, state, voiceIndex, sym)
-    const part = this._transformInlinePart(sym, pause)
+    const part = this._transformPartAnnotation(sym, pause, state) ?? this._transformInlinePart(sym, pause)
     const extras = this._transformExtras(sym, pause, state, voiceIndex)
     const gotos = this._resolvePendingVariantGotos(pause, state, voiceIndex, sym)
     return [pause, ...barMarks, ...(part ? [part] : []), ...extras, ...gotos]
@@ -625,23 +635,36 @@ export class AbcToSong {
   // ---------------------------------------------------------------------------
 
   private _transformPart(sym: AbcSymbol, state: VoiceState): VoiceEntity | null {
-    if (!state.previousNote) return null
+    // Mirrors Ruby: part markers are stored by time and attached to the same-time playable.
+    state.partTable[sym.time] = sym.text ?? ''
+    return null
+  }
 
-    const part: NewPart = {
+  private _transformRemark(sym: AbcSymbol, state: VoiceState): VoiceEntity | null {
+    // Mirrors Ruby: [r:] remarks override the generated znId by voice_element[:time].
+    state.remarkTable[sym.time] = sym.text ?? ''
+    return null
+  }
+
+  private _transformPartAnnotation(sym: AbcSymbol, companion: PlayableEntity, state: VoiceState): NewPart | null {
+    if (!Object.prototype.hasOwnProperty.call(state.partTable, sym.time)) return null
+    const partText = state.partTable[sym.time]
+    if (typeof partText !== 'string') return null
+
+    return {
       type: 'NewPart' as const,
-      beat: this._timeToBeat(sym.time),
-      time: sym.time,
-      startPos: this._charposToLineCol(sym.istart),
-      endPos: this._charposToLineCol(sym.iend),
+      beat: companion.beat,
+      time: companion.time,
+      startPos: companion.startPos,
+      endPos: companion.endPos,
       decorations: [],
       barDecorations: [],
       visible: true,
-      variant: state.variantNo,
-      znId: `part-${sym.istart}`,
-      companion: state.previousNote,
-      name: sym.text ?? '',
+      variant: companion.variant,
+      znId: `part-${sym.time}`,
+      companion,
+      name: partText,
     }
-    return part
   }
 
   private _transformInlinePart(sym: AbcSymbol, companion: PlayableEntity): NewPart | null {
@@ -859,8 +882,14 @@ export class AbcToSong {
     return [1, 1]
   }
 
-  private _makeZnId(sym: AbcSymbol, voiceIndex: number): string {
-    return `${voiceIndex}-${sym.istart}`
+  private _makeZnId(sym: AbcSymbol, _voiceIndex: number): string {
+    const remarkTable = this._currentState?.remarkTable
+    if (remarkTable && Object.prototype.hasOwnProperty.call(remarkTable, sym.time)) {
+      const remark = remarkTable[sym.time]
+      if (typeof remark === 'string') return remark
+    }
+    // Mirrors Ruby: use remark_table[time] when present, otherwise voice_element[:time].
+    return `${sym.time}`
   }
 
   private _parseDecorations(sym: AbcSymbol): string[] {
@@ -901,9 +930,10 @@ export class AbcToSong {
   }
 
   private _parseLyrics(sym: AbcSymbol): string | null {
-    const lyric = (sym as Record<string, unknown>)['lyric'] as Array<{ text?: string }> | undefined
-    if (!lyric || lyric.length === 0) return null
-    return lyric.map((l) => l.text ?? '').join('')
+    const aLy = (sym as Record<string, unknown>)['a_ly'] as Array<{ t?: string }> | undefined
+    if (!aLy || aLy.length === 0) return null
+    // Mirrors Ruby: a_ly[0].t, with ABC lyric continuation and extender cleanup.
+    return aLy[0]?.t?.replace(/\n/g, '-').replace(/_/g, '') ?? ''
   }
 
   private _parseInlineAnnotation(
