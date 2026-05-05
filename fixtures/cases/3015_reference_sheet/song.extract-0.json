@@ -1,855 +1,746 @@
 {
-  "meta_data": {
-    "title": "Zupfnoter Reference Sheet",
-    "composer": "",
-    "meter": "4/4",
-    "key": "C"
+  "meta_data"       :{
+    "checksum"     :"478 780 954",
+    "composer"     :"",
+    "filename"     :"3015_reference_sheet",
+    "key"          :"C",
+    "o_key"        :"",
+    "meter"        :"4/4",
+    "number"       :"3015",
+    "tempo"        :{
+      "duration":[0.25],
+      "bpm"     :120,
+      "sym"     :{
+        "type"       :14,
+        "dur"        :0,
+        "fname"      :"abc",
+        "istart"     :182,
+        "iend"       :191,
+        "tempo_notes":[384],
+        "tempo"      :120,
+        "v"          :0,
+        "st"         :0,
+        "time"       :0,
+        "seqst"      :true,
+        "ptim"       :0,
+        "start_pos"  :[13,1],
+        "end_pos"    :[13,9]
+      }
+    },
+    "tempo_display":"1/4=120",
+    "title"        :"Zupfnoter Reference Sheet"
   },
-  "voices": [
+  "harpnote_options":{
+    "lyrics":{
+      "text":[
+        "Notes",
+        "",
+        "(1) full note",
+        "(2) half note",
+        "(3) quarter note",
+        "(4) eighth note",
+        "(5) sixteenth note",
+        "(6) punctuated half note",
+        "(7) punctuated quarter note",
+        "",
+        "Rests",
+        "",
+        "(11) full rest",
+        "(12) half rest",
+        "(13) quarter rest",
+        "(14) eighth  rest",
+        "(15) sixteenth rest",
+        "(16) punctuated half rest",
+        "(17) punctuated quarter rest",
+        "",
+        "Notebound elements",
+        "",
+        "(20) measure bar",
+        "(21) unison",
+        "(22) triplet",
+        "(23) tie",
+        "(24) repeat signs",
+        "(25) jumpline for repeat",
+        "(26) synchline for unison",
+        "(27) part note",
+        "(28) countnotes",
+        "(29) barnumbers",
+        "(30) decoration (fermata)",
+        "",
+        "Connection lines",
+        "",
+        "(31) flowline",
+        "(32) synchline",
+        "(33) subflowline",
+        "",
+        "Sheet annotation",
+        "",
+        "(34) legend",
+        "(35) extract title in legend",
+        "(36) lyrics",
+        "(37) string names",
+        "(38) string marks",
+        "(39) cutmarks",
+        "",
+        "Variant ending",
+        "",
+        "(50) variant ending",
+        "(51) input line",
+        "(52) output line",
+        "(53) followiup line",
+        "",
+        "Organizational items",
+        "",
+        "(70) input filename",
+        "(71) creation note",
+        "(72) advertising Zupfnoter",
+        "(73) Fingerprint",
+        "",
+        "Sheet notes by preset",
+        "",
+        "(74) T04 to order",
+        "(75) T02 Copryright music",
+        "(76) T03 Coppyright harpnotes",
+        "(77) T99 do not copy",
+        "(78) T01 Number",
+        "(79) T01 Number extract"
+      ]
+    }
+  },
+  "voices"          :[
     {
-      "entities": [
+      "entities":[
         {
-          "type": "Note",
-          "beat": 0,
-          "variant": 0,
-          "visible": true,
-          "pitch": 67,
-          "duration": 64,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :0,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :67,
+          "duration":64,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 192,
-          "variant": 0,
-          "visible": true,
-          "pitch": 69,
-          "duration": 32,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :192,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :69,
+          "duration":32,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 288,
-          "variant": 0,
-          "visible": true,
-          "pitch": 69,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :288,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :69,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 336,
-          "variant": 0,
-          "visible": true,
-          "pitch": 69,
-          "duration": 8,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :336,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :69,
+          "duration":8,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 360,
-          "variant": 0,
-          "visible": true,
-          "pitch": 69,
-          "duration": 4,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :360,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :69,
+          "duration":4,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 372,
-          "variant": 0,
-          "visible": true,
-          "pitch": 69,
-          "duration": 4,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :372,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :69,
+          "duration":4,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 384,
-          "variant": 0,
-          "visible": true,
-          "pitch": 69,
-          "duration": 48,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :384,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :69,
+          "duration":48,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 528,
-          "variant": 0,
-          "visible": true,
-          "pitch": 69,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :528,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :69,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
+        },
+        {"type":"Goto","variant":0,"visible":true,"from":528,"to":384},
+        {
+          "type"    :"Note",
+          "beat"    :576,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :69,
+          "duration":24,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Goto",
-          "variant": 0,
-          "visible": true,
-          "from": 528,
-          "to": 384
+          "type"    :"Note",
+          "beat"    :648,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :69,
+          "duration":8,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 576,
-          "variant": 0,
-          "visible": true,
-          "pitch": 69,
-          "duration": 24,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :672,
+          "variant" :0,
+          "visible" :true,
+          "duration":64,
+          "tieStart":false,
+          "tieEnd"  :false
+        },
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":64},
+        {
+          "type"    :"Pause",
+          "beat"    :864,
+          "variant" :0,
+          "visible" :true,
+          "duration":32,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 648,
-          "variant": 0,
-          "visible": true,
-          "pitch": 69,
-          "duration": 8,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :960,
+          "variant" :0,
+          "visible" :true,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 672,
-          "variant": 0,
-          "visible": true,
-          "duration": 64,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1008,
+          "variant" :0,
+          "visible" :true,
+          "duration":8,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 64
+          "type"    :"Pause",
+          "beat"    :1032,
+          "variant" :0,
+          "visible" :true,
+          "duration":4,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 864,
-          "variant": 0,
-          "visible": true,
-          "duration": 32,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1044,
+          "variant" :0,
+          "visible" :true,
+          "duration":4,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 960,
-          "variant": 0,
-          "visible": true,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1056,
+          "variant" :0,
+          "visible" :true,
+          "duration":48,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 1008,
-          "variant": 0,
-          "visible": true,
-          "duration": 8,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1200,
+          "variant" :0,
+          "visible" :true,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 1032,
-          "variant": 0,
-          "visible": true,
-          "duration": 4,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1248,
+          "variant" :0,
+          "visible" :true,
+          "duration":24,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 1044,
-          "variant": 0,
-          "visible": true,
-          "duration": 4,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1320,
+          "variant" :0,
+          "visible" :true,
+          "duration":8,
+          "tieStart":false,
+          "tieEnd"  :false
         },
-        {
-          "type": "Pause",
-          "beat": 1056,
-          "variant": 0,
-          "visible": true,
-          "duration": 48,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Pause",
-          "beat": 1200,
-          "variant": 0,
-          "visible": true,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Pause",
-          "beat": 1248,
-          "variant": 0,
-          "visible": true,
-          "duration": 24,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Pause",
-          "beat": 1320,
-          "variant": 0,
-          "visible": true,
-          "duration": 8,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 64
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 64
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 32
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 16
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 8
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 4
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 48
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 16
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 24
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 64
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 32
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 16
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 8
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 4
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 48
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 24
-        }
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":64},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":64},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":32},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":16},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":8},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":4},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":48},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":16},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":24},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":64},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":32},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":16},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":8},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":4},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":48},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":24}
       ]
     },
     {
-      "entities": [
+      "entities":[
         {
-          "type": "Note",
-          "beat": 0,
-          "variant": 0,
-          "visible": true,
-          "pitch": 63,
-          "duration": 32,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :0,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :63,
+          "duration":32,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 96,
-          "variant": 0,
-          "visible": true,
-          "pitch": 65,
-          "duration": 32,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :96,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :65,
+          "duration":32,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 192,
-          "variant": 0,
-          "visible": true,
-          "pitch": 63,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :192,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :63,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 224,
-          "variant": 0,
-          "visible": true,
-          "pitch": 63,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :224,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :63,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 256,
-          "variant": 0,
-          "visible": true,
-          "pitch": 63,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :256,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :63,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 288,
-          "variant": 0,
-          "visible": true,
-          "pitch": 63,
-          "duration": 16,
-          "tieStart": true,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :288,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :63,
+          "duration":16,
+          "tieStart":true,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 336,
-          "variant": 0,
-          "visible": true,
-          "pitch": 63,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": true
+          "type"    :"Note",
+          "beat"    :336,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :63,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :true
         },
         {
-          "type": "Note",
-          "beat": 384,
-          "variant": 0,
-          "visible": true,
-          "pitch": 63,
-          "duration": 48,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :384,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :63,
+          "duration":48,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 528,
-          "variant": 0,
-          "visible": true,
-          "pitch": 63,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :528,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :63,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
+        },
+        {"type":"Goto","variant":0,"visible":true,"from":528,"to":384},
+        {
+          "type"    :"SynchPoint",
+          "beat"    :576,
+          "variant" :0,
+          "visible" :true,
+          "duration":24,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Goto",
-          "variant": 0,
-          "visible": true,
-          "from": 528,
-          "to": 384
+          "type"    :"Note",
+          "beat"    :648,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :63,
+          "duration":8,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "SynchPoint",
-          "beat": 576,
-          "variant": 0,
-          "visible": true,
-          "duration": 24,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :672,
+          "variant" :0,
+          "visible" :true,
+          "duration":64,
+          "tieStart":false,
+          "tieEnd"  :false
+        },
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":64},
+        {
+          "type"    :"Pause",
+          "beat"    :864,
+          "variant" :0,
+          "visible" :true,
+          "duration":32,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 648,
-          "variant": 0,
-          "visible": true,
-          "pitch": 63,
-          "duration": 8,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :960,
+          "variant" :0,
+          "visible" :true,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 672,
-          "variant": 0,
-          "visible": true,
-          "duration": 64,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1008,
+          "variant" :0,
+          "visible" :true,
+          "duration":8,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 64
+          "type"    :"Pause",
+          "beat"    :1032,
+          "variant" :0,
+          "visible" :true,
+          "duration":4,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 864,
-          "variant": 0,
-          "visible": true,
-          "duration": 32,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1044,
+          "variant" :0,
+          "visible" :true,
+          "duration":4,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 960,
-          "variant": 0,
-          "visible": true,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1056,
+          "variant" :0,
+          "visible" :true,
+          "duration":48,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 1008,
-          "variant": 0,
-          "visible": true,
-          "duration": 8,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1200,
+          "variant" :0,
+          "visible" :true,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 1032,
-          "variant": 0,
-          "visible": true,
-          "duration": 4,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1248,
+          "variant" :0,
+          "visible" :true,
+          "duration":24,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 1044,
-          "variant": 0,
-          "visible": true,
-          "duration": 4,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :1320,
+          "variant" :0,
+          "visible" :true,
+          "duration":8,
+          "tieStart":false,
+          "tieEnd"  :false
         },
-        {
-          "type": "Pause",
-          "beat": 1056,
-          "variant": 0,
-          "visible": true,
-          "duration": 48,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Pause",
-          "beat": 1200,
-          "variant": 0,
-          "visible": true,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Pause",
-          "beat": 1248,
-          "variant": 0,
-          "visible": true,
-          "duration": 24,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Pause",
-          "beat": 1320,
-          "variant": 0,
-          "visible": true,
-          "duration": 8,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 32
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 32
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 16
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 16
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 16
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 24
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 64
-        }
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":32},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":32},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":16},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":16},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":16},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":24},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":64}
       ]
     },
     {
-      "entities": [
+      "entities":[
         {
-          "type": "Note",
-          "beat": 0,
-          "variant": 0,
-          "visible": true,
-          "pitch": 57,
-          "duration": 64,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :0,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":64,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 192,
-          "variant": 0,
-          "visible": true,
-          "pitch": 57,
-          "duration": 32,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :192,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":32,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 288,
-          "variant": 0,
-          "visible": true,
-          "pitch": 57,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :288,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 336,
-          "variant": 0,
-          "visible": true,
-          "pitch": 57,
-          "duration": 8,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :336,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":8,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 360,
-          "variant": 0,
-          "visible": true,
-          "pitch": 57,
-          "duration": 4,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :360,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":4,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 372,
-          "variant": 0,
-          "visible": true,
-          "pitch": 57,
-          "duration": 4,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :372,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":4,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 384,
-          "variant": 1,
-          "visible": true,
-          "pitch": 57,
-          "duration": 48,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :384,
+          "variant" :1,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":48,
+          "tieStart":false,
+          "tieEnd"  :false
+        },
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":48},
+        {
+          "type"    :"Note",
+          "beat"    :528,
+          "variant" :1,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 48
+          "type"    :"Note",
+          "beat"    :576,
+          "variant" :2,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
+        },
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":16},
+        {
+          "type"    :"Note",
+          "beat"    :624,
+          "variant" :2,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":48,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 528,
-          "variant": 1,
-          "visible": true,
-          "pitch": 57,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :768,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 576,
-          "variant": 2,
-          "visible": true,
-          "pitch": 57,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :816,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 16
+          "type"    :"Note",
+          "beat"    :864,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :57,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
-        {
-          "type": "Note",
-          "beat": 624,
-          "variant": 2,
-          "visible": true,
-          "pitch": 57,
-          "duration": 48,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 768,
-          "variant": 0,
-          "visible": true,
-          "pitch": 57,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 816,
-          "variant": 0,
-          "visible": true,
-          "pitch": 57,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "Note",
-          "beat": 864,
-          "variant": 0,
-          "visible": true,
-          "pitch": 57,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 64
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 32
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 48
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 16
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 16
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 48
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 48
-        },
-        {
-          "type": "NoteBoundAnnotation",
-          "variant": 0,
-          "visible": true,
-          "duration": 16
-        },
-        {
-          "type": "Goto",
-          "variant": 0,
-          "visible": true,
-          "from": 372,
-          "to": 384
-        },
-        {
-          "type": "Goto",
-          "variant": 0,
-          "visible": true,
-          "from": 372,
-          "to": 576
-        },
-        {
-          "type": "Goto",
-          "variant": 0,
-          "visible": true,
-          "from": 528,
-          "to": 768
-        },
-        {
-          "type": "Goto",
-          "variant": 0,
-          "visible": true,
-          "from": 624,
-          "to": 768
-        }
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":64},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":32},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":48},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":16},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":16},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":48},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":48},
+        {"type":"NoteBoundAnnotation","variant":0,"visible":true,"duration":16},
+        {"type":"Goto","variant":0,"visible":true,"from":372,"to":384},
+        {"type":"Goto","variant":0,"visible":true,"from":372,"to":576},
+        {"type":"Goto","variant":0,"visible":true,"from":528,"to":768},
+        {"type":"Goto","variant":0,"visible":true,"from":624,"to":768}
       ]
     }
   ],
-  "beat_maps": [
+  "beat_maps"       :[
     {
-      "0": 0,
-      "192": 192,
-      "288": 288,
-      "336": 336,
-      "360": 360,
-      "372": 372,
-      "384": 384,
-      "528": 528,
-      "576": 576,
-      "648": 648,
-      "672": 672,
-      "864": 864,
-      "960": 960,
-      "1008": 1008,
-      "1032": 1032,
-      "1044": 1044,
-      "1056": 1056,
-      "1200": 1200,
-      "1248": 1248,
-      "1320": 1320
+      "0"   :0,
+      "192" :192,
+      "288" :288,
+      "336" :336,
+      "360" :360,
+      "372" :372,
+      "384" :384,
+      "528" :528,
+      "576" :576,
+      "648" :648,
+      "672" :672,
+      "864" :864,
+      "960" :960,
+      "1008":1008,
+      "1032":1032,
+      "1044":1044,
+      "1056":1056,
+      "1200":1200,
+      "1248":1248,
+      "1320":1320
     },
     {
-      "0": 0,
-      "96": 96,
-      "192": 192,
-      "224": 224,
-      "256": 256,
-      "288": 288,
-      "336": 336,
-      "384": 384,
-      "528": 528,
-      "576": 576,
-      "648": 648,
-      "672": 672,
-      "864": 864,
-      "960": 960,
-      "1008": 1008,
-      "1032": 1032,
-      "1044": 1044,
-      "1056": 1056,
-      "1200": 1200,
-      "1248": 1248,
-      "1320": 1320
+      "0"   :0,
+      "96"  :96,
+      "192" :192,
+      "224" :224,
+      "256" :256,
+      "288" :288,
+      "336" :336,
+      "384" :384,
+      "528" :528,
+      "576" :576,
+      "648" :648,
+      "672" :672,
+      "864" :864,
+      "960" :960,
+      "1008":1008,
+      "1032":1032,
+      "1044":1044,
+      "1056":1056,
+      "1200":1200,
+      "1248":1248,
+      "1320":1320
     },
     {
-      "0": 0,
-      "192": 192,
-      "288": 288,
-      "336": 336,
-      "360": 360,
-      "372": 372,
-      "384": 384,
-      "528": 528,
-      "576": 576,
-      "624": 624,
-      "768": 768,
-      "816": 816,
-      "864": 864
+      "0"  :0,
+      "192":192,
+      "288":288,
+      "336":336,
+      "360":360,
+      "372":372,
+      "384":384,
+      "528":528,
+      "576":576,
+      "624":624,
+      "768":768,
+      "816":816,
+      "864":864
     }
   ]
 }

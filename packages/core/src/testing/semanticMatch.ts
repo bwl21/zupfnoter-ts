@@ -37,8 +37,12 @@ export interface VoiceFixture {
 export interface SongFixture {
   _comment?: string
   meta_data: Record<string, unknown>
+  /** Optional harpnote-specific options block (lyrics text etc.) */
+  harpnote_options?: Record<string, unknown>
   voices: VoiceFixture[]
   beat_maps: Record<string, number>[]
+  /** Allow additional top-level fields exported by the legacy serializer. */
+  [extraField: string]: unknown
 }
 
 export interface DrawableFixture {
@@ -112,12 +116,21 @@ function comparePoint(
 // Song comparison (Stufe 2)
 // ---------------------------------------------------------------------------
 
+/** Top-level fixture fields handled by dedicated comparison logic in matchSong. */
+const SONG_HANDLED_FIELDS = new Set(['_comment', 'voices', 'beat_maps'])
+
 /**
  * Compares a Song output against a fixture.
  *
- * Checked per entity: all serialized fixture fields.
- * Skipped: fields not present in the fixture plus internal runtime-only fields
- * that are never serialized into fixtures.
+ * All fields present in the fixture are compared:
+ *   - voices: per-entity comparison (all entity fields in the fixture)
+ *   - beat_maps: normalized key→beat map comparison
+ *   - meta_data, harpnote_options and any other top-level fields:
+ *     deep recursive comparison via compareFixtureValue
+ *
+ * The comparison is one-sided: only fields present in the fixture are checked
+ * against the actual output. Extra fields in the actual output are ignored.
+ * The internal `_comment` fixture field is skipped.
  */
 export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResult {
   const mismatches: Mismatch[] = []
@@ -128,6 +141,15 @@ export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResul
       passed: false,
       mismatches: [{ path: 'fixture', expected: 'non-empty fixture', actual: 'placeholder (voices: [])' }],
     }
+  }
+
+  // Compare every top-level field in the fixture (meta_data, harpnote_options,
+  // plus any additional legacy-exported fields) — voices and beat_maps are
+  // handled by the dedicated logic below.
+  const actualRecord = actual as unknown as Record<string, unknown>
+  for (const [key, expectedValue] of Object.entries(fixture)) {
+    if (SONG_HANDLED_FIELDS.has(key)) continue
+    diffFixtureValue(actualRecord[key], expectedValue, key, mismatches)
   }
 
   // Voice count
@@ -205,6 +227,45 @@ function compareSongEntity(actual: EntityFixture, expected: EntityFixture): bool
   }
 
   return true
+}
+
+/**
+ * Recursive comparison that records mismatches with their precise path.
+ * Used for top-level Song fields like `meta_data` so failures point to the
+ * specific nested key (e.g. `meta_data.tempo.bpm`) instead of the whole object.
+ */
+function diffFixtureValue(
+  actual: unknown,
+  expected: unknown,
+  path: string,
+  mismatches: Mismatch[],
+): void {
+  if (Array.isArray(expected)) {
+    if (!Array.isArray(actual) || actual.length !== expected.length) {
+      fail(mismatches, path, expected, actual)
+      return
+    }
+    for (let i = 0; i < expected.length; i++) {
+      diffFixtureValue(actual[i], expected[i], `${path}[${i}]`, mismatches)
+    }
+    return
+  }
+
+  if (expected !== null && typeof expected === 'object') {
+    if (actual === null || typeof actual !== 'object' || Array.isArray(actual)) {
+      fail(mismatches, path, expected, actual)
+      return
+    }
+    const actualObject = actual as Record<string, unknown>
+    for (const [key, value] of Object.entries(expected)) {
+      diffFixtureValue(actualObject[key], value, `${path}.${key}`, mismatches)
+    }
+    return
+  }
+
+  if (actual !== expected) {
+    fail(mismatches, path, expected, actual)
+  }
 }
 
 function compareFixtureValue(actual: unknown, expected: unknown): boolean {

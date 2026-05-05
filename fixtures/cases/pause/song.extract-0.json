@@ -1,81 +1,98 @@
 {
-  "meta_data": {
-    "title": "Pause Test",
-    "composer": "Zupfnoter TS Tests",
-    "meter": "4/4",
-    "key": "C"
+  "meta_data"       :{
+    "checksum"     :"305 935 185",
+    "composer"     :"Zupfnoter TS Tests",
+    "filename"     :"",
+    "key"          :"C",
+    "o_key"        :"",
+    "meter"        :"4/4",
+    "number"       :"1",
+    "tempo"        :{
+      "duration":[0.25],
+      "bpm"     :120,
+      "sym"     :{
+        "type"       :14,
+        "dur"        :0,
+        "fname"      :"abc",
+        "istart"     :51,
+        "iend"       :60,
+        "tempo_notes":[384],
+        "tempo"      :120,
+        "v"          :0,
+        "st"         :0,
+        "time"       :0,
+        "seqst"      :true,
+        "ptim"       :0,
+        "start_pos"  :[6,1],
+        "end_pos"    :[6,9]
+      }
+    },
+    "tempo_display":"1/4=120",
+    "title"        :"Pause Test"
   },
-  "voices": [
+  "harpnote_options":{"lyrics":{"text":""}},
+  "voices"          :[
     {
-      "entities": [
+      "entities":[
         {
-          "type": "Note",
-          "beat": 0,
-          "variant": 0,
-          "visible": true,
-          "pitch": 48,
-          "duration": 4,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :0,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :48,
+          "duration":4,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 12,
-          "variant": 0,
-          "visible": true,
-          "duration": 4,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :12,
+          "variant" :0,
+          "visible" :true,
+          "duration":4,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 24,
-          "variant": 0,
-          "visible": true,
-          "pitch": 50,
-          "duration": 8,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :24,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :50,
+          "duration":8,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 48,
-          "variant": 0,
-          "visible": true,
-          "duration": 8,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :48,
+          "variant" :0,
+          "visible" :true,
+          "duration":8,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Note",
-          "beat": 72,
-          "variant": 0,
-          "visible": true,
-          "pitch": 52,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Note",
+          "beat"    :72,
+          "variant" :0,
+          "visible" :true,
+          "pitch"   :52,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         },
         {
-          "type": "Pause",
-          "beat": 120,
-          "variant": 0,
-          "visible": true,
-          "duration": 16,
-          "tieStart": false,
-          "tieEnd": false
+          "type"    :"Pause",
+          "beat"    :120,
+          "variant" :0,
+          "visible" :true,
+          "duration":16,
+          "tieStart":false,
+          "tieEnd"  :false
         }
       ]
     }
   ],
-  "beat_maps": [
-    {
-      "0": 0,
-      "12": 12,
-      "24": 24,
-      "48": 48,
-      "72": 72,
-      "120": 120
-    }
-  ]
+  "beat_maps"       :[{"0":0,"12":12,"24":24,"48":48,"72":72,"120":120}]
 }

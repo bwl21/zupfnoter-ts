@@ -82,15 +82,19 @@ export interface AbcParseError {
 }
 
 function computeLegacyChecksum(abcText: string): string {
-  const stripped = abcText.trim()
-  let checksum = 0x12345678
+  const markerIndex = abcText.indexOf('%%%%zupfnoter.config')
 
-  for (let index = 0; index < stripped.length; index += 1) {
-    checksum += stripped.charCodeAt(index) * (index + 1)
+  const relevantText = markerIndex >= 0 ? abcText.slice(0, markerIndex) : abcText
+
+  let checksum = 0x12345678
+  const text = relevantText.trim()
+
+  for (let index = 0; index < text.length; index += 1) {
+    checksum += text.charCodeAt(index) * (index + 1)
   }
 
-  const chunks = String(checksum).match(/.{1,3}/g)
-  return chunks ? chunks.join(' ') : String(checksum)
+  const groups = checksum.toString().match(/.{1,3}/g)
+  return groups === null ? '' : groups.join(' ')
 }
 
 function loadAbc2svg(): Abc2svgExports {
