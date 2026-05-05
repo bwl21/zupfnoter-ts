@@ -237,6 +237,19 @@ export interface SongMetaData {
   tempo?: number
   tempoDisplay?: string
   checksum?: string
+  /** Diagnosen aus der ABC-zu-Song-Transformation */
+  diagnostics?: SongDiagnostic[]
+}
+
+export interface SongDiagnostic {
+  /** Schweregrad der Diagnose */
+  severity: 'error'
+  /** Diagnose-Text */
+  message: string
+  /** Start-Position im ABC-Quelltext [Zeile, Spalte] */
+  startPos: [number, number]
+  /** End-Position im ABC-Quelltext [Zeile, Spalte] */
+  endPos: [number, number]
 }
 
 /**

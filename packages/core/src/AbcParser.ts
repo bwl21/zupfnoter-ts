@@ -22,6 +22,7 @@ import abc2svgSource from '../vendor/abc2svg-1.js?raw'
 // ---------------------------------------------------------------------------
 
 interface Abc2svgUser {
+  keep_remark?: boolean
   img_out?: (svg: string) => void
   errbld?: (severity: number, msg: string, fname: string | undefined, line: number | undefined, col: number | undefined) => void
   read_file: (name: string) => string | null
@@ -143,6 +144,7 @@ export class AbcParser {
     this._model = null
 
     const user: Abc2svgUser = {
+      keep_remark: true,
       // Suppress SVG output — we only need the model
       img_out: (_svg: string) => { /* no-op */ },
 

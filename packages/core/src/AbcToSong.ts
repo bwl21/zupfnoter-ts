@@ -22,6 +22,7 @@ import type {
   GotoPolicy,
   BeatMap,
   SongMetaData,
+  SongDiagnostic,
 } from '@zupfnoter/types'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
 import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
@@ -34,6 +35,8 @@ import { requireDefined } from './requireDefined.js'
 
 /** abc2svg duration units for a whole note */
 const ABC2SVG_DURATION_FACTOR = 1536
+const INVALID_REMARK_ZNID_MESSAGE = 'illegal character in [r:] (must be of [a-z][a-z0.9_])'
+const REMARK_ZNID_PATTERN = /^[a-z][a-zA-Z0-9_]*$/
 
 // ---------------------------------------------------------------------------
 // Internal state per voice transformation
@@ -105,6 +108,7 @@ export class AbcToSong {
   private _shortestNote = 64
   private _config: ZupfnoterConfig | null = null
   private _currentState: VoiceState | null = null
+  private _diagnostics: SongDiagnostic[] = []
 
   /**
    * Transform an AbcModel into a Song.
@@ -114,6 +118,7 @@ export class AbcToSong {
    */
   transform(model: AbcModel, config: ZupfnoterConfig): Song {
     this._config = config
+    this._diagnostics = []
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 192
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 64
 
@@ -125,6 +130,9 @@ export class AbcToSong {
     this._propagateInlineParts(voices)
     const beatMaps = this._buildBeatMaps(voices)
     const metaData = this._extractMetaData(model)
+    if (this._diagnostics.length > 0) {
+      metaData.diagnostics = this._diagnostics
+    }
     const harpnoteOptions = this._extractHarpnoteOptions(model)
 
     return { voices, beatMaps, metaData, harpnoteOptions }
@@ -642,7 +650,20 @@ export class AbcToSong {
 
   private _transformRemark(sym: AbcSymbol, state: VoiceState): VoiceEntity | null {
     // Mirrors Ruby: [r:] remarks override the generated znId by voice_element[:time].
-    state.remarkTable[sym.time] = sym.text ?? ''
+    if (typeof sym.text !== 'string') return null
+    const remark = sym.text
+    if (Object.prototype.hasOwnProperty.call(state.remarkTable, sym.time)) return null
+    if (REMARK_ZNID_PATTERN.test(remark)) {
+      state.remarkTable[sym.time] = remark
+    } else {
+      this._diagnostics.push({
+        severity: 'error',
+        message: INVALID_REMARK_ZNID_MESSAGE,
+        startPos: this._charposToLineCol(sym.istart),
+        endPos: this._charposToLineCol(sym.iend),
+      })
+      state.remarkTable[sym.time] = `_${remark}_`
+    }
     return null
   }
 

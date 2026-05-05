@@ -31,6 +31,7 @@ export type {
   Voice,
   BeatMap,
   SongMetaData,
+  SongDiagnostic,
   Song,
 } from './music.js'
 

@@ -77,6 +77,30 @@ V:V1 clef=treble-8
     const song = transform(ABC)
     expect(song.beatMaps.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('reports invalid remark znId and uses legacy fallback', () => {
+    const song = transform(`X:1
+T:Invalid Remark ZnId Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+r:bad-id
+[V:V1] C |]
+`)
+    const note = song.voices[0]?.entities.find((e) => e.type === 'Note')
+
+    expect(note?.znId).toBe('_bad-id_')
+    expect(song.metaData.diagnostics).toEqual([
+      {
+        severity: 'error',
+        message: 'illegal character in [r:] (must be of [a-z][a-z0.9_])',
+        startPos: [1, 1],
+        endPos: [1, 1],
+      },
+    ])
+  })
 })
 
 // ---------------------------------------------------------------------------
