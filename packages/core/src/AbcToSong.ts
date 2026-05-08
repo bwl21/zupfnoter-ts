@@ -37,8 +37,7 @@ import { requireDefined } from './requireDefined.js'
 const ABC2SVG_DURATION_FACTOR = 1536
 const INVALID_REMARK_ZNID_MESSAGE = 'illegal character in [r:] (must be of [a-z][a-z0.9_])'
 const REMARK_ZNID_PATTERN = /^[a-z][a-zA-Z0-9_]*$/
-const COUNT_NAMES: Array<string | number> = Array.from({ length: 32 }, (_, index) => index + 1)
-  .flatMap((count) => [count, 'e', 'u', 'e'])
+const COUNT_NAMES: Array<string | number> = Array.from({ length: 32 }, (_, index) => [index + 1, 'e', 'u', 'e']).flat()
 
 // ---------------------------------------------------------------------------
 // Internal state per voice transformation
@@ -1029,11 +1028,12 @@ export class AbcToSong {
 
     const replaceMap: Array<[RegExp, string]> = [
       [/^<\d+>.*eue$/, 'eue'],
+      [/^<\d+>.*e$/, 'e'],
       [/^u.*$/, 'e'],
     ]
     const replacement = replaceMap.find(([pattern]) => pattern.test(countRange))
     if (replacement) {
-      countRange = countRange.replace(replacement[1], '')
+      countRange = countRange.replaceAll(replacement[1], '')
     }
 
     return (countRange.match(/<\d+>|[eu]/g) ?? []).join('-').replace(/[<>]/g, '')

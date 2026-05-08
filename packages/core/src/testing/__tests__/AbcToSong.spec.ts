@@ -517,7 +517,7 @@ describe('AbcToSong – slur / tuplet', () => {
 describe('AbcToSong – countNote', () => {
   it('matches legacy count strings for regular durations', () => {
     expect(countFromRawDuration(384)).toBe('1')
-    expect(countFromRawDuration(192)).toBe('1-e')
+    expect(countFromRawDuration(192)).toBe('1')
     expect(countFromRawDuration(288)).toBe('1-e-u')
   })
 
