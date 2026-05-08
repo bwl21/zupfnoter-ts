@@ -150,22 +150,6 @@ export class AbcToSong {
       }
     }
 
-    // DEBUG: count entity types for 246_Horch V:0
-    if (voices.length >= 3 && voices[0].entities.length > 100) {
-      const cnt: Record<string, number> = {}
-      for (const e of voices[0].entities) {
-        cnt[e.type] = (cnt[e.type] || 0) + 1
-      }
-      console.log(`V0_TYPES: ${JSON.stringify(cnt)}`)
-    }
-    if (voices.length >= 4 && voices[3].entities.length > 20 && voices[3].entities.length < 50) {
-      const cnt: Record<string, number> = {}
-      for (const e of voices[3].entities) {
-        cnt[e.type] = (cnt[e.type] || 0) + 1
-      }
-      console.log(`V3_TYPES: ${JSON.stringify(cnt)}`)
-    }
-
     const beatMaps = this._buildBeatMaps(voices)
     const metaData = this._extractMetaData(model)
     if (this._diagnostics.length > 0) {
