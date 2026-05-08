@@ -7,11 +7,11 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 4
+- Total open implementations: 6
 - Song gaps: 1
-- Sheet gaps: 3
-- Known-covered failures: 7
-- New unclassified failures: 2
+- Sheet gaps: 5
+- Known-covered failures: 9
+- New unclassified failures: 0
 
 ## Song Gaps
 
@@ -45,23 +45,21 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
   - Prompt: Investigate multi-staff layout parity in the Twostaff fixture, reproduce with the sheet legacy comparison test, implement the remaining multi-staff legacy behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
   - Refs: packages/core/src/HarpnotesLayout.ts
 
+- [ ] sheet.horch-entity-count-ripple
+  - Fixtures: 246_Horch-was-kommt-von-draussen-rein
+  - Scope: 246_Horch sheet children count
+  - Summary: Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is 1275 vs expected 1290 (15 missing). Likely a ripple effect from the song.entity-count gap (1 missing entity per voice).
+  - Prompt: Investigate the sheet children count mismatch for 246_Horch-was-kommt-von-draussen-rein extract 0. The 15 missing children are likely caused by the song.entity-count gap (1 missing entity per voice in the song model). Fix the song entity count first and verify the sheet output then matches. Remove this id when the sheet comparison test passes.
+  - Refs: packages/core/src/HarpnotesLayout.ts, packages/core/src/AbcToSong.ts
+
+- [ ] sheet.lyrics-extra-children
+  - Fixtures: lyrics
+  - Scope: lyrics text block layout
+  - Summary: Sheet output for the lyrics fixture has 24 children vs expected 20 (4 extra). Cause not yet classified.
+  - Prompt: Investigate the extra 4 children in the sheet output for the lyrics fixture (expected 20, actual 24). Compare the children array between TS output and the legacy fixture (type, position, text) to identify the extra elements. Implement parity in HarpnotesLayout.ts, then remove this id.
+  - Refs: packages/core/src/HarpnotesLayout.ts
+
 ## New Unclassified Failures
 
-- [ ] sheet.246-horch-was-kommt-von-draussen-rein [extract 0]
-  - Fixture: 246_Horch-was-kommt-von-draussen-rein
-  - Extract: 0
-  - Prompt: Investigate the sheet legacy comparison failure for fixture 246_Horch-was-kommt-von-draussen-rein extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t "246_Horch-was-kommt-von-draussen-rein [extract 0]" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
-  - Mismatch Summary:
-      children.length:
-        expected: 1290
-        actual:   1275
-
-- [ ] sheet.lyrics [extract 0]
-  - Fixture: lyrics
-  - Extract: 0
-  - Prompt: Investigate the sheet legacy comparison failure for fixture lyrics extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t "lyrics [extract 0]" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
-  - Mismatch Summary:
-      children.length:
-        expected: 20
-        actual:   24
+None.
 

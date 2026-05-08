@@ -57,6 +57,26 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     fixtures: ['Twostaff'],
     prompt: 'Investigate multi-staff layout parity in the Twostaff fixture, reproduce with the sheet legacy comparison test, implement the remaining multi-staff legacy behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
   },
+  {
+    id: 'sheet.horch-entity-count-ripple',
+    stage: 'sheet',
+    scope: '246_Horch sheet children count',
+    summary: 'Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is 1275 vs expected 1290 (15 missing). Likely a ripple effect from the song.entity-count gap (1 missing entity per voice).',
+    refs: ['packages/core/src/HarpnotesLayout.ts', 'packages/core/src/AbcToSong.ts'],
+    fixtures: ['246_Horch-was-kommt-von-draussen-rein'],
+    extracts: [0],
+    prompt: 'Investigate the sheet children count mismatch for 246_Horch-was-kommt-von-draussen-rein extract 0. The 15 missing children are likely caused by the song.entity-count gap (1 missing entity per voice in the song model). Fix the song entity count first and verify the sheet output then matches. Remove this id when the sheet comparison test passes.',
+  },
+  {
+    id: 'sheet.lyrics-extra-children',
+    stage: 'sheet',
+    scope: 'lyrics text block layout',
+    summary: 'Sheet output for the lyrics fixture has 24 children vs expected 20 (4 extra). Cause not yet classified.',
+    refs: ['packages/core/src/HarpnotesLayout.ts'],
+    fixtures: ['lyrics'],
+    extracts: [0],
+    prompt: 'Investigate the extra 4 children in the sheet output for the lyrics fixture (expected 20, actual 24). Compare the children array between TS output and the legacy fixture (type, position, text) to identify the extra elements. Implement parity in HarpnotesLayout.ts, then remove this id.',
+  },
 ]
 
 export function getOpenImplementations(

@@ -8,40 +8,5 @@
  */
 
 export const OPEN_IMPLEMENTATIONS_TEMPLATE = 
-[
-  {
-    "id": "sheet.246-horch-was-kommt-von-draussen-rein-extract-0-unclassified",
-    "stage": "sheet",
-    "scope": "246_Horch-was-kommt-von-draussen-rein [extract 0]",
-    "summary": "Unclassified sheet legacy comparison failure detected for 246_Horch-was-kommt-von-draussen-rein extract 0.",
-    "refs": [
-      "packages/core/src/HarpnotesLayout.ts"
-    ],
-    "fixtures": [
-      "246_Horch-was-kommt-von-draussen-rein"
-    ],
-    "extracts": [
-      0
-    ],
-    "prompt": "Investigate the sheet legacy comparison failure for fixture 246_Horch-was-kommt-von-draussen-rein extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t \"246_Horch-was-kommt-von-draussen-rein [extract 0]\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  children.length:\n    expected: 1290\n    actual:   1275"
-  },
-  {
-    "id": "sheet.lyrics-extract-0-unclassified",
-    "stage": "sheet",
-    "scope": "lyrics [extract 0]",
-    "summary": "Unclassified sheet legacy comparison failure detected for lyrics extract 0.",
-    "refs": [
-      "packages/core/src/HarpnotesLayout.ts"
-    ],
-    "fixtures": [
-      "lyrics"
-    ],
-    "extracts": [
-      0
-    ],
-    "prompt": "Investigate the sheet legacy comparison failure for fixture lyrics extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t \"lyrics [extract 0]\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  children.length:\n    expected: 20\n    actual:   24"
-  }
-] as const
+[] as const
 
