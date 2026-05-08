@@ -7,10 +7,10 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 5
+- Total open implementations: 4
 - Song gaps: 0
-- Sheet gaps: 5
-- Known-covered failures: 7
+- Sheet gaps: 4
+- Known-covered failures: 6
 - New unclassified failures: 0
 
 ## Song Gaps
@@ -45,13 +45,6 @@ No open gaps.
   - Scope: 246_Horch sheet children count
   - Summary: Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is 1280 vs expected 1290 (10 missing). The song-level entity-count gap is now resolved; the remaining 10 missing children are from layout-layer differences (likely Pause pitch Math.floor fix cascading into different beat compression/spread).
   - Prompt: Investigate the remaining 10 missing sheet children for 246_Horch-was-kommt-von-draussen-rein extract 0. The song entity count now matches, and Pause pitches match. The remaining sheet gap is a new effect from the layout layer.
-  - Refs: packages/core/src/HarpnotesLayout.ts
-
-- [ ] sheet.lyrics-extra-children
-  - Fixtures: lyrics
-  - Scope: lyrics text block layout
-  - Summary: Sheet output for the lyrics fixture has 24 children vs expected 20 (4 extra). Cause not yet classified.
-  - Prompt: Investigate the extra 4 children in the sheet output for the lyrics fixture (expected 20, actual 24). Compare the children array between TS output and the legacy fixture (type, position, text) to identify the extra elements. Implement parity in HarpnotesLayout.ts, then remove this id.
   - Refs: packages/core/src/HarpnotesLayout.ts
 
 ## New Unclassified Failures

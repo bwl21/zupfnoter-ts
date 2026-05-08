@@ -456,7 +456,7 @@ export class HarpnotesLayout {
     const resZnAnnotations = this._layoutZnAnnotations(song.metaData)
 
     // 6. Lyrics
-    const resLyrics = this._layoutLyrics(song, beatMaps, conf)
+    const resLyrics = this._layoutLyrics(song, conf)
 
     // 7. Sheet annotations
     const resAnnotations = this._layoutAnnotations(song.metaData, conf, extractNr)
@@ -1612,13 +1612,10 @@ export class HarpnotesLayout {
 
   private _layoutLyrics(
     song: Song,
-    beatMaps: Map<number, BeatCompressionMap>,
     conf: Confstack,
   ): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
-    const activeVoiceNrs = (conf.get('extract.voices') as number[] | undefined) ?? [1]
     const lyricsConf = (conf.get('extract.lyrics') as Record<string, { verses?: number[]; pos?: [number, number]; style?: string }> | undefined) ?? {}
     const rawLyrics = song.harpnoteOptions?.['lyrics']
 
@@ -1651,31 +1648,6 @@ export class HarpnotesLayout {
       }
 
       return result
-    }
-
-    for (const voiceNr of activeVoiceNrs) {
-      const voice = song.voices[voiceNr]
-      if (!voice) continue
-      const beatMap = beatMaps.get(voiceNr)
-      if (!beatMap) continue
-
-      for (const entity of voice.entities) {
-        if (entity.type !== 'Note' && entity.type !== 'SynchPoint') continue
-        const playable = entity as PlayableEntity
-        if (!playable.lyrics) continue
-
-        const [x, y] = playableCenter(playable, beatMap, layout, startpos)
-
-        result.push({
-          type: 'Annotation',
-          center: [x, y + layout.ELLIPSE_SIZE[1] + 2],
-          text: playable.lyrics,
-          style: 'small',
-          color: layout.color.color_default,
-          lineWidth: layout.LINE_THIN,
-          visible: playable.visible,
-        })
-      }
     }
 
     return result

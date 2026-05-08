@@ -56,16 +56,6 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     extracts: [0],
     prompt: 'Investigate the remaining 10 missing sheet children for 246_Horch-was-kommt-von-draussen-rein extract 0. The song entity count now matches, and Pause pitches match. The remaining sheet gap is a new effect from the layout layer.',
   },
-  {
-    id: 'sheet.lyrics-extra-children',
-    stage: 'sheet',
-    scope: 'lyrics text block layout',
-    summary: 'Sheet output for the lyrics fixture has 24 children vs expected 20 (4 extra). Cause not yet classified.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['lyrics'],
-    extracts: [0],
-    prompt: 'Investigate the extra 4 children in the sheet output for the lyrics fixture (expected 20, actual 24). Compare the children array between TS output and the legacy fixture (type, position, text) to identify the extra elements. Implement parity in HarpnotesLayout.ts, then remove this id.',
-  },
 ]
 
 export function getOpenImplementations(
