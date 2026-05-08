@@ -1074,7 +1074,8 @@ export class HarpnotesLayout {
     }
 
     const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
-    const height = fontSize * layout.MM_PER_POINT
+    // Legacy Annotation#size verwendet jsPDF intern (1pt = 25.4/72 mm), nicht MM_PER_POINT (0.3)
+    const height = fontSize * 25.4 / 72
     return [text.length * height * 0.55, height]
   }
 
