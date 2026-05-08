@@ -513,7 +513,7 @@ export class HarpnotesLayout {
     // Compute beat compression for all layout voices.
     // layoutlineVoices contains 1-based voice numbers (from config);
     // computeBeatCompression expects 0-based indices into song.voices.
-    const layoutlineIndices = Array.from(new Set([...activeVoiceNrs, ...layoutlineVoices])).map(v => v - 1)
+    const layoutlineIndices = Array.from(new Set([...activeVoiceNrs, ...layoutlineVoices]))
     const beatCompressionMap = applyLegacyBeatSpread(
       computeBeatCompression(song, layoutlineIndices, conf),
       layout,
@@ -525,8 +525,9 @@ export class HarpnotesLayout {
     const activeVoices: number[] = []
 
     for (const voiceNr of activeVoiceNrs) {
-      // voices are 1-based in config, 0-based in song.voices
-      const voiceIdx = voiceNr - 1
+      // voices are 1-based in config; song.voices[0] is the legacy V1 duplicate,
+      // so song.voices[voiceNr] is the real voice
+      const voiceIdx = voiceNr
       const voice = song.voices[voiceIdx]
       if (!voice) continue
 
@@ -611,8 +612,8 @@ export class HarpnotesLayout {
       if (leftVoiceNr === undefined || rightVoiceNr === undefined) continue
       if (!activeVoices.has(leftVoiceNr) || !activeVoices.has(rightVoiceNr)) continue
 
-      const leftVoice = song.voices[leftVoiceNr - 1]
-      const rightVoice = song.voices[rightVoiceNr - 1]
+      const leftVoice = song.voices[leftVoiceNr]
+      const rightVoice = song.voices[rightVoiceNr]
       if (!leftVoice || !rightVoice) continue
 
       const leftByBeat = playablesByBeat(leftVoice)
@@ -1424,8 +1425,8 @@ export class HarpnotesLayout {
     for (const [v1Nr, v2Nr] of synchlinePairs) {
       if (v1Nr === undefined || v2Nr === undefined) continue
       if (!activeVoices.has(v1Nr) || !activeVoices.has(v2Nr)) continue
-      const voice1 = song.voices[v1Nr - 1]
-      const voice2 = song.voices[v2Nr - 1]
+      const voice1 = song.voices[v1Nr]
+      const voice2 = song.voices[v2Nr]
       if (!voice1 || !voice2) continue
 
       const beatMap1 = beatMaps.get(v1Nr) ?? beatMaps.values().next().value
@@ -1652,7 +1653,7 @@ export class HarpnotesLayout {
     }
 
     for (const voiceNr of activeVoiceNrs) {
-      const voice = song.voices[voiceNr - 1]
+      const voice = song.voices[voiceNr]
       if (!voice) continue
       const beatMap = beatMaps.get(voiceNr)
       if (!beatMap) continue

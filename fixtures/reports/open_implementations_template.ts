@@ -21,7 +21,7 @@ export const OPEN_IMPLEMENTATIONS_TEMPLATE =
       "246_Horch-was-kommt-von-draussen-rein"
     ],
     "prompt": "Investigate the song legacy comparison failure for fixture 246_Horch-was-kommt-von-draussen-rein. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"246_Horch-was-kommt-von-draussen-rein\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 3\n    actual:   2"
+    "mismatchSummary": "  voices[0].entities.length:\n    expected: 125\n    actual:   124\n  voices[1].entities.length:\n    expected: 125\n    actual:   124\n  voices[2].entities.length:\n    expected: 122\n    actual:   121"
   },
   {
     "id": "song.3015-reference-sheet-unclassified",
@@ -35,161 +35,7 @@ export const OPEN_IMPLEMENTATIONS_TEMPLATE =
       "3015_reference_sheet"
     ],
     "prompt": "Investigate the song legacy comparison failure for fixture 3015_reference_sheet. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"3015_reference_sheet\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 4\n    actual:   3"
-  },
-  {
-    "id": "song.783-einsiedler-kreuzweg-unclassified",
-    "stage": "song",
-    "scope": "783_einsiedler-kreuzweg",
-    "summary": "Unclassified song legacy comparison failure detected for 783_einsiedler-kreuzweg.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "783_einsiedler-kreuzweg"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture 783_einsiedler-kreuzweg. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"783_einsiedler-kreuzweg\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 3\n    actual:   2"
-  },
-  {
-    "id": "song.abc-to-song-slur-tuplet-parity-unclassified",
-    "stage": "song",
-    "scope": "abc-to-song-slur-tuplet-parity",
-    "summary": "Unclassified song legacy comparison failure detected for abc-to-song-slur-tuplet-parity.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "abc-to-song-slur-tuplet-parity"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture abc-to-song-slur-tuplet-parity. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"abc-to-song-slur-tuplet-parity\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120}\n    actual:   undefined\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  voices.length:\n    expected: 2\n    actual:   1"
-  },
-  {
-    "id": "song.decoration-unclassified",
-    "stage": "song",
-    "scope": "decoration",
-    "summary": "Unclassified song legacy comparison failure detected for decoration.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "decoration"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture decoration. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"decoration\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 2\n    actual:   1"
-  },
-  {
-    "id": "song.lyrics-unclassified",
-    "stage": "song",
-    "scope": "lyrics",
-    "summary": "Unclassified song legacy comparison failure detected for lyrics.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "lyrics"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture lyrics. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"lyrics\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 2\n    actual:   1"
-  },
-  {
-    "id": "song.pause-unclassified",
-    "stage": "song",
-    "scope": "pause",
-    "summary": "Unclassified song legacy comparison failure detected for pause.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "pause"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture pause. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"pause\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 2\n    actual:   1"
-  },
-  {
-    "id": "song.repeat-unclassified",
-    "stage": "song",
-    "scope": "repeat",
-    "summary": "Unclassified song legacy comparison failure detected for repeat.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "repeat"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture repeat. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"repeat\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 2\n    actual:   1"
-  },
-  {
-    "id": "song.single-note-unclassified",
-    "stage": "song",
-    "scope": "single_note",
-    "summary": "Unclassified song legacy comparison failure detected for single_note.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "single_note"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture single_note. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"single_note\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 2\n    actual:   1"
-  },
-  {
-    "id": "song.tie-unclassified",
-    "stage": "song",
-    "scope": "tie",
-    "summary": "Unclassified song legacy comparison failure detected for tie.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "tie"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture tie. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"tie\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 2\n    actual:   1"
-  },
-  {
-    "id": "song.tuplet-unclassified",
-    "stage": "song",
-    "scope": "tuplet",
-    "summary": "Unclassified song legacy comparison failure detected for tuplet.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "tuplet"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture tuplet. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"tuplet\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 2\n    actual:   1"
-  },
-  {
-    "id": "song.two-voices-unclassified",
-    "stage": "song",
-    "scope": "two_voices",
-    "summary": "Unclassified song legacy comparison failure detected for two_voices.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "two_voices"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture two_voices. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"two_voices\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  voices.length:\n    expected: 3\n    actual:   2"
-  },
-  {
-    "id": "song.twostaff-unclassified",
-    "stage": "song",
-    "scope": "Twostaff",
-    "summary": "Unclassified song legacy comparison failure detected for Twostaff.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "Twostaff"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture Twostaff. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"Twostaff\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.tempo.bpm:\n    expected: 120\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   \"1/4\"\n  voices.length:\n    expected: 5\n    actual:   4"
+    "mismatchSummary": "  voices[0].entities.length:\n    expected: 38\n    actual:   39\n  voices[1].entities.length:\n    expected: 38\n    actual:   39\n  voices[2].entities.length:\n    expected: 30\n    actual:   31"
   },
   {
     "id": "sheet.246-horch-was-kommt-von-draussen-rein-extract-0-unclassified",
@@ -207,23 +53,6 @@ export const OPEN_IMPLEMENTATIONS_TEMPLATE =
     ],
     "prompt": "Investigate the sheet legacy comparison failure for fixture 246_Horch-was-kommt-von-draussen-rein extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t \"246_Horch-was-kommt-von-draussen-rein [extract 0]\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
     "mismatchSummary": "  children.length:\n    expected: 1290\n    actual:   1275"
-  },
-  {
-    "id": "sheet.abc-to-song-slur-tuplet-parity-extract-0-unclassified",
-    "stage": "sheet",
-    "scope": "abc-to-song-slur-tuplet-parity [extract 0]",
-    "summary": "Unclassified sheet legacy comparison failure detected for abc-to-song-slur-tuplet-parity extract 0.",
-    "refs": [
-      "packages/core/src/HarpnotesLayout.ts"
-    ],
-    "fixtures": [
-      "abc-to-song-slur-tuplet-parity"
-    ],
-    "extracts": [
-      0
-    ],
-    "prompt": "Investigate the sheet legacy comparison failure for fixture abc-to-song-slur-tuplet-parity extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t \"abc-to-song-slur-tuplet-parity [extract 0]\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  children[14].text:\n    expected: \"alle Stimmen\\n\\nTakt: 4/4 (1/4=120)\\nTonart: C\"\n    actual:   \"alle Stimmen\\n\\nTakt: 4/4\\nTonart: C\""
   },
   {
     "id": "sheet.lyrics-extract-0-unclassified",

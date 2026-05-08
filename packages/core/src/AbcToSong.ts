@@ -131,6 +131,26 @@ export class AbcToSong {
 
     const voices = model.voices.map((v, idx) => this._transformVoice(v, idx, model, restpositionDefault))
     this._propagateInlineParts(voices)
+
+    // Legacy parity: insert duplicate of V1 at index 0 for 1-based voice indexing.
+    // The legacy Ruby system introduces this extra voice so that external config
+    // (e.g. extract.<nr>.voices: [1]) maps directly to Song.voices[1] (V1).
+    if (voices.length > 0) {
+      const v1 = voices[0] as Voice
+      voices.unshift({
+        index: 0,
+        entities: [...v1.entities],
+        name: v1.name,
+        showVoice: true,
+        showFlowline: true,
+        showJumpline: true,
+      })
+      for (let i = 1; i < voices.length; i++) {
+        const v = voices[i] as Voice
+        voices[i] = { ...v, index: i }
+      }
+    }
+
     const beatMaps = this._buildBeatMaps(voices)
     const metaData = this._extractMetaData(model)
     if (this._diagnostics.length > 0) {
@@ -877,6 +897,11 @@ export class AbcToSong {
     // o_key: Nur setzen, wenn die geschriebene Tonart von der effektiven abweicht
     const oKey = (writtenKey && writtenKey !== effectiveKey) ? `(Original in ${writtenKey})` : ''
 
+    const rawQ = info['Q']?.split('\n')[0]
+    const tempo = rawQ ? this._parseTempo(rawQ) : { duration: [0.25], bpm: 120 }
+    const parsedBpm = rawQ ? /^(\d+\/\d+)=(\d+)$/.exec(rawQ) : null
+    const tempoDisplay = parsedBpm ? rawQ : (rawQ ? `${rawQ}=${tempo.bpm}` : '1/4=120')
+
     return {
       title: info['T']?.split('\n')[0],
       composer: info['C']?.split('\n')[0] ?? '',
@@ -885,9 +910,9 @@ export class AbcToSong {
       meter: info['M']?.split('\n').filter(Boolean) ?? undefined,
       key: effectiveKey,
       o_key: oKey,
-      tempo: info['Q'] ? this._parseTempo(info['Q']) : undefined,
-      tempoDisplay: info['Q']?.split('\n')[0],
-      tempo_display: info['Q']?.split('\n')[0],
+      tempo,
+      tempoDisplay,
+      tempo_display: tempoDisplay,
       checksum: model.checksum,
     }
   }
@@ -907,20 +932,33 @@ export class AbcToSong {
     }
   }
 
-  private _parseTempo(q: string): { duration: number[]; bpm: number } | undefined {
-    const match = /^(\d+)\/(\d+)=(\d+)$/.exec(q.trim())
-    if (match) {
-      const num = Number.parseInt(requireDefined(match[1], 'AbcToSong._parseTempo(): missing numerator'), 10)
-      const den = Number.parseInt(requireDefined(match[2], 'AbcToSong._parseTempo(): missing denominator'), 10)
-      const bpm = Number.parseInt(requireDefined(match[3], 'AbcToSong._parseTempo(): missing BPM'), 10)
+  private _parseTempo(q: string): { duration: number[]; bpm: number } {
+    const trimmed = q.trim()
+
+    // Full: "1/4=120"
+    const fullMatch = /^(\d+)\/(\d+)=(\d+)$/.exec(trimmed)
+    if (fullMatch) {
+      const num = Number.parseInt(requireDefined(fullMatch[1], 'AbcToSong._parseTempo(): missing numerator'), 10)
+      const den = Number.parseInt(requireDefined(fullMatch[2], 'AbcToSong._parseTempo(): missing denominator'), 10)
+      const bpm = Number.parseInt(requireDefined(fullMatch[3], 'AbcToSong._parseTempo(): missing BPM'), 10)
       return { duration: [num / den], bpm }
     }
-    // Fallback: number-only tempo (selten)
-    const numMatch = /(\d+)/.exec(q)
+
+    // Duration only: "1/4" — default BPM = 120
+    const durMatch = /^(\d+)\/(\d+)$/.exec(trimmed)
+    if (durMatch) {
+      const num = Number.parseInt(requireDefined(durMatch[1], 'AbcToSong._parseTempo(): missing numerator'), 10)
+      const den = Number.parseInt(requireDefined(durMatch[2], 'AbcToSong._parseTempo(): missing denominator'), 10)
+      return { duration: [num / den], bpm: 120 }
+    }
+
+    // Number only: "120" — default duration = 1/4
+    const numMatch = /(\d+)/.exec(trimmed)
     if (numMatch) {
       return { duration: [0.25], bpm: Number.parseInt(requireDefined(numMatch[1], 'AbcToSong._parseTempo(): missing tempo digits'), 10) }
     }
-    return undefined
+
+    return { duration: [0.25], bpm: 120 }
   }
 
   // ---------------------------------------------------------------------------

@@ -20,45 +20,15 @@ export interface DetectedFailure {
 
 const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
   {
-    id: 'song.metadata-fields',
+    id: 'song.entity-count',
     stage: 'song',
-    scope: 'Song.metaData shape parity with legacy raw',
+    scope: 'Song voice entity count parity',
     summary:
-      'Song.metaData diverges from the legacy raw export: `tempo` is collapsed to a single number instead of `{duration, bpm}`, `tempoDisplay` is not exposed under `tempo_display`, `meter` is a string instead of an array, `o_key`/`filename` are missing, and the `key` value is post-processed (e.g. "Amaj" instead of "A").',
-    refs: ['packages/core/src/AbcToSong.ts', 'packages/core/src/testing/fixtureLoader.ts'],
-    fixtures: [
-      '246_Horch-was-kommt-von-draussen-rein',
-      '3015_reference_sheet',
-      '783_einsiedler-kreuzweg',
-      'Twostaff',
-      'abc-to-song-slur-tuplet-parity',
-      'decoration',
-      'lyrics',
-      'pause',
-      'repeat',
-      'single_note',
-      'tie',
-      'tuplet',
-      'two_voices',
-    ],
-    prompt:
-      'Align Song.metaData with the legacy raw shape (`song.legacy-raw.json`): emit `tempo` as `{duration, bpm}`, expose `tempo_display`, keep `meter` as an array, add `o_key` and `filename`, and stop normalizing `key` to a major/minor suffix. Reproduce with the song legacy comparison tests in packages/core/src/testing/__tests__/song/legacy_comparison.spec.ts, then remove this id from fixtures/openImplementations.ts.',
-  },
-  {
-    id: 'song.voice-count',
-    stage: 'song',
-    scope: 'Song.voices length parity',
-    summary:
-      'Several fixtures expose one fewer voice in the TS Song than in the legacy raw export. Cause is not yet classified — it may be related to multi-tune aggregation or to a missing voice-0 placeholder in the TS pipeline.',
+      'Two fixtures (246_Horch-was-kommt-von-draussen-rein, 3015_reference_sheet) have a small entity-count mismatch per voice (off by 1) that is not yet classified. 246_Horch is missing one entity per voice; 3015_reference_sheet has one extra entity per voice.',
     refs: ['packages/core/src/AbcToSong.ts'],
-    fixtures: [
-      '3015_reference_sheet',
-      '783_einsiedler-kreuzweg',
-      'Twostaff',
-      'two_voices',
-    ],
+    fixtures: ['246_Horch-was-kommt-von-draussen-rein', '3015_reference_sheet'],
     prompt:
-      'Diagnose why the TS pipeline produces fewer Song.voices than the legacy raw export for the listed fixtures (compare voices[*].length and entity counts), implement the missing voice handling in packages/core/src/AbcToSong.ts, and remove this id from fixtures/openImplementations.ts when the song legacy comparison tests pass.',
+      'Investigate the entity-count mismatch for 246_Horch-was-kommt-von-draussen-rein (TS missing 1 entity per voice) and 3015_reference_sheet (TS has 1 extra entity per voice). Compare the entity sets (type,pitch,beat) between the TS song output and normalizeRawSongFixture(song.legacy-raw.json) to identify the missing/extra entities, then implement parity in packages/core/src/AbcToSong.ts. Remove this id from fixtures/openImplementations.ts when the song legacy comparison tests pass.',
   },
   {
     id: 'sheet.remaining-composite-layout',
