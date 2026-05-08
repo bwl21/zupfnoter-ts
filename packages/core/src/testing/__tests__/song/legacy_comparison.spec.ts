@@ -19,15 +19,15 @@ import { matchSong, formatMismatches, normalizeRawSongFixture } from '../../sema
 import { loadFixture, scanFixtureCases, transformFixtureToSong } from '../../fixtureLoader.js'
 import { formatOpenImplementations, getOpenImplementations } from '../../../../../../fixtures/openImplementations.js'
 
-const SONG_FIXTURES = scanFixtureCases().filter((testCase) => testCase.hasRawSongFixture)
+const SONG_FIXTURES = scanFixtureCases().filter((testCase) => testCase.hasSongFixture)
 
 describe('Song fixtures', () => {
   for (const testCase of SONG_FIXTURES) {
     it(`matches legacy output: ${testCase.id}`, () => {
       const fixture = loadFixture(testCase)
-      if (fixture.rawSong === null) throw new Error(`Missing raw song fixture for ${testCase.id}`)
+      if (fixture.song === null) throw new Error(`Missing song fixture for ${testCase.id}`)
       const actual = transformFixtureToSong(fixture)
-      const expected = normalizeRawSongFixture(fixture.rawSong)
+      const expected = normalizeRawSongFixture(fixture.song)
       const result = matchSong(actual, expected)
       const openImplementations = getOpenImplementations('song')
       const knownGaps = formatOpenImplementations(openImplementations)

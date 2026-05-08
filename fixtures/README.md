@@ -22,14 +22,14 @@ fixtures/
 └── cases/
     ├── single_note/
     │   ├── input.abc       # ABC-Notation, optional mit %%%%zupfnoter.config
-    │   ├── song.extract-0.json # Stufe-2-Referenz: Song (extract-unabhängig, kanonischer Dateiname)
+    │   ├── song.legacy-raw.json # Stufe-2-Referenz: Rohdump aus Legacy-CLI (@music_model.to_json)
     │   ├── sheet.extract-0.json # Stufe-3-Referenz für Extrakt 0
     │   └── _ts_output/     # generierte TS-Ausgabe, nicht Referenz
     └── ...
 ```
 
 Die Tests scannen `fixtures/cases/*/input.abc` automatisch. Ein neuer Testfall wird
-für Song-Vergleiche aufgenommen, sobald zusätzlich `song.extract-0.json` existiert; für
+für Song-Vergleiche aufgenommen, sobald zusätzlich `song.legacy-raw.json` existiert; für
 Sheet-Vergleiche entsprechend mit mindestens einer `sheet.extract-<nr>.json`.
 
 Bekannte, noch nicht portierte Legacy-Aspekte werden nicht testfallspezifisch im
@@ -112,7 +112,7 @@ Für jede Eingabedatei wird geschrieben:
 
 ```text
 fixtures/cases/<test-case>/input.abc
-fixtures/cases/<test-case>/song.extract-0.json
+fixtures/cases/<test-case>/song.legacy-raw.json
 fixtures/cases/<test-case>/sheet.extract-<nr>.json
 ```
 
@@ -161,7 +161,7 @@ nicht als Verifikation gegen das Legacy-System.
 # Song-Fixtures (Stufe 2):
 cd packages/core
 npx vitest run src/testing/__tests__/song/dump_ts_output.spec.ts
-cp fixtures/cases/<name>/_ts_output/song.json fixtures/cases/<name>/song.extract-0.json
+cp fixtures/cases/<name>/_ts_output/song.json fixtures/cases/<name>/song.legacy-raw.json
 
 # Sheet-Fixtures (Stufe 3):
 npx vitest run src/testing/__tests__/sheet/dump_ts_output.spec.ts

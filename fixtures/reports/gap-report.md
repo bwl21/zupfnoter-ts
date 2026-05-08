@@ -11,7 +11,7 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 - Song gaps: 0
 - Sheet gaps: 4
 - Known-covered failures: 5
-- New unclassified failures: 3
+- New unclassified failures: 16
 
 ## Song Gaps
 
@@ -48,6 +48,122 @@ No open gaps.
   - Refs: packages/core/src/HarpnotesLayout.ts
 
 ## New Unclassified Failures
+
+- [ ] song.246-horch-was-kommt-von-draussen-rein
+  - Fixture: 246_Horch-was-kommt-von-draussen-rein
+  - Prompt: Investigate the song legacy comparison failure for fixture 246_Horch-was-kommt-von-draussen-rein. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "246_Horch-was-kommt-von-draussen-rein" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 3
+        actual:   2
+
+- [ ] song.3015-reference-sheet
+  - Fixture: 3015_reference_sheet
+  - Prompt: Investigate the song legacy comparison failure for fixture 3015_reference_sheet. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "3015_reference_sheet" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 4
+        actual:   3
+
+- [ ] song.783-einsiedler-kreuzweg
+  - Fixture: 783_einsiedler-kreuzweg
+  - Prompt: Investigate the song legacy comparison failure for fixture 783_einsiedler-kreuzweg. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "783_einsiedler-kreuzweg" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 3
+        actual:   2
+
+- [ ] song.abc-to-song-slur-tuplet-parity
+  - Fixture: abc-to-song-slur-tuplet-parity
+  - Prompt: Investigate the song legacy comparison failure for fixture abc-to-song-slur-tuplet-parity. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "abc-to-song-slur-tuplet-parity" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      meta_data.tempo:
+        expected: {"duration":[0.25],"bpm":120}
+        actual:   undefined
+      meta_data.tempo_display:
+        expected: "1/4=120"
+        actual:   undefined
+      voices.length:
+        expected: 2
+        actual:   1
+
+- [ ] song.decoration
+  - Fixture: decoration
+  - Prompt: Investigate the song legacy comparison failure for fixture decoration. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "decoration" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 2
+        actual:   1
+
+- [ ] song.lyrics
+  - Fixture: lyrics
+  - Prompt: Investigate the song legacy comparison failure for fixture lyrics. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "lyrics" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 2
+        actual:   1
+
+- [ ] song.pause
+  - Fixture: pause
+  - Prompt: Investigate the song legacy comparison failure for fixture pause. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "pause" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 2
+        actual:   1
+
+- [ ] song.repeat
+  - Fixture: repeat
+  - Prompt: Investigate the song legacy comparison failure for fixture repeat. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "repeat" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 2
+        actual:   1
+
+- [ ] song.single-note
+  - Fixture: single_note
+  - Prompt: Investigate the song legacy comparison failure for fixture single_note. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "single_note" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 2
+        actual:   1
+
+- [ ] song.tie
+  - Fixture: tie
+  - Prompt: Investigate the song legacy comparison failure for fixture tie. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "tie" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 2
+        actual:   1
+
+- [ ] song.tuplet
+  - Fixture: tuplet
+  - Prompt: Investigate the song legacy comparison failure for fixture tuplet. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "tuplet" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 2
+        actual:   1
+
+- [ ] song.two-voices
+  - Fixture: two_voices
+  - Prompt: Investigate the song legacy comparison failure for fixture two_voices. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "two_voices" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      voices.length:
+        expected: 3
+        actual:   2
+
+- [ ] song.twostaff
+  - Fixture: Twostaff
+  - Prompt: Investigate the song legacy comparison failure for fixture Twostaff. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "Twostaff" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      meta_data.tempo.bpm:
+        expected: 120
+        actual:   1
+      meta_data.tempo_display:
+        expected: "1/4=120"
+        actual:   "1/4"
+      voices.length:
+        expected: 5
+        actual:   4
 
 - [ ] sheet.246-horch-was-kommt-von-draussen-rein [extract 0]
   - Fixture: 246_Horch-was-kommt-von-draussen-rein

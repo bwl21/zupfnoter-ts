@@ -10,6 +10,7 @@ import {
   resolveFixtureSheetRenderTarget,
   scanFixtureCases,
 } from '../fixtureLoader.js'
+import { normalizeRawSongFixture } from '../semanticMatch.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 import { formatOpenImplementations, getOpenImplementations } from '../../../../../fixtures/openImplementations.js'
 
@@ -48,7 +49,7 @@ describe('fixtureLoader', () => {
 
     expect(fixture.input.abc).toContain('T:Single Note Test')
     expect(fixture.config.layout.SHORTEST_NOTE).toBe(defaultTestConfig.layout.SHORTEST_NOTE)
-    expect(fixture.song?.voices.length).toBeGreaterThan(0)
+    expect(fixture.song).not.toBeNull()
     expect(Object.keys(fixture.sheetExtracts)).toContain('0')
     expect(fixture.sheetExtracts['0']?.children.length).toBeGreaterThan(0)
   })
@@ -62,11 +63,17 @@ describe('fixtureLoader', () => {
     expect(targets[0]?.expected).toEqual(loadSheetExtractFixture('3015_reference_sheet', 0))
   })
 
-  it('loads song fixtures from song.extract-0.json', () => {
+  it('loads song fixtures from song.legacy-raw.json', () => {
     const fixture = loadFixture('repeat')
 
-    expect(fixture.song?.beat_maps).toEqual(loadSongFixture('repeat').beat_maps)
-    expect(fixture.song?.beat_maps).toEqual([{ '0': 0, '48': 48, '96': 96, '144': 144 }])
+    expect(fixture.song).not.toBeNull()
+    const normalized = normalizeRawSongFixture(fixture.song)
+    const expected = normalizeRawSongFixture(loadSongFixture('repeat'))
+    expect(normalized.beat_maps).toEqual(expected.beat_maps)
+    expect(normalized.beat_maps).toEqual([
+      { '0': 0, '48': 48, '96': 96, '144': 144 },
+      { '0': 0, '48': 48, '96': 96, '144': 144 },
+    ])
   })
 
   it('loads extract-specific sheet fixtures for simple single-extract cases', () => {

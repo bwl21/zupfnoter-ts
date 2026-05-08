@@ -31,9 +31,8 @@ export interface PipelineFixture {
     abc: string
   }
   config: ZupfnoterConfig
-  song: SongFixture | null
   /** Raw `@music_model.to_json` dump from the legacy CLI (`song.legacy-raw.json`). */
-  rawSong: unknown
+  song: unknown | null
   sheetExtracts: Record<string, SheetFixture>
   output_svg: string | null
 }
@@ -43,7 +42,6 @@ export interface FixtureCase {
   id: string
   dir: string
   hasSongFixture: boolean
-  hasRawSongFixture: boolean
   hasSheetFixture: boolean
 }
 
@@ -77,10 +75,6 @@ function fixtureCaseDir(name: string): string {
 }
 
 function resolveSongFixturePath(dir: string): string {
-  return resolve(dir, 'song.extract-0.json')
-}
-
-function resolveRawSongFixturePath(dir: string): string {
   return resolve(dir, 'song.legacy-raw.json')
 }
 
@@ -119,8 +113,7 @@ export function scanFixtureCases(): FixtureCase[] {
       name,
       id: name,
       dir,
-      hasSongFixture: existsSync(resolve(dir, 'song.extract-0.json')),
-      hasRawSongFixture: existsSync(resolve(dir, 'song.legacy-raw.json')),
+      hasSongFixture: existsSync(resolve(dir, 'song.legacy-raw.json')),
       hasSheetFixture: listSheetExtractFiles(dir).length > 0,
     }))
     .sort((a, b) => a.id.localeCompare(b.id))
@@ -155,19 +148,14 @@ export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixtu
     dir,
     input: { abc },
     config: fixtureConfigFromAbc(abc),
-    song: safeLoadJson<SongFixture>(resolveSongFixturePath(dir)),
-    rawSong: safeLoadJson<unknown>(resolveRawSongFixturePath(dir)),
+    song: safeLoadJson<unknown>(resolveSongFixturePath(dir)),
     sheetExtracts,
     output_svg: safeLoadText(resolve(dir, 'output.svg')),
   }
 }
 
-export function loadSongFixture(name: string): SongFixture {
-  return loadJson<SongFixture>(resolveSongFixturePath(fixtureCaseDir(name)))
-}
-
-export function loadRawSongFixture(name: string): unknown {
-  return loadJson<unknown>(resolveRawSongFixturePath(fixtureCaseDir(name)))
+export function loadSongFixture(name: string): unknown {
+  return loadJson<unknown>(resolveSongFixturePath(fixtureCaseDir(name)))
 }
 
 export function loadSheetExtractFixture(name: string, extractNr: number | string): SheetFixture {
