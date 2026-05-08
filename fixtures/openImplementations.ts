@@ -20,17 +20,6 @@ export interface DetectedFailure {
 
 const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
   {
-    id: 'song.entity-count',
-    stage: 'song',
-    scope: 'Song voice entity count parity',
-    summary:
-      'Two fixtures (246_Horch-was-kommt-von-draussen-rein, 3015_reference_sheet) have a small entity-count mismatch per voice (off by 1) that is not yet classified. 246_Horch is missing one entity per voice; 3015_reference_sheet has one extra entity per voice.',
-    refs: ['packages/core/src/AbcToSong.ts'],
-    fixtures: ['246_Horch-was-kommt-von-draussen-rein', '3015_reference_sheet'],
-    prompt:
-      'Investigate the entity-count mismatch for 246_Horch-was-kommt-von-draussen-rein (TS missing 1 entity per voice) and 3015_reference_sheet (TS has 1 extra entity per voice). Compare the entity sets (type,pitch,beat) between the TS song output and normalizeRawSongFixture(song.legacy-raw.json) to identify the missing/extra entities, then implement parity in packages/core/src/AbcToSong.ts. Remove this id from fixtures/openImplementations.ts when the song legacy comparison tests pass.',
-  },
-  {
     id: 'sheet.remaining-composite-layout',
     stage: 'sheet',
     scope: 'composite reference layout interactions',
@@ -61,11 +50,11 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     id: 'sheet.horch-entity-count-ripple',
     stage: 'sheet',
     scope: '246_Horch sheet children count',
-    summary: 'Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is 1275 vs expected 1290 (15 missing). Likely a ripple effect from the song.entity-count gap (1 missing entity per voice).',
-    refs: ['packages/core/src/HarpnotesLayout.ts', 'packages/core/src/AbcToSong.ts'],
+    summary: 'Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is 1280 vs expected 1290 (10 missing). The song-level entity-count gap is now resolved; the remaining 10 missing children are from layout-layer differences (likely Pause pitch Math.floor fix cascading into different beat compression/spread).',
+    refs: ['packages/core/src/HarpnotesLayout.ts'],
     fixtures: ['246_Horch-was-kommt-von-draussen-rein'],
     extracts: [0],
-    prompt: 'Investigate the sheet children count mismatch for 246_Horch-was-kommt-von-draussen-rein extract 0. The 15 missing children are likely caused by the song.entity-count gap (1 missing entity per voice in the song model). Fix the song entity count first and verify the sheet output then matches. Remove this id when the sheet comparison test passes.',
+    prompt: 'Investigate the remaining 10 missing sheet children for 246_Horch-was-kommt-von-draussen-rein extract 0. The song entity count now matches, and Pause pitches match. The remaining sheet gap is a new effect from the layout layer.',
   },
   {
     id: 'sheet.lyrics-extra-children',

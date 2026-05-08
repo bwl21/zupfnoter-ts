@@ -151,6 +151,22 @@ export class AbcToSong {
       }
     }
 
+    // DEBUG: count entity types for 246_Horch V:0
+    if (voices.length >= 3 && voices[0].entities.length > 100) {
+      const cnt: Record<string, number> = {}
+      for (const e of voices[0].entities) {
+        cnt[e.type] = (cnt[e.type] || 0) + 1
+      }
+      console.log(`V0_TYPES: ${JSON.stringify(cnt)}`)
+    }
+    if (voices.length >= 4 && voices[3].entities.length > 20 && voices[3].entities.length < 50) {
+      const cnt: Record<string, number> = {}
+      for (const e of voices[3].entities) {
+        cnt[e.type] = (cnt[e.type] || 0) + 1
+      }
+      console.log(`V3_TYPES: ${JSON.stringify(cnt)}`)
+    }
+
     const beatMaps = this._buildBeatMaps(voices)
     const metaData = this._extractMetaData(model)
     if (this._diagnostics.length > 0) {
@@ -283,8 +299,9 @@ export class AbcToSong {
         pitch = prev?.pitch ?? next?.pitch ?? 60
       } else {
         // 'center' (default)
+        // Legacy-Äquivalent zu `(prev_pitch + next_pitch) / 2` (Ruby-Integer-Division)
         if (prev && next) {
-          pitch = Math.round((prev.pitch + next.pitch) / 2)
+          pitch = Math.floor((prev.pitch + next.pitch) / 2)
         } else {
           pitch = prev?.pitch ?? next?.pitch ?? 60
         }
@@ -458,7 +475,7 @@ export class AbcToSong {
 
     // Chord symbols and annotations from extra
     const barMarks = this._consumePendingBarMarks(entity, state, _voiceIndex, sym)
-    const part = this._transformPartAnnotation(sym, entity, state) ?? this._transformInlinePart(sym, entity)
+    const part = this._transformPartAnnotation(sym, entity, state)
     const extras = this._transformExtras(sym, entity, state, _voiceIndex)
     const gotos = this._resolvePendingVariantGotos(entity, state, _voiceIndex, sym)
 
@@ -524,7 +541,7 @@ export class AbcToSong {
       state.nextRepeatStart = false
     }
     const barMarks = this._consumePendingBarMarks(pause, state, voiceIndex, sym)
-    const part = this._transformPartAnnotation(sym, pause, state) ?? this._transformInlinePart(sym, pause)
+    const part = this._transformPartAnnotation(sym, pause, state)
     const extras = this._transformExtras(sym, pause, state, voiceIndex)
     const gotos = this._resolvePendingVariantGotos(pause, state, voiceIndex, sym)
     return [pause, ...barMarks, ...(part ? [part] : []), ...extras, ...gotos]
@@ -547,9 +564,9 @@ export class AbcToSong {
     }
 
     const isRepeatBar = sym.bar_type?.includes(':') ?? false
-    const hasVariantStart = typeof sym.rbstart === 'number' && sym.rbstart > 0 && !isRepeatBar
+    const hasVariantStart = typeof sym.rbstart === 'number' && sym.rbstart > 0
     const variantLabel = sym.text?.trim() ?? ''
-    const startsVariantSection = sym.bar_type === '[|:' || hasVariantStart
+    const startsVariantSection = sym.bar_type === '[|:' || (hasVariantStart && !isRepeatBar)
 
     // Volta bracket entry / exit gotos.
     if (hasVariantStart && state.previousNote) {
@@ -558,7 +575,13 @@ export class AbcToSong {
         state.variantAnchor = state.previousNote
         state.pendingVariantEntrySources.push(state.previousNote)
       } else if (state.variantAnchor) {
-        state.pendingVariantExitSources.push(state.previousNote)
+        // When the variant-start bar is also a repeat end (e.g. |:2),
+        // variant exits are implicit (handled by the repeat Goto) so
+        // we must NOT push an exit source here — it would later create
+        // a duplicate follow Goto.
+        if (!isRepeatBar) {
+          state.pendingVariantExitSources.push(state.previousNote)
+        }
         state.pendingVariantEntrySources.push(state.variantAnchor)
       }
       state.awaitingVariantContinuation = false
@@ -587,10 +610,21 @@ export class AbcToSong {
       state.nextMeasure = false
     }
 
-    // Repeat end → Goto
-    if (sym.bar_type && sym.bar_type.startsWith(':') && state.previousNote) {
+    // Repeat end → Goto.
+    const isRepeatEndByBarType = sym.bar_type?.startsWith(':') ?? false
+    const isRepeatEndByFallback =
+      !isRepeatEndByBarType &&
+      typeof sym.rbstop === 'number' &&
+      sym.rbstop > 0 &&
+      typeof sym.rbstart === 'number' &&
+      sym.rbstart > 0 &&
+      sym.text?.trim() !== '1' &&
+      state.repetitionStack.length > 1
+    const previousNote = state.previousNote
+    const isRepeatEnd = (isRepeatEndByBarType || isRepeatEndByFallback) && previousNote
+    if (isRepeatEnd) {
       const repeatStart = state.repetitionStack[state.repetitionStack.length - 1]
-      if (repeatStart) {
+      if (repeatStart && previousNote) {
         const goto: Goto = {
           type: 'Goto' as const,
           beat: this._timeToBeat(sym.time),
@@ -602,7 +636,7 @@ export class AbcToSong {
           visible: true,
           variant: state.variantNo,
           znId: `goto-${voiceIndex}-${sym.istart}`,
-          from: state.previousNote,
+          from: previousNote,
           to: repeatStart,
           policy: {} as GotoPolicy,
         }
