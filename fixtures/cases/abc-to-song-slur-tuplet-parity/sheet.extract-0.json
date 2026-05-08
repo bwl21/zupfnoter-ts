@@ -4,67 +4,75 @@
     {"type":"FlowLine","style":"solid","color":"black"},
     {"type":"FlowLine","style":"solid","color":"black"},
     {"type":"FlowLine","style":"solid","color":"black"},
-    {"type":"FlowLine","style":"solid","color":"black"},
+    {"type":"Path","color":"black"},
+    {"type":"Path","color":"black"},
     {
-      "type"  :"Ellipse",
-      "center":[60.3,16.2],
-      "size"  :[1.05,0.51],
-      "fill"  :"filled",
+      "type"  :"Annotation",
+      "center":[125.439,29.3191],
+      "text"  :"3",
+      "style" :"small",
       "color" :"black"
     },
     {
-      "type"     :"Glyph",
-      "center"   :[71.8,18.6],
-      "size"     :[1.2,0.6],
-      "glyphName":"rest_16",
-      "color"    :"black"
-    },
-    {
       "type"  :"Ellipse",
-      "center":[83.3,21.8],
-      "size"  :[1.75,0.85],
-      "fill"  :"filled",
-      "color" :"black"
-    },
-    {
-      "type"     :"Glyph",
-      "center"   :[94.8,25.8],
-      "size"     :[1.6,1],
-      "glyphName":"rest_8",
-      "color"    :"black"
-    },
-    {
-      "type"  :"Ellipse",
-      "center":[106.3,30.8],
+      "center":[60.3,18.75],
       "size"  :[2.625,1.275],
       "fill"  :"filled",
       "color" :"black"
     },
     {
-      "type"     :"Glyph",
-      "center"   :[106.3,36.8],
-      "size"     :[1.6,1.5],
-      "glyphName":"rest_4",
-      "color"    :"black"
+      "type"  :"Ellipse",
+      "center":[60.3,16.975],
+      "size"  :[2.625,0.25],
+      "fill"  :"filled",
+      "color" :"black"
+    },
+    {
+      "type"  :"Ellipse",
+      "center":[83.3,24.75],
+      "size"  :[2.625,1.275],
+      "fill"  :"filled",
+      "color" :"black"
+    },
+    {
+      "type"  :"Ellipse",
+      "center":[106.3,30.75],
+      "size"  :[2.625,1.275],
+      "fill"  :"filled",
+      "color" :"black"
+    },
+    {
+      "type"  :"Ellipse",
+      "center":[106.3,36.75],
+      "size"  :[2.625,1.275],
+      "fill"  :"filled",
+      "color" :"black"
+    },
+    {
+      "type"  :"Ellipse",
+      "center":[140.8,42.75],
+      "size"  :[2.625,1.275],
+      "fill"  :"filled",
+      "color" :"black"
     },
     {
       "type"  :"Annotation",
       "center":[320,7],
-      "text"  :"Pause Test",
+      "text"  :"ABC to Song Slur Tuplet Parity",
       "style" :"large",
       "color" :"black"
     },
     {
       "type"  :"Annotation",
       "center":[320,27],
-      "text"  :"alle Stimmen\nZupfnoter TS Tests\nTakt: 4/4 (1/4=120)\nTonart: C",
+      "text"  :"alle Stimmen\n\nTakt: 4/4 (1/4=120)\nTonart: C",
       "style" :"regular",
       "color" :"black"
     },
     {
       "type"  :"Annotation",
       "center":[150,289],
-      "text"  :" - created 2026-05-07 10:57:02 by Zupfnoter v1.17.1-12-gcb353a2b [zupfnoter-cli]",
+      "text"  :" - created 2026-05-07 10:57:01 by Zupfnoter v1.17.1-12-gcb353a2b [zupfnoter-cli]",
       "style" :"smaller",
       "color" :"black"
     },
@@ -78,7 +86,7 @@
     {
       "type"  :"Annotation",
       "center":[380,289],
-      "text"  :"305 935 185",
+      "text"  :"305 849 934",
       "style" :"smaller",
       "color" :"black"
     },

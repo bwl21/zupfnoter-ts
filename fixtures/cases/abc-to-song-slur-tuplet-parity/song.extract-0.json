@@ -1,7 +1,7 @@
 {
   "meta_data": {
-    "title": "Repeat Test",
-    "composer": "Zupfnoter TS Tests",
+    "title": "ABC to Song Slur Tuplet Parity",
+    "composer": "",
     "number": "1",
     "filename": "",
     "meter": [
@@ -9,15 +9,7 @@
     ],
     "key": "C",
     "o_key": "",
-    "tempo": {
-      "duration": [
-        0.25
-      ],
-      "bpm": 120
-    },
-    "tempoDisplay": "1/4=120",
-    "tempo_display": "1/4=120",
-    "checksum": "305 890 487"
+    "checksum": "305 849 934"
   },
   "voices": [
     {
@@ -49,26 +41,28 @@
           "visible": true,
           "pitch": 52,
           "duration": 16,
-          "tieStart": false,
+          "tieStart": true,
           "tieEnd": false
         },
         {
           "type": "Note",
-          "beat": 144,
+          "beat": 128,
           "variant": 0,
           "visible": true,
-          "pitch": 53,
+          "pitch": 52,
+          "duration": 16,
+          "tieStart": false,
+          "tieEnd": true
+        },
+        {
+          "type": "Note",
+          "beat": 160,
+          "variant": 0,
+          "visible": true,
+          "pitch": 55,
           "duration": 16,
           "tieStart": false,
           "tieEnd": false
-        },
-        {
-          "type": "Goto",
-          "beat": 192,
-          "variant": 0,
-          "visible": true,
-          "from": 144,
-          "to": 0
         }
       ]
     }
@@ -78,7 +72,8 @@
       "0": 0,
       "48": 48,
       "96": 96,
-      "144": 144
+      "128": 128,
+      "160": 160
     }
   ]
 }

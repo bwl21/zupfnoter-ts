@@ -33,7 +33,7 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
     "origin": {
       "barDecorations": [],
       "beat": 0,
-      "countNote": null,
+      "countNote": "4",
       "decorations": [],
       "duration": 16,
       "endPos": [
@@ -62,7 +62,7 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
       "type": "Note",
       "variant": 0,
       "visible": true,
-      "znId": "0-88",
+      "znId": "0",
     },
     "size": [
       2.625,

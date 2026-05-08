@@ -1,0 +1,1980 @@
+{
+  "voices": [
+    [
+      {
+        "type": 14,
+        "dur": 0,
+        "fname": "abc",
+        "istart": 51,
+        "iend": 60,
+        "tempo_notes": [
+          384
+        ],
+        "tempo": 120,
+        "v": 0,
+        "st": 0,
+        "time": 0,
+        "seqst": true,
+        "ptim": 0,
+        "start_pos": [
+          6,
+          1
+        ],
+        "end_pos": [
+          6,
+          9
+        ]
+      },
+      {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 107,
+          "endChar": 108,
+          "start_pos": [
+            10,
+            11
+          ],
+          "end_pos": [
+            10,
+            12
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 107,
+            "notes": [
+              {
+                "pit": 16,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 202,
+                "midi": 48
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 0,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 108,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 0,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              11
+            ],
+            "end_pos": [
+              10,
+              12
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "1",
+        "@pitch": 48,
+        "@next_pitch": 50,
+        "@prev_pitch": 48,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 0,
+        "@znid": "0",
+        "@start_pos": [
+          10,
+          11
+        ],
+        "@end_pos": [
+          10,
+          12
+        ],
+        "@variant": 0,
+        "@measure_start": true,
+        "@first_in_part": true,
+        "@beat": 0
+      },
+      {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 109,
+          "endChar": 110,
+          "start_pos": [
+            10,
+            13
+          ],
+          "end_pos": [
+            10,
+            14
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 109,
+            "notes": [
+              {
+                "pit": 17,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 208,
+                "midi": 50
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 384,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 110,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 0.5,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              13
+            ],
+            "end_pos": [
+              10,
+              14
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "2",
+        "@pitch": 50,
+        "@next_pitch": 52,
+        "@prev_pitch": 48,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 384,
+        "@znid": "384",
+        "@start_pos": [
+          10,
+          13
+        ],
+        "@end_pos": [
+          10,
+          14
+        ],
+        "@variant": 0,
+        "@beat": 48
+      },
+      {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 111,
+          "endChar": 112,
+          "start_pos": [
+            10,
+            15
+          ],
+          "end_pos": [
+            10,
+            16
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 111,
+            "notes": [
+              {
+                "pit": 18,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 214,
+                "midi": 52
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 768,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 112,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 1,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              15
+            ],
+            "end_pos": [
+              10,
+              16
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "3",
+        "@pitch": 52,
+        "@next_pitch": 53,
+        "@prev_pitch": 50,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 768,
+        "@znid": "768",
+        "@start_pos": [
+          10,
+          15
+        ],
+        "@end_pos": [
+          10,
+          16
+        ],
+        "@variant": 0,
+        "@beat": 96
+      },
+      {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 113,
+          "endChar": 114,
+          "start_pos": [
+            10,
+            17
+          ],
+          "end_pos": [
+            10,
+            18
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 113,
+            "notes": [
+              {
+                "pit": 19,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 219,
+                "midi": 53
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 1152,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 114,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 1.5,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              17
+            ],
+            "end_pos": [
+              10,
+              18
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "4",
+        "@pitch": 53,
+        "@next_pitch": 53,
+        "@prev_pitch": 52,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 1152,
+        "@znid": "1152",
+        "@start_pos": [
+          10,
+          17
+        ],
+        "@end_pos": [
+          10,
+          18
+        ],
+        "@variant": 0,
+        "@beat": 144
+      },
+      {
+        "class": "Harpnotes::Music::Goto",
+        "@visible": true,
+        "@origin": null,
+        "@decorations": [],
+        "@bardecorations": [],
+        "@from": {
+          "class": "Harpnotes::Music::Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 113,
+            "endChar": 114,
+            "start_pos": [
+              10,
+              17
+            ],
+            "end_pos": [
+              10,
+              18
+            ],
+            "raw_voice_element": {
+              "type": 8,
+              "fname": "abc",
+              "stem": 0,
+              "multi": 0,
+              "nhd": 0,
+              "xmx": 0,
+              "istart": 113,
+              "notes": [
+                {
+                  "pit": 19,
+                  "shhd": 0,
+                  "shac": 0,
+                  "dur": 384,
+                  "b40": 219,
+                  "midi": 53
+                }
+              ],
+              "dur_orig": 384,
+              "dur": 384,
+              "v": 0,
+              "st": 0,
+              "time": 1152,
+              "pos": {
+                "dyn": 0,
+                "gch": 0,
+                "gst": 0,
+                "orn": 0,
+                "stm": 0,
+                "voc": 0,
+                "vol": 0
+              },
+              "iend": 114,
+              "beam_end": true,
+              "seqst": true,
+              "ptim": 1.5,
+              "pdur": 0.5,
+              "instr": 0,
+              "start_pos": [
+                10,
+                17
+              ],
+              "end_pos": [
+                10,
+                18
+              ]
+            }
+          },
+          "@decorations": [],
+          "@bardecorations": [],
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@count_note": "4",
+          "@pitch": 53,
+          "@next_pitch": 53,
+          "@prev_pitch": 52,
+          "@duration": 16,
+          "@measure_count": 1,
+          "@lyrics": "",
+          "@time": 1152,
+          "@znid": "1152",
+          "@start_pos": [
+            10,
+            17
+          ],
+          "@end_pos": [
+            10,
+            18
+          ],
+          "@variant": 0,
+          "@beat": 144
+        },
+        "@to": {
+          "class": "Harpnotes::Music::Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 107,
+            "endChar": 108,
+            "start_pos": [
+              10,
+              11
+            ],
+            "end_pos": [
+              10,
+              12
+            ],
+            "raw_voice_element": {
+              "type": 8,
+              "fname": "abc",
+              "stem": 0,
+              "multi": 0,
+              "nhd": 0,
+              "xmx": 0,
+              "istart": 107,
+              "notes": [
+                {
+                  "pit": 16,
+                  "shhd": 0,
+                  "shac": 0,
+                  "dur": 384,
+                  "b40": 202,
+                  "midi": 48
+                }
+              ],
+              "dur_orig": 384,
+              "dur": 384,
+              "v": 0,
+              "st": 0,
+              "time": 0,
+              "pos": {
+                "dyn": 0,
+                "gch": 0,
+                "gst": 0,
+                "orn": 0,
+                "stm": 0,
+                "voc": 0,
+                "vol": 0
+              },
+              "iend": 108,
+              "beam_end": true,
+              "seqst": true,
+              "ptim": 0,
+              "pdur": 0.5,
+              "instr": 0,
+              "start_pos": [
+                10,
+                11
+              ],
+              "end_pos": [
+                10,
+                12
+              ]
+            }
+          },
+          "@decorations": [],
+          "@bardecorations": [],
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@count_note": "1",
+          "@pitch": 48,
+          "@next_pitch": 50,
+          "@prev_pitch": 48,
+          "@duration": 16,
+          "@measure_count": 1,
+          "@lyrics": "",
+          "@time": 0,
+          "@znid": "0",
+          "@start_pos": [
+            10,
+            11
+          ],
+          "@end_pos": [
+            10,
+            12
+          ],
+          "@variant": 0,
+          "@measure_start": true,
+          "@first_in_part": true,
+          "@beat": 0
+        },
+        "@policy": {
+          "distance": 2,
+          "is_repeat": true,
+          "level": 2,
+          "conf_key": "notebound.c_jumplines.v_1.1152.p_repeat"
+        },
+        "@conf_key": "notebound.c_jumplines.v_1.1152.p_repeat"
+      }
+    ],
+    [
+      {
+        "type": 14,
+        "dur": 0,
+        "fname": "abc",
+        "istart": 51,
+        "iend": 60,
+        "tempo_notes": [
+          384
+        ],
+        "tempo": 120,
+        "v": 0,
+        "st": 0,
+        "time": 0,
+        "seqst": true,
+        "ptim": 0,
+        "start_pos": [
+          6,
+          1
+        ],
+        "end_pos": [
+          6,
+          9
+        ]
+      },
+      {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 107,
+          "endChar": 108,
+          "start_pos": [
+            10,
+            11
+          ],
+          "end_pos": [
+            10,
+            12
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 107,
+            "notes": [
+              {
+                "pit": 16,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 202,
+                "midi": 48
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 0,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 108,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 0,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              11
+            ],
+            "end_pos": [
+              10,
+              12
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "1",
+        "@pitch": 48,
+        "@next_pitch": 50,
+        "@prev_pitch": 48,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 0,
+        "@znid": "0",
+        "@start_pos": [
+          10,
+          11
+        ],
+        "@end_pos": [
+          10,
+          12
+        ],
+        "@variant": 0,
+        "@measure_start": true,
+        "@first_in_part": true,
+        "@beat": 0
+      },
+      {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 109,
+          "endChar": 110,
+          "start_pos": [
+            10,
+            13
+          ],
+          "end_pos": [
+            10,
+            14
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 109,
+            "notes": [
+              {
+                "pit": 17,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 208,
+                "midi": 50
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 384,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 110,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 0.5,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              13
+            ],
+            "end_pos": [
+              10,
+              14
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "2",
+        "@pitch": 50,
+        "@next_pitch": 52,
+        "@prev_pitch": 48,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 384,
+        "@znid": "384",
+        "@start_pos": [
+          10,
+          13
+        ],
+        "@end_pos": [
+          10,
+          14
+        ],
+        "@variant": 0,
+        "@beat": 48
+      },
+      {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 111,
+          "endChar": 112,
+          "start_pos": [
+            10,
+            15
+          ],
+          "end_pos": [
+            10,
+            16
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 111,
+            "notes": [
+              {
+                "pit": 18,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 214,
+                "midi": 52
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 768,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 112,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 1,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              15
+            ],
+            "end_pos": [
+              10,
+              16
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "3",
+        "@pitch": 52,
+        "@next_pitch": 53,
+        "@prev_pitch": 50,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 768,
+        "@znid": "768",
+        "@start_pos": [
+          10,
+          15
+        ],
+        "@end_pos": [
+          10,
+          16
+        ],
+        "@variant": 0,
+        "@beat": 96
+      },
+      {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 113,
+          "endChar": 114,
+          "start_pos": [
+            10,
+            17
+          ],
+          "end_pos": [
+            10,
+            18
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 113,
+            "notes": [
+              {
+                "pit": 19,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 219,
+                "midi": 53
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 1152,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 114,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 1.5,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              17
+            ],
+            "end_pos": [
+              10,
+              18
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "4",
+        "@pitch": 53,
+        "@next_pitch": 53,
+        "@prev_pitch": 52,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 1152,
+        "@znid": "1152",
+        "@start_pos": [
+          10,
+          17
+        ],
+        "@end_pos": [
+          10,
+          18
+        ],
+        "@variant": 0,
+        "@beat": 144
+      },
+      {
+        "class": "Harpnotes::Music::Goto",
+        "@visible": true,
+        "@origin": null,
+        "@decorations": [],
+        "@bardecorations": [],
+        "@from": {
+          "class": "Harpnotes::Music::Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 113,
+            "endChar": 114,
+            "start_pos": [
+              10,
+              17
+            ],
+            "end_pos": [
+              10,
+              18
+            ],
+            "raw_voice_element": {
+              "type": 8,
+              "fname": "abc",
+              "stem": 0,
+              "multi": 0,
+              "nhd": 0,
+              "xmx": 0,
+              "istart": 113,
+              "notes": [
+                {
+                  "pit": 19,
+                  "shhd": 0,
+                  "shac": 0,
+                  "dur": 384,
+                  "b40": 219,
+                  "midi": 53
+                }
+              ],
+              "dur_orig": 384,
+              "dur": 384,
+              "v": 0,
+              "st": 0,
+              "time": 1152,
+              "pos": {
+                "dyn": 0,
+                "gch": 0,
+                "gst": 0,
+                "orn": 0,
+                "stm": 0,
+                "voc": 0,
+                "vol": 0
+              },
+              "iend": 114,
+              "beam_end": true,
+              "seqst": true,
+              "ptim": 1.5,
+              "pdur": 0.5,
+              "instr": 0,
+              "start_pos": [
+                10,
+                17
+              ],
+              "end_pos": [
+                10,
+                18
+              ]
+            }
+          },
+          "@decorations": [],
+          "@bardecorations": [],
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@count_note": "4",
+          "@pitch": 53,
+          "@next_pitch": 53,
+          "@prev_pitch": 52,
+          "@duration": 16,
+          "@measure_count": 1,
+          "@lyrics": "",
+          "@time": 1152,
+          "@znid": "1152",
+          "@start_pos": [
+            10,
+            17
+          ],
+          "@end_pos": [
+            10,
+            18
+          ],
+          "@variant": 0,
+          "@beat": 144
+        },
+        "@to": {
+          "class": "Harpnotes::Music::Note",
+          "@visible": true,
+          "@origin": {
+            "startChar": 107,
+            "endChar": 108,
+            "start_pos": [
+              10,
+              11
+            ],
+            "end_pos": [
+              10,
+              12
+            ],
+            "raw_voice_element": {
+              "type": 8,
+              "fname": "abc",
+              "stem": 0,
+              "multi": 0,
+              "nhd": 0,
+              "xmx": 0,
+              "istart": 107,
+              "notes": [
+                {
+                  "pit": 16,
+                  "shhd": 0,
+                  "shac": 0,
+                  "dur": 384,
+                  "b40": 202,
+                  "midi": 48
+                }
+              ],
+              "dur_orig": 384,
+              "dur": 384,
+              "v": 0,
+              "st": 0,
+              "time": 0,
+              "pos": {
+                "dyn": 0,
+                "gch": 0,
+                "gst": 0,
+                "orn": 0,
+                "stm": 0,
+                "voc": 0,
+                "vol": 0
+              },
+              "iend": 108,
+              "beam_end": true,
+              "seqst": true,
+              "ptim": 0,
+              "pdur": 0.5,
+              "instr": 0,
+              "start_pos": [
+                10,
+                11
+              ],
+              "end_pos": [
+                10,
+                12
+              ]
+            }
+          },
+          "@decorations": [],
+          "@bardecorations": [],
+          "@slur_starts": [],
+          "@slur_ends": [],
+          "@tie_start": false,
+          "@tie_end": false,
+          "@tuplet": 1,
+          "@tuplet_start": null,
+          "@tuplet_end": null,
+          "@count_note": "1",
+          "@pitch": 48,
+          "@next_pitch": 50,
+          "@prev_pitch": 48,
+          "@duration": 16,
+          "@measure_count": 1,
+          "@lyrics": "",
+          "@time": 0,
+          "@znid": "0",
+          "@start_pos": [
+            10,
+            11
+          ],
+          "@end_pos": [
+            10,
+            12
+          ],
+          "@variant": 0,
+          "@measure_start": true,
+          "@first_in_part": true,
+          "@beat": 0
+        },
+        "@policy": {
+          "distance": 2,
+          "is_repeat": true,
+          "level": 2,
+          "conf_key": "notebound.c_jumplines.v_1.1152.p_repeat"
+        },
+        "@conf_key": "notebound.c_jumplines.v_1.1152.p_repeat"
+      }
+    ]
+  ],
+  "beat_maps": [
+    {
+      "0": {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 107,
+          "endChar": 108,
+          "start_pos": [
+            10,
+            11
+          ],
+          "end_pos": [
+            10,
+            12
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 107,
+            "notes": [
+              {
+                "pit": 16,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 202,
+                "midi": 48
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 0,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 108,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 0,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              11
+            ],
+            "end_pos": [
+              10,
+              12
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "1",
+        "@pitch": 48,
+        "@next_pitch": 50,
+        "@prev_pitch": 48,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 0,
+        "@znid": "0",
+        "@start_pos": [
+          10,
+          11
+        ],
+        "@end_pos": [
+          10,
+          12
+        ],
+        "@variant": 0,
+        "@measure_start": true,
+        "@first_in_part": true,
+        "@beat": 0
+      },
+      "48": {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 109,
+          "endChar": 110,
+          "start_pos": [
+            10,
+            13
+          ],
+          "end_pos": [
+            10,
+            14
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 109,
+            "notes": [
+              {
+                "pit": 17,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 208,
+                "midi": 50
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 384,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 110,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 0.5,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              13
+            ],
+            "end_pos": [
+              10,
+              14
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "2",
+        "@pitch": 50,
+        "@next_pitch": 52,
+        "@prev_pitch": 48,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 384,
+        "@znid": "384",
+        "@start_pos": [
+          10,
+          13
+        ],
+        "@end_pos": [
+          10,
+          14
+        ],
+        "@variant": 0,
+        "@beat": 48
+      },
+      "96": {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 111,
+          "endChar": 112,
+          "start_pos": [
+            10,
+            15
+          ],
+          "end_pos": [
+            10,
+            16
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 111,
+            "notes": [
+              {
+                "pit": 18,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 214,
+                "midi": 52
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 768,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 112,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 1,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              15
+            ],
+            "end_pos": [
+              10,
+              16
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "3",
+        "@pitch": 52,
+        "@next_pitch": 53,
+        "@prev_pitch": 50,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 768,
+        "@znid": "768",
+        "@start_pos": [
+          10,
+          15
+        ],
+        "@end_pos": [
+          10,
+          16
+        ],
+        "@variant": 0,
+        "@beat": 96
+      },
+      "144": {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 113,
+          "endChar": 114,
+          "start_pos": [
+            10,
+            17
+          ],
+          "end_pos": [
+            10,
+            18
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 113,
+            "notes": [
+              {
+                "pit": 19,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 219,
+                "midi": 53
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 1152,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 114,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 1.5,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              17
+            ],
+            "end_pos": [
+              10,
+              18
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "4",
+        "@pitch": 53,
+        "@next_pitch": 53,
+        "@prev_pitch": 52,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 1152,
+        "@znid": "1152",
+        "@start_pos": [
+          10,
+          17
+        ],
+        "@end_pos": [
+          10,
+          18
+        ],
+        "@variant": 0,
+        "@beat": 144
+      }
+    },
+    {
+      "0": {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 107,
+          "endChar": 108,
+          "start_pos": [
+            10,
+            11
+          ],
+          "end_pos": [
+            10,
+            12
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 107,
+            "notes": [
+              {
+                "pit": 16,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 202,
+                "midi": 48
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 0,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 108,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 0,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              11
+            ],
+            "end_pos": [
+              10,
+              12
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "1",
+        "@pitch": 48,
+        "@next_pitch": 50,
+        "@prev_pitch": 48,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 0,
+        "@znid": "0",
+        "@start_pos": [
+          10,
+          11
+        ],
+        "@end_pos": [
+          10,
+          12
+        ],
+        "@variant": 0,
+        "@measure_start": true,
+        "@first_in_part": true,
+        "@beat": 0
+      },
+      "48": {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 109,
+          "endChar": 110,
+          "start_pos": [
+            10,
+            13
+          ],
+          "end_pos": [
+            10,
+            14
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 109,
+            "notes": [
+              {
+                "pit": 17,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 208,
+                "midi": 50
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 384,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 110,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 0.5,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              13
+            ],
+            "end_pos": [
+              10,
+              14
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "2",
+        "@pitch": 50,
+        "@next_pitch": 52,
+        "@prev_pitch": 48,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 384,
+        "@znid": "384",
+        "@start_pos": [
+          10,
+          13
+        ],
+        "@end_pos": [
+          10,
+          14
+        ],
+        "@variant": 0,
+        "@beat": 48
+      },
+      "96": {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 111,
+          "endChar": 112,
+          "start_pos": [
+            10,
+            15
+          ],
+          "end_pos": [
+            10,
+            16
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 111,
+            "notes": [
+              {
+                "pit": 18,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 214,
+                "midi": 52
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 768,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 112,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 1,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              15
+            ],
+            "end_pos": [
+              10,
+              16
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "3",
+        "@pitch": 52,
+        "@next_pitch": 53,
+        "@prev_pitch": 50,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 768,
+        "@znid": "768",
+        "@start_pos": [
+          10,
+          15
+        ],
+        "@end_pos": [
+          10,
+          16
+        ],
+        "@variant": 0,
+        "@beat": 96
+      },
+      "144": {
+        "class": "Harpnotes::Music::Note",
+        "@visible": true,
+        "@origin": {
+          "startChar": 113,
+          "endChar": 114,
+          "start_pos": [
+            10,
+            17
+          ],
+          "end_pos": [
+            10,
+            18
+          ],
+          "raw_voice_element": {
+            "type": 8,
+            "fname": "abc",
+            "stem": 0,
+            "multi": 0,
+            "nhd": 0,
+            "xmx": 0,
+            "istart": 113,
+            "notes": [
+              {
+                "pit": 19,
+                "shhd": 0,
+                "shac": 0,
+                "dur": 384,
+                "b40": 219,
+                "midi": 53
+              }
+            ],
+            "dur_orig": 384,
+            "dur": 384,
+            "v": 0,
+            "st": 0,
+            "time": 1152,
+            "pos": {
+              "dyn": 0,
+              "gch": 0,
+              "gst": 0,
+              "orn": 0,
+              "stm": 0,
+              "voc": 0,
+              "vol": 0
+            },
+            "iend": 114,
+            "beam_end": true,
+            "seqst": true,
+            "ptim": 1.5,
+            "pdur": 0.5,
+            "instr": 0,
+            "start_pos": [
+              10,
+              17
+            ],
+            "end_pos": [
+              10,
+              18
+            ]
+          }
+        },
+        "@decorations": [],
+        "@bardecorations": [],
+        "@slur_starts": [],
+        "@slur_ends": [],
+        "@tie_start": false,
+        "@tie_end": false,
+        "@tuplet": 1,
+        "@tuplet_start": null,
+        "@tuplet_end": null,
+        "@count_note": "4",
+        "@pitch": 53,
+        "@next_pitch": 53,
+        "@prev_pitch": 52,
+        "@duration": 16,
+        "@measure_count": 1,
+        "@lyrics": "",
+        "@time": 1152,
+        "@znid": "1152",
+        "@start_pos": [
+          10,
+          17
+        ],
+        "@end_pos": [
+          10,
+          18
+        ],
+        "@variant": 0,
+        "@beat": 144
+      }
+    }
+  ],
+  "meta_data": {
+    "number": "1",
+    "composer": "Zupfnoter TS Tests",
+    "title": "Repeat Test",
+    "filename": "",
+    "tempo": {
+      "duration": [
+        0.25
+      ],
+      "bpm": 120,
+      "sym": {
+        "type": 14,
+        "dur": 0,
+        "fname": "abc",
+        "istart": 51,
+        "iend": 60,
+        "tempo_notes": [
+          384
+        ],
+        "tempo": 120,
+        "v": 0,
+        "st": 0,
+        "time": 0,
+        "seqst": true,
+        "ptim": 0,
+        "start_pos": [
+          6,
+          1
+        ],
+        "end_pos": [
+          6,
+          9
+        ]
+      }
+    },
+    "tempo_display": "1/4=120",
+    "meter": [
+      "4/4"
+    ],
+    "key": "C",
+    "o_key": ""
+  },
+  "harpnote_options": {
+    "lyrics": {
+      "text": null
+    },
+    "template": {
+      "filebase": "-no-template-",
+      "title": "- no template -"
+    },
+    "print": [
+      {
+        "title": "alle Stimmen",
+        "view_id": 0,
+        "filenamepart": "alle_Stimmen"
+      }
+    ]
+  }
+}

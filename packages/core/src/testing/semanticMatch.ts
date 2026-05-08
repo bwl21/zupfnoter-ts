@@ -28,6 +28,8 @@ export interface EntityFixture {
   tieEnd?: boolean
   from?: number
   to?: number
+  /** Allow additional fields produced by the legacy raw exporter. */
+  [extraField: string]: unknown
 }
 
 export interface VoiceFixture {
@@ -399,6 +401,105 @@ export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchRe
 // ---------------------------------------------------------------------------
 // Vitest custom matcher (optional convenience)
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Raw legacy fixture support
+//
+// The legacy CLI exports `song.legacy-raw.json` from `@music_model.to_json`,
+// which uses Ruby instance-variable names ("@pitch", "@duration", …) and
+// `class: "Harpnotes::Music::Note"` for the entity type. Voices are arrays
+// whose first element is an abc2svg tune header (no `class`), followed by
+// the actual music entities. Beat-map values are full entity objects.
+//
+// `normalizeRawSongFixture` rewrites the raw shape into the SongFixture
+// shape consumed by `matchSong`, so the comparator does not need to know
+// about raw at all.
+// ---------------------------------------------------------------------------
+
+const RAW_CLASS_TO_TYPE: Record<string, EntityFixture['type']> = {
+  'Harpnotes::Music::Note':                'Note',
+  'Harpnotes::Music::Pause':               'Pause',
+  'Harpnotes::Music::SynchPoint':          'SynchPoint',
+  'Harpnotes::Music::Goto':                'Goto',
+  'Harpnotes::Music::Chordsymbol':         'Chordsymbol',
+  'Harpnotes::Music::NoteBoundAnnotation': 'NoteBoundAnnotation',
+  'Harpnotes::Music::MeasureStart':        'MeasureStart',
+  'Harpnotes::Music::NewPart':             'NewPart',
+}
+
+function isRawEntity(value: unknown): value is Record<string, unknown> {
+  return (
+    typeof value === 'object' && value !== null && typeof (value as Record<string, unknown>).class === 'string'
+  )
+}
+
+function normalizeRawEntity(entity: Record<string, unknown>): EntityFixture {
+  const cls = entity.class as string
+  const out: EntityFixture = { type: RAW_CLASS_TO_TYPE[cls] ?? cls }
+  if ('@beat'      in entity) out.beat     = entity['@beat']      as number
+  if ('@variant'   in entity) out.variant  = entity['@variant']   as 0 | 1 | 2
+  if ('@visible'   in entity) out.visible  = entity['@visible']   as boolean
+  if ('@pitch'     in entity) out.pitch    = entity['@pitch']     as number
+  if ('@duration'  in entity) out.duration = entity['@duration']  as number
+  if ('@tie_start' in entity) out.tieStart = entity['@tie_start'] as boolean
+  if ('@tie_end'   in entity) out.tieEnd   = entity['@tie_end']   as boolean
+  if (out.type === 'Goto') {
+    const from = entity['@from']
+    const to   = entity['@to']
+    if (isRawEntity(from) && '@beat' in from) out.from = from['@beat'] as number
+    if (isRawEntity(to)   && '@beat' in to)   out.to   = to['@beat']   as number
+  }
+  return out
+}
+
+function normalizeRawVoice(voice: unknown): VoiceFixture {
+  if (!Array.isArray(voice)) return { entities: [] }
+  return { entities: voice.filter(isRawEntity).map(normalizeRawEntity) }
+}
+
+function normalizeRawBeatMap(beatMap: unknown): Record<string, number> {
+  if (typeof beatMap !== 'object' || beatMap === null) return {}
+  return Object.fromEntries(
+    Object.entries(beatMap as Record<string, unknown>).flatMap(([key, value]) => {
+      if (isRawEntity(value) && '@beat' in value) return [[key, (value as Record<string, unknown>)['@beat'] as number]]
+      if (typeof value === 'number') return [[key, value]]
+      return []
+    }),
+  )
+}
+
+function normalizeRawMetaData(meta: Record<string, unknown> | undefined): Record<string, unknown> {
+  if (!meta) return {}
+  // Drop the abc2svg `sym` block under `tempo` — it is the internal abc parser
+  // node that the TS pipeline must never carry through, so comparing it would
+  // be pure noise.
+  const tempo = meta.tempo
+  if (tempo && typeof tempo === 'object' && 'sym' in tempo) {
+    const { sym: _sym, ...tempoRest } = tempo as Record<string, unknown>
+    return { ...meta, tempo: tempoRest }
+  }
+  return meta
+}
+
+/**
+ * Converts a raw legacy song JSON (`song.legacy-raw.json`) into the
+ * SongFixture shape consumed by `matchSong`. Top-level fields that the TS
+ * pipeline does not yet emit (`harpnote_options`, abc2svg tune headers,
+ * `tempo.sym` …) are intentionally dropped to keep the comparator focused on
+ * the fields that are in scope for parity today.
+ */
+export function normalizeRawSongFixture(raw: unknown): SongFixture {
+  const r = raw as {
+    voices?: unknown[]
+    beat_maps?: unknown[]
+    meta_data?: Record<string, unknown>
+  }
+  return {
+    meta_data: normalizeRawMetaData(r.meta_data),
+    voices:    (r.voices    ?? []).map(normalizeRawVoice),
+    beat_maps: (r.beat_maps ?? []).map(normalizeRawBeatMap),
+  }
+}
 
 /**
  * Formats a MatchResult into a readable error message for test output.

@@ -10,172 +10,55 @@
 export const OPEN_IMPLEMENTATIONS_TEMPLATE = 
 [
   {
-    "id": "song.02-twostaff-unclassified",
-    "stage": "song",
-    "scope": "02_twoStaff",
-    "summary": "Unclassified song legacy comparison failure detected for 02_twoStaff.",
+    "id": "sheet.246-horch-was-kommt-von-draussen-rein-extract-0-unclassified",
+    "stage": "sheet",
+    "scope": "246_Horch-was-kommt-von-draussen-rein [extract 0]",
+    "summary": "Unclassified sheet legacy comparison failure detected for 246_Horch-was-kommt-von-draussen-rein extract 0.",
     "refs": [
-      "packages/core/src/AbcToSong.ts"
+      "packages/core/src/HarpnotesLayout.ts"
     ],
     "fixtures": [
-      "02_twoStaff"
+      "246_Horch-was-kommt-von-draussen-rein"
     ],
-    "prompt": "Investigate the song legacy comparison failure for fixture 02_twoStaff. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"02_twoStaff\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.checksum:\n    expected: \"621 756 992\"\n    actual:   \"621 756 992 0\"\n  meta_data.composer:\n    expected: \"Bernhard Weichel\\nBernhard Weichel\\nBernhard Weichel\\nBWV 244-54\\nBWV 252\\nBWV 325\\nMetallicA\\nHarpnotes by Bernhard Weichel\\nNotensatz: Bernhard Weichel\\nAlbert Frey\"\n    actual:   \"Albert Frey\"\n  meta_data.filename:\n    expected: \"\"\n    actual:   undefined\n  meta_data.key:\n    expected: \"A\"\n    actual:   \"Amaj\"\n  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.meter:\n    expected: \"4/8, 4/4, 4/4, C, 4/4, 4/4, 3/4, 6/8, 4/4, 4/4, 4/2, 4/2, 4/4, 4/4\"\n    actual:   \"4/4\"\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":\"\"}\n    actual:   undefined\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  meta_data.title:\n    expected: \"Zupfnoter test - Twostaff.abc\\nZupfnoter test parts\\nZupfnoter test pausen\\nO Haupt voll Blut und Wunden\\nNun danket alle Gott\\nHeilig, heilig\\nGreen Fields of France\\nNothing else Matters\\nHighland Cathedral\\nHighland Cathedral (Bernhard)\\nHighland Cathedral (Bernhard)\\nHighland Cathedral\\nStern auf den ich schaue\\nFür den König\"\n    actual:   \"Für den König\"\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":\"\"}}\n    actual:   undefined"
+    "extracts": [
+      0
+    ],
+    "prompt": "Investigate the sheet legacy comparison failure for fixture 246_Horch-was-kommt-von-draussen-rein extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t \"246_Horch-was-kommt-von-draussen-rein [extract 0]\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
+    "mismatchSummary": "  children.length:\n    expected: 1290\n    actual:   1275"
   },
   {
-    "id": "song.3015-reference-sheet-unclassified",
-    "stage": "song",
-    "scope": "3015_reference_sheet",
-    "summary": "Unclassified song legacy comparison failure detected for 3015_reference_sheet.",
+    "id": "sheet.abc-to-song-slur-tuplet-parity-extract-0-unclassified",
+    "stage": "sheet",
+    "scope": "abc-to-song-slur-tuplet-parity [extract 0]",
+    "summary": "Unclassified sheet legacy comparison failure detected for abc-to-song-slur-tuplet-parity extract 0.",
     "refs": [
-      "packages/core/src/AbcToSong.ts"
+      "packages/core/src/HarpnotesLayout.ts"
     ],
     "fixtures": [
-      "3015_reference_sheet"
+      "abc-to-song-slur-tuplet-parity"
     ],
-    "prompt": "Investigate the song legacy comparison failure for fixture 3015_reference_sheet. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"3015_reference_sheet\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":182,\"iend\":191,\"tempo_notes\":[384],\"tempo\":120,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[13,1],\"end_pos\":[13,9]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":[\"Notes\",\"\",\"(1) full note\",\"(2) half note\",\"(3) quarter note\",\"(4) eighth note\",\"(5) sixteenth note\",\"(6) punctuated half note\",\"(7) punctuated quarter note\",\"\",\"Rests\",\"\",\"(11) full rest\",\"(12) half rest\",\"(13) quarter rest\",\"(14) eighth  rest\",\"(15) sixteenth rest\",\"(16) punctuated half rest\",\"(17) punctuated quarter rest\",\"\",\"Notebound elements\",\"\",\"(20) measure bar\",\"(21) unison\",\"(22) triplet\",\"(23) tie\",\"(24) repeat signs\",\"(25) jumpline for repeat\",\"(26) synchline for unison\",\"(27) part note\",\"(28) countnotes\",\"(29) barnumbers\",\"(30) decoration (fermata)\",\"\",\"Connection lines\",\"\",\"(31) flowline\",\"(32) synchline\",\"(33) subflowline\",\"\",\"Sheet annotation\",\"\",\"(34) legend\",\"(35) extract title in legend\",\"(36) lyrics\",\"(37) string names\",\"(38) string marks\",\"(39) cutmarks\",\"\",\"Variant ending\",\"\",\"(50) variant ending\",\"(51) input line\",\"(52) output line\",\"(53) followiup line\",\"\",\"Organizational items\",\"\",\"(70) input filename\",\"(71) creation note\",\"(72) advertising Zupfnoter\",\"(73) Fingerprint\",\"\",\"Sheet notes by preset\",\"\",\"(74) T04 to order\",\"(75) T02 Copryright music\",\"(76) T03 Coppyright harpnotes\",\"(77) T99 do not copy\",\"(78) T01 Number\",\"(79) T01 Number extract\"]}}\n    actual:   undefined\n  voices[0].entities.length:\n    expected: 38\n    actual:   39\n  voices[1].entities.length:\n    expected: 30\n    actual:   31"
+    "extracts": [
+      0
+    ],
+    "prompt": "Investigate the sheet legacy comparison failure for fixture abc-to-song-slur-tuplet-parity extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t \"abc-to-song-slur-tuplet-parity [extract 0]\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
+    "mismatchSummary": "  children[14].text:\n    expected: \"alle Stimmen\\n\\nTakt: 4/4 (1/4=120)\\nTonart: C\"\n    actual:   \"alle Stimmen\\n\\nTakt: 4/4\\nTonart: C\""
   },
   {
-    "id": "song.783-einsiedler-kreuzweg-unclassified",
-    "stage": "song",
-    "scope": "783_einsiedler-kreuzweg",
-    "summary": "Unclassified song legacy comparison failure detected for 783_einsiedler-kreuzweg.",
+    "id": "sheet.lyrics-extract-0-unclassified",
+    "stage": "sheet",
+    "scope": "lyrics [extract 0]",
+    "summary": "Unclassified sheet legacy comparison failure detected for lyrics extract 0.",
     "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "783_einsiedler-kreuzweg"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture 783_einsiedler-kreuzweg. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"783_einsiedler-kreuzweg\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":100,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":135,\"iend\":144,\"tempo_notes\":[384],\"tempo\":100,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[8,1],\"end_pos\":[8,9]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=100\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":[\"1. Die Unschuld der Gottmensch vor Menschengericht!\",\"Ans Kreuz fort mit Jesus, wir kennen Ihn nicht!\",\"So schreiet die sämtliche jüdische Rott,\",\"Pilatus verdammt Ihn zum schmählichsten Tod.\",\"\",\"\",\"2. Wie willig nimmst, Jesus, das Kreuholz auf Dich!\",\"Umarmst es begierig zu sterben für mich!\",\"Was macht doch den Kreuztod so schätzbar vor Dir,\",\"die Liebe zum Vater, die Liebe zu mir.\",\"\",\"\",\"3. Man stößt Ihn, man schleppt Ihn zum Stadttore fort,\",\"mit höhnischem Jubel, ach! sehet Ihn dort,\",\"schon kraftlos von Streichen und Schmachen gebückt,\",\"der Kreuzlast erliegen zur Erde gedrückt.\",\"\",\"\",\"4, Den Sohn sieht die Mutter zum Kreuztod geführt,\",\"der Sohn sieht die Mutter von Mitleid gerührt.\",\"Maria und Jesus, zwei Herzen, ein Herz,\",\"o Anblick, o Abschied, o tödlicher Schmerz.\",\"\",\"\",\"5. Simon der Cyrener nimmts Kreuzholz auf sich,\",\"wie kommt es? ist's Mitleid, ist's Liebe für Dich?\",\"Nein Jesu, aus Zwang nur, aus Hass ist's gescheh'n,\",\"nicht eher, am Kreuze Dich sterben zu seh'n.\",\"\",\"\",\"6. Des Bräutigams Antlitz, die schöne Gestalt,\",\"wo ist sie? hier hat sie die Liebe gemalt.\",\"Im Schweißtuch mit Speichel und Wunden und Blut,\",\"der Braut ist das Bildnis ganz liebvoll und gut.\",\"\",\"\",\"7. Das zweite Mal sinkest zu Boden, o Herr!\",\"wie ist doch die Bürde der Sünde so schwer.\",\"Ach Sünder, vergönnt Ihm doch einige Rast,\",\"vermehret nicht immer die schreckliche Last.\",\"\",\"\",\"8. Jerusalems Töchter, weint über mich nicht,\",\"weint über euch selbsten, seht Gottes Gericht!\",\"So straft es die Sünde am schuldlosen Sohn,\",\"drum Schuldige, weinet, dass es euch verschon!\",\"\",\"\",\"9. Was bringt Dich, o Christus, schon wieder zum Fall?\",\"die Schwachheit der Christen, die Fäll' ohne Zahl.\",\"Ach wenn ich der Gnade getreuer nicht bin,\",\"wo bringt mich, wo bringt mich mein Leichtsinn noch hin.\",\"\",\"\",\"10. Der schamhafte Jesus, schau Sünder Ihn an!\",\"dein schamloser Mutwill', du hast es getan.\",\"Du hast Ihm die Wunden, die Schmerzen erweckt,\",\"Ihn schändlich entblösset mit Schmach Ihn bedeckt.\",\"\",\"\",\"11. Man wirft Ihn aufs Kreuz hin und nagelt Ihn an;\",\"wer hat's als die Sünd und die Liebe getan?\",\"Aus Händen und Füßen strömt häufiges Blut,\",\"dem Vater zum Opfer, den Sündern zugut.\",\"\",\"\",\"12. Mein Jesum am Kreuze, mein Gott stirbt für mich,\",\"und ich dein Erlöster, wie liebe ich dich!\",\"Gib dass ich Dich liebe, gekreuzigter Gott,\",\"so wie Du mich liebtest auch bis in den Tod.\",\"\",\"\",\"13. Im Schoße Mariä der Heiland der Welt,\",\"Maria zur Mutter der Menschen bestellt.\",\"Im Tode des Sohnes, welch Marter und Pein,\",\"hat's dich nicht gekostet uns Mutter zu sein.\",\"\",\"\",\"14. Mein Gott und Erlöser ins Grab hingelegt\",\"Ach wenn mich dein Leiden, dein Tod nicht bewegt,\",\"zum besseren Leben, wie wird's mir ergeh'n!\",\"Wie werde ich mit Dir einst zum Leben ersteh'n!\"]}}\n    actual:   undefined"
-  },
-  {
-    "id": "song.decoration-unclassified",
-    "stage": "song",
-    "scope": "decoration",
-    "summary": "Unclassified song legacy comparison failure detected for decoration.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "decoration"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture decoration. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"decoration\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.filename:\n    expected: \"\"\n    actual:   undefined\n  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":55,\"iend\":64,\"tempo_notes\":[384],\"tempo\":120,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[6,1],\"end_pos\":[6,9]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":\"\"}}\n    actual:   undefined"
-  },
-  {
-    "id": "song.lyrics-unclassified",
-    "stage": "song",
-    "scope": "lyrics",
-    "summary": "Unclassified song legacy comparison failure detected for lyrics.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
+      "packages/core/src/HarpnotesLayout.ts"
     ],
     "fixtures": [
       "lyrics"
     ],
-    "prompt": "Investigate the song legacy comparison failure for fixture lyrics. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"lyrics\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.filename:\n    expected: \"\"\n    actual:   undefined\n  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":51,\"iend\":60,\"tempo_notes\":[384],\"tempo\":120,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[6,1],\"end_pos\":[6,9]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":\"\"}}\n    actual:   undefined"
-  },
-  {
-    "id": "song.pause-unclassified",
-    "stage": "song",
-    "scope": "pause",
-    "summary": "Unclassified song legacy comparison failure detected for pause.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
+    "extracts": [
+      0
     ],
-    "fixtures": [
-      "pause"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture pause. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"pause\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.filename:\n    expected: \"\"\n    actual:   undefined\n  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":51,\"iend\":60,\"tempo_notes\":[384],\"tempo\":120,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[6,1],\"end_pos\":[6,9]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":\"\"}}\n    actual:   undefined"
-  },
-  {
-    "id": "song.repeat-unclassified",
-    "stage": "song",
-    "scope": "repeat",
-    "summary": "Unclassified song legacy comparison failure detected for repeat.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "repeat"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture repeat. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"repeat\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.filename:\n    expected: \"\"\n    actual:   undefined\n  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":51,\"iend\":60,\"tempo_notes\":[384],\"tempo\":120,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[6,1],\"end_pos\":[6,9]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":\"\"}}\n    actual:   undefined"
-  },
-  {
-    "id": "song.single-note-unclassified",
-    "stage": "song",
-    "scope": "single_note",
-    "summary": "Unclassified song legacy comparison failure detected for single_note.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "single_note"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture single_note. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"single_note\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.filename:\n    expected: \"\"\n    actual:   undefined\n  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":56,\"iend\":65,\"tempo_notes\":[384],\"tempo\":120,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[6,1],\"end_pos\":[6,9]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":\"\"}}\n    actual:   undefined"
-  },
-  {
-    "id": "song.tie-unclassified",
-    "stage": "song",
-    "scope": "tie",
-    "summary": "Unclassified song legacy comparison failure detected for tie.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "tie"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture tie. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"tie\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.filename:\n    expected: \"\"\n    actual:   undefined\n  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":48,\"iend\":57,\"tempo_notes\":[384],\"tempo\":120,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[6,1],\"end_pos\":[6,9]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":\"\"}}\n    actual:   undefined"
-  },
-  {
-    "id": "song.tuplet-unclassified",
-    "stage": "song",
-    "scope": "tuplet",
-    "summary": "Unclassified song legacy comparison failure detected for tuplet.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "tuplet"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture tuplet. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"tuplet\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.filename:\n    expected: \"\"\n    actual:   undefined\n  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":51,\"iend\":60,\"tempo_notes\":[384],\"tempo\":120,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[6,1],\"end_pos\":[6,9]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":\"\"}}\n    actual:   undefined"
-  },
-  {
-    "id": "song.two-voices-unclassified",
-    "stage": "song",
-    "scope": "two_voices",
-    "summary": "Unclassified song legacy comparison failure detected for two_voices.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "two_voices"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture two_voices. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"two_voices\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.filename:\n    expected: \"\"\n    actual:   undefined\n  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":55,\"iend\":64,\"tempo_notes\":[384],\"tempo\":120,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[6,1],\"end_pos\":[6,9]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":\"\"}}\n    actual:   undefined"
-  },
-  {
-    "id": "song.twostaff-unclassified",
-    "stage": "song",
-    "scope": "Twostaff",
-    "summary": "Unclassified song legacy comparison failure detected for Twostaff.",
-    "refs": [
-      "packages/core/src/AbcToSong.ts"
-    ],
-    "fixtures": [
-      "Twostaff"
-    ],
-    "prompt": "Investigate the song legacy comparison failure for fixture Twostaff. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"Twostaff\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
-    "mismatchSummary": "  meta_data.o_key:\n    expected: \"\"\n    actual:   undefined\n  meta_data.tempo:\n    expected: {\"duration\":[0.25],\"bpm\":120,\"sym\":{\"type\":14,\"dur\":0,\"fname\":\"abc\",\"istart\":79,\"iend\":84,\"v\":0,\"st\":0,\"time\":0,\"seqst\":true,\"ptim\":0,\"start_pos\":[7,1],\"end_pos\":[7,5]}}\n    actual:   1\n  meta_data.tempo_display:\n    expected: \"1/4=120\"\n    actual:   undefined\n  harpnote_options:\n    expected: {\"lyrics\":{\"text\":\"\"}}\n    actual:   undefined"
+    "prompt": "Investigate the sheet legacy comparison failure for fixture lyrics extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t \"lyrics [extract 0]\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
+    "mismatchSummary": "  children.length:\n    expected: 20\n    actual:   24"
   }
 ] as const
 

@@ -59,8 +59,7 @@ interface VoiceState {
   previousNote: PlayableEntity | null
   slurStack: string[]
   slurCounter: number
-  /** Remaining notes in the current tuplet group (0 = not in a tuplet). */
-  tupletRemaining: number
+  tupletP: number | null
   variantAnchor: PlayableEntity | null
   pendingVariantEntrySources: PlayableEntity[]
   pendingVariantExitSources: PlayableEntity[]
@@ -90,7 +89,7 @@ function createVoiceState(wmeasure: number, countBy: number | null): VoiceState 
     previousNote: null,
     slurStack: [],
     slurCounter: 0,
-    tupletRemaining: 0,
+    tupletP: null,
     variantAnchor: null,
     pendingVariantEntrySources: [],
     pendingVariantExitSources: [],
@@ -421,8 +420,7 @@ export class AbcToSong {
     entity.tieStart = state.tieStarted
 
     // Handle slurs
-    const slurStartCount = sym.slur_sls?.length ?? 0
-    entity.slurStarts = Array.from({ length: slurStartCount }, () => this._pushSlur(state))
+    entity.slurStarts = this._parseSlur(sym).map(() => this._pushSlur(state))
     const slurEndCount = sym.slur_end ?? 0
     entity.slurEnds = Array.from({ length: slurEndCount }, () => this._popSlur(state))
 
@@ -853,17 +851,43 @@ export class AbcToSong {
   // Metadata
   // ---------------------------------------------------------------------------
 
+  /**
+   * Der k_sf-Schlüsselvorzeichen-Wert in einen Tonart-Namen umrechnen.
+   * Positive Werte = Kreuze, negative Werte = b-Vorzeichen.
+   * Nur Dur (k_mode=0) wird aktuell abgebildet.
+   */
+  private static _keySfToName(kSf: number): string {
+    const SHARP_KEYS = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#']
+    const FLAT_KEYS = ['C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb']
+    if (kSf >= 0 && kSf < SHARP_KEYS.length) return SHARP_KEYS[kSf] ?? 'C'
+    return FLAT_KEYS[Math.abs(kSf)] ?? 'C'
+  }
+
   private _extractMetaData(model: AbcModel): SongMetaData {
     const info = model.info
+    const writtenKey = info['K']?.split('\n')[0]
+
+    // Effektive Tonart aus der ersten Stimme ermitteln (berücksichtigt shift=)
+    const firstVoice = model.voices[0]
+    const effectiveKeySf = firstVoice?.voice_properties.key?.k_sf
+    const effectiveKey = effectiveKeySf !== undefined
+      ? AbcToSong._keySfToName(effectiveKeySf)
+      : writtenKey
+
+    // o_key: Nur setzen, wenn die geschriebene Tonart von der effektiven abweicht
+    const oKey = (writtenKey && writtenKey !== effectiveKey) ? `(Original in ${writtenKey})` : ''
+
     return {
       title: info['T']?.split('\n')[0],
-      composer: info['C']?.split('\n')[0],
+      composer: info['C']?.split('\n')[0] ?? '',
       number: info['X']?.split('\n')[0],
-      filename: info['F']?.split('\n')[0],
-      meter: info['M']?.split('\n')[0],
-      key: info['K']?.split('\n')[0],
+      filename: info['F']?.split('\n')[0] ?? '',
+      meter: info['M']?.split('\n').filter(Boolean) ?? undefined,
+      key: effectiveKey,
+      o_key: oKey,
       tempo: info['Q'] ? this._parseTempo(info['Q']) : undefined,
       tempoDisplay: info['Q']?.split('\n')[0],
+      tempo_display: info['Q']?.split('\n')[0],
       checksum: model.checksum,
     }
   }
@@ -883,9 +907,20 @@ export class AbcToSong {
     }
   }
 
-  private _parseTempo(q: string): number | undefined {
-    const match = /(\d+)/.exec(q)
-    return match ? parseInt(requireDefined(match[1], 'AbcToSong._parseTempo(): missing tempo digits'), 10) : undefined
+  private _parseTempo(q: string): { duration: number[]; bpm: number } | undefined {
+    const match = /^(\d+)\/(\d+)=(\d+)$/.exec(q.trim())
+    if (match) {
+      const num = Number.parseInt(requireDefined(match[1], 'AbcToSong._parseTempo(): missing numerator'), 10)
+      const den = Number.parseInt(requireDefined(match[2], 'AbcToSong._parseTempo(): missing denominator'), 10)
+      const bpm = Number.parseInt(requireDefined(match[3], 'AbcToSong._parseTempo(): missing BPM'), 10)
+      return { duration: [num / den], bpm }
+    }
+    // Fallback: number-only tempo (selten)
+    const numMatch = /(\d+)/.exec(q)
+    if (numMatch) {
+      return { duration: [0.25], bpm: Number.parseInt(requireDefined(numMatch[1], 'AbcToSong._parseTempo(): missing tempo digits'), 10) }
+    }
+    return undefined
   }
 
   // ---------------------------------------------------------------------------
@@ -962,26 +997,41 @@ export class AbcToSong {
       .filter((name): name is string => typeof name === 'string' && supportedDecorations.has(name))
   }
 
-  private _parseTuplet(sym: AbcSymbol, state: VoiceState): { tuplet: number; tupletStart: boolean; tupletEnd: boolean } {
-    const tplet = (sym as Record<string, unknown>)['tplet'] as { r?: number; p?: number } | undefined
-    const inTuplet = (sym as Record<string, unknown>)['in_tuplet'] === true
-
-    if (tplet) {
-      // This symbol starts a new tuplet group. p = number of notes in the group.
-      const groupSize = tplet.p ?? 3
-      state.tupletRemaining = groupSize
-    } else if (inTuplet && state.tupletRemaining <= 0) {
-      state.tupletRemaining = 3
+  private _parseSlur(sym: AbcSymbol): number[] {
+    let startValue = ((sym as Record<string, unknown>)['slur_sls'] as number | undefined) ?? 0
+    const result: number[] = []
+    while (startValue > 0) {
+      result.push(startValue & 0xf)
+      startValue >>= 4
     }
+    return result
+  }
 
-    if (state.tupletRemaining <= 0) {
+  private _parseTuplet(sym: AbcSymbol, state: VoiceState): { tuplet: number; tupletStart: boolean; tupletEnd: boolean } {
+    const rawSym = sym as Record<string, unknown>
+    const tp = rawSym['tp'] as Array<{ p?: number }> | undefined
+    const rawInTuplet = Boolean(rawSym['in_tuplet'])
+    const tupletStart = tp?.[0] !== undefined || (rawInTuplet && state.tupletP === null)
+    const nextCandidate = rawSym['next']
+    const nextSym = typeof nextCandidate === 'object' && nextCandidate !== null
+      ? nextCandidate as Record<string, unknown>
+      : null
+    const tupletEndMarker = Boolean(rawSym['tpe']) || (rawInTuplet && nextSym !== null && !Boolean(nextSym['in_tuplet']))
+    const inTuplet = rawInTuplet || tupletStart || state.tupletP !== null || tupletEndMarker
+
+    if (!inTuplet) {
       return { tuplet: 1, tupletStart: false, tupletEnd: false }
     }
 
-    const tuplet = tplet ? (tplet.p ?? 3) : 3
-    const tupletStart = tplet !== undefined || (inTuplet && state.tupletRemaining === 3)
-    state.tupletRemaining--
-    const tupletEnd = state.tupletRemaining === 0
+    if (tupletStart) {
+      state.tupletP = tp?.[0]?.p ?? 3
+    }
+
+    const tuplet = state.tupletP ?? 1
+    const tupletEnd = tupletEndMarker && state.tupletP !== null
+    if (tupletEnd) {
+      state.tupletP = null
+    }
 
     return { tuplet, tupletStart, tupletEnd }
   }

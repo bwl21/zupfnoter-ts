@@ -4,11 +4,19 @@
  *
  * Tests the full ABC → Song transformation for the minimal fixtures.
  */
+import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
-import type { AbcModel } from '../../AbcModel.js'
+import type { PlayableEntity, Song } from '@zupfnoter/types'
+import type { AbcModel, AbcSymbol } from '../../AbcModel.js'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { defaultTestConfig } from '../defaultConfig.js'
+import { readFixtureAbc } from '../fixtureLoader.js'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const REPO_ROOT = resolve(__dirname, '../../../../..')
 
 function transform(abcText: string) {
   const parser = new AbcParser()
@@ -61,6 +69,123 @@ function countFromRawDuration(rawDuration: number): string | null | undefined {
     .voices[0]?.entities
     .find((entity) => entity.type === 'Note')
     ?.countNote
+}
+
+function transformSymbols(symbols: AbcSymbol[]) {
+  const musicTypes = Array.from({ length: 18 }, () => '')
+  musicTypes[8] = 'note'
+  const model: AbcModel = {
+    voices: [{
+      voice_properties: {
+        id: 'V1',
+        meter: { wmeasure: 1536, a_meter: [{ bot: 4, top: 4 }] },
+        key: {},
+      },
+      symbols,
+    }],
+    music_types: musicTypes,
+    music_type_ids: { note: 8 },
+    info: {},
+    checksum: '',
+  }
+  const transformer = new AbcToSong()
+  return transformer.transform(model, defaultTestConfig)
+}
+
+interface SlurTupletParityEntity {
+  type: string
+  time: number
+  znId: string
+  duration: number
+  pitch: number
+  slurStartsCount: number
+  slurEndsCount: number
+  tuplet: number
+  tupletStart: boolean
+  tupletEnd: boolean
+  countNote: string | null
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function asNumber(value: unknown): number {
+  return typeof value === 'number' ? value : 0
+}
+
+function asString(value: unknown): string {
+  return typeof value === 'string' ? value : ''
+}
+
+function asNullableString(value: unknown): string | null {
+  return typeof value === 'string' ? value : null
+}
+
+function arrayLength(value: unknown): number {
+  return Array.isArray(value) ? value.length : 0
+}
+
+function legacyType(entity: Record<string, unknown>): string {
+  const explicitType = entity['type']
+  if (typeof explicitType === 'string') return explicitType
+
+  const className = entity['class']
+  if (typeof className !== 'string') return ''
+
+  return className.slice(className.lastIndexOf(':') + 1)
+}
+
+function normalizeTsSlurTupletParity(song: Song): SlurTupletParityEntity[] {
+  const voice = song.voices[0]
+  if (!voice) return []
+
+  return voice.entities
+    .filter((entity): entity is PlayableEntity => 'duration' in entity && 'pitch' in entity)
+    .map((entity) => ({
+      type: entity.type,
+      time: entity.time,
+      znId: entity.znId,
+      duration: entity.duration,
+      pitch: entity.pitch,
+      slurStartsCount: entity.slurStarts.length,
+      slurEndsCount: entity.slurEnds.length,
+      tuplet: entity.tuplet,
+      tupletStart: entity.tupletStart,
+      tupletEnd: entity.tupletEnd,
+      countNote: entity.countNote,
+    }))
+}
+
+function normalizeLegacySlurTupletParity(rawSong: unknown): SlurTupletParityEntity[] {
+  if (!isRecord(rawSong)) return []
+
+  const voices = rawSong['voices']
+  if (!Array.isArray(voices)) return []
+
+  const voice = voices[1] ?? voices[0]
+  if (!Array.isArray(voice)) return []
+
+  return voice
+    .filter(isRecord)
+    .map((entity) => ({
+      type: legacyType(entity),
+      time: asNumber(entity['@time']),
+      znId: asString(entity['@znid']),
+      duration: asNumber(entity['@duration']),
+      pitch: asNumber(entity['@pitch']),
+      slurStartsCount: arrayLength(entity['@slur_starts']),
+      slurEndsCount: arrayLength(entity['@slur_ends']),
+      tuplet: asNumber(entity['@tuplet']),
+      tupletStart: Boolean(entity['@tuplet_start']),
+      tupletEnd: Boolean(entity['@tuplet_end']),
+      countNote: asNullableString(entity['@count_note']),
+    }))
+}
+
+function readLegacyRawSong(fixtureName: string): unknown {
+  const path = resolve(REPO_ROOT, 'fixtures/cases', fixtureName, 'song.legacy-raw.json')
+  return JSON.parse(readFileSync(path, 'utf-8')) as unknown
 }
 
 // ---------------------------------------------------------------------------
@@ -305,6 +430,83 @@ V:V1 clef=treble-8
     const notes = song.voices[0]!.entities.filter((e) => e.type === 'Note')
     const tieEnd = notes.find((n) => n.type === 'Note' && n.tieEnd)
     expect(tieEnd).toBeDefined()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// slur / tuplet
+// ---------------------------------------------------------------------------
+
+describe('AbcToSong – slur / tuplet', () => {
+  it('matches regenerated legacy output for the focused slur and tuplet fixture', () => {
+    const fixtureName = 'abc-to-song-slur-tuplet-parity'
+    const song = transform(readFixtureAbc(fixtureName))
+    const expected = normalizeLegacySlurTupletParity(readLegacyRawSong(fixtureName))
+
+    expect(normalizeTsSlurTupletParity(song)).toEqual(expected)
+  })
+
+  it.each([
+    [0x1, ['slur-0']],
+    [0x11, ['slur-0', 'slur-1']],
+    [0x1111, ['slur-0', 'slur-1', 'slur-2', 'slur-3']],
+  ])('decodes slur_sls=%s as a legacy bitfield', (slur_sls, expectedStarts) => {
+    const song = transformSymbols([{
+      type: 8,
+      time: 0,
+      dur: 384,
+      istart: 0,
+      iend: 1,
+      notes: [{ midi: 60, dur: 384 }],
+      // Legacy abc2svg stores slur_sls as 4-bit groups, not as an array.
+      slur_sls: slur_sls as unknown as number[],
+    }])
+    const note = song.voices[0]?.entities.find((entity) => entity.type === 'Note')
+
+    expect(note?.slurStarts).toEqual(expectedStarts)
+  })
+
+  it('uses legacy abc2svg tuplet fields for a triplet', () => {
+    const song = transformSymbols([
+      {
+        type: 8,
+        time: 0,
+        dur: 256,
+        istart: 0,
+        iend: 1,
+        notes: [{ midi: 60, dur: 256 }],
+        in_tuplet: true,
+        tp: [{ p: 3 }],
+      },
+      {
+        type: 8,
+        time: 256,
+        dur: 256,
+        istart: 2,
+        iend: 3,
+        notes: [{ midi: 62, dur: 256 }],
+        in_tuplet: true,
+      },
+      {
+        type: 8,
+        time: 512,
+        dur: 256,
+        istart: 4,
+        iend: 5,
+        notes: [{ midi: 65, dur: 256 }],
+        in_tuplet: true,
+        tpe: true,
+      },
+    ])
+    const notes = song.voices[0]?.entities.filter((entity) => entity.type === 'Note') ?? []
+
+    expect(notes.map((note) => note.tuplet)).toEqual([3, 3, 3])
+    expect(notes[0]?.tupletStart).toBe(true)
+    expect(notes[0]?.tupletEnd).toBe(false)
+    expect(notes[1]?.tupletStart).toBe(false)
+    expect(notes[1]?.tupletEnd).toBe(false)
+    expect(notes[2]?.tupletStart).toBe(false)
+    expect(notes[2]?.tupletEnd).toBe(true)
   })
 })
 

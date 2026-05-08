@@ -50,7 +50,6 @@ sind.
 | `tie` | Bindebögen |
 | `decoration` | Fermata, Dynamik |
 | `lyrics` | Liedtext (w:-Zeilen) |
-| `02_twoStaff` | Legacy-Testcase aus `30_sources/SRC_Zupfnoter/testcases/` |
 | `Twostaff` | Legacy-Testcase aus `30_sources/SRC_Zupfnoter/testcases/` |
 
 ## Fixtures neu erzeugen (Legacy-Export)

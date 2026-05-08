@@ -1724,7 +1724,7 @@ export class HarpnotesLayout {
     const placeholders: Record<string, string> = {
       composer: metaData.composer ?? '',
       key: metaData.key ?? '',
-      meter: metaData.meter ?? '',
+      meter: Array.isArray(metaData.meter) ? metaData.meter.join(', ') : (metaData.meter ?? ''),
       number: metaData.number ?? '',
       tempo: metaData.tempoDisplay ?? '',
       title: metaData.title ?? '',

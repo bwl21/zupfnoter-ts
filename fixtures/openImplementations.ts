@@ -20,13 +20,45 @@ export interface DetectedFailure {
 
 const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
   {
-    id: 'sheet.legacy-inline-directives',
-    stage: 'sheet',
-    scope: '%%%%hn* inline directives',
-    summary: 'Legacy inline directives such as %%%%hnc, %%%%hna, and %%%%hn.legend are not parsed and mapped to the TypeScript config model yet.',
-    refs: ['packages/core/src/extractSongConfig.ts', 'packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['02_twoStaff'],
-    prompt: 'Investigate legacy inline ABC directives such as %%%%hnc, %%%%hna, and %%%%hn.legend, reproduce with the 02_twoStaff sheet legacy comparison test, implement parsing and config mapping with legacy parity, then remove this id from fixtures/openImplementations.ts.',
+    id: 'song.metadata-fields',
+    stage: 'song',
+    scope: 'Song.metaData shape parity with legacy raw',
+    summary:
+      'Song.metaData diverges from the legacy raw export: `tempo` is collapsed to a single number instead of `{duration, bpm}`, `tempoDisplay` is not exposed under `tempo_display`, `meter` is a string instead of an array, `o_key`/`filename` are missing, and the `key` value is post-processed (e.g. "Amaj" instead of "A").',
+    refs: ['packages/core/src/AbcToSong.ts', 'packages/core/src/testing/fixtureLoader.ts'],
+    fixtures: [
+      '246_Horch-was-kommt-von-draussen-rein',
+      '3015_reference_sheet',
+      '783_einsiedler-kreuzweg',
+      'Twostaff',
+      'abc-to-song-slur-tuplet-parity',
+      'decoration',
+      'lyrics',
+      'pause',
+      'repeat',
+      'single_note',
+      'tie',
+      'tuplet',
+      'two_voices',
+    ],
+    prompt:
+      'Align Song.metaData with the legacy raw shape (`song.legacy-raw.json`): emit `tempo` as `{duration, bpm}`, expose `tempo_display`, keep `meter` as an array, add `o_key` and `filename`, and stop normalizing `key` to a major/minor suffix. Reproduce with the song legacy comparison tests in packages/core/src/testing/__tests__/song/legacy_comparison.spec.ts, then remove this id from fixtures/openImplementations.ts.',
+  },
+  {
+    id: 'song.voice-count',
+    stage: 'song',
+    scope: 'Song.voices length parity',
+    summary:
+      'Several fixtures expose one fewer voice in the TS Song than in the legacy raw export. Cause is not yet classified — it may be related to multi-tune aggregation or to a missing voice-0 placeholder in the TS pipeline.',
+    refs: ['packages/core/src/AbcToSong.ts'],
+    fixtures: [
+      '3015_reference_sheet',
+      '783_einsiedler-kreuzweg',
+      'Twostaff',
+      'two_voices',
+    ],
+    prompt:
+      'Diagnose why the TS pipeline produces fewer Song.voices than the legacy raw export for the listed fixtures (compare voices[*].length and entity counts), implement the missing voice handling in packages/core/src/AbcToSong.ts, and remove this id from fixtures/openImplementations.ts when the song legacy comparison tests pass.',
   },
   {
     id: 'sheet.remaining-composite-layout',

@@ -232,9 +232,11 @@ export interface SongMetaData {
   composer?: string
   number?: string
   filename?: string
-  meter?: string
+  meter?: string | string[]
   key?: string
-  tempo?: number
+  o_key?: string
+  tempo?: number | { duration: number[]; bpm: number }
+  tempo_display?: string
   tempoDisplay?: string
   checksum?: string
   /** Diagnosen aus der ABC-zu-Song-Transformation */

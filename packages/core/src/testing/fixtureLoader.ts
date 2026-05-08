@@ -32,6 +32,8 @@ export interface PipelineFixture {
   }
   config: ZupfnoterConfig
   song: SongFixture | null
+  /** Raw `@music_model.to_json` dump from the legacy CLI (`song.legacy-raw.json`). */
+  rawSong: unknown
   sheetExtracts: Record<string, SheetFixture>
   output_svg: string | null
 }
@@ -41,6 +43,7 @@ export interface FixtureCase {
   id: string
   dir: string
   hasSongFixture: boolean
+  hasRawSongFixture: boolean
   hasSheetFixture: boolean
 }
 
@@ -75,6 +78,10 @@ function fixtureCaseDir(name: string): string {
 
 function resolveSongFixturePath(dir: string): string {
   return resolve(dir, 'song.extract-0.json')
+}
+
+function resolveRawSongFixturePath(dir: string): string {
+  return resolve(dir, 'song.legacy-raw.json')
 }
 
 function listSheetExtractFiles(dir: string): string[] {
@@ -113,6 +120,7 @@ export function scanFixtureCases(): FixtureCase[] {
       id: name,
       dir,
       hasSongFixture: existsSync(resolve(dir, 'song.extract-0.json')),
+      hasRawSongFixture: existsSync(resolve(dir, 'song.legacy-raw.json')),
       hasSheetFixture: listSheetExtractFiles(dir).length > 0,
     }))
     .sort((a, b) => a.id.localeCompare(b.id))
@@ -148,6 +156,7 @@ export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixtu
     input: { abc },
     config: fixtureConfigFromAbc(abc),
     song: safeLoadJson<SongFixture>(resolveSongFixturePath(dir)),
+    rawSong: safeLoadJson<unknown>(resolveRawSongFixturePath(dir)),
     sheetExtracts,
     output_svg: safeLoadText(resolve(dir, 'output.svg')),
   }
@@ -155,6 +164,10 @@ export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixtu
 
 export function loadSongFixture(name: string): SongFixture {
   return loadJson<SongFixture>(resolveSongFixturePath(fixtureCaseDir(name)))
+}
+
+export function loadRawSongFixture(name: string): unknown {
+  return loadJson<unknown>(resolveRawSongFixturePath(fixtureCaseDir(name)))
 }
 
 export function loadSheetExtractFixture(name: string, extractNr: number | string): SheetFixture {

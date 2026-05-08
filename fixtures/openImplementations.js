@@ -5,7 +5,7 @@ const OPEN_IMPLEMENTATIONS = [
         scope: '%%%%hn* inline directives',
         summary: 'Legacy inline directives such as %%%%hnc, %%%%hna, and %%%%hn.legend are not parsed and mapped to the TypeScript config model yet.',
         refs: ['packages/core/src/extractSongConfig.ts', 'packages/core/src/HarpnotesLayout.ts'],
-        fixtures: ['02_twoStaff'],
+        fixtures: [],
         prompt: 'Investigate legacy inline ABC directives such as %%%%hnc, %%%%hna, and %%%%hn.legend, reproduce with the 02_twoStaff sheet legacy comparison test, implement parsing and config mapping with legacy parity, then remove this id from fixtures/openImplementations.ts.',
     },
     {

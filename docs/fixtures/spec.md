@@ -65,7 +65,6 @@ Abgelegt unter `fixtures/abc/legacy/`.
 
 | Datei | Testet |
 |-------|--------|
-| `02_twoStaff.abc` | Mehrstimmigkeit, Parts |
 | `Twostaff.abc` | Standardfall |
 
 ---
