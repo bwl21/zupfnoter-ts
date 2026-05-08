@@ -46,11 +46,16 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     id: 'sheet.horch-entity-count-ripple',
     stage: 'sheet',
     scope: '246_Horch sheet children count',
-    summary: 'Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is 1280 vs expected 1290 (10 missing). The song-level entity-count gap is now resolved; the remaining 10 missing children are from layout-layer differences (likely Pause pitch Math.floor fix cascading into different beat compression/spread).',
+    summary: 'Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is no longer the primary mismatch after restoring pause decorations; the remaining failure is layout-layer parity in flowline/type counts and Y positions.',
     refs: ['packages/core/src/HarpnotesLayout.ts'],
     fixtures: ['246_Horch-was-kommt-von-draussen-rein'],
     extracts: [0],
-    prompt: 'Investigate the remaining 10 missing sheet children for 246_Horch-was-kommt-von-draussen-rein extract 0. The song entity count now matches, and Pause pitches match. The remaining sheet gap is a new effect from the layout layer.',
+    prompt: 'Investigate the remaining sheet parity for 246_Horch-was-kommt-von-draussen-rein extract 0. Pause decorations now restore the original child count, but TS still emits 4 extra FlowLines and misses 2 Annotation/Ellipse note-bound pairs; once child order is aligned, Y positions expose a beat compression/spread mismatch.',
+    notes: [
+      'Triage 2026-05-08: The visible 1280 vs 1290 count gap was caused by Pause entities not carrying ABC decorations. `AbcToSong._transformRest()` now copies `this._parseDecorations(sym)`, which restores the 10 missing decoration background/text children without changing song entity counts.',
+      'Do not solve the remaining `:|]2` variant label by materializing extra Song NoteBoundAnnotation entities: that breaks Horch song parity by +1 entity per voice. The missing sheet-level `2` labels and the extra FlowLines need a layout/variant rendering approach that preserves the Song fixture shape.',
+      'A naive trailing-rest FlowLine skip also breaks the `pause` sheet fixture. Revisit FlowLine parity with a narrower legacy condition.',
+    ].join(' '),
   },
 ]
 

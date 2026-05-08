@@ -232,6 +232,7 @@ export function songToFixture(song: Song): SongFixture {
         if ('duration' in e) entry['duration'] = (e as { duration: number }).duration
         if ('tieStart' in e) entry['tieStart'] = (e as { tieStart: boolean }).tieStart
         if ('tieEnd' in e) entry['tieEnd'] = (e as { tieEnd: boolean }).tieEnd
+        if (e.decorations.length > 0) entry['decorations'] = e.decorations
         if (
           entry.duration === undefined &&
           'companion' in e &&

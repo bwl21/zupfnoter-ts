@@ -492,7 +492,7 @@ export class AbcToSong {
       time: sym.time,
       startPos: this._charposToLineCol(sym.istart),
       endPos: this._charposToLineCol(sym.iend),
-      decorations: [],
+      decorations: this._parseDecorations(sym),
       barDecorations: [],
       visible: !(sym.invis ?? sym.invisible ?? false),
       variant: state.variantNo,

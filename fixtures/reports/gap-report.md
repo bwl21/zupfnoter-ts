@@ -36,8 +36,8 @@ No open gaps.
 - [ ] sheet.horch-entity-count-ripple
   - Fixtures: 246_Horch-was-kommt-von-draussen-rein
   - Scope: 246_Horch sheet children count
-  - Summary: Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is 1280 vs expected 1290 (10 missing). The song-level entity-count gap is now resolved; the remaining 10 missing children are from layout-layer differences (likely Pause pitch Math.floor fix cascading into different beat compression/spread).
-  - Prompt: Investigate the remaining 10 missing sheet children for 246_Horch-was-kommt-von-draussen-rein extract 0. The song entity count now matches, and Pause pitches match. The remaining sheet gap is a new effect from the layout layer.
+  - Summary: Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is no longer the primary mismatch after restoring pause decorations; the remaining failure is layout-layer parity in flowline/type counts and Y positions.
+  - Prompt: Investigate the remaining sheet parity for 246_Horch-was-kommt-von-draussen-rein extract 0. Pause decorations now restore the original child count, but TS still emits 4 extra FlowLines and misses 2 Annotation/Ellipse note-bound pairs; once child order is aligned, Y positions expose a beat compression/spread mismatch.
   - Refs: packages/core/src/HarpnotesLayout.ts
 
 ## New Unclassified Failures

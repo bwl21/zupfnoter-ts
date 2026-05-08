@@ -443,6 +443,9 @@ function normalizeRawEntity(entity: Record<string, unknown>): EntityFixture {
   if ('@duration'  in entity) out.duration = entity['@duration']  as number
   if ('@tie_start' in entity) out.tieStart = entity['@tie_start'] as boolean
   if ('@tie_end'   in entity) out.tieEnd   = entity['@tie_end']   as boolean
+  if (Array.isArray(entity['@decorations']) && entity['@decorations'].length > 0) {
+    out.decorations = entity['@decorations']
+  }
   if (out.type === 'Goto') {
     const from = entity['@from']
     const to   = entity['@to']
