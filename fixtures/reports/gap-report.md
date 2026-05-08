@@ -7,9 +7,9 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 4
+- Total open implementations: 3
 - Song gaps: 0
-- Sheet gaps: 4
+- Sheet gaps: 3
 - Known-covered failures: 6
 - New unclassified failures: 0
 
@@ -24,13 +24,6 @@ No open gaps.
   - Scope: composite reference layout interactions
   - Summary: Composite reference fixtures still expose mixed flowline, countnote, tuplet, variant-ending, and annotation-background parity gaps beyond sheet text blocks.
   - Prompt: Investigate the remaining composite sheet parity in 3015_reference_sheet and 783_einsiedler-kreuzweg, classify the concrete flowline/countnote/tuplet/variant-ending mismatches with the sheet legacy comparison tests, implement the remaining behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
-
-- [ ] sheet.tuplet-layout
-  - Fixtures: tuplet
-  - Scope: legacy tuplet bracket and number layout
-  - Summary: Tuplet bracket paths and tuplet number annotations are not yet reproduced with full legacy parity.
-  - Prompt: Investigate tuplet layout parity in the tuplet fixture, reproduce with the sheet legacy comparison test, implement legacy tuplet bracket and number rendering in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
   - Refs: packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.multistaff-layout

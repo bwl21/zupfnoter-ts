@@ -29,15 +29,6 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     prompt: 'Investigate the remaining composite sheet parity in 3015_reference_sheet and 783_einsiedler-kreuzweg, classify the concrete flowline/countnote/tuplet/variant-ending mismatches with the sheet legacy comparison tests, implement the remaining behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
   },
   {
-    id: 'sheet.tuplet-layout',
-    stage: 'sheet',
-    scope: 'legacy tuplet bracket and number layout',
-    summary: 'Tuplet bracket paths and tuplet number annotations are not yet reproduced with full legacy parity.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['tuplet'],
-    prompt: 'Investigate tuplet layout parity in the tuplet fixture, reproduce with the sheet legacy comparison test, implement legacy tuplet bracket and number rendering in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
-  },
-  {
     id: 'sheet.multistaff-layout',
     stage: 'sheet',
     scope: 'multi-staff sheet layout',
