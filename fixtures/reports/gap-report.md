@@ -8,23 +8,21 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 ## Summary
 
 - Total open implementations: 4
-- Song gaps: 0
-- Sheet gaps: 4
-- Known-covered failures: 5
-- New unclassified failures: 4
+- Song gaps: 1
+- Sheet gaps: 3
+- Known-covered failures: 7
+- New unclassified failures: 2
 
 ## Song Gaps
 
-No open gaps.
+- [ ] song.entity-count
+  - Fixtures: 246_Horch-was-kommt-von-draussen-rein, 3015_reference_sheet
+  - Scope: Song voice entity count parity
+  - Summary: Two fixtures (246_Horch-was-kommt-von-draussen-rein, 3015_reference_sheet) have a small entity-count mismatch per voice (off by 1) that is not yet classified. 246_Horch is missing one entity per voice; 3015_reference_sheet has one extra entity per voice.
+  - Prompt: Investigate the entity-count mismatch for 246_Horch-was-kommt-von-draussen-rein (TS missing 1 entity per voice) and 3015_reference_sheet (TS has 1 extra entity per voice). Compare the entity sets (type,pitch,beat) between the TS song output and normalizeRawSongFixture(song.legacy-raw.json) to identify the missing/extra entities, then implement parity in packages/core/src/AbcToSong.ts. Remove this id from fixtures/openImplementations.ts when the song legacy comparison tests pass.
+  - Refs: packages/core/src/AbcToSong.ts
 
 ## Sheet Gaps
-
-- [ ] sheet.legacy-inline-directives
-  - Fixtures: -
-  - Scope: %%%%hn* inline directives
-  - Summary: Legacy inline directives such as %%%%hnc, %%%%hna, and %%%%hn.legend are not parsed and mapped to the TypeScript config model yet.
-  - Prompt: Investigate legacy inline ABC directives such as %%%%hnc, %%%%hna, and %%%%hn.legend, reproduce with the 02_twoStaff sheet legacy comparison test, implement parsing and config mapping with legacy parity, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/extractSongConfig.ts, packages/core/src/HarpnotesLayout.ts
 
 - [ ] sheet.remaining-composite-layout
   - Fixtures: 3015_reference_sheet, 783_einsiedler-kreuzweg
@@ -48,34 +46,6 @@ No open gaps.
   - Refs: packages/core/src/HarpnotesLayout.ts
 
 ## New Unclassified Failures
-
-- [ ] song.246-horch-was-kommt-von-draussen-rein
-  - Fixture: 246_Horch-was-kommt-von-draussen-rein
-  - Prompt: Investigate the song legacy comparison failure for fixture 246_Horch-was-kommt-von-draussen-rein. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "246_Horch-was-kommt-von-draussen-rein" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
-  - Mismatch Summary:
-      voices[0].entities.length:
-        expected: 125
-        actual:   124
-      voices[1].entities.length:
-        expected: 125
-        actual:   124
-      voices[2].entities.length:
-        expected: 122
-        actual:   121
-
-- [ ] song.3015-reference-sheet
-  - Fixture: 3015_reference_sheet
-  - Prompt: Investigate the song legacy comparison failure for fixture 3015_reference_sheet. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "3015_reference_sheet" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
-  - Mismatch Summary:
-      voices[0].entities.length:
-        expected: 38
-        actual:   39
-      voices[1].entities.length:
-        expected: 38
-        actual:   39
-      voices[2].entities.length:
-        expected: 30
-        actual:   31
 
 - [ ] sheet.246-horch-was-kommt-von-draussen-rein [extract 0]
   - Fixture: 246_Horch-was-kommt-von-draussen-rein
