@@ -180,6 +180,7 @@ export class AbcToSong {
         if (playableIndex === -1) continue
 
         const companion = voice.entities[playableIndex] as PlayableEntity
+        companion.firstInPart = true
         const propagatedPart: NewPart = {
           ...part,
           companion,
@@ -214,11 +215,12 @@ export class AbcToSong {
       }
     }
 
-    // Befülle prevPitch/nextPitch und prevPlayable/nextPlayable auf allen Playables
+    // Befülle prevPitch/nextPitch und prevPlayable/nextPlayable auf allen Playables.
+    // Restposition benötigt die Playable-Referenzen; danach werden die numerischen
+    // Pitch-Felder erneut synchronisiert, weil Pausen ihren Pitch ändern können.
     this._annotateNeighbourPitches(entities)
-
-    // Setze Pause-Pitch basierend auf restposition-Konfiguration
     this._applyRestposition(entities, restpositionDefault)
+    this._annotateNeighbourPitches(entities)
     this._currentState = null
 
     return {
@@ -713,6 +715,7 @@ export class AbcToSong {
     const partText = state.partTable[sym.time]
     if (typeof partText !== 'string') return null
 
+    companion.firstInPart = true
     return {
       type: 'NewPart' as const,
       beat: companion.beat,
@@ -735,6 +738,7 @@ export class AbcToSong {
     const partText = (part as { text?: unknown }).text
     if (typeof partText !== 'string' || partText.length === 0) return null
 
+    companion.firstInPart = true
     return {
       type: 'NewPart' as const,
       beat: companion.beat,

@@ -35,12 +35,11 @@ No open gaps.
 
 - [ ] sheet.horch-entity-count-ripple
   - Fixtures: 246_Horch-was-kommt-von-draussen-rein
-  - Scope: 246_Horch sheet children count
-  - Summary: Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is no longer the primary mismatch after restoring pause decorations; the remaining failure is layout-layer parity in flowline/type counts and Y positions.
-  - Prompt: Investigate the remaining sheet parity for 246_Horch-was-kommt-von-draussen-rein extract 0. Pause decorations now restore the original child count, but TS still emits 4 extra FlowLines and misses 2 Annotation/Ellipse note-bound pairs; once child order is aligned, Y positions expose a beat compression/spread mismatch.
+  - Scope: 246_Horch sheet Y-position parity
+  - Summary: Sheet child count, FlowLine counts, `:|]2` variant-end labels, and small annotation-background widths now match for 246_Horch-was-kommt-von-draussen-rein extract 0; the remaining failure is layout-layer Y-position parity.
+  - Prompt: Investigate the remaining sheet parity for 246_Horch-was-kommt-von-draussen-rein extract 0. Element order and type counts are aligned: 1290 children with FlowLine/Path/Annotation/Glyph/Ellipse counts matching legacy. The remaining mismatch is systematic Y-position drift from beat compression/spread behavior.
   - Refs: packages/core/src/HarpnotesLayout.ts
 
 ## New Unclassified Failures
 
 None.
-

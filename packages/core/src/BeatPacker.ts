@@ -89,6 +89,22 @@ function collectPartStartPlayables(song: Song, layoutLines: number[]): Set<Playa
     for (const entity of voice.entities) {
       if (entity.type === 'NewPart') {
         result.add(entity.companion)
+      } else if (entity.type === 'Goto') {
+        result.add(entity.to)
+      }
+    }
+  }
+  return result
+}
+
+function collectNamedPartStartPlayables(song: Song, layoutLines: number[]): Set<PlayableEntity> {
+  const result = new Set<PlayableEntity>()
+  for (const voiceId of layoutLines) {
+    const voice = song.voices[voiceId]
+    if (!voice) continue
+    for (const entity of voice.entities) {
+      if (entity.type === 'NewPart') {
+        result.add(entity.companion)
       }
     }
   }
@@ -295,12 +311,14 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
 
   const playables = collectRelevantPlayables(song, layoutLines)
+  const partStartPlayables = collectPartStartPlayables(song, layoutLines)
+  const namedPartStartPlayables = collectNamedPartStartPlayables(song, layoutLines)
   const beats = groupByBeat(playables)
   const sortedBeats = Array.from(beats.keys()).sort((a, b) => a - b)
 
   const collisionStack: Record<number, number> = {}  // pitch → last newbeat
   let newbeat = 0
-  let nextIncrement = -1  // -1 = noch nicht initialisiert
+  let nextIncrement = 0
   let lastSize = 0
   const result: BeatCompressionMap = {}
 
@@ -310,21 +328,20 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
     const size = beatResolution * sizeFactor
 
-    let defaultIncrement = (size + lastSize) / 2
-    defaultIncrement = Math.max(defaultIncrement, confMinIncrement)
+    const defaultIncrement = Math.max((size + lastSize) / 2, confMinIncrement)
     lastSize = size
 
     // Kollisionserkennung: Note deren Pitch zuletzt auf einem Beat war
     // der noch nicht weit genug zurückliegt
     const collisions = notes.filter(note => {
-      const lastBeat = collisionStack[note.pitch] ?? -Infinity
+      const lastBeat = collisionStack[note.pitch] ?? -1
       return lastBeat >= newbeat - confMinIncrement
     })
 
     // Inversions-Erkennung: Melodielinie die nicht monoton ist
     const inversions = notes.filter(note => {
-      const prev = note.prevPitch ?? note.pitch
-      const next = note.nextPitch ?? note.pitch
+      const prev = note.prevPlayable?.pitch ?? note.prevPitch ?? note.pitch
+      const next = note.nextPlayable?.pitch ?? note.nextPitch ?? note.pitch
       const a = [prev, note.pitch, next]
       const left = requireDefined(a[0], 'BeatPacker._packMethod10(): missing inversion pitch value')
       const middle = requireDefined(a[1], 'BeatPacker._packMethod10(): missing inversion pitch value')
@@ -333,21 +350,21 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
         (left >= middle && middle >= right) ||
         (left <= middle && middle <= right)
       )
-      return !isMonotone
+      const nextStartsPart = note.nextPlayable ? namedPartStartPlayables.has(note.nextPlayable) : false
+      return !isMonotone && !nextStartsPart
     })
 
-    const isNewPart = notes.some(n => n.firstInPart)
+    const isNewPart = notes.some(n => n.firstInPart || partStartPlayables.has(n))
     const measureStart = notes.some(n => n.measureStart)
 
-    // Erster Beat: defaultIncrement verwenden
-    let increment = nextIncrement < 0 ? defaultIncrement : nextIncrement
+    let increment = nextIncrement
     nextIncrement = confMinIncrement
 
     if (collisions.length > 0) {
       increment = defaultIncrement
     } else if (inversions.length > 0) {
       nextIncrement = defaultIncrement / 2
-      increment = Math.max(increment, nextIncrement)
+      increment = nextIncrement
     }
 
     if (isNewPart) {

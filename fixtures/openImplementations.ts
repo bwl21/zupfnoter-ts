@@ -45,16 +45,18 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
   {
     id: 'sheet.horch-entity-count-ripple',
     stage: 'sheet',
-    scope: '246_Horch sheet children count',
-    summary: 'Sheet children count for 246_Horch-was-kommt-von-draussen-rein extract 0 is no longer the primary mismatch after restoring pause decorations; the remaining failure is layout-layer parity in flowline/type counts and Y positions.',
+    scope: '246_Horch sheet Y-position parity',
+    summary: 'Sheet child count, FlowLine counts, `:|]2` variant-end labels, and small annotation-background widths now match for 246_Horch-was-kommt-von-draussen-rein extract 0; the remaining failure is layout-layer Y-position parity.',
     refs: ['packages/core/src/HarpnotesLayout.ts'],
     fixtures: ['246_Horch-was-kommt-von-draussen-rein'],
     extracts: [0],
-    prompt: 'Investigate the remaining sheet parity for 246_Horch-was-kommt-von-draussen-rein extract 0. Pause decorations now restore the original child count, but TS still emits 4 extra FlowLines and misses 2 Annotation/Ellipse note-bound pairs; once child order is aligned, Y positions expose a beat compression/spread mismatch.',
+    prompt: 'Investigate the remaining sheet parity for 246_Horch-was-kommt-von-draussen-rein extract 0. Element order and type counts are aligned: 1290 children with FlowLine/Path/Annotation/Glyph/Ellipse counts matching legacy. The remaining mismatch is systematic Y-position drift from beat compression/spread behavior.',
     notes: [
       'Triage 2026-05-08: The visible 1280 vs 1290 count gap was caused by Pause entities not carrying ABC decorations. `AbcToSong._transformRest()` now copies `this._parseDecorations(sym)`, which restores the 10 missing decoration background/text children without changing song entity counts.',
-      'Do not solve the remaining `:|]2` variant label by materializing extra Song NoteBoundAnnotation entities: that breaks Horch song parity by +1 entity per voice. The missing sheet-level `2` labels and the extra FlowLines need a layout/variant rendering approach that preserves the Song fixture shape.',
-      'A naive trailing-rest FlowLine skip also breaks the `pause` sheet fixture. Revisit FlowLine parity with a narrower legacy condition.',
+      'Follow-up 2026-05-09: Layout now suppresses FlowLines across variant boundaries even when the target playable is a Pause or the line is dotted. This removes the 4 extra FlowLines without affecting Song fixtures.',
+      'Follow-up 2026-05-09: Layout now synthesizes missing `2` variant-end labels from repeat Gotos when Song parity intentionally has no NoteBoundAnnotation entity for `:|]2`. Do not materialize these in AbcToSong; that breaks Horch song parity by +1 entity per voice.',
+      'Follow-up 2026-05-09: Annotation background widths for small countnote text now account for narrow glyphs such as `l`, `t`, and `r`; the focused Horch sheet diff no longer reports size mismatches.',
+      'A naive trailing-rest FlowLine skip also breaks the `pause` sheet fixture. Revisit only if a future FlowLine mismatch reappears.',
     ].join(' '),
   },
 ]

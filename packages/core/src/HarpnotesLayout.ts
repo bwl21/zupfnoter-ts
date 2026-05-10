@@ -1036,6 +1036,7 @@ export class HarpnotesLayout {
     align: 'left' | 'right' | 'center',
     layout: LayoutConfig,
     padding: number,
+    shiftEu = false,
   ): Ellipse {
     const size = this._annotationSize(annotation.text, annotation.style, layout)
     const halfSize: [number, number] = [size[0] * 0.5, size[1] * 0.5]
@@ -1046,7 +1047,10 @@ export class HarpnotesLayout {
         ? -halfSize[0]
         : 0
     let backgroundY = halfSize[1]
-    if (!/[|gyqp]/.test(annotation.text)) {
+    if (shiftEu) {
+      backgroundY = halfSize[1] - padding * 0.7
+      paddedSize[1] *= 0.5
+    } else if (!/[|gyqp]/.test(annotation.text)) {
       backgroundY = halfSize[1] - padding * 0.5
       paddedSize[1] *= 0.7
     }
@@ -1076,7 +1080,19 @@ export class HarpnotesLayout {
     const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
     // Legacy Annotation#size verwendet jsPDF intern (1pt = 25.4/72 mm), nicht MM_PER_POINT (0.3)
     const height = fontSize * 25.4 / 72
-    return [text.length * height * 0.55, height]
+    const width = Array.from(text).reduce((sum, char) => {
+      const factor = char === '-'
+        ? 0.33
+        : /[il]/.test(char)
+          ? 0.22
+          : char === 't'
+            ? 0.24
+            : char === 'r'
+              ? 0.39
+              : 0.55
+      return sum + height * factor
+    }, 0)
+    return [width, height]
   }
 
   // ---------------------------------------------------------------------------
@@ -1153,11 +1169,12 @@ export class HarpnotesLayout {
     style: 'solid' | 'dotted',
     noteBoundPlayables: Set<PlayableEntity>,
   ): boolean {
+    if (curr.measureStart === true && prev.variant !== curr.variant) return true
     if (style !== 'solid') return false
     if (curr.type === 'Pause') {
       return prev.type === 'Pause' && curr.duration < prev.duration && !noteBoundPlayables.has(curr)
     }
-    return curr.measureStart === true && prev.variant !== curr.variant
+    return false
   }
 
   private _layoutSynchPointLine(
@@ -1751,18 +1768,24 @@ export class HarpnotesLayout {
       if (countnoteVoices.has(voiceNr)) {
         const countnoteText = this._countnoteText(playable, measureStartBeat, voiceNr, conf)
         const offset = this._countnoteOffset(playable, layout, voiceNr, conf)
+        const style = (conf.get('extract.countnotes.style') as string | undefined) ?? 'smaller'
+        const shiftEu = /^[aoveu]$/.test(countnoteText)
+        const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
+        const shiftY = shiftEu ? fontSize * layout.MM_PER_POINT * 0.25 : 0
         const annotation: Annotation = {
           type: 'Annotation',
-          center: [x + offset[0], y + offset[1]],
+          center: [x + offset[0], y + offset[1] - shiftY],
           text: countnoteText,
-          style: (conf.get('extract.countnotes.style') as string | undefined) ?? 'smaller',
+          style,
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: playable.visible,
         }
         const side = this._countnoteSide(playable, voiceNr, conf)
         if (countnoteText !== 'e') {
-          countnoteBackgrounds.push(this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05))
+          countnoteBackgrounds.push(
+            this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05, shiftEu),
+          )
         }
         countnotes.push(annotation)
       }
@@ -2134,10 +2157,45 @@ export class HarpnotesLayout {
       .filter((entity): entity is NoteBoundAnnotation | NewPart =>
         entity.type === 'NoteBoundAnnotation' || entity.type === 'NewPart',
       )
-      .sort((a, b) => {
-        if (a.type === b.type) return 0
-        return a.type === 'NewPart' ? -1 : 1
+
+    const existingVariantEndTimes = new Set(
+      annotationEntities
+        .filter((entity): entity is NoteBoundAnnotation =>
+          entity.type === 'NoteBoundAnnotation' && entity.policy === 'Goto',
+        )
+        .map((entity) => entity.companion.time),
+    )
+
+    for (const entity of voice.entities) {
+      if (entity.type !== 'Goto' || entity.policy.isRepeat !== true || entity.to.variant !== 2) continue
+      if (existingVariantEndTimes.has(entity.to.time)) continue
+      annotationEntities.push({
+        type: 'NoteBoundAnnotation' as const,
+        beat: entity.to.beat,
+        time: entity.to.time,
+        startPos: entity.startPos,
+        endPos: entity.endPos,
+        decorations: [],
+        barDecorations: [],
+        visible: true,
+        variant: 0,
+        znId: `layout-variantend-${voiceNr}-${entity.to.time}`,
+        companion: entity.to,
+        text: String(entity.to.variant),
+        position: [5, -7],
+        style: 'regular',
+        policy: 'Goto',
+        confKey: `notebound.variantend.v_${voiceNr}.${entity.to.time}`,
       })
+      existingVariantEndTimes.add(entity.to.time)
+    }
+
+    annotationEntities.sort((a, b) => {
+      if (a.type !== b.type) return a.type === 'NewPart' ? -1 : 1
+      if (a.type !== 'NoteBoundAnnotation' || b.type !== 'NoteBoundAnnotation') return 0
+      if (a.policy === b.policy) return 0
+      return a.policy === 'Goto' ? -1 : 1
+    })
 
     for (const entity of annotationEntities) {
       if (entity.type !== 'NoteBoundAnnotation' && entity.type !== 'NewPart') continue
