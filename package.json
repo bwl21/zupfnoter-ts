@@ -15,10 +15,14 @@
     "test:unit": "pnpm -r run test:unit",
     "type-check": "pnpm -r run type-check",
     "lint": "pnpm -r run lint",
+    "ai-task": "tsx tools/ai-task/src/cli.ts",
+    "ai-task:check": "tsc -p tools/ai-task/tsconfig.json --noEmit",
     "format": "pnpm -r run format"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
+    "@types/node": "^24.12.2",
+    "tsx": "^4.21.0",
     "typescript": "~5.9.3"
   },
   "engines": {
