@@ -208,7 +208,6 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
 
   let newbeat = 0
   let lastSize = 0
-  let breakAfterPart = false
   const result: BeatCompressionMap = {}
 
   for (const beat of sortedBeats) {
@@ -218,8 +217,7 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
     const size = beatResolution * sizeFactor
 
     const hasPartStart = notes.some(n => partStartPlayables.has(n))
-    const isContinuationAfterPart = breakAfterPart && !hasPartStart
-    const isNewPart = notes.some(n => n.firstInPart) || hasPartStart || isContinuationAfterPart
+    const isNewPart = notes.some(n => n.firstInPart) || hasPartStart
     const measureStart = notes.some(n => n.measureStart)
 
     let defaultIncrement = (size + lastSize) / 2
@@ -234,7 +232,6 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
 
     newbeat += increment
     result[beat] = newbeat
-    breakAfterPart = hasPartStart
   }
 
   return result
