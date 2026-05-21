@@ -66,7 +66,6 @@ function transformRawDuration(rawDuration: number) {
     music_type_ids: { note: 8 },
     info: {},
     checksum: '',
-    source: '',
   }
   const transformer = new AbcToSong()
   return transformer.transform(model, defaultTestConfig)
@@ -95,7 +94,6 @@ function transformSymbols(symbols: AbcSymbol[]) {
     music_type_ids: { note: 8 },
     info: {},
     checksum: '',
-    source: '',
   }
   const transformer = new AbcToSong()
   return transformer.transform(model, defaultTestConfig)

@@ -111,7 +111,6 @@ export class AbcToSong {
   private _currentState: VoiceState | null = null
   private _diagnostics: SongDiagnostic[] = []
   private _partTable: Record<number, string> = {}
-  private _sourceText = ''
 
   /**
    * Transform an AbcModel into a Song.
@@ -123,7 +122,6 @@ export class AbcToSong {
     this._config = config
     this._diagnostics = []
     this._partTable = {}
-    this._sourceText = model.source
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 192
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 64
 
@@ -1048,11 +1046,6 @@ export class AbcToSong {
   }
 
   private _parseSlur(sym: AbcSymbol): number[] {
-    const slsValue = (sym as Record<string, unknown>)['sls']
-    if (Array.isArray(slsValue)) {
-      return slsValue.map((_value, index) => index + 1)
-    }
-
     const rawValue = (sym as Record<string, unknown>)['slur_sls']
     if (Array.isArray(rawValue)) {
       return rawValue.filter((value): value is number => typeof value === 'number')
@@ -1064,30 +1057,7 @@ export class AbcToSong {
       result.push(startValue & 0xf)
       startValue >>= 4
     }
-    if (result.length > 0) {
-      return result
-    }
-
-    return this._parseSlurFromSource(sym.istart)
-  }
-
-  private _parseSlurFromSource(startOffset: number): number[] {
-    if (this._sourceText.length === 0 || startOffset <= 0) {
-      return []
-    }
-
-    let index = startOffset - 1
-    while (index >= 0 && /\s/.test(this._sourceText[index] ?? '')) {
-      index -= 1
-    }
-
-    let count = 0
-    while ((this._sourceText[index] ?? '') === '(') {
-      count += 1
-      index -= 1
-    }
-
-    return Array.from({ length: count }, (_value, arrayIndex) => arrayIndex + 1)
+    return result
   }
 
   private _parseTuplet(sym: AbcSymbol, state: VoiceState): { tuplet: number; tupletStart: boolean; tupletEnd: boolean } {

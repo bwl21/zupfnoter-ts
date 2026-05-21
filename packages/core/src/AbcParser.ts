@@ -83,6 +83,43 @@ export interface AbcParseError {
   column?: number
 }
 
+function countSlurStartsFromSource(source: string, startOffset: number): number[] {
+  if (startOffset <= 0) return []
+
+  let index = startOffset - 1
+  while (index >= 0 && /\s/.test(source[index] ?? '')) {
+    index -= 1
+  }
+
+  let count = 0
+  while ((source[index] ?? '') === '(') {
+    count += 1
+    index -= 1
+  }
+
+  return Array.from({ length: count }, (_value, arrayIndex) => arrayIndex + 1)
+}
+
+function normalizeSymbol(
+  liveSymbol: Abc2svgSymbol,
+  source: string,
+  nextSymbol?: AbcSymbol,
+): AbcSymbol {
+  const normalized = {
+    ...liveSymbol,
+    next: nextSymbol,
+  } as AbcSymbol
+
+  const slurStarts = Array.isArray(liveSymbol.slur_sls)
+    ? liveSymbol.slur_sls.filter((value): value is number => typeof value === 'number')
+    : countSlurStartsFromSource(source, liveSymbol.istart)
+  if (slurStarts.length > 0) {
+    normalized.slur_sls = slurStarts
+  }
+
+  return normalized
+}
+
 function computeLegacyChecksum(abcText: string): string {
   const markerIndex = abcText.indexOf('%%%%zupfnoter.config')
 
@@ -223,7 +260,7 @@ export class AbcParser {
     }
 
     const voices: AbcVoice[] = voice_tb.map((v) => {
-      const symbols: AbcSymbol[] = AbcParser._collectSymbols(v.sym)
+      const symbols: AbcSymbol[] = AbcParser._collectSymbols(v.sym, source)
 
       return {
         voice_properties: {
@@ -237,17 +274,20 @@ export class AbcParser {
       }
     })
 
-    return { voices, music_types, music_type_ids, info, checksum, source }
+    return { voices, music_types, music_type_ids, info, checksum }
   }
 
   /** Walk the linked-list of symbols in a voice and collect them into an array */
-  private static _collectSymbols(first: Abc2svgSymbol | undefined): AbcSymbol[] {
-    const result: AbcSymbol[] = []
+  private static _collectSymbols(first: Abc2svgSymbol | undefined, source: string): AbcSymbol[] {
+    const liveSymbols: Abc2svgSymbol[] = []
     let sym: Abc2svgSymbol | undefined = first
     while (sym) {
-      result.push(sym as unknown as AbcSymbol)
+      liveSymbols.push(sym)
       sym = sym.next
     }
-    return result
+
+    return liveSymbols.map((liveSymbol, index) =>
+      normalizeSymbol(liveSymbol, source, liveSymbols[index + 1] as unknown as AbcSymbol | undefined),
+    )
   }
 }

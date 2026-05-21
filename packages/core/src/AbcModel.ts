@@ -161,6 +161,4 @@ export interface AbcModel {
   info: Record<string, string>
   /** Legacy checksum over the stripped ABC source, used in sheet footer annotations. */
   checksum: string
-  /** Original ABC source text for parser-level parity fallbacks */
-  source: string
 }
