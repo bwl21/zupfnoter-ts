@@ -8,5 +8,20 @@
  */
 
 export const OPEN_IMPLEMENTATIONS_TEMPLATE = 
-[] as const
+[
+  {
+    "id": "song.246-horch-was-kommt-von-draussen-rein-unclassified",
+    "stage": "song",
+    "scope": "246_Horch-was-kommt-von-draussen-rein",
+    "summary": "Unclassified song legacy comparison failure detected for 246_Horch-was-kommt-von-draussen-rein.",
+    "refs": [
+      "packages/core/src/AbcToSong.ts"
+    ],
+    "fixtures": [
+      "246_Horch-was-kommt-von-draussen-rein"
+    ],
+    "prompt": "Investigate the song legacy comparison failure for fixture 246_Horch-was-kommt-von-draussen-rein. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t \"246_Horch-was-kommt-von-draussen-rein\" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.",
+    "mismatchSummary": "  voices[0].entities.length:\n    expected: 125\n    actual:   124\n  voices[1].entities.length:\n    expected: 125\n    actual:   124\n  voices[2].entities.length:\n    expected: 122\n    actual:   121"
+  }
+] as const
 
