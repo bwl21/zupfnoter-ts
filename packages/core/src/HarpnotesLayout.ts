@@ -1186,16 +1186,26 @@ export class HarpnotesLayout {
     startpos: number,
     visible: boolean | undefined,
   ): FlowLine | null {
-    const firstNote = synchPoint.notes[0]
-    const lastNote = synchPoint.notes[synchPoint.notes.length - 1]
-    if (!firstNote || !lastNote || firstNote === lastNote) return null
+    const noteCenters = synchPoint.notes.map((note) => ({
+      note,
+      center: playableCenter(note, beatMap, layout, startpos),
+    }))
+    if (noteCenters.length < 2) return null
+
+    const leftmost = noteCenters.reduce((left, current) => (
+      current.center[0] < left.center[0] ? current : left
+    ))
+    const rightmost = noteCenters.reduce((right, current) => (
+      current.center[0] > right.center[0] ? current : right
+    ))
+    if (leftmost.note === rightmost.note) return null
 
     return {
       type: 'FlowLine',
-      from: playableCenter(firstNote, beatMap, layout, startpos),
-      to: playableCenter(lastNote, beatMap, layout, startpos),
+      from: leftmost.center,
+      to: rightmost.center,
       style: 'dashed',
-      color: variantToColor(firstNote.variant, layout),
+      color: variantToColor(leftmost.note.variant, layout),
       lineWidth: layout.LINE_THIN,
       visible: visible === true,
     }

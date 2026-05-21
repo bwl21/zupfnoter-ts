@@ -103,6 +103,16 @@ K:C
 V:V1 clef=treble-8
 [V:V1] "^override target" C |]`
 
+const ABC_SYNCHPOINT_TRIAD = `X:1
+T:SynchPoint Triad Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] [ECG] |]`
+
 const ABC_REPEAT = `X:1
 T:Repeat Test
 M:4/4
@@ -217,6 +227,33 @@ describe('HarpnotesLayout', () => {
       const { sheet } = pipeline(ABC_TWO_VOICES)
       expect(sheet.activeVoices).toContain(1)
       expect(sheet.activeVoices).toContain(2)
+    })
+  })
+
+  describe('synchpoint', () => {
+    it('anchors the dashed line at the leftmost and rightmost note like legacy', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      expect(extract0).toBeDefined()
+      if (!extract0) return
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+
+      const { sheet } = pipelineWithConfig(ABC_SYNCHPOINT_TRIAD, config)
+      const ellipses = sheet.children.filter((child): child is Ellipse => child.type === 'Ellipse')
+      const synchLine = sheet.children.find(
+        (child): child is FlowLine => child.type === 'FlowLine' && child.style === 'dashed',
+      )
+
+      expect(ellipses.length).toBe(3)
+      expect(synchLine).toBeDefined()
+      const xs = ellipses.map((ellipse) => ellipse.center[0]).sort((left, right) => left - right)
+      expect(synchLine?.from[0]).toBeCloseTo(xs[0] ?? 0)
+      expect(synchLine?.to[0]).toBeCloseTo(xs[2] ?? 0)
     })
   })
 
