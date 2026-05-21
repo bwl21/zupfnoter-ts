@@ -802,7 +802,7 @@ export class HarpnotesLayout {
 
     const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
     const showSlur = (conf.get('layout.SHOW_SLUR') as boolean | undefined) ?? false
-    const slurIndex = new Map<string, PlayableEntity>()
+    const slurIndex = new Map<number, PlayableEntity>()
     let tieStart: PlayableEntity = firstPlayable
 
     for (const playable of playables) {

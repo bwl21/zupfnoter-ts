@@ -89,6 +89,8 @@ export interface AbcSymbol {
   text?: string
   /** Tie start flag */
   ti1?: number
+  /** abc2svg slur descriptors attached to this symbol */
+  sls?: Array<{ ty?: number; [key: string]: unknown }>
   /** Slur start IDs */
   slur_sls?: number[]
   /** Number of slurs ending here */
@@ -159,4 +161,6 @@ export interface AbcModel {
   info: Record<string, string>
   /** Legacy checksum over the stripped ABC source, used in sheet footer annotations. */
   checksum: string
+  /** Original ABC source text for parser-level parity fallbacks */
+  source: string
 }

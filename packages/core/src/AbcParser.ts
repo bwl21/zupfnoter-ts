@@ -59,6 +59,7 @@ interface Abc2svgSymbol {
   bar_type?: string
   text?: string
   ti1?: number
+  sls?: Array<{ ty?: number; [key: string]: unknown }>
   slur_sls?: number[]
   slur_end?: number
   rbstart?: number
@@ -168,6 +169,7 @@ export class AbcParser {
           music_types,
           info,
           computeLegacyChecksum(abcText),
+          abcText,
         )
       },
     }
@@ -196,6 +198,7 @@ export class AbcParser {
     music_types: string[],
     info: Record<string, string>,
     checksum: string,
+    source: string,
   ): AbcModel {
     // Build reverse map: type name → numeric id
     const music_type_ids: Record<string, number> = {}
@@ -234,7 +237,7 @@ export class AbcParser {
       }
     })
 
-    return { voices, music_types, music_type_ids, info, checksum }
+    return { voices, music_types, music_type_ids, info, checksum, source }
   }
 
   /** Walk the linked-list of symbols in a voice and collect them into an array */

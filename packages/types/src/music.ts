@@ -55,8 +55,8 @@ export interface Playable extends MusicEntity {
   measureCount: number
   jumpStarts: string[]
   jumpEnds: string[]
-  slurStarts: string[]
-  slurEnds: string[]
+  slurStarts: number[]
+  slurEnds: number[]
   countNote: string | null
   lyrics: string | null
   /**

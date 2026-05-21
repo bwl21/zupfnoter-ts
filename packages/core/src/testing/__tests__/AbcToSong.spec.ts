@@ -66,6 +66,7 @@ function transformRawDuration(rawDuration: number) {
     music_type_ids: { note: 8 },
     info: {},
     checksum: '',
+    source: '',
   }
   const transformer = new AbcToSong()
   return transformer.transform(model, defaultTestConfig)
@@ -94,6 +95,7 @@ function transformSymbols(symbols: AbcSymbol[]) {
     music_type_ids: { note: 8 },
     info: {},
     checksum: '',
+    source: '',
   }
   const transformer = new AbcToSong()
   return transformer.transform(model, defaultTestConfig)
@@ -144,7 +146,7 @@ function legacyType(entity: Record<string, unknown>): string {
 }
 
 function normalizeTsSlurTupletParity(song: Song): SlurTupletParityEntity[] {
-  const voice = song.voices[0]
+  const voice = song.voices[1] ?? song.voices[0]
   if (!voice) return []
 
   return voice.entities
@@ -521,9 +523,9 @@ describe('AbcToSong – slur / tuplet', () => {
   })
 
   it.each([
-    [0x1, ['slur-0']],
-    [0x11, ['slur-0', 'slur-1']],
-    [0x1111, ['slur-0', 'slur-1', 'slur-2', 'slur-3']],
+    [0x1, [1]],
+    [0x11, [1, 2]],
+    [0x1111, [1, 2, 3, 4]],
   ])('decodes slur_sls=%s as a legacy bitfield', (slur_sls, expectedStarts) => {
     const song = transformSymbols([{
       type: 8,

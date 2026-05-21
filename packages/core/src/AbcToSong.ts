@@ -58,7 +58,7 @@ interface VoiceState {
   variantEndings: Array<Array<{ rbstop?: PlayableEntity; rbstart?: PlayableEntity; distance?: number[]; repeatEnd?: boolean }>>
   pushedVariantEndingRepeat: boolean
   previousNote: PlayableEntity | null
-  slurStack: string[]
+  slurStack: number[]
   slurCounter: number
   tupletP: number | null
   variantAnchor: PlayableEntity | null
@@ -111,6 +111,7 @@ export class AbcToSong {
   private _currentState: VoiceState | null = null
   private _diagnostics: SongDiagnostic[] = []
   private _partTable: Record<number, string> = {}
+  private _sourceText = ''
 
   /**
    * Transform an AbcModel into a Song.
@@ -122,6 +123,7 @@ export class AbcToSong {
     this._config = config
     this._diagnostics = []
     this._partTable = {}
+    this._sourceText = model.source
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 192
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 64
 
@@ -1046,13 +1048,46 @@ export class AbcToSong {
   }
 
   private _parseSlur(sym: AbcSymbol): number[] {
-    let startValue = ((sym as Record<string, unknown>)['slur_sls'] as number | undefined) ?? 0
+    const slsValue = (sym as Record<string, unknown>)['sls']
+    if (Array.isArray(slsValue)) {
+      return slsValue.map((_value, index) => index + 1)
+    }
+
+    const rawValue = (sym as Record<string, unknown>)['slur_sls']
+    if (Array.isArray(rawValue)) {
+      return rawValue.filter((value): value is number => typeof value === 'number')
+    }
+
+    let startValue = (typeof rawValue === 'number' ? rawValue : 0)
     const result: number[] = []
     while (startValue > 0) {
       result.push(startValue & 0xf)
       startValue >>= 4
     }
-    return result
+    if (result.length > 0) {
+      return result
+    }
+
+    return this._parseSlurFromSource(sym.istart)
+  }
+
+  private _parseSlurFromSource(startOffset: number): number[] {
+    if (this._sourceText.length === 0 || startOffset <= 0) {
+      return []
+    }
+
+    let index = startOffset - 1
+    while (index >= 0 && /\s/.test(this._sourceText[index] ?? '')) {
+      index -= 1
+    }
+
+    let count = 0
+    while ((this._sourceText[index] ?? '') === '(') {
+      count += 1
+      index -= 1
+    }
+
+    return Array.from({ length: count }, (_value, arrayIndex) => arrayIndex + 1)
   }
 
   private _parseTuplet(sym: AbcSymbol, state: VoiceState): { tuplet: number; tupletStart: boolean; tupletEnd: boolean } {
@@ -1166,14 +1201,19 @@ export class AbcToSong {
     return fallback
   }
 
-  private _pushSlur(state: VoiceState): string {
-    const id = `slur-${state.slurCounter++}`
+  private _pushSlur(state: VoiceState): number {
+    const id = state.slurCounter + 1
+    state.slurCounter++
     state.slurStack.push(id)
     return id
   }
 
-  private _popSlur(state: VoiceState): string {
-    return state.slurStack.pop() ?? `slur-end-${state.slurCounter++}`
+  private _popSlur(state: VoiceState): number {
+    const existing = state.slurStack.pop()
+    if (existing !== undefined) return existing
+    const id = state.slurCounter + 1
+    state.slurCounter++
+    return id
   }
 
   private _investigateFirstBar(voice: AbcVoice, state: VoiceState, model: AbcModel): void {

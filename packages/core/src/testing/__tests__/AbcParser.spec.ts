@@ -114,6 +114,13 @@ describe('AbcParser', () => {
       expect(noteSymbol!.notes![0]!.midi).toBeGreaterThan(0)
     })
 
+    it('retains the original source text in the model', () => {
+      const parser = new AbcParser()
+      const model = parser.parse(SINGLE_NOTE_ABC)
+
+      expect(model.source).toBe(SINGLE_NOTE_ABC)
+    })
+
     it('collects errors for invalid ABC without throwing', () => {
       const parser = new AbcParser()
       // Invalid key should produce warnings but still parse
