@@ -723,14 +723,30 @@ export class AbcToSong {
   private _transformPartAnnotation(
     sym: AbcSymbol,
     companion: PlayableEntity,
-    _voiceIndex: number,
-  ): null {
+    voiceIndex: number,
+  ): NoteBoundAnnotation | null {
     if (!Object.prototype.hasOwnProperty.call(this._partTable, sym.time)) return null
     const partText = this._partTable[sym.time]
-    if (typeof partText !== 'string') return null
+    if (typeof partText !== 'string' || partText.length === 0) return null
 
     companion.firstInPart = true
-    return null
+    return {
+      type: 'NoteBoundAnnotation' as const,
+      beat: this._timeToBeat(sym.time),
+      time: sym.time,
+      startPos: this._charposToLineCol(sym.istart),
+      endPos: this._charposToLineCol(sym.iend),
+      decorations: [],
+      barDecorations: [],
+      visible: true,
+      variant: 0,
+      znId: `annot-partname-${voiceIndex}-${sym.istart}`,
+      companion,
+      text: partText,
+      position: this._getDefaultNoteBoundPosition('partname', [5, -7]),
+      style: 'bold',
+      confKey: `notebound.partname.v_${voiceIndex + 1}.${companion.time}`,
+    }
   }
 
   private _transformInlinePart(sym: AbcSymbol, companion: PlayableEntity): void {

@@ -392,8 +392,11 @@ V:V1 clef=treble-8
 [V:V1] C [P:Rests] z |]
 `)
     const pause = song.voices[0]?.entities.find((e) => e.type === 'Pause')
+    const partAnnotations = song.voices[0]?.entities.filter((e) => e.type === 'NoteBoundAnnotation') ?? []
     expect(song.voices[0]?.entities.some((e) => e.type === 'NewPart')).toBe(false)
     expect(pause?.type).toBe('Pause')
+    expect(partAnnotations).toHaveLength(1)
+    expect((partAnnotations[0] as { text?: string } | undefined)?.text).toBe('Rests')
     if (pause?.type === 'Pause') {
       expect(pause.firstInPart).toBe(true)
     }
@@ -413,10 +416,16 @@ V:V2 clef=treble-8
 `)
     const voice1Playable = song.voices[1]?.entities.find((e) => e.type === 'Pause')
     const voice2Playable = song.voices[2]?.entities.find((e) => e.type === 'Note')
+    const voice1Annotations = song.voices[1]?.entities.filter((e) => e.type === 'NoteBoundAnnotation') ?? []
+    const voice2Annotations = song.voices[2]?.entities.filter((e) => e.type === 'NoteBoundAnnotation') ?? []
     expect(voice1Playable?.type).toBe('Pause')
     expect(song.voices[1]?.entities.some((e) => e.type === 'NewPart')).toBe(false)
     expect(song.voices[2]?.entities.some((e) => e.type === 'NewPart')).toBe(false)
     expect(voice2Playable?.type).toBe('Note')
+    expect(voice1Annotations).toHaveLength(1)
+    expect(voice2Annotations).toHaveLength(1)
+    expect((voice1Annotations[0] as { text?: string } | undefined)?.text).toBe('Rests')
+    expect((voice2Annotations[0] as { text?: string } | undefined)?.text).toBe('Rests')
     if (voice1Playable?.type === 'Pause') {
       expect(voice1Playable.firstInPart).toBe(true)
     }
