@@ -23,6 +23,8 @@ import type {
   BeatMap,
   SongMetaData,
   SongDiagnostic,
+  RestPositionConfig,
+  RestPositionMode,
 } from '@zupfnoter/types'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
 import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
@@ -124,11 +126,9 @@ export class AbcToSong {
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 192
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 64
 
-    const restpositionConfig = config as unknown as Record<string, Record<string, unknown>>
-    const restpositionDefault =
-      (restpositionConfig['restposition']?.['default'] as string | undefined) ?? 'center'
+    const restposition = config.restposition
 
-    const voices = model.voices.map((v, idx) => this._transformVoice(v, idx, model, restpositionDefault))
+    const voices = model.voices.map((v, idx) => this._transformVoice(v, idx, model, restposition))
     this._propagateInlineParts(voices)
 
     // Legacy parity: insert duplicate of V1 at index 0 for 1-based voice indexing.
@@ -195,7 +195,12 @@ export class AbcToSong {
   // Voice transformation
   // ---------------------------------------------------------------------------
 
-  private _transformVoice(voice: AbcVoice, voiceIndex: number, model: AbcModel, restpositionDefault = 'center'): Voice {
+  private _transformVoice(
+    voice: AbcVoice,
+    voiceIndex: number,
+    model: AbcModel,
+    restposition: RestPositionConfig,
+  ): Voice {
     const wmeasure = voice.voice_properties.meter.wmeasure
     const countBy = voice.voice_properties.meter.a_meter[0]?.bot ?? null
     const state = createVoiceState(wmeasure, countBy)
@@ -219,7 +224,9 @@ export class AbcToSong {
     // Restposition benötigt die Playable-Referenzen; danach werden die numerischen
     // Pitch-Felder erneut synchronisiert, weil Pausen ihren Pitch ändern können.
     this._annotateNeighbourPitches(entities)
-    this._applyRestposition(entities, restpositionDefault)
+    this._applyRestposition(entities, restposition.default)
+    this._annotateNeighbourPitches(entities)
+    this._applyRepeatEndRestposition(entities, restposition)
     this._annotateNeighbourPitches(entities)
     this._currentState = null
 
@@ -270,7 +277,7 @@ export class AbcToSong {
    * - `'next'`:   nextPlayable.pitch (Fallback: prevPlayable.pitch)
    * - `'previous'`: prevPlayable.pitch (Fallback: nextPlayable.pitch)
    */
-  private _applyRestposition(entities: VoiceEntity[], mode: string): void {
+  private _applyRestposition(entities: VoiceEntity[], mode: RestPositionMode): void {
     for (const entity of entities) {
       if (entity.type !== 'Pause') continue
       const pause = entity as Pause
@@ -293,6 +300,40 @@ export class AbcToSong {
       }
       pause.pitch = pitch
     }
+  }
+
+  private _applyRepeatEndRestposition(entities: VoiceEntity[], restposition: RestPositionConfig): void {
+    const mode = this._resolveRestpositionMode(restposition.repeatend, restposition.default)
+    if (mode === restposition.default) return
+
+    for (const entity of entities) {
+      if (entity.type !== 'Goto') continue
+      const from = entity.from
+      if (from.type !== 'Pause') continue
+      this._applyRestpositionToPause(from, mode)
+    }
+  }
+
+  private _applyRestpositionToPause(pause: Pause, mode: RestPositionMode): void {
+    const prev = this._findRestpositionNeighbour(pause.prevPlayable, 'previous')
+    const next = this._findRestpositionNeighbour(pause.nextPlayable, 'next')
+
+    if (mode === 'next') {
+      pause.pitch = next?.pitch ?? prev?.pitch ?? 60
+    } else if (mode === 'previous') {
+      pause.pitch = prev?.pitch ?? next?.pitch ?? 60
+    } else if (prev && next) {
+      pause.pitch = Math.floor((prev.pitch + next.pitch) / 2)
+    } else {
+      pause.pitch = prev?.pitch ?? next?.pitch ?? 60
+    }
+  }
+
+  private _resolveRestpositionMode(
+    mode: RestPositionMode | 'default',
+    defaultMode: RestPositionMode,
+  ): RestPositionMode {
+    return mode === 'default' ? defaultMode : mode
   }
 
   private _findRestpositionNeighbour(
@@ -461,10 +502,11 @@ export class AbcToSong {
     // Chord symbols and annotations from extra
     const barMarks = this._consumePendingBarMarks(entity, state, _voiceIndex, sym)
     const part = this._transformPartAnnotation(sym, entity, state)
+    const inlinePart = this._transformInlinePart(sym, entity)
     const extras = this._transformExtras(sym, entity, state, _voiceIndex)
     const gotos = this._resolvePendingVariantGotos(entity, state, _voiceIndex, sym)
 
-    return [entity, ...barMarks, ...(part ? [part] : []), ...extras, ...gotos]
+    return [entity, ...barMarks, ...(part ? [part] : []), ...(inlinePart ? [inlinePart] : []), ...extras, ...gotos]
   }
 
   // ---------------------------------------------------------------------------
@@ -527,9 +569,10 @@ export class AbcToSong {
     }
     const barMarks = this._consumePendingBarMarks(pause, state, voiceIndex, sym)
     const part = this._transformPartAnnotation(sym, pause, state)
+    const inlinePart = this._transformInlinePart(sym, pause)
     const extras = this._transformExtras(sym, pause, state, voiceIndex)
     const gotos = this._resolvePendingVariantGotos(pause, state, voiceIndex, sym)
-    return [pause, ...barMarks, ...(part ? [part] : []), ...extras, ...gotos]
+    return [pause, ...barMarks, ...(part ? [part] : []), ...(inlinePart ? [inlinePart] : []), ...extras, ...gotos]
   }
 
   // ---------------------------------------------------------------------------

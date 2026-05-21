@@ -9,6 +9,7 @@ import { describe, it, expect } from 'vitest'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { HarpnotesLayout } from '../../HarpnotesLayout.js'
+import type { AnnotationTextMetrics } from '../../TextMetrics.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 import type { Ellipse, Glyph, FlowLine, Path, Annotation } from '@zupfnoter/types'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
@@ -36,6 +37,14 @@ function clonedDefaultConfig(): ZupfnoterConfig {
       Object.entries(defaultTestConfig.extract).map(([key, value]) => [key, { ...value }]),
     ),
   }
+}
+
+function pipelineWithLayout(abcText: string, layout: HarpnotesLayout) {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const song = new AbcToSong().transform(model, defaultTestConfig)
+  const sheet = layout.layout(song, 0, 'A4')
+  return { song, sheet }
 }
 
 // ---------------------------------------------------------------------------
@@ -337,6 +346,25 @@ describe('HarpnotesLayout', () => {
       const legend = annotations.find(a => a.text.includes('Legend Test'))
       expect(legend).toBeDefined()
       expect(annotations.some(a => a.text.includes('Test Composer'))).toBe(true)
+    })
+
+    it('uses injected annotation text metrics for annotation backgrounds', () => {
+      const metrics: AnnotationTextMetrics = {
+        measureAnnotation: () => [10, 8],
+      }
+
+      const { sheet } = pipelineWithLayout(
+        ABC_NOTEBOUND_ANNOTATION,
+        new HarpnotesLayout(defaultTestConfig, { annotationTextMetrics: metrics }),
+      )
+
+      const background = sheet.children.find(
+        (child): child is Ellipse => child.type === 'Ellipse' && child.color === 'white',
+      )
+
+      expect(background).toBeDefined()
+      expect(background?.size[0]).toBeCloseTo(5.5)
+      expect(background?.size[1]).toBeCloseTo(4.5)
     })
 
     it('renders the legacy sheet footer annotations', () => {

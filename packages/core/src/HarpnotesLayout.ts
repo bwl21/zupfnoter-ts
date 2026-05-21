@@ -40,6 +40,11 @@ import { buildConfstack } from './buildConfstack.js'
 import { computeBeatCompression, type BeatCompressionMap } from './BeatPacker.js'
 import type { Confstack } from './Confstack.js'
 import { requireDefined } from './requireDefined.js'
+import {
+  createDefaultAnnotationTextMetrics,
+  type AnnotationTextMetrics,
+  type HarpnotesLayoutOptions,
+} from './TextMetrics.js'
 
 // ---------------------------------------------------------------------------
 // Coordinate helpers (module-level pure functions)
@@ -103,26 +108,29 @@ function playableCenter(
   layout: LayoutConfig,
   startpos: number,
 ): [number, number] {
+  const proxy = playableLayoutProxy(playable)
   return [
-    playableX(playable, layout),
-    beatToY(playable.beat, beatMap, layout, startpos),
+    playableX(proxy, layout),
+    beatToY(proxy.beat, beatMap, layout, startpos),
   ]
 }
 
 function playableX(playable: PlayableEntity, layout: LayoutConfig): number {
-  const x = pitchToX(playable.pitch, layout)
-  return x + playableHorizontalShift(playable, layout, x)
+  const proxy = playableLayoutProxy(playable)
+  const x = pitchToX(proxy.pitch, layout)
+  return x + playableHorizontalShift(proxy, layout, x)
 }
 
 function playableSize(playable: PlayableEntity, layout: LayoutConfig): [number, number] {
-  if (playable.type === 'Pause') {
-    const dKey = durationToKey(playable.duration)
+  const proxy = playableLayoutProxy(playable)
+  if (proxy.type === 'Pause') {
+    const dKey = durationToKey(proxy.duration)
     const restStyle = layout.REST_TO_GLYPH[dKey] ?? layout.REST_TO_GLYPH['err']
     if (!restStyle) return layout.REST_SIZE
     return [layout.REST_SIZE[0] * restStyle.scale[0], layout.REST_SIZE[1] * restStyle.scale[1]]
   }
 
-  const dKey = durationToKey(playable.duration)
+  const dKey = durationToKey(proxy.duration)
   const style = layout.DURATION_TO_STYLE[dKey] ?? requireDefined(
     layout.DURATION_TO_STYLE['err'],
     'HarpnotesLayout.playableSize(): missing fallback duration style "err"',
@@ -131,13 +139,19 @@ function playableSize(playable: PlayableEntity, layout: LayoutConfig): [number, 
 }
 
 function playableDotted(playable: PlayableEntity, layout: LayoutConfig): boolean {
-  const dKey = durationToKey(playable.duration)
-  if (playable.type === 'Pause') {
+  const proxy = playableLayoutProxy(playable)
+  const dKey = durationToKey(proxy.duration)
+  if (proxy.type === 'Pause') {
     return (layout.REST_TO_GLYPH[dKey] ?? layout.REST_TO_GLYPH['err'])?.dotted ?? false
   }
 
   const style = layout.DURATION_TO_STYLE[dKey] ?? layout.DURATION_TO_STYLE['err']
   return style?.dotted ?? false
+}
+
+function playableLayoutProxy(playable: PlayableEntity): PlayableEntity {
+  if (playable.type !== 'SynchPoint') return playable
+  return playable.notes[playable.notes.length - 1] ?? playable
 }
 
 function playableHorizontalShift(playable: PlayableEntity, layout: LayoutConfig, x: number): number {
@@ -428,9 +442,11 @@ function makeLegacySlurPath(p1: [number, number], p2: [number, number]): [number
 
 export class HarpnotesLayout {
   private _config: ZupfnoterConfig
+  private _annotationTextMetrics: AnnotationTextMetrics
 
-  constructor(config: ZupfnoterConfig) {
+  constructor(config: ZupfnoterConfig, options: HarpnotesLayoutOptions = {}) {
     this._config = config
+    this._annotationTextMetrics = options.annotationTextMetrics ?? createDefaultAnnotationTextMetrics()
   }
 
   /**
@@ -660,7 +676,10 @@ export class HarpnotesLayout {
         const note = entity as Note
         const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note))
         playableElements.push(drawable)
-        if ((note.measureStart && !this._isLegacyVariantLeadInMeasureStart(note)) || note.decorations.includes('fermata')) {
+        if (
+          (note.measureStart && !this._isLegacyVariantLeadInMeasureStart(note)) ||
+          note.decorations.includes('fermata')
+        ) {
           playableElements.push(this._layoutMeasureBarover(drawable, layout))
         }
         const noteDecorations = this._layoutDecorations(note, drawable, layout, voiceNr, conf)
@@ -686,7 +705,10 @@ export class HarpnotesLayout {
         for (const note of sp.notes) {
           const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(sp))
           playableElements.push(drawable)
-          if (note.measureStart && !this._isLegacyVariantLeadInMeasureStart(note)) {
+          if (
+            note.measureStart &&
+            !this._isLegacyVariantLeadInMeasureStart(note)
+          ) {
             playableElements.push(this._layoutMeasureBarover(drawable, layout))
           }
           decorationRoot ??= drawable
@@ -1069,30 +1091,7 @@ export class HarpnotesLayout {
   }
 
   private _annotationSize(text: string, style: string, layout: LayoutConfig): [number, number] {
-    if (style === 'small_italic') {
-      const widths: Record<string, number> = {
-        f: 0.889,
-        p: 1.7462,
-      }
-      return [widths[text] ?? text.length * 1.2, 3.175]
-    }
-
-    const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
-    // Legacy Annotation#size verwendet jsPDF intern (1pt = 25.4/72 mm), nicht MM_PER_POINT (0.3)
-    const height = fontSize * 25.4 / 72
-    const width = Array.from(text).reduce((sum, char) => {
-      const factor = char === '-'
-        ? 0.33
-        : /[il]/.test(char)
-          ? 0.22
-          : char === 't'
-            ? 0.24
-            : char === 'r'
-              ? 0.39
-              : 0.55
-      return sum + height * factor
-    }, 0)
-    return [width, height]
+    return this._annotationTextMetrics.measureAnnotation(text, style, layout)
   }
 
   // ---------------------------------------------------------------------------
@@ -1172,7 +1171,10 @@ export class HarpnotesLayout {
     if (curr.measureStart === true && prev.variant !== curr.variant) return true
     if (style !== 'solid') return false
     if (curr.type === 'Pause') {
-      return prev.type === 'Pause' && curr.duration < prev.duration && !noteBoundPlayables.has(curr)
+      return prev.type === 'Pause' &&
+        curr.duration < prev.duration &&
+        !(noteBoundPlayables.has(prev) && prev.duration >= 48) &&
+        !noteBoundPlayables.has(curr)
     }
     return false
   }
@@ -1681,14 +1683,14 @@ export class HarpnotesLayout {
 
     if (!notes) return result
 
-    for (const [, entry] of Object.entries(notes)) {
+    for (const [, entry] of this._sortSheetAnnotationEntries(notes)) {
       const ann = entry as { pos?: [number, number]; text?: string; style?: string }
       if (!ann.pos || !ann.text) continue
 
       result.push({
         type: 'Annotation',
         center: ann.pos,
-        text: this._resolveAnnotationPlaceholders(ann.text, metaData, conf, extractNr),
+        text: this._normalizeAnnotationText(this._resolveAnnotationPlaceholders(ann.text, metaData, conf, extractNr)),
         style: ann.style ?? 'regular',
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
@@ -1697,6 +1699,36 @@ export class HarpnotesLayout {
     }
 
     return result
+  }
+
+  private _sortSheetAnnotationEntries(notes: Record<string, unknown>): Array<[string, unknown]> {
+    const entries = Object.entries(notes)
+    if (entries.some(([key]) => !key.startsWith('T'))) return entries
+
+    const legacyOrder = new Map([
+      ['T01_number', 0],
+      ['T01_number_extract', 1],
+    ])
+    return entries.sort(([left], [right]) => {
+      const leftOrder = legacyOrder.get(left) ?? 100
+      const rightOrder = legacyOrder.get(right) ?? 100
+      if (leftOrder !== rightOrder) return leftOrder - rightOrder
+      return 0
+    })
+  }
+
+  private _normalizeAnnotationText(text: string): string {
+    return Array.from(text.replaceAll(/[„“‚’—–]/g, (char) => {
+      const replacements: Record<string, string> = {
+        '„': '"',
+        '“': '"',
+        '‚': "'",
+        '’': "'",
+        '—': '-',
+        '–': '-',
+      }
+      return replacements[char] ?? char
+    })).map((char) => char.charCodeAt(0) > 255 ? '¿' : char).join('')
   }
 
   private _resolveAnnotationPlaceholders(
@@ -1825,7 +1857,8 @@ export class HarpnotesLayout {
     return Boolean(
       playable.measureStart &&
       playable.duration < 32 &&
-      playable.nextPlayable?.measureStart,
+      playable.nextPlayable?.measureStart &&
+      playable.nextPlayable.variant === playable.variant,
     )
   }
 
@@ -2182,7 +2215,7 @@ export class HarpnotesLayout {
         znId: `layout-variantend-${voiceNr}-${entity.to.time}`,
         companion: entity.to,
         text: String(entity.to.variant),
-        position: [5, -7],
+        position: [-4, -7],
         style: 'regular',
         policy: 'Goto',
         confKey: `notebound.variantend.v_${voiceNr}.${entity.to.time}`,

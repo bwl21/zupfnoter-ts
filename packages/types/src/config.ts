@@ -203,6 +203,23 @@ export interface PositionedTextConfig {
 }
 
 /**
+ * Modus für die horizontale Positionierung von Pausen.
+ */
+export type RestPositionMode = 'center' | 'next' | 'previous'
+
+/**
+ * Pausenpositionierung aus `restposition`.
+ */
+export interface RestPositionConfig {
+  /** Standardmodus für normale Pausen */
+  default: RestPositionMode
+  /** Modus für Pausen direkt am Wiederholungsanfang */
+  repeatstart: RestPositionMode | 'default'
+  /** Modus für Pausen direkt am Wiederholungsende */
+  repeatend: RestPositionMode | 'default'
+}
+
+/**
  * Konfiguration für einen Extrakt (eine Druckansicht).
  * Entspricht `extract.<nr>`-Abschnitt in der Zupfnoter-Konfiguration.
  *
@@ -252,6 +269,8 @@ export interface ZupfnoterConfig {
   layout: LayoutConfig
   extract: Record<string, ExtractConfig>
   printer: PrinterConfig
+  /** Pausenpositionierung nach Legacy-Konfiguration */
+  restposition: RestPositionConfig
   /** Reihenfolge der zu erzeugenden Extrakte. Legacy-default für Sheet-Fixtures ist der erste Eintrag. */
   produce?: number[]
   annotations?: Record<string, PositionedTextConfig>

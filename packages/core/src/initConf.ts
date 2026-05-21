@@ -43,6 +43,11 @@ function cutStringNames(strings: string[]): string {
  */
 export function initConf(conf: Confstack): ZupfnoterConfig {
   return {
+    restposition: {
+      default: 'center',
+      repeatstart: 'next',
+      repeatend: 'default',
+    },
     layout: {
       // Ellipsen- und Pausengrößen
       ELLIPSE_SIZE: [3.5, 1.7],

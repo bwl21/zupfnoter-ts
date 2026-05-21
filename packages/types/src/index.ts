@@ -54,6 +54,8 @@ export type {
   DurationStyle,
   GlyphName,
   RestStyle,
+  RestPositionMode,
+  RestPositionConfig,
   LayoutConfig,
   PrinterConfig,
   BarnumberConfig,

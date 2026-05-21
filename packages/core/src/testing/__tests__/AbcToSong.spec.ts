@@ -25,6 +25,13 @@ function transform(abcText: string) {
   return transformer.transform(model, defaultTestConfig)
 }
 
+function transformWithConfig(abcText: string, config: typeof defaultTestConfig) {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const transformer = new AbcToSong()
+  return transformer.transform(model, config)
+}
+
 function transformWithoutCountBy(abcText: string) {
   const parser = new AbcParser()
   const model = parser.parse(abcText)
@@ -349,6 +356,51 @@ V:V1 clef=treble-8
 `)
     const annotations = song.voices[0]!.entities.filter((e) => e.type === 'NoteBoundAnnotation')
     expect(annotations.length).toBe(1)
+  })
+
+  it('applies repeatend=previous to a rest before a repeat end', () => {
+    const song = transformWithConfig(`X:1
+T:Repeat End Restposition Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] |: C z :| D |]
+`, {
+      ...defaultTestConfig,
+      restposition: {
+        ...defaultTestConfig.restposition,
+        repeatend: 'previous',
+      },
+    })
+    const pause = song.voices[0]?.entities.find((e) => e.type === 'Pause')
+    expect(pause?.type).toBe('Pause')
+    if (pause?.type === 'Pause') {
+      expect(pause.pitch).toBe(48)
+    }
+  })
+
+  it('attaches inline part markers to rests', () => {
+    const song = transform(`X:1
+T:Inline Part Rest Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] C [P:Rests] z |]
+`)
+    const part = song.voices[0]?.entities.find((e) => e.type === 'NewPart')
+    const pause = song.voices[0]?.entities.find((e) => e.type === 'Pause')
+    expect(part?.type).toBe('NewPart')
+    if (part?.type === 'NewPart') {
+      expect(part.name).toBe('Rests')
+    }
+    expect(pause?.type).toBe('Pause')
+    if (pause?.type === 'Pause') {
+      expect(pause.firstInPart).toBe(true)
+    }
   })
 })
 
