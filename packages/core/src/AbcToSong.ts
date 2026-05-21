@@ -70,8 +70,6 @@ interface VoiceState {
   pendingVariantEndingDuration: number | null
   /** Ruby-compatible [r:] remark lookup by voice_element[:time]. */
   remarkTable: Record<number, string>
-  /** Ruby-compatible P: part lookup by voice_element[:time]. */
-  partTable: Record<number, string>
 }
 
 function createVoiceState(wmeasure: number, countBy: number | null): VoiceState {
@@ -99,7 +97,6 @@ function createVoiceState(wmeasure: number, countBy: number | null): VoiceState 
     pendingVariantEndingText: null,
     pendingVariantEndingDuration: null,
     remarkTable: {},
-    partTable: {},
   }
 }
 
@@ -113,6 +110,7 @@ export class AbcToSong {
   private _config: ZupfnoterConfig | null = null
   private _currentState: VoiceState | null = null
   private _diagnostics: SongDiagnostic[] = []
+  private _partTable: Record<number, string> = {}
 
   /**
    * Transform an AbcModel into a Song.
@@ -123,13 +121,13 @@ export class AbcToSong {
   transform(model: AbcModel, config: ZupfnoterConfig): Song {
     this._config = config
     this._diagnostics = []
+    this._partTable = {}
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 192
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 64
 
     const restposition = config.restposition
 
     const voices = model.voices.map((v, idx) => this._transformVoice(v, idx, model, restposition))
-    this._propagateInlineParts(voices)
 
     // Legacy parity: insert duplicate of V1 at index 0 for 1-based voice indexing.
     // The legacy Ruby system introduces this extra voice so that external config
@@ -158,37 +156,6 @@ export class AbcToSong {
     const harpnoteOptions = this._extractHarpnoteOptions(model)
 
     return { voices, beatMaps, metaData, harpnoteOptions }
-  }
-
-  private _propagateInlineParts(voices: Voice[]): void {
-    const parts = voices.flatMap((voice) =>
-      voice.entities.filter((entity): entity is NewPart => entity.type === 'NewPart'),
-    )
-
-    for (const part of parts) {
-      for (const voice of voices) {
-        const alreadyHasPart = voice.entities.some(
-          (entity) => entity.type === 'NewPart' && entity.beat === part.beat && entity.name === part.name,
-        )
-        if (alreadyHasPart) continue
-
-        const playableIndex = voice.entities.findIndex(
-          (entity) =>
-            (entity.type === 'Note' || entity.type === 'Pause' || entity.type === 'SynchPoint') &&
-            entity.beat === part.beat,
-        )
-        if (playableIndex === -1) continue
-
-        const companion = voice.entities[playableIndex] as PlayableEntity
-        companion.firstInPart = true
-        const propagatedPart: NewPart = {
-          ...part,
-          companion,
-          znId: `${part.znId}-v${voice.index}`,
-        }
-        voice.entities.splice(playableIndex + 1, 0, propagatedPart)
-      }
-    }
   }
 
   // ---------------------------------------------------------------------------
@@ -501,12 +468,12 @@ export class AbcToSong {
 
     // Chord symbols and annotations from extra
     const barMarks = this._consumePendingBarMarks(entity, state, _voiceIndex, sym)
-    const part = this._transformPartAnnotation(sym, entity, state)
-    const inlinePart = this._transformInlinePart(sym, entity)
+    this._transformInlinePart(sym, entity)
+    const part = this._transformPartAnnotation(sym, entity, _voiceIndex)
     const extras = this._transformExtras(sym, entity, state, _voiceIndex)
     const gotos = this._resolvePendingVariantGotos(entity, state, _voiceIndex, sym)
 
-    return [entity, ...barMarks, ...(part ? [part] : []), ...(inlinePart ? [inlinePart] : []), ...extras, ...gotos]
+    return [entity, ...barMarks, ...(part ? [part] : []), ...extras, ...gotos]
   }
 
   // ---------------------------------------------------------------------------
@@ -568,11 +535,11 @@ export class AbcToSong {
       state.nextRepeatStart = false
     }
     const barMarks = this._consumePendingBarMarks(pause, state, voiceIndex, sym)
-    const part = this._transformPartAnnotation(sym, pause, state)
-    const inlinePart = this._transformInlinePart(sym, pause)
+    this._transformInlinePart(sym, pause)
+    const part = this._transformPartAnnotation(sym, pause, voiceIndex)
     const extras = this._transformExtras(sym, pause, state, voiceIndex)
     const gotos = this._resolvePendingVariantGotos(pause, state, voiceIndex, sym)
-    return [pause, ...barMarks, ...(part ? [part] : []), ...(inlinePart ? [inlinePart] : []), ...extras, ...gotos]
+    return [pause, ...barMarks, ...(part ? [part] : []), ...extras, ...gotos]
   }
 
   // ---------------------------------------------------------------------------
@@ -730,7 +697,7 @@ export class AbcToSong {
 
   private _transformPart(sym: AbcSymbol, state: VoiceState): VoiceEntity | null {
     // Mirrors Ruby: part markers are stored by time and attached to the same-time playable.
-    state.partTable[sym.time] = sym.text ?? ''
+    this._partTable[sym.time] = sym.text ?? ''
     return null
   }
 
@@ -753,49 +720,27 @@ export class AbcToSong {
     return null
   }
 
-  private _transformPartAnnotation(sym: AbcSymbol, companion: PlayableEntity, state: VoiceState): NewPart | null {
-    if (!Object.prototype.hasOwnProperty.call(state.partTable, sym.time)) return null
-    const partText = state.partTable[sym.time]
+  private _transformPartAnnotation(
+    sym: AbcSymbol,
+    companion: PlayableEntity,
+    _voiceIndex: number,
+  ): null {
+    if (!Object.prototype.hasOwnProperty.call(this._partTable, sym.time)) return null
+    const partText = this._partTable[sym.time]
     if (typeof partText !== 'string') return null
 
     companion.firstInPart = true
-    return {
-      type: 'NewPart' as const,
-      beat: companion.beat,
-      time: companion.time,
-      startPos: companion.startPos,
-      endPos: companion.endPos,
-      decorations: [],
-      barDecorations: [],
-      visible: true,
-      variant: companion.variant,
-      znId: `part-${sym.time}`,
-      companion,
-      name: partText,
-    }
+    return null
   }
 
-  private _transformInlinePart(sym: AbcSymbol, companion: PlayableEntity): NewPart | null {
+  private _transformInlinePart(sym: AbcSymbol, companion: PlayableEntity): void {
     const part = sym.part
-    if (!part || typeof part !== 'object') return null
+    if (!part || typeof part !== 'object') return
     const partText = (part as { text?: unknown }).text
-    if (typeof partText !== 'string' || partText.length === 0) return null
+    if (typeof partText !== 'string' || partText.length === 0) return
 
     companion.firstInPart = true
-    return {
-      type: 'NewPart' as const,
-      beat: companion.beat,
-      time: companion.time,
-      startPos: companion.startPos,
-      endPos: companion.endPos,
-      decorations: [],
-      barDecorations: [],
-      visible: true,
-      variant: companion.variant,
-      znId: `part-${sym.istart}`,
-      companion,
-      name: partText,
-    }
+    this._partTable[companion.time] = partText
   }
 
   private _resolvePendingVariantGotos(

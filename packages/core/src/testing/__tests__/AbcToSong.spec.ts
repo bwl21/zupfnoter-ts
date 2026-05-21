@@ -381,7 +381,7 @@ V:V1 clef=treble-8
     }
   })
 
-  it('attaches inline part markers to rests', () => {
+  it('marks rests after inline part markers as firstInPart without emitting NewPart entities', () => {
     const song = transform(`X:1
 T:Inline Part Rest Test
 M:4/4
@@ -391,15 +391,37 @@ K:C
 V:V1 clef=treble-8
 [V:V1] C [P:Rests] z |]
 `)
-    const part = song.voices[0]?.entities.find((e) => e.type === 'NewPart')
     const pause = song.voices[0]?.entities.find((e) => e.type === 'Pause')
-    expect(part?.type).toBe('NewPart')
-    if (part?.type === 'NewPart') {
-      expect(part.name).toBe('Rests')
-    }
+    expect(song.voices[0]?.entities.some((e) => e.type === 'NewPart')).toBe(false)
     expect(pause?.type).toBe('Pause')
     if (pause?.type === 'Pause') {
       expect(pause.firstInPart).toBe(true)
+    }
+  })
+
+  it('shares inline part markers across voices via a transformer-global part table', () => {
+    const song = transform(`X:1
+T:Inline Part Shared Across Voices
+M:4/4
+L:1/4
+K:C
+%%score (V1) (V2)
+V:V1 clef=treble-8
+V:V2 clef=treble-8
+[V:V1] [P:Rests] z |]
+[V:V2] C |]
+`)
+    const voice1Playable = song.voices[1]?.entities.find((e) => e.type === 'Pause')
+    const voice2Playable = song.voices[2]?.entities.find((e) => e.type === 'Note')
+    expect(voice1Playable?.type).toBe('Pause')
+    expect(song.voices[1]?.entities.some((e) => e.type === 'NewPart')).toBe(false)
+    expect(song.voices[2]?.entities.some((e) => e.type === 'NewPart')).toBe(false)
+    expect(voice2Playable?.type).toBe('Note')
+    if (voice1Playable?.type === 'Pause') {
+      expect(voice1Playable.firstInPart).toBe(true)
+    }
+    if (voice2Playable?.type === 'Note') {
+      expect(voice2Playable.firstInPart).toBe(true)
     }
   })
 })
