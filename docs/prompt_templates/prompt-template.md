@@ -115,20 +115,7 @@ Output:
 
 ## goal prompt
 
-Goal:
-Fix exactly one zupfnoter-ts gap.
-
-Process:
-1. Analyze root cause first.
-2. Propose minimal fix.
-3. Implement only after analysis.
-4. Run relevant tests.
-5. Stop before broad refactoring.
-
-Constraints:
-- prefer production-code fix over test rewrite
-- no snapshot mass updates
-- no unrelated formatting changes
+/new
 
 /goal Fix 246_Horch-was-kommt-von-draussen-rein in song/legacy_comparison.spec.ts
 
