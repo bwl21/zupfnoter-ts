@@ -25,8 +25,8 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     scope: 'composite reference layout interactions',
     summary: 'Composite reference fixtures still expose mixed flowline, countnote, tuplet, variant-ending, and annotation-background parity gaps beyond sheet text blocks.',
     refs: ['packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['3015_reference_sheet', '783_einsiedler-kreuzweg'],
-    prompt: 'Investigate the remaining composite sheet parity in 3015_reference_sheet and 783_einsiedler-kreuzweg, classify the concrete flowline/countnote/tuplet/variant-ending mismatches with the sheet legacy comparison tests, implement the remaining behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
+    fixtures: ['783_einsiedler-kreuzweg'],
+    prompt: 'Investigate the remaining composite sheet parity in 783_einsiedler-kreuzweg, classify the concrete flowline/countnote/tuplet/variant-ending mismatches with the sheet legacy comparison tests, implement the remaining behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
   },
   {
     id: 'sheet.multistaff-layout',

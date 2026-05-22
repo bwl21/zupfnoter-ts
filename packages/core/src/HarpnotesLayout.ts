@@ -676,10 +676,7 @@ export class HarpnotesLayout {
         const note = entity as Note
         const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note))
         playableElements.push(drawable)
-        if (
-          (note.measureStart && !this._isLegacyVariantLeadInMeasureStart(note)) ||
-          note.decorations.includes('fermata')
-        ) {
+        if (note.measureStart && !this._isLegacyVariantLeadInMeasureStart(note)) {
           playableElements.push(this._layoutMeasureBarover(drawable, layout))
         }
         const noteDecorations = this._layoutDecorations(note, drawable, layout, voiceNr, conf)
@@ -1173,7 +1170,7 @@ export class HarpnotesLayout {
     if (curr.type === 'Pause') {
       return prev.type === 'Pause' &&
         curr.duration < prev.duration &&
-        !(noteBoundPlayables.has(prev) && prev.duration >= 48) &&
+        !noteBoundPlayables.has(prev) &&
         !noteBoundPlayables.has(curr)
     }
     return false
@@ -1824,11 +1821,9 @@ export class HarpnotesLayout {
           visible: playable.visible,
         }
         const side = this._countnoteSide(playable, voiceNr, conf)
-        if (countnoteText !== 'e') {
-          countnoteBackgrounds.push(
-            this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05, shiftEu),
-          )
-        }
+        countnoteBackgrounds.push(
+          this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05, shiftEu),
+        )
         countnotes.push(annotation)
       }
 
@@ -2234,6 +2229,9 @@ export class HarpnotesLayout {
     }
 
     annotationEntities.sort((a, b) => {
+      const aIsPartname = a.type === 'NewPart' || (a.type === 'NoteBoundAnnotation' && a.confKey?.includes('notebound.partname') === true)
+      const bIsPartname = b.type === 'NewPart' || (b.type === 'NoteBoundAnnotation' && b.confKey?.includes('notebound.partname') === true)
+      if (aIsPartname !== bIsPartname) return aIsPartname ? -1 : 1
       if (a.type !== b.type) return a.type === 'NewPart' ? -1 : 1
       if (a.type !== 'NoteBoundAnnotation' || b.type !== 'NoteBoundAnnotation') return 0
       if (a.policy === b.policy) return 0

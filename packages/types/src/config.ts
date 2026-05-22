@@ -202,6 +202,21 @@ export interface PositionedTextConfig {
   style?: string
 }
 
+export interface DefaultNoteboundConfig {
+  annotation?: {
+    pos?: [number, number]
+  }
+  chord?: {
+    pos?: [number, number]
+  }
+  partname?: {
+    pos?: [number, number]
+  }
+  variantend?: {
+    pos?: [number, number]
+  }
+}
+
 /**
  * Modus für die horizontale Positionierung von Pausen.
  */
@@ -271,6 +286,9 @@ export interface ZupfnoterConfig {
   printer: PrinterConfig
   /** Pausenpositionierung nach Legacy-Konfiguration */
   restposition: RestPositionConfig
+  defaults?: {
+    notebound?: DefaultNoteboundConfig
+  }
   /** Reihenfolge der zu erzeugenden Extrakte. Legacy-default für Sheet-Fixtures ist der erste Eintrag. */
   produce?: number[]
   annotations?: Record<string, PositionedTextConfig>

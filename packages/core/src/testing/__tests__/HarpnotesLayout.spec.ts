@@ -93,6 +93,16 @@ K:C
 V:V1 clef=treble-8
 [V:V1] C z |]`
 
+const ABC_ANNOTATED_TRAILING_RESTS = `X:1
+T:Annotated Trailing Rests Test
+M:4/4
+L:1/8
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] "^#tail" z3 z |]`
+
 const ABC_NOTEBOUND_ANNOTATION = `X:1
 T:Notebound Annotation Test
 M:4/4
@@ -302,6 +312,97 @@ describe('HarpnotesLayout', () => {
       const visibleSheet = pipelineWithConfig(ABC_TRAILING_PAUSE, config).sheet
       const visibleRests = visibleSheet.children.filter((c): c is Glyph => c.type === 'Glyph')
       expect(visibleRests[0]?.visible).toBe(true)
+    })
+
+    it('keeps the solid flowline after an annotated longer rest', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = [1]
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      config.annotations = {
+        ...(config.annotations ?? {}),
+        tail: {
+          text: 'tail',
+          style: 'small',
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_ANNOTATED_TRAILING_RESTS, config)
+      const flowlines = sheet.children.filter((child): child is FlowLine => child.type === 'FlowLine')
+
+      expect(flowlines).toHaveLength(1)
+      expect(flowlines[0]?.style).toBe('solid')
+    })
+
+    it('orders part annotations before regular note-bound annotations', () => {
+      const config = clonedDefaultConfig()
+      config.annotations = {
+        ...(config.annotations ?? {}),
+        note: {
+          text: 'note',
+          style: 'small',
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(
+        `X:1
+T:Part Ordering Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] "^#note" C [P:Rests] z |]`,
+        config,
+      )
+      const annotations = sheet.children.filter(
+        (child): child is Annotation => child.type === 'Annotation' && (child.text === 'Rests' || child.text === 'note'),
+      )
+
+      expect(annotations.map((annotation) => annotation.text)).toEqual(['Rests', 'note'])
+    })
+
+  })
+
+  describe('decorations', () => {
+    it('does not synthesize a barover for fermata decorations', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+
+      const { sheet } = pipelineWithConfig(
+        `X:1
+T:Fermata Without Barover Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] !fermata!C |]`,
+        config,
+      )
+      const blackEllipses = sheet.children.filter(
+        (child): child is Ellipse => child.type === 'Ellipse' && child.color === 'black',
+      )
+      const fermatas = sheet.children.filter(
+        (child): child is Glyph => child.type === 'Glyph' && child.glyphName === 'fermata',
+      )
+
+      expect(blackEllipses).toHaveLength(1)
+      expect(fermatas).toHaveLength(1)
     })
   })
 

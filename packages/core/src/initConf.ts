@@ -48,6 +48,14 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
       repeatstart: 'next',
       repeatend: 'default',
     },
+    defaults: {
+      notebound: {
+        annotation: { pos: [5, -7] },
+        chord: { pos: [0, 0] },
+        partname: { pos: [-4, -7] },
+        variantend: { pos: [-4, -7] },
+      },
+    },
     layout: {
       // Ellipsen- und Pausengrößen
       ELLIPSE_SIZE: [3.5, 1.7],
