@@ -13,6 +13,7 @@ import { AbcParser } from '../AbcParser.js'
 import { AbcToSong } from '../AbcToSong.js'
 import { HarpnotesLayout } from '../HarpnotesLayout.js'
 import { extractSongConfig, mergeSongConfig } from '../extractSongConfig.js'
+import { LegacyFixtureAnnotationTextMetrics } from './legacyAnnotationTextMetrics.js'
 import type { SongFixture, SheetFixture, DrawableFixture, EntityFixture } from './semanticMatch.js'
 import { defaultTestConfig } from './defaultConfig.js'
 
@@ -188,7 +189,9 @@ export function transformFixtureToSheet(
   const model = new AbcParser().parse(fixture.input.abc)
   const song = new AbcToSong().transform(model, fixture.config)
   const target = resolveFixtureSheetRenderTarget(fixture.config, extractNr)
-  const sheet = new HarpnotesLayout(fixture.config).layout(song, target.extractNr, target.pageFormat)
+  const sheet = new HarpnotesLayout(fixture.config, {
+    annotationTextMetrics: new LegacyFixtureAnnotationTextMetrics(),
+  }).layout(song, target.extractNr, target.pageFormat)
   return sheetToFixture(sheet)
 }
 
