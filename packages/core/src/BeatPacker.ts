@@ -142,6 +142,14 @@ function getMincFactor(
   return 0
 }
 
+function getLayoutMinc(conf: Confstack): Record<string, { minc_f?: number }> {
+  return (
+    (conf.get('extract.notebound.minc') as Record<string, { minc_f?: number }> | undefined) ??
+    (conf.get('notebound.minc') as Record<string, { minc_f?: number }> | undefined) ??
+    {}
+  )
+}
+
 function isPlayable(entity: unknown): entity is PlayableEntity {
   return (
     entity !== null &&
@@ -186,7 +194,7 @@ function _packMethod2(song: Song, layoutLines: number[]): BeatCompressionMap {
 function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatCompressionMap {
   const durationToStyle = conf.get('layout.DURATION_TO_STYLE') as Record<DurationKey, DurationStyle>
   const beatResolution = (conf.get('layout.BEAT_RESOLUTION') as number) ?? 192
-  const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
+  const layoutMinc = getLayoutMinc(conf)
 
   const playables = collectRelevantPlayables(song, layoutLines)
   const partStartPlayables = collectPartStartPlayables(song, layoutLines)
@@ -234,7 +242,7 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
 function _packMethod10(song: Song, layoutLines: number[], conf: Confstack): BeatCompressionMap {
   const durationToStyle = conf.get('layout.DURATION_TO_STYLE') as Record<DurationKey, DurationStyle>
   const beatResolution = (conf.get('layout.BEAT_RESOLUTION') as number) ?? 192
-  const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
+  const layoutMinc = getLayoutMinc(conf)
 
   // Alle relevanten BeatMaps sammeln
   const relevantBeatMaps = layoutLines
@@ -291,7 +299,7 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const durationToStyle = conf.get('layout.DURATION_TO_STYLE') as Record<DurationKey, DurationStyle>
   const beatResolution = (conf.get('layout.BEAT_RESOLUTION') as number) ?? 192
   const confMinIncrement = ((conf.get('layout.packer.pack_min_increment') as number) ?? 0) * beatResolution
-  const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
+  const layoutMinc = getLayoutMinc(conf)
 
   const playables = collectRelevantPlayables(song, layoutLines)
   const beats = groupByBeat(playables)
@@ -380,7 +388,7 @@ function _packMethod3(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const durationToStyle = conf.get('layout.DURATION_TO_STYLE') as Record<DurationKey, DurationStyle>
   const beatResolution = (conf.get('layout.BEAT_RESOLUTION') as number) ?? 192
   const confMinIncrement = ((conf.get('layout.packer.pack_min_increment') as number) ?? 0) * beatResolution
-  const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
+  const layoutMinc = getLayoutMinc(conf)
 
   const playables = collectRelevantPlayables(song, layoutLines)
   const beats = groupByBeat(playables)

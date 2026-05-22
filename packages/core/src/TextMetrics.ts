@@ -56,7 +56,10 @@ export class HeuristicAnnotationTextMetrics implements AnnotationTextMetrics {
         f: 0.889,
         p: 1.7462,
       }
-      return [widths[text] ?? text.length * 1.2, 3.175]
+      const width = widths[text]
+      if (width !== undefined) {
+        return [width, 3.175]
+      }
     }
 
     const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
@@ -262,10 +265,10 @@ export class JsPdfAnnotationTextMetrics implements AnnotationTextMetrics {
     const fontStyle = layout.FONT_STYLE_DEF[style]?.fontStyle ?? 'normal'
     const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
     document.setFontSize(fontSize)
-    if (typeof document.setFont === 'function') {
-      document.setFont('times', fontStyle)
-    } else if (typeof document.setFontStyle === 'function') {
+    if (typeof document.setFontStyle === 'function') {
       document.setFontStyle(fontStyle)
+    } else if (typeof document.setFont === 'function') {
+      document.setFont('helvetica', fontStyle)
     }
     const size = document.getTextDimensions(text.replaceAll('&tilde;', '~').split('\n'))
     return [size.w, size.h]
