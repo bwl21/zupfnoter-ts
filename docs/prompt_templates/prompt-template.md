@@ -112,3 +112,34 @@ Constraints:
 
 Output:
 - nur geänderten Code
+
+## goal prompt
+
+Goal:
+Fix exactly one zupfnoter-ts gap.
+
+Process:
+1. Analyze root cause first.
+2. Propose minimal fix.
+3. Implement only after analysis.
+4. Run relevant tests.
+5. Stop before broad refactoring.
+
+Constraints:
+- prefer production-code fix over test rewrite
+- no snapshot mass updates
+- no unrelated formatting changes
+
+/goal Fix 246_Horch-was-kommt-von-draussen-rein in song/legacy_comparison.spec.ts
+
+Requirements:
+- analyze legacy Ruby behavior first
+- identify where BeatPacker input diverges
+- preserve existing TypeScript architecture
+- minimal invasive change
+- avoid formatting-only diffs
+
+Acceptance criteria:
+- target fixture matches legacy output
+- no unrelated fixture changes
+- explain root cause before implementing

@@ -11,7 +11,7 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 - Song gaps: 0
 - Sheet gaps: 3
 - Known-covered failures: 3
-- New unclassified failures: 1
+- New unclassified failures: 0
 
 ## Song Gaps
 
@@ -42,17 +42,5 @@ No open gaps.
 
 ## New Unclassified Failures
 
-- [ ] song.246-horch-was-kommt-von-draussen-rein
-  - Fixture: 246_Horch-was-kommt-von-draussen-rein
-  - Prompt: Investigate the song legacy comparison failure for fixture 246_Horch-was-kommt-von-draussen-rein. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/song/legacy_comparison.spec.ts -t "246_Horch-was-kommt-von-draussen-rein" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
-  - Mismatch Summary:
-      voices[0].entities.length:
-        expected: 125
-        actual:   124
-      voices[1].entities.length:
-        expected: 125
-        actual:   124
-      voices[2].entities.length:
-        expected: 122
-        actual:   121
+None.
 

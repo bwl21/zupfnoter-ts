@@ -561,8 +561,6 @@ export class AbcToSong {
     const isRepeatBar = sym.bar_type?.includes(':') ?? false
     const hasVariantStart = typeof sym.rbstart === 'number' && sym.rbstart > 0
     const variantLabel = sym.text?.trim() ?? ''
-    const startsVariantSection = sym.bar_type === '[|:' || (hasVariantStart && !isRepeatBar)
-
     // Volta bracket entry / exit gotos.
     if (hasVariantStart && state.previousNote) {
       const nextVariantNo = (state.variantSectionNo + 1) as 1 | 2
@@ -583,7 +581,7 @@ export class AbcToSong {
       state.variantSectionNo = nextVariantNo
       state.variantNo = nextVariantNo
     }
-    if (startsVariantSection && state.previousNote) {
+    if (sym.rbstart === 2 && state.previousNote) {
       state.pendingVariantEndingText = variantLabel
       state.pendingVariantEndingDuration = sym.bar_type === '[|:' ? 64 : null
     }
