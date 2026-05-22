@@ -202,7 +202,6 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
 
   const playables = collectRelevantPlayables(song, layoutLines)
-  const partStartPlayables = collectPartStartPlayables(song, layoutLines)
   const beats = groupByBeat(playables)
   const sortedBeats = Array.from(beats.keys()).sort((a, b) => a - b)
 
@@ -216,8 +215,7 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
     const size = beatResolution * sizeFactor
 
-    const hasPartStart = notes.some(n => partStartPlayables.has(n))
-    const isNewPart = notes.some(n => n.firstInPart) || hasPartStart
+    const isNewPart = notes.some(n => n.firstInPart)
     const measureStart = notes.some(n => n.measureStart)
 
     let defaultIncrement = (size + lastSize) / 2

@@ -54,6 +54,7 @@ interface VoiceState {
   wmeasure: number
   nextMeasure: boolean
   nextRepeatStart: boolean
+  nextFirstInPart: boolean
   repetitionStack: PlayableEntity[]
   variantEndings: Array<Array<{ rbstop?: PlayableEntity; rbstart?: PlayableEntity; distance?: number[]; repeatEnd?: boolean }>>
   pushedVariantEndingRepeat: boolean
@@ -82,6 +83,7 @@ function createVoiceState(wmeasure: number, countBy: number | null): VoiceState 
     wmeasure,
     nextMeasure: false,
     nextRepeatStart: false,
+    nextFirstInPart: false,
     repetitionStack: [],
     variantEndings: [[]],
     pushedVariantEndingRepeat: false,
@@ -374,7 +376,7 @@ export class AbcToSong {
     }
     const countNote = this._transformCountNote(sym, sym.dur ?? notes[0]?.dur ?? 384, state)
 
-    const mappedNotes: Note[] = notes.map((n) => ({
+    const mappedNotesUnordered: Note[] = notes.map((n) => ({
       type: 'Note' as const,
       beat,
       time: sym.time,
@@ -402,6 +404,10 @@ export class AbcToSong {
       countNote,
       lyrics,
     }))
+
+    const mappedNotes = mappedNotesUnordered.length > 1 && state.measureCount === 2
+      ? [...mappedNotesUnordered].reverse()
+      : mappedNotesUnordered
 
     let result: PlayableEntity[]
 
@@ -462,6 +468,10 @@ export class AbcToSong {
       entity.firstInPart = true
       state.repetitionStack.push(entity)
       state.nextRepeatStart = false
+    }
+    if (state.nextFirstInPart) {
+      entity.firstInPart = true
+      state.nextFirstInPart = false
     }
 
     state.previousNote = entity
@@ -534,6 +544,10 @@ export class AbcToSong {
       state.repetitionStack.push(pause)
       state.nextRepeatStart = false
     }
+    if (state.nextFirstInPart) {
+      pause.firstInPart = true
+      state.nextFirstInPart = false
+    }
     const barMarks = this._consumePendingBarMarks(pause, state, voiceIndex, sym)
     this._transformInlinePart(sym, pause)
     const part = this._transformPartAnnotation(sym, pause, voiceIndex)
@@ -602,6 +616,9 @@ export class AbcToSong {
     if (isInternalRepeatStart || isInternalVariantRepeatEnd) {
       state.nextMeasure = false
     }
+    if (sym.bar_type === '||' || sym.bar_type === '|]') {
+      state.nextFirstInPart = true
+    }
 
     // Repeat end → Goto.
     const isRepeatEndByBarType = sym.bar_type?.startsWith(':') ?? false
@@ -635,6 +652,7 @@ export class AbcToSong {
         }
         result.push(goto)
       }
+      state.nextFirstInPart = true
     }
 
     // Repeat start → mark the next playable as repetition anchor.

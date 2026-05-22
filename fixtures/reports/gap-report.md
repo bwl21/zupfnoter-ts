@@ -10,7 +10,7 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 - Total open implementations: 3
 - Song gaps: 0
 - Sheet gaps: 3
-- Known-covered failures: 3
+- Known-covered failures: 2
 - New unclassified failures: 0
 
 ## Song Gaps
