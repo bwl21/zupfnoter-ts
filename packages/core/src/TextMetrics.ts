@@ -39,7 +39,7 @@ interface JsPdfDocument {
   getTextDimensions(text: string | string[]): JsPdfTextDimensions
 }
 
-type JsPdfConstructor = new (
+export type JsPdfConstructor = new (
   orientation: JsPdfOrientation,
   unit: JsPdfUnit,
   format: JsPdfFormat,
@@ -265,14 +265,22 @@ export class JsPdfAnnotationTextMetrics implements AnnotationTextMetrics {
 }
 
 /**
+ * Baut eine jsPDF-basierte Annotationstext-Metrik aus einem expliziten
+ * jsPDF-Konstruktor.
+ */
+export function createJsPdfAnnotationTextMetrics(jsPdfConstructor: JsPdfConstructor): AnnotationTextMetrics {
+  return new JsPdfAnnotationTextMetrics(() => new jsPdfConstructor('l', 'mm', 'a3'))
+}
+
+/**
  * Liefert standardmäßig jsPDF-Metriken, wenn im aktuellen Runtime-Kontext
  * ein globaler `jsPDF`-Konstruktor verfügbar ist. Andernfalls wird die
  * bestehende Heuristik verwendet.
  */
-export function createDefaultAnnotationTextMetrics(): AnnotationTextMetrics {
-  const ctor = readGlobalJsPdfConstructor()
+export function createDefaultAnnotationTextMetrics(jsPdfConstructor?: JsPdfConstructor | null): AnnotationTextMetrics {
+  const ctor = jsPdfConstructor ?? readGlobalJsPdfConstructor()
   if (!ctor) return new HeuristicAnnotationTextMetrics()
-  return new JsPdfAnnotationTextMetrics(() => new ctor('l', 'mm', 'a3'))
+  return createJsPdfAnnotationTextMetrics(ctor)
 }
 
 function readGlobalJsPdfConstructor(): JsPdfConstructor | null {

@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { AbcParser, AbcToSong, HarpnotesLayout, SvgEngine, Confstack, initConf, extractSongConfig, mergeSongConfig } from '@zupfnoter/core'
+import {
+  AbcParser,
+  AbcToSong,
+  HarpnotesLayout,
+  SvgEngine,
+  Confstack,
+  initConf,
+  extractSongConfig,
+  mergeSongConfig,
+  createDefaultAnnotationTextMetrics,
+} from '@zupfnoter/core'
 import type { AbcParseError } from '@zupfnoter/core'
 import type { VoiceEntity, Voice } from '@zupfnoter/types'
 
@@ -47,7 +57,9 @@ function renderAbc(text: string): void {
       errorMessage.value = ''
     }
     const song  = new AbcToSong().transform(model, config)
-    const sheet = new HarpnotesLayout(config).layout(song, 0, 'A3')
+    const sheet = new HarpnotesLayout(config, {
+      annotationTextMetrics: createDefaultAnnotationTextMetrics(),
+    }).layout(song, 0, 'A3')
     // SvgEngine emits width/height in mm (correct for print/PDF).
     // Replace with 100% so the SVG scales to its container in the browser.
     const rawSvg = new SvgEngine().draw(sheet)

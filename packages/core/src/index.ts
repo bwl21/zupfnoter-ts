@@ -23,9 +23,10 @@ export { HarpnotesLayout } from './HarpnotesLayout.js'
 export {
   HeuristicAnnotationTextMetrics,
   JsPdfAnnotationTextMetrics,
+  createJsPdfAnnotationTextMetrics,
   createDefaultAnnotationTextMetrics,
 } from './TextMetrics.js'
-export type { HarpnotesLayoutOptions, AnnotationTextMetrics } from './TextMetrics.js'
+export type { HarpnotesLayoutOptions, AnnotationTextMetrics, JsPdfConstructor } from './TextMetrics.js'
 
 export { SvgEngine } from './SvgEngine.js'
 export type { SvgEngineOptions } from './SvgEngine.js'
