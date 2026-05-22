@@ -81,6 +81,11 @@ export interface Playable extends MusicEntity {
    * Entspricht `next_playable` im Legacy-System.
    */
   nextPlayable?: PlayableEntity
+  /**
+   * Legacy-Flag für die nächste Part-Grenze.
+   * Entspricht `next_first_in_part` im Legacy-System.
+   */
+  nextFirstInPart?: boolean
 }
 
 /**

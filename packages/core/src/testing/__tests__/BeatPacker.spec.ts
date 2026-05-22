@@ -311,6 +311,7 @@ describe('computeBeatCompression – method 1 (collision)', () => {
       expect(positions[i]).toBeGreaterThan(positions[i - 1]!)
     }
   })
+
 })
 
 // ---------------------------------------------------------------------------

@@ -745,6 +745,9 @@ export class AbcToSong {
     const partText = this._partTable[sym.time]
     if (typeof partText !== 'string' || partText.length === 0) return null
 
+    if (companion.prevPlayable) {
+      companion.prevPlayable.nextFirstInPart = true
+    }
     companion.firstInPart = true
     return {
       type: 'NoteBoundAnnotation' as const,
@@ -771,6 +774,9 @@ export class AbcToSong {
     const partText = (part as { text?: unknown }).text
     if (typeof partText !== 'string' || partText.length === 0) return
 
+    if (companion.prevPlayable) {
+      companion.prevPlayable.nextFirstInPart = true
+    }
     companion.firstInPart = true
     this._partTable[companion.time] = partText
   }

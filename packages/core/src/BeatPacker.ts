@@ -97,20 +97,6 @@ function collectPartStartPlayables(song: Song, layoutLines: number[]): Set<Playa
   return result
 }
 
-function collectNamedPartStartPlayables(song: Song, layoutLines: number[]): Set<PlayableEntity> {
-  const result = new Set<PlayableEntity>()
-  for (const voiceId of layoutLines) {
-    const voice = song.voices[voiceId]
-    if (!voice) continue
-    for (const entity of voice.entities) {
-      if (entity.type === 'NewPart') {
-        result.add(entity.companion)
-      }
-    }
-  }
-  return result
-}
-
 /**
  * Gruppiert Playables nach Beat-Nummer.
  * Entspricht `group_by { |p| p.beat }` in Ruby.
@@ -180,6 +166,7 @@ function isSynchPoint(entity: PlayableEntity): entity is SynchPoint {
  */
 function _packMethod2(song: Song, layoutLines: number[]): BeatCompressionMap {
   const playables = collectRelevantPlayables(song, layoutLines)
+  const partStartPlayables = collectPartStartPlayables(song, layoutLines)
   const beats = groupByBeat(playables)
   const result: BeatCompressionMap = {}
   for (const beat of beats.keys()) {
@@ -202,6 +189,7 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
 
   const playables = collectRelevantPlayables(song, layoutLines)
+  const partStartPlayables = collectPartStartPlayables(song, layoutLines)
   const beats = groupByBeat(playables)
   const sortedBeats = Array.from(beats.keys()).sort((a, b) => a - b)
 
@@ -215,7 +203,7 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
     const size = beatResolution * sizeFactor
 
-    const isNewPart = notes.some(n => n.firstInPart)
+    const isNewPart = notes.some(n => n.firstInPart || partStartPlayables.has(n))
     const measureStart = notes.some(n => n.measureStart)
 
     let defaultIncrement = (size + lastSize) / 2
@@ -306,8 +294,6 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const layoutMinc = (conf.get('notebound.minc') as Record<string, { minc_f?: number }>) ?? {}
 
   const playables = collectRelevantPlayables(song, layoutLines)
-  const partStartPlayables = collectPartStartPlayables(song, layoutLines)
-  const namedPartStartPlayables = collectNamedPartStartPlayables(song, layoutLines)
   const beats = groupByBeat(playables)
   const sortedBeats = Array.from(beats.keys()).sort((a, b) => a - b)
 
@@ -323,14 +309,16 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
     const size = beatResolution * sizeFactor
 
-    const defaultIncrement = Math.max((size + lastSize) / 2, confMinIncrement)
+    const defaultIncrement = (size + lastSize) / 2
     lastSize = size
 
     // Kollisionserkennung: Note deren Pitch zuletzt auf einem Beat war
     // der noch nicht weit genug zurückliegt
-    const collisions = notes.filter(note => {
+    const collisions = notes.flatMap(note => {
       const lastBeat = collisionStack[note.pitch] ?? -1
-      return lastBeat >= newbeat - confMinIncrement
+      if (lastBeat < newbeat - confMinIncrement) return []
+      const collisionSize = beatResolution * getSizeFactor(note.duration, durationToStyle)
+      return [{ note, inc: collisionSize }]
     })
 
     // Inversions-Erkennung: Melodielinie die nicht monoton ist
@@ -345,11 +333,11 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
         (left >= middle && middle >= right) ||
         (left <= middle && middle <= right)
       )
-      const nextStartsPart = note.nextPlayable ? namedPartStartPlayables.has(note.nextPlayable) : false
+      const nextStartsPart = note.nextFirstInPart === true
       return !isMonotone && !nextStartsPart
     })
 
-    const isNewPart = notes.some(n => n.firstInPart || partStartPlayables.has(n))
+    const isNewPart = notes.some(n => n.firstInPart)
     const measureStart = notes.some(n => n.measureStart)
 
     let increment = nextIncrement
