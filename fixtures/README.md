@@ -145,11 +145,17 @@ voices[0].entities[2].pitch:
   actual:   48
 ```
 
-`npm run test:gaps` gibt zusätzlich eine kompakte Prompt-Zusammenfassung der aktuell
-gepflegten Gap-IDs aus, schreibt `fixtures/reports/gap-report.md` als lesbare
-Arbeitsliste und erzeugt `fixtures/reports/open_implementations_template.ts`
-für neue unklassifizierte Failures. So kann `fixtures/openImplementations.ts`
-gezielt manuell bereinigt oder ergänzt werden.
+`npm run test:gaps` erzeugt drei stufenbezogene Markdown-Reports unter
+`fixtures/reports/`:
+
+- `song-gap-report.md` (Stufe 2, registry-basiert)
+- `sheet-gap-report.md` (Stufe 3, registry-basiert)
+- `svg-gap-report.md` (Stufe 4, strukturelle Tag-Count-Analyse)
+
+Die Song- und Sheet-Reports basieren auf `fixtures/openImplementations.ts` und
+listen sowohl bekannte als auch neu entdeckte Failures auf. Der SVG-Report
+vergleicht für jedes Fixture die Tag-Typ-Verteilung der Legacy-Ausgabe gegen die
+TS-Ausgabe und zeigt die ersten positionalen Tag-Abweichungen.
 
 ## TS-Ausgabe als Bootstrap-Referenz
 

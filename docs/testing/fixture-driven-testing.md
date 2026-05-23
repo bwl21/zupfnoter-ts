@@ -290,19 +290,19 @@ pnpm test:gaps
 ```
 
 Dieses Kommando führt keinen normalen Legacy-Testlauf aus, sondern berechnet selbst
-einen Gap-Report aus den Vergleichshelfern. Es erzeugt:
+einen Gap-Report **pro Pipeline-Stufe** aus den Vergleichshelfern. Es erzeugt drei
+unabhängige Berichte:
 
-- eine kompakte Zusammenfassung der aktuell eingetragenen Gap-IDs
-- die Datei `fixtures/reports/gap-report.md` als lesbare Arbeitsansicht
-- eine Liste direkt nutzbarer Arbeits-Prompts für neue unklassifizierte Fehler
-- die Datei `fixtures/reports/open_implementations_template.ts`
+- `fixtures/reports/song-gap-report.md` — Stufe 2 (Song), registry-basiert
+- `fixtures/reports/sheet-gap-report.md` — Stufe 3 (Sheet), registry-basiert
+- `fixtures/reports/svg-gap-report.md` — Stufe 4 (SVG), strukturell (Tag-Count-Diff)
 
-Die Report-Dateien werden bei jedem Lauf neu geschrieben:
+Die ersten beiden Reports basieren auf `fixtures/openImplementations.ts` und sind
+„leer", wenn keine bekannten oder neuen Failures vorliegen. Der SVG-Report ist
+rein strukturell und vergleicht für jedes Fixture die Tag-Typ-Verteilung von
+Legacy- gegen TS-Ausgabe.
 
-- `gap-report.md`: vollständige, regenerierte Arbeitsliste mit `id`, `fixtures` und `prompt`
-- `open_implementations_template.ts`: Vorschlagsbuffer für neue unklassifizierte Fehler
-- **leeres Template-Array**: es wurden keine neuen unklassifizierten Fehler gefunden
-- **gefüllt**: es gibt fehlschlagende Legacy-Vergleiche, die noch nicht durch `fixtures/openImplementations.ts` abgedeckt sind
+Die Report-Dateien werden bei jedem Lauf neu geschrieben.
 
 ### Wie kommt ein neuer Eintrag hinein?
 
@@ -346,49 +346,32 @@ Regeln für gute Einträge:
 - wenn zwei Fehler dieselbe Ursache haben, lieber **ein** sauberer Eintrag statt vieler Duplikate
 - wenn eine Abweichung nur ein einzelnes kaputtes Fixture betrifft, **kein** neuer Gap-Eintrag, sondern Exporter/Fixture prüfen
 
-### Wie nutze ich `open_implementations_template.ts`?
+### Wie nutze ich die Gap-Reports?
 
-Die Datei ist ein **Vorschlagsbuffer**, kein aktiver Teil der Vergleichstests.
+Die generierten Markdown-Dateien sind die lesbaren Arbeitsansichten des aktuellen
+Zustands — pro Pipeline-Stufe eine Datei:
 
-Typischer Ablauf:
-
-1. `pnpm test:unit`
-2. `pnpm test:gaps`
-3. `fixtures/reports/open_implementations_template.ts` ansehen
-4. für jeden sinnvollen Kandidaten entscheiden:
-   - zu bestehendem Eintrag in `fixtures/openImplementations.ts` zuordnen
-   - oder als neuen Eintrag manuell übernehmen
-   - oder verwerfen, wenn die Ursache ein Exporter-/Fixture-Problem ist
-
-Jeder Template-Eintrag enthält:
-
-- eine vorgeschlagene `id`
-- `stage`, `scope`, `refs`
-- eine kurze `summary`
-- einen direkt nutzbaren `prompt`
-- die aktuelle `mismatchSummary`
-
-Die kuratierte Hauptdatei `fixtures/openImplementations.ts` verwendet jetzt dasselbe Grundschema, nur ohne automatisch erzeugte `mismatchSummary`. Dadurch lassen sich sinnvolle Template-Einträge fast 1:1 übernehmen und anschließend manuell verdichten.
-
-Der `prompt` ist absichtlich so formuliert, dass man ihn direkt als Arbeitsauftrag für die Implementierung verwenden kann.
-
-### Wie nutze ich `gap-report.md`?
-
-Die Datei `fixtures/reports/gap-report.md` ist die lesbare Arbeitsansicht des aktuellen Zustands.
+- `fixtures/reports/song-gap-report.md`
+- `fixtures/reports/sheet-gap-report.md`
+- `fixtures/reports/svg-gap-report.md`
 
 Typischer Ablauf:
 
 1. `pnpm test:gaps`
-2. `fixtures/reports/gap-report.md` öffnen
+2. den jeweiligen Stufen-Report öffnen
 3. die offenen Punkte Abschnitt für Abschnitt abarbeiten
-4. erledigte Einträge aus `fixtures/openImplementations.ts` entfernen
+4. erledigte Song-/Sheet-Einträge aus `fixtures/openImplementations.ts` entfernen
 5. `pnpm test:gaps` erneut laufen lassen
 
-Die Datei ist bewusst generiert:
+Die Dateien sind bewusst generiert:
 
 - man kann sie temporär abhaken oder lesen wie eine Checkliste
-- beim nächsten Lauf wird sie vollständig neu erzeugt
+- beim nächsten Lauf werden sie vollständig neu erzeugt
 - falsch erledigte Punkte tauchen dadurch automatisch wieder auf
+
+Der SVG-Report enthält zusätzlich pro Fixture eine Tag-Typ-Diff-Tabelle und die
+ersten fünf positionalen Tag-Abweichungen, damit strukturelle Lücken im SVG-Engine
+direkt sichtbar sind.
 
 ### Wie kommt ein Eintrag wieder heraus?
 
