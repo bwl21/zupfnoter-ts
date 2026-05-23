@@ -7,10 +7,10 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 ## Summary
 
-- Total open implementations: 3
+- Total open implementations: 0
 - Song gaps: 0
-- Sheet gaps: 3
-- Known-covered failures: 2
+- Sheet gaps: 0
+- Known-covered failures: 0
 - New unclassified failures: 0
 
 ## Song Gaps
@@ -19,26 +19,7 @@ No open gaps.
 
 ## Sheet Gaps
 
-- [ ] sheet.remaining-composite-layout
-  - Fixtures: 3015_reference_sheet, 783_einsiedler-kreuzweg
-  - Scope: composite reference layout interactions
-  - Summary: Composite reference fixtures still expose mixed flowline, countnote, tuplet, variant-ending, and annotation-background parity gaps beyond sheet text blocks.
-  - Prompt: Investigate the remaining composite sheet parity in 3015_reference_sheet and 783_einsiedler-kreuzweg, classify the concrete flowline/countnote/tuplet/variant-ending mismatches with the sheet legacy comparison tests, implement the remaining behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
-
-- [ ] sheet.multistaff-layout
-  - Fixtures: Twostaff
-  - Scope: multi-staff sheet layout
-  - Summary: Multi-staff sheet layout is not yet reproduced with full legacy parity.
-  - Prompt: Investigate multi-staff layout parity in the Twostaff fixture, reproduce with the sheet legacy comparison test, implement the remaining multi-staff legacy behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.
-  - Refs: packages/core/src/HarpnotesLayout.ts
-
-- [ ] sheet.horch-entity-count-ripple
-  - Fixtures: 246_Horch-was-kommt-von-draussen-rein
-  - Scope: 246_Horch sheet Y-position parity
-  - Summary: Sheet child count, FlowLine counts, `:|]2` variant-end labels, and small annotation-background widths now match for 246_Horch-was-kommt-von-draussen-rein extract 0; the remaining failure is layout-layer Y-position parity.
-  - Prompt: Investigate the remaining sheet parity for 246_Horch-was-kommt-von-draussen-rein extract 0. Element order and type counts are aligned: 1290 children with FlowLine/Path/Annotation/Glyph/Ellipse counts matching legacy. The remaining mismatch is systematic Y-position drift from beat compression/spread behavior.
-  - Refs: packages/core/src/HarpnotesLayout.ts
+No open gaps.
 
 ## New Unclassified Failures
 
