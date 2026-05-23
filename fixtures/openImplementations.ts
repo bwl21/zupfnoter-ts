@@ -29,20 +29,6 @@ const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
     prompt: 'Investigate the remaining composite sheet parity in 783_einsiedler-kreuzweg, classify the concrete flowline/countnote/tuplet/variant-ending mismatches with the sheet legacy comparison tests, implement the remaining behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
   },
   {
-    id: 'sheet.multistaff-layout',
-    stage: 'sheet',
-    scope: 'multi-staff sheet layout',
-    summary: 'Multi-staff sheet layout is not yet reproduced with full legacy parity.',
-    refs: ['packages/core/src/HarpnotesLayout.ts'],
-    fixtures: ['Twostaff'],
-    prompt: 'Investigate multi-staff layout parity in the Twostaff fixture, reproduce with the sheet legacy comparison test, implement the remaining multi-staff legacy behavior in packages/core/src/HarpnotesLayout.ts, then remove this id from fixtures/openImplementations.ts.',
-    notes: [
-      'Triage 2026-05-08: Not a small voice-index-only gap. The first mismatch block around children[68..77] is caused by SynchPoint/chord note order: legacy keeps [B,G,] as pitches [59,55], while TS currently emits ascending [55,59], so paired ellipses appear swapped.',
-      'A second independent difference starts in the later bass/repeat section: expected y positions are consistently about +6.25 mm compared with TS output. This points to beat-packer, measureStart, or repeat-bar spacing behavior, not just child ordering.',
-      'Temporary debug inspection was removed; revisit with focused diagnostics for SynchPoint note ordering and beat compression around beats 96+ in Twostaff.',
-    ].join(' '),
-  },
-  {
     id: 'sheet.horch-entity-count-ripple',
     stage: 'sheet',
     scope: '246_Horch sheet Y-position parity',

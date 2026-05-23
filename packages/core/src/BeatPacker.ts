@@ -81,22 +81,6 @@ function collectRelevantPlayables(song: Song, layoutLines: number[]): PlayableEn
   return playables
 }
 
-function collectPartStartPlayables(song: Song, layoutLines: number[]): Set<PlayableEntity> {
-  const result = new Set<PlayableEntity>()
-  for (const voiceId of layoutLines) {
-    const voice = song.voices[voiceId]
-    if (!voice) continue
-    for (const entity of voice.entities) {
-      if (entity.type === 'NewPart') {
-        result.add(entity.companion)
-      } else if (entity.type === 'Goto') {
-        result.add(entity.to)
-      }
-    }
-  }
-  return result
-}
-
 /**
  * Gruppiert Playables nach Beat-Nummer.
  * Entspricht `group_by { |p| p.beat }` in Ruby.
@@ -174,7 +158,6 @@ function isSynchPoint(entity: PlayableEntity): entity is SynchPoint {
  */
 function _packMethod2(song: Song, layoutLines: number[]): BeatCompressionMap {
   const playables = collectRelevantPlayables(song, layoutLines)
-  const partStartPlayables = collectPartStartPlayables(song, layoutLines)
   const beats = groupByBeat(playables)
   const result: BeatCompressionMap = {}
   for (const beat of beats.keys()) {
@@ -197,7 +180,6 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
   const layoutMinc = getLayoutMinc(conf)
 
   const playables = collectRelevantPlayables(song, layoutLines)
-  const partStartPlayables = collectPartStartPlayables(song, layoutLines)
   const beats = groupByBeat(playables)
   const sortedBeats = Array.from(beats.keys()).sort((a, b) => a - b)
 
@@ -211,7 +193,7 @@ function _packMethod0(song: Song, layoutLines: number[], conf: Confstack): BeatC
     const sizeFactor = getSizeFactor(maxDuration, durationToStyle)
     const size = beatResolution * sizeFactor
 
-    const isNewPart = notes.some(n => n.firstInPart || partStartPlayables.has(n))
+    const isNewPart = notes.some(n => n.firstInPart)
     const measureStart = notes.some(n => n.measureStart)
 
     let defaultIncrement = (size + lastSize) / 2
