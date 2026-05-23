@@ -70,6 +70,10 @@ export interface SheetFixture {
   children: DrawableFixture[]
 }
 
+export interface SvgFixture {
+  svg: string
+}
+
 // ---------------------------------------------------------------------------
 // Mismatch reporting
 // ---------------------------------------------------------------------------
@@ -396,6 +400,82 @@ export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchRe
   }
 
   return { passed: mismatches.length === 0, mismatches }
+}
+
+// ---------------------------------------------------------------------------
+// SVG comparison (Stufe 4)
+// ---------------------------------------------------------------------------
+
+const SVG_NUMBER_PATTERN = /-?\d+(?:\.\d+)?/g
+const SVG_TAG_PATTERN = /<[^>]+>/g
+const SVG_ATTRIBUTE_PATTERN = /([^\s=/>]+)\s*=\s*"([^"]*)"/g
+
+function normalizeSvgNumber(value: string): string {
+  const parsed = Number.parseFloat(value)
+  if (!Number.isFinite(parsed)) return value
+  return parsed.toFixed(3).replace(/\.?0+$/, '')
+}
+
+function normalizeSvgTag(tag: string): string {
+  if (tag.startsWith('</') || tag.startsWith('<?') || tag.startsWith('<!--')) {
+    return tag
+  }
+
+  const isSelfClosing = tag.endsWith('/>')
+  const nameMatch = tag.match(/^<([^\s/>]+)/)
+  const tagName = nameMatch?.[1]
+  if (tagName === undefined) return tag
+
+  const attributes: Array<[string, string]> = []
+  let attributeMatch: RegExpExecArray | null
+  const attributePattern = new RegExp(SVG_ATTRIBUTE_PATTERN)
+
+  while ((attributeMatch = attributePattern.exec(tag)) !== null) {
+    const key = attributeMatch[1]
+    const rawValue = attributeMatch[2]
+    if (key === undefined || rawValue === undefined) continue
+
+    const normalizedValue = rawValue.replace(SVG_NUMBER_PATTERN, normalizeSvgNumber)
+    attributes.push([key, normalizedValue])
+  }
+
+  attributes.sort(([left], [right]) => left.localeCompare(right))
+  const renderedAttributes = attributes.map(([key, value]) => `${key}="${value}"`).join(' ')
+  const closing = isSelfClosing ? ' />' : '>'
+  return renderedAttributes.length > 0
+    ? `<${tagName} ${renderedAttributes}${closing}`
+    : `<${tagName}${closing}`
+}
+
+export function normalizeSvgFixture(svg: string): SvgFixture {
+  const withoutLineEndings = svg.replace(/\r\n?/g, '\n').trim()
+  const normalizedTags = withoutLineEndings.replace(SVG_TAG_PATTERN, normalizeSvgTag)
+  const collapsedWhitespace = normalizedTags
+    .replace(/>\s+</g, '><')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  return { svg: collapsedWhitespace }
+}
+
+export function matchSvg(actual: string, fixture: string): MatchResult {
+  const normalizedActual = normalizeSvgFixture(actual)
+  const normalizedFixture = normalizeSvgFixture(fixture)
+
+  if (normalizedActual.svg === normalizedFixture.svg) {
+    return { passed: true, mismatches: [] }
+  }
+
+  return {
+    passed: false,
+    mismatches: [
+      {
+        path: 'svg',
+        expected: normalizedFixture.svg,
+        actual: normalizedActual.svg,
+      },
+    ],
+  }
 }
 
 // ---------------------------------------------------------------------------

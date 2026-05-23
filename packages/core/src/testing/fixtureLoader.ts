@@ -12,6 +12,7 @@ import type { Song, Sheet, ZupfnoterConfig } from '@zupfnoter/types'
 import { AbcParser } from '../AbcParser.js'
 import { AbcToSong } from '../AbcToSong.js'
 import { HarpnotesLayout } from '../HarpnotesLayout.js'
+import { SvgEngine } from '../SvgEngine.js'
 import { extractSongConfig, mergeSongConfig } from '../extractSongConfig.js'
 import { LegacyFixtureAnnotationTextMetrics } from './legacyAnnotationTextMetrics.js'
 import type { SongFixture, SheetFixture, DrawableFixture, EntityFixture } from './semanticMatch.js'
@@ -35,7 +36,7 @@ export interface PipelineFixture {
   /** Raw `@music_model.to_json` dump from the legacy CLI (`song.legacy-raw.json`). */
   song: unknown | null
   sheetExtracts: Record<string, SheetFixture>
-  output_svg: string | null
+  outputSvgExtracts: Record<string, string>
 }
 
 export interface FixtureCase {
@@ -44,6 +45,7 @@ export interface FixtureCase {
   dir: string
   hasSongFixture: boolean
   hasSheetFixture: boolean
+  hasOutputSvgFixture: boolean
 }
 
 function loadJson<T>(path: string): T {
@@ -96,6 +98,27 @@ function loadSheetExtractFixtures(dir: string): Record<string, SheetFixture> {
   )
 }
 
+function listOutputSvgFiles(dir: string): string[] {
+  return readdirSync(dir)
+    .filter((name) => name === 'output.svg' || /^output\.extract-\d+\.svg$/.test(name))
+    .sort((a, b) => a.localeCompare(b))
+}
+
+function loadOutputSvgFixtures(dir: string): Record<string, string> {
+  const svgFiles = listOutputSvgFiles(dir)
+  if (svgFiles.includes('output.svg')) {
+    return { '0': loadText(resolve(dir, 'output.svg')) }
+  }
+
+  return Object.fromEntries(
+    svgFiles.map((filename) => {
+      const match = filename.match(/^output\.extract-(\d+)\.svg$/)
+      if (!match) throw new Error(`Invalid svg extract fixture filename: ${filename}`)
+      return [match[1], loadText(resolve(dir, filename))]
+    }),
+  )
+}
+
 function toRepoRelativePath(path: string): string {
   return relative(REPO_ROOT, path)
 }
@@ -116,6 +139,7 @@ export function scanFixtureCases(): FixtureCase[] {
       dir,
       hasSongFixture: existsSync(resolve(dir, 'song.legacy-raw.json')),
       hasSheetFixture: listSheetExtractFiles(dir).length > 0,
+      hasOutputSvgFixture: listOutputSvgFiles(dir).length > 0,
     }))
     .sort((a, b) => a.id.localeCompare(b.id))
 }
@@ -143,6 +167,7 @@ export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixtu
   const dir = fixtureCaseDir(name)
   const abc = loadText(resolve(dir, 'input.abc'))
   const sheetExtracts = loadSheetExtractFixtures(dir)
+  const outputSvgExtracts = loadOutputSvgFixtures(dir)
   return {
     name,
     id: name,
@@ -151,7 +176,7 @@ export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixtu
     config: fixtureConfigFromAbc(abc),
     song: safeLoadJson<unknown>(resolveSongFixturePath(dir)),
     sheetExtracts,
-    output_svg: safeLoadText(resolve(dir, 'output.svg')),
+    outputSvgExtracts,
   }
 }
 
@@ -202,6 +227,28 @@ export function getSheetFixtureTargets(fixture: PipelineFixture): Array<{ extrac
       expected,
     }))
     .sort((a, b) => a.extractNr - b.extractNr)
+}
+
+export function getOutputSvgFixtureTargets(fixture: PipelineFixture): Array<{ extractNr: number; expected: string }> {
+  return Object.entries(fixture.outputSvgExtracts)
+    .map(([extractNr, expected]) => ({
+      extractNr: Number.parseInt(extractNr, 10),
+      expected,
+    }))
+    .sort((a, b) => a.extractNr - b.extractNr)
+}
+
+export function transformFixtureToSvg(
+  fixture: PipelineFixture,
+  extractNr: number | string = 0,
+): string {
+  const model = new AbcParser().parse(fixture.input.abc)
+  const song = new AbcToSong().transform(model, fixture.config)
+  const target = resolveFixtureSheetRenderTarget(fixture.config, extractNr)
+  const sheet = new HarpnotesLayout(fixture.config, {
+    annotationTextMetrics: new LegacyFixtureAnnotationTextMetrics(),
+  }).layout(song, target.extractNr, target.pageFormat)
+  return new SvgEngine().draw(sheet)
 }
 
 export function saveFixtureOutput(fixture: PipelineFixture, stage: FixtureStage, data: unknown): void {
