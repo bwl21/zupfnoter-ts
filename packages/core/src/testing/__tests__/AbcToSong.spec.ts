@@ -280,6 +280,23 @@ r:bad-id
       },
     ])
   })
+
+  it('uses a valid [r:] remark as znId', () => {
+    const song = transform(`X:1
+T:Valid Remark ZnId Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+r:custom_id
+[V:V1] C |]
+`)
+    const note = song.voices[0]?.entities.find((e) => e.type === 'Note')
+
+    expect(note?.znId).toBe('custom_id')
+    expect(song.metaData.diagnostics ?? []).toEqual([])
+  })
 })
 
 // ---------------------------------------------------------------------------

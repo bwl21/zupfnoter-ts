@@ -927,6 +927,7 @@ export class HarpnotesLayout {
       lineWidth: layout.LINE_THICK,
       visible,
       confKey: note.confKey,
+      znId: note.znId,
       origin: note,
     }
   }
@@ -959,6 +960,7 @@ export class HarpnotesLayout {
       lineWidth: layout.LINE_THICK,
       visible,
       confKey: pause.confKey,
+      znId: pause.znId,
     }
   }
 
@@ -1012,6 +1014,7 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
+          znId: playable.znId,
           origin: playable,
         }
         backgrounds.push(this._annotationBackground(drawable, annotation.align ?? 'left', layout, 0.2))
@@ -1028,6 +1031,7 @@ export class HarpnotesLayout {
           lineWidth: layout.LINE_THICK,
           visible: true,
           confKey: `${overrideKey}.pos`,
+          znId: playable.znId,
         })
       }
     }
@@ -1047,6 +1051,7 @@ export class HarpnotesLayout {
       color: root.color,
       lineWidth: layout.LINE_THIN,
       visible: root.visible,
+      znId: root.znId,
     }
   }
 
@@ -1140,6 +1145,7 @@ export class HarpnotesLayout {
               color: layout.color.color_default,
               lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
               visible,
+              znId: curr.znId,
             })
           }
         } else {
@@ -1151,6 +1157,7 @@ export class HarpnotesLayout {
             color: layout.color.color_default,
             lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
             visible,
+            znId: curr.znId,
           })
         }
       }
@@ -1205,6 +1212,7 @@ export class HarpnotesLayout {
       color: variantToColor(leftmost.note.variant, layout),
       lineWidth: layout.LINE_THIN,
       visible: visible === true,
+      znId: synchPoint.znId,
     }
   }
 
@@ -1309,6 +1317,7 @@ export class HarpnotesLayout {
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,
         visible: true,
+        znId: goto.znId,
       },
       {
         type: 'Path',
@@ -1321,6 +1330,7 @@ export class HarpnotesLayout {
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,
         visible: true,
+        znId: goto.znId,
       },
       {
         type: 'Path',
@@ -1335,6 +1345,7 @@ export class HarpnotesLayout {
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,
         visible: true,
+        znId: goto.znId,
       },
     ]
   }
@@ -1414,6 +1425,7 @@ export class HarpnotesLayout {
             color: layout.color.color_default,
             lineWidth: layout.LINE_THIN,
             visible: true,
+            znId: tupletStart.znId,
           })
           result.push({
             type: 'Annotation',
@@ -1423,6 +1435,7 @@ export class HarpnotesLayout {
             color: layout.color.color_default,
             lineWidth: layout.LINE_THIN,
             visible: true,
+            znId: tupletStart.znId,
           })
         }
 

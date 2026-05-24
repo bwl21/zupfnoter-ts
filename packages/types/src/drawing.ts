@@ -22,6 +22,8 @@ export interface Drawable {
   color: string
   lineWidth: number
   confKey?: string
+  /** Legacy-nahe Zupfnoter-ID des fachlichen Ursprungsobjekts */
+  znId?: string
   visible: boolean
 }
 

@@ -26,6 +26,7 @@ export interface EntityFixture {
   visible?: boolean
   tieStart?: boolean
   tieEnd?: boolean
+  znId?: string
   from?: number
   to?: number
   /** Allow additional fields produced by the legacy raw exporter. */
@@ -63,6 +64,7 @@ export interface DrawableFixture {
   text?: string
   // Common
   color?: string
+  znId?: string
 }
 
 export interface SheetFixture {
@@ -116,6 +118,31 @@ function comparePoint(
   if (!nearlyEqual(actual[0], expected[0], tolerance) || !nearlyEqual(actual[1], expected[1], tolerance)) {
     fail(mismatches, path, expected, actual)
   }
+}
+
+function parseIndexedPath(path: string, rootKey: string, childKey: string): { rootIndex: number; childIndex: number } | null {
+  const match = path.match(new RegExp(`^${rootKey}\\[(\\d+)\\]\\.${childKey}\\[(\\d+)\\]`))
+  if (!match) return null
+  const rootIndex = Number.parseInt(match[1] ?? '', 10)
+  const childIndex = Number.parseInt(match[2] ?? '', 10)
+  if (!Number.isInteger(rootIndex) || !Number.isInteger(childIndex)) return null
+  return { rootIndex, childIndex }
+}
+
+export function resolveSongFixtureZnId(song: SongFixture, path: string): string | undefined {
+  const parsed = parseIndexedPath(path, 'voices', 'entities')
+  if (!parsed) return undefined
+  const entity = song.voices[parsed.rootIndex]?.entities[parsed.childIndex]
+  return typeof entity?.znId === 'string' && entity.znId.length > 0 ? entity.znId : undefined
+}
+
+export function resolveSheetFixtureZnId(sheet: SheetFixture, path: string): string | undefined {
+  const match = path.match(/^children\[(\d+)\]/)
+  if (!match) return undefined
+  const index = Number.parseInt(match[1] ?? '', 10)
+  if (!Number.isInteger(index)) return undefined
+  const child = sheet.children[index]
+  return typeof child?.znId === 'string' && child.znId.length > 0 ? child.znId : undefined
 }
 
 // ---------------------------------------------------------------------------
@@ -404,11 +431,17 @@ export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchRe
 
 // ---------------------------------------------------------------------------
 // SVG comparison (Stufe 4)
+//
+// Structural comparison intentionally drops TS-only `data-*` metadata.
+// Those attributes are preserved in the rendered SVG for runtime lookup and
+// interaction diagnostics, but they do not exist in the legacy output and
+// must not be reported as structural gaps.
 // ---------------------------------------------------------------------------
 
 const SVG_NUMBER_PATTERN = /-?\d+(?:\.\d+)?/g
 const SVG_TAG_PATTERN = /<[^>]+>/g
 const SVG_ATTRIBUTE_PATTERN = /([^\s=/>]+)\s*=\s*"([^"]*)"/g
+const SVG_DATA_ATTRIBUTE_PREFIX = 'data-'
 
 function normalizeSvgNumber(value: string): string {
   const parsed = Number.parseFloat(value)
@@ -434,6 +467,7 @@ function normalizeSvgTag(tag: string): string {
     const key = attributeMatch[1]
     const rawValue = attributeMatch[2]
     if (key === undefined || rawValue === undefined) continue
+    if (key.startsWith(SVG_DATA_ATTRIBUTE_PREFIX)) continue
 
     const normalizedValue = rawValue.replace(SVG_NUMBER_PATTERN, normalizeSvgNumber)
     attributes.push([key, normalizedValue])
@@ -523,6 +557,7 @@ function normalizeRawEntity(entity: Record<string, unknown>): EntityFixture {
   if ('@duration'  in entity) out.duration = entity['@duration']  as number
   if ('@tie_start' in entity) out.tieStart = entity['@tie_start'] as boolean
   if ('@tie_end'   in entity) out.tieEnd   = entity['@tie_end']   as boolean
+  if ('@znid'      in entity) out.znId     = entity['@znid']      as string
   if (Array.isArray(entity['@decorations']) && entity['@decorations'].length > 0) {
     out.decorations = entity['@decorations']
   }

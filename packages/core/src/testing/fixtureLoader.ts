@@ -265,7 +265,8 @@ export function saveFixtureOutput(fixture: PipelineFixture, stage: FixtureStage,
  *
  * All entity types are included (Note, Pause, SynchPoint, MeasureStart, NewPart,
  * Goto, Chordsymbol, NoteBoundAnnotation). Fields not present on a given type
- * are omitted (not set to null).
+ * are omitted (not set to null). Legacy-facing identifiers like `znId` are
+ * preserved so downstream comparisons can keep the same semantic anchor.
  */
 export function songToFixture(song: Song): SongFixture {
   return {
@@ -277,6 +278,7 @@ export function songToFixture(song: Song): SongFixture {
           beat: e.beat,
           variant: e.variant,
           visible: e.visible,
+          znId: e.znId,
         }
         if ('pitch' in e) entry['pitch'] = (e as { pitch: number }).pitch
         if ('duration' in e) entry['duration'] = (e as { duration: number }).duration
@@ -317,13 +319,14 @@ export function songToFixture(song: Song): SongFixture {
  *
  * Only fields relevant for semantic comparison are included.
  * Excluded: confKey, lineWidth, origin, draginfo, visible (invisible elements filtered out).
+ * Legacy-facing identifiers like `znId` are preserved when present.
  */
 export function sheetToFixture(sheet: Sheet): SheetFixture {
   return {
     children: sheet.children
       .filter((c) => c.visible !== false)
       .map((c): DrawableFixture => {
-        const entry: DrawableFixture = { type: c.type }
+        const entry: DrawableFixture = { type: c.type, znId: c.znId }
         if ('center'    in c && c.center    !== undefined) entry.center    = c.center
         if ('size'      in c && c.size      !== undefined) entry.size      = c.size
         if ('fill'      in c && c.fill      !== undefined) entry.fill      = c.fill as DrawableFixture['fill']

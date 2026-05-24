@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, it } from 'vitest'
 
 import { loadFixture, scanFixtureCases, transformFixtureToSong } from '../../fixtureLoader.js'
-import { matchSong, normalizeRawSongFixture } from '../../semanticMatch.js'
+import { matchSong, normalizeRawSongFixture, resolveSongFixtureZnId } from '../../semanticMatch.js'
 import {
   classifyFailures,
   pushFailureIfNeeded,
@@ -28,8 +28,10 @@ function collectSongFailures(): DetectedFailureWithDetails[] {
     const fixture = loadFixture(testCase)
     if (fixture.song === null) continue
     const actual = transformFixtureToSong(fixture)
-    const result = matchSong(actual, normalizeRawSongFixture(fixture.song))
-    pushFailureIfNeeded(failures, { stage: 'song', fixtureId: testCase.id }, result)
+    const expected = normalizeRawSongFixture(fixture.song)
+    const result = matchSong(actual, expected)
+    const znId = result.mismatches[0]?.path ? resolveSongFixtureZnId(actual, result.mismatches[0].path) : undefined
+    pushFailureIfNeeded(failures, { stage: 'song', fixtureId: testCase.id }, result, znId)
   }
   return failures
 }

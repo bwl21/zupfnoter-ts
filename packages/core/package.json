@@ -18,7 +18,7 @@
     "test:dump:sheet": "vitest run src/testing/__tests__/sheet/dump_ts_output.spec.ts --reporter=verbose",
     "test:dump:svg": "vitest run src/testing/__tests__/output_svg/dump_ts_output.spec.ts --reporter=verbose",
     "test:full": "pnpm run test:unit && pnpm run test:gaps",
-    "test:gaps": "vitest run src/testing/__tests__/song/gap_report.spec.ts src/testing/__tests__/sheet/gap_report.spec.ts src/testing/__tests__/output_svg/gap_report.spec.ts --reporter=verbose",
+    "test:gaps": "ZUPFNOTER_GAP_REPORTS=1 vitest run src/testing/__tests__/song/gap_report.spec.ts src/testing/__tests__/sheet/gap_report.spec.ts src/testing/__tests__/output_svg/gap_report.spec.ts --reporter=verbose",
     "type-check": "tsc -p tsconfig.typecheck.json",
     "test:unit": "vitest",
     "lint": "oxlint --ignore-path .oxlintignore ."

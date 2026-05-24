@@ -20,4 +20,11 @@ describe('SVG fixture normalization', () => {
 
     expect(matchSvg(actual, expected).passed).toBe(true)
   })
+
+  it('ignores ts-only data attributes in structural comparison', () => {
+    const actual = '<svg xmlns="http://www.w3.org/2000/svg" width="10mm"><g data-conf-key="song.layout.foo" data-zn-id="zn-123"><rect data-role="hitbox" x="1" y="2" width="3" height="4" /></g></svg>'
+    const expected = '<svg xmlns="http://www.w3.org/2000/svg" width="10mm"><g><rect x="1" y="2" width="3" height="4" /></g></svg>'
+
+    expect(matchSvg(actual, expected).passed).toBe(true)
+  })
 })

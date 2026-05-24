@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { matchSheet, matchSong, type SheetFixture, type SongFixture } from '../semanticMatch.js'
+import { matchSheet, matchSong, normalizeRawSongFixture, type SheetFixture, type SongFixture } from '../semanticMatch.js'
 
 describe('semanticMatch', () => {
   it('compares beat maps as part of song parity', () => {
@@ -62,5 +62,24 @@ describe('semanticMatch', () => {
     const result = matchSheet(actual, fixture)
 
     expect(result.passed).toBe(true)
+  })
+
+  it('preserves znId during raw song normalization', () => {
+    const raw = {
+      meta_data: {},
+      voices: [[
+        {
+          class: 'Harpnotes::Music::Note',
+          '@beat': 0,
+          '@visible': true,
+          '@znid': '384',
+          '@pitch': 60,
+        },
+      ]],
+      beat_maps: [{}],
+    }
+
+    const fixture = normalizeRawSongFixture(raw)
+    expect(fixture.voices[0]?.entities[0]?.znId).toBe('384')
   })
 })

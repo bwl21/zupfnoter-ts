@@ -11,7 +11,7 @@ import {
   scanFixtureCases,
   transformFixtureToSheet,
 } from '../../fixtureLoader.js'
-import { matchSheet } from '../../semanticMatch.js'
+import { matchSheet, resolveSheetFixtureZnId } from '../../semanticMatch.js'
 import {
   classifyFailures,
   pushFailureIfNeeded,
@@ -34,10 +34,12 @@ function collectSheetFailures(): DetectedFailureWithDetails[] {
     for (const target of getSheetFixtureTargets(fixture)) {
       const actual = transformFixtureToSheet(fixture, target.extractNr)
       const result = matchSheet(actual, target.expected)
+      const znId = result.mismatches[0]?.path ? resolveSheetFixtureZnId(actual, result.mismatches[0].path) : undefined
       pushFailureIfNeeded(
         failures,
         { stage: 'sheet', fixtureId: testCase.id, extractNr: target.extractNr },
         result,
+        znId,
       )
     }
   }

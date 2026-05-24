@@ -10,6 +10,8 @@ import {
   loadSheetExtractFixture,
   resolveFixtureSheetRenderTarget,
   scanFixtureCases,
+  transformFixtureToSong,
+  transformFixtureToSheet,
 } from '../fixtureLoader.js'
 import { normalizeRawSongFixture } from '../semanticMatch.js'
 import { defaultTestConfig } from '../defaultConfig.js'
@@ -91,6 +93,15 @@ describe('fixtureLoader', () => {
       { '0': 0, '48': 48, '96': 96, '144': 144 },
       { '0': 0, '48': 48, '96': 96, '144': 144 },
     ])
+  })
+
+  it('preserves znId in generated song and sheet fixtures', () => {
+    const fixture = loadFixture('single_note')
+    const songFixture = transformFixtureToSong(fixture)
+    const sheetFixture = transformFixtureToSheet(fixture, 0)
+
+    expect(songFixture.voices[0]?.entities.some((entity) => entity.znId === '0')).toBe(true)
+    expect(sheetFixture.children.some((child) => child.znId === '0')).toBe(true)
   })
 
   it('loads extract-specific sheet fixtures for simple single-extract cases', () => {

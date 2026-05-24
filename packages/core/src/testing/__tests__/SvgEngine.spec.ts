@@ -256,6 +256,8 @@ describe('SvgEngine', () => {
 
     it('uses font size from style', () => {
       const eng = new SvgEngine({
+        width: 400,
+        height: 282,
         fontStyles: { regular: { fontSize: 5, fontStyle: 'normal' } },
       })
       const svg = eng.draw(makeSheet([annotation({ style: 'regular' })]))

@@ -15,17 +15,20 @@ import {
 
 export interface DetectedFailureWithDetails extends DetectedFailure {
   mismatchSummary: string
+  znId?: string
 }
 
 export function pushFailureIfNeeded(
   failures: DetectedFailureWithDetails[],
   failure: DetectedFailure,
   result: MatchResult,
+  znId?: string,
 ): void {
   if (result.passed) return
   failures.push({
     ...failure,
     mismatchSummary: formatMismatches(result),
+    znId,
   })
 }
 
@@ -126,6 +129,9 @@ export function renderStageReport(args: {
       lines.push(`  - Fixture: ${failure.fixtureId}`)
       if (failure.extractNr !== undefined) {
         lines.push(`  - Extract: ${failure.extractNr}`)
+      }
+      if (failure.znId) {
+        lines.push(`  - znId: ${failure.znId}`)
       }
       lines.push(`  - Prompt: ${makeImplementationPrompt(failure)}`)
       lines.push('  - Mismatch Summary:')
