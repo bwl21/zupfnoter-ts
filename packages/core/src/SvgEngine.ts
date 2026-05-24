@@ -145,16 +145,18 @@ function svgText(
     textAttrs.transform = `scale(1.05, 1) translate(0,${-fontSize / 8})`
     textAttrs.x = x / 1.05
   }
-  const lines = text.split('\n')
-  if (lines.length === 1) {
-    return `<text ${attrs(textAttrs)}>${esc(text)}</text>`
-  }
-
-  const tspans = lines.map((line, i) =>
-    legacy
-      ? `<tspan dy="1.2em" x="${x / 1.05}">${esc(line)}</tspan>`
-      : `<tspan x="${x}" dy="${i === 0 ? 0 : fontSize * 1.2}">${esc(line)}</tspan>`,
-  ).join('')
+  const renderedText = legacy
+    ? text
+        .replace(/ +\n/g, '\n')
+        .replace(/\n\n/g, '\n \n')
+        .replace(/(\\?)(~)/g, (match) => (match.startsWith('\\') ? match.slice(1) : '\u00a0'))
+    : text
+  const lines = renderedText.split('\n')
+  const tspans = legacy
+    ? lines.map((line) => `<tspan dy="1.2em" x="${x / 1.05}">${esc(line)}</tspan>`).join('')
+    : lines.length === 1
+      ? esc(renderedText)
+      : lines.map((line, i) => `<tspan x="${x}" dy="${i === 0 ? 0 : fontSize * 1.2}">${esc(line)}</tspan>`).join('')
   return `<text ${attrs(textAttrs)}>${tspans}</text>`
 }
 
@@ -234,11 +236,13 @@ export class SvgEngine {
     this._width = options.width ?? LEGACY_PAGE_WIDTH
     this._height = options.height ?? LEGACY_PAGE_HEIGHT
     this._fontStyles = options.fontStyles ?? {
-      regular: { fontSize: 4, fontStyle: 'normal' },
-      bold: { fontSize: 4, fontStyle: 'bold' },
-      large: { fontSize: 7, fontStyle: 'bold' },
-      small: { fontSize: 3, fontStyle: 'normal' },
-      smaller: { fontSize: 2, fontStyle: 'normal' },
+      regular: { fontSize: 12, fontStyle: 'normal' },
+      bold: { fontSize: 12, fontStyle: 'bold' },
+      large: { fontSize: 20, fontStyle: 'bold' },
+      small_bold: { fontSize: 9, fontStyle: 'bold' },
+      small_italic: { fontSize: 9, fontStyle: 'italic' },
+      small: { fontSize: 9, fontStyle: 'normal' },
+      smaller: { fontSize: 6, fontStyle: 'normal' },
     }
   }
 
@@ -550,7 +554,7 @@ export class SvgEngine {
     if (style === undefined) {
       style = requireDefined(this._fontStyles.regular, 'SvgEngine: missing default font style "regular"')
     }
-    const meta = this._buildMeta(
+  const meta = this._buildMeta(
       'Annotation',
       'annotation',
       index,
@@ -558,9 +562,14 @@ export class SvgEngine {
       el.confKey,
       el.znId,
     )
+    const anchor = el.align === 'center'
+      ? 'middle'
+      : el.align === 'right'
+        ? 'end'
+        : 'start'
     return this._wrapElement(
       meta,
-      svgText(x, y, el.text, style.fontSize, style.fontStyle.includes('bold') ? 'bold' : 'normal', style.fontStyle.includes('italic') ? 'italic' : 'normal', 'start', {
+      svgText(x, y, el.text, style.fontSize, style.fontStyle.includes('bold') ? 'bold' : 'normal', style.fontStyle.includes('italic') ? 'italic' : 'normal', anchor, {
         class: 'zupfnoter-shape zupfnoter-shape--annotation',
         'data-style': el.style,
       }, this._useLegacyFrame),

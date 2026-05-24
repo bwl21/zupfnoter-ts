@@ -81,6 +81,8 @@ export interface Annotation extends Drawable {
   center: [number, number]
   text: string
   style: string
+  /** Textausrichtung wie im Legacy-SVG. */
+  align?: 'left' | 'right' | 'center'
   size?: [number, number]
   origin?: PlayableEntity
 }

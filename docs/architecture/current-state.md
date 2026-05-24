@@ -120,6 +120,7 @@ Die Architektur- und Migrationsdokumentation ist bereits breit angelegt:
 
 - Phasen-Dokumente liegen unter `docs/phase-*`
 - Architektur- und Analyse-Notizen liegen unter `docs/architecture`
+- Die fortschreibbare SVG-/Konfigurations-Paritätstabelle liegt unter `docs/architecture/svg-parity-table.md`
 - Fixture-Strategien sind unter `docs/fixtures` und `docs/testing` beschrieben
 - Voice-Styles sind dokumentiert, aber noch nicht implementiert
 

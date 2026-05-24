@@ -996,7 +996,14 @@ export class HarpnotesLayout {
       if (!visible) continue
 
       const center: [number, number] = [root.center[0] + offset[0], root.center[1] + offset[1]]
-      const annotation = annotationDecorations[decoration]
+      const annotation = annotationDecorations[decoration] as
+        | {
+          pos: [number, number]
+          style: string
+          text: string
+          align?: 'left' | 'right' | 'center'
+        }
+        | undefined
 
       if (annotation) {
         const annotationCenter: [number, number] = [
@@ -1011,6 +1018,7 @@ export class HarpnotesLayout {
           center: annotationCenter,
           text: annotation.text,
           style,
+          align: annotation.align,
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
@@ -1547,6 +1555,7 @@ export class HarpnotesLayout {
             center: [x, y],
             text,
             style,
+            align: 'center',
             color: layout.color.color_default,
             lineWidth: layout.LINE_THIN,
             visible: true,
@@ -1576,6 +1585,12 @@ export class HarpnotesLayout {
     const secondaryPos = (legendConf?.['spos'] as [number, number] | undefined) ?? [320, 27]
     const secondaryStyle = (legendConf?.['style'] as string | undefined) ?? 'regular'
     const extractTitle = (conf.get('extract.title') as string | undefined) ?? String(extractNr)
+    const legendAlign = legendConf?.['align'] as string | undefined
+    const align: 'left' | 'right' | 'center' = legendAlign === 'l'
+      ? 'right'
+      : legendAlign === 'center'
+        ? 'center'
+        : 'left'
 
     if (metaData.title) {
       result.push({
@@ -1583,6 +1598,7 @@ export class HarpnotesLayout {
         center: titlePos,
         text: metaData.title,
         style: titleStyle,
+        align,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: true,
@@ -1601,6 +1617,7 @@ export class HarpnotesLayout {
         center: secondaryPos,
         text: secondaryText,
         style: secondaryStyle,
+        align,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: true,
@@ -1821,19 +1838,21 @@ export class HarpnotesLayout {
         const countnoteText = this._countnoteText(playable, measureStartBeat, voiceNr, conf)
         const offset = this._countnoteOffset(playable, layout, voiceNr, conf)
         const style = (conf.get('extract.countnotes.style') as string | undefined) ?? 'smaller'
+        const side = this._countnoteSide(playable, voiceNr, conf)
         const shiftEu = /^[aoveu]$/.test(countnoteText)
         const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
         const shiftY = shiftEu ? fontSize * layout.MM_PER_POINT * 0.25 : 0
+        const align: 'left' | 'right' = side === 'l' ? 'right' : 'left'
         const annotation: Annotation = {
           type: 'Annotation',
           center: [x + offset[0], y + offset[1] - shiftY],
           text: countnoteText,
           style,
+          align,
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: playable.visible,
         }
-        const side = this._countnoteSide(playable, voiceNr, conf)
         countnoteBackgrounds.push(
           this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05, shiftEu),
         )
@@ -1855,6 +1874,7 @@ export class HarpnotesLayout {
           center: [x + offset[0], y + offset[1]],
           text: `${(conf.get('extract.barnumbers.prefix') as string | undefined) ?? ''}${barnumber}`,
           style: (conf.get('extract.barnumbers.style') as string | undefined) ?? 'small_bold',
+          align: side === 'l' ? 'right' : 'left',
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: playable.visible,
