@@ -26,10 +26,11 @@ import {
 
 const LEGACY_INTEGRATION_CSS = [
   'rect.abcref, rect.zupfnoter-hitbox {',
-  '  fill: grey;',
-  '  fill-opacity: 0.01;',
+  '  fill: none;',
+  '  stroke: none;',
   '}',
   'rect.abcref:hover, rect.zupfnoter-hitbox:hover {',
+  '  fill: grey;',
   '  fill-opacity: 0.5;',
   '}',
 ].join('\n')

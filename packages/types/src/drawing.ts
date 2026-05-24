@@ -69,6 +69,8 @@ export interface FlowLine extends Drawable {
 export interface Path extends Drawable {
   readonly type: 'Path'
   path: [number, number][]
+  /** Exakter SVG-`d`-String für Legacy-nahe Kurven oder Pfade. */
+  pathData?: string
   fill: boolean
 }
 

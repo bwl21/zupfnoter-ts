@@ -511,6 +511,7 @@ export class SvgEngine {
           {
             class: 'zupfnoter-shape zupfnoter-shape--flowline',
             'data-flow-style': el.style,
+            'stroke-dasharray': dash,
           },
           'butt',
         )
@@ -526,7 +527,7 @@ export class SvgEngine {
   // ---------------------------------------------------------------------------
 
   private _drawPath(el: Path, index: number): string {
-    const d = pathFromPoints(el.path)
+    const d = el.pathData ?? pathFromPoints(el.path)
     if (!d) return ''
     const meta = this._buildMeta(
       'Path',

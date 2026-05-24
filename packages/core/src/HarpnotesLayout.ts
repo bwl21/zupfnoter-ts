@@ -380,7 +380,7 @@ function makeAnnotatedBezierPath(
   p1: [number, number],
   p2: [number, number],
   options: AnnotatedBezierOptions,
-): { path: [number, number][]; anchor: [number, number] } {
+): { path: [number, number][]; pathData: string; anchor: [number, number] } {
   const delta = subtractPoint(p2, p1)
   const angle = Math.atan2(delta[1], delta[0])
   const cp1 = rotatePoint(rotatePoint(options.cp1, angle), -Math.PI * 0.5)
@@ -403,19 +403,22 @@ function makeAnnotatedBezierPath(
   const anchor = addPoint(baseAnchor, options.pos)
 
   const path: [number, number][] = []
+  const pathDataParts: string[] = [`M${p1[0]} ${p1[1]}`]
   if (options.shape.includes('c')) {
     for (let i = 0; i <= 12; i++) {
       path.push(cubicPoint(p1, cp1, cp2, delta, i / 12))
     }
+    pathDataParts.push(`c${cp1[0]} ${cp1[1]} ${cp2[0]} ${cp2[1]} ${delta[0]} ${delta[1]}`)
   }
   if (options.shape.includes('l')) {
     path.push(p1, cpa1, cpa2, p2)
+    pathDataParts.push(`l${cp1[0]} ${cp1[1]}L${cpa2[0]} ${cpa2[1]}L${p2[0]} ${p2[1]}`)
   }
 
-  return { path, anchor }
+  return { path, pathData: pathDataParts.join(''), anchor }
 }
 
-function makeLegacySlurPath(p1: [number, number], p2: [number, number]): [number, number][] {
+function makeLegacySlurPath(p1: [number, number], p2: [number, number]): { path: [number, number][]; pathData: string } {
   const delta = subtractPoint(p2, p1)
   const length = Math.hypot(delta[0], delta[1])
   const angle = Math.atan2(delta[1], delta[0])
@@ -433,7 +436,10 @@ function makeLegacySlurPath(p1: [number, number], p2: [number, number]): [number
     ])
   }
 
-  return points
+  return {
+    path: points,
+    pathData: `M${p1[0]} ${p1[1]}c${cp1[0]} ${cp1[1]} ${cp2[0]} ${cp2[1]} ${delta[0]} ${delta[1]}`,
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -826,7 +832,7 @@ export class HarpnotesLayout {
           const p2 = addPoint(playableCenter(playable, beatMap, layout, startpos), [3, 0])
           result.push({
             type: 'Path',
-            path: makeLegacySlurPath(p1, p2),
+            ...makeLegacySlurPath(p1, p2),
             fill: false,
             color: layout.color.color_default,
             lineWidth: layout.LINE_MEDIUM,
@@ -881,7 +887,7 @@ export class HarpnotesLayout {
 
     return {
       type: 'Path',
-      path: bottomup ? makeLegacySlurPath(p2, p1) : makeLegacySlurPath(p1, p2),
+      ...(bottomup ? makeLegacySlurPath(p2, p1) : makeLegacySlurPath(p1, p2)),
       fill: false,
       color: variantToColor(variant, layout),
       lineWidth: layout.LINE_THICK,
@@ -1148,7 +1154,7 @@ export class HarpnotesLayout {
           if (options.show) {
             result.push({
               type: 'Path',
-              path: makeAnnotatedBezierPath(from, to, options).path,
+              ...makeAnnotatedBezierPath(from, to, options),
               fill: false,
               color: layout.color.color_default,
               lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
@@ -1417,7 +1423,7 @@ export class HarpnotesLayout {
         if (options.show) {
           const p1 = playableCenter(tupletStart, beatMap, layout, startpos)
           const p2 = playableCenter(p, beatMap, layout, startpos)
-          const { path, anchor } = makeAnnotatedBezierPath(p1, p2, options)
+          const { path, pathData, anchor } = makeAnnotatedBezierPath(p1, p2, options)
           const configuredText = conf.get('extract.tuplets.text')
           const text = (
             typeof configuredText === 'string'
@@ -1429,6 +1435,7 @@ export class HarpnotesLayout {
           result.push({
             type: 'Path',
             path,
+            pathData,
             fill: false,
             color: layout.color.color_default,
             lineWidth: layout.LINE_THIN,
