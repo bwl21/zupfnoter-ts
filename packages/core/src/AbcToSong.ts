@@ -788,24 +788,30 @@ export class AbcToSong {
     sym: AbcSymbol,
   ): Goto[] {
     const result: Goto[] = []
-    const sources = [...state.pendingVariantEntrySources]
+    const entrySources = [...state.pendingVariantEntrySources]
     state.pendingVariantEntrySources = []
+    const exitSources = state.awaitingVariantContinuation && state.pendingVariantExitSources.length > 0
+      ? [...state.pendingVariantExitSources]
+      : []
 
-    if (state.awaitingVariantContinuation && state.pendingVariantExitSources.length > 0) {
-      sources.push(...state.pendingVariantExitSources)
+    if (exitSources.length > 0) {
       state.pendingVariantExitSources = []
       state.awaitingVariantContinuation = false
       state.variantAnchor = null
       state.variantSectionNo = 0
     }
 
-    for (let idx = 0; idx < sources.length; idx++) {
-      const source = requireDefined(
-        sources[idx],
+    let idx = 0
+    for (const source of entrySources) {
+      const resolvedSource = requireDefined(
+        source,
         `AbcToSong._resolvePendingVariantGotos(): missing source at index ${idx}`,
       )
-      if (source === target) continue
-        result.push({
+      if (resolvedSource === target) {
+        idx += 1
+        continue
+      }
+      result.push({
         type: 'Goto' as const,
         beat: target.beat,
         time: sym.time,
@@ -816,10 +822,38 @@ export class AbcToSong {
         visible: true,
         variant: 0,
         znId: `goto-${voiceIndex}-${sym.istart}-${idx}`,
-        from: source,
+        from: resolvedSource,
         to: target,
-          policy: { isRepeat: true } as GotoPolicy,
-        })
+        policy: { isRepeat: true } as GotoPolicy,
+      })
+      idx += 1
+    }
+
+    for (const source of exitSources) {
+      const resolvedSource = requireDefined(
+        source,
+        `AbcToSong._resolvePendingVariantGotos(): missing exit source at index ${idx}`,
+      )
+      if (resolvedSource === target) {
+        idx += 1
+        continue
+      }
+      result.push({
+        type: 'Goto' as const,
+        beat: target.beat,
+        time: sym.time,
+        startPos: this._charposToLineCol(sym.istart),
+        endPos: this._charposToLineCol(sym.iend),
+        decorations: [],
+        barDecorations: [],
+        visible: true,
+        variant: 0,
+        znId: `goto-${voiceIndex}-${sym.istart}-${idx}`,
+        from: resolvedSource,
+        to: target,
+        policy: { isRepeat: true, verticalAnchor: 'to' } as GotoPolicy,
+      })
+      idx += 1
     }
 
     return result

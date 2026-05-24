@@ -179,8 +179,10 @@ function subtractPoint(a: [number, number], b: [number, number]): [number, numbe
   return [a[0] - b[0], a[1] - b[1]]
 }
 
-function orientationX(delta: number): -1 | 1 {
-  return delta < 0 ? -1 : 1
+function orientationX(delta: number): -1 | 0 | 1 {
+  if (delta < 0) return -1
+  if (delta > 0) return 1
+  return 0
 }
 
 function orientationY(delta: number): -1 | 0 | 1 {
@@ -1322,11 +1324,40 @@ export class HarpnotesLayout {
     const vcp3 = addPoint(p3, [0, -verticalCutY])
     const verticalOrientation = orientationY(p2[1] - p3[1])
     const lineCutEnd = addPoint(vcp2, [0, verticalOrientation])
+    const arrow1 = addPoint(p4, [2.5 * endOrientation, 1])
+    const arrow2 = addPoint(p4, [2.5 * endOrientation, -1])
+    const vcutArrow1 = addPoint(vcp2, [0.5, 1.5 * verticalOrientation])
+    const vcutArrow2 = addPoint(vcp2, [-0.5, 1.5 * verticalOrientation])
+    const outlinePathData = [
+      `M${p1[0]} ${p1[1]}`,
+      `l${p2[0] - p1[0]} ${p2[1] - p1[1]}`,
+      `l${lineCutEnd[0] - p2[0]} ${lineCutEnd[1] - p2[1]}`,
+      `M${vcp3[0]} ${vcp3[1]}`,
+      `L${p3[0]} ${p3[1]}`,
+      `L${p4Line[0]} ${p4Line[1]}`,
+    ].join('')
+    const arrowPathData = [
+      `M${p4[0]} ${p4[1]}`,
+      `l${arrow1[0] - p4[0]} ${arrow1[1] - p4[1]}`,
+      `l${arrow2[0] - arrow1[0]} ${arrow2[1] - arrow1[1]}`,
+      `l${p4[0] - arrow2[0]} ${p4[1] - arrow2[1]}`,
+      'z',
+    ].join('')
+    const vcutArrowPathData = verticalCut === 0
+      ? undefined
+      : [
+        `M${vcp2[0]} ${vcp2[1]}`,
+        `l${vcutArrow1[0] - vcp2[0]} ${vcutArrow1[1] - vcp2[1]}`,
+        `l${vcutArrow2[0] - vcutArrow1[0]} ${vcutArrow2[1] - vcutArrow1[1]}`,
+        `l${vcp2[0] - vcutArrow2[0]} ${vcp2[1] - vcutArrow2[1]}`,
+        'z',
+      ].join('')
 
     return [
       {
         type: 'Path',
         path: [p1, p2, lineCutEnd, vcp3, p3, p4Line],
+        pathData: outlinePathData,
         fill: false,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,
@@ -1337,9 +1368,10 @@ export class HarpnotesLayout {
         type: 'Path',
         path: [
           p4,
-          addPoint(p4, [2.5 * endOrientation, 1]),
-          addPoint(p4, [2.5 * endOrientation, -1]),
+          arrow1,
+          arrow2,
         ],
+        pathData: arrowPathData,
         fill: true,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,
@@ -1352,9 +1384,10 @@ export class HarpnotesLayout {
           ? []
           : [
             vcp2,
-            addPoint(vcp2, [0.5, 1.5 * verticalOrientation]),
-            addPoint(vcp2, [-0.5, 1.5 * verticalOrientation]),
+            vcutArrow1,
+            vcutArrow2,
           ],
+        pathData: vcutArrowPathData,
         fill: true,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,

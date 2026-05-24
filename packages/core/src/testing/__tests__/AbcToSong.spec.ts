@@ -8,12 +8,12 @@ import { readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
-import type { PlayableEntity, Song } from '@zupfnoter/types'
+import type { Goto, PlayableEntity, Song } from '@zupfnoter/types'
 import type { AbcModel, AbcSymbol } from '../../AbcModel.js'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { defaultTestConfig } from '../defaultConfig.js'
-import { readFixtureAbc } from '../fixtureLoader.js'
+import { fixtureConfigFromAbc, readFixtureAbc } from '../fixtureLoader.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '../../../../..')
@@ -30,6 +30,14 @@ function transformWithConfig(abcText: string, config: typeof defaultTestConfig) 
   const model = parser.parse(abcText)
   const transformer = new AbcToSong()
   return transformer.transform(model, config)
+}
+
+function transformFixture(name: string) {
+  const abc = readFixtureAbc(name)
+  const parser = new AbcParser()
+  const model = parser.parse(abc)
+  const transformer = new AbcToSong()
+  return transformer.transform(model, fixtureConfigFromAbc(abc))
 }
 
 function transformWithoutCountBy(abcText: string) {
@@ -471,6 +479,14 @@ V:V1 clef=treble-8
     const song = transform(ABC)
     const gotos = song.voices[0]!.entities.filter((e) => e.type === 'Goto')
     expect(gotos.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('sets verticalAnchor=to for variant-ending exit gotos', () => {
+    const song = transformFixture('246_Horch-was-kommt-von-draussen-rein')
+    const gotos = song.voices.flatMap((voice) => voice.entities).filter((entity): entity is Goto => entity.type === 'Goto')
+    const exitGotos = gotos.filter((goto) => goto.policy.verticalAnchor === 'to')
+
+    expect(exitGotos.length).toBeGreaterThan(0)
   })
 
 })

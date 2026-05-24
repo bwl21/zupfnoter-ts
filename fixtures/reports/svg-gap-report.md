@@ -17,8 +17,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 887, ts 1041 (Δ 154)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 40330
-- Diff ratio: 1.309%
+- Differing pixels: 40368
+- Diff ratio: 1.311%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/3015_reference_sheet/diff.png
 
 - Group count: legacy 221, ts 326
@@ -72,8 +72,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 2700, ts 3549 (Δ 849)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 45862
-- Diff ratio: 1.489%
+- Differing pixels: 44019
+- Diff ratio: 1.429%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/246_Horch-was-kommt-von-draussen-rein/diff.png
 
 - Group count: legacy 743, ts 1284
@@ -396,8 +396,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 60, ts 66 (Δ 6)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 3302
-- Diff ratio: 0.107%
+- Differing pixels: 3318
+- Diff ratio: 0.108%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/repeat/diff.png
 
 - Group count: legacy 18, ts 24
