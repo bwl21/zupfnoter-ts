@@ -24,13 +24,15 @@ fixtures/
     │   ├── input.abc       # ABC-Notation, optional mit %%%%zupfnoter.config
     │   ├── song.legacy-raw.json # Stufe-2-Referenz: Rohdump aus Legacy-CLI (@music_model.to_json)
     │   ├── sheet.extract-0.json # Stufe-3-Referenz für Extrakt 0
+    │   ├── output.extract-0.svg # Stufe-4-Referenz für Extrakt 0
     │   └── _ts_output/     # generierte TS-Ausgabe, nicht Referenz
     └── ...
 ```
 
 Die Tests scannen `fixtures/cases/*/input.abc` automatisch. Ein neuer Testfall wird
 für Song-Vergleiche aufgenommen, sobald zusätzlich `song.legacy-raw.json` existiert; für
-Sheet-Vergleiche entsprechend mit mindestens einer `sheet.extract-<nr>.json`.
+Sheet-Vergleiche entsprechend mit mindestens einer `sheet.extract-<nr>.json`; für
+SVG-Vergleiche mit mindestens einer `output.extract-<nr>.svg`.
 
 Bekannte, noch nicht portierte Legacy-Aspekte werden nicht testfallspezifisch im
 Fixture-Verzeichnis gepflegt, sondern zentral im Testcode als globale Capability-Liste.
@@ -88,12 +90,21 @@ Für jede aufgelöste ABC-Datei ruft er die Legacy-CLI einzeln auf als
 Die TS-Pipeline-Ausgabe kann als Vergleichsbasis erzeugt werden:
 
 ```bash
-cd packages/core
-npx vitest run src/testing/__tests__/song/dump_ts_output.spec.ts
-# Schreibt: fixtures/cases/<name>/_ts_output/song.json
+pnpm test
 ```
 
-Diese Dateien sind **nicht** die Referenz-Fixtures — sie zeigen nur, was die TS-Pipeline
+`pnpm test` führt die normalen Workspace-Tests aus und schreibt dabei zusätzlich die
+TS-Dumps nach `fixtures/cases/<name>/_ts_output/`.
+
+Für gezielte Einzel-Dumps gibt es zusätzlich:
+
+```bash
+pnpm test:dump:song
+pnpm test:dump:sheet
+pnpm test:dump:svg
+```
+
+Diese Dateien sind **nicht** die Referenz-Fixtures. Sie zeigen nur, was die TS-Pipeline
 aktuell produziert. Vergleiche sie mit dem Legacy-Export, um Abweichungen zu finden.
 
 ### 2. Legacy-Fixtures exportieren
@@ -114,6 +125,7 @@ Für jede Eingabedatei wird geschrieben:
 fixtures/cases/<test-case>/input.abc
 fixtures/cases/<test-case>/song.legacy-raw.json
 fixtures/cases/<test-case>/sheet.extract-<nr>.json
+fixtures/cases/<test-case>/output.extract-<nr>.svg
 ```
 
 Wenn die Eingabe `fixtures/cases/<name>/input.abc` heißt, verwendet der Exporter
@@ -134,8 +146,8 @@ Reason: <Begründung der Änderung>"
 Nach dem Befüllen der Fixtures:
 
 ```bash
-pnpm --filter @zupfnoter/core run test:unit
-npm run test:gaps
+pnpm test
+pnpm test:gaps
 ```
 
 Schlagen Tests fehl, zeigt `formatMismatches` den genauen Pfad der Abweichung:
@@ -145,7 +157,7 @@ voices[0].entities[2].pitch:
   actual:   48
 ```
 
-`npm run test:gaps` erzeugt drei stufenbezogene Markdown-Reports unter
+`pnpm test:gaps` erzeugt drei stufenbezogene Markdown-Reports unter
 `fixtures/reports/`:
 
 - `song-gap-report.md` (Stufe 2, registry-basiert)
@@ -165,13 +177,16 @@ nicht als Verifikation gegen das Legacy-System.
 
 ```bash
 # Song-Fixtures (Stufe 2):
-cd packages/core
-npx vitest run src/testing/__tests__/song/dump_ts_output.spec.ts
+pnpm test:dump:song
 cp fixtures/cases/<name>/_ts_output/song.json fixtures/cases/<name>/song.legacy-raw.json
 
 # Sheet-Fixtures (Stufe 3):
-npx vitest run src/testing/__tests__/sheet/dump_ts_output.spec.ts
-cp fixtures/cases/<name>/_ts_output/sheet.json fixtures/cases/<name>/sheet.extract-0.json
+pnpm test:dump:sheet
+cp fixtures/cases/<name>/_ts_output/sheet.extract-0.json fixtures/cases/<name>/sheet.extract-0.json
+
+# SVG-Fixtures (Stufe 4):
+pnpm test:dump:svg
+cp fixtures/cases/<name>/_ts_output/output.extract-0.svg fixtures/cases/<name>/output.extract-0.svg
 ```
 
 ## Fixture-Format

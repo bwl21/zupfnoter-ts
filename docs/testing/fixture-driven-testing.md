@@ -20,11 +20,11 @@ ABC-Datei + Config
     ↓
 [Stufe 1: AbcParser]
     ↓
-[Stufe 2: AbcToSong] → fixture: song.extract-0.json
+[Stufe 2: AbcToSong] → fixture: song.legacy-raw.json
     ↓
 [Stufe 3: HarpnotesLayout] → fixture: sheet.extract-<nr>.json
     ↓
-[Stufe 4: SvgEngine] → fixture: output.svg (geplant)
+[Stufe 4: SvgEngine] → fixture: output.extract-<nr>.svg
 ```
 
 Alle Fixtures liegen unter `fixtures/` und sind **versioniert**.
@@ -38,24 +38,26 @@ fixtures/
 └── cases/
     ├── <test-case>/
     │   ├── input.abc          # ABC-Notation + optionaler %%%%zupfnoter.config Block
-    │   ├── song.extract-0.json # Stufe 2: Song-Modell (kanonische Song-Referenz)
+    │   ├── song.legacy-raw.json # Stufe 2: Song-Modell (kanonische Song-Referenz)
     │   ├── sheet.extract-0.json
     │   ├── sheet.extract-1.json
     │   ├── ...
-    │   ├── output.svg         # Stufe 4: SVG-String (Legacy Reference, geplant)
+    │   ├── output.extract-0.svg
+    │   ├── output.extract-1.svg
+    │   ├── ...
     │   └── _ts_output/        # TypeScript-Ausgabe (generiert)
-    │       ├── song.extract-0.json
-    │       ├── sheet.json
-    │       └── output.svg
+    │       ├── song.json
+    │       ├── sheet.extract-0.json
+    │       └── output.extract-0.svg
     └── ...
 ```
 
 **Konvention:**
 - Input: `fixtures/cases/<test-case>/input.abc`
-- Legacy Reference: `fixtures/cases/<test-case>/<stufe>.json` bzw. `sheet.extract-<nr>.json` (hand-gepflegt oder exportiert)
-- TypeScript Output: `fixtures/cases/<test-case>/_ts_output/<stufe>.json` (generiert)
+- Legacy Reference: `song.legacy-raw.json`, `sheet.extract-<nr>.json`, `output.extract-<nr>.svg`
+- TypeScript Output: `_ts_output/song.json`, `_ts_output/sheet.extract-<nr>.json`, `_ts_output/output.extract-<nr>.svg`
 - Discovery: Tests scannen `fixtures/cases/*/input.abc`.
-- Stage-Aktivierung: Song-Tests laufen für Testfälle mit `song.extract-0.json`; Sheet-Tests für Testfälle mit mindestens einer `sheet.extract-<nr>.json`.
+- Stage-Aktivierung: Song-Tests laufen für Testfälle mit `song.legacy-raw.json`; Sheet-Tests für Testfälle mit mindestens einer `sheet.extract-<nr>.json`; SVG-Tests für Testfälle mit mindestens einer `output.extract-<nr>.svg`.
 - Config: inline im ABC via `%%%%zupfnoter.config`; fehlt der Block, gelten `initConf()`-Defaults.
 - Keine separate `input.config.json`: Fixture-Tests verwenden genau dieselbe Config-Quelle wie die Pipeline.
 - Legacy-ABC-Direktiven wie `%%%%hnc`, `%%%%hna` oder `%%%%hn.legend` sind davon getrennt und müssen bei Bedarf explizit in die TS-Config-Extraktion überführt werden.
@@ -68,22 +70,25 @@ fixtures/
 
 Die Vergleichstests werden generisch aus `fixtures/cases/*/input.abc` erzeugt.
 Sie enthalten keine fallweise handgeschriebenen Assertions. Stattdessen entscheidet
-der Fixture-Bestand, welche Song- und Sheet-Vergleiche ausgeführt werden.
+der Fixture-Bestand, welche Song-, Sheet- und SVG-Vergleiche ausgeführt werden.
 
 ```mermaid
 flowchart TD
-  A[scanFixtureCases] --> B{song.extract-0.json vorhanden?}
+  A[scanFixtureCases] --> B{song.legacy-raw.json vorhanden?}
   A --> C{sheet.extract-N.json vorhanden?}
-  B -->|ja| D[Song-Vergleichstest anlegen]
-  C -->|ja| E[Sheet-Vergleichstest anlegen]
-  D --> F[loadFixture]
-  E --> F
-  F --> G[Config aus input.abc aufbauen]
-  G --> H[TS-Pipeline ausführen]
-  H --> I[semanticMatch gegen Legacy-Fixture]
-  I --> J{Vergleich ok?}
-  J -->|ja| K[Test grün]
-  J -->|nein| L[Mismatch + offene Gaps ausgeben]
+  A --> D{output.extract-N.svg vorhanden?}
+  B -->|ja| E[Song-Vergleichstest anlegen]
+  C -->|ja| F[Sheet-Vergleichstest anlegen]
+  D -->|ja| G[SVG-Vergleichstest anlegen]
+  E --> H[loadFixture]
+  F --> H
+  G --> H
+  H --> I[Config aus input.abc aufbauen]
+  I --> J[TS-Pipeline ausführen]
+  J --> K[semanticMatch oder SVG-Analyse gegen Legacy-Fixture]
+  K --> L{Vergleich ok?}
+  L -->|ja| M[Test grün]
+  L -->|nein| N[Mismatch + offene Gaps ausgeben]
 ```
 
 ### 2. Ablauf Song-Vergleich
@@ -104,7 +109,7 @@ sequenceDiagram
   Parser-->>Vitest: AbcModel
   Vitest->>Song: transform(model, config)
   Song-->>Vitest: Song
-  Vitest->>Match: matchSong(actual, song.extract-0.json)
+  Vitest->>Match: matchSong(actual, song.legacy-raw.json)
   Match-->>Vitest: passed + mismatches
   Vitest->>Gaps: getOpenImplementations('song')
   Gaps-->>Vitest: bekannte Song-Gaps
@@ -143,20 +148,54 @@ sequenceDiagram
   end
 ```
 
-### 4. Verantwortung der Bausteine
+### 4. Ablauf SVG-Vergleich
+
+Für SVG-Fixtures ist `output.extract-<nr>.svg` die explizite Legacy-Referenz pro Extrakt.
+
+```mermaid
+sequenceDiagram
+  participant Vitest
+  participant Loader as fixtureLoader
+  participant Parser as AbcParser
+  participant Song as AbcToSong
+  participant Layout as HarpnotesLayout
+  participant Svg as SvgEngine
+  participant Match as svgComparison
+
+  Vitest->>Loader: loadFixture(testCase)
+  Loader-->>Vitest: Fixture + outputExtracts
+  Vitest->>Loader: getOutputSvgFixtureTargets(fixture)
+  Loader-->>Vitest: [(extractNr, expectedSvg), ...]
+  loop pro Extract
+    Vitest->>Parser: parse(abc)
+    Parser-->>Vitest: AbcModel
+    Vitest->>Song: transform(model, config)
+    Song-->>Vitest: Song
+    Vitest->>Layout: layout(song, extractNr, 'A4')
+    Layout-->>Vitest: Sheet
+    Vitest->>Svg: draw(sheet)
+    Svg-->>Vitest: SVG
+    Vitest->>Match: struktureller SVG-Vergleich
+    Match-->>Vitest: passed + Tag-Diffs
+  end
+```
+
+### 5. Verantwortung der Bausteine
 
 ```mermaid
 flowchart LR
   A[fixtureLoader] -->|liest| B[input.abc]
-  A -->|lädt| C[song.extract-0.json]
+  A -->|lädt| C[song.legacy-raw.json]
   A -->|lädt| D[sheet.extract-N.json]
-  A -->|baut| E[effektive Config]
-  F[legacy_comparison.spec.ts] -->|steuert| A
-  F -->|ruft| G[AbcParser]
-  F -->|ruft| H[AbcToSong]
-  F -->|ruft| I[HarpnotesLayout]
-  F -->|vergleicht über| J[semanticMatch]
-  F -->|ergänzt Hinweise aus| K[fixtures/openImplementations.ts]
+  A -->|lädt| E[output.extract-N.svg]
+  A -->|baut| F[effektive Config]
+  G[legacy_comparison.spec.ts] -->|steuert| A
+  G -->|ruft| H[AbcParser]
+  G -->|ruft| I[AbcToSong]
+  G -->|ruft| J[HarpnotesLayout]
+  G -->|ruft| K[SvgEngine]
+  G -->|vergleicht über| L[semanticMatch / SVG-Diff]
+  G -->|ergänzt Hinweise aus| M[fixtures/openImplementations.ts]
 ```
 
 ---
@@ -164,9 +203,9 @@ flowchart LR
 ## Fixture-Extraktion aus Legacy-System
 
 Der Legacy-CLI besitzt einen expliziten Exportmodus. Er liest ABC-Dateien, führt die
-produktive Legacy-Pipeline aus und schreibt pro Testfall `input.abc`, `song.extract-0.json` und
-für das Sheet `sheet.extract-<nr>.json` in
-`fixtures/cases/<test-case>/`.
+produktive Legacy-Pipeline aus und schreibt pro Testfall `input.abc`,
+`song.legacy-raw.json`, `sheet.extract-<nr>.json` und
+`output.extract-<nr>.svg` in `fixtures/cases/<test-case>/`.
 
 ```bash
 npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
@@ -202,6 +241,18 @@ git commit -m "docs(fixtures): export legacy references for Phase 2-4 tests"
 pnpm test
 ```
 
+`pnpm test` ist der normale Entwicklungsmodus. Der Lauf berechnet die TS-Ausgabe
+frisch, führt die Vergleichstests aus und schreibt zusätzlich TS-Dumps nach
+`fixtures/cases/<name>/_ts_output/`.
+
+Für gezielte Dump-Läufe gibt es zusätzlich:
+
+```bash
+pnpm test:dump:song
+pnpm test:dump:sheet
+pnpm test:dump:svg
+```
+
 ### 2. Nur den Gap-Report erzeugen
 
 ```bash
@@ -211,9 +262,18 @@ pnpm test:gaps
 Wichtig:
 
 - `pnpm test:gaps` liest **nicht** die Ergebnisse eines vorherigen `test:unit`-Laufs.
+- `pnpm test:gaps` liest **nicht** die Ergebnisse eines vorherigen `pnpm test`-Laufs.
 - Stattdessen führt es einen **eigenen** Report-Testlauf aus, der die aktuellen Fixture-Vergleiche selbst neu berechnet.
 - Wenn man nur wissen will, **welche Fixture-Vergleichsfälle aktuell noch fehlschlagen**, reicht `pnpm test:gaps` in der Regel aus.
-- Wenn man den **vollen normalen Fehlkontext** der eigentlichen Vergleichstests sehen will, braucht man `pnpm test:unit` oder die direkten `legacy_comparison.spec.ts`-Läufe.
+- Wenn man den **vollen normalen Fehlkontext** der eigentlichen Vergleichstests sehen will, braucht man `pnpm test` oder die direkten `legacy_comparison.spec.ts`-Läufe.
+
+### 3. Voller Lauf inklusive Reports
+
+```bash
+pnpm test:full
+```
+
+`pnpm test:full` führt zuerst `pnpm test` und danach `pnpm test:gaps` aus.
 
 Der Report enthält pro Stage jetzt konkrete Einträge mit `id`, `fixtures` und `prompt`:
 
@@ -386,7 +446,7 @@ Ebenfalls manuell:
 
 Empfohlener Ablauf:
 
-1. `pnpm test:unit` ausführen
+1. `pnpm test` ausführen
 2. `pnpm test:gaps` ausführen
 3. vergleichen:
    - Gibt es fehlschlagende Tests ohne passenden Gap-Eintrag?
@@ -398,7 +458,7 @@ Die Datei ist aktuell genau dann in gutem Zustand, wenn sie die **bekannten syst
 
 Ein praktikabler Ablauf ist:
 
-1. `pnpm test:unit`
+1. `pnpm test`
 2. `pnpm test:gaps`
 3. eine Gap-ID auswählen, z. B. `sheet.barnumbers-config`
 4. die referenzierten Stellen im Code öffnen
@@ -422,8 +482,9 @@ Deshalb gilt:
 1. **Keine parallelen `*.corrected.json`-Referenzen einführen.**
 2. Den Exporter im Legacy-System prüfen und korrigieren.
 3. Das betroffene Fixture **neu exportieren** und die bestehende Referenzdatei ersetzen:
-   - `song.extract-0.json`
+   - `song.legacy-raw.json`
    - `sheet.extract-<nr>.json`
+   - `output.extract-<nr>.svg`
 4. Die generischen Vergleichstests bleiben unverändert.
 
 Begründung:
@@ -455,5 +516,5 @@ pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy
 
 - [x] Phase 2: Song-Fixtures bootstrap + Tests aktivieren
 - [x] Phase 3: Sheet-Fixtures bootstrap + Tests aktivieren  
-- [ ] Phase 4: SVG-Fixtures + Snapshot-Tests
+- [ ] Phase 4: SVG-Parität gegenüber `output.extract-<nr>.svg` schließen
 - [ ] Phase 4: PDF-Fixtures (nur "valides PDF", kein Byte-Vergleich) 

@@ -53,7 +53,8 @@ describe('fixtureLoader', () => {
     expect(fixture.song).not.toBeNull()
     expect(Object.keys(fixture.sheetExtracts)).toContain('0')
     expect(fixture.sheetExtracts['0']?.children.length).toBeGreaterThan(0)
-    expect(fixture.outputSvgExtracts).toEqual({})
+    expect(Object.keys(fixture.outputSvgExtracts)).toContain('0')
+    expect(fixture.outputSvgExtracts['0']).toContain('<svg')
   })
 
   it('uses extract-specific sheet fixtures when present', () => {
@@ -67,7 +68,7 @@ describe('fixtureLoader', () => {
 
   it('uses extract-specific svg fixtures when present and falls back to extract 0 legacy naming', () => {
     const singleNoteFixture = loadFixture('single_note')
-    expect(getOutputSvgFixtureTargets(singleNoteFixture)).toEqual([])
+    expect(getOutputSvgFixtureTargets(singleNoteFixture).map((target) => target.extractNr)).toEqual([0])
 
     const fixtureWithLegacySvgName = {
       ...singleNoteFixture,
@@ -156,6 +157,6 @@ describe('fixtureLoader', () => {
     expect(cases.map((testCase) => testCase.id)).toContain('Twostaff')
     expect(cases.find((testCase) => testCase.id === 'single_note')?.hasSongFixture).toBe(true)
     expect(cases.find((testCase) => testCase.id === 'single_note')?.hasSheetFixture).toBe(true)
-    expect(cases.find((testCase) => testCase.id === 'single_note')?.hasOutputSvgFixture).toBe(false)
+    expect(cases.find((testCase) => testCase.id === 'single_note')?.hasOutputSvgFixture).toBe(true)
   })
 })
