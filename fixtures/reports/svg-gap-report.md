@@ -14,24 +14,26 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 
 ### ❌ 3015_reference_sheet [extract 0]
 
-- Total opening tags: legacy 887, ts 1041 (Δ 154)
+- Total opening tags: legacy 887, ts 900 (Δ 13)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 37613
-- Diff ratio: 1.221%
+- Differing pixels: 78760
+- Diff ratio: 2.557%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/3015_reference_sheet/diff.png
 
-- Group count: legacy 221, ts 326
-- id count: legacy 594, ts 455
-- class count: legacy 78, ts 837
-- data-* count: legacy 2, ts 653
-- explicit fill count: legacy 164, ts 379
-- explicit stroke count: legacy 153, ts 379
+- Group count: legacy 221, ts 280
+- id count: legacy 594, ts 386
+- class count: legacy 78, ts 722
+- data-* count: legacy 2, ts 561
+- explicit fill count: legacy 164, ts 333
+- explicit stroke count: legacy 153, ts 333
 
   Tag count deltas:
-  - g: 221 -> 326 (+105)
-  - ellipse: 67 -> 142 (+75)
-  - rect: 173 -> 154 (-19)
+  - g: 221 -> 280 (+59)
+  - ellipse: 67 -> 119 (+52)
+  - rect: 173 -> 131 (-42)
+  - tspan: 204 -> 178 (-26)
+  - text: 131 -> 108 (-23)
   - path: 90 -> 83 (-7)
 
   First positional mismatches:
@@ -60,34 +62,36 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     legacy: <path d="M301.8,34.5L232.8,34.5" id="ZN_4" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
     ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M278.8,20L232.8,20" fill="none" stroke="black" stroke-dasharray="1.056 1.056" stroke-linecap="butt" stroke-width="0.1" />
 
-- Anchors: legacy 594, ts 455
+- Anchors: legacy 594, ts 386
 - data-conf-key: legacy 0, ts 1
 - data-zn-id: legacy 0, ts 193
-- Hitboxes: legacy 76, ts 131
+- Hitboxes: legacy 76, ts 108
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
 
 ### ❌ 246_Horch-was-kommt-von-draussen-rein [extract 0]
 
-- Total opening tags: legacy 2700, ts 3549 (Δ 849)
+- Total opening tags: legacy 2700, ts 3543 (Δ 843)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 33760
-- Diff ratio: 1.096%
+- Differing pixels: 33943
+- Diff ratio: 1.102%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/246_Horch-was-kommt-von-draussen-rein/diff.png
 
-- Group count: legacy 743, ts 1284
-- id count: legacy 2091, ts 1859
-- class count: legacy 261, ts 3197
-- data-* count: legacy 4, ts 2569
-- explicit fill count: legacy 604, ts 1335
-- explicit stroke count: legacy 597, ts 1335
+- Group count: legacy 743, ts 1282
+- id count: legacy 2091, ts 1856
+- class count: legacy 261, ts 3192
+- data-* count: legacy 4, ts 2565
+- explicit fill count: legacy 604, ts 1333
+- explicit stroke count: legacy 597, ts 1333
 
   Tag count deltas:
-  - g: 743 -> 1284 (+541)
-  - ellipse: 230 -> 576 (+346)
-  - rect: 631 -> 605 (-26)
+  - g: 743 -> 1282 (+539)
+  - ellipse: 230 -> 575 (+345)
+  - rect: 631 -> 604 (-27)
   - path: 394 -> 382 (-12)
+  - text: 349 -> 348 (-1)
+  - tspan: 352 -> 351 (-1)
 
   First positional mismatches:
   - index 0
@@ -115,10 +119,10 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     legacy: <path d="M415.05,19.262L405.3,20.431" id="ZN_4" stroke-width="0.2" />
     ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M415.2,16.826L415.05,19.262" fill="none" stroke="black" stroke-linecap="butt" stroke-width="0.2" />
 
-- Anchors: legacy 2091, ts 1859
+- Anchors: legacy 2091, ts 1856
 - data-conf-key: legacy 0, ts 0
 - data-zn-id: legacy 0, ts 923
-- Hitboxes: legacy 257, ts 577
+- Hitboxes: legacy 257, ts 576
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
 

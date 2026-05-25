@@ -6,7 +6,7 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
 ## Summary
 
 - Cases with reports: 13
-- Required gaps: 3555
+- Required gaps: 3302
 - Warnings: 0
 
 ## Gap Type Overview
@@ -14,102 +14,101 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
 | Gap category | Count |
 | --- | ---: |
 | different-array-order | 30 |
-| different-length | 1 |
-| different-value | 734 |
-| extra-event | 89 |
+| different-length | 2 |
+| different-value | 505 |
+| extra-event | 75 |
 | extra-field | 2601 |
 | ignored-by-contract | 730 |
 | missing-event | 89 |
-| missing-field | 11 |
 
 ## Case Reports
 
 - [246_Horch-was-kommt-von-draussen-rein](fixtures/cases/246_Horch-was-kommt-von-draussen-rein/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 1923
+  - Required gaps: 1692
   - Warnings: 0
   - Matched events: 347
   - Unmatched legacy events: 25
-  - Unmatched TS events: 25
+  - Unmatched TS events: 13
 
 - [3015_reference_sheet](fixtures/cases/3015_reference_sheet/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 527
+  - Required gaps: 526
   - Warnings: 0
   - Matched events: 74
   - Unmatched legacy events: 59
-  - Unmatched TS events: 59
+  - Unmatched TS events: 57
 
 - [783_einsiedler-kreuzweg](fixtures/cases/783_einsiedler-kreuzweg/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 492
+  - Required gaps: 491
   - Warnings: 0
   - Matched events: 132
   - Unmatched legacy events: 0
   - Unmatched TS events: 0
 
 - [abc-to-song-slur-tuplet-parity](fixtures/cases/abc-to-song-slur-tuplet-parity/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 45
-  - Warnings: 0
-  - Matched events: 10
-  - Unmatched legacy events: 0
-  - Unmatched TS events: 0
-
-- [decoration](fixtures/cases/decoration/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 33
-  - Warnings: 0
-  - Matched events: 8
-  - Unmatched legacy events: 0
-  - Unmatched TS events: 0
-
-- [lyrics](fixtures/cases/lyrics/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 37
-  - Warnings: 0
-  - Matched events: 8
-  - Unmatched legacy events: 0
-  - Unmatched TS events: 0
-
-- [pause](fixtures/cases/pause/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 53
-  - Warnings: 0
-  - Matched events: 12
-  - Unmatched legacy events: 0
-  - Unmatched TS events: 0
-
-- [repeat](fixtures/cases/repeat/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 35
-  - Warnings: 0
-  - Matched events: 8
-  - Unmatched legacy events: 2
-  - Unmatched TS events: 2
-
-- [single_note](fixtures/cases/single_note/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 11
-  - Warnings: 0
-  - Matched events: 2
-  - Unmatched legacy events: 0
-  - Unmatched TS events: 0
-
-- [tie](fixtures/cases/tie/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 33
-  - Warnings: 0
-  - Matched events: 8
-  - Unmatched legacy events: 0
-  - Unmatched TS events: 0
-
-- [tuplet](fixtures/cases/tuplet/_parity/song/reports/song-gap-report.md)
   - Required gaps: 43
   - Warnings: 0
   - Matched events: 10
   - Unmatched legacy events: 0
   - Unmatched TS events: 0
 
+- [decoration](fixtures/cases/decoration/_parity/song/reports/song-gap-report.md)
+  - Required gaps: 31
+  - Warnings: 0
+  - Matched events: 8
+  - Unmatched legacy events: 0
+  - Unmatched TS events: 0
+
+- [lyrics](fixtures/cases/lyrics/_parity/song/reports/song-gap-report.md)
+  - Required gaps: 35
+  - Warnings: 0
+  - Matched events: 8
+  - Unmatched legacy events: 0
+  - Unmatched TS events: 0
+
+- [pause](fixtures/cases/pause/_parity/song/reports/song-gap-report.md)
+  - Required gaps: 51
+  - Warnings: 0
+  - Matched events: 12
+  - Unmatched legacy events: 0
+  - Unmatched TS events: 0
+
+- [repeat](fixtures/cases/repeat/_parity/song/reports/song-gap-report.md)
+  - Required gaps: 33
+  - Warnings: 0
+  - Matched events: 8
+  - Unmatched legacy events: 2
+  - Unmatched TS events: 2
+
+- [single_note](fixtures/cases/single_note/_parity/song/reports/song-gap-report.md)
+  - Required gaps: 9
+  - Warnings: 0
+  - Matched events: 2
+  - Unmatched legacy events: 0
+  - Unmatched TS events: 0
+
+- [tie](fixtures/cases/tie/_parity/song/reports/song-gap-report.md)
+  - Required gaps: 31
+  - Warnings: 0
+  - Matched events: 8
+  - Unmatched legacy events: 0
+  - Unmatched TS events: 0
+
+- [tuplet](fixtures/cases/tuplet/_parity/song/reports/song-gap-report.md)
+  - Required gaps: 41
+  - Warnings: 0
+  - Matched events: 10
+  - Unmatched legacy events: 0
+  - Unmatched TS events: 0
+
 - [two_voices](fixtures/cases/two_voices/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 48
+  - Required gaps: 46
   - Warnings: 0
   - Matched events: 12
   - Unmatched legacy events: 0
   - Unmatched TS events: 0
 
 - [Twostaff](fixtures/cases/Twostaff/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 275
+  - Required gaps: 273
   - Warnings: 0
   - Matched events: 56
   - Unmatched legacy events: 3

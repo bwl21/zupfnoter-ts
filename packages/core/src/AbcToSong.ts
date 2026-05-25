@@ -161,7 +161,7 @@ export class AbcToSong {
     if (this._diagnostics.length > 0) {
       metaData.diagnostics = this._diagnostics
     }
-    const harpnoteOptions = this._extractHarpnoteOptions(model)
+    const harpnoteOptions = this._extractHarpnoteOptions(model, config)
 
     return { voices, beatMaps, metaData, harpnoteOptions }
   }
@@ -924,8 +924,16 @@ export class AbcToSong {
       const text = extra.text ?? ''
       if (!text) continue
 
-      // Chord symbol: abc2svg type 'g' (gchordfont), all others are annotations
-      if (extra.type === 'g') {
+      // Legacy does not materialize plain `g` extras as Song entities here.
+      if (extra.type === 'g') continue
+      const trimmedText = text.trim()
+      if (extra.type === '^' && (trimmedText.startsWith('|') || trimmedText.startsWith(':|'))) {
+        continue
+      }
+
+      // Legacy extracts chord symbols from `^` extras on playable notes.
+      // Rests keep their `^` extras as note-bound annotations.
+      if (extra.type === '^' && companion.type !== 'Pause') {
         const chord: Chordsymbol = {
           type: 'Chordsymbol' as const,
           beat: this._timeToBeat(sym.time),
@@ -1043,7 +1051,7 @@ export class AbcToSong {
     }
   }
 
-  private _extractHarpnoteOptions(model: AbcModel): Record<string, unknown> {
+  private _extractHarpnoteOptions(model: AbcModel, config: ZupfnoterConfig): Record<string, unknown> {
     const info = model.info
     const lyrics = info['W']
       ? {
@@ -1051,21 +1059,31 @@ export class AbcToSong {
           .split('\n')
           .map((line) => line.trimEnd()),
       }
-      : undefined
+      : {
+        text: null,
+      }
     const template = {
       filebase: '-no-template-',
       title: '- no template -',
     }
-    const print = [
-      {
-        title: 'alle Stimmen',
-        view_id: 0,
-        filenamepart: 'doc',
-      },
-    ]
+    const print = (config.produce ?? [])
+      .map((extractNr) => {
+        const extract = config.extract[String(extractNr)]
+        const title = extract?.title
+        if (!title) {
+          return null
+        }
+        const filenamepart = (extract.filenamepart ?? title).trim().replace(/[^a-zA-Z0-9\-_]/g, '_')
+        return {
+          title,
+          view_id: extractNr,
+          filenamepart,
+        }
+      })
+      .filter((entry): entry is { title: string; view_id: number; filenamepart: string } => entry !== null)
 
     return {
-      ...(lyrics ? { lyrics } : {}),
+      lyrics,
       template,
       print,
     }

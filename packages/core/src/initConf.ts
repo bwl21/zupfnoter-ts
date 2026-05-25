@@ -43,6 +43,7 @@ function cutStringNames(strings: string[]): string {
  */
 export function initConf(conf: Confstack): ZupfnoterConfig {
   return {
+    produce: [0],
     restposition: {
       default: 'center',
       repeatstart: 'next',

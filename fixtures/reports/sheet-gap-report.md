@@ -9,7 +9,7 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 - Open implementations: 0
 - Known-covered failures: 0
-- New unclassified failures: 0
+- New unclassified failures: 2
 
 ## Open Gaps
 
@@ -17,5 +17,21 @@ No open gaps.
 
 ## New Unclassified Failures
 
-None.
+- [ ] sheet.246-horch-was-kommt-von-draussen-rein [extract 0]
+  - Fixture: 246_Horch-was-kommt-von-draussen-rein
+  - Extract: 0
+  - Prompt: Investigate the sheet legacy comparison failure for fixture 246_Horch-was-kommt-von-draussen-rein extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t "246_Horch-was-kommt-von-draussen-rein [extract 0]" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      children.length:
+        expected: 1290
+        actual:   1288
+
+- [ ] sheet.3015-reference-sheet [extract 0]
+  - Fixture: 3015_reference_sheet
+  - Extract: 0
+  - Prompt: Investigate the sheet legacy comparison failure for fixture 3015_reference_sheet extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t "3015_reference_sheet [extract 0]" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
+  - Mismatch Summary:
+      children.length:
+        expected: 329
+        actual:   283
 

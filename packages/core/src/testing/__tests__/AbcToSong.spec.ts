@@ -121,6 +121,9 @@ C
 `)
 
     expect(song.harpnoteOptions).toMatchObject({
+      lyrics: {
+        text: null,
+      },
       template: {
         filebase: '-no-template-',
         title: '- no template -',
@@ -129,7 +132,7 @@ C
         {
           title: 'alle Stimmen',
           view_id: 0,
-          filenamepart: 'doc',
+          filenamepart: 'alle_Stimmen',
         },
       ],
     })

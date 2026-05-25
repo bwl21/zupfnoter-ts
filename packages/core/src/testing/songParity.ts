@@ -1077,6 +1077,23 @@ function normalizeTsEvent(
     }
   }
 
+  if (
+    kind === 'Chordsymbol' &&
+    typeof event.abcExcerpt === 'string' &&
+    (event.abcExcerpt.startsWith('|') || event.abcExcerpt.startsWith(':|'))
+  ) {
+    return null
+  }
+
+  if (kind === 'Goto') {
+    const policyConfKey = event.gotoInfo?.policy && isRecord(event.gotoInfo.policy)
+      ? readString((event.gotoInfo.policy as Record<string, unknown>).confKey)
+      : undefined
+    if (typeof policyConfKey === 'string' && policyConfKey.endsWith('.p_begin')) {
+      return null
+    }
+  }
+
   const leftovers = Object.fromEntries(
     Object.entries(entity).filter(([key]) => !TS_EVENT_KNOWN_KEYS.has(key)),
   )
@@ -1166,8 +1183,18 @@ function normalizeTsVoice(
     return normalized
   }
 
+  let globalIndex = 0
   for (let index = 0; index < entities.length; index++) {
-    const event = normalizeTsEvent(entities[index], voiceIndex, index, index, source, context, `voices[${voiceIndex}].events[${index}]`)
+    const event = normalizeTsEvent(
+      entities[index],
+      voiceIndex,
+      normalized.events.length,
+      globalIndex,
+      source,
+      context,
+      `voices[${voiceIndex}].events[${normalized.events.length}]`,
+    )
+    globalIndex++
     if (event === null) continue
     normalized.events.push(event)
   }
