@@ -151,6 +151,8 @@ export interface AbcModel {
   voices: AbcVoice[]
   /** Zero-based character offsets for each line start in the original ABC source. */
   sourceLineStarts: number[]
+  /** Original ABC source text as parsed by abc2svg. */
+  source: string
   /**
    * Maps numeric type values to human-readable names.
    * Index matches ABC_TYPE constants.

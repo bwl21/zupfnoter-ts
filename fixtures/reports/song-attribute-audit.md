@@ -6,7 +6,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 246_Horch-was-kommt-von-draussen-rein
 
-- Issues: 107
+- Issues: 59
 - voices[0].entities[17].endPos[1] (mismatch)
   - expected: 71
   - actual: 72
@@ -31,98 +31,47 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[90].endPos[1] (mismatch)
   - expected: 79
   - actual: 78
-- voices[0].entities[91].confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.29184.p_repeat"
-  - actual: undefined
-- voices[0].entities[91].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.29184.p_repeat"
-  - actual: undefined
-- voices[0].entities[91].policy.distance (missing)
-  - expected: -6
-  - actual: undefined
-- voices[0].entities[91].policy.isRepeat (missing)
-  - expected: true
-  - actual: undefined
-- voices[0].entities[91].policy.level (missing)
-  - expected: 3
-  - actual: undefined
 - voices[0].entities[112].tupletStart (mismatch)
   - expected: false
   - actual: null
 - voices[0].entities[113].tupletStart (mismatch)
   - expected: false
   - actual: null
-- voices[0].entities[119].confKey (missing)
-  - expected: "notebound.chord.v_1.192.0"
-  - actual: undefined
 - voices[0].entities[119].text (missing)
   - expected: "Cb"
   - actual: undefined
 - voices[0].entities[119].position[1] (mismatch)
   - expected: 0
   - actual: -5
-- voices[0].entities[120].confKey (missing)
-  - expected: "notebound.chord.v_1.15936.0"
-  - actual: undefined
 - voices[0].entities[120].text (missing)
   - expected: "Cb"
   - actual: undefined
 - voices[0].entities[120].position[1] (mismatch)
   - expected: 0
   - actual: -5
-- voices[0].entities[121].confKey (missing)
-  - expected: "notebound.chord.v_1.37440.0"
-  - actual: undefined
 - voices[0].entities[121].text (missing)
   - expected: "Cb"
   - actual: undefined
 - voices[0].entities[121].position[1] (mismatch)
   - expected: 0
   - actual: -5
-- voices[0].entities[122].confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.26880.0.p_begin"
-  - actual: undefined
-- voices[0].entities[122].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.26880.0.p_begin"
-  - actual: undefined
-- voices[0].entities[122].policy.distance (missing)
-  - expected: 3
-  - actual: undefined
-- voices[0].entities[122].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[0].entities[122].policy.toAnchor (missing)
-  - expected: "before"
-  - actual: undefined
-- voices[0].entities[123].confKey (missing)
+- voices[0].entities[123].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.1.p_begin"
-  - actual: undefined
-- voices[0].entities[123].policy.confKey (missing)
+  - actual: "notebound.c_jumplines.v_1.26880.0.p_begin"
+- voices[0].entities[123].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.1.p_begin"
-  - actual: undefined
+  - actual: "notebound.c_jumplines.v_1.26880.0.p_begin"
 - voices[0].entities[123].policy.distance (missing)
   - expected: 3
   - actual: undefined
-- voices[0].entities[123].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[0].entities[123].policy.toAnchor (missing)
-  - expected: "before"
-  - actual: undefined
-- voices[0].entities[124].confKey (missing)
+- voices[0].entities[124].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.p_follow"
-  - actual: undefined
-- voices[0].entities[124].policy.confKey (missing)
+  - actual: "notebound.c_jumplines.v_1.33408.p_follow"
+- voices[0].entities[124].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.p_follow"
-  - actual: undefined
+  - actual: "notebound.c_jumplines.v_1.33408.p_follow"
 - voices[0].entities[124].policy.distance (missing)
   - expected: -1
-  - actual: undefined
-- voices[0].entities[124].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[0].entities[124].policy.toAnchor (missing)
-  - expected: "before"
   - actual: undefined
 - voices[1].entities[17].endPos[1] (mismatch)
   - expected: 71
@@ -148,98 +97,47 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[90].endPos[1] (mismatch)
   - expected: 79
   - actual: 78
-- voices[1].entities[91].confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.29184.p_repeat"
-  - actual: undefined
-- voices[1].entities[91].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.29184.p_repeat"
-  - actual: undefined
-- voices[1].entities[91].policy.distance (missing)
-  - expected: -6
-  - actual: undefined
-- voices[1].entities[91].policy.isRepeat (missing)
-  - expected: true
-  - actual: undefined
-- voices[1].entities[91].policy.level (missing)
-  - expected: 3
-  - actual: undefined
 - voices[1].entities[112].tupletStart (mismatch)
   - expected: false
   - actual: null
 - voices[1].entities[113].tupletStart (mismatch)
   - expected: false
   - actual: null
-- voices[1].entities[119].confKey (missing)
-  - expected: "notebound.chord.v_1.192.0"
-  - actual: undefined
 - voices[1].entities[119].text (missing)
   - expected: "Cb"
   - actual: undefined
 - voices[1].entities[119].position[1] (mismatch)
   - expected: 0
   - actual: -5
-- voices[1].entities[120].confKey (missing)
-  - expected: "notebound.chord.v_1.15936.0"
-  - actual: undefined
 - voices[1].entities[120].text (missing)
   - expected: "Cb"
   - actual: undefined
 - voices[1].entities[120].position[1] (mismatch)
   - expected: 0
   - actual: -5
-- voices[1].entities[121].confKey (missing)
-  - expected: "notebound.chord.v_1.37440.0"
-  - actual: undefined
 - voices[1].entities[121].text (missing)
   - expected: "Cb"
   - actual: undefined
 - voices[1].entities[121].position[1] (mismatch)
   - expected: 0
   - actual: -5
-- voices[1].entities[122].confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.26880.0.p_begin"
-  - actual: undefined
-- voices[1].entities[122].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.26880.0.p_begin"
-  - actual: undefined
-- voices[1].entities[122].policy.distance (missing)
-  - expected: 3
-  - actual: undefined
-- voices[1].entities[122].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[1].entities[122].policy.toAnchor (missing)
-  - expected: "before"
-  - actual: undefined
-- voices[1].entities[123].confKey (missing)
+- voices[1].entities[123].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.1.p_begin"
-  - actual: undefined
-- voices[1].entities[123].policy.confKey (missing)
+  - actual: "notebound.c_jumplines.v_1.26880.0.p_begin"
+- voices[1].entities[123].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.1.p_begin"
-  - actual: undefined
+  - actual: "notebound.c_jumplines.v_1.26880.0.p_begin"
 - voices[1].entities[123].policy.distance (missing)
   - expected: 3
   - actual: undefined
-- voices[1].entities[123].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[1].entities[123].policy.toAnchor (missing)
-  - expected: "before"
-  - actual: undefined
-- voices[1].entities[124].confKey (missing)
+- voices[1].entities[124].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.p_follow"
-  - actual: undefined
-- voices[1].entities[124].policy.confKey (missing)
+  - actual: "notebound.c_jumplines.v_1.33408.p_follow"
+- voices[1].entities[124].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.p_follow"
-  - actual: undefined
+  - actual: "notebound.c_jumplines.v_1.33408.p_follow"
 - voices[1].entities[124].policy.distance (missing)
   - expected: -1
-  - actual: undefined
-- voices[1].entities[124].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[1].entities[124].policy.toAnchor (missing)
-  - expected: "before"
   - actual: undefined
 - voices[2].entities[22].endPos[1] (mismatch)
   - expected: 13
@@ -262,106 +160,40 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[2].entities[68].endPos[1] (mismatch)
   - expected: 69
   - actual: 70
-- voices[2].entities[96].confKey (missing)
-  - expected: "notebound.c_jumplines.v_2.30336.p_repeat"
-  - actual: undefined
-- voices[2].entities[96].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_2.30336.p_repeat"
-  - actual: undefined
-- voices[2].entities[96].policy.distance (missing)
-  - expected: 5
-  - actual: undefined
-- voices[2].entities[96].policy.isRepeat (missing)
-  - expected: true
-  - actual: undefined
-- voices[2].entities[96].policy.level (missing)
-  - expected: 3
-  - actual: undefined
 - voices[2].entities[111].tupletStart (mismatch)
   - expected: false
   - actual: null
 - voices[2].entities[112].tupletStart (mismatch)
   - expected: false
   - actual: null
-- voices[2].entities[119].confKey (missing)
-  - expected: "notebound.c_jumplines.v_2.27264.0.p_begin"
-  - actual: undefined
-- voices[2].entities[119].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_2.27264.0.p_begin"
-  - actual: undefined
-- voices[2].entities[119].policy.distance (missing)
-  - expected: -3
-  - actual: undefined
-- voices[2].entities[119].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[2].entities[119].policy.toAnchor (missing)
-  - expected: "before"
-  - actual: undefined
-- voices[2].entities[120].confKey (missing)
+- voices[2].entities[120].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_2.27264.1.p_begin"
-  - actual: undefined
-- voices[2].entities[120].policy.confKey (missing)
+  - actual: "notebound.c_jumplines.v_2.27264.0.p_begin"
+- voices[2].entities[120].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_2.27264.1.p_begin"
-  - actual: undefined
+  - actual: "notebound.c_jumplines.v_2.27264.0.p_begin"
 - voices[2].entities[120].policy.distance (missing)
   - expected: -3
   - actual: undefined
-- voices[2].entities[120].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[2].entities[120].policy.toAnchor (missing)
-  - expected: "before"
-  - actual: undefined
-- voices[2].entities[121].confKey (missing)
+- voices[2].entities[121].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_2.27264.p_follow"
-  - actual: undefined
-- voices[2].entities[121].policy.confKey (missing)
+  - actual: "notebound.c_jumplines.v_2.33024.p_follow"
+- voices[2].entities[121].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_2.27264.p_follow"
-  - actual: undefined
+  - actual: "notebound.c_jumplines.v_2.33024.p_follow"
 - voices[2].entities[121].policy.distance (missing)
   - expected: 3
-  - actual: undefined
-- voices[2].entities[121].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[2].entities[121].policy.toAnchor (missing)
-  - expected: "before"
   - actual: undefined
 
 ## 3015_reference_sheet
 
-- Issues: 40
-- voices[0].entities[8].confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.4224.p_repeat"
-  - actual: undefined
-- voices[0].entities[8].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.4224.p_repeat"
-  - actual: undefined
-- voices[0].entities[8].policy.distance (missing)
+- Issues: 15
+- voices[0].entities[8].policy.level (mismatch)
   - expected: 2
-  - actual: undefined
-- voices[0].entities[8].policy.isRepeat (missing)
-  - expected: true
-  - actual: undefined
-- voices[0].entities[8].policy.level (missing)
+  - actual: 3
+- voices[1].entities[8].policy.level (mismatch)
   - expected: 2
-  - actual: undefined
-- voices[1].entities[8].confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.4224.p_repeat"
-  - actual: undefined
-- voices[1].entities[8].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.4224.p_repeat"
-  - actual: undefined
-- voices[1].entities[8].policy.distance (missing)
-  - expected: 2
-  - actual: undefined
-- voices[1].entities[8].policy.isRepeat (missing)
-  - expected: true
-  - actual: undefined
-- voices[1].entities[8].policy.level (missing)
-  - expected: 2
-  - actual: undefined
+  - actual: 3
 - voices[2].entities[3].tupletStart (mismatch)
   - expected: false
   - actual: null
@@ -371,87 +203,36 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[2].entities[8].nextPitch (mismatch)
   - expected: 63
   - actual: 59
-- voices[2].entities[9].confKey (missing)
-  - expected: "notebound.c_jumplines.v_2.4224.p_repeat"
-  - actual: undefined
-- voices[2].entities[9].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_2.4224.p_repeat"
-  - actual: undefined
-- voices[2].entities[9].policy.distance (missing)
+- voices[2].entities[9].policy.level (mismatch)
   - expected: 2
-  - actual: undefined
-- voices[2].entities[9].policy.isRepeat (missing)
-  - expected: true
-  - actual: undefined
-- voices[2].entities[9].policy.level (missing)
-  - expected: 2
-  - actual: undefined
+  - actual: 3
 - voices[2].entities[11].prevPitch (mismatch)
   - expected: 63
   - actual: 59
 - voices[3].entities[14].endPos[1] (mismatch)
   - expected: 171
   - actual: 172
-- voices[3].entities[23].confKey (missing)
-  - expected: "notebound.c_jumplines.v_3.2976.0.p_begin"
-  - actual: undefined
-- voices[3].entities[23].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_3.2976.0.p_begin"
-  - actual: undefined
-- voices[3].entities[23].policy.distance (missing)
-  - expected: -2
-  - actual: undefined
-- voices[3].entities[23].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[3].entities[23].policy.toAnchor (missing)
-  - expected: "before"
-  - actual: undefined
-- voices[3].entities[24].confKey (missing)
+- voices[3].entities[24].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_3.2976.1.p_begin"
-  - actual: undefined
-- voices[3].entities[24].policy.confKey (missing)
+  - actual: "notebound.c_jumplines.v_3.2976.0.p_begin"
+- voices[3].entities[24].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_3.2976.1.p_begin"
-  - actual: undefined
-- voices[3].entities[24].policy.distance (missing)
-  - expected: -2
-  - actual: undefined
-- voices[3].entities[24].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[3].entities[24].policy.toAnchor (missing)
-  - expected: "before"
-  - actual: undefined
-- voices[3].entities[25].confKey (missing)
+  - actual: "notebound.c_jumplines.v_3.2976.0.p_begin"
+- voices[3].entities[25].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_3.2976.p_end"
-  - actual: undefined
-- voices[3].entities[25].policy.confKey (missing)
+  - actual: "notebound.c_jumplines.v_3.4224.p_follow"
+- voices[3].entities[25].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_3.2976.p_end"
-  - actual: undefined
-- voices[3].entities[25].policy.distance (missing)
+  - actual: "notebound.c_jumplines.v_3.4224.p_follow"
+- voices[3].entities[25].policy.distance (mismatch)
   - expected: 2
-  - actual: undefined
-- voices[3].entities[25].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[3].entities[25].policy.toAnchor (missing)
-  - expected: "before"
-  - actual: undefined
-- voices[3].entities[26].confKey (missing)
+  - actual: -2
+- voices[3].entities[26].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_3.2976.p_follow"
-  - actual: undefined
-- voices[3].entities[26].policy.confKey (missing)
+  - actual: "notebound.c_jumplines.v_3.4992.p_follow"
+- voices[3].entities[26].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_3.2976.p_follow"
-  - actual: undefined
-- voices[3].entities[26].policy.distance (missing)
-  - expected: -2
-  - actual: undefined
-- voices[3].entities[26].policy.fromAnchor (missing)
-  - expected: "after"
-  - actual: undefined
-- voices[3].entities[26].policy.toAnchor (missing)
-  - expected: "before"
-  - actual: undefined
+  - actual: "notebound.c_jumplines.v_3.4992.p_follow"
 
 ## 783_einsiedler-kreuzweg
 
@@ -511,37 +292,13 @@ No missing or mismatched attributes.
 
 ## repeat
 
-- Issues: 10
-- voices[0].entities[4].confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.1152.p_repeat"
-  - actual: undefined
-- voices[0].entities[4].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.1152.p_repeat"
-  - actual: undefined
-- voices[0].entities[4].policy.distance (missing)
+- Issues: 2
+- voices[0].entities[4].policy.level (mismatch)
   - expected: 2
-  - actual: undefined
-- voices[0].entities[4].policy.isRepeat (missing)
-  - expected: true
-  - actual: undefined
-- voices[0].entities[4].policy.level (missing)
+  - actual: 3
+- voices[1].entities[4].policy.level (mismatch)
   - expected: 2
-  - actual: undefined
-- voices[1].entities[4].confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.1152.p_repeat"
-  - actual: undefined
-- voices[1].entities[4].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_1.1152.p_repeat"
-  - actual: undefined
-- voices[1].entities[4].policy.distance (missing)
-  - expected: 2
-  - actual: undefined
-- voices[1].entities[4].policy.isRepeat (missing)
-  - expected: true
-  - actual: undefined
-- voices[1].entities[4].policy.level (missing)
-  - expected: 2
-  - actual: undefined
+  - actual: 3
 
 ## single_note
 
@@ -573,7 +330,7 @@ No missing or mismatched attributes.
 
 ## Twostaff
 
-- Issues: 35
+- Issues: 31
 - voices[3].entities[5].nextPitch (mismatch)
   - expected: 55
   - actual: 59
@@ -643,21 +400,9 @@ No missing or mismatched attributes.
 - voices[3].entities[16].prevPitch (mismatch)
   - expected: 62
   - actual: 54
-- voices[4].entities[11].confKey (missing)
-  - expected: "notebound.c_jumplines.v_4.1344.p_repeat"
-  - actual: undefined
-- voices[4].entities[11].policy.confKey (missing)
-  - expected: "notebound.c_jumplines.v_4.1344.p_repeat"
-  - actual: undefined
-- voices[4].entities[11].policy.distance (missing)
-  - expected: 2
-  - actual: undefined
-- voices[4].entities[11].policy.isRepeat (missing)
-  - expected: true
-  - actual: undefined
-- voices[4].entities[11].policy.level (missing)
+- voices[4].entities[11].policy.level (mismatch)
   - expected: 1
-  - actual: undefined
+  - actual: 2
 - voices[4].entities[17].nextPitch (mismatch)
   - expected: 71
   - actual: 64

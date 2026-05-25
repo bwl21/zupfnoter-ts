@@ -69,6 +69,7 @@ interface VoiceState {
   variantSectionNo: 0 | 1 | 2
   pendingVariantEndingText: string | null
   pendingVariantEndingDuration: number | null
+  pendingGotoDistances: number[] | null
   /** Ruby-compatible [r:] remark lookup by voice_element[:time]. */
   remarkTable: Record<number, string>
 }
@@ -98,6 +99,7 @@ function createVoiceState(wmeasure: number, countBy: number | null): VoiceState 
     variantSectionNo: 0,
     pendingVariantEndingText: null,
     pendingVariantEndingDuration: null,
+    pendingGotoDistances: null,
     remarkTable: {},
   }
 }
@@ -111,6 +113,7 @@ export class AbcToSong {
   private _shortestNote = 64
   private _config: ZupfnoterConfig | null = null
   private _sourceLineStarts: number[] = [0]
+  private _source: string | null = null
   private _currentState: VoiceState | null = null
   private _diagnostics: SongDiagnostic[] = []
   private _partTable: Record<number, string> = {}
@@ -128,6 +131,7 @@ export class AbcToSong {
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 192
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 64
     this._sourceLineStarts = model.sourceLineStarts
+    this._source = model.source
 
     const restposition = config.restposition
 
@@ -365,6 +369,7 @@ export class AbcToSong {
     _voiceIndex: number,
     state: VoiceState,
   ): VoiceEntity[] {
+    this._registerPendingGotoDistances(sym, state)
     const notes = sym.notes ?? []
     const duration = this._convertDuration(notes[0]?.dur ?? 384)
     const beat = this._timeToBeat(sym.time)
@@ -502,6 +507,7 @@ export class AbcToSong {
     voiceIndex: number,
     state: VoiceState,
   ): VoiceEntity[] {
+    this._registerPendingGotoDistances(sym, state)
     const duration = this._convertDuration(sym.dur ?? 384)
     const beat = this._timeToBeat(sym.time)
     const measureStart = state.nextMeasure
@@ -573,6 +579,7 @@ export class AbcToSong {
     state: VoiceState,
   ): VoiceEntity[] {
     const result: VoiceEntity[] = []
+    this._registerPendingGotoDistances(sym, state)
 
     if (!(sym.invisible ?? false)) {
       state.nextMeasure = true
@@ -641,23 +648,33 @@ export class AbcToSong {
     if (isRepeatEnd) {
       const repeatStart = state.repetitionStack[state.repetitionStack.length - 1]
       if (repeatStart && previousNote) {
+        const repeatTime = previousNote.time
+        const repeatDistance = this._extractGotoDistancesFromSymbol(sym)?.[0] ?? state.pendingGotoDistances?.[0] ?? 2
+        const repeatLevel = state.repetitionStack.length + 1
         const goto: Goto = {
           type: 'Goto' as const,
-          beat: this._timeToBeat(sym.time),
-          time: sym.time,
-          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
-          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+          beat: this._timeToBeat(repeatTime),
+          time: repeatTime,
+          startPos: previousNote.startPos,
+          endPos: previousNote.endPos,
           decorations: [],
           barDecorations: [],
           visible: true,
           variant: state.variantNo,
-          znId: `goto-${voiceIndex}-${sym.istart}`,
+          znId: `goto-${voiceIndex}-${repeatStart.time}`,
+          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${repeatTime}.p_repeat`,
           from: previousNote,
           to: repeatStart,
-          policy: {} as GotoPolicy,
+          policy: {
+            confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${repeatTime}.p_repeat`,
+            distance: repeatDistance,
+            isRepeat: true,
+            level: repeatLevel,
+          } as GotoPolicy,
         }
         result.push(goto)
       }
+      state.pendingGotoDistances = null
       state.nextFirstInPart = true
     }
 
@@ -794,6 +811,7 @@ export class AbcToSong {
     sym: AbcSymbol,
   ): Goto[] {
     const result: Goto[] = []
+    const gotoDistances = state.pendingGotoDistances
     const entrySources = [...state.pendingVariantEntrySources]
     state.pendingVariantEntrySources = []
     const exitSources = state.awaitingVariantContinuation && state.pendingVariantExitSources.length > 0
@@ -828,9 +846,16 @@ export class AbcToSong {
         visible: true,
         variant: 0,
         znId: `goto-${voiceIndex}-${sym.istart}-${idx}`,
+        confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.${idx}.p_begin`,
         from: resolvedSource,
         to: target,
-        policy: { isRepeat: true } as GotoPolicy,
+        policy: {
+          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.${idx}.p_begin`,
+          distance: gotoDistances?.[0],
+          fromAnchor: 'after',
+          toAnchor: 'before',
+          isRepeat: true,
+        } as GotoPolicy,
       })
       idx += 1
     }
@@ -855,13 +880,26 @@ export class AbcToSong {
         visible: true,
         variant: 0,
         znId: `goto-${voiceIndex}-${sym.istart}-${idx}`,
+        confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.p_follow`,
         from: resolvedSource,
         to: target,
-        policy: { isRepeat: true, verticalAnchor: 'to' } as GotoPolicy,
+        policy: {
+          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.p_follow`,
+          distance: gotoDistances?.[2],
+          isRepeat: true,
+          fromAnchor: 'after',
+          toAnchor: 'before',
+          verticalAnchor: 'to',
+        } as GotoPolicy,
       })
       idx += 1
     }
 
+    if (entrySources.length > 0 || exitSources.length > 0) {
+      state.pendingGotoDistances = null
+    } else {
+      state.pendingGotoDistances = gotoDistances
+    }
     return result
   }
   // ---------------------------------------------------------------------------
@@ -899,6 +937,7 @@ export class AbcToSong {
           visible: true,
           variant: state.variantNo,
           znId: `chord-${voiceIndex}-${sym.istart}`,
+          confKey: `notebound.chord.v_${voiceId}.${companion.time}.${extraIndex}`,
           companion,
           text,
           position: [0, -5],
@@ -1174,6 +1213,59 @@ export class AbcToSong {
     }
     // Mirrors Ruby: use remark_table[time] when present, otherwise voice_element[:time].
     return `${sym.time}`
+  }
+
+  private _parseGotoDistances(text: string): number[] | null {
+    const match = text.match(/^@([^\@]*)@(\-?\d*)(,(\-?\d*),(\-?\d*))?$/)
+    if (!match) return null
+
+    const distances = [match[2], match[4], match[5]]
+      .map((value) => (value !== undefined && value !== '' ? Number.parseInt(value, 10) : null))
+      .filter((value): value is number => value !== null && Number.isFinite(value))
+
+    return distances.length > 0 ? distances : null
+  }
+
+  private _registerPendingGotoDistances(sym: AbcSymbol, state: VoiceState): void {
+    const gotoDistances = this._extractGotoDistancesFromSymbol(sym)
+    if (gotoDistances) {
+      state.pendingGotoDistances = gotoDistances
+    }
+  }
+
+  private _extractGotoDistancesFromSymbol(sym: AbcSymbol): number[] | null {
+    const extras = sym.a_gch
+    if (!Array.isArray(extras) || extras.length === 0) return null
+
+    for (const extra of extras) {
+      if (!extra || extra.type !== '^' || typeof extra.text !== 'string' || !extra.text.startsWith('@')) continue
+      const gotoDistances = this._parseGotoDistances(extra.text)
+      if (gotoDistances) {
+        return gotoDistances
+      }
+    }
+
+    if (this._source !== null) {
+      const windowStart = Math.max(0, sym.istart - 512)
+      const windowEnd = Math.min(this._source.length, sym.iend + 512)
+      const window = this._source.slice(windowStart, windowEnd)
+      const sourceMatches = window.matchAll(/\^(@@[-0-9,]+(?:@[^"\s]+)?)/g)
+      let nearestMarker: string | null = null
+      let nearestMarkerIndex = -1
+      const symbolIndex = sym.istart - windowStart
+      for (const match of sourceMatches) {
+        const matchIndex = match.index ?? -1
+        if (matchIndex <= symbolIndex && matchIndex >= nearestMarkerIndex && match[1]) {
+          nearestMarker = match[1]
+          nearestMarkerIndex = matchIndex
+        }
+      }
+      if (nearestMarker !== null) {
+        return this._parseGotoDistances(nearestMarker)
+      }
+    }
+
+    return null
   }
 
   private _parseDecorations(sym: AbcSymbol): string[] {

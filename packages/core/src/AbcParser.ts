@@ -284,7 +284,15 @@ export class AbcParser {
       }
     })
 
-    return { voices, music_types, music_type_ids, info, checksum, sourceLineStarts: buildLineStarts(source) }
+    return {
+      voices,
+      music_types,
+      music_type_ids,
+      info,
+      checksum,
+      sourceLineStarts: buildLineStarts(source),
+      source,
+    }
   }
 
   /** Walk the linked-list of symbols in a voice and collect them into an array */

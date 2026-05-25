@@ -75,6 +75,7 @@ function transformRawDuration(rawDuration: number) {
     info: {},
     checksum: '',
     sourceLineStarts: [0],
+    source: '',
   }
   const transformer = new AbcToSong()
   return transformer.transform(model, defaultTestConfig)
@@ -104,6 +105,7 @@ function transformSymbols(symbols: AbcSymbol[]) {
     info: {},
     checksum: '',
     sourceLineStarts: [0],
+    source: '',
   }
   const transformer = new AbcToSong()
   return transformer.transform(model, defaultTestConfig)
@@ -500,6 +502,21 @@ V:V1 clef=treble-8
     const exitGotos = gotos.filter((goto) => goto.policy.verticalAnchor === 'to')
 
     expect(exitGotos.length).toBeGreaterThan(0)
+  })
+
+  it('preserves legacy repeat and variant jump distances', () => {
+    const song = transformFixture('246_Horch-was-kommt-von-draussen-rein')
+    const gotos = song.voices.flatMap((voice) => voice.entities).filter((entity): entity is Goto => entity.type === 'Goto')
+
+    const repeatGoto = gotos.find((goto) => goto.confKey === 'notebound.c_jumplines.v_1.29184.p_repeat')
+    expect(repeatGoto?.policy.distance).toBe(-6)
+    expect(repeatGoto?.policy.level).toBe(3)
+
+    const beginGoto = gotos.find((goto) => goto.confKey === 'notebound.c_jumplines.v_1.26880.0.p_begin')
+    expect(beginGoto?.policy.distance).toBe(3)
+    expect(beginGoto?.policy.fromAnchor).toBe('after')
+    expect(beginGoto?.policy.toAnchor).toBe('before')
+
   })
 
 })
