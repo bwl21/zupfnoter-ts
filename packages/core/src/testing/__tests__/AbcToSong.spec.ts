@@ -74,6 +74,7 @@ function transformRawDuration(rawDuration: number) {
     music_type_ids: { note: 8 },
     info: {},
     checksum: '',
+    sourceLineStarts: [0],
   }
   const transformer = new AbcToSong()
   return transformer.transform(model, defaultTestConfig)
@@ -102,6 +103,7 @@ function transformSymbols(symbols: AbcSymbol[]) {
     music_type_ids: { note: 8 },
     info: {},
     checksum: '',
+    sourceLineStarts: [0],
   }
   const transformer = new AbcToSong()
   return transformer.transform(model, defaultTestConfig)
@@ -255,6 +257,17 @@ V:V1 clef=treble-8
     }
   })
 
+  it('tracks the ABC source position for note entities', () => {
+    const song = transform(ABC)
+    const note = song.voices[0]!.entities.find((e) => e.type === 'Note')
+    if (note?.type === 'Note') {
+      expect(note.startPos[0]).toBe(8)
+      expect(note.endPos[0]).toBe(8)
+      expect(note.startPos[1]).toBeGreaterThan(0)
+      expect(note.endPos[1]).toBeGreaterThan(note.startPos[1])
+    }
+  })
+
   it('extracts title metadata', () => {
     const song = transform(ABC)
     expect(song.metaData.title).toContain('Single Note')
@@ -283,8 +296,8 @@ r:bad-id
       {
         severity: 'error',
         message: 'illegal character in [r:] (must be of [a-z][a-z0.9_])',
-        startPos: [1, 1],
-        endPos: [1, 1],
+        startPos: [8, 1],
+        endPos: [8, 9],
       },
     ])
   })

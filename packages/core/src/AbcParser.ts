@@ -136,6 +136,16 @@ function computeLegacyChecksum(abcText: string): string {
   return groups === null ? '' : groups.join(' ')
 }
 
+function buildLineStarts(source: string): number[] {
+  const lineStarts = [0]
+  for (let index = 0; index < source.length; index += 1) {
+    if (source[index] === '\n') {
+      lineStarts.push(index + 1)
+    }
+  }
+  return lineStarts
+}
+
 function loadAbc2svg(): Abc2svgExports {
   const mod = { exports: {} as Record<string, unknown> }
   const fn = new Function('module', 'exports', abc2svgSource)
@@ -274,7 +284,7 @@ export class AbcParser {
       }
     })
 
-    return { voices, music_types, music_type_ids, info, checksum }
+    return { voices, music_types, music_type_ids, info, checksum, sourceLineStarts: buildLineStarts(source) }
   }
 
   /** Walk the linked-list of symbols in a voice and collect them into an array */

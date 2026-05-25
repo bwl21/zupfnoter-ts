@@ -110,6 +110,7 @@ export class AbcToSong {
   private _beatResolution = 192
   private _shortestNote = 64
   private _config: ZupfnoterConfig | null = null
+  private _sourceLineStarts: number[] = [0]
   private _currentState: VoiceState | null = null
   private _diagnostics: SongDiagnostic[] = []
   private _partTable: Record<number, string> = {}
@@ -126,6 +127,7 @@ export class AbcToSong {
     this._partTable = {}
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 192
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 64
+    this._sourceLineStarts = model.sourceLineStarts
 
     const restposition = config.restposition
 
@@ -228,10 +230,14 @@ export class AbcToSong {
       if (prev) {
         p.prevPitch = prev.pitch
         p.prevPlayable = prev
+      } else {
+        p.prevPitch = p.pitch
       }
       if (next) {
         p.nextPitch = next.pitch
         p.nextPlayable = next
+      } else {
+        p.nextPitch = p.pitch
       }
     }
   }
@@ -362,8 +368,8 @@ export class AbcToSong {
     const notes = sym.notes ?? []
     const duration = this._convertDuration(notes[0]?.dur ?? 384)
     const beat = this._timeToBeat(sym.time)
-    const startPos = this._charposToLineCol(sym.istart)
-    const endPos = this._charposToLineCol(sym.iend)
+    const startPos = this._symbolPosition(sym, 'start_pos', sym.istart)
+    const endPos = this._symbolPosition(sym, 'end_pos', sym.iend)
     const decorations = this._parseDecorations(sym)
     const { tuplet, tupletStart, tupletEnd } = this._parseTuplet(sym, state)
     const lyrics = this._parseLyrics(sym)
@@ -511,8 +517,8 @@ export class AbcToSong {
       type: 'Pause' as const,
       beat,
       time: sym.time,
-      startPos: this._charposToLineCol(sym.istart),
-      endPos: this._charposToLineCol(sym.iend),
+      startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+      endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
       decorations: this._parseDecorations(sym),
       barDecorations: [],
       visible: !(sym.invis ?? sym.invisible ?? false),
@@ -639,8 +645,8 @@ export class AbcToSong {
           type: 'Goto' as const,
           beat: this._timeToBeat(sym.time),
           time: sym.time,
-          startPos: this._charposToLineCol(sym.istart),
-          endPos: this._charposToLineCol(sym.iend),
+          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
           decorations: [],
           barDecorations: [],
           visible: true,
@@ -679,8 +685,8 @@ export class AbcToSong {
       type: 'NoteBoundAnnotation' as const,
       beat: this._timeToBeat(sym.time),
       time: sym.time,
-      startPos: this._charposToLineCol(sym.istart),
-      endPos: this._charposToLineCol(sym.iend),
+      startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+      endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
       decorations: [],
       barDecorations: [],
       visible: true,
@@ -728,8 +734,8 @@ export class AbcToSong {
       this._diagnostics.push({
         severity: 'error',
         message: INVALID_REMARK_ZNID_MESSAGE,
-        startPos: this._charposToLineCol(sym.istart),
-        endPos: this._charposToLineCol(sym.iend),
+        startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+        endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
       })
       state.remarkTable[sym.time] = `_${remark}_`
     }
@@ -753,8 +759,8 @@ export class AbcToSong {
       type: 'NoteBoundAnnotation' as const,
       beat: this._timeToBeat(sym.time),
       time: sym.time,
-      startPos: this._charposToLineCol(sym.istart),
-      endPos: this._charposToLineCol(sym.iend),
+      startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+      endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
       decorations: [],
       barDecorations: [],
       visible: true,
@@ -815,8 +821,8 @@ export class AbcToSong {
         type: 'Goto' as const,
         beat: target.beat,
         time: sym.time,
-        startPos: this._charposToLineCol(sym.istart),
-        endPos: this._charposToLineCol(sym.iend),
+        startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+        endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
         decorations: [],
         barDecorations: [],
         visible: true,
@@ -842,8 +848,8 @@ export class AbcToSong {
         type: 'Goto' as const,
         beat: target.beat,
         time: sym.time,
-        startPos: this._charposToLineCol(sym.istart),
-        endPos: this._charposToLineCol(sym.iend),
+        startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+        endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
         decorations: [],
         barDecorations: [],
         visible: true,
@@ -886,8 +892,8 @@ export class AbcToSong {
           type: 'Chordsymbol' as const,
           beat: this._timeToBeat(sym.time),
           time: sym.time,
-          startPos: this._charposToLineCol(sym.istart),
-          endPos: this._charposToLineCol(sym.iend),
+          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
           decorations: [],
           barDecorations: [],
           visible: true,
@@ -907,8 +913,8 @@ export class AbcToSong {
           type: 'NoteBoundAnnotation' as const,
           beat: this._timeToBeat(sym.time),
           time: sym.time,
-          startPos: this._charposToLineCol(sym.istart),
-          endPos: this._charposToLineCol(sym.iend),
+          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
           decorations: [],
           barDecorations: [],
           visible: true,
@@ -1088,10 +1094,76 @@ export class AbcToSong {
   }
 
   /** Convert character offset to [line, column] (1-based) */
-  private _charposToLineCol(_offset: number): [number, number] {
-    // Phase 2: return placeholder — full implementation needs the ABC source text
-    // This will be refined when AbcParser passes the source to AbcToSong
-    return [1, 1]
+  private _charposToLineCol(offset: number): [number, number] {
+    if (offset <= 0 || this._sourceLineStarts.length === 0) return [1, 1]
+
+    let left = 0
+    let right = this._sourceLineStarts.length - 1
+    while (left <= right) {
+      const middle = Math.floor((left + right) / 2)
+      const lineStart = this._sourceLineStarts[middle]
+      const nextLineStart = this._sourceLineStarts[middle + 1]
+
+      if (lineStart === undefined) break
+      if (nextLineStart !== undefined && offset >= nextLineStart) {
+        left = middle + 1
+        continue
+      }
+      if (offset < lineStart) {
+        right = middle - 1
+        continue
+      }
+      return [middle + 1, offset - lineStart + 1]
+    }
+
+    const lastIndex = this._sourceLineStarts.length - 1
+    const lineStart = this._sourceLineStarts[lastIndex]
+    if (lineStart === undefined) return [1, 1]
+    return [lastIndex + 1, offset - lineStart + 1]
+  }
+
+  private _symbolPosition(sym: AbcSymbol, key: 'start_pos' | 'end_pos', fallbackOffset: number): [number, number] {
+    const shouldAdjustEndPos = (): boolean => {
+      if (key !== 'end_pos') return false
+      const notes = sym.notes
+      if (!Array.isArray(notes) || notes.length === 0) return false
+      // abc2svg 1.x reports some accidental-bearing notes one column too early in iend.
+      // Legacy end_pos includes the accidental, so we compensate only for those cases.
+      return notes.some((note) => {
+        if (!note || typeof note !== 'object') return false
+        const record = note as Record<string, unknown>
+        const acc = record.acc
+        return typeof acc === 'number' && acc !== 0
+      })
+    }
+
+    const origin = (sym as Record<string, unknown>)['origin']
+    if (origin && typeof origin === 'object' && !Array.isArray(origin)) {
+      const originRecord = origin as Record<string, unknown>
+      const rawVoiceElement = originRecord['raw_voice_element']
+      if (rawVoiceElement && typeof rawVoiceElement === 'object' && !Array.isArray(rawVoiceElement)) {
+        const rawPos = (rawVoiceElement as Record<string, unknown>)[key]
+        if (
+          Array.isArray(rawPos) &&
+          rawPos.length === 2 &&
+          typeof rawPos[0] === 'number' &&
+          typeof rawPos[1] === 'number'
+        ) {
+          return [rawPos[0], rawPos[1]]
+        }
+      }
+      const pos = originRecord[key]
+      if (
+        Array.isArray(pos) &&
+        pos.length === 2 &&
+        typeof pos[0] === 'number' &&
+        typeof pos[1] === 'number'
+      ) {
+        return [pos[0], pos[1]]
+      }
+    }
+    const fallback = this._charposToLineCol(fallbackOffset)
+    return shouldAdjustEndPos() ? [fallback[0], fallback[1] + 1] : fallback
   }
 
   private _makeZnId(sym: AbcSymbol, _voiceIndex: number): string {

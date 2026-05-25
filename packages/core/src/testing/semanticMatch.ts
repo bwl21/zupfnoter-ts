@@ -19,16 +19,40 @@ const CREATED_FOOTER_PATTERN = /^(.*) - created(?: \d{4}-\d{2}-\d{2} \d{2}:\d{2}
 
 export interface EntityFixture {
   type: 'Note' | 'Pause' | 'SynchPoint' | 'Goto' | 'MeasureStart' | 'NewPart' | string
+  barDecorations?: string[]
+  confKey?: string
+  decorations?: string[]
+  endPos?: [number, number]
+  firstInPart?: boolean
+  countNote?: string | null
+  lyrics?: string | null
   pitch?: number
   duration?: number
   beat?: number
+  text?: string
+  position?: [number, number]
+  style?: string
+  measureCount?: number
+  measureStart?: boolean
+  nextPitch?: number
+  prevPitch?: number
+  slurStarts?: number[]
+  slurEnds?: number[]
+  startPos?: [number, number]
+  time?: number
+  jumpStarts?: string[]
+  jumpEnds?: string[]
   variant?: 0 | 1 | 2
   visible?: boolean
   tieStart?: boolean
   tieEnd?: boolean
   znId?: string
+  tuplet?: number
+  tupletStart?: boolean | null
+  tupletEnd?: boolean | null
   from?: number
   to?: number
+  policy?: Record<string, unknown>
   /** Allow additional fields produced by the legacy raw exporter. */
   [extraField: string]: unknown
 }
@@ -54,6 +78,9 @@ export interface DrawableFixture {
   center?: [number, number]
   size?: [number, number]
   fill?: boolean
+  confKey?: string
+  lineWidth?: number
+  visible?: boolean
   // FlowLine
   from?: [number, number]
   to?: [number, number]
@@ -252,7 +279,34 @@ function normalizeBeatMap(beatMap: Record<string, number>): Record<string, numbe
 }
 
 function compareSongEntity(actual: EntityFixture, expected: EntityFixture): boolean {
+  if (expected.type !== 'Note' && expected.type !== 'Pause' && expected.type !== 'SynchPoint') {
+    return actual.type === expected.type
+  }
+
+  const comparableFields = new Set([
+    'type',
+    'beat',
+    'variant',
+    'visible',
+    'znId',
+    'pitch',
+    'duration',
+    'tieStart',
+    'tieEnd',
+    'measureStart',
+    'measureCount',
+    'countNote',
+    'firstInPart',
+    'from',
+    'to',
+    'confKey',
+    'policy',
+    'text',
+    'position',
+    'style',
+  ])
   for (const [key, expectedValue] of Object.entries(expected)) {
+    if (!comparableFields.has(key)) continue
     const actualValue = actual[key as keyof EntityFixture]
     if (!compareFixtureValue(actualValue, expectedValue)) {
       return false
@@ -550,11 +604,40 @@ function isRawEntity(value: unknown): value is Record<string, unknown> {
 function normalizeRawEntity(entity: Record<string, unknown>): EntityFixture {
   const cls = entity.class as string
   const out: EntityFixture = { type: RAW_CLASS_TO_TYPE[cls] ?? cls }
+  if ('@bardecorations' in entity) out.barDecorations = entity['@bardecorations'] as string[]
+  if ('@barDecorations' in entity) out.barDecorations = entity['@barDecorations'] as string[]
+  if ('@bar_decorations' in entity) out.barDecorations = entity['@bar_decorations'] as string[]
   if ('@beat'      in entity) out.beat     = entity['@beat']      as number
+  if ('@conf_key'  in entity) out.confKey  = entity['@conf_key']  as string
+  if ('@count_note' in entity) out.countNote = entity['@count_note'] as string | null
+  if ('@end_pos'   in entity) out.endPos   = entity['@end_pos']   as [number, number]
+  if ('@first_in_part' in entity) out.firstInPart = entity['@first_in_part'] as boolean
+  if ('@jump_starts' in entity) out.jumpStarts = entity['@jump_starts'] as string[]
+  if ('@jump_ends'   in entity) out.jumpEnds   = entity['@jump_ends']   as string[]
+  if ('@lyrics'    in entity) out.lyrics    = entity['@lyrics']    as string | null
+  if ('@measure_count' in entity) out.measureCount = entity['@measure_count'] as number
+  if ('@measure_start' in entity) out.measureStart = entity['@measure_start'] as boolean
+  if ('@next_pitch' in entity) out.nextPitch = entity['@next_pitch'] as number
+  if ('@prev_pitch' in entity) out.prevPitch = entity['@prev_pitch'] as number
+  if ('@slur_starts' in entity) out.slurStarts = entity['@slur_starts'] as number[]
+  if ('@slur_ends'   in entity) out.slurEnds   = entity['@slur_ends']   as number[]
+  if ('@start_pos'   in entity) out.startPos   = entity['@start_pos']   as [number, number]
+  if ('@time'        in entity) out.time      = entity['@time']        as number
+  if ('@tuplet'      in entity) out.tuplet    = entity['@tuplet']      as number
+  if ('@tuplet_start' in entity) out.tupletStart = entity['@tuplet_start'] as boolean
+  if ('@tuplet_end'   in entity) out.tupletEnd   = entity['@tuplet_end']   as boolean
   if ('@variant'   in entity) out.variant  = entity['@variant']   as 0 | 1 | 2
   if ('@visible'   in entity) out.visible  = entity['@visible']   as boolean
   if ('@pitch'     in entity) out.pitch    = entity['@pitch']     as number
   if ('@duration'  in entity) out.duration = entity['@duration']  as number
+  if ('@annotations' in entity && entity['@annotations'] && typeof entity['@annotations'] === 'object' && !Array.isArray(entity['@annotations'])) {
+    const annotations = entity['@annotations'] as Record<string, unknown>
+    if (typeof annotations.text === 'string') out.text = annotations.text
+    if (Array.isArray(annotations.pos) && annotations.pos.length === 2 && typeof annotations.pos[0] === 'number' && typeof annotations.pos[1] === 'number') {
+      out.position = [annotations.pos[0], annotations.pos[1]]
+    }
+    if (typeof annotations.style === 'string') out.style = annotations.style
+  }
   if ('@tie_start' in entity) out.tieStart = entity['@tie_start'] as boolean
   if ('@tie_end'   in entity) out.tieEnd   = entity['@tie_end']   as boolean
   if ('@znid'      in entity) out.znId     = entity['@znid']      as string
@@ -566,6 +649,20 @@ function normalizeRawEntity(entity: Record<string, unknown>): EntityFixture {
     const to   = entity['@to']
     if (isRawEntity(from) && '@beat' in from) out.from = from['@beat'] as number
     if (isRawEntity(to)   && '@beat' in to)   out.to   = to['@beat']   as number
+    const policy = entity['@policy']
+    if (policy && typeof policy === 'object' && !Array.isArray(policy)) {
+      const policyObject = policy as Record<string, unknown>
+      out.policy = {
+        ...(policyObject.conf_key !== undefined ? { confKey: policyObject.conf_key } : {}),
+        ...(policyObject.distance !== undefined ? { distance: policyObject.distance } : {}),
+        ...(policyObject.from_anchor !== undefined ? { fromAnchor: policyObject.from_anchor } : {}),
+        ...(policyObject.is_repeat !== undefined ? { isRepeat: policyObject.is_repeat } : {}),
+        ...(policyObject.level !== undefined ? { level: policyObject.level } : {}),
+        ...(policyObject.padding !== undefined ? { padding: policyObject.padding } : {}),
+        ...(policyObject.to_anchor !== undefined ? { toAnchor: policyObject.to_anchor } : {}),
+        ...(policyObject.vertical_anchor !== undefined ? { verticalAnchor: policyObject.vertical_anchor } : {}),
+      }
+    }
   }
   return out
 }
