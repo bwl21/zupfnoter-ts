@@ -43,3 +43,5 @@ __screenshots__/
 
 # Generated fixture output (dev helper, not reference data)
 fixtures/cases/*/_ts_output/
+fixtures/cases/*/_parity/
+fixtures/reports/song-gap-report.json

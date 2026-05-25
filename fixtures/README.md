@@ -26,6 +26,7 @@ fixtures/
     │   ├── sheet.extract-0.json # Stufe-3-Referenz für Extrakt 0
     │   ├── output.extract-0.svg # Stufe-4-Referenz für Extrakt 0
     │   └── _ts_output/     # generierte TS-Ausgabe, nicht Referenz
+    │   └── _parity/song/   # harte Song-Parity-Artefakte (normalisiert, Report, Debug)
     └── ...
 ```
 
@@ -104,6 +105,25 @@ pnpm test:dump:sheet
 pnpm test:dump:svg
 ```
 
+Für harte Song-Parity-Vergleiche gibt es den dedizierten Runner:
+
+```bash
+pnpm parity:song 3015_reference_sheet
+pnpm parity:song --all
+```
+
+Der Runner schreibt pro Case Artefakte nach
+`fixtures/cases/<name>/_parity/song/`:
+
+- `normalized/legacy.normalized-song.json`
+- `normalized/ts.normalized-song.json`
+- `reports/song-gap-report.md`
+- `reports/song-gap-report.json`
+- `debug/matched-events.json`
+- `debug/unmatched-legacy-events.json`
+- `debug/unmatched-ts-events.json`
+- `debug/matching-trace.json`
+
 Diese Dateien sind **nicht** die Referenz-Fixtures. Sie zeigen nur, was die TS-Pipeline
 aktuell produziert. Vergleiche sie mit dem Legacy-Export, um Abweichungen zu finden.
 
@@ -164,8 +184,9 @@ voices[0].entities[2].pitch:
 - `sheet-gap-report.md` (Stufe 3, registry-basiert)
 - `svg-gap-report.md` (Stufe 4, strukturelle Tag-Count-Analyse)
 
-Die Song- und Sheet-Reports basieren auf `fixtures/openImplementations.ts` und
-listen sowohl bekannte als auch neu entdeckte Failures auf. Der SVG-Report
+Der Song-Report ist ein globaler Index auf die case-basierten `_parity/song`
+Artefakte und verweist zusätzlich auf die manuelle Gap-Liste in
+`fixtures/openImplementations.ts`. Der SVG-Report
 vergleicht für jedes Fixture die Tag-Typ-Verteilung der Legacy-Ausgabe gegen die
 TS-Ausgabe und zeigt die ersten positionalen Tag-Abweichungen.
 

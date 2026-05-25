@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import {
   fixtureConfigFromAbc,
   fixtureAbcPath,
@@ -8,6 +7,7 @@ import {
   loadFixture,
   loadSongFixture,
   loadSheetExtractFixture,
+  songToFixture,
   resolveFixtureSheetRenderTarget,
   scanFixtureCases,
   transformFixtureToSong,
@@ -102,6 +102,25 @@ describe('fixtureLoader', () => {
 
     expect(songFixture.voices[0]?.entities.some((entity) => entity.znId === '0')).toBe(true)
     expect(sheetFixture.children.some((child) => child.znId === '0')).toBe(true)
+  })
+
+  it('matches legacy tuplet marker handling in song fixtures', () => {
+    const singleNoteFixture = transformFixtureToSong(loadFixture('single_note'))
+    const singleNote = singleNoteFixture.voices
+      .flatMap((voice) => voice.entities)
+      .find((entity) => entity.type === 'Note')
+
+    expect(singleNote?.tupletStart).toBeUndefined()
+    expect(singleNote?.tupletEnd).toBeUndefined()
+
+    const tupletFixture = transformFixtureToSong(loadFixture('tuplet'))
+    const tupletNotes = tupletFixture.voices
+      .flatMap((voice) => voice.entities)
+      .filter((entity) => entity.type === 'Note' && 'tuplet' in entity && entity.tuplet === 3)
+
+    expect(tupletNotes.some((entity) => entity.tupletStart === true)).toBe(true)
+    expect(tupletNotes.some((entity) => entity.tupletStart === false)).toBe(true)
+    expect(tupletNotes.some((entity) => entity.tupletEnd === true)).toBe(true)
   })
 
   it('loads extract-specific sheet fixtures for simple single-extract cases', () => {

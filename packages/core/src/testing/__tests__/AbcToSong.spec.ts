@@ -111,6 +111,31 @@ function transformSymbols(symbols: AbcSymbol[]) {
   return transformer.transform(model, defaultTestConfig)
 }
 
+describe('AbcToSong – harpnote options', () => {
+  it('includes the legacy template and print defaults', () => {
+    const song = transform(`X:1
+T:Options Test
+M:4/4
+K:C
+C
+`)
+
+    expect(song.harpnoteOptions).toMatchObject({
+      template: {
+        filebase: '-no-template-',
+        title: '- no template -',
+      },
+      print: [
+        {
+          title: 'alle Stimmen',
+          view_id: 0,
+          filenamepart: 'doc',
+        },
+      ],
+    })
+  })
+})
+
 interface SlurTupletParityEntity {
   type: string
   time: number

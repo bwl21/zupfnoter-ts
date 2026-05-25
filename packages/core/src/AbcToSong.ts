@@ -1052,9 +1052,22 @@ export class AbcToSong {
           .map((line) => line.trimEnd()),
       }
       : undefined
+    const template = {
+      filebase: '-no-template-',
+      title: '- no template -',
+    }
+    const print = [
+      {
+        title: 'alle Stimmen',
+        view_id: 0,
+        filenamepart: 'doc',
+      },
+    ]
 
     return {
       ...(lyrics ? { lyrics } : {}),
+      template,
+      print,
     }
   }
 

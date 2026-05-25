@@ -271,6 +271,7 @@ export function saveFixtureOutput(fixture: PipelineFixture, stage: FixtureStage,
 export function songToFixture(song: Song): SongFixture {
   return {
     meta_data: song.metaData as Record<string, unknown>,
+    harpnote_options: song.harpnoteOptions as Record<string, unknown> | undefined,
     voices: song.voices.map((v) => ({
       entities: v.entities.map((e): EntityFixture => {
         const entry: EntityFixture = {
@@ -291,8 +292,8 @@ export function songToFixture(song: Song): SongFixture {
           countNote: 'countNote' in e ? e.countNote : undefined,
           lyrics: 'lyrics' in e ? (e.lyrics ?? '') : undefined,
           tuplet: 'tuplet' in e ? e.tuplet : undefined,
-          tupletStart: 'tupletStart' in e ? (e.tupletStart ? true : null) : undefined,
-          tupletEnd: 'tupletEnd' in e ? (e.tupletEnd ? true : null) : undefined,
+          tupletStart: 'tupletStart' in e && 'tuplet' in e && e.tuplet > 1 ? e.tupletStart : undefined,
+          tupletEnd: 'tupletEnd' in e ? (e.tupletEnd ? true : undefined) : undefined,
           slurStarts: 'slurStarts' in e ? e.slurStarts : undefined,
           slurEnds: 'slurEnds' in e ? e.slurEnds : undefined,
           jumpStarts: 'jumpStarts' in e ? e.jumpStarts : undefined,
