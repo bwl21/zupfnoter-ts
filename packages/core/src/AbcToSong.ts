@@ -931,9 +931,32 @@ export class AbcToSong {
         continue
       }
 
-      // Legacy extracts chord symbols from `^` extras on playable notes.
-      // Rests keep their `^` extras as note-bound annotations.
-      if (extra.type === '^' && companion.type !== 'Pause') {
+      // Legacy treats semantic `^` extras with inline markers (`#`, `!`, `<>`)
+      // as note-bound annotations, while plain `^` extras remain chord symbols.
+      if (extra.type === '^' && companion.type !== 'Pause' && /^[!#<>]/.test(text.trim())) {
+        const parsedAnnotation = this._parseInlineAnnotation(text, voiceId, companion.time, extraIndex)
+        if (!parsedAnnotation) continue
+
+        const annotation: NoteBoundAnnotation = {
+          type: 'NoteBoundAnnotation' as const,
+          beat: this._timeToBeat(sym.time),
+          time: sym.time,
+          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+          decorations: [],
+          barDecorations: [],
+          visible: true,
+          variant: 0,
+          znId: `annot-${voiceIndex}-${sym.istart}`,
+          companion,
+          text: parsedAnnotation.text,
+          position: parsedAnnotation.position,
+          style: parsedAnnotation.style,
+          policy: parsedAnnotation.policy,
+          confKey: parsedAnnotation.confKey,
+        }
+        result.push(annotation)
+      } else if (extra.type === '^' && companion.type !== 'Pause') {
         const chord: Chordsymbol = {
           type: 'Chordsymbol' as const,
           beat: this._timeToBeat(sym.time),
