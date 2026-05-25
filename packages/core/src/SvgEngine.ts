@@ -502,23 +502,21 @@ export class SvgEngine {
       el.confKey,
       el.znId,
     )
-    const content = this._useLegacyFrame
-      ? svgPath(
-          `M${formatNumber(x1)},${formatNumber(y1)}L${formatNumber(x2)},${formatNumber(y2)}`,
-          el.color,
-          el.lineWidth,
-          'none',
-          {
-            class: 'zupfnoter-shape zupfnoter-shape--flowline',
-            'data-flow-style': el.style,
-            'stroke-dasharray': dash,
-          },
-          'butt',
-        )
-      : svgLine(x1, y1, x2, y2, el.color, el.lineWidth, dash, {
-          class: 'zupfnoter-shape zupfnoter-shape--flowline',
-          'data-flow-style': el.style,
-        })
+    if (this._useLegacyFrame) {
+      const legacyId = `ZN_${index + 3}`
+      const pathAttrs: Record<string, string | number | undefined> = {
+        d: `M${formatNumber(x1)},${formatNumber(y1)}L${formatNumber(x2)},${formatNumber(y2)}`,
+        id: legacyId,
+      }
+      if (dash !== undefined) pathAttrs['stroke-dasharray'] = dash
+      pathAttrs['stroke-width'] = el.lineWidth
+      return `<g id="${legacyId}" fill="" stroke="black" ><path ${attrs(pathAttrs)} /></g>`
+    }
+
+    const content = svgLine(x1, y1, x2, y2, el.color, el.lineWidth, dash, {
+      class: 'zupfnoter-shape zupfnoter-shape--flowline',
+      'data-flow-style': el.style,
+    })
     return this._wrapElement(meta, content)
   }
 
