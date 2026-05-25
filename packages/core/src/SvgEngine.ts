@@ -535,6 +535,18 @@ export class SvgEngine {
       el.confKey,
       el.znId,
     )
+    if (this._useLegacyFrame) {
+      const legacyId = `ZN_${index + 3}`
+      const groupFill = el.fill ? el.color : 'none'
+      const pathAttrs: Record<string, string | number | undefined> = {
+        d,
+        id: legacyId,
+        'stroke-linecap': 'round',
+        'stroke-width': el.lineWidth,
+      }
+      return `<g id="${legacyId}" fill="${groupFill}" stroke="black" ><path ${attrs(pathAttrs)} /></g>`
+    }
+
     const fill = el.fill ? el.color : 'none'
     const content = svgPath(d, el.color, el.lineWidth, fill, {
       class: 'zupfnoter-shape zupfnoter-shape--path',
