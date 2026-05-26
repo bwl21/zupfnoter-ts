@@ -246,14 +246,10 @@ export class AbcToSong {
       if (prev) {
         p.prevPitch = prev.pitch
         p.prevPlayable = prev
-      } else {
-        p.prevPitch = p.pitch
       }
       if (next) {
         p.nextPitch = next.pitch
         p.nextPlayable = next
-      } else {
-        p.nextPitch = p.pitch
       }
     }
   }
