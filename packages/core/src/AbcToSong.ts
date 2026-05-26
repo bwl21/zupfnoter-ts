@@ -70,6 +70,9 @@ interface VoiceState {
   pendingVariantEndingText: string | null
   pendingVariantEndingDuration: number | null
   pendingGotoDistances: number[] | null
+  deferredJumplines: Goto[]
+  deferredNoteboundAnnotations: NoteBoundAnnotation[]
+  deferredChords: Chordsymbol[]
   /** Ruby-compatible [r:] remark lookup by voice_element[:time]. */
   remarkTable: Record<number, string>
 }
@@ -100,6 +103,9 @@ function createVoiceState(wmeasure: number, countBy: number | null): VoiceState 
     pendingVariantEndingText: null,
     pendingVariantEndingDuration: null,
     pendingGotoDistances: null,
+    deferredJumplines: [],
+    deferredNoteboundAnnotations: [],
+    deferredChords: [],
     remarkTable: {},
   }
 }
@@ -194,6 +200,12 @@ export class AbcToSong {
         entities.push(...(Array.isArray(result) ? result : [result]))
       }
     }
+
+    entities.push(
+      ...state.deferredNoteboundAnnotations,
+      ...state.deferredChords,
+      ...state.deferredJumplines,
+    )
 
     // Befülle prevPitch/nextPitch und prevPlayable/nextPlayable auf allen Playables.
     // Restposition benötigt die Playable-Referenzen; danach werden die numerischen
@@ -487,14 +499,14 @@ export class AbcToSong {
 
     state.previousNote = entity
 
-    // Chord symbols and annotations from extra
-    const barMarks = this._consumePendingBarMarks(entity, state, _voiceIndex, sym)
+    const inlineEntities: VoiceEntity[] = []
+    inlineEntities.push(...this._consumePendingBarMarks(entity, state, _voiceIndex, sym))
     this._transformInlinePart(sym, entity)
-    const part = this._transformPartAnnotation(sym, entity, _voiceIndex)
-    const extras = this._transformExtras(sym, entity, state, _voiceIndex)
-    const gotos = this._resolvePendingVariantGotos(entity, state, _voiceIndex, sym)
+    inlineEntities.push(...this._transformPartAnnotation(sym, entity, _voiceIndex, state))
+    this._transformExtras(sym, entity, state, _voiceIndex)
+    this._resolvePendingVariantGotos(entity, state, _voiceIndex, sym)
 
-    return [entity, ...barMarks, ...(part ? [part] : []), ...extras, ...gotos]
+    return [entity, ...inlineEntities]
   }
 
   // ---------------------------------------------------------------------------
@@ -560,12 +572,13 @@ export class AbcToSong {
       pause.firstInPart = true
       state.nextFirstInPart = false
     }
-    const barMarks = this._consumePendingBarMarks(pause, state, voiceIndex, sym)
+    const inlineEntities: VoiceEntity[] = []
+    inlineEntities.push(...this._consumePendingBarMarks(pause, state, voiceIndex, sym))
     this._transformInlinePart(sym, pause)
-    const part = this._transformPartAnnotation(sym, pause, voiceIndex)
-    const extras = this._transformExtras(sym, pause, state, voiceIndex)
-    const gotos = this._resolvePendingVariantGotos(pause, state, voiceIndex, sym)
-    return [pause, ...barMarks, ...(part ? [part] : []), ...extras, ...gotos]
+    inlineEntities.push(...this._transformPartAnnotation(sym, pause, voiceIndex, state))
+    this._transformExtras(sym, pause, state, voiceIndex)
+    this._resolvePendingVariantGotos(pause, state, voiceIndex, sym)
+    return [pause, ...inlineEntities]
   }
 
   // ---------------------------------------------------------------------------
@@ -651,8 +664,8 @@ export class AbcToSong {
         const repeatTime = previousNote.time
         const repeatDistance = this._extractGotoDistancesFromSymbol(sym)?.[0] ?? state.pendingGotoDistances?.[0] ?? 2
         const repeatLevel = state.repetitionStack.length + 1
-        const goto: Goto = {
-          type: 'Goto' as const,
+      const goto: Goto = {
+        type: 'Goto' as const,
           beat: this._timeToBeat(repeatTime),
           time: repeatTime,
           startPos: previousNote.startPos,
@@ -671,8 +684,8 @@ export class AbcToSong {
             isRepeat: true,
             level: repeatLevel,
           } as GotoPolicy,
-        }
-        result.push(goto)
+      }
+      result.push(goto)
       }
       state.pendingGotoDistances = null
       state.nextFirstInPart = true
@@ -684,7 +697,7 @@ export class AbcToSong {
     }
 
     if (state.previousNote) {
-      result.push(...this._transformExtras(sym, state.previousNote, state, voiceIndex))
+      this._transformExtras(sym, state.previousNote, state, voiceIndex)
     }
 
     return result
@@ -695,7 +708,7 @@ export class AbcToSong {
     state: VoiceState,
     voiceIndex: number,
     sym: AbcSymbol,
-  ): VoiceEntity[] {
+  ): NoteBoundAnnotation[] {
     if (state.pendingVariantEndingText === null) return []
 
     const annotation: NoteBoundAnnotation & { duration: number } = {
@@ -763,16 +776,17 @@ export class AbcToSong {
     sym: AbcSymbol,
     companion: PlayableEntity,
     voiceIndex: number,
-  ): NoteBoundAnnotation | null {
-    if (!Object.prototype.hasOwnProperty.call(this._partTable, sym.time)) return null
+    state: VoiceState,
+  ): NoteBoundAnnotation[] {
+    if (!Object.prototype.hasOwnProperty.call(this._partTable, sym.time)) return []
     const partText = this._partTable[sym.time]
-    if (typeof partText !== 'string' || partText.length === 0) return null
+    if (typeof partText !== 'string' || partText.length === 0) return []
 
     if (companion.prevPlayable) {
       companion.prevPlayable.nextFirstInPart = true
     }
     companion.firstInPart = true
-    return {
+    return [{
       type: 'NoteBoundAnnotation' as const,
       beat: this._timeToBeat(sym.time),
       time: sym.time,
@@ -788,7 +802,7 @@ export class AbcToSong {
       position: this._getDefaultNoteBoundPosition('partname', [5, -7]),
       style: 'bold',
       confKey: `notebound.partname.v_${voiceIndex + 1}.${companion.time}`,
-    }
+    }]
   }
 
   private _transformInlinePart(sym: AbcSymbol, companion: PlayableEntity): void {
@@ -809,8 +823,7 @@ export class AbcToSong {
     state: VoiceState,
     voiceIndex: number,
     sym: AbcSymbol,
-  ): Goto[] {
-    const result: Goto[] = []
+  ): void {
     const gotoDistances = state.pendingGotoDistances
     const entrySources = [...state.pendingVariantEntrySources]
     state.pendingVariantEntrySources = []
@@ -835,7 +848,7 @@ export class AbcToSong {
         idx += 1
         continue
       }
-      result.push({
+      state.deferredJumplines.push({
         type: 'Goto' as const,
         beat: target.beat,
         time: sym.time,
@@ -869,7 +882,7 @@ export class AbcToSong {
         idx += 1
         continue
       }
-      result.push({
+      state.deferredJumplines.push({
         type: 'Goto' as const,
         beat: target.beat,
         time: sym.time,
@@ -900,7 +913,7 @@ export class AbcToSong {
     } else {
       state.pendingGotoDistances = gotoDistances
     }
-    return result
+    return
   }
   // ---------------------------------------------------------------------------
   // Extra elements (chord symbols, annotations)
@@ -911,9 +924,8 @@ export class AbcToSong {
     companion: PlayableEntity,
     state: VoiceState,
     voiceIndex: number,
-  ): VoiceEntity[] {
-    if (!sym.a_gch) return []
-    const result: VoiceEntity[] = []
+  ): void {
+    if (!sym.a_gch) return
     const voiceId = voiceIndex + 1
 
     for (let extraIndex = 0; extraIndex < sym.a_gch.length; extraIndex++) {
@@ -924,15 +936,32 @@ export class AbcToSong {
       const text = extra.text ?? ''
       if (!text) continue
 
-      // Legacy does not materialize plain `g` extras as Song entities here.
-      if (extra.type === 'g') continue
       const trimmedText = text.trim()
+      if (extra.type === 'g' && companion.type !== 'Pause') {
+        const chord: Chordsymbol = {
+          type: 'Chordsymbol' as const,
+          beat: this._timeToBeat(sym.time),
+          time: sym.time,
+          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+          decorations: [],
+          barDecorations: [],
+          visible: true,
+          variant: state.variantNo,
+          znId: `chord-${voiceIndex}-${sym.istart}`,
+          confKey: `notebound.chord.v_${voiceId}.${companion.time}.${extraIndex}`,
+          companion,
+          text: this._normalizeChordText(text),
+          position: this._getDefaultNoteBoundPosition('chord', [0, 0]),
+          style: 'large',
+        }
+        state.deferredChords.push(chord)
+        continue
+      }
       if (extra.type === '^' && (trimmedText.startsWith('|') || trimmedText.startsWith(':|'))) {
         continue
       }
 
-      // Legacy treats semantic `^` extras with inline markers (`#`, `!`, `<>`)
-      // as note-bound annotations, while plain `^` extras remain chord symbols.
       if (extra.type === '^' && companion.type !== 'Pause' && /^[!#<>]/.test(text.trim())) {
         const parsedAnnotation = this._parseInlineAnnotation(text, voiceId, companion.time, extraIndex)
         if (!parsedAnnotation) continue
@@ -955,26 +984,7 @@ export class AbcToSong {
           policy: parsedAnnotation.policy,
           confKey: parsedAnnotation.confKey,
         }
-        result.push(annotation)
-      } else if (extra.type === '^' && companion.type !== 'Pause') {
-        const chord: Chordsymbol = {
-          type: 'Chordsymbol' as const,
-          beat: this._timeToBeat(sym.time),
-          time: sym.time,
-          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
-          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
-          decorations: [],
-          barDecorations: [],
-          visible: true,
-          variant: state.variantNo,
-          znId: `chord-${voiceIndex}-${sym.istart}`,
-          confKey: `notebound.chord.v_${voiceId}.${companion.time}.${extraIndex}`,
-          companion,
-          text,
-          position: [0, -5],
-          style: 'large',
-        }
-        result.push(chord)
+        state.deferredNoteboundAnnotations.push(annotation)
       } else {
         const parsedAnnotation = this._parseInlineAnnotation(text, voiceId, companion.time, extraIndex)
         if (!parsedAnnotation) continue
@@ -997,11 +1007,9 @@ export class AbcToSong {
           policy: parsedAnnotation.policy,
           confKey: parsedAnnotation.confKey,
         }
-        result.push(annotation)
+        state.deferredNoteboundAnnotations.push(annotation)
       }
     }
-
-    return result
   }
 
   // ---------------------------------------------------------------------------
@@ -1441,7 +1449,23 @@ export class AbcToSong {
     }
   }
 
-  private _getDefaultNoteBoundPosition(kind: 'annotation' | 'partname' | 'variantend', fallback: [number, number]): [number, number] {
+  private _normalizeChordText(rawText: string): string {
+    const normalized = rawText
+      .trim()
+      .replace(/♯/g, '#')
+      .replace(/♭/g, 'b')
+
+    if (normalized === 'B') {
+      return 'Cb'
+    }
+
+    return normalized
+  }
+
+  private _getDefaultNoteBoundPosition(
+    kind: 'annotation' | 'partname' | 'variantend' | 'chord',
+    fallback: [number, number],
+  ): [number, number] {
     const config = this._config as unknown as Record<string, unknown> | null
     const defaults = config?.['defaults']
     if (!defaults || typeof defaults !== 'object') return fallback
