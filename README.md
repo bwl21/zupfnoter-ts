@@ -22,6 +22,7 @@ packages/
 
 apps/
   demo/   Laufende Demo-App für ABC-Editor + SVG-Vorschau
+  viewsvg/ Vergleichs-Viewer für Legacy-/TS-SVGs
   web/    Geplante Vue-Web-App (Phase 5)
   cli/    Geplante CLI für SVG/PDF-Export
 ```
@@ -68,6 +69,7 @@ Für Fixture- und Legacy-Vergleichsarbeit:
 
 ```sh
 npm run test:loadsample
+npm run test:viewsvg
 npm run test:gaps
 ```
 

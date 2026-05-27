@@ -1,9 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Routes will be added in Phase 5
+import ViewSvgView from '@/views/ViewSvgView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [],
+  routes: [
+    {
+      path: '/',
+      name: 'viewsvg',
+      component: ViewSvgView,
+    },
+  ],
 })
 
 export default router

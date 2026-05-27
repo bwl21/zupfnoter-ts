@@ -15,6 +15,7 @@
     "test:gaps": "pnpm --filter @zupfnoter/core run test:gaps",
     "test:parity:song": "pnpm parity:song",
     "test:loadsample": "node ./tools/load-legacy-fixtures.mjs",
+    "test:viewsvg": "pnpm --filter @zupfnoter/viewsvg exec vite --host 127.0.0.1 --port 4173",
     "parity:song": "node tools/parity-song.mjs",
     "test:recreateLegacy": "npm run test:loadsample",
     "test:unit": "pnpm -r run test:unit",
