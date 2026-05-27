@@ -382,7 +382,7 @@ function makeAnnotatedBezierPath(
   p1: [number, number],
   p2: [number, number],
   options: AnnotatedBezierOptions,
-): { path: [number, number][]; pathData: string; anchor: [number, number] } {
+): { path: [number, number][]; pathData: string; anchor: [number, number]; cp1: [number, number]; cp2: [number, number] } {
   const delta = subtractPoint(p2, p1)
   const angle = Math.atan2(delta[1], delta[0])
   const cp1 = rotatePoint(rotatePoint(options.cp1, angle), -Math.PI * 0.5)
@@ -417,7 +417,7 @@ function makeAnnotatedBezierPath(
     pathDataParts.push(`l${cp1[0]} ${cp1[1]}L${cpa2[0]} ${cpa2[1]}L${p2[0]} ${p2[1]}`)
   }
 
-  return { path, pathData: pathDataParts.join(''), anchor }
+  return { path, pathData: pathDataParts.join(''), anchor, cp1, cp2 }
 }
 
 function makeLegacySlurPath(p1: [number, number], p2: [number, number]): { path: [number, number][]; pathData: string } {
@@ -507,7 +507,14 @@ export class HarpnotesLayout {
       ...resInstrument,
     ]
 
-    return { children, activeVoices }
+    return {
+      children: children.map((child) => (
+        child.more_conf_keys === undefined
+          ? { ...child, more_conf_keys: [] }
+          : child
+      )),
+      activeVoices,
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -685,7 +692,7 @@ export class HarpnotesLayout {
     for (const entity of voice.entities) {
       if (entity.type === 'Note') {
         const note = entity as Note
-        const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note))
+        const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note), voiceNr, extractNr, 0, true)
         playableElements.push(drawable)
         if (note.measureStart && !this._isLegacyVariantLeadInMeasureStart(note)) {
           playableElements.push(this._layoutMeasureBarover(drawable, layout))
@@ -695,7 +702,7 @@ export class HarpnotesLayout {
         decorations.push(...noteDecorations.decorations)
       } else if (entity.type === 'Pause') {
         const pause = entity as Pause
-        const glyph = this._layoutPause(pause, beatMap, layout, startpos, visibleByPlayable.get(pause))
+        const glyph = this._layoutPause(pause, beatMap, layout, startpos, visibleByPlayable.get(pause), voiceNr, extractNr, 0, true)
         if (glyph) {
           playableElements.push(glyph)
           if (pause.measureStart && !this._isLegacyVariantLeadInMeasureStart(pause)) {
@@ -710,8 +717,19 @@ export class HarpnotesLayout {
         let decorationRoot: Ellipse | null = null
         const synchLine = this._layoutSynchPointLine(sp, beatMap, layout, startpos, visibleByPlayable.get(sp))
         if (synchLine) playableElements.push(synchLine)
-        for (const note of sp.notes) {
-          const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(sp))
+        for (const [noteIndex, note] of sp.notes.entries()) {
+          const legacyNoteIndex = sp.notes.length - 1 - noteIndex
+          const drawable = this._layoutNote(
+            note,
+            beatMap,
+            layout,
+            startpos,
+            visibleByPlayable.get(sp),
+            voiceNr,
+            extractNr,
+            legacyNoteIndex,
+            legacyNoteIndex === 0,
+          )
           playableElements.push(drawable)
           if (
             note.measureStart &&
@@ -776,6 +794,7 @@ export class HarpnotesLayout {
       layout,
       startpos,
       voiceNr,
+      extractNr,
       conf,
     )
     result.push(...countnoteBackgrounds, ...countnotes, ...barnumberBackgrounds, ...barnumbers)
@@ -793,7 +812,11 @@ export class HarpnotesLayout {
     ))
     result.push(...annotationBackgrounds, ...orderedAnnotations)
 
-    return result
+    return result.map((child) => (
+      child.more_conf_keys === undefined
+        ? { ...child, more_conf_keys: [] }
+        : child
+    ))
   }
 
   private _layoutVoiceSlurs(
@@ -844,6 +867,7 @@ export class HarpnotesLayout {
             color: layout.color.color_default,
             lineWidth: layout.LINE_MEDIUM,
             visible: true,
+            more_conf_keys: [],
           })
         }
       }
@@ -899,6 +923,7 @@ export class HarpnotesLayout {
       color: variantToColor(variant, layout),
       lineWidth: layout.LINE_THICK,
       visible: true,
+      more_conf_keys: [],
     }
   }
 
@@ -912,6 +937,10 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     visible = note.visible,
+    voiceNr?: number,
+    extractNr?: number | string,
+    noteIndex = 0,
+    enableEditorMeta = true,
   ): Ellipse {
     const dKey = durationToKey(note.duration)
     const style = layout.DURATION_TO_STYLE[dKey]
@@ -928,6 +957,9 @@ export class HarpnotesLayout {
     ]
     const x = playableX(note, layout)
     const y = beatToY(note.beat, beatMap, layout, startpos)
+    const confBase = voiceNr !== undefined && extractNr !== undefined
+      ? `extract.${extractNr}.notebound.nconf.v_${voiceNr}.t_${note.time}.n_${noteIndex}`
+      : undefined
 
     return {
       type: 'Ellipse',
@@ -940,7 +972,14 @@ export class HarpnotesLayout {
       color,
       lineWidth: layout.LINE_THICK,
       visible,
-      confKey: note.confKey,
+      confKey: enableEditorMeta && confBase !== undefined ? `${confBase}.***` : undefined,
+      more_conf_keys: enableEditorMeta
+        ? this._buildPlayableMoreConfKeys(
+          confBase !== undefined ? `${confBase}.***` : undefined,
+          note.time,
+          extractNr ?? 0,
+        )
+        : [],
       znId: note.znId,
       origin: note,
     }
@@ -952,6 +991,10 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     visible = pause.visible,
+    voiceNr?: number,
+    extractNr?: number | string,
+    noteIndex = 0,
+    enableEditorMeta = true,
   ): Glyph | null {
     if (pause.invisible) return null
 
@@ -960,6 +1003,9 @@ export class HarpnotesLayout {
     const dKey = durationToKey(pause.duration)
     const restStyle = layout.REST_TO_GLYPH?.[dKey] ?? layout.REST_TO_GLYPH?.['err']
     if (!restStyle) return null
+    const confBase = voiceNr !== undefined && extractNr !== undefined
+      ? `extract.${extractNr}.notebound.nconf.v_${voiceNr}.t_${pause.time}.n_${noteIndex}`
+      : undefined
 
     const color = variantToColor(pause.variant, layout)
 
@@ -973,7 +1019,14 @@ export class HarpnotesLayout {
       color,
       lineWidth: layout.LINE_THICK,
       visible,
-      confKey: pause.confKey,
+      confKey: enableEditorMeta && confBase !== undefined ? `${confBase}.***` : undefined,
+      more_conf_keys: enableEditorMeta
+        ? this._buildPlayableMoreConfKeys(
+          confBase !== undefined ? `${confBase}.***` : undefined,
+          pause.time,
+          extractNr ?? 0,
+        )
+        : [],
       znId: pause.znId,
     }
   }
@@ -1036,6 +1089,8 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
+          more_conf_keys: [],
+          draginfo: this._annotationDraginfo(),
           znId: playable.znId,
           origin: playable,
         }
@@ -1050,15 +1105,69 @@ export class HarpnotesLayout {
           dotted: false,
           fill: 'filled',
           color: layout.color.color_default,
-          lineWidth: layout.LINE_THICK,
+          lineWidth: layout.LINE_THIN,
           visible: true,
           confKey: `${overrideKey}.pos`,
+          more_conf_keys: [],
+          draginfo: this._annotationDraginfo(),
           znId: playable.znId,
         })
       }
     }
 
     return { backgrounds, decorations: result }
+  }
+
+  private _buildPlayableMoreConfKeys(
+    rootConfKey: string | undefined,
+    playableTime: number,
+    extractNr: number | string,
+  ): Array<Record<string, unknown>> {
+    if (rootConfKey === undefined) return []
+
+    const shiftConfKey = `${rootConfKey.replace(/\.[^.]+$/, '')}.nshift`
+    const mincConfKey = `extract.${extractNr}.notebound.minc.${playableTime}.minc_f`
+
+    return [
+      {
+        conf_key: shiftConfKey,
+        text: 'shift left',
+        icon: 'fa fa-arrow-left',
+        value: -0.5,
+      },
+      {
+        conf_key: shiftConfKey,
+        text: 'shift right',
+        icon: 'fa fa-arrow-right',
+        value: 0.5,
+      },
+      {
+        text: '---',
+        icon: 'fa fa-arrows-v',
+        value: 0.5,
+      },
+      {
+        conf_key: mincConfKey,
+        text: 'Edit Minc',
+        icon: 'fa fa-arrows-v',
+      },
+      {
+        conf_key: mincConfKey,
+        text: 'increase Minc',
+        icon: 'fa fa-arrow-down',
+        value: 0.5,
+      },
+      {
+        conf_key: mincConfKey,
+        text: 'decrease Minc',
+        icon: 'fa fa-arrow-up',
+        value: -0.5,
+      },
+    ]
+  }
+
+  private _annotationDraginfo(): Record<string, unknown> {
+    return { handler: 'annotation' }
   }
 
   private _layoutMeasureBarover(root: Ellipse | Glyph, layout: LayoutConfig): Ellipse {
@@ -1075,6 +1184,7 @@ export class HarpnotesLayout {
       lineWidth: layout.LINE_THIN,
       visible: root.visible,
       znId: root.znId,
+      more_conf_keys: [],
     }
   }
 
@@ -1171,6 +1281,7 @@ export class HarpnotesLayout {
               lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
               confKey: `extract.${extractNr}.notebound.flowline.v_${voiceNr}.${curr.znId}.*`,
               visible,
+              more_conf_keys: [],
               znId: curr.znId,
             })
           }
@@ -1308,7 +1419,9 @@ export class HarpnotesLayout {
     const toCenter = playableCenter(toNote, beatMap, layout, startpos)
     const fromSize = playableSize(fromNote, layout)
     const toSize = playableSize(toNote, layout)
-    const verticalOffset = (distance + 0.5) * layout.X_SPACING
+    const verticalOffset = goto.confKey?.endsWith('.p_end') === true && distance < 0
+      ? Math.abs((distance + 0.5) * layout.X_SPACING)
+      : (distance + 0.5) * layout.X_SPACING
     const verticalBase = verticalAnchor === 'to' ? toCenter : fromCenter
     const verticalX = verticalBase[0] + verticalOffset
     const startOrientation = orientationX(verticalX - fromCenter[0])
@@ -1376,6 +1489,29 @@ export class HarpnotesLayout {
         lineWidth: layout.LINE_THICK,
         confKey,
         visible: true,
+        more_conf_keys: [],
+        draginfo: {
+          handler: 'jumpline',
+          jumpline: {
+            from: {
+              center: fromCenter,
+              size: fromSize,
+              anchor: 'after',
+            },
+            to: {
+              center: toCenter,
+              size: toSize,
+              anchor: 'before',
+            },
+            vertical: verticalOffset,
+            vertical_anchor: verticalAnchor,
+            padding: null,
+            xspacing: layout.X_SPACING,
+            jumpline_anchor: anchor,
+            verticalcut: verticalCut,
+          },
+          xspacing: layout.X_SPACING,
+        },
         znId: goto.znId,
       },
       {
@@ -1388,9 +1524,9 @@ export class HarpnotesLayout {
         pathData: arrowPathData,
         fill: true,
         color: layout.color.color_default,
-        lineWidth: layout.LINE_THICK,
-        confKey,
+        lineWidth: layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
         znId: goto.znId,
       },
       {
@@ -1405,9 +1541,9 @@ export class HarpnotesLayout {
         pathData: vcutArrowPathData,
         fill: true,
         color: layout.color.color_default,
-        lineWidth: layout.LINE_THICK,
-        confKey,
+        lineWidth: layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
         znId: goto.znId,
       },
     ]
@@ -1473,7 +1609,7 @@ export class HarpnotesLayout {
         if (options.show) {
           const p1 = playableCenter(tupletStart, beatMap, layout, startpos)
           const p2 = playableCenter(p, beatMap, layout, startpos)
-          const { path, pathData, anchor } = makeAnnotatedBezierPath(p1, p2, options)
+          const { path, pathData, anchor, cp1, cp2 } = makeAnnotatedBezierPath(p1, p2, options)
           const configuredText = conf.get('extract.tuplets.text')
           const text = (
             typeof configuredText === 'string'
@@ -1491,6 +1627,18 @@ export class HarpnotesLayout {
             lineWidth: layout.LINE_THIN,
             confKey: `extract.${extractNr}.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}.*`,
             visible: true,
+            more_conf_keys: [],
+            draginfo: {
+              handler: 'tuplet',
+              p1,
+              p2,
+              cp1: addPoint(p1, cp1),
+              cp2: addPoint(p1, cp2),
+              mp: { x: anchor[0], y: anchor[1] },
+              tuplet_options: options,
+              conf_key: `extract.${extractNr}.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}`,
+              callback: null,
+            },
             znId: tupletStart.znId,
           })
           result.push({
@@ -1501,6 +1649,8 @@ export class HarpnotesLayout {
             color: layout.color.color_default,
             lineWidth: layout.LINE_THIN,
             visible: true,
+            more_conf_keys: [],
+            draginfo: this._annotationDraginfo(),
             znId: tupletStart.znId,
           })
         }
@@ -1567,6 +1717,7 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: p1.visible && p2.visible,
+          more_conf_keys: [],
         })
       }
     }
@@ -1597,6 +1748,7 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
+          more_conf_keys: [],
         })
       }
     }
@@ -1608,16 +1760,18 @@ export class HarpnotesLayout {
         const x = pitchToX(pitch, layout)
         const text = labels[index % labels.length] ?? '~'
         for (const y of vpos) {
-          result.push({
-            type: 'Annotation',
-            center: [x, y],
-            text,
-            style,
-            align: 'center',
-            color: layout.color.color_default,
-            lineWidth: layout.LINE_THIN,
-            visible: true,
-          })
+        result.push({
+          type: 'Annotation',
+          center: [x, y],
+          text,
+          style,
+          align: 'center',
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THIN,
+          visible: true,
+          more_conf_keys: [],
+          draginfo: this._annotationDraginfo(),
+        })
         }
       }
     }
@@ -1660,6 +1814,8 @@ export class HarpnotesLayout {
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
+        draginfo: this._annotationDraginfo(),
       })
     }
 
@@ -1679,6 +1835,8 @@ export class HarpnotesLayout {
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
+        draginfo: this._annotationDraginfo(),
       })
     }
 
@@ -1698,6 +1856,8 @@ export class HarpnotesLayout {
         color: this._config.layout.color.color_default,
         lineWidth: this._config.layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
+        draginfo: this._annotationDraginfo(),
       },
       {
         type: 'Annotation',
@@ -1707,6 +1867,8 @@ export class HarpnotesLayout {
         color: this._config.layout.color.color_default,
         lineWidth: this._config.layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
+        draginfo: this._annotationDraginfo(),
       },
       {
         type: 'Annotation',
@@ -1758,6 +1920,8 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
+          more_conf_keys: [],
+          draginfo: this._annotationDraginfo(),
         })
       }
 
@@ -1790,6 +1954,8 @@ export class HarpnotesLayout {
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
+        draginfo: this._annotationDraginfo(),
       })
     }
 
@@ -1866,6 +2032,7 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
   ): {
     barnumberBackgrounds: Ellipse[]
@@ -1901,6 +2068,7 @@ export class HarpnotesLayout {
         const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
         const shiftY = shiftEu ? fontSize * layout.MM_PER_POINT * 0.25 : 0
         const align: 'left' | 'right' = side === 'l' ? 'right' : 'left'
+        const countnoteAlignKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}.align`
         const annotation: Annotation = {
           type: 'Annotation',
           center: [x + offset[0], y + offset[1] - shiftY],
@@ -1910,6 +2078,21 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: playable.visible,
+          more_conf_keys: [
+            {
+              conf_key: countnoteAlignKey,
+              text: 'countnote left',
+              icon: 'fa fa-arrow-left',
+              value: 'l',
+            },
+            {
+              conf_key: countnoteAlignKey,
+              text: 'countnote right',
+              icon: 'fa fa-arrow-right',
+              value: 'r',
+            },
+          ],
+          draginfo: this._annotationDraginfo(),
         }
         countnoteBackgrounds.push(
           this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05, shiftEu),
@@ -1926,6 +2109,7 @@ export class HarpnotesLayout {
         const offset = this._barnumberOffset(playable, layout, voiceNr, conf)
         const side = this._barnumberSide(playable, voiceNr, conf)
         const barnumber = playable.measureCount - skippedBarnumberMeasureStarts
+        const barnumberAlignKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}.align`
 
         const annotation: Annotation = {
           type: 'Annotation',
@@ -1936,6 +2120,21 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: playable.visible,
+          more_conf_keys: [
+            {
+              conf_key: barnumberAlignKey,
+              text: 'barnumber left',
+              icon: 'fa fa-arrow-left',
+              value: 'l',
+            },
+            {
+              conf_key: barnumberAlignKey,
+              text: 'barnumber right',
+              icon: 'fa fa-arrow-right',
+              value: 'r',
+            },
+          ],
+          draginfo: this._annotationDraginfo(),
         }
         barnumberBackgrounds.push(this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, 0.2))
         barnumbers.push(annotation)
@@ -2112,6 +2311,7 @@ export class HarpnotesLayout {
         lineWidth: 0,
         visible: true,
         confKey: `extract.${extractNr}.images.${nr}.pos`,
+        more_conf_keys: [],
       })
     }
 
@@ -2137,6 +2337,7 @@ export class HarpnotesLayout {
         color: this._config.layout.color.color_default,
         lineWidth: this._config.layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
       }]
     } catch {
       return []
@@ -2255,6 +2456,8 @@ export class HarpnotesLayout {
       color: layout.color.color_default,
       lineWidth: layout.LINE_THIN,
       visible: goto.visible,
+      more_conf_keys: [],
+      draginfo: this._annotationDraginfo(),
     }
   }
 
@@ -2370,6 +2573,8 @@ export class HarpnotesLayout {
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: companion.visible,
+        draginfo: this._annotationDraginfo(),
+        more_conf_keys: [],
       })
     }
 

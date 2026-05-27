@@ -6,16 +6,13 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 246_Horch-was-kommt-von-draussen-rein [extract 0]
 
-- Issues: 4005
+- Issues: 3002
 - children[0].from (extra)
   - expected: undefined
   - actual: [415.2,16.826431959139]
 - children[0].to (extra)
   - expected: undefined
   - actual: [415.05,19.261674571324335]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[0].znId (extra)
   - expected: undefined
   - actual: "192"
@@ -25,9 +22,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1].to (extra)
   - expected: undefined
   - actual: [405.3,20.430591025173293]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[1].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -37,9 +31,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[2].to (extra)
   - expected: undefined
   - actual: [405.3,22.865833637358627]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[2].znId (extra)
   - expected: undefined
   - actual: "576"
@@ -49,9 +40,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[3].to (extra)
   - expected: undefined
   - actual: [382.3,24.034750091207588]
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[3].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -61,9 +49,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[4].to (extra)
   - expected: undefined
   - actual: [382.3,26.95704122582999]
-- children[4].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[4].znId (extra)
   - expected: undefined
   - actual: "960"
@@ -73,9 +58,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[5].to (extra)
   - expected: undefined
   - actual: [359.3,29.58710324699015]
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[5].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -85,9 +67,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[6].to (extra)
   - expected: undefined
   - actual: [336.3,30.75601970083911]
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[6].znId (extra)
   - expected: undefined
   - actual: "1728"
@@ -97,9 +76,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[7].to (extra)
   - expected: undefined
   - actual: [324.8,31.92493615468807]
-- children[7].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[7].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -109,9 +85,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[8].to (extra)
   - expected: undefined
   - actual: [324.8,34.3601787668734]
-- children[8].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[8].znId (extra)
   - expected: undefined
   - actual: "2112"
@@ -121,9 +94,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[9].to (extra)
   - expected: undefined
   - actual: [301.8,35.52909522072237]
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[9].znId (extra)
   - expected: undefined
   - actual: "2304"
@@ -133,9 +103,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[10].to (extra)
   - expected: undefined
   - actual: [301.8,38.451386355344766]
-- children[10].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[10].znId (extra)
   - expected: undefined
   - actual: "2496"
@@ -145,9 +112,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[11].to (extra)
   - expected: undefined
   - actual: [301.8,43.273166727471725]
-- children[11].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[11].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -157,9 +121,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[12].to (extra)
   - expected: undefined
   - actual: [301.8,45.70840933965706]
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[12].znId (extra)
   - expected: undefined
   - actual: "3264"
@@ -169,9 +130,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[13].to (extra)
   - expected: undefined
   - actual: [290.3,46.87732579350602]
-- children[13].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[13].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -181,9 +139,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[14].to (extra)
   - expected: undefined
   - actual: [278.8,48.046242247354975]
-- children[14].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[14].znId (extra)
   - expected: undefined
   - actual: "3648"
@@ -193,9 +148,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[15].to (extra)
   - expected: undefined
   - actual: [267.3,49.21515870120393]
-- children[15].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[15].znId (extra)
   - expected: undefined
   - actual: "3840"
@@ -205,9 +157,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[16].to (extra)
   - expected: undefined
   - actual: [255.8,50.4327800072966]
-- children[16].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[16].znId (extra)
   - expected: undefined
   - actual: "4032"
@@ -217,9 +166,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[17].to (extra)
   - expected: undefined
   - actual: [267.3,51.406877052170735]
-- children[17].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[17].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -229,9 +175,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[18].to (extra)
   - expected: undefined
   - actual: [221.3,53.355071141919]
-- children[18].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[18].znId (extra)
   - expected: undefined
   - actual: "4416"
@@ -241,9 +184,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[19].to (extra)
   - expected: undefined
   - actual: [244.3,57.007935060197006]
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[19].znId (extra)
   - expected: undefined
   - actual: "4608"
@@ -253,9 +193,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[20].to (extra)
   - expected: undefined
   - actual: [301.8,73.98157606712877]
-- children[20].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[20].znId (extra)
   - expected: undefined
   - actual: "6720"
@@ -265,9 +202,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[21].to (extra)
   - expected: undefined
   - actual: [324.8,75.15049252097774]
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[21].znId (extra)
   - expected: undefined
   - actual: "6912"
@@ -277,9 +211,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[22].to (extra)
   - expected: undefined
   - actual: [324.8,77.58573513316307]
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[22].znId (extra)
   - expected: undefined
   - actual: "7104"
@@ -289,9 +220,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[23].to (extra)
   - expected: undefined
   - actual: [336.3,78.75465158701202]
-- children[23].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[23].znId (extra)
   - expected: undefined
   - actual: "7296"
@@ -301,9 +229,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[24].to (extra)
   - expected: undefined
   - actual: [359.3,80.58108354615102]
-- children[24].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[24].znId (extra)
   - expected: undefined
   - actual: "7680"
@@ -313,9 +238,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[25].to (extra)
   - expected: undefined
   - actual: [382.3,82.04222911346223]
-- children[25].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[25].znId (extra)
   - expected: undefined
   - actual: "7872"
@@ -325,9 +247,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[26].to (extra)
   - expected: undefined
   - actual: [359.3,84.96452024808463]
-- children[26].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[26].znId (extra)
   - expected: undefined
   - actual: "8256"
@@ -337,9 +256,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[27].to (extra)
   - expected: undefined
   - actual: [359.3,87.39976286026996]
-- children[27].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[27].znId (extra)
   - expected: undefined
   - actual: "8448"
@@ -349,9 +265,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[28].to (extra)
   - expected: undefined
   - actual: [301.8,90.39511127325792]
-- children[28].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[28].znId (extra)
   - expected: undefined
   - actual: "9216"
@@ -361,9 +274,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[29].to (extra)
   - expected: undefined
   - actual: [267.3,91.85625684056912]
-- children[29].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[29].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -373,9 +283,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[30].to (extra)
   - expected: undefined
   - actual: [267.3,94.77854797519151]
-- children[30].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[30].znId (extra)
   - expected: undefined
   - actual: "9984"
@@ -385,9 +292,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[31].to (extra)
   - expected: undefined
   - actual: [382.3,98.06612550164172]
-- children[31].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[31].znId (extra)
   - expected: undefined
   - actual: "10752"
@@ -397,9 +301,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[32].to (extra)
   - expected: undefined
   - actual: [382.3,100.50136811382704]
-- children[32].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[32].znId (extra)
   - expected: undefined
   - actual: "10944"
@@ -409,9 +310,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[33].to (extra)
   - expected: undefined
   - actual: [370.8,101.47546515870118]
-- children[33].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[33].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -421,9 +319,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[34].to (extra)
   - expected: undefined
   - actual: [359.3,102.44956220357531]
-- children[34].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[34].znId (extra)
   - expected: undefined
   - actual: "11328"
@@ -433,9 +328,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[35].to (extra)
   - expected: undefined
   - actual: [313.3,104.88480481576065]
-- children[35].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[35].znId (extra)
   - expected: undefined
   - actual: "11520"
@@ -445,9 +337,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[36].to (extra)
   - expected: undefined
   - actual: [278.8,112.73846224005834]
-- children[36].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[36].znId (extra)
   - expected: undefined
   - actual: "12288"
@@ -457,9 +346,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[37].to (extra)
   - expected: undefined
   - actual: [301.8,115.12499999999997]
-- children[37].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[37].znId (extra)
   - expected: undefined
   - actual: "12864"
@@ -469,9 +355,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[38].to (extra)
   - expected: undefined
   - actual: [324.8,116.29391645384894]
-- children[38].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[38].znId (extra)
   - expected: undefined
   - actual: "13056"
@@ -481,9 +364,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[39].to (extra)
   - expected: undefined
   - actual: [336.3,117.4628329076979]
-- children[39].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[39].znId (extra)
   - expected: undefined
   - actual: "13440"
@@ -493,9 +373,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[40].to (extra)
   - expected: undefined
   - actual: [359.3,119.28926486683692]
-- children[40].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[40].znId (extra)
   - expected: undefined
   - actual: "13824"
@@ -505,9 +382,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[41].to (extra)
   - expected: undefined
   - actual: [382.3,120.75041043414811]
-- children[41].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[41].znId (extra)
   - expected: undefined
   - actual: "14016"
@@ -517,9 +391,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[42].to (extra)
   - expected: undefined
   - actual: [359.3,123.6727015687705]
-- children[42].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[42].znId (extra)
   - expected: undefined
   - actual: "14400"
@@ -529,9 +400,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[43].to (extra)
   - expected: undefined
   - actual: [359.3,126.10794418095584]
-- children[43].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[43].znId (extra)
   - expected: undefined
   - actual: "14592"
@@ -541,9 +409,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[44].to (extra)
   - expected: undefined
   - actual: [336.3,129.10329259394382]
-- children[44].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[44].znId (extra)
   - expected: undefined
   - actual: "15360"
@@ -553,9 +418,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[45].to (extra)
   - expected: undefined
   - actual: [336.3,131.53853520612915]
-- children[45].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[45].znId (extra)
   - expected: undefined
   - actual: "15552"
@@ -565,9 +427,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[46].to (extra)
   - expected: undefined
   - actual: [301.8,132.75615651222182]
-- children[46].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[46].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -577,9 +436,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[47].to (extra)
   - expected: undefined
   - actual: [405.3,133.9737778183145]
-- children[47].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[47].znId (extra)
   - expected: undefined
   - actual: "15936"
@@ -589,9 +445,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[48].to (extra)
   - expected: undefined
   - actual: [347.8,135.19139912440716]
-- children[48].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[48].znId (extra)
   - expected: undefined
   - actual: "16128"
@@ -601,9 +454,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[49].to (extra)
   - expected: undefined
   - actual: [301.8,136.65254469171833]
-- children[49].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[49].znId (extra)
   - expected: undefined
   - actual: "16320"
@@ -613,9 +463,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[50].to (extra)
   - expected: undefined
   - actual: [415.05,139.57483582634075]
-- children[50].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[50].znId (extra)
   - expected: undefined
   - actual: "16896"
@@ -625,9 +472,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[51].to (extra)
   - expected: undefined
   - actual: [415.05,141.523029916089]
-- children[51].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[51].znId (extra)
   - expected: undefined
   - actual: "17088"
@@ -637,9 +481,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[52].to (extra)
   - expected: undefined
   - actual: [382.3,142.69194636993797]
-- children[52].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[52].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -649,9 +490,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[53].to (extra)
   - expected: undefined
   - actual: [359.3,143.66604341481212]
-- children[53].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[53].znId (extra)
   - expected: undefined
   - actual: "17472"
@@ -661,9 +499,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[54].to (extra)
   - expected: undefined
   - actual: [415.05,144.8836647209048]
-- children[54].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[54].znId (extra)
   - expected: undefined
   - actual: "17664"
@@ -673,9 +508,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[55].to (extra)
   - expected: undefined
   - actual: [415.05,147.31890733309012]
-- children[55].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[55].znId (extra)
   - expected: undefined
   - actual: "17856"
@@ -685,9 +517,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[56].to (extra)
   - expected: undefined
   - actual: [405.3,148.5365286391828]
-- children[56].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[56].znId (extra)
   - expected: undefined
   - actual: "18048"
@@ -697,9 +526,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[57].to (extra)
   - expected: undefined
   - actual: [336.3,150.0585552717986]
-- children[57].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[57].znId (extra)
   - expected: undefined
   - actual: "18432"
@@ -709,9 +535,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[58].to (extra)
   - expected: undefined
   - actual: [336.3,152.98084640642102]
-- children[58].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[58].znId (extra)
   - expected: undefined
   - actual: "18816"
@@ -721,9 +544,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[59].to (extra)
   - expected: undefined
   - actual: [382.3,154.44199197373223]
-- children[59].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[59].znId (extra)
   - expected: undefined
   - actual: "19200"
@@ -733,9 +553,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[60].to (extra)
   - expected: undefined
   - actual: [359.3,155.9031375410434]
-- children[60].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[60].znId (extra)
   - expected: undefined
   - actual: "19584"
@@ -745,9 +562,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[61].to (extra)
   - expected: undefined
   - actual: [336.3,157.3642831083546]
-- children[61].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[61].znId (extra)
   - expected: undefined
   - actual: "19776"
@@ -757,9 +571,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[62].to (extra)
   - expected: undefined
   - actual: [324.8,158.82542867566582]
-- children[62].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[62].znId (extra)
   - expected: undefined
   - actual: "19968"
@@ -769,9 +580,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[63].to (extra)
   - expected: undefined
   - actual: [324.8,161.26067128785115]
-- children[63].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[63].znId (extra)
   - expected: undefined
   - actual: "20160"
@@ -781,9 +589,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[64].to (extra)
   - expected: undefined
   - actual: [278.8,162.47829259394382]
-- children[64].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[64].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -793,9 +598,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[65].to (extra)
   - expected: undefined
   - actual: [324.8,163.6959139000365]
-- children[65].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[65].znId (extra)
   - expected: undefined
   - actual: "20544"
@@ -805,9 +607,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[66].to (extra)
   - expected: undefined
   - actual: [324.8,166.13115651222182]
-- children[66].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[66].znId (extra)
   - expected: undefined
   - actual: "20736"
@@ -817,9 +616,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[67].to (extra)
   - expected: undefined
   - actual: [301.8,169.41873403867203]
-- children[67].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[67].znId (extra)
   - expected: undefined
   - actual: "21504"
@@ -829,9 +625,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[68].to (extra)
   - expected: undefined
   - actual: [267.3,170.8798796059832]
-- children[68].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[68].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -841,9 +634,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[69].to (extra)
   - expected: undefined
   - actual: [301.8,172.3410251732944]
-- children[69].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[69].znId (extra)
   - expected: undefined
   - actual: "22272"
@@ -853,9 +643,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[70].to (extra)
   - expected: undefined
   - actual: [415.05,176.23741335279095]
-- children[70].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[70].znId (extra)
   - expected: undefined
   - actual: "23040"
@@ -865,9 +652,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[71].to (extra)
   - expected: undefined
   - actual: [415.05,178.1856074425392]
-- children[71].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[71].znId (extra)
   - expected: undefined
   - actual: "23232"
@@ -877,9 +661,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[72].to (extra)
   - expected: undefined
   - actual: [405.3,180.1338015322875]
-- children[72].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[72].znId (extra)
   - expected: undefined
   - actual: "23424"
@@ -889,9 +670,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[73].to (extra)
   - expected: undefined
   - actual: [393.8,182.08199562203575]
-- children[73].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[73].znId (extra)
   - expected: undefined
   - actual: "23616"
@@ -901,9 +679,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[74].to (extra)
   - expected: undefined
   - actual: [393.8,184.51723823422108]
-- children[74].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[74].znId (extra)
   - expected: undefined
   - actual: "23808"
@@ -913,9 +688,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[75].to (extra)
   - expected: undefined
   - actual: [336.3,191.53073695731487]
-- children[75].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[75].znId (extra)
   - expected: undefined
   - actual: "24576"
@@ -925,9 +697,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[76].to (extra)
   - expected: undefined
   - actual: [336.3,194.45302809193726]
-- children[76].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[76].znId (extra)
   - expected: undefined
   - actual: "24960"
@@ -937,9 +706,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[77].to (extra)
   - expected: undefined
   - actual: [382.3,195.91417365924843]
-- children[77].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[77].znId (extra)
   - expected: undefined
   - actual: "25344"
@@ -949,9 +715,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[78].to (extra)
   - expected: undefined
   - actual: [359.3,197.37531922655967]
-- children[78].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[78].znId (extra)
   - expected: undefined
   - actual: "25728"
@@ -961,9 +724,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[79].to (extra)
   - expected: undefined
   - actual: [336.3,198.54423568040863]
-- children[79].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[79].znId (extra)
   - expected: undefined
   - actual: "25920"
@@ -973,9 +733,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[80].to (extra)
   - expected: undefined
   - actual: [324.8,200.06626231302448]
-- children[80].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[80].znId (extra)
   - expected: undefined
   - actual: "26112"
@@ -985,9 +742,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[81].to (extra)
   - expected: undefined
   - actual: [278.8,201.52740788033566]
-- children[81].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[81].znId (extra)
   - expected: undefined
   - actual: "26496"
@@ -997,9 +751,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[82].to (extra)
   - expected: undefined
   - actual: [324.8,202.98855344764686]
-- children[82].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[82].znId (extra)
   - expected: undefined
   - actual: "26880"
@@ -1009,9 +760,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[83].to (extra)
   - expected: undefined
   - actual: [267.3,211.9745986866107]
-- children[83].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[83].znId (extra)
   - expected: undefined
   - actual: "28032"
@@ -1021,9 +769,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[84].to (extra)
   - expected: undefined
   - actual: [301.8,213.43574425392194]
-- children[84].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[84].znId (extra)
   - expected: undefined
   - actual: "28416"
@@ -1033,9 +778,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[85].to (extra)
   - expected: undefined
   - actual: [336.3,214.89688982123315]
-- children[85].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[85].znId (extra)
   - expected: undefined
   - actual: "28800"
@@ -1045,9 +787,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[86].to (extra)
   - expected: undefined
   - actual: [324.8,217.02772710689527]
-- children[86].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[86].znId (extra)
   - expected: undefined
   - actual: "29184"
@@ -1057,9 +796,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[87].to (extra)
   - expected: undefined
   - actual: [359.3,233.29514775629335]
-- children[87].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[87].znId (extra)
   - expected: undefined
   - actual: "30912"
@@ -1069,9 +805,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[88].to (extra)
   - expected: undefined
   - actual: [359.3,235.73039036847868]
-- children[88].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[88].znId (extra)
   - expected: undefined
   - actual: "31104"
@@ -1081,9 +814,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[89].to (extra)
   - expected: undefined
   - actual: [359.3,237.6785844582269]
-- children[89].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[89].znId (extra)
   - expected: undefined
   - actual: "31296"
@@ -1093,9 +823,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[90].to (extra)
   - expected: undefined
   - actual: [336.3,238.8962057643196]
-- children[90].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[90].znId (extra)
   - expected: undefined
   - actual: "31488"
@@ -1105,9 +832,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[91].to (extra)
   - expected: undefined
   - actual: [301.8,240.3573513316308]
-- children[91].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[91].znId (extra)
   - expected: undefined
   - actual: "31872"
@@ -1117,9 +841,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[92].to (extra)
   - expected: undefined
   - actual: [324.8,242.18378329076978]
-- children[92].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[92].znId (extra)
   - expected: undefined
   - actual: "32256"
@@ -1129,9 +850,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[93].to (extra)
   - expected: undefined
   - actual: [359.3,244.61902590295512]
-- children[93].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[93].znId (extra)
   - expected: undefined
   - actual: "32448"
@@ -1141,9 +859,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[94].to (extra)
   - expected: undefined
   - actual: [359.3,247.05426851514045]
-- children[94].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[94].znId (extra)
   - expected: undefined
   - actual: "32640"
@@ -1153,9 +868,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[95].to (extra)
   - expected: undefined
   - actual: [359.3,249.00246260488873]
-- children[95].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[95].znId (extra)
   - expected: undefined
   - actual: "32832"
@@ -1165,9 +877,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[96].to (extra)
   - expected: undefined
   - actual: [382.3,250.22008391098143]
-- children[96].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[96].znId (extra)
   - expected: undefined
   - actual: "33024"
@@ -1177,9 +886,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[97].to (extra)
   - expected: undefined
   - actual: [336.3,251.6812294782926]
-- children[97].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[97].znId (extra)
   - expected: undefined
   - actual: "33408"
@@ -1189,9 +895,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[98].to (extra)
   - expected: undefined
   - actual: [359.3,258.9869573148486]
-- children[98].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[98].znId (extra)
   - expected: undefined
   - actual: "33984"
@@ -1201,9 +904,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[99].to (extra)
   - expected: undefined
   - actual: [359.3,261.42219992703394]
-- children[99].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[99].znId (extra)
   - expected: undefined
   - actual: "34176"
@@ -1213,9 +913,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[100].to (extra)
   - expected: undefined
   - actual: [359.3,263.3703940167822]
-- children[100].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[100].znId (extra)
   - expected: undefined
   - actual: "34368"
@@ -1225,9 +922,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[101].to (extra)
   - expected: undefined
   - actual: [336.3,264.58801532287487]
-- children[101].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[101].znId (extra)
   - expected: undefined
   - actual: "34560"
@@ -1237,9 +931,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[102].to (extra)
   - expected: undefined
   - actual: [301.8,265.80563662896753]
-- children[102].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[102].znId (extra)
   - expected: undefined
   - actual: "34944"
@@ -1249,9 +940,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[103].to (extra)
   - expected: undefined
   - actual: [301.8,269.45850054724554]
-- children[103].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[103].znId (extra)
   - expected: undefined
   - actual: "tp_1_1"
@@ -1261,9 +949,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[104].to (extra)
   - expected: undefined
   - actual: [267.3,270.9196461145567]
-- children[104].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[104].znId (extra)
   - expected: undefined
   - actual: "35584"
@@ -1273,9 +958,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[105].to (extra)
   - expected: undefined
   - actual: [301.8,272.38079168186795]
-- children[105].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[105].znId (extra)
   - expected: undefined
   - actual: "35840"
@@ -1285,9 +967,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[106].to (extra)
   - expected: undefined
   - actual: [336.3,273.8419372491791]
-- children[106].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[106].znId (extra)
   - expected: undefined
   - actual: "36096"
@@ -1297,9 +976,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[107].to (extra)
   - expected: undefined
   - actual: [405.3,275.30308281649036]
-- children[107].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[107].znId (extra)
   - expected: undefined
   - actual: "36480"
@@ -1309,9 +985,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[108].to (extra)
   - expected: undefined
   - actual: [412.675,277.12951477562933]
-- children[108].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[108].znId (extra)
   - expected: undefined
   - actual: "36864"
@@ -1321,9 +994,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[109].to (extra)
   - expected: undefined
   - actual: [415.05,279.56475738781467]
-- children[109].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[109].znId (extra)
   - expected: undefined
   - actual: "37440"
@@ -1333,66 +1003,63 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[110].to (extra)
   - expected: undefined
   - actual: [414.8,282]
-- children[110].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[110].znId (extra)
   - expected: undefined
   - actual: "37632"
 - children[111].fill (extra)
   - expected: undefined
   - actual: false
-- children[111].lineWidth (extra)
+- children[111].color (extra)
   - expected: undefined
-  - actual: 0.3
-- children[111].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[111].path (mismatch)
+  - expected: [["M",362.425,84.46452024808463],["c",0.4013239450395754,0.9492203925061474,0.4013239450395753,2.4860222196791866,0,3.435242612185334]]
   - actual: [[362.425,84.46452024808463],[362.51697007073824,84.71338655499511],[362.5922183104331,84.98265499505376],[362.6507447190848,85.26824514163093],[362.6925492966931,85.566076568097],[362.717632043258,85.87206884782233],[362.7259929587797,86.18214155417729],[362.717632043258,86.49221426053225],[362.6925492966931,86.79820654025758],[362.6507447190848,87.09603796672364],[362.5922183104331,87.38162811330082],[362.51697007073824,87.65089655335947],[362.425,87.89976286026996]]
 - children[112].fill (extra)
   - expected: undefined
   - actual: false
-- children[112].lineWidth (extra)
+- children[112].color (extra)
   - expected: undefined
-  - actual: 0.3
-- children[112].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[112].path (mismatch)
+  - expected: [["M",362.425,123.17270156877052],["c",0.4013239450395738,0.9492203925061435,0.4013239450395737,2.4860222196791764,0,3.43524261218532]]
   - actual: [[362.425,123.1727015687705],[362.51697007073824,123.42156787568099],[362.5922183104331,123.69083631573965],[362.6507447190848,123.97642646231681],[362.6925492966931,124.27425788878288],[362.717632043258,124.58025016850821],[362.7259929587797,124.89032287486317],[362.717632043258,125.20039558121813],[362.6925492966931,125.50638786094346],[362.6507447190848,125.80421928740952],[362.5922183104331,126.0898094339867],[362.51697007073824,126.35907787404534],[362.425,126.60794418095584]]
 - children[113].fill (extra)
   - expected: undefined
   - actual: false
-- children[113].lineWidth (extra)
+- children[113].color (extra)
   - expected: undefined
-  - actual: 0.3
-- children[113].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[113].path (mismatch)
+  - expected: [["M",327.925,163.1959139000365],["c",0.4013239450395754,0.9492203925061474,0.4013239450395753,2.4860222196791866,0,3.435242612185334]]
   - actual: [[327.925,163.1959139000365],[328.01697007073824,163.44478020694697],[328.0922183104331,163.71404864700563],[328.1507447190848,163.9996387935828],[328.1925492966931,164.2974702200489],[328.217632043258,164.6034624997742],[328.2259929587797,164.91353520612915],[328.217632043258,165.2236079124841],[328.1925492966931,165.52960019220944],[328.1507447190848,165.82743161867552],[328.0922183104331,166.11302176525268],[328.01697007073824,166.38229020531134],[327.925,166.63115651222182]]
 - children[114].fill (extra)
   - expected: undefined
   - actual: false
-- children[114].lineWidth (extra)
+- children[114].color (extra)
   - expected: undefined
-  - actual: 0.3
-- children[114].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[114].path (mismatch)
+  - expected: [["M",396.925,181.58199562203575],["c",0.4013239450395754,0.9492203925061474,0.4013239450395753,2.4860222196791866,0,3.435242612185334]]
   - actual: [[396.925,181.58199562203575],[397.01697007073824,181.83086192894623],[397.0922183104331,182.1001303690049],[397.1507447190848,182.38572051558205],[397.1925492966931,182.68355194204815],[397.217632043258,182.98954422177346],[397.2259929587797,183.2996169281284],[397.217632043258,183.60968963448337],[397.1925492966931,183.9156819142087],[397.1507447190848,184.21351334067478],[397.0922183104331,184.49910348725194],[397.01697007073824,184.7683719273106],[396.925,185.01723823422108]]
 - children[115].fill (extra)
   - expected: undefined
   - actual: false
-- children[115].lineWidth (extra)
+- children[115].color (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "black"
 - children[115].znId (extra)
   - expected: undefined
   - actual: "tp_1_1"
-- children[115].path (extra)
-  - expected: undefined
+- children[115].draginfo (mismatch)
+  - expected: {"handler":"tuplet","p1":[301.8,269.45850054724554],"p2":[301.8,272.38079168186795],"cp1":[249.73000000000002,262.5485005472455],"cp2":[247.19,279.08079168186794],"mp":{"$$id":19194,"x":257.8118311687643,"y":268.58197259917995},"conf_key":"extract.0.notebound.tuplet.v_1.tp_1_1"}
+  - actual: {"handler":"tuplet","p1":[301.8,269.45850054724554],"p2":[301.8,272.38079168186795],"cp1":[249.73000000000002,262.5485005472455],"cp2":[247.19,279.08079168186794],"mp":{"x":257.8118311687643,"y":268.58197259917995},"tuplet_options":{"cp1":[-52.07,-6.91],"cp2":[-54.61,6.7],"pos":[0,0],"shape":["c"],"show":true},"conf_key":"extract.0.notebound.tuplet.v_1.tp_1_1","callback":null}
+- children[115].path (mismatch)
+  - expected: [["M",301.8,269.45850054724554],["c",-52.07,-6.91,-54.61,9.622291134622412,0,2.9222911346224123]]
   - actual: [[301.8,269.45850054724554],[289.81878472222223,268.1923708589222],[279.9277777777778,267.74093877943983],[272.1534375,267.94213978703027],[266.52222222222224,268.6339093599254],[263.0605902777778,269.654182976357],[261.795,270.84089611455676],[262.75190972222225,272.03198425275656],[265.9577777777778,273.06538286918806],[271.4390625,273.7790274420832],[279.22222222222223,274.0108534496737],[289.33371527777774,273.59879637019134],[301.8,272.38079168186795]]
 - children[116].center (mismatch)
   - expected: [257.8118,268.582]
   - actual: [257.8118311687643,268.58197259917995]
-- children[116].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[116].znId (extra)
   - expected: undefined
   - actual: "tp_1_1"
@@ -1402,231 +1069,222 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[117].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[117].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[117].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[117].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[118].center (mismatch)
   - expected: [415.2,15.7764]
   - actual: [415.2,15.776431959139]
-- children[118].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[118].znId (extra)
   - expected: undefined
   - actual: "0"
 - children[119].center (mismatch)
   - expected: [415.05,19.2617]
   - actual: [415.05,19.261674571324335]
-- children[119].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[119].znId (extra)
   - expected: undefined
   - actual: "192"
+- children[119].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_192.n_0.***"
 - children[120].center (mismatch)
   - expected: [405.3,20.4306]
   - actual: [405.3,20.430591025173293]
 - children[120].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[120].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[120].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[120].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[121].center (mismatch)
   - expected: [405.3,22.8658]
   - actual: [405.3,22.865833637358627]
-- children[121].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[121].znId (extra)
   - expected: undefined
   - actual: "576"
+- children[121].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_576.n_0.***"
 - children[122].center (mismatch)
   - expected: [382.3,24.0348]
   - actual: [382.3,24.034750091207588]
-- children[122].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[122].znId (extra)
   - expected: undefined
   - actual: "768"
+- children[122].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
 - children[123].center (mismatch)
   - expected: [382.3,26.957]
   - actual: [382.3,26.95704122582999]
 - children[123].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[123].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[123].znId (extra)
   - expected: undefined
   - actual: "960"
+- children[123].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_960.n_0.***"
 - children[124].center (mismatch)
   - expected: [359.3,29.5871]
   - actual: [359.3,29.58710324699015]
 - children[124].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[124].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[124].znId (extra)
   - expected: undefined
   - actual: "1536"
+- children[124].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1536.n_0.***"
 - children[125].center (mismatch)
   - expected: [359.3,28.5371]
   - actual: [359.3,28.53710324699015]
-- children[125].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[125].znId (extra)
   - expected: undefined
   - actual: "1536"
 - children[126].center (mismatch)
   - expected: [336.3,30.756]
   - actual: [336.3,30.75601970083911]
-- children[126].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[126].znId (extra)
   - expected: undefined
   - actual: "1728"
+- children[126].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1728.n_0.***"
 - children[127].center (mismatch)
   - expected: [324.8,31.9249]
   - actual: [324.8,31.92493615468807]
 - children[127].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[127].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[127].znId (extra)
   - expected: undefined
   - actual: "1920"
+- children[127].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1920.n_0.***"
 - children[128].center (mismatch)
   - expected: [324.8,34.3602]
   - actual: [324.8,34.3601787668734]
-- children[128].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[128].znId (extra)
   - expected: undefined
   - actual: "2112"
+- children[128].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_2112.n_0.***"
 - children[129].center (mismatch)
   - expected: [301.8,35.5291]
   - actual: [301.8,35.52909522072237]
-- children[129].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[129].znId (extra)
   - expected: undefined
   - actual: "2304"
+- children[129].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_2304.n_0.***"
 - children[130].center (mismatch)
   - expected: [301.8,38.4514]
   - actual: [301.8,38.451386355344766]
 - children[130].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[130].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[130].znId (extra)
   - expected: undefined
   - actual: "2496"
+- children[130].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_2496.n_0.***"
 - children[131].center (mismatch)
   - expected: [301.8,43.2732]
   - actual: [301.8,43.273166727471725]
 - children[131].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[131].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[131].znId (extra)
   - expected: undefined
   - actual: "3072"
+- children[131].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_3072.n_0.***"
 - children[132].center (mismatch)
   - expected: [301.8,42.2232]
   - actual: [301.8,42.22316672747173]
-- children[132].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[132].znId (extra)
   - expected: undefined
   - actual: "3072"
 - children[133].center (mismatch)
   - expected: [301.8,45.7084]
   - actual: [301.8,45.70840933965706]
-- children[133].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[133].znId (extra)
   - expected: undefined
   - actual: "3264"
+- children[133].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_3264.n_0.***"
 - children[134].center (mismatch)
   - expected: [290.3,46.8773]
   - actual: [290.3,46.87732579350602]
 - children[134].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[134].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[134].znId (extra)
   - expected: undefined
   - actual: "3456"
+- children[134].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_3456.n_0.***"
 - children[135].center (mismatch)
   - expected: [278.8,48.0462]
   - actual: [278.8,48.046242247354975]
-- children[135].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[135].znId (extra)
   - expected: undefined
   - actual: "3648"
+- children[135].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_3648.n_0.***"
 - children[136].center (mismatch)
   - expected: [267.3,49.2152]
   - actual: [267.3,49.21515870120393]
-- children[136].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[136].znId (extra)
   - expected: undefined
   - actual: "3840"
+- children[136].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_3840.n_0.***"
 - children[137].center (mismatch)
   - expected: [255.8,50.4328]
   - actual: [255.8,50.4327800072966]
-- children[137].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[137].znId (extra)
   - expected: undefined
   - actual: "4032"
+- children[137].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4032.n_0.***"
 - children[138].center (mismatch)
   - expected: [267.3,51.4069]
   - actual: [267.3,51.406877052170735]
-- children[138].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[138].znId (extra)
   - expected: undefined
   - actual: "4224"
+- children[138].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4224.n_0.***"
 - children[139].center (mismatch)
   - expected: [221.3,53.3551]
   - actual: [221.3,53.355071141919]
-- children[139].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[139].znId (extra)
   - expected: undefined
   - actual: "4416"
+- children[139].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4416.n_0.***"
 - children[140].center (mismatch)
   - expected: [244.3,57.0079]
   - actual: [244.3,57.007935060197006]
@@ -1636,18 +1294,15 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[140].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[140].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[140].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[140].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4608.n_0.***"
 - children[141].center (mismatch)
   - expected: [244.3,55.5079]
   - actual: [244.3,55.507935060197006]
-- children[141].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[141].znId (extra)
   - expected: undefined
   - actual: "4608"
@@ -1657,75 +1312,69 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[142].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[142].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[142].znId (extra)
   - expected: undefined
   - actual: "6144"
+- children[142].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_6144.n_0.***"
 - children[143].center (mismatch)
   - expected: [278.8,70.3687]
   - actual: [278.8,70.36874315943085]
-- children[143].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[143].znId (extra)
   - expected: undefined
   - actual: "6144"
 - children[144].center (mismatch)
   - expected: [301.8,73.9816]
   - actual: [301.8,73.98157606712877]
-- children[144].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[144].znId (extra)
   - expected: undefined
   - actual: "6720"
+- children[144].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_6720.n_0.***"
 - children[145].center (mismatch)
   - expected: [324.8,75.1505]
   - actual: [324.8,75.15049252097774]
-- children[145].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[145].znId (extra)
   - expected: undefined
   - actual: "6912"
+- children[145].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_6912.n_0.***"
 - children[146].center (mismatch)
   - expected: [324.8,77.5857]
   - actual: [324.8,77.58573513316307]
-- children[146].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[146].znId (extra)
   - expected: undefined
   - actual: "7104"
+- children[146].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_7104.n_0.***"
 - children[147].center (mismatch)
   - expected: [336.3,78.7547]
   - actual: [336.3,78.75465158701202]
 - children[147].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[147].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[147].znId (extra)
   - expected: undefined
   - actual: "7296"
+- children[147].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_7296.n_0.***"
 - children[148].center (mismatch)
   - expected: [359.3,80.5811]
   - actual: [359.3,80.58108354615102]
-- children[148].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[148].znId (extra)
   - expected: undefined
   - actual: "7680"
+- children[148].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_7680.n_0.***"
 - children[149].center (mismatch)
   - expected: [359.3,79.6311]
   - actual: [359.3,79.63108354615102]
-- children[149].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[149].znId (extra)
   - expected: undefined
   - actual: "7680"
@@ -1735,51 +1384,48 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[150].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[150].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[150].znId (extra)
   - expected: undefined
   - actual: "7872"
+- children[150].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_7872.n_0.***"
 - children[151].center (mismatch)
   - expected: [359.3,84.9645]
   - actual: [359.3,84.96452024808463]
-- children[151].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[151].znId (extra)
   - expected: undefined
   - actual: "8256"
+- children[151].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8256.n_0.***"
 - children[152].center (mismatch)
   - expected: [359.3,87.3998]
   - actual: [359.3,87.39976286026996]
 - children[152].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[152].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[152].znId (extra)
   - expected: undefined
   - actual: "8448"
+- children[152].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8448.n_0.***"
 - children[153].center (mismatch)
   - expected: [301.8,90.3951]
   - actual: [301.8,90.39511127325792]
 - children[153].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[153].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[153].znId (extra)
   - expected: undefined
   - actual: "9216"
+- children[153].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_9216.n_0.***"
 - children[154].center (mismatch)
   - expected: [301.8,89.1201]
   - actual: [301.8,89.12011127325792]
-- children[154].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[154].znId (extra)
   - expected: undefined
   - actual: "9216"
@@ -1789,69 +1435,66 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[155].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[155].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[155].znId (extra)
   - expected: undefined
   - actual: "9600"
+- children[155].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_9600.n_0.***"
 - children[156].center (mismatch)
   - expected: [267.3,94.7785]
   - actual: [267.3,94.77854797519151]
 - children[156].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[156].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[156].znId (extra)
   - expected: undefined
   - actual: "9984"
+- children[156].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_9984.n_0.***"
 - children[157].center (mismatch)
   - expected: [382.3,98.0661]
   - actual: [382.3,98.06612550164172]
-- children[157].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[157].znId (extra)
   - expected: undefined
   - actual: "10752"
+- children[157].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_10752.n_0.***"
 - children[158].center (mismatch)
   - expected: [382.3,97.1161]
   - actual: [382.3,97.11612550164172]
-- children[158].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[158].znId (extra)
   - expected: undefined
   - actual: "10752"
 - children[159].center (mismatch)
   - expected: [382.3,100.5014]
   - actual: [382.3,100.50136811382704]
-- children[159].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[159].znId (extra)
   - expected: undefined
   - actual: "10944"
+- children[159].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_10944.n_0.***"
 - children[160].center (mismatch)
   - expected: [370.8,101.4755]
   - actual: [370.8,101.47546515870118]
-- children[160].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[160].znId (extra)
   - expected: undefined
   - actual: "11136"
+- children[160].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_11136.n_0.***"
 - children[161].center (mismatch)
   - expected: [359.3,102.4496]
   - actual: [359.3,102.44956220357531]
-- children[161].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[161].znId (extra)
   - expected: undefined
   - actual: "11328"
+- children[161].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_11328.n_0.***"
 - children[162].center (mismatch)
   - expected: [313.3,104.8848]
   - actual: [313.3,104.88480481576065]
@@ -1861,81 +1504,75 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[162].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[162].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[162].znId (extra)
   - expected: undefined
   - actual: "11520"
+- children[162].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_11520.n_0.***"
 - children[163].center (mismatch)
   - expected: [278.8,112.7385]
   - actual: [278.8,112.73846224005834]
 - children[163].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[163].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[163].znId (extra)
   - expected: undefined
   - actual: "12288"
+- children[163].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_12288.n_0.***"
 - children[164].center (mismatch)
   - expected: [278.8,111.4635]
   - actual: [278.8,111.46346224005833]
-- children[164].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[164].znId (extra)
   - expected: undefined
   - actual: "12288"
 - children[165].center (mismatch)
   - expected: [301.8,115.125]
   - actual: [301.8,115.12499999999997]
-- children[165].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[165].znId (extra)
   - expected: undefined
   - actual: "12864"
+- children[165].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_12864.n_0.***"
 - children[166].center (mismatch)
   - expected: [324.8,116.2939]
   - actual: [324.8,116.29391645384894]
 - children[166].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[166].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[166].znId (extra)
   - expected: undefined
   - actual: "13056"
+- children[166].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_13056.n_0.***"
 - children[167].center (mismatch)
   - expected: [336.3,117.4628]
   - actual: [336.3,117.4628329076979]
 - children[167].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[167].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[167].znId (extra)
   - expected: undefined
   - actual: "13440"
+- children[167].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_13440.n_0.***"
 - children[168].center (mismatch)
   - expected: [359.3,119.2893]
   - actual: [359.3,119.28926486683692]
-- children[168].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[168].znId (extra)
   - expected: undefined
   - actual: "13824"
+- children[168].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_13824.n_0.***"
 - children[169].center (mismatch)
   - expected: [359.3,118.3393]
   - actual: [359.3,118.33926486683691]
-- children[169].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[169].znId (extra)
   - expected: undefined
   - actual: "13824"
@@ -1945,198 +1582,189 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[170].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[170].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[170].znId (extra)
   - expected: undefined
   - actual: "14016"
+- children[170].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_14016.n_0.***"
 - children[171].center (mismatch)
   - expected: [359.3,123.6727]
   - actual: [359.3,123.6727015687705]
-- children[171].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[171].znId (extra)
   - expected: undefined
   - actual: "14400"
+- children[171].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_14400.n_0.***"
 - children[172].center (mismatch)
   - expected: [359.3,126.1079]
   - actual: [359.3,126.10794418095584]
 - children[172].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[172].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[172].znId (extra)
   - expected: undefined
   - actual: "14592"
+- children[172].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_14592.n_0.***"
 - children[173].center (mismatch)
   - expected: [336.3,129.1033]
   - actual: [336.3,129.10329259394382]
-- children[173].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[173].znId (extra)
   - expected: undefined
   - actual: "15360"
+- children[173].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_15360.n_0.***"
 - children[174].center (mismatch)
   - expected: [336.3,128.1533]
   - actual: [336.3,128.15329259394383]
-- children[174].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[174].znId (extra)
   - expected: undefined
   - actual: "15360"
 - children[175].center (mismatch)
   - expected: [336.3,131.5385]
   - actual: [336.3,131.53853520612915]
-- children[175].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[175].znId (extra)
   - expected: undefined
   - actual: "15552"
+- children[175].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_15552.n_0.***"
 - children[176].center (mismatch)
   - expected: [301.8,132.7562]
   - actual: [301.8,132.75615651222182]
-- children[176].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[176].znId (extra)
   - expected: undefined
   - actual: "15744"
+- children[176].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_15744.n_0.***"
 - children[177].center (mismatch)
   - expected: [405.3,133.9738]
   - actual: [405.3,133.9737778183145]
-- children[177].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[177].znId (extra)
   - expected: undefined
   - actual: "15936"
+- children[177].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_15936.n_0.***"
 - children[178].center (mismatch)
   - expected: [347.8,135.1914]
   - actual: [347.8,135.19139912440716]
 - children[178].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[178].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[178].znId (extra)
   - expected: undefined
   - actual: "16128"
+- children[178].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_16128.n_0.***"
 - children[179].center (mismatch)
   - expected: [301.8,136.6525]
   - actual: [301.8,136.65254469171833]
 - children[179].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[179].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[179].znId (extra)
   - expected: undefined
   - actual: "16320"
+- children[179].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_16320.n_0.***"
 - children[180].center (mismatch)
   - expected: [415.05,139.5748]
   - actual: [415.05,139.57483582634075]
-- children[180].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[180].znId (extra)
   - expected: undefined
   - actual: "16896"
+- children[180].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_16896.n_0.***"
 - children[181].center (mismatch)
   - expected: [415.05,138.6248]
   - actual: [415.05,138.62483582634076]
-- children[181].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[181].znId (extra)
   - expected: undefined
   - actual: "16896"
 - children[182].center (mismatch)
   - expected: [415.05,141.523]
   - actual: [415.05,141.523029916089]
-- children[182].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[182].znId (extra)
   - expected: undefined
   - actual: "17088"
+- children[182].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_17088.n_0.***"
 - children[183].center (mismatch)
   - expected: [382.3,142.6919]
   - actual: [382.3,142.69194636993797]
 - children[183].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[183].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[183].znId (extra)
   - expected: undefined
   - actual: "17280"
+- children[183].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_17280.n_0.***"
 - children[184].center (mismatch)
   - expected: [359.3,143.666]
   - actual: [359.3,143.66604341481212]
-- children[184].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[184].znId (extra)
   - expected: undefined
   - actual: "17472"
+- children[184].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_17472.n_0.***"
 - children[185].center (mismatch)
   - expected: [415.05,144.8837]
   - actual: [415.05,144.8836647209048]
-- children[185].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[185].znId (extra)
   - expected: undefined
   - actual: "17664"
+- children[185].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_17664.n_0.***"
 - children[186].center (mismatch)
   - expected: [415.05,147.3189]
   - actual: [415.05,147.31890733309012]
-- children[186].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[186].znId (extra)
   - expected: undefined
   - actual: "17856"
+- children[186].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_17856.n_0.***"
 - children[187].center (mismatch)
   - expected: [405.3,148.5365]
   - actual: [405.3,148.5365286391828]
 - children[187].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[187].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[187].znId (extra)
   - expected: undefined
   - actual: "18048"
+- children[187].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_18048.n_0.***"
 - children[188].center (mismatch)
   - expected: [336.3,150.0586]
   - actual: [336.3,150.0585552717986]
 - children[188].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[188].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[188].znId (extra)
   - expected: undefined
   - actual: "18432"
+- children[188].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_18432.n_0.***"
 - children[189].center (mismatch)
   - expected: [336.3,148.7836]
   - actual: [336.3,148.7835552717986]
-- children[189].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[189].znId (extra)
   - expected: undefined
   - actual: "18432"
@@ -2146,117 +1774,111 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[190].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[190].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[190].znId (extra)
   - expected: undefined
   - actual: "18816"
+- children[190].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_18816.n_0.***"
 - children[191].center (mismatch)
   - expected: [382.3,154.442]
   - actual: [382.3,154.44199197373223]
 - children[191].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[191].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[191].znId (extra)
   - expected: undefined
   - actual: "19200"
+- children[191].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_19200.n_0.***"
 - children[192].center (mismatch)
   - expected: [359.3,155.9031]
   - actual: [359.3,155.9031375410434]
-- children[192].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[192].znId (extra)
   - expected: undefined
   - actual: "19584"
+- children[192].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_19584.n_0.***"
 - children[193].center (mismatch)
   - expected: [336.3,157.3643]
   - actual: [336.3,157.3642831083546]
-- children[193].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[193].znId (extra)
   - expected: undefined
   - actual: "19776"
+- children[193].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_19776.n_0.***"
 - children[194].center (mismatch)
   - expected: [324.8,158.8254]
   - actual: [324.8,158.82542867566582]
-- children[194].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[194].znId (extra)
   - expected: undefined
   - actual: "19968"
+- children[194].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_19968.n_0.***"
 - children[195].center (mismatch)
   - expected: [324.8,157.8754]
   - actual: [324.8,157.87542867566583]
-- children[195].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[195].znId (extra)
   - expected: undefined
   - actual: "19968"
 - children[196].center (mismatch)
   - expected: [324.8,161.2607]
   - actual: [324.8,161.26067128785115]
-- children[196].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[196].znId (extra)
   - expected: undefined
   - actual: "20160"
+- children[196].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_20160.n_0.***"
 - children[197].center (mismatch)
   - expected: [278.8,162.4783]
   - actual: [278.8,162.47829259394382]
-- children[197].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[197].znId (extra)
   - expected: undefined
   - actual: "20352"
+- children[197].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_20352.n_0.***"
 - children[198].center (mismatch)
   - expected: [324.8,163.6959]
   - actual: [324.8,163.6959139000365]
-- children[198].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[198].znId (extra)
   - expected: undefined
   - actual: "20544"
+- children[198].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_20544.n_0.***"
 - children[199].center (mismatch)
   - expected: [324.8,166.1312]
   - actual: [324.8,166.13115651222182]
 - children[199].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[199].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[199].znId (extra)
   - expected: undefined
   - actual: "20736"
+- children[199].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_20736.n_0.***"
 - children[200].center (mismatch)
   - expected: [301.8,169.4187]
   - actual: [301.8,169.41873403867203]
 - children[200].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[200].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[200].znId (extra)
   - expected: undefined
   - actual: "21504"
+- children[200].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_21504.n_0.***"
 - children[201].center (mismatch)
   - expected: [301.8,168.1437]
   - actual: [301.8,168.14373403867202]
-- children[201].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[201].znId (extra)
   - expected: undefined
   - actual: "21504"
@@ -2266,99 +1888,93 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[202].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[202].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[202].znId (extra)
   - expected: undefined
   - actual: "21888"
+- children[202].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_21888.n_0.***"
 - children[203].center (mismatch)
   - expected: [301.8,172.341]
   - actual: [301.8,172.3410251732944]
 - children[203].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[203].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[203].znId (extra)
   - expected: undefined
   - actual: "22272"
+- children[203].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_22272.n_0.***"
 - children[204].center (mismatch)
   - expected: [415.05,176.2374]
   - actual: [415.05,176.23741335279095]
-- children[204].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[204].znId (extra)
   - expected: undefined
   - actual: "23040"
+- children[204].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_23040.n_0.***"
 - children[205].center (mismatch)
   - expected: [415.05,175.2874]
   - actual: [415.05,175.28741335279096]
-- children[205].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[205].znId (extra)
   - expected: undefined
   - actual: "23040"
 - children[206].center (mismatch)
   - expected: [415.05,178.1856]
   - actual: [415.05,178.1856074425392]
-- children[206].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[206].znId (extra)
   - expected: undefined
   - actual: "23232"
+- children[206].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_23232.n_0.***"
 - children[207].center (mismatch)
   - expected: [405.3,180.1338]
   - actual: [405.3,180.1338015322875]
-- children[207].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[207].znId (extra)
   - expected: undefined
   - actual: "23424"
+- children[207].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_23424.n_0.***"
 - children[208].center (mismatch)
   - expected: [393.8,182.082]
   - actual: [393.8,182.08199562203575]
-- children[208].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[208].znId (extra)
   - expected: undefined
   - actual: "23616"
+- children[208].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_23616.n_0.***"
 - children[209].center (mismatch)
   - expected: [393.8,184.5172]
   - actual: [393.8,184.51723823422108]
 - children[209].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[209].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[209].znId (extra)
   - expected: undefined
   - actual: "23808"
+- children[209].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_23808.n_0.***"
 - children[210].center (mismatch)
   - expected: [336.3,191.5307]
   - actual: [336.3,191.53073695731487]
 - children[210].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[210].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[210].znId (extra)
   - expected: undefined
   - actual: "24576"
+- children[210].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_24576.n_0.***"
 - children[211].center (mismatch)
   - expected: [336.3,190.2557]
   - actual: [336.3,190.25573695731487]
-- children[211].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[211].znId (extra)
   - expected: undefined
   - actual: "24576"
@@ -2368,60 +1984,57 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[212].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[212].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[212].znId (extra)
   - expected: undefined
   - actual: "24960"
+- children[212].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_24960.n_0.***"
 - children[213].center (mismatch)
   - expected: [382.3,195.9142]
   - actual: [382.3,195.91417365924843]
 - children[213].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[213].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[213].znId (extra)
   - expected: undefined
   - actual: "25344"
+- children[213].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_25344.n_0.***"
 - children[214].center (mismatch)
   - expected: [359.3,197.3753]
   - actual: [359.3,197.37531922655967]
-- children[214].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[214].znId (extra)
   - expected: undefined
   - actual: "25728"
+- children[214].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_25728.n_0.***"
 - children[215].center (mismatch)
   - expected: [336.3,198.5442]
   - actual: [336.3,198.54423568040863]
-- children[215].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[215].znId (extra)
   - expected: undefined
   - actual: "25920"
+- children[215].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_25920.n_0.***"
 - children[216].center (mismatch)
   - expected: [324.8,200.0663]
   - actual: [324.8,200.06626231302448]
 - children[216].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[216].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[216].znId (extra)
   - expected: undefined
   - actual: "26112"
+- children[216].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_26112.n_0.***"
 - children[217].center (mismatch)
   - expected: [324.8,198.7913]
   - actual: [324.8,198.79126231302448]
-- children[217].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[217].znId (extra)
   - expected: undefined
   - actual: "26112"
@@ -2431,42 +2044,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[218].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[218].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[218].znId (extra)
   - expected: undefined
   - actual: "26496"
+- children[218].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_26496.n_0.***"
 - children[219].center (mismatch)
   - expected: [324.8,202.9886]
   - actual: [324.8,202.98855344764686]
 - children[219].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[219].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[219].znId (extra)
   - expected: undefined
   - actual: "26880"
+- children[219].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_26880.n_0.***"
 - children[220].center (mismatch)
   - expected: [301.8,210.5135]
   - actual: [301.8,210.51345311929953]
 - children[220].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[220].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[220].znId (extra)
   - expected: undefined
   - actual: "27648"
+- children[220].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_27648.n_0.***"
 - children[221].center (mismatch)
   - expected: [301.8,209.2385]
   - actual: [301.8,209.23845311929952]
-- children[221].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[221].znId (extra)
   - expected: undefined
   - actual: "27648"
@@ -2476,51 +2086,48 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[222].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[222].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[222].znId (extra)
   - expected: undefined
   - actual: "28032"
+- children[222].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_28032.n_0.***"
 - children[223].center (mismatch)
   - expected: [301.8,213.4357]
   - actual: [301.8,213.43574425392194]
 - children[223].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[223].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[223].znId (extra)
   - expected: undefined
   - actual: "28416"
+- children[223].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_28416.n_0.***"
 - children[224].center (mismatch)
   - expected: [336.3,214.8969]
   - actual: [336.3,214.89688982123315]
 - children[224].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[224].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[224].znId (extra)
   - expected: undefined
   - actual: "28800"
+- children[224].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_28800.n_0.***"
 - children[225].center (mismatch)
   - expected: [324.8,217.0277]
   - actual: [324.8,217.02772710689527]
-- children[225].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[225].znId (extra)
   - expected: undefined
   - actual: "29184"
+- children[225].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_29184.n_0.***"
 - children[226].center (mismatch)
   - expected: [324.8,215.4277]
   - actual: [324.8,215.42772710689528]
-- children[226].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[226].znId (extra)
   - expected: undefined
   - actual: "29184"
@@ -2530,243 +2137,231 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[227].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[227].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[227].znId (extra)
   - expected: undefined
   - actual: "30720"
+- children[227].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_30720.n_0.***"
 - children[228].center (mismatch)
   - expected: [336.3,229.8099]
   - actual: [336.3,229.809905144108]
-- children[228].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[228].znId (extra)
   - expected: undefined
   - actual: "30720"
 - children[229].center (mismatch)
   - expected: [359.3,233.2951]
   - actual: [359.3,233.29514775629335]
-- children[229].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[229].znId (extra)
   - expected: undefined
   - actual: "30912"
+- children[229].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_30912.n_0.***"
 - children[230].center (mismatch)
   - expected: [359.3,235.7304]
   - actual: [359.3,235.73039036847868]
 - children[230].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[230].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[230].znId (extra)
   - expected: undefined
   - actual: "31104"
+- children[230].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_31104.n_0.***"
 - children[231].center (mismatch)
   - expected: [359.3,237.6786]
   - actual: [359.3,237.6785844582269]
-- children[231].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[231].znId (extra)
   - expected: undefined
   - actual: "31296"
+- children[231].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_31296.n_0.***"
 - children[232].center (mismatch)
   - expected: [336.3,238.8962]
   - actual: [336.3,238.8962057643196]
 - children[232].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[232].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[232].znId (extra)
   - expected: undefined
   - actual: "31488"
+- children[232].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_31488.n_0.***"
 - children[233].center (mismatch)
   - expected: [301.8,240.3574]
   - actual: [301.8,240.3573513316308]
 - children[233].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[233].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[233].znId (extra)
   - expected: undefined
   - actual: "31872"
+- children[233].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_31872.n_0.***"
 - children[234].center (mismatch)
   - expected: [324.8,242.1838]
   - actual: [324.8,242.18378329076978]
 - children[234].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[234].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[234].znId (extra)
   - expected: undefined
   - actual: "32256"
+- children[234].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_32256.n_0.***"
 - children[235].center (mismatch)
   - expected: [324.8,241.1338]
   - actual: [324.8,241.13378329076977]
-- children[235].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[235].znId (extra)
   - expected: undefined
   - actual: "32256"
 - children[236].center (mismatch)
   - expected: [359.3,244.619]
   - actual: [359.3,244.61902590295512]
-- children[236].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[236].znId (extra)
   - expected: undefined
   - actual: "32448"
+- children[236].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_32448.n_0.***"
 - children[237].center (mismatch)
   - expected: [359.3,247.0543]
   - actual: [359.3,247.05426851514045]
 - children[237].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[237].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[237].znId (extra)
   - expected: undefined
   - actual: "32640"
+- children[237].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_32640.n_0.***"
 - children[238].center (mismatch)
   - expected: [359.3,249.0025]
   - actual: [359.3,249.00246260488873]
-- children[238].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[238].znId (extra)
   - expected: undefined
   - actual: "32832"
+- children[238].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_32832.n_0.***"
 - children[239].center (mismatch)
   - expected: [382.3,250.2201]
   - actual: [382.3,250.22008391098143]
 - children[239].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[239].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[239].znId (extra)
   - expected: undefined
   - actual: "33024"
+- children[239].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_33024.n_0.***"
 - children[240].center (mismatch)
   - expected: [336.3,251.6812]
   - actual: [336.3,251.6812294782926]
 - children[240].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[240].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[240].znId (extra)
   - expected: undefined
   - actual: "33408"
+- children[240].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_33408.n_0.***"
 - children[241].center (mismatch)
   - expected: [347.8,256.5517]
   - actual: [347.8,256.5517147026633]
 - children[241].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[241].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[241].znId (extra)
   - expected: undefined
   - actual: "33792"
+- children[241].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_33792.n_0.***"
 - children[242].center (mismatch)
   - expected: [347.8,255.5017]
   - actual: [347.8,255.50171470266326]
-- children[242].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[242].znId (extra)
   - expected: undefined
   - actual: "33792"
 - children[243].center (mismatch)
   - expected: [359.3,258.987]
   - actual: [359.3,258.9869573148486]
-- children[243].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[243].znId (extra)
   - expected: undefined
   - actual: "33984"
+- children[243].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_33984.n_0.***"
 - children[244].center (mismatch)
   - expected: [359.3,261.4222]
   - actual: [359.3,261.42219992703394]
 - children[244].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[244].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[244].znId (extra)
   - expected: undefined
   - actual: "34176"
+- children[244].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_34176.n_0.***"
 - children[245].center (mismatch)
   - expected: [359.3,263.3704]
   - actual: [359.3,263.3703940167822]
-- children[245].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[245].znId (extra)
   - expected: undefined
   - actual: "34368"
+- children[245].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_34368.n_0.***"
 - children[246].center (mismatch)
   - expected: [336.3,264.588]
   - actual: [336.3,264.58801532287487]
 - children[246].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[246].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[246].znId (extra)
   - expected: undefined
   - actual: "34560"
+- children[246].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_34560.n_0.***"
 - children[247].center (mismatch)
   - expected: [301.8,265.8056]
   - actual: [301.8,265.80563662896753]
 - children[247].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[247].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[247].znId (extra)
   - expected: undefined
   - actual: "34944"
+- children[247].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_34944.n_0.***"
 - children[248].center (mismatch)
   - expected: [301.8,269.4585]
   - actual: [301.8,269.45850054724554]
 - children[248].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[248].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[248].znId (extra)
   - expected: undefined
   - actual: "tp_1_1"
+- children[248].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_35328.n_0.***"
 - children[249].center (mismatch)
   - expected: [301.8,268.1835]
   - actual: [301.8,268.18350054724556]
-- children[249].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[249].znId (extra)
   - expected: undefined
   - actual: "tp_1_1"
@@ -2776,2589 +2371,1635 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[250].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[250].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[250].znId (extra)
   - expected: undefined
   - actual: "35584"
+- children[250].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_35584.n_0.***"
 - children[251].center (mismatch)
   - expected: [301.8,272.3808]
   - actual: [301.8,272.38079168186795]
 - children[251].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[251].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[251].znId (extra)
   - expected: undefined
   - actual: "35840"
+- children[251].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_35840.n_0.***"
 - children[252].center (mismatch)
   - expected: [336.3,273.8419]
   - actual: [336.3,273.8419372491791]
 - children[252].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[252].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[252].znId (extra)
   - expected: undefined
   - actual: "36096"
+- children[252].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_36096.n_0.***"
 - children[253].center (mismatch)
   - expected: [405.3,275.3031]
   - actual: [405.3,275.30308281649036]
 - children[253].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[253].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[253].znId (extra)
   - expected: undefined
   - actual: "36480"
+- children[253].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_36480.n_0.***"
 - children[254].center (mismatch)
   - expected: [412.675,277.1295]
   - actual: [412.675,277.12951477562933]
 - children[254].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[254].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[254].znId (extra)
   - expected: undefined
   - actual: "36864"
+- children[254].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_36864.n_0.***"
 - children[255].center (mismatch)
   - expected: [412.675,275.8545]
   - actual: [412.675,275.85451477562935]
-- children[255].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[255].znId (extra)
   - expected: undefined
   - actual: "36864"
 - children[256].center (mismatch)
   - expected: [415.05,279.5648]
   - actual: [415.05,279.56475738781467]
-- children[256].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[256].znId (extra)
   - expected: undefined
   - actual: "37440"
+- children[256].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_37440.n_0.***"
 - children[257].size (mismatch)
   - expected: [2,0.6]
   - actual: [2,0.6000000000000001]
 - children[257].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[257].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[257].znId (extra)
   - expected: undefined
   - actual: "37632"
+- children[257].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_37632.n_0.***"
 - children[258].center (mismatch)
   - expected: [412.0179,18.1598]
   - actual: [412.0179166666666,18.159765292472333]
 - children[258].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[258].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[259].center (mismatch)
   - expected: [411.7179,20.055]
   - actual: [411.71791666666667,20.055007904657668]
 - children[259].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[259].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[260].center (mismatch)
   - expected: [408.4821,21.7639]
   - actual: [408.4820833333334,21.763924358506625]
 - children[260].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[260].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[261].center (mismatch)
   - expected: [408.6321,23.6592]
   - actual: [408.63208333333336,23.65916697069196]
 - children[261].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[261].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[262].center (mismatch)
   - expected: [385.6321,25.2681]
   - actual: [385.63208333333336,25.26808342454092]
 - children[262].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[262].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[263].center (mismatch)
   - expected: [389.3698,28.5154]
   - actual: [389.36975,28.515374559163323]
 - children[263].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[263].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[264].center (mismatch)
   - expected: [362.4821,30.9204]
   - actual: [362.4820833333334,30.920436580323482]
 - children[264].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[264].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[265].center (mismatch)
   - expected: [339.6321,31.5494]
   - actual: [339.63208333333336,31.549353034172444]
 - children[265].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[265].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[266].center (mismatch)
   - expected: [327.9821,33.2583]
   - actual: [327.9820833333334,33.258269488021405]
 - children[266].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[266].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[267].center (mismatch)
   - expected: [328.1321,35.1535]
   - actual: [328.13208333333336,35.15351210020673]
 - children[267].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[267].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[268].center (mismatch)
   - expected: [305.1321,36.7624]
   - actual: [305.13208333333336,36.7624285540557]
 - children[268].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[268].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[269].center (mismatch)
   - expected: [295.7303,40.0097]
   - actual: [295.73025,40.0097196886781]
 - children[269].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[269].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[270].center (mismatch)
   - expected: [298.6179,44.6065]
   - actual: [298.61791666666664,44.60650006080506]
 - children[270].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[270].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[271].center (mismatch)
   - expected: [305.1321,46.5017]
   - actual: [305.13208333333336,46.50174267299039]
 - children[271].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[271].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[272].center (mismatch)
   - expected: [293.4821,48.2107]
   - actual: [293.4820833333334,48.21065912683935]
 - children[272].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[272].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[273].center (mismatch)
   - expected: [282.1321,48.8396]
   - actual: [282.13208333333336,48.839575580688305]
 - children[273].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[273].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[274].center (mismatch)
   - expected: [270.6321,50.4485]
   - actual: [270.63208333333336,50.44849203453727]
 - children[274].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[274].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[275].center (mismatch)
   - expected: [252.4679,51.2261]
   - actual: [252.46791666666667,51.22611334062993]
 - children[275].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[275].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[276].center (mismatch)
   - expected: [270.6321,52.6402]
   - actual: [270.63208333333336,52.64021038550407]
 - children[276].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[276].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[277].center (mismatch)
   - expected: [217.9679,54.1484]
   - actual: [217.96791666666667,54.14840447525233]
 - children[277].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[277].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[278].center (mismatch)
   - expected: [235.9239,58.7913]
   - actual: [235.92391666666668,58.791268393530345]
 - children[278].size (mismatch)
   - expected: [3.3261,0.7058]
   - actual: [3.3260833333333335,0.7058333333333331]
-- children[278].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[279].center (mismatch)
   - expected: [272.7303,73.2021]
   - actual: [272.73025,73.20207649276418]
 - children[279].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[279].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[280].center (mismatch)
   - expected: [298.4679,74.7749]
   - actual: [298.46791666666667,74.7749094004621]
 - children[280].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[280].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[281].center (mismatch)
   - expected: [321.4679,76.3838]
   - actual: [321.46791666666667,76.38382585431107]
 - children[281].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[281].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[282].center (mismatch)
   - expected: [321.4679,78.3791]
   - actual: [321.46791666666667,78.3790684664964]
 - children[282].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[282].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[283].center (mismatch)
   - expected: [332.0929,80.313]
   - actual: [332.09291666666667,80.31298492034534]
 - children[283].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[283].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[284].center (mismatch)
   - expected: [355.9679,81.8144]
   - actual: [355.96791666666667,81.81441687948436]
 - children[284].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[284].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[285].center (mismatch)
   - expected: [387.4384,83.6006]
   - actual: [387.4384166666667,83.60056244679555]
 - children[285].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[285].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[286].center (mismatch)
   - expected: [363.6321,85.7579]
   - actual: [363.63208333333336,85.75785358141796]
 - children[286].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[286].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[287].center (mismatch)
   - expected: [365.4384,88.9581]
   - actual: [365.4384166666667,88.95809619360328]
 - children[287].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[287].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[288].center (mismatch)
   - expected: [306.0071,91.9534]
   - actual: [306.00708333333336,91.95344460659125]
 - children[288].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[288].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[289].center (mismatch)
   - expected: [271.5071,93.4146]
   - actual: [271.50708333333336,93.41459017390244]
 - children[289].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[289].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[290].center (mismatch)
   - expected: [262.1616,96.3369]
   - actual: [262.16158333333334,96.33688130852484]
 - children[290].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[290].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[291].center (mismatch)
   - expected: [378.9679,99.2995]
   - actual: [378.96791666666667,99.29945883497506]
 - children[291].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[291].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[292].center (mismatch)
   - expected: [385.6321,101.2947]
   - actual: [385.63208333333336,101.29470144716038]
 - children[292].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[292].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[293].center (mismatch)
   - expected: [374.1321,102.7088]
   - actual: [374.13208333333336,102.70879849203452]
 - children[293].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[293].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[294].center (mismatch)
   - expected: [362.6321,103.2429]
   - actual: [362.63208333333336,103.24289553690865]
 - children[294].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[294].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[295].center (mismatch)
   - expected: [317.8134,106.0681]
   - actual: [317.8134166666667,106.06813814909397]
 - children[295].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[295].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[296].center (mismatch)
   - expected: [272.7303,114.2968]
   - actual: [272.73025,114.29679557339166]
 - children[296].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[296].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[297].center (mismatch)
   - expected: [298.4679,115.9183]
   - actual: [298.46791666666667,115.91833333333331]
 - children[297].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[297].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[298].center (mismatch)
   - expected: [320.5929,117.8522]
   - actual: [320.59291666666667,117.85224978718226]
 - children[298].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[298].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[299].center (mismatch)
   - expected: [332.0929,119.0212]
   - actual: [332.09291666666667,119.02116624103122]
 - children[299].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[299].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[300].center (mismatch)
   - expected: [355.9679,120.5226]
   - actual: [355.96791666666667,120.52259820017025]
 - children[300].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[300].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[301].center (mismatch)
   - expected: [387.4384,122.3087]
   - actual: [387.4384166666667,122.30874376748143]
 - children[301].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[301].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[302].center (mismatch)
   - expected: [363.6321,124.466]
   - actual: [363.63208333333336,124.46603490210384]
 - children[302].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[302].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[303].center (mismatch)
   - expected: [365.4384,127.6663]
   - actual: [365.4384166666667,127.66627751428916]
 - children[303].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[303].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[304].center (mismatch)
   - expected: [339.6321,130.3366]
   - actual: [339.63208333333336,130.33662592727717]
 - children[304].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[304].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[305].center (mismatch)
   - expected: [339.6321,132.3319]
   - actual: [339.63208333333336,132.3318685394625]
 - children[305].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[305].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[306].center (mismatch)
   - expected: [298.4679,133.9895]
   - actual: [298.46791666666667,133.98948984555517]
 - children[306].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[306].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[307].center (mismatch)
   - expected: [408.6321,134.7671]
   - actual: [408.63208333333336,134.76711115164784]
 - children[307].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[307].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[308].center (mismatch)
   - expected: [350.9821,136.5247]
   - actual: [350.9820833333334,136.5247324577405]
 - children[308].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[308].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[309].center (mismatch)
   - expected: [295.7303,138.2109]
   - actual: [295.73025,138.21087802505167]
 - children[309].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[309].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[310].center (mismatch)
   - expected: [411.7179,140.8082]
   - actual: [411.71791666666667,140.8081691596741]
 - children[310].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[310].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[311].center (mismatch)
   - expected: [411.7179,142.3164]
   - actual: [411.71791666666667,142.31636324942235]
 - children[311].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[311].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[312].center (mismatch)
   - expected: [385.4821,144.0253]
   - actual: [385.4820833333334,144.0252797032713]
 - children[312].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[312].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[313].center (mismatch)
   - expected: [355.9679,144.4594]
   - actual: [355.96791666666667,144.45937674814547]
 - children[313].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[313].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[314].center (mismatch)
   - expected: [411.7179,146.117]
   - actual: [411.71791666666667,146.11699805423814]
 - children[314].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[314].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[315].center (mismatch)
   - expected: [411.7179,148.1122]
   - actual: [411.71791666666667,148.11224066642347]
 - children[315].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[315].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[316].center (mismatch)
   - expected: [409.5071,150.0949]
   - actual: [409.50708333333336,150.09486197251613]
 - children[316].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[316].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[317].center (mismatch)
   - expected: [340.5071,151.6169]
   - actual: [340.50708333333336,151.61688860513195]
 - children[317].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[317].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[318].center (mismatch)
   - expected: [332.0929,154.5392]
   - actual: [332.09291666666667,154.53917973975436]
 - children[318].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[318].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[319].center (mismatch)
   - expected: [386.5071,156.0003]
   - actual: [386.50708333333336,156.00032530706557]
 - children[319].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[319].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[320].center (mismatch)
   - expected: [362.6321,157.1365]
   - actual: [362.63208333333336,157.13647087437676]
 - children[320].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[320].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[321].center (mismatch)
   - expected: [339.6321,158.1576]
   - actual: [339.63208333333336,158.15761644168796]
 - children[321].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[321].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[322].center (mismatch)
   - expected: [328.1321,160.0588]
   - actual: [328.13208333333336,160.05876200899917]
 - children[322].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[322].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[323].center (mismatch)
   - expected: [328.1321,162.054]
   - actual: [328.13208333333336,162.0540046211845]
 - children[323].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[323].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[324].center (mismatch)
   - expected: [275.4679,163.7116]
   - actual: [275.46791666666667,163.71162592727717]
 - children[324].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[324].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[325].center (mismatch)
   - expected: [321.4679,164.4892]
   - actual: [321.46791666666667,164.48924723336984]
 - children[325].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[325].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[326].center (mismatch)
   - expected: [330.9384,167.6895]
   - actual: [330.9384166666667,167.68948984555516]
 - children[326].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[326].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[327].center (mismatch)
   - expected: [306.0071,170.9771]
   - actual: [306.00708333333336,170.97706737200537]
 - children[327].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[327].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[328].center (mismatch)
   - expected: [263.0929,172.4382]
   - actual: [263.09291666666667,172.43821293931654]
 - children[328].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[328].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[329].center (mismatch)
   - expected: [296.6616,173.8994]
   - actual: [296.66158333333334,173.89935850662775]
 - children[329].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[329].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[330].center (mismatch)
   - expected: [411.7179,177.4707]
   - actual: [411.71791666666667,177.4707466861243]
 - children[330].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[330].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[331].center (mismatch)
   - expected: [411.7179,178.9789]
   - actual: [411.71791666666667,178.97894077587256]
 - children[331].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[331].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[332].center (mismatch)
   - expected: [408.6321,181.3671]
   - actual: [408.63208333333336,181.36713486562084]
 - children[332].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[332].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[333].center (mismatch)
   - expected: [398.1321,182.8753]
   - actual: [398.13208333333336,182.8753289553691]
 - children[333].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[333].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[334].center (mismatch)
   - expected: [399.9384,186.0756]
   - actual: [399.9384166666667,186.07557156755442]
 - children[334].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[334].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[335].center (mismatch)
   - expected: [340.5071,193.0891]
   - actual: [340.50708333333336,193.0890702906482]
 - children[335].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[335].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[336].center (mismatch)
   - expected: [332.0929,196.0114]
   - actual: [332.09291666666667,196.0113614252706]
 - children[336].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[336].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[337].center (mismatch)
   - expected: [386.5071,197.4725]
   - actual: [386.50708333333336,197.47250699258177]
 - children[337].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[337].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[338].center (mismatch)
   - expected: [362.6321,198.6087]
   - actual: [362.63208333333336,198.60865255989302]
 - children[338].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[338].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[339].center (mismatch)
   - expected: [339.6321,199.3376]
   - actual: [339.63208333333336,199.33756901374198]
 - children[339].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[339].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[340].center (mismatch)
   - expected: [329.0071,201.6246]
   - actual: [329.00708333333336,201.62459564635782]
 - children[340].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[340].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[341].center (mismatch)
   - expected: [274.5929,203.0857]
   - actual: [274.59291666666667,203.085741213669]
 - children[341].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[341].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[342].center (mismatch)
   - expected: [329.9384,204.5469]
   - actual: [329.9384166666667,204.5468867809802]
 - children[342].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[342].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[343].center (mismatch)
   - expected: [306.0071,212.0718]
   - actual: [306.00708333333336,212.07178645263286]
 - children[343].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[343].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[344].center (mismatch)
   - expected: [263.0929,213.5329]
   - actual: [263.09291666666667,213.53293201994404]
 - children[344].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[344].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[345].center (mismatch)
   - expected: [297.5929,214.9941]
   - actual: [297.59291666666667,214.99407758725528]
 - children[345].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[345].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[346].center (mismatch)
   - expected: [340.5071,216.4552]
   - actual: [340.50708333333336,216.45522315456648]
 - children[346].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[346].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[347].center (mismatch)
   - expected: [310.0739,217.1111]
   - actual: [310.07391666666666,217.1110604402286]
 - children[347].size (mismatch)
   - expected: [3.3261,0.7058]
   - actual: [3.3260833333333335,0.7058333333333331]
-- children[347].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[348].center (mismatch)
   - expected: [333.1179,232.1932]
   - actual: [333.11791666666664,232.19323847744135]
 - children[348].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[348].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[349].center (mismatch)
   - expected: [355.9679,234.0885]
   - actual: [355.96791666666667,234.0884810896267]
 - children[349].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[349].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[350].center (mismatch)
   - expected: [356.1179,237.0637]
   - actual: [356.11791666666664,237.06372370181202]
 - children[350].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[350].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[351].center (mismatch)
   - expected: [362.6321,238.4719]
   - actual: [362.63208333333336,238.47191779156026]
 - children[351].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[351].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[352].center (mismatch)
   - expected: [340.5071,240.4545]
   - actual: [340.50708333333336,240.45453909765294]
 - children[352].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[352].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[353].center (mismatch)
   - expected: [297.5929,241.9157]
   - actual: [297.59291666666667,241.91568466496415]
 - children[353].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[353].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[354].center (mismatch)
   - expected: [321.6179,243.5171]
   - actual: [321.61791666666664,243.51711662410312]
 - children[354].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[354].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[355].center (mismatch)
   - expected: [355.9679,245.4124]
   - actual: [355.96791666666667,245.41235923628847]
 - children[355].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[355].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[356].center (mismatch)
   - expected: [356.1179,248.3876]
   - actual: [356.11791666666664,248.3876018484738]
 - children[356].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[356].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[357].center (mismatch)
   - expected: [355.9679,249.7958]
   - actual: [355.96791666666667,249.79579593822208]
 - children[357].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[357].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[358].center (mismatch)
   - expected: [386.5071,251.7784]
   - actual: [386.50708333333336,251.77841724431477]
 - children[358].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[358].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[359].center (mismatch)
   - expected: [332.0929,253.2396]
   - actual: [332.09291666666667,253.23956281162594]
 - children[359].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[359].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[360].center (mismatch)
   - expected: [344.6179,257.885]
   - actual: [344.61791666666664,257.8850480359966]
 - children[360].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[360].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[361].center (mismatch)
   - expected: [355.9679,259.7803]
   - actual: [355.96791666666667,259.7802906481819]
 - children[361].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[361].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[362].center (mismatch)
   - expected: [356.1179,262.7555]
   - actual: [356.11791666666664,262.75553326036726]
 - children[362].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[362].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[363].center (mismatch)
   - expected: [362.6321,264.1637]
   - actual: [362.63208333333336,264.1637273501155]
 - children[363].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[363].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[364].center (mismatch)
   - expected: [340.5071,266.1463]
   - actual: [340.50708333333336,266.1463486562082]
 - children[364].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[364].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[365].center (mismatch)
   - expected: [306.0071,267.364]
   - actual: [306.00708333333336,267.36396996230087]
 - children[365].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[365].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[366].center (mismatch)
   - expected: [306.6527,271.0168]
   - actual: [306.653725,271.0168338805789]
 - children[366].size (mismatch)
   - expected: [1.1777,0.7058]
   - actual: [1.1787249999999998,0.7058333333333331]
-- children[366].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[367].center (mismatch)
   - expected: [262.8601,272.478]
   - actual: [262.8579666666667,272.47797944789005]
 - children[367].size (mismatch)
   - expected: [0.7649,0.7058]
   - actual: [0.7670333333333332,0.7058333333333331]
-- children[367].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[368].center (mismatch)
   - expected: [297.3601,273.9391]
   - actual: [297.3579666666667,273.9391250152013]
 - children[368].size (mismatch)
   - expected: [0.7649,0.7058]
   - actual: [0.7670333333333332,0.7058333333333331]
-- children[368].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[369].center (mismatch)
   - expected: [332.0929,275.4003]
   - actual: [332.09291666666667,275.40027058251246]
 - children[369].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[369].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[370].center (mismatch)
   - expected: [401.0929,276.8614]
   - actual: [401.09291666666667,276.8614161498237]
 - children[370].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[370].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[371].center (mismatch)
   - expected: [406.6053,278.6878]
   - actual: [406.60525,278.68784810896267]
 - children[371].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[371].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[372].center (mismatch)
   - expected: [411.7179,280.3581]
   - actual: [411.71791666666667,280.35809072114796]
 - children[372].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[372].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[373].center (mismatch)
   - expected: [410.2866,283.1833]
   - actual: [410.28658333333334,283.18333333333334]
 - children[373].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[373].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[374].center (mismatch)
   - expected: [412.6,17.0764]
   - actual: [412.59999999999997,17.076431959139]
-- children[374].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[375].center (mismatch)
   - expected: [412.3,18.9617]
   - actual: [412.3,18.961674571324334]
-- children[375].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[376].center (mismatch)
   - expected: [407.9,20.6806]
   - actual: [407.90000000000003,20.680591025173293]
-- children[376].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[377].center (mismatch)
   - expected: [408.05,22.5658]
   - actual: [408.05,22.565833637358626]
-- children[377].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[378].center (mismatch)
   - expected: [385.05,24.1848]
   - actual: [385.05,24.184750091207587]
-- children[378].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[379].center (mismatch)
   - expected: [386.925,27.432]
   - actual: [386.925,27.43204122582999]
-- children[379].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[380].center (mismatch)
   - expected: [361.9,29.8371]
   - actual: [361.90000000000003,29.83710324699015]
-- children[380].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[381].center (mismatch)
   - expected: [339.05,30.456]
   - actual: [339.05,30.45601970083911]
-- children[381].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[382].center (mismatch)
   - expected: [327.4,32.1749]
   - actual: [327.40000000000003,32.17493615468807]
-- children[382].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[383].center (mismatch)
   - expected: [327.55,34.0602]
   - actual: [327.55,34.0601787668734]
-- children[383].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[384].center (mismatch)
   - expected: [304.55,35.6791]
   - actual: [304.55,35.67909522072237]
-- children[384].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[385].center (mismatch)
   - expected: [298.175,38.9264]
   - actual: [298.175,38.92638635534477]
-- children[385].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[386].center (mismatch)
   - expected: [299.2,43.5232]
   - actual: [299.2,43.523166727471725]
-- children[386].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[387].center (mismatch)
   - expected: [304.55,45.4084]
   - actual: [304.55,45.408409339657055]
-- children[387].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[388].center (mismatch)
   - expected: [292.9,47.1273]
   - actual: [292.90000000000003,47.12732579350602]
-- children[388].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[389].center (mismatch)
   - expected: [281.55,47.7462]
   - actual: [281.55,47.74624224735497]
-- children[389].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[390].center (mismatch)
   - expected: [270.05,49.3652]
   - actual: [270.05,49.36515870120393]
-- children[390].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[391].center (mismatch)
   - expected: [253.05,50.1328]
   - actual: [253.05,50.132780007296596]
-- children[391].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[392].center (mismatch)
   - expected: [270.05,51.5569]
   - actual: [270.05,51.556877052170734]
-- children[392].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[393].center (mismatch)
   - expected: [218.55,53.0551]
   - actual: [218.55,53.055071141918994]
-- children[393].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[394].center (mismatch)
   - expected: [239.3,57.7079]
   - actual: [239.3,57.70793506019701]
-- children[394].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[395].center (mismatch)
   - expected: [275.175,72.1187]
   - actual: [275.175,72.11874315943085]
-- children[395].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[396].center (mismatch)
   - expected: [299.05,73.6816]
   - actual: [299.05,73.68157606712877]
-- children[396].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[397].center (mismatch)
   - expected: [322.05,75.3005]
   - actual: [322.05,75.30049252097774]
-- children[397].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[398].center (mismatch)
   - expected: [322.05,77.2857]
   - actual: [322.05,77.28573513316307]
-- children[398].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[399].center (mismatch)
   - expected: [332.675,79.2297]
   - actual: [332.675,79.22965158701201]
-- children[399].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[400].center (mismatch)
   - expected: [356.55,80.7311]
   - actual: [356.55,80.73108354615103]
-- children[400].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[401].center (mismatch)
   - expected: [385.925,82.5172]
   - actual: [385.925,82.51722911346222]
-- children[401].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[402].center (mismatch)
   - expected: [363.05,84.6645]
   - actual: [363.05,84.66452024808463]
-- children[402].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[403].center (mismatch)
   - expected: [363.925,87.8748]
   - actual: [363.925,87.87476286026995]
-- children[403].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[404].center (mismatch)
   - expected: [305.425,90.8701]
   - actual: [305.425,90.87011127325792]
-- children[404].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[405].center (mismatch)
   - expected: [270.925,92.3313]
   - actual: [270.925,92.33125684056911]
-- children[405].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[406].center (mismatch)
   - expected: [263.675,95.2535]
   - actual: [263.675,95.25354797519151]
-- children[406].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[407].center (mismatch)
   - expected: [379.55,98.2161]
   - actual: [379.55,98.21612550164173]
-- children[407].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[408].center (mismatch)
   - expected: [385.05,100.2014]
   - actual: [385.05,100.20136811382704]
-- children[408].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[409].center (mismatch)
   - expected: [373.55,101.6255]
   - actual: [373.55,101.62546515870119]
-- children[409].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[410].center (mismatch)
   - expected: [362.05,102.1496]
   - actual: [362.05,102.14956220357531]
-- children[410].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[411].center (mismatch)
   - expected: [316.3,104.9848]
   - actual: [316.3,104.98480481576064]
-- children[411].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[412].center (mismatch)
   - expected: [275.175,113.2135]
   - actual: [275.175,113.21346224005833]
-- children[412].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[413].center (mismatch)
   - expected: [299.05,114.825]
   - actual: [299.05,114.82499999999997]
-- children[413].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[414].center (mismatch)
   - expected: [321.175,116.7689]
   - actual: [321.175,116.76891645384893]
-- children[414].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[415].center (mismatch)
   - expected: [332.675,117.9378]
   - actual: [332.675,117.9378329076979]
-- children[415].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[416].center (mismatch)
   - expected: [356.55,119.4393]
   - actual: [356.55,119.43926486683692]
-- children[416].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[417].center (mismatch)
   - expected: [385.925,121.2254]
   - actual: [385.925,121.2254104341481]
-- children[417].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[418].center (mismatch)
   - expected: [363.05,123.3727]
   - actual: [363.05,123.37270156877051]
-- children[418].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[419].center (mismatch)
   - expected: [363.925,126.5829]
   - actual: [363.925,126.58294418095583]
-- children[419].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[420].center (mismatch)
   - expected: [339.05,129.2533]
   - actual: [339.05,129.25329259394383]
-- children[420].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[421].center (mismatch)
   - expected: [339.05,131.2385]
   - actual: [339.05,131.23853520612917]
-- children[421].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[422].center (mismatch)
   - expected: [299.05,132.9062]
   - actual: [299.05,132.90615651222183]
-- children[422].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[423].center (mismatch)
   - expected: [408.05,133.6738]
   - actual: [408.05,133.6737778183145]
-- children[423].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[424].center (mismatch)
   - expected: [350.4,135.4414]
   - actual: [350.40000000000003,135.44139912440716]
-- children[424].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[425].center (mismatch)
   - expected: [298.175,137.1275]
   - actual: [298.175,137.12754469171833]
-- children[425].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[426].center (mismatch)
   - expected: [412.3,139.7248]
   - actual: [412.3,139.72483582634075]
-- children[426].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[427].center (mismatch)
   - expected: [412.3,141.223]
   - actual: [412.3,141.22302991608902]
-- children[427].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[428].center (mismatch)
   - expected: [384.9,142.9419]
   - actual: [384.90000000000003,142.94194636993797]
-- children[428].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[429].center (mismatch)
   - expected: [356.55,143.366]
   - actual: [356.55,143.36604341481214]
-- children[429].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[430].center (mismatch)
   - expected: [412.3,145.0337]
   - actual: [412.3,145.0336647209048]
-- children[430].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[431].center (mismatch)
   - expected: [412.3,147.0189]
   - actual: [412.3,147.01890733309014]
-- children[431].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[432].center (mismatch)
   - expected: [408.925,149.0115]
   - actual: [408.925,149.01152863918279]
-- children[432].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[433].center (mismatch)
   - expected: [339.925,150.5336]
   - actual: [339.925,150.5335552717986]
-- children[433].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[434].center (mismatch)
   - expected: [332.675,153.4558]
   - actual: [332.675,153.45584640642102]
-- children[434].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[435].center (mismatch)
   - expected: [385.925,154.917]
   - actual: [385.925,154.91699197373222]
-- children[435].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[436].center (mismatch)
   - expected: [362.05,156.0531]
   - actual: [362.05,156.0531375410434]
-- children[436].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[437].center (mismatch)
   - expected: [339.05,157.0643]
   - actual: [339.05,157.06428310835463]
-- children[437].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[438].center (mismatch)
   - expected: [327.55,158.9754]
   - actual: [327.55,158.97542867566582]
-- children[438].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[439].center (mismatch)
   - expected: [327.55,160.9607]
   - actual: [327.55,160.96067128785117]
-- children[439].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[440].center (mismatch)
   - expected: [276.05,162.6283]
   - actual: [276.05,162.62829259394383]
-- children[440].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[441].center (mismatch)
   - expected: [322.05,163.3959]
   - actual: [322.05,163.3959139000365]
-- children[441].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[442].center (mismatch)
   - expected: [329.425,166.6062]
   - actual: [329.425,166.60615651222182]
-- children[442].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[443].center (mismatch)
   - expected: [305.425,169.8937]
   - actual: [305.425,169.89373403867202]
-- children[443].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[444].center (mismatch)
   - expected: [263.675,171.3549]
   - actual: [263.675,171.3548796059832]
-- children[444].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[445].center (mismatch)
   - expected: [298.175,172.816]
   - actual: [298.175,172.8160251732944]
-- children[445].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[446].center (mismatch)
   - expected: [412.3,176.3874]
   - actual: [412.3,176.38741335279096]
-- children[446].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[447].center (mismatch)
   - expected: [412.3,177.8856]
   - actual: [412.3,177.88560744253923]
-- children[447].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[448].center (mismatch)
   - expected: [408.05,180.2838]
   - actual: [408.05,180.2838015322875]
-- children[448].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[449].center (mismatch)
   - expected: [397.55,181.782]
   - actual: [397.55,181.78199562203577]
-- children[449].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[450].center (mismatch)
   - expected: [398.425,184.9922]
   - actual: [398.425,184.99223823422108]
-- children[450].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[451].center (mismatch)
   - expected: [339.925,192.0057]
   - actual: [339.925,192.00573695731487]
-- children[451].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[452].center (mismatch)
   - expected: [332.675,194.928]
   - actual: [332.675,194.92802809193725]
-- children[452].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[453].center (mismatch)
   - expected: [385.925,196.3892]
   - actual: [385.925,196.38917365924843]
-- children[453].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[454].center (mismatch)
   - expected: [362.05,197.5253]
   - actual: [362.05,197.52531922655967]
-- children[454].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[455].center (mismatch)
   - expected: [339.05,198.2442]
   - actual: [339.05,198.24423568040865]
-- children[455].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[456].center (mismatch)
   - expected: [328.425,200.5413]
   - actual: [328.425,200.54126231302448]
-- children[456].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[457].center (mismatch)
   - expected: [275.175,202.0024]
   - actual: [275.175,202.00240788033565]
-- children[457].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[458].center (mismatch)
   - expected: [328.425,203.4636]
   - actual: [328.425,203.46355344764686]
-- children[458].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[459].center (mismatch)
   - expected: [305.425,210.9885]
   - actual: [305.425,210.98845311929952]
-- children[459].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[460].center (mismatch)
   - expected: [263.675,212.4496]
   - actual: [263.675,212.4495986866107]
-- children[460].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[461].center (mismatch)
   - expected: [298.175,213.9107]
   - actual: [298.175,213.91074425392193]
-- children[461].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[462].center (mismatch)
   - expected: [339.925,215.3719]
   - actual: [339.925,215.37188982123314]
-- children[462].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[463].center (mismatch)
   - expected: [313.45,216.0277]
   - actual: [313.45,216.02772710689527]
-- children[463].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[464].center (mismatch)
   - expected: [333.7,231.1099]
   - actual: [333.7,231.109905144108]
-- children[464].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[465].center (mismatch)
   - expected: [356.55,232.9951]
   - actual: [356.55,232.99514775629336]
-- children[465].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[466].center (mismatch)
   - expected: [356.7,235.9804]
   - actual: [356.7,235.98039036847868]
-- children[466].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[467].center (mismatch)
   - expected: [362.05,237.3786]
   - actual: [362.05,237.37858445822692]
-- children[467].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[468].center (mismatch)
   - expected: [339.925,239.3712]
   - actual: [339.925,239.3712057643196]
-- children[468].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[469].center (mismatch)
   - expected: [298.175,240.8324]
   - actual: [298.175,240.8323513316308]
-- children[469].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[470].center (mismatch)
   - expected: [322.2,242.4338]
   - actual: [322.2,242.43378329076978]
-- children[470].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[471].center (mismatch)
   - expected: [356.55,244.319]
   - actual: [356.55,244.31902590295513]
-- children[471].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[472].center (mismatch)
   - expected: [356.7,247.3043]
   - actual: [356.7,247.30426851514045]
-- children[472].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[473].center (mismatch)
   - expected: [356.55,248.7025]
   - actual: [356.55,248.70246260488875]
-- children[473].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[474].center (mismatch)
   - expected: [385.925,250.6951]
   - actual: [385.925,250.69508391098142]
-- children[474].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[475].center (mismatch)
   - expected: [332.675,252.1562]
   - actual: [332.675,252.1562294782926]
-- children[475].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[476].center (mismatch)
   - expected: [345.2,256.8017]
   - actual: [345.2,256.8017147026633]
-- children[476].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[477].center (mismatch)
   - expected: [356.55,258.687]
   - actual: [356.55,258.6869573148486]
-- children[477].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[478].center (mismatch)
   - expected: [356.7,261.6722]
   - actual: [356.7,261.67219992703394]
-- children[478].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[479].center (mismatch)
   - expected: [362.05,263.0704]
   - actual: [362.05,263.0703940167822]
-- children[479].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[480].center (mismatch)
   - expected: [339.925,265.063]
   - actual: [339.925,265.0630153228749]
-- children[480].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[481].center (mismatch)
   - expected: [305.425,266.2806]
   - actual: [305.425,266.28063662896756]
-- children[481].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[482].center (mismatch)
   - expected: [305.425,269.9335]
   - actual: [305.425,269.93350054724556]
-- children[482].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[483].center (mismatch)
   - expected: [263.675,271.3946]
   - actual: [263.675,271.39464611455674]
-- children[483].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[484].center (mismatch)
   - expected: [298.175,272.8558]
   - actual: [298.175,272.85579168186797]
-- children[484].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[485].center (mismatch)
   - expected: [332.675,274.3169]
   - actual: [332.675,274.31693724917915]
-- children[485].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[486].center (mismatch)
   - expected: [401.675,275.7781]
   - actual: [401.675,275.7780828164904]
-- children[486].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[487].center (mismatch)
   - expected: [409.05,277.6045]
   - actual: [409.05,277.60451477562935]
-- children[487].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[488].center (mismatch)
   - expected: [412.3,279.2648]
   - actual: [412.3,279.26475738781465]
-- children[488].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[489].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[490].center (mismatch)
   - expected: [411.7269,13.8639]
   - actual: [411.72687499999995,13.863931959139002]
 - children[490].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[490].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[491].center (mismatch)
   - expected: [355.8269,26.6246]
   - actual: [355.826875,26.62460324699015]
 - children[491].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[491].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[492].center (mismatch)
   - expected: [305.2731,40.3107]
   - actual: [305.27312500000005,40.31066672747172]
 - children[492].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[492].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[493].center (mismatch)
   - expected: [250.1731,53.5954]
   - actual: [250.173125,53.595435060197005]
 - children[493].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[493].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[494].center (mismatch)
   - expected: [284.2981,68.4562]
   - actual: [284.298125,68.45624315943085]
 - children[494].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[494].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[495].center (mismatch)
   - expected: [362.9231,77.7186]
   - actual: [362.923125,77.71858354615102]
 - children[495].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[495].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[496].center (mismatch)
   - expected: [297.3019,87.2076]
   - actual: [297.301875,87.20761127325792]
 - children[496].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[496].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[497].center (mismatch)
   - expected: [385.9231,95.2036]
   - actual: [385.923125,95.20362550164172]
 - children[497].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[497].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[498].center (mismatch)
   - expected: [274.3019,109.551]
   - actual: [274.301875,109.55096224005834]
 - children[498].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[498].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[499].center (mismatch)
   - expected: [363.7963,116.4268]
   - actual: [363.79625,116.42676486683692]
 - children[499].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[499].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[500].center (mismatch)
   - expected: [331.8038,126.2408]
   - actual: [331.80375000000004,126.24079259394382]
 - children[500].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[500].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[501].center (mismatch)
   - expected: [411.9038,136.5623]
   - actual: [411.90375000000006,136.56233582634076]
 - children[501].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[501].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[502].center (mismatch)
   - expected: [330.9288,146.8711]
   - actual: [330.92875000000004,146.8710552717986]
 - children[502].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[502].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[503].center (mismatch)
   - expected: [320.3038,155.9629]
   - actual: [320.30375000000004,155.96292867566584]
 - children[503].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[503].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[504].center (mismatch)
   - expected: [296.4288,166.2312]
   - actual: [296.42875000000004,166.23123403867203]
 - children[504].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[504].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[505].center (mismatch)
   - expected: [410.5538,173.3749]
   - actual: [410.55375000000004,173.37491335279097]
 - children[505].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[505].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[506].center (mismatch)
   - expected: [330.9288,188.3432]
   - actual: [330.92875000000004,188.34323695731487]
 - children[506].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[506].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[507].center (mismatch)
   - expected: [319.4288,196.8788]
   - actual: [319.42875000000004,196.87876231302448]
 - children[507].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[507].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[508].center (mismatch)
   - expected: [296.4288,207.326]
   - actual: [296.42875000000004,207.32595311929953]
 - children[508].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[508].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[509].center (mismatch)
   - expected: [318.5538,213.5152]
   - actual: [318.55375000000004,213.51522710689528]
 - children[509].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[509].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[510].center (mismatch)
   - expected: [338.6463,227.5974]
   - actual: [338.64625,227.59740514410802]
 - children[510].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[510].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[511].center (mismatch)
   - expected: [329.1463,239.2213]
   - actual: [329.14625,239.2212832907698]
 - children[511].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[511].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[512].center (mismatch)
   - expected: [352.1463,253.5892]
   - actual: [352.14625,253.5892147026633]
 - children[512].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[512].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[513].center (mismatch)
   - expected: [307.1713,266.271]
   - actual: [307.17125,266.27100054724554]
 - children[513].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[513].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[514].center (mismatch)
   - expected: [407.4588,272.787]
   - actual: [407.45875,272.78701477562936]
 - children[514].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[514].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[515].center (mismatch)
   - expected: [412.6,12.3764]
   - actual: [412.59999999999997,12.376431959139001]
-- children[515].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[516].center (mismatch)
   - expected: [356.7,25.1371]
   - actual: [356.7,25.13710324699015]
-- children[516].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[517].center (mismatch)
   - expected: [304.4,38.8232]
   - actual: [304.40000000000003,38.82316672747172]
-- children[517].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[518].center (mismatch)
   - expected: [249.3,52.1079]
   - actual: [249.3,52.10793506019701]
-- children[518].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[519].center (mismatch)
   - expected: [283.425,66.9687]
   - actual: [283.425,66.96874315943086]
-- children[519].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[520].center (mismatch)
   - expected: [362.05,76.2311]
   - actual: [362.05,76.23108354615103]
-- children[520].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[521].center (mismatch)
   - expected: [298.175,85.7201]
   - actual: [298.175,85.72011127325793]
-- children[521].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[522].center (mismatch)
   - expected: [385.05,93.7161]
   - actual: [385.05,93.71612550164173]
-- children[522].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[523].center (mismatch)
   - expected: [275.175,108.0635]
   - actual: [275.175,108.06346224005834]
-- children[523].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[524].center (mismatch)
   - expected: [362.05,114.9393]
   - actual: [362.05,114.93926486683692]
-- children[524].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[525].center (mismatch)
   - expected: [333.55,124.7533]
   - actual: [333.55,124.75329259394383]
-- children[525].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[526].center (mismatch)
   - expected: [413.65,135.0748]
   - actual: [413.65000000000003,135.07483582634075]
-- children[526].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[527].center (mismatch)
   - expected: [332.675,145.3836]
   - actual: [332.675,145.3835552717986]
-- children[527].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[528].center (mismatch)
   - expected: [322.05,154.4754]
   - actual: [322.05,154.47542867566582]
-- children[528].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[529].center (mismatch)
   - expected: [298.175,164.7437]
   - actual: [298.175,164.74373403867202]
-- children[529].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[530].center (mismatch)
   - expected: [412.3,171.8874]
   - actual: [412.3,171.88741335279096]
-- children[530].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[531].center (mismatch)
   - expected: [332.675,186.8557]
   - actual: [332.675,186.85573695731486]
-- children[531].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[532].center (mismatch)
   - expected: [321.175,195.3913]
   - actual: [321.175,195.39126231302447]
-- children[532].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[533].center (mismatch)
   - expected: [298.175,205.8385]
   - actual: [298.175,205.83845311929952]
-- children[533].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[534].center (mismatch)
   - expected: [320.3,212.0277]
   - actual: [320.3,212.02772710689527]
-- children[534].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[535].center (mismatch)
   - expected: [336.9,226.1099]
   - actual: [336.90000000000003,226.109905144108]
-- children[535].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[536].center (mismatch)
   - expected: [327.4,237.7338]
   - actual: [327.40000000000003,237.7337832907698]
-- children[536].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[537].center (mismatch)
   - expected: [350.4,252.1017]
   - actual: [350.40000000000003,252.1017147026633]
-- children[537].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[538].center (mismatch)
   - expected: [305.425,264.7835]
   - actual: [305.425,264.7835005472455]
-- children[538].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[539].center (mismatch)
   - expected: [409.205,271.2995]
   - actual: [409.205,271.29951477562935]
-- children[539].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[540].center (mismatch)
   - expected: [419.0731,15.4139]
   - actual: [419.0731,15.413931959139001]
 - children[540].size (mismatch)
   - expected: [1.0731,1.7875]
   - actual: [1.0731,1.7874999999999999]
-- children[540].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[541].center (mismatch)
   - expected: [310.5783,45.1959]
   - actual: [310.5830125,45.19590933965706]
 - children[541].size (mismatch)
   - expected: [3.9782,1.2512]
   - actual: [3.9830125,1.2512499999999998]
-- children[541].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[542].center (mismatch)
   - expected: [299.5228,46.3648]
   - actual: [299.5275125,46.364825793506014]
 - children[542].size (mismatch)
   - expected: [4.4228,1.2512]
   - actual: [4.4275125,1.2512499999999998]
-- children[542].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[543].center (mismatch)
   - expected: [270.7445,50.8944]
   - actual: [270.7445,50.89437705217073]
 - children[543].size (mismatch)
   - expected: [0.6445,1.2512]
   - actual: [0.6445000000000001,1.2512499999999998]
-- children[543].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[544].center (mismatch)
   - expected: [278.8,65.7604]
   - actual: [278.8,65.76040982609751]
 - children[544].size (mismatch)
   - expected: [6.6347,2.3167]
   - actual: [6.641016666666666,2.3166666666666664]
-- children[544].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[545].center (mismatch)
   - expected: [363.1731,86.9873]
   - actual: [363.17310000000003,86.98726286026996]
 - children[545].size (mismatch)
   - expected: [1.0731,1.7875]
   - actual: [1.0731,1.7874999999999999]
-- children[545].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[546].center (mismatch)
   - expected: [316.7445,104.3723]
   - actual: [316.7445,104.37230481576064]
 - children[546].size (mismatch)
   - expected: [0.6445,1.2512]
   - actual: [0.6445000000000001,1.2512499999999998]
-- children[546].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[547].center (mismatch)
   - expected: [305.2445,136.14]
   - actual: [305.2445,136.14004469171834]
 - children[547].size (mismatch)
   - expected: [0.6445,1.2512]
   - actual: [0.6445000000000001,1.2512499999999998]
-- children[547].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[548].center (mismatch)
   - expected: [340.1731,229.4474]
   - actual: [340.17310000000003,229.44740514410802]
 - children[548].size (mismatch)
   - expected: [1.0731,1.7875]
   - actual: [1.0731,1.7874999999999999]
-- children[548].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[549].center (mismatch)
   - expected: [351.2445,255.0392]
   - actual: [351.2445,255.0392147026633]
 - children[549].size (mismatch)
   - expected: [0.6445,1.2512]
   - actual: [0.6445000000000001,1.2512499999999998]
-- children[549].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[550].center (mismatch)
   - expected: [418.2,13.8264]
   - actual: [418.2,13.826431959139]
-- children[550].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[550].znId (extra)
   - expected: undefined
   - actual: "0"
 - children[551].center (mismatch)
   - expected: [306.8,43.7084]
   - actual: [306.8,43.70840933965706]
-- children[551].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[551].znId (extra)
   - expected: undefined
   - actual: "3264"
 - children[552].center (mismatch)
   - expected: [295.3,44.8773]
   - actual: [295.3,44.87732579350602]
-- children[552].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[552].znId (extra)
   - expected: undefined
   - actual: "3456"
 - children[553].center (mismatch)
   - expected: [270.3,49.4069]
   - actual: [270.3,49.406877052170735]
-- children[553].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[553].znId (extra)
   - expected: undefined
   - actual: "4224"
 - children[554].center (mismatch)
   - expected: [278.8,63.6437]
   - actual: [278.8,63.643743159430855]
-- children[554].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[554].znId (extra)
   - expected: undefined
   - actual: "6144"
 - children[555].center (mismatch)
   - expected: [362.3,85.3998]
   - actual: [362.3,85.39976286026996]
-- children[555].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[555].znId (extra)
   - expected: undefined
   - actual: "8448"
 - children[556].center (mismatch)
   - expected: [316.3,102.8848]
   - actual: [316.3,102.88480481576065]
-- children[556].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[556].znId (extra)
   - expected: undefined
   - actual: "11520"
 - children[557].center (mismatch)
   - expected: [304.8,134.6525]
   - actual: [304.8,134.65254469171833]
-- children[557].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[557].znId (extra)
   - expected: undefined
   - actual: "16320"
 - children[558].center (mismatch)
   - expected: [339.3,227.8599]
   - actual: [339.3,227.859905144108]
-- children[558].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[558].znId (extra)
   - expected: undefined
   - actual: "30720"
 - children[559].center (mismatch)
   - expected: [350.8,253.5517]
   - actual: [350.8,253.55171470266328]
-- children[559].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[559].znId (extra)
   - expected: undefined
   - actual: "33792"
 - children[560].fill (extra)
   - expected: undefined
   - actual: false
-- children[560].lineWidth (extra)
+- children[560].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[560].znId (extra)
   - expected: undefined
   - actual: "goto-0-6144"
-- children[560].path (extra)
-  - expected: undefined
+- children[560].draginfo (mismatch)
+  - expected: {"handler":"jumpline","jumpline":{"from":{"center":[324.8,217.0277271068953],"size":[3.5,1.3],"anchor":"after"},"to":{"center":[278.8,71.64374315943085],"size":[2.625,0.9750000000000001],"anchor":"before"},"vertical":-63.25,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+  - actual: {"handler":"jumpline","jumpline":{"from":{"center":[324.8,217.02772710689527],"size":[3.5,1.3],"anchor":"after"},"to":{"center":[278.8,71.64374315943085],"size":[2.625,0.9750000000000001],"anchor":"before"},"vertical":-63.25,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+- children[560].path (mismatch)
+  - expected: [["M",318.3,219.3277271068953],["l",-56.75,0],["l",0,-148.65898394746444],["M",261.55,219.32772710689528],["L",261.55,69.66874315943086],["L",271.175,69.66874315943086]]
   - actual: [[318.3,219.32772710689528],[261.55,219.32772710689528],[261.55,70.66874315943085],[261.55,219.32772710689528],[261.55,69.66874315943086],[271.175,69.66874315943086]]
 - children[561].fill (extra)
   - expected: undefined
   - actual: true
-- children[561].lineWidth (extra)
+- children[561].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[561].znId (extra)
   - expected: undefined
   - actual: "goto-0-6144"
-- children[561].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.29184.p_repeat"
-- children[561].path (extra)
-  - expected: undefined
+- children[561].path (mismatch)
+  - expected: [["M",273.175,69.66874315943086],["l",-2.5,1],["l",0,-2],["l",2.5,1],["z"]]
   - actual: [[273.175,69.66874315943086],[270.675,70.66874315943086],[270.675,68.66874315943086]]
 - children[562].fill (extra)
   - expected: undefined
   - actual: true
-- children[562].lineWidth (extra)
+- children[562].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[562].znId (extra)
   - expected: undefined
   - actual: "goto-0-6144"
-- children[562].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.29184.p_repeat"
-- children[562].path (extra)
-  - expected: undefined
-  - actual: []
 - children[563].fill (extra)
   - expected: undefined
   - actual: false
-- children[563].lineWidth (extra)
+- children[563].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[563].znId (extra)
   - expected: undefined
   - actual: "goto-0-566-0"
-- children[563].path (extra)
-  - expected: undefined
+- children[563].path (mismatch)
+  - expected: [["M",330.425,204.96355344764686],["l",23.125,0],["l",0,2.5748996716526733],["M",353.55,204.96355344764686],["L",353.55,208.53845311929953],["L",309.425,208.53845311929953]]
   - actual: [[330.425,204.96355344764686],[353.55,204.96355344764686],[353.55,207.53845311929953],[353.55,204.96355344764686],[353.55,208.53845311929953],[309.425,208.53845311929953]]
 - children[564].fill (extra)
   - expected: undefined
   - actual: true
-- children[564].lineWidth (extra)
+- children[564].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[564].znId (extra)
   - expected: undefined
   - actual: "goto-0-566-0"
-- children[564].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.26880.0.p_begin"
-- children[564].path (extra)
-  - expected: undefined
+- children[564].path (mismatch)
+  - expected: [["M",307.425,208.53845311929953],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
   - actual: [[307.425,208.53845311929953],[309.925,209.53845311929953],[309.925,207.53845311929953]]
 - children[565].fill (extra)
   - expected: undefined
   - actual: true
-- children[565].lineWidth (extra)
+- children[565].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[565].znId (extra)
   - expected: undefined
   - actual: "goto-0-566-0"
-- children[565].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.26880.0.p_begin"
-- children[565].path (extra)
-  - expected: undefined
-  - actual: []
 - children[566].fill (extra)
   - expected: undefined
   - actual: false
-- children[566].lineWidth (extra)
+- children[566].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[566].znId (extra)
   - expected: undefined
   - actual: "goto-0-604-1"
-- children[566].path (extra)
-  - expected: undefined
+- children[566].draginfo (mismatch)
+  - expected: {"handler":"jumpline","jumpline":{"from":{"center":[324.8,202.98855344764686],"size":[2.625,0.9750000000000001],"anchor":"after"},"to":{"center":[336.3,230.85990514410798],"size":[1.6,0.75],"anchor":"before"},"vertical":28.75,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+  - actual: {"handler":"jumpline","jumpline":{"from":{"center":[324.8,202.98855344764686],"size":[2.625,0.9750000000000001],"anchor":"after"},"to":{"center":[336.3,230.859905144108],"size":[1.6,0.75],"anchor":"before"},"vertical":28.75,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+- children[566].path (mismatch)
+  - expected: [["M",330.425,204.96355344764686],["l",23.125,0],["l",0,23.146351696461124],["M",353.55,204.96355344764686],["L",353.55,229.10990514410798],["L",342.90000000000003,229.10990514410798]]
   - actual: [[330.425,204.96355344764686],[353.55,204.96355344764686],[353.55,228.109905144108],[353.55,204.96355344764686],[353.55,229.109905144108],[342.90000000000003,229.109905144108]]
 - children[567].fill (extra)
   - expected: undefined
   - actual: true
-- children[567].lineWidth (extra)
+- children[567].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[567].znId (extra)
   - expected: undefined
   - actual: "goto-0-604-1"
-- children[567].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.26880.1.p_begin"
-- children[567].path (extra)
-  - expected: undefined
+- children[567].path (mismatch)
+  - expected: [["M",340.90000000000003,229.10990514410798],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
   - actual: [[340.90000000000003,229.109905144108],[343.40000000000003,230.109905144108],[343.40000000000003,228.109905144108]]
 - children[568].fill (extra)
   - expected: undefined
   - actual: true
-- children[568].lineWidth (extra)
+- children[568].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[568].znId (extra)
   - expected: undefined
   - actual: "goto-0-604-1"
-- children[568].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.26880.1.p_begin"
-- children[568].path (extra)
-  - expected: undefined
-  - actual: []
 - children[569].fill (extra)
   - expected: undefined
   - actual: false
-- children[569].lineWidth (extra)
+- children[569].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[569].znId (extra)
   - expected: undefined
   - actual: "goto-0-660-2"
-- children[569].path (extra)
-  - expected: undefined
+- children[569].path (mismatch)
+  - expected: [["M",330.675,253.6562294782926],["l",-11.625,0],["l",0,0.1454852243706739],["M",319.05,253.6562294782926],["L",319.05,254.80171470266328],["L",341.2,254.80171470266328]]
   - actual: [[330.675,253.6562294782926],[319.05,253.6562294782926],[319.05,253.80171470266328],[319.05,253.6562294782926],[319.05,254.80171470266328],[341.2,254.80171470266328]]
 - children[570].fill (extra)
   - expected: undefined
   - actual: true
-- children[570].lineWidth (extra)
+- children[570].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[570].znId (extra)
   - expected: undefined
   - actual: "goto-0-660-2"
-- children[570].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.26880.p_follow"
-- children[570].path (extra)
-  - expected: undefined
+- children[570].path (mismatch)
+  - expected: [["M",343.2,254.80171470266328],["l",-2.5,1],["l",0,-2],["l",2.5,1],["z"]]
   - actual: [[343.2,254.80171470266328],[340.7,255.80171470266328],[340.7,253.80171470266328]]
 - children[571].fill (extra)
   - expected: undefined
   - actual: true
-- children[571].lineWidth (extra)
+- children[571].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[571].znId (extra)
   - expected: undefined
   - actual: "goto-0-660-2"
-- children[571].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.26880.p_follow"
-- children[571].path (extra)
-  - expected: undefined
-  - actual: []
 - children[572].center (mismatch)
   - expected: [298.9642,205.3801]
   - actual: [298.9641666666667,205.3801197859662]
 - children[572].size (mismatch)
   - expected: [1.6642,1.8317]
   - actual: [1.6641666666666666,1.8316666666666663]
-- children[572].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[573].center (mismatch)
   - expected: [333.4642,225.7266]
   - actual: [333.4641666666667,225.7265718107747]
 - children[573].size (mismatch)
   - expected: [1.6642,1.8317]
   - actual: [1.6641666666666666,1.8316666666666663]
-- children[573].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[574].center (mismatch)
   - expected: [297.8,203.5135]
   - actual: [297.8,203.51345311929953]
-- children[574].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[575].center (mismatch)
   - expected: [332.3,223.8599]
   - actual: [332.3,223.859905144108]
-- children[575].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[576].from (extra)
   - expected: undefined
   - actual: [278.8,16.826431959139]
 - children[576].to (extra)
   - expected: undefined
   - actual: [267.3,20.430591025173293]
-- children[576].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[576].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -5368,9 +4009,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[577].to (extra)
   - expected: undefined
   - actual: [244.3,24.034750091207588]
-- children[577].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[577].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -5380,9 +4018,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[578].to (extra)
   - expected: undefined
   - actual: [221.3,28.125957679678947]
-- children[578].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[578].znId (extra)
   - expected: undefined
   - actual: "1152"
@@ -5392,9 +4027,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[579].to (extra)
   - expected: undefined
   - actual: [198.3,29.58710324699015]
-- children[579].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[579].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -5404,9 +4036,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[580].to (extra)
   - expected: undefined
   - actual: [186.8,31.92493615468807]
-- children[580].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[580].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -5416,9 +4045,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[581].to (extra)
   - expected: undefined
   - actual: [163.8,35.52909522072237]
-- children[581].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[581].znId (extra)
   - expected: undefined
   - actual: "2304"
@@ -5428,9 +4054,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[582].to (extra)
   - expected: undefined
   - actual: [140.8,39.620302809193724]
-- children[582].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[582].znId (extra)
   - expected: undefined
   - actual: "2688"
@@ -5440,9 +4063,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[583].to (extra)
   - expected: undefined
   - actual: [129.3,43.273166727471725]
-- children[583].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[583].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -5452,9 +4072,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[584].to (extra)
   - expected: undefined
   - actual: [106.3,46.87732579350602]
-- children[584].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[584].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -5464,9 +4081,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[585].to (extra)
   - expected: undefined
   - actual: [83.3,49.21515870120393]
-- children[585].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[585].znId (extra)
   - expected: undefined
   - actual: "3840"
@@ -5476,9 +4090,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[586].to (extra)
   - expected: undefined
   - actual: [83.3,51.406877052170735]
-- children[586].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[586].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -5488,9 +4099,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[587].to (extra)
   - expected: undefined
   - actual: [83.3,53.355071141919]
-- children[587].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[587].znId (extra)
   - expected: undefined
   - actual: "4416"
@@ -5500,9 +4108,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[588].to (extra)
   - expected: undefined
   - actual: [83.3,57.007935060197006]
-- children[588].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[588].znId (extra)
   - expected: undefined
   - actual: "4608"
@@ -5512,9 +4117,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[589].to (extra)
   - expected: undefined
   - actual: [83.3,59.930226194819404]
-- children[589].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[589].znId (extra)
   - expected: undefined
   - actual: "4800"
@@ -5524,9 +4126,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[590].to (extra)
   - expected: undefined
   - actual: [83.3,61.87842028456767]
-- children[590].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[590].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -5536,9 +4135,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[591].to (extra)
   - expected: undefined
   - actual: [83.3,63.82661437431594]
-- children[591].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[591].znId (extra)
   - expected: undefined
   - actual: "5184"
@@ -5548,9 +4144,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[592].to (extra)
   - expected: undefined
   - actual: [106.3,64.9955308281649]
-- children[592].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[592].znId (extra)
   - expected: undefined
   - actual: "5376"
@@ -5560,9 +4153,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[593].to (extra)
   - expected: undefined
   - actual: [129.3,66.16444728201385]
-- children[593].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[593].znId (extra)
   - expected: undefined
   - actual: "5760"
@@ -5572,9 +4162,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[594].to (extra)
   - expected: undefined
   - actual: [129.3,72.8126596132798]
-- children[594].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[594].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -5584,9 +4171,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[595].to (extra)
   - expected: undefined
   - actual: [106.3,75.15049252097774]
-- children[595].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[595].znId (extra)
   - expected: undefined
   - actual: "6912"
@@ -5596,9 +4180,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[596].to (extra)
   - expected: undefined
   - actual: [94.8,78.75465158701202]
-- children[596].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[596].znId (extra)
   - expected: undefined
   - actual: "7296"
@@ -5608,9 +4189,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[597].to (extra)
   - expected: undefined
   - actual: [83.3,80.58108354615102]
-- children[597].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[597].znId (extra)
   - expected: undefined
   - actual: "7680"
@@ -5620,9 +4198,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[598].to (extra)
   - expected: undefined
   - actual: [140.8,83.50337468077342]
-- children[598].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[598].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -5632,9 +4207,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[599].to (extra)
   - expected: undefined
   - actual: [83.3,87.39976286026996]
-- children[599].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[599].znId (extra)
   - expected: undefined
   - actual: "8448"
@@ -5644,9 +4216,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[600].to (extra)
   - expected: undefined
   - actual: [71.8,88.56867931411892]
-- children[600].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[600].znId (extra)
   - expected: undefined
   - actual: "8832"
@@ -5656,9 +4225,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[601].to (extra)
   - expected: undefined
   - actual: [60.3,90.39511127325792]
-- children[601].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[601].znId (extra)
   - expected: undefined
   - actual: "9216"
@@ -5668,9 +4234,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[602].to (extra)
   - expected: undefined
   - actual: [129.3,91.85625684056912]
-- children[602].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[602].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -5680,9 +4243,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[603].to (extra)
   - expected: undefined
   - actual: [83.3,94.77854797519151]
-- children[603].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[603].znId (extra)
   - expected: undefined
   - actual: "9984"
@@ -5692,9 +4252,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[604].to (extra)
   - expected: undefined
   - actual: [37.3,96.23969354250272]
-- children[604].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[604].znId (extra)
   - expected: undefined
   - actual: "10368"
@@ -5704,9 +4261,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[605].to (extra)
   - expected: undefined
   - actual: [48.8,98.06612550164172]
-- children[605].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[605].znId (extra)
   - expected: undefined
   - actual: "10752"
@@ -5716,9 +4270,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[606].to (extra)
   - expected: undefined
   - actual: [140.8,101.47546515870118]
-- children[606].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[606].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -5728,9 +4279,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[607].to (extra)
   - expected: undefined
   - actual: [83.3,102.44956220357531]
-- children[607].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[607].znId (extra)
   - expected: undefined
   - actual: "11328"
@@ -5740,9 +4288,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[608].to (extra)
   - expected: undefined
   - actual: [83.3,104.88480481576065]
-- children[608].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[608].znId (extra)
   - expected: undefined
   - actual: "11520"
@@ -5752,9 +4297,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[609].to (extra)
   - expected: undefined
   - actual: [83.3,107.32004742794598]
-- children[609].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[609].znId (extra)
   - expected: undefined
   - actual: "11712"
@@ -5764,9 +4306,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[610].to (extra)
   - expected: undefined
   - actual: [83.3,109.26824151769424]
-- children[610].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[610].znId (extra)
   - expected: undefined
   - actual: "11904"
@@ -5776,9 +4315,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[611].to (extra)
   - expected: undefined
   - actual: [83.3,111.21643560744252]
-- children[611].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[611].znId (extra)
   - expected: undefined
   - actual: "12096"
@@ -5788,9 +4324,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[612].to (extra)
   - expected: undefined
   - actual: [140.8,112.73846224005834]
-- children[612].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[612].znId (extra)
   - expected: undefined
   - actual: "12288"
@@ -5800,9 +4333,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[613].to (extra)
   - expected: undefined
   - actual: [129.3,113.956083546151]
-- children[613].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[613].znId (extra)
   - expected: undefined
   - actual: "12672"
@@ -5812,9 +4342,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[614].to (extra)
   - expected: undefined
   - actual: [106.3,116.29391645384894]
-- children[614].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[614].znId (extra)
   - expected: undefined
   - actual: "13056"
@@ -5824,9 +4351,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[615].to (extra)
   - expected: undefined
   - actual: [94.8,117.4628329076979]
-- children[615].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[615].znId (extra)
   - expected: undefined
   - actual: "13440"
@@ -5836,9 +4360,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[616].to (extra)
   - expected: undefined
   - actual: [83.3,119.28926486683692]
-- children[616].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[616].znId (extra)
   - expected: undefined
   - actual: "13824"
@@ -5848,9 +4369,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[617].to (extra)
   - expected: undefined
   - actual: [140.8,122.21155600145931]
-- children[617].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[617].znId (extra)
   - expected: undefined
   - actual: "14208"
@@ -5860,9 +4378,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[618].to (extra)
   - expected: undefined
   - actual: [83.3,126.10794418095584]
-- children[618].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[618].znId (extra)
   - expected: undefined
   - actual: "14592"
@@ -5872,9 +4387,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[619].to (extra)
   - expected: undefined
   - actual: [71.8,127.27686063480482]
-- children[619].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[619].znId (extra)
   - expected: undefined
   - actual: "14976"
@@ -5884,9 +4396,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[620].to (extra)
   - expected: undefined
   - actual: [60.3,129.10329259394382]
-- children[620].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[620].znId (extra)
   - expected: undefined
   - actual: "15360"
@@ -5896,9 +4405,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[621].to (extra)
   - expected: undefined
   - actual: [129.3,132.75615651222182]
-- children[621].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[621].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -5908,9 +4414,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[622].to (extra)
   - expected: undefined
   - actual: [83.3,135.19139912440716]
-- children[622].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[622].znId (extra)
   - expected: undefined
   - actual: "16128"
@@ -5920,9 +4423,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[623].to (extra)
   - expected: undefined
   - actual: [129.3,138.11369025902954]
-- children[623].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[623].znId (extra)
   - expected: undefined
   - actual: "16512"
@@ -5932,9 +4432,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[624].to (extra)
   - expected: undefined
   - actual: [140.8,139.57483582634075]
-- children[624].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[624].znId (extra)
   - expected: undefined
   - actual: "16896"
@@ -5944,9 +4441,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[625].to (extra)
   - expected: undefined
   - actual: [140.8,141.523029916089]
-- children[625].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[625].znId (extra)
   - expected: undefined
   - actual: "17088"
@@ -5956,9 +4450,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[626].to (extra)
   - expected: undefined
   - actual: [106.3,142.69194636993797]
-- children[626].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[626].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -5968,9 +4459,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[627].to (extra)
   - expected: undefined
   - actual: [83.3,143.66604341481212]
-- children[627].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[627].znId (extra)
   - expected: undefined
   - actual: "17472"
@@ -5980,9 +4468,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[628].to (extra)
   - expected: undefined
   - actual: [140.8,144.8836647209048]
-- children[628].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[628].znId (extra)
   - expected: undefined
   - actual: "17664"
@@ -5992,9 +4477,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[629].to (extra)
   - expected: undefined
   - actual: [48.8,148.5365286391828]
-- children[629].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[629].znId (extra)
   - expected: undefined
   - actual: "18048"
@@ -6004,9 +4486,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[630].to (extra)
   - expected: undefined
   - actual: [60.3,150.0585552717986]
-- children[630].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[630].znId (extra)
   - expected: undefined
   - actual: "18432"
@@ -6016,9 +4495,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[631].to (extra)
   - expected: undefined
   - actual: [83.3,152.98084640642102]
-- children[631].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[631].znId (extra)
   - expected: undefined
   - actual: "18816"
@@ -6028,9 +4504,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[632].to (extra)
   - expected: undefined
   - actual: [106.3,154.44199197373223]
-- children[632].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[632].znId (extra)
   - expected: undefined
   - actual: "19200"
@@ -6040,9 +4513,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[633].to (extra)
   - expected: undefined
   - actual: [140.8,155.9031375410434]
-- children[633].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[633].znId (extra)
   - expected: undefined
   - actual: "19584"
@@ -6052,9 +4522,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[634].to (extra)
   - expected: undefined
   - actual: [129.3,158.82542867566582]
-- children[634].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[634].znId (extra)
   - expected: undefined
   - actual: "19968"
@@ -6064,9 +4531,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[635].to (extra)
   - expected: undefined
   - actual: [83.3,162.47829259394382]
-- children[635].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[635].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -6076,9 +4540,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[636].to (extra)
   - expected: undefined
   - actual: [48.8,166.13115651222182]
-- children[636].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[636].znId (extra)
   - expected: undefined
   - actual: "20736"
@@ -6088,9 +4549,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[637].to (extra)
   - expected: undefined
   - actual: [5.425,167.59230207953303]
-- children[637].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[637].znId (extra)
   - expected: undefined
   - actual: "21120"
@@ -6100,9 +4558,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[638].to (extra)
   - expected: undefined
   - actual: [106.3,169.41873403867203]
-- children[638].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[638].znId (extra)
   - expected: undefined
   - actual: "21504"
@@ -6112,9 +4567,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[639].to (extra)
   - expected: undefined
   - actual: [60.3,170.8798796059832]
-- children[639].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[639].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -6124,9 +4576,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[640].to (extra)
   - expected: undefined
   - actual: [25.8,172.3410251732944]
-- children[640].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[640].znId (extra)
   - expected: undefined
   - actual: "22272"
@@ -6136,9 +4585,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[641].to (extra)
   - expected: undefined
   - actual: [106.3,173.55864647938708]
-- children[641].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[641].znId (extra)
   - expected: undefined
   - actual: "22656"
@@ -6148,9 +4594,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[642].to (extra)
   - expected: undefined
   - actual: [94.8,174.77626778547975]
-- children[642].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[642].znId (extra)
   - expected: undefined
   - actual: "22848"
@@ -6160,9 +4603,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[643].to (extra)
   - expected: undefined
   - actual: [83.3,176.23741335279095]
-- children[643].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[643].znId (extra)
   - expected: undefined
   - actual: "23040"
@@ -6172,9 +4612,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[644].to (extra)
   - expected: undefined
   - actual: [4.55,178.1856074425392]
-- children[644].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[644].znId (extra)
   - expected: undefined
   - actual: "23232"
@@ -6184,9 +4621,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[645].to (extra)
   - expected: undefined
   - actual: [4.4,180.1338015322875]
-- children[645].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[645].znId (extra)
   - expected: undefined
   - actual: "23424"
@@ -6196,9 +4630,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[646].to (extra)
   - expected: undefined
   - actual: [4.55,182.08199562203575]
-- children[646].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[646].znId (extra)
   - expected: undefined
   - actual: "23616"
@@ -6208,9 +4639,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[647].to (extra)
   - expected: undefined
   - actual: [25.8,184.51723823422108]
-- children[647].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[647].znId (extra)
   - expected: undefined
   - actual: "23808"
@@ -6220,9 +4648,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[648].to (extra)
   - expected: undefined
   - actual: [25.8,186.95248084640642]
-- children[648].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[648].znId (extra)
   - expected: undefined
   - actual: "24000"
@@ -6232,9 +4657,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[649].to (extra)
   - expected: undefined
   - actual: [48.8,188.12139730025538]
-- children[649].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[649].znId (extra)
   - expected: undefined
   - actual: "24192"
@@ -6244,9 +4666,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[650].to (extra)
   - expected: undefined
   - actual: [48.8,190.06959139000367]
-- children[650].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[650].znId (extra)
   - expected: undefined
   - actual: "24384"
@@ -6256,9 +4675,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[651].to (extra)
   - expected: undefined
   - actual: [60.3,191.53073695731487]
-- children[651].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[651].znId (extra)
   - expected: undefined
   - actual: "24576"
@@ -6268,9 +4684,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[652].to (extra)
   - expected: undefined
   - actual: [83.3,194.45302809193726]
-- children[652].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[652].znId (extra)
   - expected: undefined
   - actual: "24960"
@@ -6280,9 +4693,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[653].to (extra)
   - expected: undefined
   - actual: [106.3,195.91417365924843]
-- children[653].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[653].znId (extra)
   - expected: undefined
   - actual: "25344"
@@ -6292,9 +4702,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[654].to (extra)
   - expected: undefined
   - actual: [60.3,197.37531922655967]
-- children[654].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[654].znId (extra)
   - expected: undefined
   - actual: "25728"
@@ -6304,9 +4711,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[655].to (extra)
   - expected: undefined
   - actual: [48.8,200.06626231302448]
-- children[655].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[655].znId (extra)
   - expected: undefined
   - actual: "26112"
@@ -6316,9 +4720,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[656].to (extra)
   - expected: undefined
   - actual: [106.3,201.52740788033566]
-- children[656].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[656].znId (extra)
   - expected: undefined
   - actual: "26496"
@@ -6328,9 +4729,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[657].to (extra)
   - expected: undefined
   - actual: [83.3,202.98855344764686]
-- children[657].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[657].znId (extra)
   - expected: undefined
   - actual: "26880"
@@ -6340,9 +4738,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[658].to (extra)
   - expected: undefined
   - actual: [48.8,204.44969901495804]
-- children[658].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[658].znId (extra)
   - expected: undefined
   - actual: "27264"
@@ -6352,9 +4747,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[659].to (extra)
   - expected: undefined
   - actual: [25.8,211.9745986866107]
-- children[659].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[659].znId (extra)
   - expected: undefined
   - actual: "28032"
@@ -6364,9 +4756,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[660].to (extra)
   - expected: undefined
   - actual: [129.3,213.43574425392194]
-- children[660].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[660].znId (extra)
   - expected: undefined
   - actual: "28416"
@@ -6376,9 +4765,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[661].to (extra)
   - expected: undefined
   - actual: [163.8,214.89688982123315]
-- children[661].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[661].znId (extra)
   - expected: undefined
   - actual: "28800"
@@ -6388,9 +4774,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[662].to (extra)
   - expected: undefined
   - actual: [140.8,217.02772710689527]
-- children[662].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[662].znId (extra)
   - expected: undefined
   - actual: "29184"
@@ -6400,9 +4783,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[663].to (extra)
   - expected: undefined
   - actual: [140.8,219.9500182415177]
-- children[663].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[663].znId (extra)
   - expected: undefined
   - actual: "29376"
@@ -6412,9 +4792,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[664].to (extra)
   - expected: undefined
   - actual: [106.3,221.11893469536668]
-- children[664].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[664].znId (extra)
   - expected: undefined
   - actual: "29568"
@@ -6424,9 +4801,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[665].to (extra)
   - expected: undefined
   - actual: [83.3,222.0930317402408]
-- children[665].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[665].znId (extra)
   - expected: undefined
   - actual: "29760"
@@ -6436,9 +4810,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[666].to (extra)
   - expected: undefined
   - actual: [106.3,224.52827435242614]
-- children[666].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[666].znId (extra)
   - expected: undefined
   - actual: "29952"
@@ -6448,9 +4819,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[667].to (extra)
   - expected: undefined
   - actual: [129.3,225.98941991973734]
-- children[667].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[667].znId (extra)
   - expected: undefined
   - actual: "30336"
@@ -6460,9 +4828,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[668].to (extra)
   - expected: undefined
   - actual: [83.3,233.29514775629335]
-- children[668].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[668].znId (extra)
   - expected: undefined
   - actual: "30912"
@@ -6472,9 +4837,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[669].to (extra)
   - expected: undefined
   - actual: [83.3,237.6785844582269]
-- children[669].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[669].znId (extra)
   - expected: undefined
   - actual: "31296"
@@ -6484,9 +4846,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[670].to (extra)
   - expected: undefined
   - actual: [221.3,238.8962057643196]
-- children[670].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[670].znId (extra)
   - expected: undefined
   - actual: "31488"
@@ -6496,9 +4855,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[671].to (extra)
   - expected: undefined
   - actual: [83.3,242.18378329076978]
-- children[671].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[671].znId (extra)
   - expected: undefined
   - actual: "32256"
@@ -6508,9 +4864,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[672].to (extra)
   - expected: undefined
   - actual: [83.3,244.61902590295512]
-- children[672].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[672].znId (extra)
   - expected: undefined
   - actual: "32448"
@@ -6520,9 +4873,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[673].to (extra)
   - expected: undefined
   - actual: [83.3,249.00246260488873]
-- children[673].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[673].znId (extra)
   - expected: undefined
   - actual: "32832"
@@ -6532,9 +4882,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[674].to (extra)
   - expected: undefined
   - actual: [221.3,250.22008391098143]
-- children[674].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[674].znId (extra)
   - expected: undefined
   - actual: "33024"
@@ -6544,9 +4891,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[675].to (extra)
   - expected: undefined
   - actual: [83.3,258.9869573148486]
-- children[675].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[675].znId (extra)
   - expected: undefined
   - actual: "33984"
@@ -6556,9 +4900,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[676].to (extra)
   - expected: undefined
   - actual: [83.3,263.3703940167822]
-- children[676].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[676].znId (extra)
   - expected: undefined
   - actual: "34368"
@@ -6568,9 +4909,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[677].to (extra)
   - expected: undefined
   - actual: [221.3,264.58801532287487]
-- children[677].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[677].znId (extra)
   - expected: undefined
   - actual: "34560"
@@ -6580,9 +4918,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[678].to (extra)
   - expected: undefined
   - actual: [83.3,269.45850054724554]
-- children[678].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[678].znId (extra)
   - expected: undefined
   - actual: "tp_2_1"
@@ -6592,9 +4927,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[679].to (extra)
   - expected: undefined
   - actual: [25.8,270.9196461145567]
-- children[679].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[679].znId (extra)
   - expected: undefined
   - actual: "35584"
@@ -6604,9 +4936,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[680].to (extra)
   - expected: undefined
   - actual: [129.3,272.38079168186795]
-- children[680].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[680].znId (extra)
   - expected: undefined
   - actual: "35840"
@@ -6616,9 +4945,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[681].to (extra)
   - expected: undefined
   - actual: [163.8,273.8419372491791]
-- children[681].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[681].znId (extra)
   - expected: undefined
   - actual: "36096"
@@ -6628,9 +4954,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[682].to (extra)
   - expected: undefined
   - actual: [129.3,275.30308281649036]
-- children[682].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[682].znId (extra)
   - expected: undefined
   - actual: "36480"
@@ -6640,9 +4963,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[683].to (extra)
   - expected: undefined
   - actual: [140.8,277.12951477562933]
-- children[683].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[683].znId (extra)
   - expected: undefined
   - actual: "36864"
@@ -6652,9 +4972,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[684].to (extra)
   - expected: undefined
   - actual: [140.8,279.56475738781467]
-- children[684].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[684].znId (extra)
   - expected: undefined
   - actual: "37440"
@@ -6664,9 +4981,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[685].to (extra)
   - expected: undefined
   - actual: [140.8,282]
-- children[685].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[685].znId (extra)
   - expected: undefined
   - actual: "37632"
@@ -6676,9 +4990,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[686].to (extra)
   - expected: undefined
   - actual: [267.3,20.430591025173293]
-- children[686].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[686].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -6688,9 +4999,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[687].to (extra)
   - expected: undefined
   - actual: [244.3,24.034750091207588]
-- children[687].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[687].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -6700,9 +5008,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[688].to (extra)
   - expected: undefined
   - actual: [221.3,28.125957679678947]
-- children[688].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[688].znId (extra)
   - expected: undefined
   - actual: "1152"
@@ -6712,9 +5017,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[689].to (extra)
   - expected: undefined
   - actual: [198.3,29.58710324699015]
-- children[689].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[689].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -6724,9 +5026,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[690].to (extra)
   - expected: undefined
   - actual: [186.8,31.92493615468807]
-- children[690].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[690].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -6736,9 +5035,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[691].to (extra)
   - expected: undefined
   - actual: [163.8,35.52909522072237]
-- children[691].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[691].znId (extra)
   - expected: undefined
   - actual: "2304"
@@ -6748,9 +5044,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[692].to (extra)
   - expected: undefined
   - actual: [140.8,39.620302809193724]
-- children[692].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[692].znId (extra)
   - expected: undefined
   - actual: "2688"
@@ -6760,9 +5053,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[693].to (extra)
   - expected: undefined
   - actual: [129.3,43.273166727471725]
-- children[693].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[693].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -6772,9 +5062,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[694].to (extra)
   - expected: undefined
   - actual: [106.3,46.87732579350602]
-- children[694].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[694].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -6784,9 +5071,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[695].to (extra)
   - expected: undefined
   - actual: [83.3,49.21515870120393]
-- children[695].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[695].znId (extra)
   - expected: undefined
   - actual: "3840"
@@ -6796,9 +5080,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[696].to (extra)
   - expected: undefined
   - actual: [83.3,51.406877052170735]
-- children[696].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[696].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -6808,9 +5089,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[697].to (extra)
   - expected: undefined
   - actual: [83.3,53.355071141919]
-- children[697].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[697].znId (extra)
   - expected: undefined
   - actual: "4416"
@@ -6820,9 +5098,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[698].to (extra)
   - expected: undefined
   - actual: [83.3,57.007935060197006]
-- children[698].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[698].znId (extra)
   - expected: undefined
   - actual: "4608"
@@ -6832,9 +5107,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[699].to (extra)
   - expected: undefined
   - actual: [83.3,59.930226194819404]
-- children[699].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[699].znId (extra)
   - expected: undefined
   - actual: "4800"
@@ -6844,9 +5116,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[700].to (extra)
   - expected: undefined
   - actual: [83.3,61.87842028456767]
-- children[700].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[700].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -6856,9 +5125,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[701].to (extra)
   - expected: undefined
   - actual: [83.3,63.82661437431594]
-- children[701].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[701].znId (extra)
   - expected: undefined
   - actual: "5184"
@@ -6868,9 +5134,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[702].to (extra)
   - expected: undefined
   - actual: [106.3,64.9955308281649]
-- children[702].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[702].znId (extra)
   - expected: undefined
   - actual: "5376"
@@ -6880,9 +5143,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[703].to (extra)
   - expected: undefined
   - actual: [129.3,66.16444728201385]
-- children[703].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[703].znId (extra)
   - expected: undefined
   - actual: "5760"
@@ -6892,9 +5152,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[704].to (extra)
   - expected: undefined
   - actual: [129.3,72.8126596132798]
-- children[704].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[704].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -6904,9 +5161,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[705].to (extra)
   - expected: undefined
   - actual: [106.3,75.15049252097774]
-- children[705].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[705].znId (extra)
   - expected: undefined
   - actual: "6912"
@@ -6916,9 +5170,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[706].to (extra)
   - expected: undefined
   - actual: [94.8,78.75465158701202]
-- children[706].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[706].znId (extra)
   - expected: undefined
   - actual: "7296"
@@ -6928,9 +5179,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[707].to (extra)
   - expected: undefined
   - actual: [83.3,80.58108354615102]
-- children[707].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[707].znId (extra)
   - expected: undefined
   - actual: "7680"
@@ -6940,9 +5188,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[708].to (extra)
   - expected: undefined
   - actual: [140.8,83.50337468077342]
-- children[708].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[708].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -6952,9 +5197,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[709].to (extra)
   - expected: undefined
   - actual: [83.3,87.39976286026996]
-- children[709].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[709].znId (extra)
   - expected: undefined
   - actual: "8448"
@@ -6964,9 +5206,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[710].to (extra)
   - expected: undefined
   - actual: [71.8,88.56867931411892]
-- children[710].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[710].znId (extra)
   - expected: undefined
   - actual: "8832"
@@ -6976,9 +5215,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[711].to (extra)
   - expected: undefined
   - actual: [60.3,90.39511127325792]
-- children[711].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[711].znId (extra)
   - expected: undefined
   - actual: "9216"
@@ -6988,9 +5224,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[712].to (extra)
   - expected: undefined
   - actual: [129.3,91.85625684056912]
-- children[712].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[712].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -7000,9 +5233,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[713].to (extra)
   - expected: undefined
   - actual: [83.3,94.77854797519151]
-- children[713].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[713].znId (extra)
   - expected: undefined
   - actual: "9984"
@@ -7012,9 +5242,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[714].to (extra)
   - expected: undefined
   - actual: [37.3,96.23969354250272]
-- children[714].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[714].znId (extra)
   - expected: undefined
   - actual: "10368"
@@ -7024,9 +5251,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[715].to (extra)
   - expected: undefined
   - actual: [48.8,98.06612550164172]
-- children[715].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[715].znId (extra)
   - expected: undefined
   - actual: "10752"
@@ -7036,9 +5260,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[716].to (extra)
   - expected: undefined
   - actual: [140.8,101.47546515870118]
-- children[716].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[716].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -7048,9 +5269,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[717].to (extra)
   - expected: undefined
   - actual: [83.3,102.44956220357531]
-- children[717].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[717].znId (extra)
   - expected: undefined
   - actual: "11328"
@@ -7060,9 +5278,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[718].to (extra)
   - expected: undefined
   - actual: [83.3,104.88480481576065]
-- children[718].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[718].znId (extra)
   - expected: undefined
   - actual: "11520"
@@ -7072,9 +5287,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[719].to (extra)
   - expected: undefined
   - actual: [83.3,107.32004742794598]
-- children[719].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[719].znId (extra)
   - expected: undefined
   - actual: "11712"
@@ -7084,9 +5296,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[720].to (extra)
   - expected: undefined
   - actual: [83.3,109.26824151769424]
-- children[720].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[720].znId (extra)
   - expected: undefined
   - actual: "11904"
@@ -7096,9 +5305,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[721].to (extra)
   - expected: undefined
   - actual: [83.3,111.21643560744252]
-- children[721].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[721].znId (extra)
   - expected: undefined
   - actual: "12096"
@@ -7108,9 +5314,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[722].to (extra)
   - expected: undefined
   - actual: [140.8,112.73846224005834]
-- children[722].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[722].znId (extra)
   - expected: undefined
   - actual: "12288"
@@ -7120,9 +5323,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[723].to (extra)
   - expected: undefined
   - actual: [129.3,113.956083546151]
-- children[723].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[723].znId (extra)
   - expected: undefined
   - actual: "12672"
@@ -7132,9 +5332,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[724].to (extra)
   - expected: undefined
   - actual: [106.3,116.29391645384894]
-- children[724].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[724].znId (extra)
   - expected: undefined
   - actual: "13056"
@@ -7144,9 +5341,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[725].to (extra)
   - expected: undefined
   - actual: [94.8,117.4628329076979]
-- children[725].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[725].znId (extra)
   - expected: undefined
   - actual: "13440"
@@ -7156,9 +5350,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[726].to (extra)
   - expected: undefined
   - actual: [83.3,119.28926486683692]
-- children[726].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[726].znId (extra)
   - expected: undefined
   - actual: "13824"
@@ -7168,9 +5359,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[727].to (extra)
   - expected: undefined
   - actual: [140.8,122.21155600145931]
-- children[727].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[727].znId (extra)
   - expected: undefined
   - actual: "14208"
@@ -7180,9 +5368,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[728].to (extra)
   - expected: undefined
   - actual: [83.3,126.10794418095584]
-- children[728].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[728].znId (extra)
   - expected: undefined
   - actual: "14592"
@@ -7192,9 +5377,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[729].to (extra)
   - expected: undefined
   - actual: [71.8,127.27686063480482]
-- children[729].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[729].znId (extra)
   - expected: undefined
   - actual: "14976"
@@ -7204,9 +5386,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[730].to (extra)
   - expected: undefined
   - actual: [60.3,129.10329259394382]
-- children[730].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[730].znId (extra)
   - expected: undefined
   - actual: "15360"
@@ -7216,9 +5395,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[731].to (extra)
   - expected: undefined
   - actual: [129.3,132.75615651222182]
-- children[731].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[731].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -7228,9 +5404,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[732].to (extra)
   - expected: undefined
   - actual: [83.3,135.19139912440716]
-- children[732].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[732].znId (extra)
   - expected: undefined
   - actual: "16128"
@@ -7240,9 +5413,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[733].to (extra)
   - expected: undefined
   - actual: [129.3,138.11369025902954]
-- children[733].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[733].znId (extra)
   - expected: undefined
   - actual: "16512"
@@ -7252,9 +5422,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[734].to (extra)
   - expected: undefined
   - actual: [140.8,139.57483582634075]
-- children[734].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[734].znId (extra)
   - expected: undefined
   - actual: "16896"
@@ -7264,9 +5431,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[735].to (extra)
   - expected: undefined
   - actual: [140.8,141.523029916089]
-- children[735].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[735].znId (extra)
   - expected: undefined
   - actual: "17088"
@@ -7276,9 +5440,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[736].to (extra)
   - expected: undefined
   - actual: [106.3,142.69194636993797]
-- children[736].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[736].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -7288,9 +5449,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[737].to (extra)
   - expected: undefined
   - actual: [83.3,143.66604341481212]
-- children[737].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[737].znId (extra)
   - expected: undefined
   - actual: "17472"
@@ -7300,9 +5458,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[738].to (extra)
   - expected: undefined
   - actual: [140.8,144.8836647209048]
-- children[738].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[738].znId (extra)
   - expected: undefined
   - actual: "17664"
@@ -7312,9 +5467,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[739].to (extra)
   - expected: undefined
   - actual: [48.8,148.5365286391828]
-- children[739].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[739].znId (extra)
   - expected: undefined
   - actual: "18048"
@@ -7324,9 +5476,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[740].to (extra)
   - expected: undefined
   - actual: [60.3,150.0585552717986]
-- children[740].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[740].znId (extra)
   - expected: undefined
   - actual: "18432"
@@ -7336,9 +5485,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[741].to (extra)
   - expected: undefined
   - actual: [83.3,152.98084640642102]
-- children[741].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[741].znId (extra)
   - expected: undefined
   - actual: "18816"
@@ -7348,9 +5494,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[742].to (extra)
   - expected: undefined
   - actual: [106.3,154.44199197373223]
-- children[742].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[742].znId (extra)
   - expected: undefined
   - actual: "19200"
@@ -7360,9 +5503,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[743].to (extra)
   - expected: undefined
   - actual: [140.8,155.9031375410434]
-- children[743].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[743].znId (extra)
   - expected: undefined
   - actual: "19584"
@@ -7372,9 +5512,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[744].to (extra)
   - expected: undefined
   - actual: [129.3,158.82542867566582]
-- children[744].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[744].znId (extra)
   - expected: undefined
   - actual: "19968"
@@ -7384,9 +5521,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[745].to (extra)
   - expected: undefined
   - actual: [83.3,162.47829259394382]
-- children[745].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[745].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -7396,9 +5530,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[746].to (extra)
   - expected: undefined
   - actual: [48.8,166.13115651222182]
-- children[746].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[746].znId (extra)
   - expected: undefined
   - actual: "20736"
@@ -7408,9 +5539,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[747].to (extra)
   - expected: undefined
   - actual: [5.425,167.59230207953303]
-- children[747].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[747].znId (extra)
   - expected: undefined
   - actual: "21120"
@@ -7420,9 +5548,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[748].to (extra)
   - expected: undefined
   - actual: [106.3,169.41873403867203]
-- children[748].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[748].znId (extra)
   - expected: undefined
   - actual: "21504"
@@ -7432,9 +5557,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[749].to (extra)
   - expected: undefined
   - actual: [60.3,170.8798796059832]
-- children[749].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[749].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -7444,9 +5566,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[750].to (extra)
   - expected: undefined
   - actual: [25.8,172.3410251732944]
-- children[750].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[750].znId (extra)
   - expected: undefined
   - actual: "22272"
@@ -7456,9 +5575,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[751].to (extra)
   - expected: undefined
   - actual: [106.3,173.55864647938708]
-- children[751].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[751].znId (extra)
   - expected: undefined
   - actual: "22656"
@@ -7468,9 +5584,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[752].to (extra)
   - expected: undefined
   - actual: [94.8,174.77626778547975]
-- children[752].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[752].znId (extra)
   - expected: undefined
   - actual: "22848"
@@ -7480,9 +5593,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[753].to (extra)
   - expected: undefined
   - actual: [83.3,176.23741335279095]
-- children[753].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[753].znId (extra)
   - expected: undefined
   - actual: "23040"
@@ -7492,9 +5602,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[754].to (extra)
   - expected: undefined
   - actual: [4.55,178.1856074425392]
-- children[754].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[754].znId (extra)
   - expected: undefined
   - actual: "23232"
@@ -7504,9 +5611,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[755].to (extra)
   - expected: undefined
   - actual: [4.4,180.1338015322875]
-- children[755].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[755].znId (extra)
   - expected: undefined
   - actual: "23424"
@@ -7516,9 +5620,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[756].to (extra)
   - expected: undefined
   - actual: [4.55,182.08199562203575]
-- children[756].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[756].znId (extra)
   - expected: undefined
   - actual: "23616"
@@ -7528,9 +5629,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[757].to (extra)
   - expected: undefined
   - actual: [25.8,184.51723823422108]
-- children[757].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[757].znId (extra)
   - expected: undefined
   - actual: "23808"
@@ -7540,9 +5638,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[758].to (extra)
   - expected: undefined
   - actual: [25.8,186.95248084640642]
-- children[758].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[758].znId (extra)
   - expected: undefined
   - actual: "24000"
@@ -7552,9 +5647,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[759].to (extra)
   - expected: undefined
   - actual: [48.8,188.12139730025538]
-- children[759].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[759].znId (extra)
   - expected: undefined
   - actual: "24192"
@@ -7564,9 +5656,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[760].to (extra)
   - expected: undefined
   - actual: [48.8,190.06959139000367]
-- children[760].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[760].znId (extra)
   - expected: undefined
   - actual: "24384"
@@ -7576,9 +5665,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[761].to (extra)
   - expected: undefined
   - actual: [60.3,191.53073695731487]
-- children[761].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[761].znId (extra)
   - expected: undefined
   - actual: "24576"
@@ -7588,9 +5674,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[762].to (extra)
   - expected: undefined
   - actual: [83.3,194.45302809193726]
-- children[762].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[762].znId (extra)
   - expected: undefined
   - actual: "24960"
@@ -7600,9 +5683,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[763].to (extra)
   - expected: undefined
   - actual: [106.3,195.91417365924843]
-- children[763].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[763].znId (extra)
   - expected: undefined
   - actual: "25344"
@@ -7612,9 +5692,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[764].to (extra)
   - expected: undefined
   - actual: [60.3,197.37531922655967]
-- children[764].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[764].znId (extra)
   - expected: undefined
   - actual: "25728"
@@ -7624,9 +5701,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[765].to (extra)
   - expected: undefined
   - actual: [48.8,200.06626231302448]
-- children[765].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[765].znId (extra)
   - expected: undefined
   - actual: "26112"
@@ -7636,9 +5710,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[766].to (extra)
   - expected: undefined
   - actual: [106.3,201.52740788033566]
-- children[766].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[766].znId (extra)
   - expected: undefined
   - actual: "26496"
@@ -7648,9 +5719,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[767].to (extra)
   - expected: undefined
   - actual: [83.3,202.98855344764686]
-- children[767].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[767].znId (extra)
   - expected: undefined
   - actual: "26880"
@@ -7660,9 +5728,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[768].to (extra)
   - expected: undefined
   - actual: [48.8,204.44969901495804]
-- children[768].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[768].znId (extra)
   - expected: undefined
   - actual: "27264"
@@ -7672,9 +5737,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[769].to (extra)
   - expected: undefined
   - actual: [25.8,211.9745986866107]
-- children[769].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[769].znId (extra)
   - expected: undefined
   - actual: "28032"
@@ -7684,9 +5746,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[770].to (extra)
   - expected: undefined
   - actual: [129.3,213.43574425392194]
-- children[770].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[770].znId (extra)
   - expected: undefined
   - actual: "28416"
@@ -7696,9 +5755,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[771].to (extra)
   - expected: undefined
   - actual: [163.8,214.89688982123315]
-- children[771].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[771].znId (extra)
   - expected: undefined
   - actual: "28800"
@@ -7708,9 +5764,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[772].to (extra)
   - expected: undefined
   - actual: [140.8,217.02772710689527]
-- children[772].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[772].znId (extra)
   - expected: undefined
   - actual: "29184"
@@ -7720,9 +5773,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[773].to (extra)
   - expected: undefined
   - actual: [140.8,219.9500182415177]
-- children[773].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[773].znId (extra)
   - expected: undefined
   - actual: "29376"
@@ -7732,9 +5782,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[774].to (extra)
   - expected: undefined
   - actual: [106.3,221.11893469536668]
-- children[774].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[774].znId (extra)
   - expected: undefined
   - actual: "29568"
@@ -7744,9 +5791,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[775].to (extra)
   - expected: undefined
   - actual: [83.3,222.0930317402408]
-- children[775].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[775].znId (extra)
   - expected: undefined
   - actual: "29760"
@@ -7756,9 +5800,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[776].to (extra)
   - expected: undefined
   - actual: [106.3,224.52827435242614]
-- children[776].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[776].znId (extra)
   - expected: undefined
   - actual: "29952"
@@ -7768,9 +5809,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[777].to (extra)
   - expected: undefined
   - actual: [129.3,225.98941991973734]
-- children[777].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[777].znId (extra)
   - expected: undefined
   - actual: "30336"
@@ -7780,9 +5818,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[778].to (extra)
   - expected: undefined
   - actual: [83.3,233.29514775629335]
-- children[778].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[778].znId (extra)
   - expected: undefined
   - actual: "30912"
@@ -7792,9 +5827,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[779].to (extra)
   - expected: undefined
   - actual: [83.3,237.6785844582269]
-- children[779].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[779].znId (extra)
   - expected: undefined
   - actual: "31296"
@@ -7804,9 +5836,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[780].to (extra)
   - expected: undefined
   - actual: [221.3,238.8962057643196]
-- children[780].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[780].znId (extra)
   - expected: undefined
   - actual: "31488"
@@ -7816,9 +5845,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[781].to (extra)
   - expected: undefined
   - actual: [83.3,242.18378329076978]
-- children[781].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[781].znId (extra)
   - expected: undefined
   - actual: "32256"
@@ -7828,9 +5854,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[782].to (extra)
   - expected: undefined
   - actual: [83.3,244.61902590295512]
-- children[782].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[782].znId (extra)
   - expected: undefined
   - actual: "32448"
@@ -7840,9 +5863,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[783].to (extra)
   - expected: undefined
   - actual: [83.3,249.00246260488873]
-- children[783].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[783].znId (extra)
   - expected: undefined
   - actual: "32832"
@@ -7852,9 +5872,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[784].to (extra)
   - expected: undefined
   - actual: [221.3,250.22008391098143]
-- children[784].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[784].znId (extra)
   - expected: undefined
   - actual: "33024"
@@ -7864,9 +5881,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[785].to (extra)
   - expected: undefined
   - actual: [83.3,258.9869573148486]
-- children[785].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[785].znId (extra)
   - expected: undefined
   - actual: "33984"
@@ -7876,9 +5890,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[786].to (extra)
   - expected: undefined
   - actual: [83.3,263.3703940167822]
-- children[786].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[786].znId (extra)
   - expected: undefined
   - actual: "34368"
@@ -7888,9 +5899,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[787].to (extra)
   - expected: undefined
   - actual: [221.3,264.58801532287487]
-- children[787].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[787].znId (extra)
   - expected: undefined
   - actual: "34560"
@@ -7900,9 +5908,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[788].to (extra)
   - expected: undefined
   - actual: [83.3,269.45850054724554]
-- children[788].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[788].znId (extra)
   - expected: undefined
   - actual: "tp_2_1"
@@ -7912,9 +5917,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[789].to (extra)
   - expected: undefined
   - actual: [25.8,270.9196461145567]
-- children[789].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[789].znId (extra)
   - expected: undefined
   - actual: "35584"
@@ -7924,9 +5926,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[790].to (extra)
   - expected: undefined
   - actual: [129.3,272.38079168186795]
-- children[790].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[790].znId (extra)
   - expected: undefined
   - actual: "35840"
@@ -7936,9 +5935,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[791].to (extra)
   - expected: undefined
   - actual: [163.8,273.8419372491791]
-- children[791].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[791].znId (extra)
   - expected: undefined
   - actual: "36096"
@@ -7948,9 +5944,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[792].to (extra)
   - expected: undefined
   - actual: [129.3,275.30308281649036]
-- children[792].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[792].znId (extra)
   - expected: undefined
   - actual: "36480"
@@ -7960,9 +5953,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[793].to (extra)
   - expected: undefined
   - actual: [140.8,277.12951477562933]
-- children[793].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[793].znId (extra)
   - expected: undefined
   - actual: "36864"
@@ -7972,9 +5962,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[794].to (extra)
   - expected: undefined
   - actual: [140.8,279.56475738781467]
-- children[794].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[794].znId (extra)
   - expected: undefined
   - actual: "37440"
@@ -7984,30 +5971,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[795].to (extra)
   - expected: undefined
   - actual: [140.8,282]
-- children[795].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[795].znId (extra)
   - expected: undefined
   - actual: "37632"
 - children[796].fill (extra)
   - expected: undefined
   - actual: false
-- children[796].lineWidth (extra)
+- children[796].color (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "black"
 - children[796].znId (extra)
   - expected: undefined
   - actual: "tp_2_1"
-- children[796].path (extra)
-  - expected: undefined
+- children[796].draginfo (mismatch)
+  - expected: {"handler":"tuplet","p1":[83.3,269.45850054724554],"p2":[129.3,272.38079168186795],"cp1":[-6.265335131930641,259.76052433027377],"cp2":[-11.68635038489711,283.4645187241141],"mp":{"$$id":25000,"x":16.745910850570695,"y":271.11146792371534},"conf_key":"extract.0.notebound.tuplet.v_2.tp_2_1"}
+  - actual: {"handler":"tuplet","p1":[83.3,269.45850054724554],"p2":[129.3,272.38079168186795],"cp1":[-6.265335131930641,259.76052433027377],"cp2":[-11.68635038489711,283.4645187241141],"mp":{"x":16.745910850570695,"y":271.11146792371534},"tuplet_options":{"cp1":[4,-90],"cp2":[-20,-140],"pos":[0,0],"shape":["c"],"show":true},"conf_key":"extract.0.notebound.tuplet.v_2.tp_2_1","callback":null}
+- children[796].path (mismatch)
+  - expected: [["M",83.3,269.45850054724554],["c",-89.56533513193064,-9.697976216971776,-94.98635038489711,14.00601817686855,46.000000000000014,2.9222911346224123]]
   - actual: [[83.3,269.45850054724554],[62.69770473634698,267.69041925338587],[45.81761393209141,267.07731697092504],[32.8759187183406,267.3824239358112],[24.088810226201836,268.36897038399263],[19.67247958678242,269.8001865514177],[19.84311793118959,271.43930267403465],[24.816916390530693,273.04954898779164],[34.810066095912994,274.3941557286371],[50.03875817844379,275.2363531325191],[70.71918376923037,275.33937143538606],[97.06753399938,274.4664408731863],[129.3,272.38079168186795]]
 - children[797].center (mismatch)
   - expected: [16.7459,271.1115]
   - actual: [16.745910850570695,271.11146792371534]
-- children[797].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[797].znId (extra)
   - expected: undefined
   - actual: "tp_2_1"
@@ -8017,18 +6001,15 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[798].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[798].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[798].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[798].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_0.n_0.***"
 - children[799].center (mismatch)
   - expected: [278.8,15.5514]
   - actual: [278.8,15.551431959139]
-- children[799].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[799].znId (extra)
   - expected: undefined
   - actual: "0"
@@ -8038,54 +6019,51 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[800].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[800].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[800].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[800].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_384.n_0.***"
 - children[801].center (mismatch)
   - expected: [244.3,24.0348]
   - actual: [244.3,24.034750091207588]
 - children[801].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[801].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[801].znId (extra)
   - expected: undefined
   - actual: "768"
+- children[801].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_768.n_0.***"
 - children[802].center (mismatch)
   - expected: [221.3,28.126]
   - actual: [221.3,28.125957679678947]
 - children[802].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[802].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[802].znId (extra)
   - expected: undefined
   - actual: "1152"
+- children[802].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_1152.n_0.***"
 - children[803].center (mismatch)
   - expected: [198.3,29.5871]
   - actual: [198.3,29.58710324699015]
 - children[803].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[803].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[803].znId (extra)
   - expected: undefined
   - actual: "1536"
+- children[803].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_1536.n_0.***"
 - children[804].center (mismatch)
   - expected: [198.3,28.3121]
   - actual: [198.3,28.31210324699015]
-- children[804].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[804].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -8095,54 +6073,51 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[805].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[805].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[805].znId (extra)
   - expected: undefined
   - actual: "1920"
+- children[805].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_1920.n_0.***"
 - children[806].center (mismatch)
   - expected: [163.8,35.5291]
   - actual: [163.8,35.52909522072237]
 - children[806].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[806].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[806].znId (extra)
   - expected: undefined
   - actual: "2304"
+- children[806].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_2304.n_0.***"
 - children[807].center (mismatch)
   - expected: [140.8,39.6203]
   - actual: [140.8,39.620302809193724]
 - children[807].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[807].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[807].znId (extra)
   - expected: undefined
   - actual: "2688"
+- children[807].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_2688.n_0.***"
 - children[808].center (mismatch)
   - expected: [129.3,43.2732]
   - actual: [129.3,43.273166727471725]
 - children[808].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[808].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[808].znId (extra)
   - expected: undefined
   - actual: "3072"
+- children[808].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_3072.n_0.***"
 - children[809].center (mismatch)
   - expected: [129.3,41.9982]
   - actual: [129.3,41.99816672747173]
-- children[809].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[809].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -8152,138 +6127,132 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[810].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[810].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[810].znId (extra)
   - expected: undefined
   - actual: "3456"
+- children[810].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_3456.n_0.***"
 - children[811].center (mismatch)
   - expected: [83.3,49.2152]
   - actual: [83.3,49.21515870120393]
 - children[811].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[811].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[811].znId (extra)
   - expected: undefined
   - actual: "3840"
+- children[811].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_3840.n_0.***"
 - children[812].center (mismatch)
   - expected: [83.3,51.4069]
   - actual: [83.3,51.406877052170735]
 - children[812].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[812].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[812].znId (extra)
   - expected: undefined
   - actual: "4224"
+- children[812].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_4224.n_0.***"
 - children[813].center (mismatch)
   - expected: [83.3,53.3551]
   - actual: [83.3,53.355071141919]
-- children[813].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[813].znId (extra)
   - expected: undefined
   - actual: "4416"
+- children[813].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_4416.n_0.***"
 - children[814].center (mismatch)
   - expected: [83.3,57.0079]
   - actual: [83.3,57.007935060197006]
 - children[814].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[814].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[814].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[814].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_4608.n_0.***"
 - children[815].center (mismatch)
   - expected: [83.3,55.9579]
   - actual: [83.3,55.95793506019701]
-- children[815].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[815].znId (extra)
   - expected: undefined
   - actual: "4608"
 - children[816].center (mismatch)
   - expected: [83.3,59.9302]
   - actual: [83.3,59.930226194819404]
-- children[816].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[816].znId (extra)
   - expected: undefined
   - actual: "4800"
+- children[816].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_4800.n_0.***"
 - children[817].center (mismatch)
   - expected: [83.3,61.8784]
   - actual: [83.3,61.87842028456767]
 - children[817].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[817].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[817].znId (extra)
   - expected: undefined
   - actual: "4992"
+- children[817].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_4992.n_0.***"
 - children[818].center (mismatch)
   - expected: [83.3,63.8266]
   - actual: [83.3,63.82661437431594]
-- children[818].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[818].znId (extra)
   - expected: undefined
   - actual: "5184"
+- children[818].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_5184.n_0.***"
 - children[819].center (mismatch)
   - expected: [106.3,64.9955]
   - actual: [106.3,64.9955308281649]
 - children[819].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[819].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[819].znId (extra)
   - expected: undefined
   - actual: "5376"
+- children[819].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_5376.n_0.***"
 - children[820].center (mismatch)
   - expected: [129.3,66.1644]
   - actual: [129.3,66.16444728201385]
 - children[820].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[820].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[820].znId (extra)
   - expected: undefined
   - actual: "5760"
+- children[820].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_5760.n_0.***"
 - children[821].center (mismatch)
   - expected: [140.8,71.6437]
   - actual: [140.8,71.64374315943085]
 - children[821].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[821].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[821].znId (extra)
   - expected: undefined
   - actual: "6144"
+- children[821].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_6144.n_0.***"
 - children[822].center (mismatch)
   - expected: [140.8,70.3687]
   - actual: [140.8,70.36874315943085]
-- children[822].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[822].znId (extra)
   - expected: undefined
   - actual: "6144"
@@ -8293,54 +6262,51 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[823].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[823].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[823].znId (extra)
   - expected: undefined
   - actual: "6528"
+- children[823].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_6528.n_0.***"
 - children[824].center (mismatch)
   - expected: [106.3,75.1505]
   - actual: [106.3,75.15049252097774]
 - children[824].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[824].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[824].znId (extra)
   - expected: undefined
   - actual: "6912"
+- children[824].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_6912.n_0.***"
 - children[825].center (mismatch)
   - expected: [94.8,78.7547]
   - actual: [94.8,78.75465158701202]
 - children[825].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[825].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[825].znId (extra)
   - expected: undefined
   - actual: "7296"
+- children[825].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_7296.n_0.***"
 - children[826].center (mismatch)
   - expected: [83.3,80.5811]
   - actual: [83.3,80.58108354615102]
 - children[826].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[826].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[826].znId (extra)
   - expected: undefined
   - actual: "7680"
+- children[826].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_7680.n_0.***"
 - children[827].center (mismatch)
   - expected: [83.3,79.3061]
   - actual: [83.3,79.30608354615102]
-- children[827].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[827].znId (extra)
   - expected: undefined
   - actual: "7680"
@@ -8350,54 +6316,51 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[828].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[828].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[828].znId (extra)
   - expected: undefined
   - actual: "8064"
+- children[828].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_8064.n_0.***"
 - children[829].center (mismatch)
   - expected: [83.3,87.3998]
   - actual: [83.3,87.39976286026996]
 - children[829].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[829].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[829].znId (extra)
   - expected: undefined
   - actual: "8448"
+- children[829].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_8448.n_0.***"
 - children[830].center (mismatch)
   - expected: [71.8,88.5687]
   - actual: [71.8,88.56867931411892]
 - children[830].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[830].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[830].znId (extra)
   - expected: undefined
   - actual: "8832"
+- children[830].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_8832.n_0.***"
 - children[831].center (mismatch)
   - expected: [60.3,90.3951]
   - actual: [60.3,90.39511127325792]
 - children[831].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[831].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[831].znId (extra)
   - expected: undefined
   - actual: "9216"
+- children[831].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_9216.n_0.***"
 - children[832].center (mismatch)
   - expected: [60.3,89.1201]
   - actual: [60.3,89.12011127325792]
-- children[832].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[832].znId (extra)
   - expected: undefined
   - actual: "9216"
@@ -8407,135 +6370,129 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[833].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[833].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[833].znId (extra)
   - expected: undefined
   - actual: "9600"
+- children[833].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_9600.n_0.***"
 - children[834].center (mismatch)
   - expected: [83.3,94.7785]
   - actual: [83.3,94.77854797519151]
 - children[834].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[834].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[834].znId (extra)
   - expected: undefined
   - actual: "9984"
+- children[834].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_9984.n_0.***"
 - children[835].center (mismatch)
   - expected: [37.3,96.2397]
   - actual: [37.3,96.23969354250272]
 - children[835].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[835].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[835].znId (extra)
   - expected: undefined
   - actual: "10368"
+- children[835].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_10368.n_0.***"
 - children[836].center (mismatch)
   - expected: [48.8,98.0661]
   - actual: [48.8,98.06612550164172]
 - children[836].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[836].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[836].znId (extra)
   - expected: undefined
   - actual: "10752"
+- children[836].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_10752.n_0.***"
 - children[837].center (mismatch)
   - expected: [48.8,96.7911]
   - actual: [48.8,96.79112550164172]
-- children[837].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[837].znId (extra)
   - expected: undefined
   - actual: "10752"
 - children[838].center (mismatch)
   - expected: [140.8,101.4755]
   - actual: [140.8,101.47546515870118]
-- children[838].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[838].znId (extra)
   - expected: undefined
   - actual: "11136"
+- children[838].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_11136.n_0.***"
 - children[839].center (mismatch)
   - expected: [83.3,102.4496]
   - actual: [83.3,102.44956220357531]
-- children[839].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[839].znId (extra)
   - expected: undefined
   - actual: "11328"
+- children[839].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_11328.n_0.***"
 - children[840].center (mismatch)
   - expected: [83.3,104.8848]
   - actual: [83.3,104.88480481576065]
 - children[840].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[840].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[840].znId (extra)
   - expected: undefined
   - actual: "11520"
+- children[840].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_11520.n_0.***"
 - children[841].center (mismatch)
   - expected: [83.3,107.32]
   - actual: [83.3,107.32004742794598]
-- children[841].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[841].znId (extra)
   - expected: undefined
   - actual: "11712"
+- children[841].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_11712.n_0.***"
 - children[842].center (mismatch)
   - expected: [83.3,109.2682]
   - actual: [83.3,109.26824151769424]
 - children[842].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[842].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[842].znId (extra)
   - expected: undefined
   - actual: "11904"
+- children[842].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_11904.n_0.***"
 - children[843].center (mismatch)
   - expected: [83.3,111.2164]
   - actual: [83.3,111.21643560744252]
-- children[843].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[843].znId (extra)
   - expected: undefined
   - actual: "12096"
+- children[843].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_12096.n_0.***"
 - children[844].center (mismatch)
   - expected: [140.8,112.7385]
   - actual: [140.8,112.73846224005834]
 - children[844].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[844].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[844].znId (extra)
   - expected: undefined
   - actual: "12288"
+- children[844].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_12288.n_0.***"
 - children[845].center (mismatch)
   - expected: [140.8,111.4635]
   - actual: [140.8,111.46346224005833]
-- children[845].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[845].znId (extra)
   - expected: undefined
   - actual: "12288"
@@ -8545,54 +6502,51 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[846].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[846].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[846].znId (extra)
   - expected: undefined
   - actual: "12672"
+- children[846].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_12672.n_0.***"
 - children[847].center (mismatch)
   - expected: [106.3,116.2939]
   - actual: [106.3,116.29391645384894]
 - children[847].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[847].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[847].znId (extra)
   - expected: undefined
   - actual: "13056"
+- children[847].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_13056.n_0.***"
 - children[848].center (mismatch)
   - expected: [94.8,117.4628]
   - actual: [94.8,117.4628329076979]
 - children[848].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[848].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[848].znId (extra)
   - expected: undefined
   - actual: "13440"
+- children[848].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_13440.n_0.***"
 - children[849].center (mismatch)
   - expected: [83.3,119.2893]
   - actual: [83.3,119.28926486683692]
 - children[849].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[849].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[849].znId (extra)
   - expected: undefined
   - actual: "13824"
+- children[849].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_13824.n_0.***"
 - children[850].center (mismatch)
   - expected: [83.3,118.0143]
   - actual: [83.3,118.01426486683691]
-- children[850].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[850].znId (extra)
   - expected: undefined
   - actual: "13824"
@@ -8602,54 +6556,51 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[851].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[851].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[851].znId (extra)
   - expected: undefined
   - actual: "14208"
+- children[851].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_14208.n_0.***"
 - children[852].center (mismatch)
   - expected: [83.3,126.1079]
   - actual: [83.3,126.10794418095584]
 - children[852].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[852].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[852].znId (extra)
   - expected: undefined
   - actual: "14592"
+- children[852].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_14592.n_0.***"
 - children[853].center (mismatch)
   - expected: [71.8,127.2769]
   - actual: [71.8,127.27686063480482]
 - children[853].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[853].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[853].znId (extra)
   - expected: undefined
   - actual: "14976"
+- children[853].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_14976.n_0.***"
 - children[854].center (mismatch)
   - expected: [60.3,129.1033]
   - actual: [60.3,129.10329259394382]
 - children[854].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[854].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[854].znId (extra)
   - expected: undefined
   - actual: "15360"
+- children[854].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_15360.n_0.***"
 - children[855].center (mismatch)
   - expected: [60.3,127.8283]
   - actual: [60.3,127.82829259394381]
-- children[855].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[855].znId (extra)
   - expected: undefined
   - actual: "15360"
@@ -8659,126 +6610,120 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[856].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[856].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[856].znId (extra)
   - expected: undefined
   - actual: "15744"
+- children[856].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_15744.n_0.***"
 - children[857].center (mismatch)
   - expected: [83.3,135.1914]
   - actual: [83.3,135.19139912440716]
 - children[857].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[857].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[857].znId (extra)
   - expected: undefined
   - actual: "16128"
+- children[857].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_16128.n_0.***"
 - children[858].center (mismatch)
   - expected: [129.3,138.1137]
   - actual: [129.3,138.11369025902954]
 - children[858].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[858].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[858].znId (extra)
   - expected: undefined
   - actual: "16512"
+- children[858].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_16512.n_0.***"
 - children[859].center (mismatch)
   - expected: [140.8,139.5748]
   - actual: [140.8,139.57483582634075]
-- children[859].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[859].znId (extra)
   - expected: undefined
   - actual: "16896"
+- children[859].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_16896.n_0.***"
 - children[860].center (mismatch)
   - expected: [140.8,138.6248]
   - actual: [140.8,138.62483582634076]
-- children[860].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[860].znId (extra)
   - expected: undefined
   - actual: "16896"
 - children[861].center (mismatch)
   - expected: [140.8,141.523]
   - actual: [140.8,141.523029916089]
-- children[861].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[861].znId (extra)
   - expected: undefined
   - actual: "17088"
+- children[861].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_17088.n_0.***"
 - children[862].center (mismatch)
   - expected: [106.3,142.6919]
   - actual: [106.3,142.69194636993797]
 - children[862].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[862].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[862].znId (extra)
   - expected: undefined
   - actual: "17280"
+- children[862].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_17280.n_0.***"
 - children[863].center (mismatch)
   - expected: [83.3,143.666]
   - actual: [83.3,143.66604341481212]
-- children[863].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[863].znId (extra)
   - expected: undefined
   - actual: "17472"
+- children[863].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_17472.n_0.***"
 - children[864].center (mismatch)
   - expected: [140.8,144.8837]
   - actual: [140.8,144.8836647209048]
 - children[864].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[864].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[864].znId (extra)
   - expected: undefined
   - actual: "17664"
+- children[864].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_17664.n_0.***"
 - children[865].center (mismatch)
   - expected: [48.8,148.5365]
   - actual: [48.8,148.5365286391828]
 - children[865].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[865].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[865].znId (extra)
   - expected: undefined
   - actual: "18048"
+- children[865].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_18048.n_0.***"
 - children[866].center (mismatch)
   - expected: [60.3,150.0586]
   - actual: [60.3,150.0585552717986]
 - children[866].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[866].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[866].znId (extra)
   - expected: undefined
   - actual: "18432"
+- children[866].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_18432.n_0.***"
 - children[867].center (mismatch)
   - expected: [60.3,148.7836]
   - actual: [60.3,148.7835552717986]
-- children[867].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[867].znId (extra)
   - expected: undefined
   - actual: "18432"
@@ -8788,54 +6733,51 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[868].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[868].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[868].znId (extra)
   - expected: undefined
   - actual: "18816"
+- children[868].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_18816.n_0.***"
 - children[869].center (mismatch)
   - expected: [106.3,154.442]
   - actual: [106.3,154.44199197373223]
 - children[869].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[869].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[869].znId (extra)
   - expected: undefined
   - actual: "19200"
+- children[869].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_19200.n_0.***"
 - children[870].center (mismatch)
   - expected: [140.8,155.9031]
   - actual: [140.8,155.9031375410434]
 - children[870].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[870].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[870].znId (extra)
   - expected: undefined
   - actual: "19584"
+- children[870].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_19584.n_0.***"
 - children[871].center (mismatch)
   - expected: [129.3,158.8254]
   - actual: [129.3,158.82542867566582]
 - children[871].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[871].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[871].znId (extra)
   - expected: undefined
   - actual: "19968"
+- children[871].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_19968.n_0.***"
 - children[872].center (mismatch)
   - expected: [129.3,157.5504]
   - actual: [129.3,157.5504286756658]
-- children[872].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[872].znId (extra)
   - expected: undefined
   - actual: "19968"
@@ -8845,54 +6787,51 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[873].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[873].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[873].znId (extra)
   - expected: undefined
   - actual: "20352"
+- children[873].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_20352.n_0.***"
 - children[874].center (mismatch)
   - expected: [48.8,166.1312]
   - actual: [48.8,166.13115651222182]
 - children[874].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[874].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[874].znId (extra)
   - expected: undefined
   - actual: "20736"
+- children[874].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_20736.n_0.***"
 - children[875].center (mismatch)
   - expected: [5.425,167.5923]
   - actual: [5.425,167.59230207953303]
 - children[875].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[875].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[875].znId (extra)
   - expected: undefined
   - actual: "21120"
+- children[875].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_21120.n_0.***"
 - children[876].center (mismatch)
   - expected: [106.3,169.4187]
   - actual: [106.3,169.41873403867203]
 - children[876].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[876].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[876].znId (extra)
   - expected: undefined
   - actual: "21504"
+- children[876].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_21504.n_0.***"
 - children[877].center (mismatch)
   - expected: [106.3,168.1437]
   - actual: [106.3,168.14373403867202]
-- children[877].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[877].znId (extra)
   - expected: undefined
   - actual: "21504"
@@ -8902,144 +6841,138 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[878].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[878].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[878].znId (extra)
   - expected: undefined
   - actual: "21888"
+- children[878].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_21888.n_0.***"
 - children[879].center (mismatch)
   - expected: [25.8,172.341]
   - actual: [25.8,172.3410251732944]
 - children[879].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[879].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[879].znId (extra)
   - expected: undefined
   - actual: "22272"
+- children[879].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_22272.n_0.***"
 - children[880].center (mismatch)
   - expected: [106.3,173.5586]
   - actual: [106.3,173.55864647938708]
-- children[880].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[880].znId (extra)
   - expected: undefined
   - actual: "22656"
+- children[880].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_22656.n_0.***"
 - children[881].center (mismatch)
   - expected: [94.8,174.7763]
   - actual: [94.8,174.77626778547975]
-- children[881].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[881].znId (extra)
   - expected: undefined
   - actual: "22848"
+- children[881].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_22848.n_0.***"
 - children[882].center (mismatch)
   - expected: [83.3,176.2374]
   - actual: [83.3,176.23741335279095]
-- children[882].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[882].znId (extra)
   - expected: undefined
   - actual: "23040"
+- children[882].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_23040.n_0.***"
 - children[883].center (mismatch)
   - expected: [83.3,175.2874]
   - actual: [83.3,175.28741335279096]
-- children[883].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[883].znId (extra)
   - expected: undefined
   - actual: "23040"
 - children[884].center (mismatch)
   - expected: [4.55,178.1856]
   - actual: [4.55,178.1856074425392]
-- children[884].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[884].znId (extra)
   - expected: undefined
   - actual: "23232"
+- children[884].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_23232.n_0.***"
 - children[885].center (mismatch)
   - expected: [4.4,180.1338]
   - actual: [4.4,180.1338015322875]
 - children[885].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[885].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[885].znId (extra)
   - expected: undefined
   - actual: "23424"
+- children[885].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_23424.n_0.***"
 - children[886].center (mismatch)
   - expected: [4.55,182.082]
   - actual: [4.55,182.08199562203575]
-- children[886].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[886].znId (extra)
   - expected: undefined
   - actual: "23616"
+- children[886].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_23616.n_0.***"
 - children[887].center (mismatch)
   - expected: [25.8,184.5172]
   - actual: [25.8,184.51723823422108]
-- children[887].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[887].znId (extra)
   - expected: undefined
   - actual: "23808"
+- children[887].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_23808.n_0.***"
 - children[888].center (mismatch)
   - expected: [25.8,186.9525]
   - actual: [25.8,186.95248084640642]
-- children[888].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[888].znId (extra)
   - expected: undefined
   - actual: "24000"
+- children[888].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_24000.n_0.***"
 - children[889].center (mismatch)
   - expected: [48.8,188.1214]
   - actual: [48.8,188.12139730025538]
-- children[889].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[889].znId (extra)
   - expected: undefined
   - actual: "24192"
+- children[889].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_24192.n_0.***"
 - children[890].center (mismatch)
   - expected: [48.8,190.0696]
   - actual: [48.8,190.06959139000367]
-- children[890].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[890].znId (extra)
   - expected: undefined
   - actual: "24384"
+- children[890].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_24384.n_0.***"
 - children[891].center (mismatch)
   - expected: [60.3,191.5307]
   - actual: [60.3,191.53073695731487]
 - children[891].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[891].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[891].znId (extra)
   - expected: undefined
   - actual: "24576"
+- children[891].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_24576.n_0.***"
 - children[892].center (mismatch)
   - expected: [60.3,190.2557]
   - actual: [60.3,190.25573695731487]
-- children[892].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[892].znId (extra)
   - expected: undefined
   - actual: "24576"
@@ -9049,54 +6982,51 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[893].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[893].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[893].znId (extra)
   - expected: undefined
   - actual: "24960"
+- children[893].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_24960.n_0.***"
 - children[894].center (mismatch)
   - expected: [106.3,195.9142]
   - actual: [106.3,195.91417365924843]
 - children[894].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[894].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[894].znId (extra)
   - expected: undefined
   - actual: "25344"
+- children[894].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_25344.n_0.***"
 - children[895].center (mismatch)
   - expected: [60.3,197.3753]
   - actual: [60.3,197.37531922655967]
 - children[895].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[895].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[895].znId (extra)
   - expected: undefined
   - actual: "25728"
+- children[895].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_25728.n_0.***"
 - children[896].center (mismatch)
   - expected: [48.8,200.0663]
   - actual: [48.8,200.06626231302448]
 - children[896].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[896].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[896].znId (extra)
   - expected: undefined
   - actual: "26112"
+- children[896].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_26112.n_0.***"
 - children[897].center (mismatch)
   - expected: [48.8,198.7913]
   - actual: [48.8,198.79126231302448]
-- children[897].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[897].znId (extra)
   - expected: undefined
   - actual: "26112"
@@ -9106,54 +7036,51 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[898].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[898].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[898].znId (extra)
   - expected: undefined
   - actual: "26496"
+- children[898].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_26496.n_0.***"
 - children[899].center (mismatch)
   - expected: [83.3,202.9886]
   - actual: [83.3,202.98855344764686]
 - children[899].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[899].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[899].znId (extra)
   - expected: undefined
   - actual: "26880"
+- children[899].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_26880.n_0.***"
 - children[900].center (mismatch)
   - expected: [48.8,204.4497]
   - actual: [48.8,204.44969901495804]
 - children[900].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[900].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[900].znId (extra)
   - expected: undefined
   - actual: "27264"
+- children[900].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_27264.n_0.***"
 - children[901].center (mismatch)
   - expected: [60.3,210.5135]
   - actual: [60.3,210.51345311929953]
 - children[901].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[901].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[901].znId (extra)
   - expected: undefined
   - actual: "27648"
+- children[901].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_27648.n_0.***"
 - children[902].center (mismatch)
   - expected: [60.3,209.2385]
   - actual: [60.3,209.23845311929952]
-- children[902].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[902].znId (extra)
   - expected: undefined
   - actual: "27648"
@@ -9163,123 +7090,117 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[903].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[903].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[903].znId (extra)
   - expected: undefined
   - actual: "28032"
+- children[903].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_28032.n_0.***"
 - children[904].center (mismatch)
   - expected: [129.3,213.4357]
   - actual: [129.3,213.43574425392194]
 - children[904].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[904].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[904].znId (extra)
   - expected: undefined
   - actual: "28416"
+- children[904].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_28416.n_0.***"
 - children[905].center (mismatch)
   - expected: [163.8,214.8969]
   - actual: [163.8,214.89688982123315]
 - children[905].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[905].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[905].znId (extra)
   - expected: undefined
   - actual: "28800"
+- children[905].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_28800.n_0.***"
 - children[906].center (mismatch)
   - expected: [140.8,217.0277]
   - actual: [140.8,217.02772710689527]
-- children[906].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[906].znId (extra)
   - expected: undefined
   - actual: "29184"
+- children[906].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_29184.n_0.***"
 - children[907].center (mismatch)
   - expected: [140.8,216.0777]
   - actual: [140.8,216.07772710689528]
-- children[907].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[907].znId (extra)
   - expected: undefined
   - actual: "29184"
 - children[908].center (mismatch)
   - expected: [140.8,219.95]
   - actual: [140.8,219.9500182415177]
-- children[908].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[908].znId (extra)
   - expected: undefined
   - actual: "29376"
+- children[908].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_29376.n_0.***"
 - children[909].center (mismatch)
   - expected: [106.3,221.1189]
   - actual: [106.3,221.11893469536668]
 - children[909].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[909].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[909].znId (extra)
   - expected: undefined
   - actual: "29568"
+- children[909].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_29568.n_0.***"
 - children[910].center (mismatch)
   - expected: [83.3,222.093]
   - actual: [83.3,222.0930317402408]
-- children[910].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[910].znId (extra)
   - expected: undefined
   - actual: "29760"
+- children[910].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_29760.n_0.***"
 - children[911].center (mismatch)
   - expected: [106.3,224.5283]
   - actual: [106.3,224.52827435242614]
 - children[911].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[911].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[911].znId (extra)
   - expected: undefined
   - actual: "29952"
+- children[911].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_29952.n_0.***"
 - children[912].center (mismatch)
   - expected: [129.3,225.9894]
   - actual: [129.3,225.98941991973734]
 - children[912].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[912].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[912].znId (extra)
   - expected: undefined
   - actual: "30336"
+- children[912].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_30336.n_0.***"
 - children[913].center (mismatch)
   - expected: [83.3,230.8599]
   - actual: [83.3,230.859905144108]
-- children[913].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[913].znId (extra)
   - expected: undefined
   - actual: "30720"
+- children[913].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_30720.n_0.***"
 - children[914].center (mismatch)
   - expected: [83.3,229.9099]
   - actual: [83.3,229.90990514410802]
-- children[914].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[914].znId (extra)
   - expected: undefined
   - actual: "30720"
@@ -9289,48 +7210,45 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[915].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[915].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[915].znId (extra)
   - expected: undefined
   - actual: "30912"
+- children[915].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_30912.n_0.***"
 - children[916].center (mismatch)
   - expected: [83.3,237.6786]
   - actual: [83.3,237.6785844582269]
-- children[916].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[916].znId (extra)
   - expected: undefined
   - actual: "31296"
+- children[916].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_31296.n_0.***"
 - children[917].center (mismatch)
   - expected: [221.3,238.8962]
   - actual: [221.3,238.8962057643196]
 - children[917].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[917].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[917].znId (extra)
   - expected: undefined
   - actual: "31488"
+- children[917].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_31488.n_0.***"
 - children[918].center (mismatch)
   - expected: [83.3,242.1838]
   - actual: [83.3,242.18378329076978]
-- children[918].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[918].znId (extra)
   - expected: undefined
   - actual: "32256"
+- children[918].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_32256.n_0.***"
 - children[919].center (mismatch)
   - expected: [83.3,241.2338]
   - actual: [83.3,241.2337832907698]
-- children[919].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[919].znId (extra)
   - expected: undefined
   - actual: "32256"
@@ -9340,48 +7258,45 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[920].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[920].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[920].znId (extra)
   - expected: undefined
   - actual: "32448"
+- children[920].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_32448.n_0.***"
 - children[921].center (mismatch)
   - expected: [83.3,249.0025]
   - actual: [83.3,249.00246260488873]
-- children[921].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[921].znId (extra)
   - expected: undefined
   - actual: "32832"
+- children[921].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_32832.n_0.***"
 - children[922].center (mismatch)
   - expected: [221.3,250.2201]
   - actual: [221.3,250.22008391098143]
 - children[922].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[922].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[922].znId (extra)
   - expected: undefined
   - actual: "33024"
+- children[922].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_33024.n_0.***"
 - children[923].center (mismatch)
   - expected: [83.3,256.5517]
   - actual: [83.3,256.5517147026633]
-- children[923].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[923].znId (extra)
   - expected: undefined
   - actual: "33792"
+- children[923].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_33792.n_0.***"
 - children[924].center (mismatch)
   - expected: [83.3,255.6017]
   - actual: [83.3,255.6017147026633]
-- children[924].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[924].znId (extra)
   - expected: undefined
   - actual: "33792"
@@ -9391,51 +7306,48 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[925].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[925].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[925].znId (extra)
   - expected: undefined
   - actual: "33984"
+- children[925].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_33984.n_0.***"
 - children[926].center (mismatch)
   - expected: [83.3,263.3704]
   - actual: [83.3,263.3703940167822]
-- children[926].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[926].znId (extra)
   - expected: undefined
   - actual: "34368"
+- children[926].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_34368.n_0.***"
 - children[927].center (mismatch)
   - expected: [221.3,264.588]
   - actual: [221.3,264.58801532287487]
 - children[927].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[927].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[927].znId (extra)
   - expected: undefined
   - actual: "34560"
+- children[927].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_34560.n_0.***"
 - children[928].center (mismatch)
   - expected: [83.3,269.4585]
   - actual: [83.3,269.45850054724554]
 - children[928].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[928].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[928].znId (extra)
   - expected: undefined
   - actual: "tp_2_1"
+- children[928].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_35328.n_0.***"
 - children[929].center (mismatch)
   - expected: [83.3,268.1835]
   - actual: [83.3,268.18350054724556]
-- children[929].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[929].znId (extra)
   - expected: undefined
   - actual: "tp_2_1"
@@ -9445,2758 +7357,1780 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[930].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[930].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[930].znId (extra)
   - expected: undefined
   - actual: "35584"
+- children[930].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_35584.n_0.***"
 - children[931].center (mismatch)
   - expected: [129.3,272.3808]
   - actual: [129.3,272.38079168186795]
 - children[931].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[931].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[931].znId (extra)
   - expected: undefined
   - actual: "35840"
+- children[931].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_35840.n_0.***"
 - children[932].center (mismatch)
   - expected: [163.8,273.8419]
   - actual: [163.8,273.8419372491791]
 - children[932].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[932].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[932].znId (extra)
   - expected: undefined
   - actual: "36096"
+- children[932].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_36096.n_0.***"
 - children[933].center (mismatch)
   - expected: [129.3,275.3031]
   - actual: [129.3,275.30308281649036]
 - children[933].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[933].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[933].znId (extra)
   - expected: undefined
   - actual: "36480"
+- children[933].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_36480.n_0.***"
 - children[934].center (mismatch)
   - expected: [140.8,277.1295]
   - actual: [140.8,277.12951477562933]
 - children[934].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[934].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[934].znId (extra)
   - expected: undefined
   - actual: "36864"
+- children[934].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_36864.n_0.***"
 - children[935].center (mismatch)
   - expected: [140.8,275.8545]
   - actual: [140.8,275.85451477562935]
-- children[935].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[935].znId (extra)
   - expected: undefined
   - actual: "36864"
 - children[936].center (mismatch)
   - expected: [140.8,279.5648]
   - actual: [140.8,279.56475738781467]
-- children[936].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[936].znId (extra)
   - expected: undefined
   - actual: "37440"
+- children[936].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_37440.n_0.***"
 - children[937].size (mismatch)
   - expected: [2,0.6]
   - actual: [2,0.6000000000000001]
 - children[937].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[937].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[937].znId (extra)
   - expected: undefined
   - actual: "37632"
+- children[937].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_37632.n_0.***"
 - children[938].center (mismatch)
   - expected: [283.0071,18.3848]
   - actual: [283.00708333333336,18.384765292472334]
 - children[938].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[938].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[939].center (mismatch)
   - expected: [271.5071,21.9889]
   - actual: [271.50708333333336,21.988924358506626]
 - children[939].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[939].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[940].center (mismatch)
   - expected: [248.5071,25.5931]
   - actual: [248.50708333333336,25.59308342454092]
 - children[940].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[940].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[941].center (mismatch)
   - expected: [225.5071,29.6843]
   - actual: [225.50708333333336,29.68429101301228]
 - children[941].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[941].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[942].center (mismatch)
   - expected: [202.5071,31.1454]
   - actual: [202.50708333333336,31.145436580323484]
 - children[942].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[942].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[943].center (mismatch)
   - expected: [191.0071,33.4833]
   - actual: [191.00708333333336,33.483269488021406]
 - children[943].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[943].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[944].center (mismatch)
   - expected: [168.0071,37.0874]
   - actual: [168.00708333333336,37.087428554055705]
 - children[944].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[944].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[945].center (mismatch)
   - expected: [145.0071,41.1786]
   - actual: [145.00708333333336,41.17863614252706]
 - children[945].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[945].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[946].center (mismatch)
   - expected: [133.5071,44.8315]
   - actual: [133.50708333333336,44.83150006080506]
 - children[946].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[946].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[947].center (mismatch)
   - expected: [110.5071,48.4357]
   - actual: [110.50708333333333,48.435659126839354]
 - children[947].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[947].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[948].center (mismatch)
   - expected: [87.5071,50.7735]
   - actual: [87.50708333333333,50.77349203453727]
 - children[948].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[948].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[949].center (mismatch)
   - expected: [80.1179,52.7402]
   - actual: [80.11791666666667,52.74021038550407]
 - children[949].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[949].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[950].center (mismatch)
   - expected: [79.9679,54.1484]
   - actual: [79.96791666666667,54.14840447525233]
 - children[950].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[950].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[951].center (mismatch)
   - expected: [80.1179,58.3413]
   - actual: [80.11791666666667,58.34126839353034]
 - children[951].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[951].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[952].center (mismatch)
   - expected: [79.9679,60.7236]
   - actual: [79.96791666666667,60.723559528152734]
 - children[952].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[952].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[953].center (mismatch)
   - expected: [80.1179,63.2118]
   - actual: [80.11791666666667,63.211753617901]
 - children[953].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[953].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[954].center (mismatch)
   - expected: [79.9679,64.6199]
   - actual: [79.96791666666667,64.61994770764926]
 - children[954].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[954].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[955].center (mismatch)
   - expected: [102.0929,66.5539]
   - actual: [102.09291666666667,66.55386416149823]
 - children[955].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[955].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[956].center (mismatch)
   - expected: [125.0929,67.7228]
   - actual: [125.09291666666668,67.72278061534718]
 - children[956].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[956].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[957].center (mismatch)
   - expected: [145.0071,73.2021]
   - actual: [145.00708333333336,73.20207649276418]
 - children[957].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[957].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[958].center (mismatch)
   - expected: [133.5071,74.371]
   - actual: [133.50708333333336,74.37099294661313]
 - children[958].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[958].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[959].center (mismatch)
   - expected: [110.5071,76.7088]
   - actual: [110.50708333333333,76.70882585431106]
 - children[959].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[959].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[960].center (mismatch)
   - expected: [99.0071,80.313]
   - actual: [99.00708333333333,80.31298492034534]
 - children[960].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[960].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[961].center (mismatch)
   - expected: [79.0929,82.1394]
   - actual: [79.09291666666667,82.13941687948434]
 - children[961].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[961].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[962].center (mismatch)
   - expected: [145.0071,85.0617]
   - actual: [145.00708333333336,85.06170801410674]
 - children[962].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[962].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[963].center (mismatch)
   - expected: [87.5071,88.9581]
   - actual: [87.50708333333333,88.95809619360328]
 - children[963].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[963].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[964].center (mismatch)
   - expected: [76.0071,90.127]
   - actual: [76.00708333333333,90.12701264745225]
 - children[964].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[964].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[965].center (mismatch)
   - expected: [56.0929,91.9534]
   - actual: [56.09291666666667,91.95344460659125]
 - children[965].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[965].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[966].center (mismatch)
   - expected: [133.5071,93.4146]
   - actual: [133.50708333333336,93.41459017390244]
 - children[966].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[966].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[967].center (mismatch)
   - expected: [87.5071,96.3369]
   - actual: [87.50708333333333,96.33688130852484]
 - children[967].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[967].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[968].center (mismatch)
   - expected: [33.0929,97.798]
   - actual: [33.09291666666667,97.79802687583604]
 - children[968].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[968].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[969].center (mismatch)
   - expected: [44.5929,99.6245]
   - actual: [44.59291666666667,99.62445883497504]
 - children[969].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[969].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[970].center (mismatch)
   - expected: [144.1321,102.7088]
   - actual: [144.13208333333336,102.70879849203452]
 - children[970].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[970].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[971].center (mismatch)
   - expected: [86.6321,103.2429]
   - actual: [86.63208333333333,103.24289553690865]
 - children[971].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[971].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[972].center (mismatch)
   - expected: [80.1179,106.2181]
   - actual: [80.11791666666667,106.21813814909397]
 - children[972].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[972].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[973].center (mismatch)
   - expected: [79.9679,108.1134]
   - actual: [79.96791666666667,108.11338076127932]
 - children[973].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[973].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[974].center (mismatch)
   - expected: [80.1179,110.6016]
   - actual: [80.11791666666667,110.60157485102756]
 - children[974].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[974].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[975].center (mismatch)
   - expected: [79.9679,112.0098]
   - actual: [79.96791666666667,112.00976894077586]
 - children[975].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[975].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[976].center (mismatch)
   - expected: [145.0071,114.2968]
   - actual: [145.00708333333336,114.29679557339166]
 - children[976].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[976].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[977].center (mismatch)
   - expected: [133.5071,115.5144]
   - actual: [133.50708333333336,115.51441687948433]
 - children[977].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[977].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[978].center (mismatch)
   - expected: [110.5071,117.8522]
   - actual: [110.50708333333333,117.85224978718226]
 - children[978].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[978].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[979].center (mismatch)
   - expected: [99.0071,119.0212]
   - actual: [99.00708333333333,119.02116624103122]
 - children[979].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[979].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[980].center (mismatch)
   - expected: [79.0929,120.8476]
   - actual: [79.09291666666667,120.84759820017024]
 - children[980].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[980].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[981].center (mismatch)
   - expected: [145.0071,123.7699]
   - actual: [145.00708333333336,123.76988933479264]
 - children[981].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[981].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[982].center (mismatch)
   - expected: [87.5071,127.6663]
   - actual: [87.50708333333333,127.66627751428916]
 - children[982].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[982].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[983].center (mismatch)
   - expected: [76.0071,128.8352]
   - actual: [76.00708333333333,128.83519396813816]
 - children[983].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[983].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[984].center (mismatch)
   - expected: [56.0929,130.6616]
   - actual: [56.09291666666667,130.66162592727716]
 - children[984].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[984].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[985].center (mismatch)
   - expected: [133.5071,134.3145]
   - actual: [133.50708333333336,134.31448984555516]
 - children[985].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[985].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[986].center (mismatch)
   - expected: [79.0929,136.7497]
   - actual: [79.09291666666667,136.7497324577405]
 - children[986].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[986].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[987].center (mismatch)
   - expected: [125.0929,139.672]
   - actual: [125.09291666666668,139.67202359236288]
 - children[987].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[987].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[988].center (mismatch)
   - expected: [137.4679,140.8082]
   - actual: [137.46791666666667,140.8081691596741]
 - children[988].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[988].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[989].center (mismatch)
   - expected: [144.1321,142.3164]
   - actual: [144.13208333333336,142.31636324942235]
 - children[989].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[989].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[990].center (mismatch)
   - expected: [109.4821,144.0253]
   - actual: [109.48208333333332,144.0252797032713]
 - children[990].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[990].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[991].center (mismatch)
   - expected: [79.9679,144.4594]
   - actual: [79.96791666666667,144.45937674814547]
 - children[991].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[991].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[992].center (mismatch)
   - expected: [145.0071,146.442]
   - actual: [145.00708333333336,146.44199805423813]
 - children[992].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[992].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[993].center (mismatch)
   - expected: [44.5929,150.0949]
   - actual: [44.59291666666667,150.09486197251613]
 - children[993].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[993].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[994].center (mismatch)
   - expected: [56.0929,151.6169]
   - actual: [56.09291666666667,151.61688860513195]
 - children[994].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[994].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[995].center (mismatch)
   - expected: [79.0929,154.5392]
   - actual: [79.09291666666667,154.53917973975436]
 - children[995].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[995].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[996].center (mismatch)
   - expected: [102.0929,156.0003]
   - actual: [102.09291666666667,156.00032530706557]
 - children[996].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[996].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[997].center (mismatch)
   - expected: [145.0071,157.4615]
   - actual: [145.00708333333336,157.46147087437674]
 - children[997].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[997].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[998].center (mismatch)
   - expected: [133.5071,160.3838]
   - actual: [133.50708333333336,160.38376200899916]
 - children[998].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[998].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[999].center (mismatch)
   - expected: [87.5071,164.0366]
   - actual: [87.50708333333333,164.03662592727716]
 - children[999].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[999].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1000].center (mismatch)
   - expected: [53.0071,167.6895]
   - actual: [53.00708333333333,167.68948984555516]
 - children[1000].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1000].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1001].center (mismatch)
   - expected: [9.6321,169.1506]
   - actual: [9.632083333333334,169.15063541286636]
 - children[1001].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1001].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1002].center (mismatch)
   - expected: [110.5071,170.9771]
   - actual: [110.50708333333333,170.97706737200537]
 - children[1002].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1002].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1003].center (mismatch)
   - expected: [64.5071,172.4382]
   - actual: [64.50708333333333,172.43821293931654]
 - children[1003].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1003].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1004].center (mismatch)
   - expected: [21.5929,173.8994]
   - actual: [21.592916666666667,173.89935850662775]
 - children[1004].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1004].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1005].center (mismatch)
   - expected: [109.6321,174.792]
   - actual: [109.63208333333333,174.79197981272043]
 - children[1005].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1005].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1006].center (mismatch)
   - expected: [98.1321,175.5696]
   - actual: [98.13208333333333,175.5696011188131]
 - children[1006].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1006].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1007].center (mismatch)
   - expected: [86.6321,177.4707]
   - actual: [86.63208333333333,177.4707466861243]
 - children[1007].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1007].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1008].center (mismatch)
   - expected: [7.8821,178.9789]
   - actual: [7.882083333333333,178.97894077587256]
 - children[1008].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1008].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1009].center (mismatch)
   - expected: [7.5821,181.4671]
   - actual: [7.582083333333333,181.46713486562084]
 - children[1009].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1009].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1010].center (mismatch)
   - expected: [7.8821,182.8753]
   - actual: [7.882083333333333,182.8753289553691]
 - children[1010].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1010].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1011].center (mismatch)
   - expected: [22.4679,185.7506]
   - actual: [22.467916666666667,185.75057156755443]
 - children[1011].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1011].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1012].center (mismatch)
   - expected: [22.4679,187.7458]
   - actual: [22.467916666666667,187.74581417973977]
 - children[1012].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1012].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1013].center (mismatch)
   - expected: [45.4679,189.3547]
   - actual: [45.46791666666667,189.35473063358873]
 - children[1013].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1013].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1014].center (mismatch)
   - expected: [45.4679,190.8629]
   - actual: [45.46791666666667,190.86292472333702]
 - children[1014].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1014].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1015].center (mismatch)
   - expected: [56.0929,193.0891]
   - actual: [56.09291666666667,193.0890702906482]
 - children[1015].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1015].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1016].center (mismatch)
   - expected: [79.0929,196.0114]
   - actual: [79.09291666666667,196.0113614252706]
 - children[1016].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1016].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1017].center (mismatch)
   - expected: [110.5071,197.4725]
   - actual: [110.50708333333333,197.47250699258177]
 - children[1017].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1017].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1018].center (mismatch)
   - expected: [64.5071,198.9337]
   - actual: [64.50708333333333,198.933652559893]
 - children[1018].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1018].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1019].center (mismatch)
   - expected: [44.5929,201.6246]
   - actual: [44.59291666666667,201.62459564635782]
 - children[1019].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1019].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1020].center (mismatch)
   - expected: [110.5071,203.0857]
   - actual: [110.50708333333333,203.085741213669]
 - children[1020].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1020].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1021].center (mismatch)
   - expected: [87.5071,204.5469]
   - actual: [87.50708333333333,204.5468867809802]
 - children[1021].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1021].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1022].center (mismatch)
   - expected: [44.5929,206.008]
   - actual: [44.59291666666667,206.00803234829138]
 - children[1022].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1022].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1023].center (mismatch)
   - expected: [64.5071,212.0718]
   - actual: [64.50708333333333,212.07178645263286]
 - children[1023].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1023].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1024].center (mismatch)
   - expected: [21.5929,213.5329]
   - actual: [21.592916666666667,213.53293201994404]
 - children[1024].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1024].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1025].center (mismatch)
   - expected: [125.0929,214.9941]
   - actual: [125.09291666666668,214.99407758725528]
 - children[1025].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1025].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1026].center (mismatch)
   - expected: [168.0071,216.4552]
   - actual: [168.00708333333336,216.45522315456648]
 - children[1026].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1026].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1027].center (mismatch)
   - expected: [144.1321,218.2611]
   - actual: [144.13208333333336,218.26106044022862]
 - children[1027].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1027].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1028].center (mismatch)
   - expected: [144.1321,220.7434]
   - actual: [144.13208333333336,220.74335157485106]
 - children[1028].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1028].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1029].center (mismatch)
   - expected: [109.4821,222.4523]
   - actual: [109.48208333333332,222.45226802870002]
 - children[1029].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1029].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1030].center (mismatch)
   - expected: [79.9679,222.8864]
   - actual: [79.96791666666667,222.88636507357415]
 - children[1030].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1030].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1031].center (mismatch)
   - expected: [102.0929,226.0866]
   - actual: [102.09291666666667,226.08660768575947]
 - children[1031].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1031].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1032].center (mismatch)
   - expected: [133.5071,227.5478]
   - actual: [133.50708333333336,227.54775325307068]
 - children[1032].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1032].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1033].center (mismatch)
   - expected: [86.6321,232.0932]
   - actual: [86.63208333333333,232.09323847744136]
 - children[1033].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1033].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1034].center (mismatch)
   - expected: [78.1616,234.8535]
   - actual: [78.16158333333333,234.85348108962668]
 - children[1034].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[1034].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1035].center (mismatch)
   - expected: [79.9679,238.4719]
   - actual: [79.96791666666667,238.47191779156026]
 - children[1035].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1035].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1036].center (mismatch)
   - expected: [226.4384,240.4545]
   - actual: [226.43841666666668,240.45453909765294]
 - children[1036].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[1036].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1037].center (mismatch)
   - expected: [86.6321,243.4171]
   - actual: [86.63208333333333,243.41711662410313]
 - children[1037].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1037].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1038].center (mismatch)
   - expected: [78.1616,246.1774]
   - actual: [78.16158333333333,246.17735923628845]
 - children[1038].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[1038].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1039].center (mismatch)
   - expected: [79.9679,249.7958]
   - actual: [79.96791666666667,249.79579593822208]
 - children[1039].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1039].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1040].center (mismatch)
   - expected: [226.4384,251.7784]
   - actual: [226.43841666666668,251.77841724431477]
 - children[1040].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[1040].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1041].center (mismatch)
   - expected: [86.6321,257.785]
   - actual: [86.63208333333333,257.78504803599657]
 - children[1041].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1041].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1042].center (mismatch)
   - expected: [78.1616,260.5453]
   - actual: [78.16158333333333,260.54529064818195]
 - children[1042].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[1042].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1043].center (mismatch)
   - expected: [79.9679,264.1637]
   - actual: [79.96791666666667,264.1637273501155]
 - children[1043].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1043].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1044].center (mismatch)
   - expected: [226.4384,266.1463]
   - actual: [226.43841666666668,266.1463486562082]
 - children[1044].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[1044].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1045].center (mismatch)
   - expected: [88.1527,271.0168]
   - actual: [88.153725,271.0168338805789]
 - children[1045].size (mismatch)
   - expected: [1.1777,0.7058]
   - actual: [1.1787249999999998,0.7058333333333331]
-- children[1045].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1046].center (mismatch)
   - expected: [21.3601,272.478]
   - actual: [21.357966666666666,272.47797944789005]
 - children[1046].size (mismatch)
   - expected: [0.7649,0.7058]
   - actual: [0.7670333333333332,0.7058333333333331]
-- children[1046].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1047].center (mismatch)
   - expected: [124.8601,273.9391]
   - actual: [124.85796666666668,273.9391250152013]
 - children[1047].size (mismatch)
   - expected: [0.7649,0.7058]
   - actual: [0.7670333333333332,0.7058333333333331]
-- children[1047].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1048].center (mismatch)
   - expected: [168.0071,275.4003]
   - actual: [168.00708333333336,275.40027058251246]
 - children[1048].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1048].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1049].center (mismatch)
   - expected: [125.0929,276.8614]
   - actual: [125.09291666666668,276.8614161498237]
 - children[1049].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[1049].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1050].center (mismatch)
   - expected: [134.7303,278.6878]
   - actual: [134.73025,278.68784810896267]
 - children[1050].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[1050].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1051].center (mismatch)
   - expected: [137.4679,280.3581]
   - actual: [137.46791666666667,280.35809072114796]
 - children[1051].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[1051].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1052].center (mismatch)
   - expected: [136.2866,283.1833]
   - actual: [136.28658333333334,283.18333333333334]
 - children[1052].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[1052].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1053].center (mismatch)
   - expected: [282.425,17.3014]
   - actual: [282.425,17.301431959139002]
-- children[1053].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1054].center (mismatch)
   - expected: [270.925,20.9056]
   - actual: [270.925,20.905591025173294]
-- children[1054].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1055].center (mismatch)
   - expected: [247.925,24.5098]
   - actual: [247.925,24.50975009120759]
-- children[1055].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1056].center (mismatch)
   - expected: [224.925,28.601]
   - actual: [224.925,28.60095767967895]
-- children[1056].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1057].center (mismatch)
   - expected: [201.925,30.0621]
   - actual: [201.925,30.06210324699015]
-- children[1057].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1058].center (mismatch)
   - expected: [190.425,32.3999]
   - actual: [190.425,32.39993615468807]
-- children[1058].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1059].center (mismatch)
   - expected: [167.425,36.0041]
   - actual: [167.425,36.00409522072237]
-- children[1059].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1060].center (mismatch)
   - expected: [144.425,40.0953]
   - actual: [144.425,40.095302809193726]
-- children[1060].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1061].center (mismatch)
   - expected: [132.925,43.7482]
   - actual: [132.925,43.74816672747173]
-- children[1061].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1062].center (mismatch)
   - expected: [109.925,47.3523]
   - actual: [109.925,47.35232579350602]
-- children[1062].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1063].center (mismatch)
   - expected: [86.925,49.6902]
   - actual: [86.925,49.690158701203934]
-- children[1063].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1064].center (mismatch)
   - expected: [80.7,51.6569]
   - actual: [80.7,51.656877052170735]
-- children[1064].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1065].center (mismatch)
   - expected: [80.55,53.0551]
   - actual: [80.55,53.055071141918994]
-- children[1065].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1066].center (mismatch)
   - expected: [80.7,57.2579]
   - actual: [80.7,57.257935060197006]
-- children[1066].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1067].center (mismatch)
   - expected: [80.55,59.6302]
   - actual: [80.55,59.6302261948194]
-- children[1067].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1068].center (mismatch)
   - expected: [80.7,62.1284]
   - actual: [80.7,62.12842028456767]
-- children[1068].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1069].center (mismatch)
   - expected: [80.55,63.5266]
   - actual: [80.55,63.52661437431593]
-- children[1069].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1070].center (mismatch)
   - expected: [102.675,65.4705]
   - actual: [102.675,65.4705308281649]
-- children[1070].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1071].center (mismatch)
   - expected: [125.675,66.6394]
   - actual: [125.67500000000001,66.63944728201385]
-- children[1071].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1072].center (mismatch)
   - expected: [144.425,72.1187]
   - actual: [144.425,72.11874315943085]
-- children[1072].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1073].center (mismatch)
   - expected: [132.925,73.2877]
   - actual: [132.925,73.2876596132798]
-- children[1073].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1074].center (mismatch)
   - expected: [109.925,75.6255]
   - actual: [109.925,75.62549252097773]
-- children[1074].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1075].center (mismatch)
   - expected: [98.425,79.2297]
   - actual: [98.425,79.22965158701201]
-- children[1075].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1076].center (mismatch)
   - expected: [79.675,81.0561]
   - actual: [79.675,81.05608354615102]
-- children[1076].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1077].center (mismatch)
   - expected: [144.425,83.9784]
   - actual: [144.425,83.97837468077341]
-- children[1077].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1078].center (mismatch)
   - expected: [86.925,87.8748]
   - actual: [86.925,87.87476286026995]
-- children[1078].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1079].center (mismatch)
   - expected: [75.425,89.0437]
   - actual: [75.425,89.04367931411892]
-- children[1079].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1080].center (mismatch)
   - expected: [56.675,90.8701]
   - actual: [56.675,90.87011127325792]
-- children[1080].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1081].center (mismatch)
   - expected: [132.925,92.3313]
   - actual: [132.925,92.33125684056911]
-- children[1081].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1082].center (mismatch)
   - expected: [86.925,95.2535]
   - actual: [86.925,95.25354797519151]
-- children[1082].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1083].center (mismatch)
   - expected: [33.675,96.7147]
   - actual: [33.675,96.71469354250272]
-- children[1083].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1084].center (mismatch)
   - expected: [45.175,98.5411]
   - actual: [45.175,98.54112550164172]
-- children[1084].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1085].center (mismatch)
   - expected: [143.55,101.6255]
   - actual: [143.55,101.62546515870119]
-- children[1085].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1086].center (mismatch)
   - expected: [86.05,102.1496]
   - actual: [86.05,102.14956220357531]
-- children[1086].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1087].center (mismatch)
   - expected: [80.7,105.1348]
   - actual: [80.7,105.13480481576065]
-- children[1087].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1088].center (mismatch)
   - expected: [80.55,107.02]
   - actual: [80.55,107.02004742794598]
-- children[1088].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1089].center (mismatch)
   - expected: [80.7,109.5182]
   - actual: [80.7,109.51824151769424]
-- children[1089].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1090].center (mismatch)
   - expected: [80.55,110.9164]
   - actual: [80.55,110.91643560744252]
-- children[1090].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1091].center (mismatch)
   - expected: [144.425,113.2135]
   - actual: [144.425,113.21346224005833]
-- children[1091].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1092].center (mismatch)
   - expected: [132.925,114.4311]
   - actual: [132.925,114.431083546151]
-- children[1092].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1093].center (mismatch)
   - expected: [109.925,116.7689]
   - actual: [109.925,116.76891645384893]
-- children[1093].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1094].center (mismatch)
   - expected: [98.425,117.9378]
   - actual: [98.425,117.9378329076979]
-- children[1094].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1095].center (mismatch)
   - expected: [79.675,119.7643]
   - actual: [79.675,119.76426486683691]
-- children[1095].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1096].center (mismatch)
   - expected: [144.425,122.6866]
   - actual: [144.425,122.68655600145931]
-- children[1096].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1097].center (mismatch)
   - expected: [86.925,126.5829]
   - actual: [86.925,126.58294418095583]
-- children[1097].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1098].center (mismatch)
   - expected: [75.425,127.7519]
   - actual: [75.425,127.75186063480481]
-- children[1098].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1099].center (mismatch)
   - expected: [56.675,129.5783]
   - actual: [56.675,129.57829259394381]
-- children[1099].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1100].center (mismatch)
   - expected: [132.925,133.2312]
   - actual: [132.925,133.23115651222182]
-- children[1100].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1101].center (mismatch)
   - expected: [79.675,135.6664]
   - actual: [79.675,135.66639912440715]
-- children[1101].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1102].center (mismatch)
   - expected: [125.675,138.5887]
   - actual: [125.67500000000001,138.58869025902953]
-- children[1102].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1103].center (mismatch)
   - expected: [138.05,139.7248]
   - actual: [138.05,139.72483582634075]
-- children[1103].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1104].center (mismatch)
   - expected: [143.55,141.223]
   - actual: [143.55,141.22302991608902]
-- children[1104].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1105].center (mismatch)
   - expected: [108.9,142.9419]
   - actual: [108.89999999999999,142.94194636993797]
-- children[1105].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1106].center (mismatch)
   - expected: [80.55,143.366]
   - actual: [80.55,143.36604341481214]
-- children[1106].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1107].center (mismatch)
   - expected: [144.425,145.3587]
   - actual: [144.425,145.35866472090478]
-- children[1107].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1108].center (mismatch)
   - expected: [45.175,149.0115]
   - actual: [45.175,149.01152863918279]
-- children[1108].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1109].center (mismatch)
   - expected: [56.675,150.5336]
   - actual: [56.675,150.5335552717986]
-- children[1109].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1110].center (mismatch)
   - expected: [79.675,153.4558]
   - actual: [79.675,153.45584640642102]
-- children[1110].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1111].center (mismatch)
   - expected: [102.675,154.917]
   - actual: [102.675,154.91699197373222]
-- children[1111].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1112].center (mismatch)
   - expected: [144.425,156.3781]
   - actual: [144.425,156.3781375410434]
-- children[1112].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1113].center (mismatch)
   - expected: [132.925,159.3004]
   - actual: [132.925,159.3004286756658]
-- children[1113].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1114].center (mismatch)
   - expected: [86.925,162.9533]
   - actual: [86.925,162.95329259394381]
-- children[1114].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1115].center (mismatch)
   - expected: [52.425,166.6062]
   - actual: [52.425,166.60615651222182]
-- children[1115].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1116].center (mismatch)
   - expected: [9.05,168.0673]
   - actual: [9.05,168.06730207953302]
-- children[1116].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1117].center (mismatch)
   - expected: [109.925,169.8937]
   - actual: [109.925,169.89373403867202]
-- children[1117].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1118].center (mismatch)
   - expected: [63.925,171.3549]
   - actual: [63.925,171.3548796059832]
-- children[1118].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1119].center (mismatch)
   - expected: [22.175,172.816]
   - actual: [22.175,172.8160251732944]
-- children[1119].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1120].center (mismatch)
   - expected: [109.05,173.7086]
   - actual: [109.05,173.70864647938708]
-- children[1120].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1121].center (mismatch)
   - expected: [97.55,174.4763]
   - actual: [97.55,174.47626778547976]
-- children[1121].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1122].center (mismatch)
   - expected: [86.05,176.3874]
   - actual: [86.05,176.38741335279096]
-- children[1122].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1123].center (mismatch)
   - expected: [7.3,177.8856]
   - actual: [7.3,177.88560744253923]
-- children[1123].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1124].center (mismatch)
   - expected: [7,180.3838]
   - actual: [7,180.3838015322875]
-- children[1124].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1125].center (mismatch)
   - expected: [7.3,181.782]
   - actual: [7.3,181.78199562203577]
-- children[1125].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1126].center (mismatch)
   - expected: [23.05,184.6672]
   - actual: [23.05,184.6672382342211]
-- children[1126].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1127].center (mismatch)
   - expected: [23.05,186.6525]
   - actual: [23.05,186.65248084640643]
-- children[1127].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1128].center (mismatch)
   - expected: [46.05,188.2714]
   - actual: [46.05,188.2713973002554]
-- children[1128].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1129].center (mismatch)
   - expected: [46.05,189.7696]
   - actual: [46.05,189.76959139000368]
-- children[1129].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1130].center (mismatch)
   - expected: [56.675,192.0057]
   - actual: [56.675,192.00573695731487]
-- children[1130].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1131].center (mismatch)
   - expected: [79.675,194.928]
   - actual: [79.675,194.92802809193725]
-- children[1131].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1132].center (mismatch)
   - expected: [109.925,196.3892]
   - actual: [109.925,196.38917365924843]
-- children[1132].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1133].center (mismatch)
   - expected: [63.925,197.8503]
   - actual: [63.925,197.85031922655966]
-- children[1133].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1134].center (mismatch)
   - expected: [45.175,200.5413]
   - actual: [45.175,200.54126231302448]
-- children[1134].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1135].center (mismatch)
   - expected: [109.925,202.0024]
   - actual: [109.925,202.00240788033565]
-- children[1135].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1136].center (mismatch)
   - expected: [86.925,203.4636]
   - actual: [86.925,203.46355344764686]
-- children[1136].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1137].center (mismatch)
   - expected: [45.175,204.9247]
   - actual: [45.175,204.92469901495804]
-- children[1137].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1138].center (mismatch)
   - expected: [63.925,210.9885]
   - actual: [63.925,210.98845311929952]
-- children[1138].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1139].center (mismatch)
   - expected: [22.175,212.4496]
   - actual: [22.175,212.4495986866107]
-- children[1139].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1140].center (mismatch)
   - expected: [125.675,213.9107]
   - actual: [125.67500000000001,213.91074425392193]
-- children[1140].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1141].center (mismatch)
   - expected: [167.425,215.3719]
   - actual: [167.425,215.37188982123314]
-- children[1141].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1142].center (mismatch)
   - expected: [143.55,217.1777]
   - actual: [143.55,217.17772710689528]
-- children[1142].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1143].center (mismatch)
   - expected: [143.55,219.65]
   - actual: [143.55,219.65001824151773]
-- children[1143].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1144].center (mismatch)
   - expected: [108.9,221.3689]
   - actual: [108.89999999999999,221.36893469536668]
-- children[1144].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1145].center (mismatch)
   - expected: [80.55,221.793]
   - actual: [80.55,221.79303174024082]
-- children[1145].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1146].center (mismatch)
   - expected: [102.675,225.0033]
   - actual: [102.675,225.00327435242613]
-- children[1146].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1147].center (mismatch)
   - expected: [132.925,226.4644]
   - actual: [132.925,226.46441991973734]
-- children[1147].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1148].center (mismatch)
   - expected: [86.05,231.0099]
   - actual: [86.05,231.00990514410802]
-- children[1148].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1149].center (mismatch)
   - expected: [79.675,233.7701]
   - actual: [79.675,233.77014775629334]
-- children[1149].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1150].center (mismatch)
   - expected: [80.55,237.3786]
   - actual: [80.55,237.37858445822692]
-- children[1150].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1151].center (mismatch)
   - expected: [224.925,239.3712]
   - actual: [224.925,239.3712057643196]
-- children[1151].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1152].center (mismatch)
   - expected: [86.05,242.3338]
   - actual: [86.05,242.3337832907698]
-- children[1152].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1153].center (mismatch)
   - expected: [79.675,245.094]
   - actual: [79.675,245.0940259029551]
-- children[1153].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1154].center (mismatch)
   - expected: [80.55,248.7025]
   - actual: [80.55,248.70246260488875]
-- children[1154].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1155].center (mismatch)
   - expected: [224.925,250.6951]
   - actual: [224.925,250.69508391098142]
-- children[1155].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1156].center (mismatch)
   - expected: [86.05,256.7017]
   - actual: [86.05,256.70171470266325]
-- children[1156].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1157].center (mismatch)
   - expected: [79.675,259.462]
   - actual: [79.675,259.46195731484863]
-- children[1157].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1158].center (mismatch)
   - expected: [80.55,263.0704]
   - actual: [80.55,263.0703940167822]
-- children[1158].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1159].center (mismatch)
   - expected: [224.925,265.063]
   - actual: [224.925,265.0630153228749]
-- children[1159].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1160].center (mismatch)
   - expected: [86.925,269.9335]
   - actual: [86.925,269.93350054724556]
-- children[1160].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1161].center (mismatch)
   - expected: [22.175,271.3946]
   - actual: [22.175,271.39464611455674]
-- children[1161].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1162].center (mismatch)
   - expected: [125.675,272.8558]
   - actual: [125.67500000000001,272.85579168186797]
-- children[1162].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1163].center (mismatch)
   - expected: [167.425,274.3169]
   - actual: [167.425,274.31693724917915]
-- children[1163].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1164].center (mismatch)
   - expected: [125.675,275.7781]
   - actual: [125.67500000000001,275.7780828164904]
-- children[1164].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1165].center (mismatch)
   - expected: [137.175,277.6045]
   - actual: [137.175,277.60451477562935]
-- children[1165].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1166].center (mismatch)
   - expected: [138.05,279.2648]
   - actual: [138.05,279.26475738781465]
-- children[1166].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1167].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1168].center (mismatch)
   - expected: [283.2981,13.6389]
   - actual: [283.298125,13.638931959139]
 - children[1168].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[1168].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1169].center (mismatch)
   - expected: [193.8019,26.3996]
   - actual: [193.80187500000002,26.39960324699015]
 - children[1169].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[1169].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1170].center (mismatch)
   - expected: [124.8019,40.0857]
   - actual: [124.80187500000001,40.08566672747172]
 - children[1170].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[1170].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1171].center (mismatch)
   - expected: [86.7731,54.0454]
   - actual: [86.773125,54.045435060197]
 - children[1171].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[1171].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1172].center (mismatch)
   - expected: [145.1531,67.3012]
   - actual: [145.153125,67.30124315943085]
 - children[1172].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[1172].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1173].center (mismatch)
   - expected: [78.8019,77.3936]
   - actual: [78.801875,77.39358354615102]
 - children[1173].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[1173].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1174].center (mismatch)
   - expected: [55.8019,87.2076]
   - actual: [55.801874999999995,87.20761127325792]
 - children[1174].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[1174].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1175].center (mismatch)
   - expected: [53.2981,94.8786]
   - actual: [53.298125,94.87862550164172]
 - children[1175].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[1175].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1176].center (mismatch)
   - expected: [145.2981,109.551]
   - actual: [145.298125,109.55096224005834]
 - children[1176].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[1176].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1177].center (mismatch)
   - expected: [77.9287,116.1018]
   - actual: [77.92875,116.10176486683692]
 - children[1177].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1177].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1178].center (mismatch)
   - expected: [54.9287,125.9158]
   - actual: [54.928749999999994,125.91579259394382]
 - children[1178].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1178].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1179].center (mismatch)
   - expected: [145.2963,136.7123]
   - actual: [145.29625000000001,136.71233582634076]
 - children[1179].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1179].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1180].center (mismatch)
   - expected: [65.6713,146.8711]
   - actual: [65.67125,146.8710552717986]
 - children[1180].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1180].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1181].center (mismatch)
   - expected: [123.9288,155.6379]
   - actual: [123.92875000000001,155.63792867566582]
 - children[1181].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1181].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1182].center (mismatch)
   - expected: [111.6713,166.2312]
   - actual: [111.67125,166.23123403867203]
 - children[1182].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1182].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1183].center (mismatch)
   - expected: [78.8037,173.3749]
   - actual: [78.80375,173.37491335279097]
 - children[1183].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1183].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1184].center (mismatch)
   - expected: [65.6713,188.3432]
   - actual: [65.67125,188.34323695731487]
 - children[1184].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1184].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1185].center (mismatch)
   - expected: [43.4287,196.8788]
   - actual: [43.428749999999994,196.87876231302448]
 - children[1185].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1185].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1186].center (mismatch)
   - expected: [65.6713,207.326]
   - actual: [65.67125,207.32595311929953]
 - children[1186].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1186].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1187].center (mismatch)
   - expected: [136.3038,214.1652]
   - actual: [136.30375,214.1652271068953]
 - children[1187].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1187].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1188].center (mismatch)
   - expected: [81.9538,227.8474]
   - actual: [81.95375,227.84740514410802]
 - children[1188].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1188].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1189].center (mismatch)
   - expected: [78.8037,239.3213]
   - actual: [78.80375,239.3212832907698]
 - children[1189].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1189].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1190].center (mismatch)
   - expected: [78.8037,253.6892]
   - actual: [78.80375,253.6892147026633]
 - children[1190].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1190].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1191].center (mismatch)
   - expected: [77.9287,266.271]
   - actual: [77.92875,266.27100054724554]
 - children[1191].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1191].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1192].center (mismatch)
   - expected: [147.1713,273.942]
   - actual: [147.17125000000001,273.94201477562933]
 - children[1192].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[1192].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1193].center (mismatch)
   - expected: [282.425,12.1514]
   - actual: [282.425,12.151431959139]
-- children[1193].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1194].center (mismatch)
   - expected: [194.675,24.9121]
   - actual: [194.675,24.91210324699015]
-- children[1194].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1195].center (mismatch)
   - expected: [125.675,38.5982]
   - actual: [125.67500000000001,38.59816672747172]
-- children[1195].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1196].center (mismatch)
   - expected: [85.9,52.5579]
   - actual: [85.89999999999999,52.557935060197]
-- children[1196].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1197].center (mismatch)
   - expected: [144.28,65.8137]
   - actual: [144.28,65.81374315943086]
-- children[1197].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1198].center (mismatch)
   - expected: [79.675,75.9061]
   - actual: [79.675,75.90608354615102]
-- children[1198].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1199].center (mismatch)
   - expected: [56.675,85.7201]
   - actual: [56.675,85.72011127325793]
-- children[1199].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1200].center (mismatch)
   - expected: [52.425,93.3911]
   - actual: [52.425,93.39112550164172]
-- children[1200].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1201].center (mismatch)
   - expected: [144.425,108.0635]
   - actual: [144.425,108.06346224005834]
-- children[1201].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1202].center (mismatch)
   - expected: [79.675,114.6143]
   - actual: [79.675,114.61426486683692]
-- children[1202].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1203].center (mismatch)
   - expected: [56.675,124.4283]
   - actual: [56.675,124.42829259394382]
-- children[1203].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1204].center (mismatch)
   - expected: [143.55,135.2248]
   - actual: [143.55,135.22483582634075]
-- children[1204].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1205].center (mismatch)
   - expected: [63.925,145.3836]
   - actual: [63.925,145.3835552717986]
-- children[1205].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1206].center (mismatch)
   - expected: [125.675,154.1504]
   - actual: [125.67500000000001,154.1504286756658]
-- children[1206].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1207].center (mismatch)
   - expected: [109.925,164.7437]
   - actual: [109.925,164.74373403867202]
-- children[1207].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1208].center (mismatch)
   - expected: [80.55,171.8874]
   - actual: [80.55,171.88741335279096]
-- children[1208].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1209].center (mismatch)
   - expected: [63.925,186.8557]
   - actual: [63.925,186.85573695731486]
-- children[1209].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1210].center (mismatch)
   - expected: [45.175,195.3913]
   - actual: [45.175,195.39126231302447]
-- children[1210].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1211].center (mismatch)
   - expected: [63.925,205.8385]
   - actual: [63.925,205.83845311929952]
-- children[1211].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1212].center (mismatch)
   - expected: [138.05,212.6777]
   - actual: [138.05,212.67772710689528]
-- children[1212].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1213].center (mismatch)
   - expected: [83.7,226.3599]
   - actual: [83.7,226.359905144108]
-- children[1213].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1214].center (mismatch)
   - expected: [80.55,237.8338]
   - actual: [80.55,237.8337832907698]
-- children[1214].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1215].center (mismatch)
   - expected: [80.55,252.2017]
   - actual: [80.55,252.20171470266328]
-- children[1215].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1216].center (mismatch)
   - expected: [79.675,264.7835]
   - actual: [79.675,264.7835005472455]
-- children[1216].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1217].center (mismatch)
   - expected: [145.425,272.4545]
   - actual: [145.425,272.4545147756293]
-- children[1217].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1218].fill (extra)
   - expected: undefined
   - actual: false
-- children[1218].lineWidth (extra)
+- children[1218].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1218].znId (extra)
   - expected: undefined
   - actual: "goto-1-6144"
-- children[1218].path (extra)
-  - expected: undefined
+- children[1218].draginfo (mismatch)
+  - expected: {"handler":"jumpline","jumpline":{"from":{"center":[129.3,225.98941991973732],"size":[2.625,0.9750000000000001],"anchor":"after"},"to":{"center":[140.8,71.64374315943085],"size":[2.625,0.9750000000000001],"anchor":"before"},"vertical":51.75,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+  - actual: {"handler":"jumpline","jumpline":{"from":{"center":[129.3,225.98941991973734],"size":[2.625,0.9750000000000001],"anchor":"after"},"to":{"center":[140.8,71.64374315943085],"size":[2.625,0.9750000000000001],"anchor":"before"},"vertical":51.75,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+- children[1218].path (mismatch)
+  - expected: [["M",134.925,227.9644199197373],["l",46.125,0],["l",0,-157.29567676030643],["M",181.05,227.96441991973728],["L",181.05,69.66874315943086],["L",148.425,69.66874315943086]]
   - actual: [[134.925,227.96441991973734],[181.05,227.96441991973734],[181.05,70.66874315943085],[181.05,227.96441991973734],[181.05,69.66874315943086],[148.425,69.66874315943086]]
 - children[1219].fill (extra)
   - expected: undefined
   - actual: true
-- children[1219].lineWidth (extra)
+- children[1219].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1219].znId (extra)
   - expected: undefined
   - actual: "goto-1-6144"
-- children[1219].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_2.30336.p_repeat"
-- children[1219].path (extra)
-  - expected: undefined
+- children[1219].path (mismatch)
+  - expected: [["M",146.425,69.66874315943086],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
   - actual: [[146.425,69.66874315943086],[148.925,70.66874315943086],[148.925,68.66874315943086]]
 - children[1220].fill (extra)
   - expected: undefined
   - actual: true
-- children[1220].lineWidth (extra)
+- children[1220].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1220].znId (extra)
   - expected: undefined
   - actual: "goto-1-6144"
-- children[1220].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_2.30336.p_repeat"
-- children[1220].path (extra)
-  - expected: undefined
-  - actual: []
 - children[1221].fill (extra)
   - expected: undefined
   - actual: false
-- children[1221].lineWidth (extra)
+- children[1221].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1221].znId (extra)
   - expected: undefined
   - actual: "goto-1-1121-0"
-- children[1221].path (extra)
-  - expected: undefined
+- children[1221].draginfo (mismatch)
+  - expected: {"handler":"jumpline","jumpline":{"from":{"center":[48.8,204.44969901495807],"size":[2.625,0.9750000000000001],"anchor":"after"},"to":{"center":[60.3,210.51345311929953],"size":[2.625,0.9750000000000001],"anchor":"before"},"vertical":-28.75,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+  - actual: {"handler":"jumpline","jumpline":{"from":{"center":[48.8,204.44969901495804],"size":[2.625,0.9750000000000001],"anchor":"after"},"to":{"center":[60.3,210.51345311929953],"size":[2.625,0.9750000000000001],"anchor":"before"},"vertical":-28.75,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+- children[1221].path (mismatch)
+  - expected: [["M",43.175,206.42469901495807],["l",-23.125,0],["l",0,1.1137541043414672],["M",20.049999999999997,206.42469901495807],["L",20.049999999999997,208.53845311929953],["L",52.675,208.53845311929953]]
   - actual: [[43.175,206.42469901495804],[20.049999999999997,206.42469901495804],[20.049999999999997,207.53845311929953],[20.049999999999997,206.42469901495804],[20.049999999999997,208.53845311929953],[52.675,208.53845311929953]]
 - children[1222].fill (extra)
   - expected: undefined
   - actual: true
-- children[1222].lineWidth (extra)
+- children[1222].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1222].znId (extra)
   - expected: undefined
   - actual: "goto-1-1121-0"
-- children[1222].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_2.27264.0.p_begin"
-- children[1222].path (extra)
-  - expected: undefined
+- children[1222].path (mismatch)
+  - expected: [["M",54.675,208.53845311929953],["l",-2.5,1],["l",0,-2],["l",2.5,1],["z"]]
   - actual: [[54.675,208.53845311929953],[52.175,209.53845311929953],[52.175,207.53845311929953]]
 - children[1223].fill (extra)
   - expected: undefined
   - actual: true
-- children[1223].lineWidth (extra)
+- children[1223].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1223].znId (extra)
   - expected: undefined
   - actual: "goto-1-1121-0"
-- children[1223].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_2.27264.0.p_begin"
-- children[1223].path (extra)
-  - expected: undefined
-  - actual: []
 - children[1224].fill (extra)
   - expected: undefined
   - actual: false
-- children[1224].lineWidth (extra)
+- children[1224].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1224].znId (extra)
   - expected: undefined
   - actual: "goto-1-1159-1"
-- children[1224].path (extra)
-  - expected: undefined
+- children[1224].draginfo (mismatch)
+  - expected: {"handler":"jumpline","jumpline":{"from":{"center":[48.8,204.44969901495807],"size":[2.625,0.9750000000000001],"anchor":"after"},"to":{"center":[83.3,230.85990514410798],"size":[1.75,0.65],"anchor":"before"},"vertical":-28.75,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+  - actual: {"handler":"jumpline","jumpline":{"from":{"center":[48.8,204.44969901495804],"size":[2.625,0.9750000000000001],"anchor":"after"},"to":{"center":[83.3,230.859905144108],"size":[1.75,0.65],"anchor":"before"},"vertical":-28.75,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+- children[1224].path (mismatch)
+  - expected: [["M",43.175,206.42469901495807],["l",-23.125,0],["l",0,21.785206129149913],["M",20.049999999999997,206.42469901495807],["L",20.049999999999997,229.20990514410798],["L",76.55,229.20990514410798]]
   - actual: [[43.175,206.42469901495804],[20.049999999999997,206.42469901495804],[20.049999999999997,228.209905144108],[20.049999999999997,206.42469901495804],[20.049999999999997,229.209905144108],[76.55,229.209905144108]]
 - children[1225].fill (extra)
   - expected: undefined
   - actual: true
-- children[1225].lineWidth (extra)
+- children[1225].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1225].znId (extra)
   - expected: undefined
   - actual: "goto-1-1159-1"
-- children[1225].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_2.27264.1.p_begin"
-- children[1225].path (extra)
-  - expected: undefined
+- children[1225].path (mismatch)
+  - expected: [["M",78.55,229.20990514410798],["l",-2.5,1],["l",0,-2],["l",2.5,1],["z"]]
   - actual: [[78.55,229.209905144108],[76.05,230.209905144108],[76.05,228.209905144108]]
 - children[1226].fill (extra)
   - expected: undefined
   - actual: true
-- children[1226].lineWidth (extra)
+- children[1226].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1226].znId (extra)
   - expected: undefined
   - actual: "goto-1-1159-1"
-- children[1226].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_2.27264.1.p_begin"
-- children[1226].path (extra)
-  - expected: undefined
-  - actual: []
 - children[1227].fill (extra)
   - expected: undefined
   - actual: false
-- children[1227].lineWidth (extra)
+- children[1227].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1227].znId (extra)
   - expected: undefined
   - actual: "goto-1-1182-2"
-- children[1227].path (extra)
-  - expected: undefined
+- children[1227].draginfo (mismatch)
+  - expected: {"handler":"jumpline","jumpline":{"from":{"center":[221.3,250.2200839109814],"size":[2.625,0.9750000000000001],"anchor":"after"},"to":{"center":[83.3,256.5517147026633],"size":[1.75,0.65],"anchor":"before"},"vertical":28.75,"vertical_anchor":"to","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+  - actual: {"handler":"jumpline","jumpline":{"from":{"center":[221.3,250.22008391098143],"size":[2.625,0.9750000000000001],"anchor":"after"},"to":{"center":[83.3,256.5517147026633],"size":[1.75,0.65],"anchor":"before"},"vertical":28.75,"vertical_anchor":"to","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+- children[1227].path (mismatch)
+  - expected: [["M",215.675,252.1950839109814],["l",-103.62500000000001,0],["l",0,1.7066307916818744],["M",112.05,252.1950839109814],["L",112.05,254.90171470266327],["L",90.05,254.90171470266327]]
   - actual: [[215.675,252.19508391098142],[112.05,252.19508391098142],[112.05,253.90171470266327],[112.05,252.19508391098142],[112.05,254.90171470266327],[90.05,254.90171470266327]]
 - children[1228].fill (extra)
   - expected: undefined
   - actual: true
-- children[1228].lineWidth (extra)
+- children[1228].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1228].znId (extra)
   - expected: undefined
   - actual: "goto-1-1182-2"
-- children[1228].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_2.27264.p_follow"
-- children[1228].path (extra)
-  - expected: undefined
+- children[1228].path (mismatch)
+  - expected: [["M",88.05,254.90171470266327],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
   - actual: [[88.05,254.90171470266327],[90.55,255.90171470266327],[90.55,253.90171470266327]]
 - children[1229].fill (extra)
   - expected: undefined
   - actual: true
-- children[1229].lineWidth (extra)
+- children[1229].color (extra)
   - expected: undefined
-  - actual: 0.3
+  - actual: "black"
 - children[1229].znId (extra)
   - expected: undefined
   - actual: "goto-1-1182-2"
-- children[1229].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_2.27264.p_follow"
-- children[1229].path (extra)
-  - expected: undefined
-  - actual: []
 - children[1230].center (mismatch)
   - expected: [57.4642,205.3801]
   - actual: [57.464166666666664,205.3801197859662]
 - children[1230].size (mismatch)
   - expected: [1.6642,1.8317]
   - actual: [1.6641666666666666,1.8316666666666663]
-- children[1230].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1231].center (mismatch)
   - expected: [77.4642,225.7266]
   - actual: [77.46416666666667,225.7265718107747]
 - children[1231].size (mismatch)
   - expected: [1.6642,1.8317]
   - actual: [1.6641666666666666,1.8316666666666663]
-- children[1231].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1232].center (mismatch)
   - expected: [112.4642,196.3941]
   - actual: [112.46416666666667,196.39407454700233]
 - children[1232].size (mismatch)
   - expected: [1.6642,1.8317]
   - actual: [1.6641666666666666,1.8316666666666663]
-- children[1232].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1233].center (mismatch)
   - expected: [56.3,203.5135]
   - actual: [56.3,203.51345311929953]
-- children[1233].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1234].center (mismatch)
   - expected: [76.3,223.8599]
   - actual: [76.3,223.859905144108]
-- children[1234].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1235].center (mismatch)
   - expected: [111.3,194.5274]
   - actual: [111.3,194.52740788033566]
-- children[1235].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1236].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1237].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1238].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1239].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1240].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1241].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1242].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1243].text (mismatch)
-  - expected: "246_Horch-was-kommt-von-draussen-rein - created 2026-05-27 19:55:01 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: "246_Horch-was-kommt-von-draussen-rein - created 2026-05-27 20:59:42 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "246_Horch-was-kommt-von-draussen-rein - created by Zupfnoter"
-- children[1243].lineWidth (extra)
+- children[1243].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1244].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1244].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1245].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[1246].fill (extra)
   - expected: undefined
   - actual: true
-- children[1246].lineWidth (extra)
+- children[1246].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1246].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[1246].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[1247].fill (extra)
   - expected: undefined
   - actual: true
-- children[1247].lineWidth (extra)
+- children[1247].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1247].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[1247].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[1248].fill (extra)
   - expected: undefined
   - actual: true
-- children[1248].lineWidth (extra)
+- children[1248].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1248].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[1248].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[1249].lineWidth (extra)
+- children[1249].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1250].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1250].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1251].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1251].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1252].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1252].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1253].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1253].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1254].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1254].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1255].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1255].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1256].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1256].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1257].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1257].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1258].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1258].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1259].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1259].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1260].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1260].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1261].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1261].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1262].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1262].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1263].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1263].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1264].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1264].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1265].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1265].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1266].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1266].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1267].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1267].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1268].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1268].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1269].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1269].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1270].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1270].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1271].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1271].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1272].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1272].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1273].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1273].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1274].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1274].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1275].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1275].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1276].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1276].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1277].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1277].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1278].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1278].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1279].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1279].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1280].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1280].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1281].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1281].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1282].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1282].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1283].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1283].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1284].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1284].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1285].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[1285].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[1286].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1287].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1288].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[1289].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 
 ## 3015_reference_sheet [extract 0]
 
-- Issues: 785
+- Issues: 555
 - children[0].from (extra)
   - expected: undefined
   - actual: [278.8,20]
 - children[0].to (extra)
   - expected: undefined
   - actual: [232.8,20]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1].from (extra)
   - expected: undefined
   - actual: [301.8,34.5]
 - children[1].to (extra)
   - expected: undefined
   - actual: [232.8,34.5]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[2].from (extra)
   - expected: undefined
   - actual: [301.8,52.5]
 - children[2].to (extra)
   - expected: undefined
   - actual: [232.8,52.5]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[3].from (extra)
   - expected: undefined
   - actual: [301.8,58.5]
 - children[3].to (extra)
   - expected: undefined
   - actual: [232.8,58.5]
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[4].from (extra)
   - expected: undefined
   - actual: [301.8,75.6]
 - children[4].to (extra)
   - expected: undefined
   - actual: [232.8,75.6]
-- children[4].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[5].from (extra)
   - expected: undefined
   - actual: [301.8,81.6]
 - children[5].to (extra)
   - expected: undefined
   - actual: [232.8,81.6]
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[6].from (extra)
   - expected: undefined
   - actual: [301.8,96.6]
 - children[6].to (extra)
   - expected: undefined
   - actual: [232.8,96.6]
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[7].from (extra)
   - expected: undefined
   - actual: [301.8,107.59999999999998]
 - children[7].to (extra)
   - expected: undefined
   - actual: [232.8,107.59999999999998]
-- children[7].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[8].from (extra)
   - expected: undefined
   - actual: [301.8,119.59999999999998]
 - children[8].to (extra)
   - expected: undefined
   - actual: [232.8,119.59999999999998]
-- children[8].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[9].from (extra)
   - expected: undefined
   - actual: [301.8,150.59999999999997]
 - children[9].to (extra)
   - expected: undefined
   - actual: [232.8,150.59999999999997]
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[10].from (extra)
   - expected: undefined
   - actual: [301.8,156.59999999999997]
 - children[10].to (extra)
   - expected: undefined
   - actual: [232.8,156.59999999999997]
-- children[10].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[11].from (extra)
   - expected: undefined
   - actual: [301.8,161.59999999999997]
 - children[11].to (extra)
   - expected: undefined
   - actual: [232.8,161.59999999999997]
-- children[11].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[12].from (extra)
   - expected: undefined
   - actual: [301.8,164.79999999999998]
 - children[12].to (extra)
   - expected: undefined
   - actual: [232.8,164.79999999999998]
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[13].from (extra)
   - expected: undefined
   - actual: [301.8,167.2]
 - children[13].to (extra)
   - expected: undefined
   - actual: [232.8,167.2]
-- children[13].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[14].from (extra)
   - expected: undefined
   - actual: [301.8,172.45]
 - children[14].to (extra)
   - expected: undefined
   - actual: [232.8,172.45]
-- children[14].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[15].from (extra)
   - expected: undefined
   - actual: [301.8,178.45]
 - children[15].to (extra)
   - expected: undefined
   - actual: [232.8,178.45]
-- children[15].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[16].from (extra)
   - expected: undefined
   - actual: [301.8,185.94999999999996]
 - children[16].to (extra)
   - expected: undefined
   - actual: [232.8,185.94999999999996]
-- children[16].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[17].from (extra)
   - expected: undefined
   - actual: [301.8,190.94999999999996]
 - children[17].to (extra)
   - expected: undefined
   - actual: [232.8,190.94999999999996]
-- children[17].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[18].from (extra)
   - expected: undefined
   - actual: [278.8,20]
 - children[18].to (extra)
   - expected: undefined
   - actual: [301.8,34.5]
-- children[18].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[18].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -12206,9 +9140,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[19].to (extra)
   - expected: undefined
   - actual: [301.8,52.5]
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[19].znId (extra)
   - expected: undefined
   - actual: "2304"
@@ -12218,9 +9149,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[20].to (extra)
   - expected: undefined
   - actual: [301.8,58.5]
-- children[20].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[20].znId (extra)
   - expected: undefined
   - actual: "2688"
@@ -12230,9 +9158,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[21].to (extra)
   - expected: undefined
   - actual: [301.8,62.699999999999996]
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[21].znId (extra)
   - expected: undefined
   - actual: "2880"
@@ -12242,9 +9167,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[22].to (extra)
   - expected: undefined
   - actual: [301.8,65.1]
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[22].znId (extra)
   - expected: undefined
   - actual: "2976"
@@ -12254,9 +9176,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[23].to (extra)
   - expected: undefined
   - actual: [301.8,81.6]
-- children[23].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[23].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -12266,9 +9185,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[24].to (extra)
   - expected: undefined
   - actual: [301.8,107.59999999999998]
-- children[24].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[24].znId (extra)
   - expected: undefined
   - actual: "5184"
@@ -12278,9 +9194,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[25].to (extra)
   - expected: undefined
   - actual: [301.8,150.59999999999997]
-- children[25].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[25].znId (extra)
   - expected: undefined
   - actual: "6912"
@@ -12290,9 +9203,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[26].to (extra)
   - expected: undefined
   - actual: [301.8,156.59999999999997]
-- children[26].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[26].znId (extra)
   - expected: undefined
   - actual: "7680"
@@ -12302,9 +9212,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[27].to (extra)
   - expected: undefined
   - actual: [301.8,161.59999999999997]
-- children[27].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[27].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -12314,9 +9221,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[28].to (extra)
   - expected: undefined
   - actual: [301.8,164.79999999999998]
-- children[28].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[28].znId (extra)
   - expected: undefined
   - actual: "8256"
@@ -12326,9 +9230,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[29].to (extra)
   - expected: undefined
   - actual: [301.8,167.2]
-- children[29].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[29].znId (extra)
   - expected: undefined
   - actual: "8352"
@@ -12338,9 +9239,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[30].to (extra)
   - expected: undefined
   - actual: [301.8,172.45]
-- children[30].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[30].znId (extra)
   - expected: undefined
   - actual: "8448"
@@ -12350,9 +9248,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[31].to (extra)
   - expected: undefined
   - actual: [301.8,178.45]
-- children[31].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[31].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -12362,9 +9257,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[32].to (extra)
   - expected: undefined
   - actual: [301.8,185.94999999999996]
-- children[32].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[32].znId (extra)
   - expected: undefined
   - actual: "9984"
@@ -12374,138 +9266,120 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[33].to (extra)
   - expected: undefined
   - actual: [301.8,190.94999999999996]
-- children[33].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[33].znId (extra)
   - expected: undefined
   - actual: "10560"
-- children[34].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[34].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[35].lineWidth (extra)
+- children[34].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[35].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[36].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[36].znId (extra)
   - expected: undefined
   - actual: "1536"
-- children[37].lineWidth (extra)
+- children[36].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_1536.n_0.***"
 - children[37].znId (extra)
   - expected: undefined
   - actual: "1536"
-- children[38].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[38].znId (extra)
   - expected: undefined
   - actual: "2304"
-- children[39].lineWidth (extra)
+- children[38].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_2304.n_0.***"
 - children[39].znId (extra)
   - expected: undefined
   - actual: "2688"
+- children[39].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_2688.n_0.***"
 - children[40].center (mismatch)
   - expected: [301.8,62.7]
   - actual: [301.8,62.699999999999996]
-- children[40].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[40].znId (extra)
   - expected: undefined
   - actual: "2880"
-- children[41].lineWidth (extra)
+- children[40].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_2880.n_0.***"
 - children[41].znId (extra)
   - expected: undefined
   - actual: "2976"
-- children[42].lineWidth (extra)
+- children[41].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_2976.n_0.***"
 - children[42].znId (extra)
   - expected: undefined
   - actual: "3072"
+- children[42].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_3072.n_0.***"
 - children[43].center (mismatch)
   - expected: [301.8,73.825]
   - actual: [301.8,73.82499999999999]
-- children[43].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[43].znId (extra)
   - expected: undefined
   - actual: "3072"
-- children[44].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[44].znId (extra)
   - expected: undefined
   - actual: "4224"
-- children[45].lineWidth (extra)
+- children[44].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_4224.n_0.***"
 - children[45].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[45].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4608.n_0.***"
 - children[46].center (mismatch)
   - expected: [301.8,94.825]
   - actual: [301.8,94.82499999999999]
-- children[46].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[46].znId (extra)
   - expected: undefined
   - actual: "4608"
 - children[47].center (mismatch)
   - expected: [301.8,107.6]
   - actual: [301.8,107.59999999999998]
-- children[47].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[47].znId (extra)
   - expected: undefined
   - actual: "5184"
+- children[47].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_5184.n_0.***"
 - children[48].center (mismatch)
   - expected: [301.8,119.6]
   - actual: [301.8,119.59999999999998]
 - children[48].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[48].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[48].znId (extra)
   - expected: undefined
   - actual: "5376"
+- children[48].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_5376.n_0.***"
 - children[49].center (mismatch)
   - expected: [301.8,150.6]
   - actual: [301.8,150.59999999999997]
 - children[49].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[49].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[49].znId (extra)
   - expected: undefined
   - actual: "6912"
+- children[49].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_6912.n_0.***"
 - children[50].center (mismatch)
   - expected: [301.8,149.3]
   - actual: [301.8,149.29999999999995]
-- children[50].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[50].znId (extra)
   - expected: undefined
   - actual: "6912"
@@ -12515,90 +9389,84 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[51].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[51].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[51].znId (extra)
   - expected: undefined
   - actual: "7680"
+- children[51].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_7680.n_0.***"
 - children[52].center (mismatch)
   - expected: [301.8,161.6]
   - actual: [301.8,161.59999999999997]
 - children[52].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[52].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[52].znId (extra)
   - expected: undefined
   - actual: "8064"
+- children[52].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8064.n_0.***"
 - children[53].center (mismatch)
   - expected: [301.8,164.8]
   - actual: [301.8,164.79999999999998]
 - children[53].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[53].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[53].znId (extra)
   - expected: undefined
   - actual: "8256"
+- children[53].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8256.n_0.***"
 - children[54].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[54].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[54].znId (extra)
   - expected: undefined
   - actual: "8352"
+- children[54].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8352.n_0.***"
 - children[55].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[55].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[55].znId (extra)
   - expected: undefined
   - actual: "8448"
+- children[55].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8448.n_0.***"
 - children[56].center (mismatch)
   - expected: [301.8,171.15]
   - actual: [301.8,171.14999999999998]
-- children[56].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[56].znId (extra)
   - expected: undefined
   - actual: "8448"
 - children[57].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[57].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[57].znId (extra)
   - expected: undefined
   - actual: "9600"
+- children[57].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_9600.n_0.***"
 - children[58].center (mismatch)
   - expected: [301.8,185.95]
   - actual: [301.8,185.94999999999996]
 - children[58].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[58].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[58].znId (extra)
   - expected: undefined
   - actual: "9984"
+- children[58].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_9984.n_0.***"
 - children[59].center (mismatch)
   - expected: [301.8,183.95]
   - actual: [301.8,183.94999999999996]
-- children[59].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[59].znId (extra)
   - expected: undefined
   - actual: "9984"
@@ -12608,291 +9476,177 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[60].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[60].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[60].znId (extra)
   - expected: undefined
   - actual: "10560"
+- children[60].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_10560.n_0.***"
 - children[61].fill (extra)
   - expected: undefined
   - actual: false
-- children[61].lineWidth (extra)
+- children[61].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[61].znId (extra)
   - expected: undefined
   - actual: "goto-0-3072"
-- children[61].path (extra)
-  - expected: undefined
+- children[61].path (mismatch)
+  - expected: [["M",307.425,83.875],["l",11.625,0],["l",0,-9.550000000000011],["M",319.05,83.875],["L",319.05,73.32499999999999],["L",309.425,73.32499999999999]]
   - actual: [[307.425,83.875],[319.05,83.875],[319.05,74.32499999999999],[319.05,83.875],[319.05,73.32499999999999],[309.425,73.32499999999999]]
 - children[62].fill (extra)
   - expected: undefined
   - actual: true
-- children[62].lineWidth (extra)
+- children[62].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[62].znId (extra)
   - expected: undefined
   - actual: "goto-0-3072"
-- children[62].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.4224.p_repeat"
-- children[62].path (extra)
-  - expected: undefined
+- children[62].path (mismatch)
+  - expected: [["M",307.425,73.32499999999999],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
   - actual: [[307.425,73.32499999999999],[309.925,74.32499999999999],[309.925,72.32499999999999]]
 - children[63].fill (extra)
   - expected: undefined
   - actual: true
-- children[63].lineWidth (extra)
+- children[63].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[63].znId (extra)
   - expected: undefined
   - actual: "goto-0-3072"
-- children[63].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.4224.p_repeat"
-- children[63].path (extra)
-  - expected: undefined
-  - actual: []
 - children[64].center (mismatch)
   - expected: [293.515,114.4667]
   - actual: [293.5255833333333,114.46666666666664]
 - children[64].size (mismatch)
   - expected: [6.215,1.8317]
   - actual: [6.225583333333333,1.8316666666666663]
-- children[64].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[65].center (mismatch)
   - expected: [294.595,19.5875]
   - actual: [294.6077,19.5875]
 - children[65].size (mismatch)
   - expected: [11.295,2.0875]
   - actual: [11.3077,2.0875]
-- children[65].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[66].center (mismatch)
   - expected: [294.341,26.3375]
   - actual: [294.33306250000004,26.3375]
 - children[66].size (mismatch)
   - expected: [11.041,1.4613]
   - actual: [11.033062500000002,1.46125]
-- children[66].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[67].center (mismatch)
   - expected: [317.2458,33.8375]
   - actual: [317.255275,33.8375]
 - children[67].size (mismatch)
   - expected: [10.9457,1.4613]
   - actual: [10.955275,1.46125]
-- children[67].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[68].center (mismatch)
   - expected: [317.7696,51.8375]
   - actual: [317.7855,51.8375]
 - children[68].size (mismatch)
   - expected: [11.4696,1.4613]
   - actual: [11.4855,1.46125]
-- children[68].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[69].center (mismatch)
   - expected: [317.6744,57.8375]
   - actual: [317.687075,57.8375]
 - children[69].size (mismatch)
   - expected: [11.3744,1.4613]
   - actual: [11.387075,1.46125]
-- children[69].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[70].center (mismatch)
   - expected: [322.1511,62.0375]
   - actual: [322.16700000000003,62.037499999999994]
 - children[70].size (mismatch)
   - expected: [15.8511,1.4613]
   - actual: [15.866999999999997,1.46125]
-- children[70].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[71].center (mismatch)
   - expected: [325.3261,70.1875]
   - actual: [325.34517500000004,70.1875]
 - children[71].size (mismatch)
   - expected: [19.0261,2.0875]
   - actual: [19.045175,2.0875]
-- children[71].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[72].center (mismatch)
   - expected: [336.3098,80.0131]
   - actual: [336.31133750000004,80.01312499999999]
 - children[72].size (mismatch)
   - expected: [15.0098,3.9131]
   - actual: [15.011337499999998,3.9131249999999995]
-- children[72].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[73].center (mismatch)
   - expected: [325.85,96.1875]
   - actual: [325.8754,96.1875]
 - children[73].size (mismatch)
   - expected: [19.55,2.0875]
   - actual: [19.575400000000002,2.0875]
-- children[73].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[74].center (mismatch)
   - expected: [319.5953,119.1875]
   - actual: [319.6000125,119.18749999999999]
 - children[74].size (mismatch)
   - expected: [13.2953,2.0875]
   - actual: [13.300012500000001,2.0875]
-- children[74].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[75].center (mismatch)
   - expected: [319.246,149.9375]
   - actual: [319.2475875,149.93749999999997]
 - children[75].size (mismatch)
   - expected: [12.946,1.4613]
   - actual: [12.9475875,1.46125]
-- children[75].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[76].center (mismatch)
   - expected: [319.7699,155.9375]
   - actual: [319.77781250000004,155.93749999999997]
 - children[76].size (mismatch)
   - expected: [13.4699,1.4613]
   - actual: [13.4778125,1.46125]
-- children[76].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[77].center (mismatch)
   - expected: [319.6746,160.9375]
   - actual: [319.6793875,160.93749999999997]
 - children[77].size (mismatch)
   - expected: [13.3746,1.4613]
   - actual: [13.3793875,1.46125]
-- children[77].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[78].center (mismatch)
   - expected: [324.6753,164.1375]
   - actual: [324.68795,164.1375]
 - children[78].size (mismatch)
   - expected: [18.3753,1.4613]
   - actual: [18.387950000000004,1.46125]
-- children[78].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[79].center (mismatch)
   - expected: [327.3264,172.0375]
   - actual: [327.3374875,172.0375]
 - children[79].size (mismatch)
   - expected: [21.0264,2.0875]
   - actual: [21.037487500000005,2.0875]
-- children[79].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[80].center (mismatch)
   - expected: [327.8503,185.5375]
   - actual: [327.86771250000004,185.53749999999997]
 - children[80].size (mismatch)
   - expected: [21.5502,2.0875]
   - actual: [21.567712500000006,2.0875]
-- children[80].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[81].center (mismatch)
   - expected: [287.8,112.6]
   - actual: [287.8,112.59999999999998]
-- children[81].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[82].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[83].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[84].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[85].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[86].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[87].center (mismatch)
   - expected: [306.8,60.7]
   - actual: [306.8,60.699999999999996]
-- children[87].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[88].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[89].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[90].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[91].center (mismatch)
   - expected: [306.8,117.6]
   - actual: [306.8,117.59999999999998]
-- children[91].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[92].center (mismatch)
   - expected: [306.8,148.6]
   - actual: [306.8,148.59999999999997]
-- children[92].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[93].center (mismatch)
   - expected: [306.8,154.6]
   - actual: [306.8,154.59999999999997]
-- children[93].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[94].center (mismatch)
   - expected: [306.8,159.6]
   - actual: [306.8,159.59999999999997]
-- children[94].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[95].center (mismatch)
   - expected: [306.8,162.8]
   - actual: [306.8,162.79999999999998]
-- children[95].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[96].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[97].center (mismatch)
   - expected: [306.8,183.95]
   - actual: [306.8,183.94999999999996]
-- children[97].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[98].from (extra)
   - expected: undefined
   - actual: [232.8,20]
 - children[98].to (extra)
   - expected: undefined
   - actual: [255.8,27]
-- children[98].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[98].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -12902,9 +9656,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[99].to (extra)
   - expected: undefined
   - actual: [232.8,40.5]
-- children[99].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[99].znId (extra)
   - expected: undefined
   - actual: "1792"
@@ -12914,195 +9665,168 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[100].to (extra)
   - expected: undefined
   - actual: [232.8,46.5]
-- children[100].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[100].znId (extra)
   - expected: undefined
   - actual: "2048"
 - children[101].fill (extra)
   - expected: undefined
   - actual: false
-- children[101].lineWidth (extra)
+- children[101].color (extra)
   - expected: undefined
-  - actual: 0.5
-- children[101].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[101].path (mismatch)
+  - expected: [["M",235.925,52],["c",0.8177785188481662,1.934228087406059,0.817778518848166,5.0657719125939416,0,7]]
   - actual: [[235.925,52],[236.11240757723604,52.50711531761805],[236.2657410495201,53.055804098353526],[236.38500041685208,53.63775164958295],[236.47018567923212,54.24464327868283],[236.52129683666013,54.86816429302967],[236.53833388913614,55.5],[236.52129683666013,56.131835706970335],[236.47018567923212,56.75535672131718],[236.38500041685208,57.36224835041705],[236.2657410495201,57.94419590164646],[236.11240757723604,58.49288468238194],[235.925,59]]
 - children[102].fill (extra)
   - expected: undefined
   - actual: false
-- children[102].lineWidth (extra)
+- children[102].color (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "black"
 - children[102].znId (extra)
   - expected: undefined
   - actual: "1536"
-- children[102].path (extra)
-  - expected: undefined
+- children[102].draginfo (mismatch)
+  - expected: {"handler":"tuplet","p1":[232.8,34.5],"p2":[232.8,46.5],"cp1":[237.8,36.5],"cp2":[237.8,44.5],"mp":{"$$id":7640,"x":238.55,"y":38.5},"conf_key":"extract.0.notebound.tuplet.v_2.1536"}
+  - actual: {"handler":"tuplet","p1":[232.8,34.5],"p2":[232.8,46.5],"cp1":[237.8,36.5],"cp2":[237.8,44.5],"mp":{"x":238.55,"y":38.5},"tuplet_options":{"cp1":[5,2],"cp2":[5,-2],"pos":[0,0],"shape":["c"],"show":true},"conf_key":"extract.0.notebound.tuplet.v_2.1536","callback":null}
+- children[102].path (mismatch)
+  - expected: [["M",232.8,34.5],["c",5,2,5,10,0,12]]
   - actual: [[232.8,34.5],[233.94583333333335,35.11805555555555],[234.88333333333335,35.94444444444444],[235.6125,36.9375],[236.13333333333335,38.05555555555555],[236.44583333333335,39.25694444444444],[236.55,40.5],[236.44583333333335,41.74305555555555],[236.13333333333335,42.94444444444444],[235.6125,44.0625],[234.88333333333335,45.05555555555556],[233.94583333333335,45.88194444444444],[232.8,46.5]]
-- children[103].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[103].znId (extra)
   - expected: undefined
   - actual: "1536"
-- children[104].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[104].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[105].lineWidth (extra)
+- children[104].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_2.t_0.n_0.***"
 - children[105].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[106].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[106].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[107].lineWidth (extra)
+- children[106].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_2.t_768.n_0.***"
 - children[107].znId (extra)
   - expected: undefined
   - actual: "1536"
-- children[108].lineWidth (extra)
+- children[107].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_2.t_1536.n_0.***"
 - children[108].znId (extra)
   - expected: undefined
   - actual: "1536"
-- children[109].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[109].znId (extra)
   - expected: undefined
   - actual: "1792"
-- children[110].lineWidth (extra)
+- children[109].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_2.t_1792.n_0.***"
 - children[110].znId (extra)
   - expected: undefined
   - actual: "2048"
-- children[111].lineWidth (extra)
+- children[110].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_2.t_2048.n_0.***"
 - children[111].znId (extra)
   - expected: undefined
   - actual: "2304"
-- children[112].lineWidth (extra)
+- children[111].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_2.t_2304.n_0.***"
 - children[112].znId (extra)
   - expected: undefined
   - actual: "2688"
-- children[113].lineWidth (extra)
+- children[112].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_2.t_2688.n_0.***"
 - children[113].znId (extra)
   - expected: undefined
   - actual: "3072"
+- children[113].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_3072.n_0.***"
 - children[114].center (mismatch)
   - expected: [232.8,73.825]
   - actual: [232.8,73.82499999999999]
-- children[114].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[114].znId (extra)
   - expected: undefined
   - actual: "3072"
-- children[115].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[115].znId (extra)
   - expected: undefined
   - actual: "4224"
+- children[115].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_4224.n_0.***"
 - children[116].from (extra)
   - expected: undefined
   - actual: [186.8,96.6]
 - children[116].to (extra)
   - expected: undefined
   - actual: [232.8,96.6]
-- children[116].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[116].znId (extra)
   - expected: undefined
   - actual: "4608"
-- children[117].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[117].znId (extra)
   - expected: undefined
   - actual: "4608"
 - children[118].center (mismatch)
   - expected: [186.8,94.825]
   - actual: [186.8,94.82499999999999]
-- children[118].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[118].znId (extra)
   - expected: undefined
   - actual: "4608"
-- children[119].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[119].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[119].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_4608.n_0.***"
 - children[120].center (mismatch)
   - expected: [232.8,94.825]
   - actual: [232.8,94.82499999999999]
-- children[120].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[120].znId (extra)
   - expected: undefined
   - actual: "4608"
 - children[121].center (mismatch)
   - expected: [232.8,107.6]
   - actual: [232.8,107.59999999999998]
-- children[121].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[121].znId (extra)
   - expected: undefined
   - actual: "5184"
+- children[121].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_5184.n_0.***"
 - children[122].center (mismatch)
   - expected: [232.8,119.6]
   - actual: [232.8,119.59999999999998]
 - children[122].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[122].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[122].znId (extra)
   - expected: undefined
   - actual: "5376"
+- children[122].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_5376.n_0.***"
 - children[123].center (mismatch)
   - expected: [232.8,150.6]
   - actual: [232.8,150.59999999999997]
 - children[123].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[123].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[123].znId (extra)
   - expected: undefined
   - actual: "6912"
+- children[123].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_6912.n_0.***"
 - children[124].center (mismatch)
   - expected: [232.8,149.3]
   - actual: [232.8,149.29999999999995]
-- children[124].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[124].znId (extra)
   - expected: undefined
   - actual: "6912"
@@ -13112,90 +9836,84 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[125].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[125].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[125].znId (extra)
   - expected: undefined
   - actual: "7680"
+- children[125].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_7680.n_0.***"
 - children[126].center (mismatch)
   - expected: [232.8,161.6]
   - actual: [232.8,161.59999999999997]
 - children[126].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[126].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[126].znId (extra)
   - expected: undefined
   - actual: "8064"
+- children[126].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_8064.n_0.***"
 - children[127].center (mismatch)
   - expected: [232.8,164.8]
   - actual: [232.8,164.79999999999998]
 - children[127].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[127].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[127].znId (extra)
   - expected: undefined
   - actual: "8256"
+- children[127].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_8256.n_0.***"
 - children[128].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[128].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[128].znId (extra)
   - expected: undefined
   - actual: "8352"
+- children[128].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_8352.n_0.***"
 - children[129].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[129].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[129].znId (extra)
   - expected: undefined
   - actual: "8448"
+- children[129].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_8448.n_0.***"
 - children[130].center (mismatch)
   - expected: [232.8,171.15]
   - actual: [232.8,171.14999999999998]
-- children[130].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[130].znId (extra)
   - expected: undefined
   - actual: "8448"
 - children[131].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[131].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[131].znId (extra)
   - expected: undefined
   - actual: "9600"
+- children[131].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_9600.n_0.***"
 - children[132].center (mismatch)
   - expected: [232.8,185.95]
   - actual: [232.8,185.94999999999996]
 - children[132].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[132].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[132].znId (extra)
   - expected: undefined
   - actual: "9984"
+- children[132].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_9984.n_0.***"
 - children[133].center (mismatch)
   - expected: [232.8,183.95]
   - actual: [232.8,183.94999999999996]
-- children[133].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[133].znId (extra)
   - expected: undefined
   - actual: "9984"
@@ -13205,147 +9923,84 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[134].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[134].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[134].znId (extra)
   - expected: undefined
   - actual: "10560"
+- children[134].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_10560.n_0.***"
 - children[135].center (mismatch)
   - expected: [226.515,114.4667]
   - actual: [226.52558333333334,114.46666666666664]
 - children[135].size (mismatch)
   - expected: [6.215,1.8317]
   - actual: [6.225583333333333,1.8316666666666663]
-- children[135].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[136].center (mismatch)
   - expected: [248.2934,14.3375]
   - actual: [248.30131250000002,14.3375]
 - children[136].size (mismatch)
   - expected: [10.9934,1.4613]
   - actual: [11.001312500000001,1.46125]
-- children[136].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[137].center (mismatch)
   - expected: [260.024,23.3375]
   - actual: [260.027175,23.3375]
 - children[137].size (mismatch)
   - expected: [14.724,1.4613]
   - actual: [14.727175,1.46125]
-- children[137].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[138].center (mismatch)
   - expected: [248.0708,40.8375]
   - actual: [248.0659875,40.8375]
 - children[138].size (mismatch)
   - expected: [7.7707,1.4613]
   - actual: [7.7659875000000005,1.46125]
-- children[138].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[139].center (mismatch)
   - expected: [250.1825,55.0875]
   - actual: [250.192025,55.0875]
 - children[139].size (mismatch)
   - expected: [12.8825,2.0875]
   - actual: [12.892024999999999,2.0875]
-- children[139].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[140].center (mismatch)
   - expected: [263.1359,85.1875]
   - actual: [263.1438125,85.1875]
 - children[140].size (mismatch)
   - expected: [20.8359,2.0875]
   - actual: [20.843812500000002,2.0875]
-- children[140].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[141].center (mismatch)
   - expected: [218.2306,101.0131]
   - actual: [218.2290375,101.01312499999999]
 - children[141].size (mismatch)
   - expected: [16.9306,3.9131]
   - actual: [16.929037500000003,3.9131249999999995]
-- children[141].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[142].center (mismatch)
   - expected: [253.3258,113.9375]
   - actual: [253.34003750000002,113.93749999999999]
 - children[142].size (mismatch)
   - expected: [16.0258,1.4613]
   - actual: [16.0400375,1.46125]
-- children[142].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[143].center (mismatch)
   - expected: [239.0912,81.7167]
   - actual: [239.09116666666668,81.71666666666665]
 - children[143].size (mismatch)
   - expected: [1.7912,2.6167]
   - actual: [1.7911666666666664,2.6166666666666663]
-- children[143].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[144].center (mismatch)
   - expected: [227.0912,75.7167]
   - actual: [227.09116666666668,75.71666666666665]
 - children[144].size (mismatch)
   - expected: [1.7912,2.6167]
   - actual: [1.7911666666666664,2.6166666666666663]
-- children[144].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[145].center (mismatch)
   - expected: [220.8,112.6]
   - actual: [220.8,112.59999999999998]
-- children[145].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[146].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[147].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[148].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[149].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[150].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[151].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[152].center (mismatch)
   - expected: [237.8,112.6]
   - actual: [237.8,112.59999999999998]
-- children[152].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[153].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[154].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[155].from (extra)
   - expected: undefined
   - actual: [163.8,20]
 - children[155].to (extra)
   - expected: undefined
   - actual: [163.8,34.5]
-- children[155].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[155].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -13355,9 +10010,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[156].to (extra)
   - expected: undefined
   - actual: [163.8,52.5]
-- children[156].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[156].znId (extra)
   - expected: undefined
   - actual: "2304"
@@ -13367,9 +10019,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[157].to (extra)
   - expected: undefined
   - actual: [163.8,58.5]
-- children[157].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[157].znId (extra)
   - expected: undefined
   - actual: "2688"
@@ -13379,9 +10028,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[158].to (extra)
   - expected: undefined
   - actual: [163.8,62.699999999999996]
-- children[158].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[158].znId (extra)
   - expected: undefined
   - actual: "2880"
@@ -13391,9 +10037,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[159].to (extra)
   - expected: undefined
   - actual: [163.8,65.1]
-- children[159].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[159].znId (extra)
   - expected: undefined
   - actual: "2976"
@@ -13403,9 +10046,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[160].to (extra)
   - expected: undefined
   - actual: [163.8,81.6]
-- children[160].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[160].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -13415,9 +10055,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[161].to (extra)
   - expected: undefined
   - actual: [163.8,102.59999999999998]
-- children[161].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[161].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -13427,9 +10064,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[162].to (extra)
   - expected: undefined
   - actual: [163.8,143.09999999999997]
-- children[162].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[162].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -13439,387 +10073,258 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[163].to (extra)
   - expected: undefined
   - actual: [163.8,150.59999999999997]
-- children[163].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[163].znId (extra)
   - expected: undefined
   - actual: "6912"
-- children[164].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[164].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[165].lineWidth (extra)
+- children[164].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_3.t_0.n_0.***"
 - children[165].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[166].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[166].znId (extra)
   - expected: undefined
   - actual: "1536"
-- children[167].lineWidth (extra)
+- children[166].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_3.t_1536.n_0.***"
 - children[167].znId (extra)
   - expected: undefined
   - actual: "1536"
-- children[168].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[168].znId (extra)
   - expected: undefined
   - actual: "2304"
-- children[169].lineWidth (extra)
+- children[168].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_3.t_2304.n_0.***"
 - children[169].znId (extra)
   - expected: undefined
   - actual: "2688"
+- children[169].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_2688.n_0.***"
 - children[170].center (mismatch)
   - expected: [163.8,62.7]
   - actual: [163.8,62.699999999999996]
-- children[170].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[170].znId (extra)
   - expected: undefined
   - actual: "2880"
-- children[171].lineWidth (extra)
+- children[170].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_3.t_2880.n_0.***"
 - children[171].znId (extra)
   - expected: undefined
   - actual: "2976"
-- children[172].lineWidth (extra)
+- children[171].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_3.t_2976.n_0.***"
 - children[172].znId (extra)
   - expected: undefined
   - actual: "3072"
+- children[172].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_3072.n_0.***"
 - children[173].center (mismatch)
   - expected: [163.8,73.825]
   - actual: [163.8,73.82499999999999]
-- children[173].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[173].znId (extra)
   - expected: undefined
   - actual: "3072"
-- children[174].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[174].znId (extra)
   - expected: undefined
   - actual: "4224"
-- children[175].lineWidth (extra)
+- children[174].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_3.t_4224.n_0.***"
 - children[175].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[175].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_4608.n_0.***"
 - children[176].center (mismatch)
   - expected: [163.8,94.825]
   - actual: [163.8,94.82499999999999]
-- children[176].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[176].znId (extra)
   - expected: undefined
   - actual: "4608"
 - children[177].center (mismatch)
   - expected: [163.8,102.6]
   - actual: [163.8,102.59999999999998]
-- children[177].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[177].znId (extra)
   - expected: undefined
   - actual: "4992"
+- children[177].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_4992.n_0.***"
 - children[178].center (mismatch)
   - expected: [163.8,137.1]
   - actual: [163.8,137.09999999999997]
-- children[178].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[178].znId (extra)
   - expected: undefined
   - actual: "6144"
+- children[178].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_6144.n_0.***"
 - children[179].center (mismatch)
   - expected: [163.8,135.325]
   - actual: [163.8,135.32499999999996]
-- children[179].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[179].znId (extra)
   - expected: undefined
   - actual: "6144"
 - children[180].center (mismatch)
   - expected: [163.8,143.1]
   - actual: [163.8,143.09999999999997]
-- children[180].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[180].znId (extra)
   - expected: undefined
   - actual: "6528"
+- children[180].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_6528.n_0.***"
 - children[181].center (mismatch)
   - expected: [163.8,150.6]
   - actual: [163.8,150.59999999999997]
-- children[181].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[181].znId (extra)
   - expected: undefined
   - actual: "6912"
+- children[181].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_6912.n_0.***"
 - children[182].center (mismatch)
   - expected: [155.9239,22.2833]
   - actual: [155.92391666666668,22.28333333333333]
 - children[182].size (mismatch)
   - expected: [3.3261,0.7058]
   - actual: [3.3260833333333335,0.7058333333333331]
-- children[182].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[183].center (mismatch)
   - expected: [158.6616,36.3583]
   - actual: [158.66158333333334,36.358333333333334]
 - children[183].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[183].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[184].center (mismatch)
   - expected: [159.5929,54.3583]
   - actual: [159.59291666666667,54.358333333333334]
 - children[184].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[184].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[185].center (mismatch)
   - expected: [160.4679,59.9333]
   - actual: [160.46791666666667,59.93333333333334]
 - children[185].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[185].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[186].center (mismatch)
   - expected: [161.1679,63.3533]
   - actual: [161.16791666666666,63.353333333333325]
 - children[186].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[186].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[187].center (mismatch)
   - expected: [161.1679,65.7533]
   - actual: [161.16791666666666,65.75333333333333]
 - children[187].size (mismatch)
   - expected: [0.5321,0.5042]
   - actual: [0.5320833333333332,0.5041666666666665]
-- children[187].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[188].center (mismatch)
   - expected: [157.7303,77.4583]
   - actual: [157.73025,77.45833333333333]
 - children[188].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[188].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[189].center (mismatch)
   - expected: [159.5929,83.4583]
   - actual: [159.59291666666667,83.45833333333333]
 - children[189].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[189].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[190].center (mismatch)
   - expected: [159.5929,98.4583]
   - actual: [159.59291666666667,98.45833333333333]
 - children[190].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[190].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[191].center (mismatch)
   - expected: [157.7303,104.4583]
   - actual: [157.73025,104.45833333333331]
 - children[191].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[191].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[192].center (mismatch)
   - expected: [159.5929,138.9583]
   - actual: [159.59291666666667,138.95833333333331]
 - children[192].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[192].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[193].center (mismatch)
   - expected: [159.5929,144.9583]
   - actual: [159.59291666666667,144.95833333333331]
 - children[193].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[193].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[194].center (mismatch)
   - expected: [159.5929,152.4583]
   - actual: [159.59291666666667,152.45833333333331]
 - children[194].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[194].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[195].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[196].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[197].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[198].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[199].center (mismatch)
   - expected: [161.75,62.26]
   - actual: [161.75,62.25999999999999]
-- children[199].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[200].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[201].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[202].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[203].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[204].center (mismatch)
   - expected: [160.175,103.375]
   - actual: [160.175,103.37499999999999]
-- children[204].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[205].center (mismatch)
   - expected: [160.175,137.875]
   - actual: [160.175,137.87499999999997]
-- children[205].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[206].center (mismatch)
   - expected: [160.175,143.875]
   - actual: [160.175,143.87499999999997]
-- children[206].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[207].center (mismatch)
   - expected: [160.175,151.375]
   - actual: [160.175,151.37499999999997]
-- children[207].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[208].center (mismatch)
   - expected: [169.1731,16.0875]
   - actual: [169.173125,16.0875]
 - children[208].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[208].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[209].center (mismatch)
   - expected: [168.2981,31.0125]
   - actual: [168.298125,31.0125]
 - children[209].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[209].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[210].center (mismatch)
   - expected: [169.2981,72.1125]
   - actual: [169.298125,72.1125]
 - children[210].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[210].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[211].center (mismatch)
   - expected: [168.2981,93.1125]
   - actual: [168.298125,93.1125]
 - children[211].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[211].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[212].center (mismatch)
   - expected: [168.2981,133.6125]
   - actual: [168.298125,133.61249999999998]
 - children[212].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[212].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[213].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[214].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[215].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[216].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[217].center (mismatch)
   - expected: [167.425,132.125]
   - actual: [167.425,132.12499999999997]
-- children[217].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[218].center (mismatch)
   - expected: [163.8,147.6]
   - actual: [163.8,147.59999999999997]
 - children[218].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[218].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[218].znId (extra)
   - expected: undefined
   - actual: "6912"
@@ -13829,895 +10334,580 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[219].fill (extra)
   - expected: undefined
   - actual: false
-- children[219].lineWidth (extra)
+- children[219].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[219].znId (extra)
   - expected: undefined
   - actual: "goto-2-846-0"
-- children[219].path (extra)
-  - expected: undefined
+- children[219].path (mismatch)
+  - expected: [["M",159.75,66.61],["l",-13.199999999999989,0],["l",0,5.714999999999989],["M",146.55,66.61],["L",146.55,73.32499999999999],["L",156.175,73.32499999999999]]
   - actual: [[159.75,66.61],[146.55,66.61],[146.55,72.32499999999999],[146.55,66.61],[146.55,73.32499999999999],[156.175,73.32499999999999]]
 - children[220].fill (extra)
   - expected: undefined
   - actual: true
-- children[220].lineWidth (extra)
+- children[220].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[220].znId (extra)
   - expected: undefined
   - actual: "goto-2-846-0"
-- children[220].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_3.2976.0.p_begin"
-- children[220].path (extra)
-  - expected: undefined
+- children[220].path (mismatch)
+  - expected: [["M",158.175,73.32499999999999],["l",-2.5,1],["l",0,-2],["l",2.5,1],["z"]]
   - actual: [[158.175,73.32499999999999],[155.675,74.32499999999999],[155.675,72.32499999999999]]
 - children[221].fill (extra)
   - expected: undefined
   - actual: true
-- children[221].lineWidth (extra)
+- children[221].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[221].znId (extra)
   - expected: undefined
   - actual: "goto-2-846-0"
-- children[221].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_3.2976.0.p_begin"
-- children[221].path (extra)
-  - expected: undefined
-  - actual: []
 - children[222].fill (extra)
   - expected: undefined
   - actual: false
-- children[222].lineWidth (extra)
+- children[222].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[222].znId (extra)
   - expected: undefined
   - actual: "goto-2-887-1"
-- children[222].path (extra)
-  - expected: undefined
+- children[222].path (mismatch)
+  - expected: [["M",159.75,66.61],["l",-13.199999999999989,0],["l",0,26.71499999999999],["M",146.55,66.61],["L",146.55,94.32499999999999],["L",156.175,94.32499999999999]]
   - actual: [[159.75,66.61],[146.55,66.61],[146.55,93.32499999999999],[146.55,66.61],[146.55,94.32499999999999],[156.175,94.32499999999999]]
 - children[223].fill (extra)
   - expected: undefined
   - actual: true
-- children[223].lineWidth (extra)
+- children[223].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[223].znId (extra)
   - expected: undefined
   - actual: "goto-2-887-1"
-- children[223].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_3.2976.1.p_begin"
-- children[223].path (extra)
-  - expected: undefined
+- children[223].path (mismatch)
+  - expected: [["M",158.175,94.32499999999999],["l",-2.5,1],["l",0,-2],["l",2.5,1],["z"]]
   - actual: [[158.175,94.32499999999999],[155.675,95.32499999999999],[155.675,93.32499999999999]]
 - children[224].fill (extra)
   - expected: undefined
   - actual: true
-- children[224].lineWidth (extra)
+- children[224].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[224].znId (extra)
   - expected: undefined
   - actual: "goto-2-887-1"
-- children[224].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_3.2976.1.p_begin"
-- children[224].path (extra)
-  - expected: undefined
-  - actual: []
 - children[225].fill (extra)
   - expected: undefined
   - actual: false
-- children[225].lineWidth (extra)
+- children[225].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[225].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-2"
-- children[225].path (extra)
-  - expected: undefined
-  - actual: [[158.175,83.875],[146.55,83.875],[146.55,133.82499999999996],[146.55,83.875],[146.55,134.82499999999996],[156.175,134.82499999999996]]
+- children[225].path (mismatch)
+  - expected: [["M",169.425,83.875],["l",11.625,0],["l",0,49.94999999999996],["M",181.05,83.875],["L",181.05,134.82499999999996],["L",171.425,134.82499999999996]]
+  - actual: [[169.425,83.875],[181.05,83.875],[181.05,133.82499999999996],[181.05,83.875],[181.05,134.82499999999996],[171.425,134.82499999999996]]
 - children[226].fill (extra)
   - expected: undefined
   - actual: true
-- children[226].lineWidth (extra)
+- children[226].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[226].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-2"
-- children[226].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_3.2976.p_end"
-- children[226].path (extra)
-  - expected: undefined
-  - actual: [[158.175,134.82499999999996],[155.675,135.82499999999996],[155.675,133.82499999999996]]
+- children[226].path (mismatch)
+  - expected: [["M",169.425,134.82499999999996],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
+  - actual: [[169.425,134.82499999999996],[171.925,135.82499999999996],[171.925,133.82499999999996]]
 - children[227].fill (extra)
   - expected: undefined
   - actual: true
-- children[227].lineWidth (extra)
+- children[227].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[227].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-2"
-- children[227].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_3.2976.p_end"
-- children[227].path (extra)
-  - expected: undefined
-  - actual: []
 - children[228].fill (extra)
   - expected: undefined
   - actual: false
-- children[228].lineWidth (extra)
+- children[228].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[228].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-3"
-- children[228].path (extra)
-  - expected: undefined
+- children[228].path (mismatch)
+  - expected: [["M",158.175,104.87499999999999],["l",-11.625,0],["l",0,28.949999999999974],["M",146.55,104.87499999999999],["L",146.55,134.82499999999996],["L",156.175,134.82499999999996]]
   - actual: [[158.175,104.87499999999999],[146.55,104.87499999999999],[146.55,133.82499999999996],[146.55,104.87499999999999],[146.55,134.82499999999996],[156.175,134.82499999999996]]
 - children[229].fill (extra)
   - expected: undefined
   - actual: true
-- children[229].lineWidth (extra)
+- children[229].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[229].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-3"
-- children[229].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_3.2976.p_follow"
-- children[229].path (extra)
-  - expected: undefined
+- children[229].path (mismatch)
+  - expected: [["M",158.175,134.82499999999996],["l",-2.5,1],["l",0,-2],["l",2.5,1],["z"]]
   - actual: [[158.175,134.82499999999996],[155.675,135.82499999999996],[155.675,133.82499999999996]]
 - children[230].fill (extra)
   - expected: undefined
   - actual: true
-- children[230].lineWidth (extra)
+- children[230].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[230].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-3"
-- children[230].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_3.2976.p_follow"
-- children[230].path (extra)
-  - expected: undefined
-  - actual: []
 - children[231].center (mismatch)
   - expected: [160.9642,70.4667]
   - actual: [160.96416666666667,70.46666666666665]
 - children[231].size (mismatch)
   - expected: [1.6642,1.8317]
   - actual: [1.6641666666666666,1.8316666666666663]
-- children[231].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[232].center (mismatch)
   - expected: [160.9642,91.4667]
   - actual: [160.96416666666667,91.46666666666665]
 - children[232].size (mismatch)
   - expected: [1.6642,1.8317]
   - actual: [1.6641666666666666,1.8316666666666663]
-- children[232].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[233].center (mismatch)
   - expected: [184.5156,21.3375]
   - actual: [184.5172125,21.3375]
 - children[233].size (mismatch)
   - expected: [11.2156,1.4613]
   - actual: [11.2172125,1.46125]
-- children[233].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[234].center (mismatch)
   - expected: [186.246,30.8375]
   - actual: [186.2507625,30.8375]
 - children[234].size (mismatch)
   - expected: [12.946,1.4613]
   - actual: [12.9507625,1.46125]
-- children[234].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[235].center (mismatch)
   - expected: [184.5156,74.9375]
   - actual: [184.5172125,74.9375]
 - children[235].size (mismatch)
   - expected: [11.2156,1.4613]
   - actual: [11.2172125,1.46125]
-- children[235].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[236].center (mismatch)
   - expected: [137.3255,83.1875]
   - actual: [137.3207375,83.1875]
 - children[236].size (mismatch)
   - expected: [14.0255,2.0875]
   - actual: [14.020737499999997,2.0875]
-- children[236].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[237].center (mismatch)
   - expected: [163.2621,87.9375]
   - actual: [163.27641250000002,87.9375]
 - children[237].size (mismatch)
   - expected: [14.9621,1.4613]
   - actual: [14.976412499999999,1.46125]
-- children[237].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[238].center (mismatch)
   - expected: [134.4363,114.1875]
   - actual: [134.4299,114.18749999999999]
 - children[238].size (mismatch)
   - expected: [11.1363,2.0875]
   - actual: [11.129900000000001,2.0875]
-- children[238].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[239].center (mismatch)
   - expected: [178.8494,114.1875]
   - actual: [178.8509625,114.18749999999999]
 - children[239].size (mismatch)
   - expected: [14.5494,2.0875]
   - actual: [14.550962499999999,2.0875]
-- children[239].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[240].center (mismatch)
   - expected: [180.738,146.7631]
   - actual: [180.7459375,146.76312499999997]
 - children[240].size (mismatch)
   - expected: [12.438,2.7392]
   - actual: [12.445937499999998,2.7391874999999994]
-- children[240].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[241].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[242].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[243].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[244].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[245].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[246].center (mismatch)
   - expected: [123.8,81.6]
   - actual: [123.80000000000001,81.6]
-- children[246].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[247].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[248].center (mismatch)
   - expected: [123.8,112.6]
   - actual: [123.80000000000001,112.59999999999998]
-- children[248].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[249].center (mismatch)
   - expected: [164.8,112.6]
   - actual: [164.8,112.59999999999998]
-- children[249].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[250].center (mismatch)
   - expected: [168.8,143.6]
   - actual: [168.8,143.59999999999997]
-- children[250].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[251].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[252].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[253].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[254].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[255].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[256].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[257].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[258].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[259].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[260].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[261].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[262].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[263].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[264].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[265].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[266].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[267].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[268].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[269].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[270].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[271].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[272].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[273].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[274].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[275].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[276].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[277].text (mismatch)
-  - expected: "3015_reference_sheet - created 2026-05-27 19:55:02 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: "3015_reference_sheet - created 2026-05-27 20:59:42 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "3015_reference_sheet - created by Zupfnoter"
-- children[277].lineWidth (extra)
+- children[277].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[278].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[278].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[279].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[280].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[281].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[282].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[283].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[284].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[285].fill (extra)
   - expected: undefined
   - actual: true
-- children[285].lineWidth (extra)
+- children[285].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[285].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[285].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[286].fill (extra)
   - expected: undefined
   - actual: true
-- children[286].lineWidth (extra)
+- children[286].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[286].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[286].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[287].fill (extra)
   - expected: undefined
   - actual: true
-- children[287].lineWidth (extra)
+- children[287].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[287].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[287].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[288].lineWidth (extra)
+- children[288].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[289].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[289].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[290].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[290].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[291].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[291].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[292].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[292].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[293].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[293].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[294].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[294].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[295].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[295].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[296].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[296].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[297].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[297].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[298].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[298].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[299].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[299].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[300].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[300].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[301].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[301].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[302].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[302].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[303].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[303].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[304].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[304].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[305].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[305].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[306].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[306].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[307].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[307].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[308].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[308].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[309].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[309].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[310].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[310].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[311].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[311].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[312].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[312].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[313].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[313].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[314].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[314].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[315].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[315].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[316].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[316].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[317].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[317].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[318].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[318].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[319].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[319].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[320].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[320].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[321].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[321].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[322].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[322].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[323].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[323].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[324].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[324].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[325].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[326].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[327].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[328].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 
 ## 783_einsiedler-kreuzweg [extract 0]
 
-- Issues: 1492
+- Issues: 1100
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,17.424242424242422]
 - children[0].to (extra)
   - expected: undefined
   - actual: [186.8,17.424242424242422]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1].from (extra)
   - expected: undefined
   - actual: [324.8,23.484848484848484]
 - children[1].to (extra)
   - expected: undefined
   - actual: [278.8,23.484848484848484]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[2].from (extra)
   - expected: undefined
   - actual: [324.8,33.18181818181818]
 - children[2].to (extra)
   - expected: undefined
   - actual: [278.8,33.18181818181818]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[3].from (extra)
   - expected: undefined
   - actual: [278.8,39.242424242424235]
 - children[3].to (extra)
   - expected: undefined
   - actual: [186.8,39.242424242424235]
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[4].from (extra)
   - expected: undefined
   - actual: [221.3,48.93939393939394]
 - children[4].to (extra)
   - expected: undefined
   - actual: [186.8,48.93939393939394]
-- children[4].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[5].from (extra)
   - expected: undefined
   - actual: [244.3,55]
 - children[5].to (extra)
   - expected: undefined
   - actual: [198.3,55]
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[6].from (extra)
   - expected: undefined
   - actual: [267.3,59.848484848484844]
 - children[6].to (extra)
   - expected: undefined
   - actual: [221.3,59.848484848484844]
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[7].from (extra)
   - expected: undefined
   - actual: [278.8,64.69696969696969]
 - children[7].to (extra)
   - expected: undefined
   - actual: [244.3,64.69696969696969]
-- children[7].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[8].from (extra)
   - expected: undefined
   - actual: [221.3,71.76767676767676]
 - children[8].to (extra)
   - expected: undefined
   - actual: [186.8,71.76767676767676]
-- children[8].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[9].from (extra)
   - expected: undefined
   - actual: [267.3,88.33333333333333]
 - children[9].to (extra)
   - expected: undefined
   - actual: [221.3,88.33333333333333]
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[10].from (extra)
   - expected: undefined
   - actual: [244.3,93.18181818181817]
 - children[10].to (extra)
   - expected: undefined
   - actual: [198.3,93.18181818181817]
-- children[10].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[11].from (extra)
   - expected: undefined
   - actual: [278.8,104.09090909090908]
 - children[11].to (extra)
   - expected: undefined
   - actual: [186.8,104.09090909090908]
-- children[11].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[12].from (extra)
   - expected: undefined
   - actual: [221.3,108.93939393939394]
 - children[12].to (extra)
   - expected: undefined
   - actual: [186.8,108.93939393939394]
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[13].from (extra)
   - expected: undefined
   - actual: [278.8,119.84848484848484]
 - children[13].to (extra)
   - expected: undefined
   - actual: [186.8,119.84848484848484]
-- children[13].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[14].from (extra)
   - expected: undefined
   - actual: [301.8,124.69696969696969]
 - children[14].to (extra)
   - expected: undefined
   - actual: [267.3,124.69696969696969]
-- children[14].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[15].from (extra)
   - expected: undefined
   - actual: [301.8,135.6060606060606]
 - children[15].to (extra)
   - expected: undefined
   - actual: [267.3,135.6060606060606]
-- children[15].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[16].from (extra)
   - expected: undefined
   - actual: [301.8,140.45454545454544]
 - children[16].to (extra)
   - expected: undefined
   - actual: [267.3,140.45454545454544]
-- children[16].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[17].from (extra)
   - expected: undefined
   - actual: [221.3,145.30303030303028]
 - children[17].to (extra)
   - expected: undefined
   - actual: [186.8,145.30303030303028]
-- children[17].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[18].from (extra)
   - expected: undefined
   - actual: [324.8,152.37373737373736]
 - children[18].to (extra)
   - expected: undefined
   - actual: [278.8,152.37373737373736]
-- children[18].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[19].from (extra)
   - expected: undefined
   - actual: [278.8,168.93939393939394]
 - children[19].to (extra)
   - expected: undefined
   - actual: [244.3,168.93939393939394]
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[20].from (extra)
   - expected: undefined
   - actual: [221.3,173.78787878787878]
 - children[20].to (extra)
   - expected: undefined
   - actual: [186.8,173.78787878787878]
-- children[20].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[21].from (extra)
   - expected: undefined
   - actual: [244.3,185.7070707070707]
 - children[21].to (extra)
   - expected: undefined
   - actual: [198.3,185.7070707070707]
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[22].from (extra)
   - expected: undefined
   - actual: [221.3,202.27272727272725]
 - children[22].to (extra)
   - expected: undefined
   - actual: [198.3,202.27272727272725]
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[23].from (extra)
   - expected: undefined
   - actual: [221.3,207.12121212121212]
 - children[23].to (extra)
   - expected: undefined
   - actual: [186.8,207.12121212121212]
-- children[23].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[24].from (extra)
   - expected: undefined
   - actual: [221.3,216.8181818181818]
 - children[24].to (extra)
   - expected: undefined
   - actual: [186.8,216.8181818181818]
-- children[24].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[25].from (extra)
   - expected: undefined
   - actual: [336.3,222.87878787878788]
 - children[25].to (extra)
   - expected: undefined
   - actual: [301.8,222.87878787878788]
-- children[25].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[26].from (extra)
   - expected: undefined
   - actual: [324.8,227.7272727272727]
 - children[26].to (extra)
   - expected: undefined
   - actual: [278.8,227.7272727272727]
-- children[26].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[27].from (extra)
   - expected: undefined
   - actual: [301.8,232.57575757575756]
 - children[27].to (extra)
   - expected: undefined
   - actual: [267.3,232.57575757575756]
-- children[27].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[28].from (extra)
   - expected: undefined
   - actual: [324.8,238.63636363636363]
 - children[28].to (extra)
   - expected: undefined
   - actual: [278.8,238.63636363636363]
-- children[28].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[29].from (extra)
   - expected: undefined
   - actual: [301.8,243.4848484848485]
 - children[29].to (extra)
   - expected: undefined
   - actual: [267.3,243.4848484848485]
-- children[29].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[30].from (extra)
   - expected: undefined
   - actual: [278.8,248.33333333333331]
 - children[30].to (extra)
   - expected: undefined
   - actual: [244.3,248.33333333333331]
-- children[30].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[31].from (extra)
   - expected: undefined
   - actual: [301.8,254.39393939393938]
 - children[31].to (extra)
   - expected: undefined
   - actual: [267.3,254.39393939393938]
-- children[31].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[32].from (extra)
   - expected: undefined
   - actual: [278.8,259.24242424242425]
 - children[32].to (extra)
   - expected: undefined
   - actual: [244.3,259.24242424242425]
-- children[32].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[33].from (extra)
   - expected: undefined
   - actual: [267.3,264.09090909090907]
 - children[33].to (extra)
   - expected: undefined
   - actual: [221.3,264.09090909090907]
-- children[33].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[34].from (extra)
   - expected: undefined
   - actual: [278.8,270.1515151515151]
 - children[34].to (extra)
   - expected: undefined
   - actual: [186.8,270.1515151515151]
-- children[34].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[35].from (extra)
   - expected: undefined
   - actual: [278.8,275]
 - children[35].to (extra)
   - expected: undefined
   - actual: [186.8,275]
-- children[35].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[36].from (extra)
   - expected: undefined
   - actual: [221.3,17.424242424242422]
 - children[36].to (extra)
   - expected: undefined
   - actual: [324.8,23.484848484848484]
-- children[36].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[36].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -14727,9 +10917,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[37].to (extra)
   - expected: undefined
   - actual: [313.3,28.333333333333332]
-- children[37].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[37].znId (extra)
   - expected: undefined
   - actual: "1152"
@@ -14739,9 +10926,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[38].to (extra)
   - expected: undefined
   - actual: [324.8,33.18181818181818]
-- children[38].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[38].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -14751,9 +10935,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[39].to (extra)
   - expected: undefined
   - actual: [278.8,39.242424242424235]
-- children[39].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[39].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -14763,9 +10944,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[40].to (extra)
   - expected: undefined
   - actual: [221.3,44.090909090909086]
-- children[40].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[40].znId (extra)
   - expected: undefined
   - actual: "2688"
@@ -14775,9 +10953,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[41].to (extra)
   - expected: undefined
   - actual: [221.3,48.93939393939394]
-- children[41].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[41].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -14787,9 +10962,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[42].to (extra)
   - expected: undefined
   - actual: [244.3,55]
-- children[42].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[42].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -14799,9 +10971,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[43].to (extra)
   - expected: undefined
   - actual: [267.3,59.848484848484844]
-- children[43].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[43].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -14811,9 +10980,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[44].to (extra)
   - expected: undefined
   - actual: [278.8,64.69696969696969]
-- children[44].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[44].znId (extra)
   - expected: undefined
   - actual: "4608"
@@ -14823,9 +10989,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[45].to (extra)
   - expected: undefined
   - actual: [221.3,71.76767676767676]
-- children[45].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[45].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -14835,9 +10998,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[46].to (extra)
   - expected: undefined
   - actual: [221.3,77.42424242424242]
-- children[46].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[46].znId (extra)
   - expected: undefined
   - actual: "5760"
@@ -14847,9 +11007,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[47].to (extra)
   - expected: undefined
   - actual: [221.3,82.27272727272727]
-- children[47].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[47].znId (extra)
   - expected: undefined
   - actual: "6144"
@@ -14859,9 +11016,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[48].to (extra)
   - expected: undefined
   - actual: [267.3,88.33333333333333]
-- children[48].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[48].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -14871,9 +11025,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[49].to (extra)
   - expected: undefined
   - actual: [244.3,93.18181818181817]
-- children[49].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[49].znId (extra)
   - expected: undefined
   - actual: "7296"
@@ -14883,9 +11034,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[50].to (extra)
   - expected: undefined
   - actual: [267.3,98.03030303030303]
-- children[50].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[50].znId (extra)
   - expected: undefined
   - actual: "7680"
@@ -14895,9 +11043,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[51].to (extra)
   - expected: undefined
   - actual: [278.8,104.09090909090908]
-- children[51].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[51].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -14907,9 +11052,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[52].to (extra)
   - expected: undefined
   - actual: [221.3,108.93939393939394]
-- children[52].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[52].znId (extra)
   - expected: undefined
   - actual: "8832"
@@ -14919,9 +11061,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[53].to (extra)
   - expected: undefined
   - actual: [221.3,113.78787878787878]
-- children[53].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[53].znId (extra)
   - expected: undefined
   - actual: "9216"
@@ -14931,9 +11070,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[54].to (extra)
   - expected: undefined
   - actual: [278.8,119.84848484848484]
-- children[54].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[54].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -14943,9 +11079,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[55].to (extra)
   - expected: undefined
   - actual: [301.8,124.69696969696969]
-- children[55].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[55].znId (extra)
   - expected: undefined
   - actual: "10368"
@@ -14955,9 +11088,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[56].to (extra)
   - expected: undefined
   - actual: [324.8,129.54545454545453]
-- children[56].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[56].znId (extra)
   - expected: undefined
   - actual: "10752"
@@ -14967,9 +11097,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[57].to (extra)
   - expected: undefined
   - actual: [301.8,135.6060606060606]
-- children[57].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[57].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -14979,9 +11106,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[58].to (extra)
   - expected: undefined
   - actual: [301.8,140.45454545454544]
-- children[58].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[58].znId (extra)
   - expected: undefined
   - actual: "11904"
@@ -14991,9 +11115,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[59].to (extra)
   - expected: undefined
   - actual: [221.3,145.30303030303028]
-- children[59].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[59].znId (extra)
   - expected: undefined
   - actual: "12288"
@@ -15003,9 +11124,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[60].to (extra)
   - expected: undefined
   - actual: [324.8,152.37373737373736]
-- children[60].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[60].znId (extra)
   - expected: undefined
   - actual: "12672"
@@ -15015,9 +11133,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[61].to (extra)
   - expected: undefined
   - actual: [313.3,158.030303030303]
-- children[61].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[61].znId (extra)
   - expected: undefined
   - actual: "13440"
@@ -15027,9 +11142,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[62].to (extra)
   - expected: undefined
   - actual: [324.8,162.87878787878788]
-- children[62].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[62].znId (extra)
   - expected: undefined
   - actual: "13824"
@@ -15039,9 +11151,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[63].to (extra)
   - expected: undefined
   - actual: [278.8,168.93939393939394]
-- children[63].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[63].znId (extra)
   - expected: undefined
   - actual: "14208"
@@ -15051,9 +11160,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[64].to (extra)
   - expected: undefined
   - actual: [221.3,173.78787878787878]
-- children[64].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[64].znId (extra)
   - expected: undefined
   - actual: "14976"
@@ -15063,9 +11169,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[65].to (extra)
   - expected: undefined
   - actual: [221.3,178.63636363636363]
-- children[65].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[65].znId (extra)
   - expected: undefined
   - actual: "15360"
@@ -15075,9 +11178,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[66].to (extra)
   - expected: undefined
   - actual: [244.3,185.7070707070707]
-- children[66].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[66].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -15087,9 +11187,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[67].to (extra)
   - expected: undefined
   - actual: [267.3,191.36363636363637]
-- children[67].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[67].znId (extra)
   - expected: undefined
   - actual: "16512"
@@ -15099,9 +11196,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[68].to (extra)
   - expected: undefined
   - actual: [278.8,196.2121212121212]
-- children[68].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[68].znId (extra)
   - expected: undefined
   - actual: "16896"
@@ -15111,9 +11205,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[69].to (extra)
   - expected: undefined
   - actual: [221.3,202.27272727272725]
-- children[69].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[69].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -15123,9 +11214,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[70].to (extra)
   - expected: undefined
   - actual: [221.3,207.12121212121212]
-- children[70].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[70].znId (extra)
   - expected: undefined
   - actual: "18048"
@@ -15135,9 +11223,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[71].to (extra)
   - expected: undefined
   - actual: [336.3,222.87878787878788]
-- children[71].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[71].znId (extra)
   - expected: undefined
   - actual: "18816"
@@ -15147,9 +11232,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[72].to (extra)
   - expected: undefined
   - actual: [324.8,227.7272727272727]
-- children[72].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[72].znId (extra)
   - expected: undefined
   - actual: "19584"
@@ -15159,9 +11241,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[73].to (extra)
   - expected: undefined
   - actual: [301.8,232.57575757575756]
-- children[73].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[73].znId (extra)
   - expected: undefined
   - actual: "19968"
@@ -15171,9 +11250,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[74].to (extra)
   - expected: undefined
   - actual: [324.8,238.63636363636363]
-- children[74].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[74].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -15183,9 +11259,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[75].to (extra)
   - expected: undefined
   - actual: [301.8,243.4848484848485]
-- children[75].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[75].znId (extra)
   - expected: undefined
   - actual: "21120"
@@ -15195,9 +11268,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[76].to (extra)
   - expected: undefined
   - actual: [278.8,248.33333333333331]
-- children[76].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[76].znId (extra)
   - expected: undefined
   - actual: "21504"
@@ -15207,9 +11277,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[77].to (extra)
   - expected: undefined
   - actual: [301.8,254.39393939393938]
-- children[77].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[77].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -15219,9 +11286,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[78].to (extra)
   - expected: undefined
   - actual: [278.8,259.24242424242425]
-- children[78].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[78].znId (extra)
   - expected: undefined
   - actual: "22656"
@@ -15231,9 +11295,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[79].to (extra)
   - expected: undefined
   - actual: [267.3,264.09090909090907]
-- children[79].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[79].znId (extra)
   - expected: undefined
   - actual: "23040"
@@ -15243,9 +11304,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[80].to (extra)
   - expected: undefined
   - actual: [278.8,270.1515151515151]
-- children[80].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[80].znId (extra)
   - expected: undefined
   - actual: "23424"
@@ -15255,9 +11313,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[81].to (extra)
   - expected: undefined
   - actual: [278.8,275]
-- children[81].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[81].znId (extra)
   - expected: undefined
   - actual: "24192"
@@ -15267,30 +11322,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[82].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[82].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[82].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[82].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[83].center (mismatch)
   - expected: [324.8,23.4848]
   - actual: [324.8,23.484848484848484]
 - children[83].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[83].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[83].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[83].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[84].center (mismatch)
   - expected: [324.8,22.2098]
   - actual: [324.8,22.209848484848486]
-- children[84].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[84].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -15300,42 +11352,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[85].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[85].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[85].znId (extra)
   - expected: undefined
   - actual: "1152"
+- children[85].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1152.n_0.***"
 - children[86].center (mismatch)
   - expected: [324.8,33.1818]
   - actual: [324.8,33.18181818181818]
 - children[86].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[86].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[86].znId (extra)
   - expected: undefined
   - actual: "1536"
+- children[86].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1536.n_0.***"
 - children[87].center (mismatch)
   - expected: [278.8,39.2424]
   - actual: [278.8,39.242424242424235]
 - children[87].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[87].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[87].znId (extra)
   - expected: undefined
   - actual: "1920"
+- children[87].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1920.n_0.***"
 - children[88].center (mismatch)
   - expected: [278.8,37.9674]
   - actual: [278.8,37.96742424242424]
-- children[88].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[88].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -15345,36 +11394,33 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[89].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[89].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[89].znId (extra)
   - expected: undefined
   - actual: "2688"
+- children[89].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_2688.n_0.***"
 - children[90].center (mismatch)
   - expected: [221.3,48.9394]
   - actual: [221.3,48.93939393939394]
 - children[90].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[90].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[90].znId (extra)
   - expected: undefined
   - actual: "3072"
+- children[90].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_3072.n_0.***"
 - children[91].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[91].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[91].znId (extra)
   - expected: undefined
   - actual: "3456"
-- children[92].lineWidth (extra)
+- children[91].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_3456.n_0.***"
 - children[92].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -15384,42 +11430,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[93].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[93].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[93].znId (extra)
   - expected: undefined
   - actual: "4224"
+- children[93].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4224.n_0.***"
 - children[94].center (mismatch)
   - expected: [278.8,64.697]
   - actual: [278.8,64.69696969696969]
 - children[94].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[94].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[94].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[94].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4608.n_0.***"
 - children[95].center (mismatch)
   - expected: [221.3,71.7677]
   - actual: [221.3,71.76767676767676]
 - children[95].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[95].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[95].znId (extra)
   - expected: undefined
   - actual: "4992"
+- children[95].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4992.n_0.***"
 - children[96].center (mismatch)
   - expected: [221.3,70.4927]
   - actual: [221.3,70.49267676767676]
-- children[96].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[96].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -15429,42 +11472,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[97].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[97].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[97].znId (extra)
   - expected: undefined
   - actual: "5760"
+- children[97].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_5760.n_0.***"
 - children[98].center (mismatch)
   - expected: [221.3,82.2727]
   - actual: [221.3,82.27272727272727]
 - children[98].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[98].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[98].znId (extra)
   - expected: undefined
   - actual: "6144"
+- children[98].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_6144.n_0.***"
 - children[99].center (mismatch)
   - expected: [267.3,88.3333]
   - actual: [267.3,88.33333333333333]
 - children[99].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[99].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[99].znId (extra)
   - expected: undefined
   - actual: "6528"
+- children[99].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_6528.n_0.***"
 - children[100].center (mismatch)
   - expected: [267.3,87.0583]
   - actual: [267.3,87.05833333333332]
-- children[100].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[100].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -15474,42 +11514,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[101].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[101].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[101].znId (extra)
   - expected: undefined
   - actual: "7296"
+- children[101].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_7296.n_0.***"
 - children[102].center (mismatch)
   - expected: [267.3,98.0303]
   - actual: [267.3,98.03030303030303]
 - children[102].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[102].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[102].znId (extra)
   - expected: undefined
   - actual: "7680"
+- children[102].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_7680.n_0.***"
 - children[103].center (mismatch)
   - expected: [278.8,104.0909]
   - actual: [278.8,104.09090909090908]
 - children[103].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[103].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[103].znId (extra)
   - expected: undefined
   - actual: "8064"
+- children[103].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8064.n_0.***"
 - children[104].center (mismatch)
   - expected: [278.8,102.8159]
   - actual: [278.8,102.81590909090907]
-- children[104].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[104].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -15519,42 +11556,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[105].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[105].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[105].znId (extra)
   - expected: undefined
   - actual: "8832"
+- children[105].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8832.n_0.***"
 - children[106].center (mismatch)
   - expected: [221.3,113.7879]
   - actual: [221.3,113.78787878787878]
 - children[106].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[106].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[106].znId (extra)
   - expected: undefined
   - actual: "9216"
+- children[106].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_9216.n_0.***"
 - children[107].center (mismatch)
   - expected: [278.8,119.8485]
   - actual: [278.8,119.84848484848484]
 - children[107].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[107].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[107].znId (extra)
   - expected: undefined
   - actual: "9600"
+- children[107].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_9600.n_0.***"
 - children[108].center (mismatch)
   - expected: [278.8,118.5735]
   - actual: [278.8,118.57348484848484]
-- children[108].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[108].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -15564,42 +11598,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[109].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[109].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[109].znId (extra)
   - expected: undefined
   - actual: "10368"
+- children[109].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_10368.n_0.***"
 - children[110].center (mismatch)
   - expected: [324.8,129.5455]
   - actual: [324.8,129.54545454545453]
 - children[110].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[110].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[110].znId (extra)
   - expected: undefined
   - actual: "10752"
+- children[110].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_10752.n_0.***"
 - children[111].center (mismatch)
   - expected: [301.8,135.6061]
   - actual: [301.8,135.6060606060606]
 - children[111].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[111].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[111].znId (extra)
   - expected: undefined
   - actual: "11136"
+- children[111].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_11136.n_0.***"
 - children[112].center (mismatch)
   - expected: [301.8,134.3311]
   - actual: [301.8,134.3310606060606]
-- children[112].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[112].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -15609,42 +11640,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[113].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[113].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[113].znId (extra)
   - expected: undefined
   - actual: "11904"
+- children[113].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_11904.n_0.***"
 - children[114].center (mismatch)
   - expected: [221.3,145.303]
   - actual: [221.3,145.30303030303028]
 - children[114].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[114].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[114].znId (extra)
   - expected: undefined
   - actual: "12288"
+- children[114].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_12288.n_0.***"
 - children[115].center (mismatch)
   - expected: [324.8,152.3737]
   - actual: [324.8,152.37373737373736]
 - children[115].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[115].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[115].znId (extra)
   - expected: undefined
   - actual: "12672"
+- children[115].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_12672.n_0.***"
 - children[116].center (mismatch)
   - expected: [324.8,151.0987]
   - actual: [324.8,151.09873737373735]
-- children[116].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[116].znId (extra)
   - expected: undefined
   - actual: "12672"
@@ -15654,42 +11682,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[117].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[117].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[117].znId (extra)
   - expected: undefined
   - actual: "13440"
+- children[117].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_13440.n_0.***"
 - children[118].center (mismatch)
   - expected: [324.8,162.8788]
   - actual: [324.8,162.87878787878788]
 - children[118].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[118].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[118].znId (extra)
   - expected: undefined
   - actual: "13824"
+- children[118].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_13824.n_0.***"
 - children[119].center (mismatch)
   - expected: [278.8,168.9394]
   - actual: [278.8,168.93939393939394]
 - children[119].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[119].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[119].znId (extra)
   - expected: undefined
   - actual: "14208"
+- children[119].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_14208.n_0.***"
 - children[120].center (mismatch)
   - expected: [278.8,167.6644]
   - actual: [278.8,167.66439393939393]
-- children[120].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[120].znId (extra)
   - expected: undefined
   - actual: "14208"
@@ -15699,42 +11724,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[121].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[121].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[121].znId (extra)
   - expected: undefined
   - actual: "14976"
+- children[121].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_14976.n_0.***"
 - children[122].center (mismatch)
   - expected: [221.3,178.6364]
   - actual: [221.3,178.63636363636363]
 - children[122].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[122].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[122].znId (extra)
   - expected: undefined
   - actual: "15360"
+- children[122].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_15360.n_0.***"
 - children[123].center (mismatch)
   - expected: [244.3,185.7071]
   - actual: [244.3,185.7070707070707]
 - children[123].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[123].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[123].znId (extra)
   - expected: undefined
   - actual: "15744"
+- children[123].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_15744.n_0.***"
 - children[124].center (mismatch)
   - expected: [244.3,184.4321]
   - actual: [244.3,184.4320707070707]
-- children[124].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[124].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -15744,42 +11766,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[125].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[125].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[125].znId (extra)
   - expected: undefined
   - actual: "16512"
+- children[125].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_16512.n_0.***"
 - children[126].center (mismatch)
   - expected: [278.8,196.2121]
   - actual: [278.8,196.2121212121212]
 - children[126].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[126].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[126].znId (extra)
   - expected: undefined
   - actual: "16896"
+- children[126].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_16896.n_0.***"
 - children[127].center (mismatch)
   - expected: [221.3,202.2727]
   - actual: [221.3,202.27272727272725]
 - children[127].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[127].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[127].znId (extra)
   - expected: undefined
   - actual: "17280"
+- children[127].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_17280.n_0.***"
 - children[128].center (mismatch)
   - expected: [221.3,200.9977]
   - actual: [221.3,200.99772727272725]
-- children[128].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[128].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -15789,42 +11808,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[129].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[129].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[129].znId (extra)
   - expected: undefined
   - actual: "18048"
+- children[129].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_18048.n_0.***"
 - children[130].center (mismatch)
   - expected: [221.3,216.8182]
   - actual: [221.3,216.8181818181818]
 - children[130].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[130].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[130].znId (extra)
   - expected: undefined
   - actual: "18432"
+- children[130].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_18432.n_0.***"
 - children[131].center (mismatch)
   - expected: [336.3,222.8788]
   - actual: [336.3,222.87878787878788]
 - children[131].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[131].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[131].znId (extra)
   - expected: undefined
   - actual: "18816"
+- children[131].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_18816.n_0.***"
 - children[132].center (mismatch)
   - expected: [336.3,221.6038]
   - actual: [336.3,221.60378787878787]
-- children[132].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[132].znId (extra)
   - expected: undefined
   - actual: "18816"
@@ -15834,42 +11850,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[133].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[133].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[133].znId (extra)
   - expected: undefined
   - actual: "19584"
+- children[133].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_19584.n_0.***"
 - children[134].center (mismatch)
   - expected: [301.8,232.5758]
   - actual: [301.8,232.57575757575756]
 - children[134].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[134].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[134].znId (extra)
   - expected: undefined
   - actual: "19968"
+- children[134].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_19968.n_0.***"
 - children[135].center (mismatch)
   - expected: [324.8,238.6364]
   - actual: [324.8,238.63636363636363]
 - children[135].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[135].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[135].znId (extra)
   - expected: undefined
   - actual: "20352"
+- children[135].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_20352.n_0.***"
 - children[136].center (mismatch)
   - expected: [324.8,237.3614]
   - actual: [324.8,237.36136363636362]
-- children[136].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[136].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -15879,42 +11892,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[137].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[137].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[137].znId (extra)
   - expected: undefined
   - actual: "21120"
+- children[137].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_21120.n_0.***"
 - children[138].center (mismatch)
   - expected: [278.8,248.3333]
   - actual: [278.8,248.33333333333331]
 - children[138].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[138].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[138].znId (extra)
   - expected: undefined
   - actual: "21504"
+- children[138].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_21504.n_0.***"
 - children[139].center (mismatch)
   - expected: [301.8,254.3939]
   - actual: [301.8,254.39393939393938]
 - children[139].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[139].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[139].znId (extra)
   - expected: undefined
   - actual: "21888"
+- children[139].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_21888.n_0.***"
 - children[140].center (mismatch)
   - expected: [301.8,253.1189]
   - actual: [301.8,253.11893939393937]
-- children[140].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[140].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -15924,1016 +11934,629 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[141].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[141].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[141].znId (extra)
   - expected: undefined
   - actual: "22656"
+- children[141].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_22656.n_0.***"
 - children[142].center (mismatch)
   - expected: [267.3,264.0909]
   - actual: [267.3,264.09090909090907]
 - children[142].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[142].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[142].znId (extra)
   - expected: undefined
   - actual: "23040"
+- children[142].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_23040.n_0.***"
 - children[143].center (mismatch)
   - expected: [278.8,270.1515]
   - actual: [278.8,270.1515151515151]
 - children[143].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[143].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[143].znId (extra)
   - expected: undefined
   - actual: "23424"
+- children[143].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_23424.n_0.***"
 - children[144].center (mismatch)
   - expected: [278.8,268.8765]
   - actual: [278.8,268.87651515151515]
-- children[144].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[144].znId (extra)
   - expected: undefined
   - actual: "23424"
 - children[145].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[145].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[145].znId (extra)
   - expected: undefined
   - actual: "24192"
+- children[145].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_24192.n_0.***"
 - children[146].center (mismatch)
   - expected: [217.0929,18.5076]
   - actual: [217.09291666666667,18.507575757575754]
 - children[146].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[146].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[147].center (mismatch)
   - expected: [329.9384,24.5682]
   - actual: [329.9384166666667,24.568181818181817]
 - children[147].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[147].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[148].center (mismatch)
   - expected: [309.0929,29.4167]
   - actual: [309.09291666666667,29.416666666666664]
 - children[148].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[148].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[149].center (mismatch)
   - expected: [329.0071,34.2652]
   - actual: [329.00708333333336,34.265151515151516]
 - children[149].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[149].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[150].center (mismatch)
   - expected: [283.9384,40.3258]
   - actual: [283.9384166666667,40.32575757575757]
 - children[150].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[150].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[151].center (mismatch)
   - expected: [225.5071,45.1742]
   - actual: [225.50708333333336,45.17424242424242]
 - children[151].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[151].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[152].center (mismatch)
   - expected: [217.0929,50.0227]
   - actual: [217.09291666666667,50.02272727272727]
 - children[152].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[152].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[153].center (mismatch)
   - expected: [239.1616,56.0833]
   - actual: [239.16158333333334,56.083333333333336]
 - children[153].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[153].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[154].center (mismatch)
   - expected: [263.0929,60.9318]
   - actual: [263.09291666666667,60.93181818181818]
 - children[154].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[154].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[155].center (mismatch)
   - expected: [283.0071,65.7803]
   - actual: [283.00708333333336,65.78030303030302]
 - children[155].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[155].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[156].center (mismatch)
   - expected: [226.4384,72.851]
   - actual: [226.43841666666668,72.85101010101009]
 - children[156].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[156].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[157].center (mismatch)
   - expected: [218.1179,78.5076]
   - actual: [218.11791666666667,78.50757575757575]
 - children[157].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[157].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[158].center (mismatch)
   - expected: [217.0929,83.3561]
   - actual: [217.09291666666667,83.3560606060606]
 - children[158].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[158].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[159].center (mismatch)
   - expected: [272.4384,89.4167]
   - actual: [272.4384166666667,89.41666666666666]
 - children[159].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[159].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[160].center (mismatch)
   - expected: [240.0929,94.2652]
   - actual: [240.09291666666667,94.2651515151515]
 - children[160].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[160].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[161].center (mismatch)
   - expected: [263.0929,99.1136]
   - actual: [263.09291666666667,99.11363636363636]
 - children[161].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[161].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[162].center (mismatch)
   - expected: [283.9384,105.1742]
   - actual: [283.9384166666667,105.17424242424241]
 - children[162].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[162].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[163].center (mismatch)
   - expected: [225.5071,110.0227]
   - actual: [225.50708333333336,110.02272727272727]
 - children[163].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[163].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[164].center (mismatch)
   - expected: [217.0929,114.8712]
   - actual: [217.09291666666667,114.87121212121211]
 - children[164].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[164].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[165].center (mismatch)
   - expected: [273.6616,120.9318]
   - actual: [273.66158333333334,120.93181818181817]
 - children[165].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[165].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[166].center (mismatch)
   - expected: [297.5929,125.7803]
   - actual: [297.59291666666667,125.78030303030302]
 - children[166].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[166].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[167].center (mismatch)
   - expected: [329.0071,130.6288]
   - actual: [329.00708333333336,130.62878787878788]
 - children[167].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[167].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[168].center (mismatch)
   - expected: [306.9384,136.6894]
   - actual: [306.9384166666667,136.68939393939394]
 - children[168].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[168].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[169].center (mismatch)
   - expected: [304.9821,141.5379]
   - actual: [304.9820833333334,141.53787878787878]
 - children[169].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[169].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[170].center (mismatch)
   - expected: [217.0929,146.3864]
   - actual: [217.09291666666667,146.38636363636363]
 - children[170].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[170].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[171].center (mismatch)
   - expected: [329.9384,153.4571]
   - actual: [329.9384166666667,153.4570707070707]
 - children[171].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[171].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[172].center (mismatch)
   - expected: [309.0929,159.1136]
   - actual: [309.09291666666667,159.11363636363635]
 - children[172].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[172].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[173].center (mismatch)
   - expected: [329.0071,163.9621]
   - actual: [329.00708333333336,163.96212121212122]
 - children[173].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[173].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[174].center (mismatch)
   - expected: [283.9384,170.0227]
   - actual: [283.9384166666667,170.02272727272728]
 - children[174].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[174].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[175].center (mismatch)
   - expected: [225.5071,174.8712]
   - actual: [225.50708333333336,174.87121212121212]
 - children[175].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[175].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[176].center (mismatch)
   - expected: [217.0929,179.7197]
   - actual: [217.09291666666667,179.71969696969697]
 - children[176].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[176].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[177].center (mismatch)
   - expected: [239.1616,186.7904]
   - actual: [239.16158333333334,186.79040404040404]
 - children[177].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[177].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[178].center (mismatch)
   - expected: [263.0929,192.447]
   - actual: [263.09291666666667,192.44696969696972]
 - children[178].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[178].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[179].center (mismatch)
   - expected: [283.0071,197.2955]
   - actual: [283.00708333333336,197.29545454545453]
 - children[179].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[179].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[180].center (mismatch)
   - expected: [226.4384,203.3561]
   - actual: [226.43841666666668,203.3560606060606]
 - children[180].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[180].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[181].center (mismatch)
   - expected: [218.1179,208.2045]
   - actual: [218.11791666666667,208.20454545454547]
 - children[181].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[181].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[182].center (mismatch)
   - expected: [217.0929,217.9015]
   - actual: [217.09291666666667,217.90151515151516]
 - children[182].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[182].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[183].center (mismatch)
   - expected: [341.4384,223.9621]
   - actual: [341.4384166666667,223.96212121212122]
 - children[183].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[183].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[184].center (mismatch)
   - expected: [329.0071,228.8106]
   - actual: [329.00708333333336,228.81060606060603]
 - children[184].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[184].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[185].center (mismatch)
   - expected: [297.5929,233.6591]
   - actual: [297.59291666666667,233.6590909090909]
 - children[185].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[185].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[186].center (mismatch)
   - expected: [329.9384,239.7197]
   - actual: [329.9384166666667,239.71969696969697]
 - children[186].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[186].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[187].center (mismatch)
   - expected: [306.0071,244.5682]
   - actual: [306.00708333333336,244.56818181818184]
 - children[187].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[187].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[188].center (mismatch)
   - expected: [274.5929,249.4167]
   - actual: [274.59291666666667,249.41666666666666]
 - children[188].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[188].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[189].center (mismatch)
   - expected: [306.9384,255.4773]
   - actual: [306.9384166666667,255.47727272727272]
 - children[189].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[189].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[190].center (mismatch)
   - expected: [283.0071,260.3258]
   - actual: [283.00708333333336,260.32575757575756]
 - children[190].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[190].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[191].center (mismatch)
   - expected: [263.0929,265.1742]
   - actual: [263.09291666666667,265.1742424242424]
 - children[191].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[191].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[192].center (mismatch)
   - expected: [273.6616,271.2348]
   - actual: [273.66158333333334,271.23484848484844]
 - children[192].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[192].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[193].center (mismatch)
   - expected: [275.6179,276.0833]
   - actual: [275.61791666666664,276.0833333333333]
 - children[193].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[193].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[194].center (mismatch)
   - expected: [217.675,17.4242]
   - actual: [217.675,17.424242424242422]
-- children[194].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[195].center (mismatch)
   - expected: [328.425,23.4848]
   - actual: [328.425,23.484848484848484]
-- children[195].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[196].center (mismatch)
   - expected: [309.675,28.3333]
   - actual: [309.675,28.333333333333332]
-- children[196].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[197].center (mismatch)
   - expected: [328.425,33.1818]
   - actual: [328.425,33.18181818181818]
-- children[197].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[198].center (mismatch)
   - expected: [282.425,39.2424]
   - actual: [282.425,39.242424242424235]
-- children[198].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[199].center (mismatch)
   - expected: [224.925,44.0909]
   - actual: [224.925,44.090909090909086]
-- children[199].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[200].center (mismatch)
   - expected: [217.675,48.9394]
   - actual: [217.675,48.93939393939394]
-- children[200].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[201].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[202].center (mismatch)
   - expected: [263.675,59.8485]
   - actual: [263.675,59.848484848484844]
-- children[202].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[203].center (mismatch)
   - expected: [282.425,64.697]
   - actual: [282.425,64.69696969696969]
-- children[203].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[204].center (mismatch)
   - expected: [224.925,71.7677]
   - actual: [224.925,71.76767676767676]
-- children[204].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[205].center (mismatch)
   - expected: [218.7,77.4242]
   - actual: [218.70000000000002,77.42424242424242]
-- children[205].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[206].center (mismatch)
   - expected: [217.675,82.2727]
   - actual: [217.675,82.27272727272727]
-- children[206].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[207].center (mismatch)
   - expected: [270.925,88.3333]
   - actual: [270.925,88.33333333333333]
-- children[207].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[208].center (mismatch)
   - expected: [240.675,93.1818]
   - actual: [240.675,93.18181818181817]
-- children[208].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[209].center (mismatch)
   - expected: [263.675,98.0303]
   - actual: [263.675,98.03030303030303]
-- children[209].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[210].center (mismatch)
   - expected: [282.425,104.0909]
   - actual: [282.425,104.09090909090908]
-- children[210].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[211].center (mismatch)
   - expected: [224.925,108.9394]
   - actual: [224.925,108.93939393939394]
-- children[211].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[212].center (mismatch)
   - expected: [217.675,113.7879]
   - actual: [217.675,113.78787878787878]
-- children[212].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[213].center (mismatch)
   - expected: [275.175,119.8485]
   - actual: [275.175,119.84848484848484]
-- children[213].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[214].center (mismatch)
   - expected: [298.175,124.697]
   - actual: [298.175,124.69696969696969]
-- children[214].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[215].center (mismatch)
   - expected: [328.425,129.5455]
   - actual: [328.425,129.54545454545453]
-- children[215].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[216].center (mismatch)
   - expected: [305.425,135.6061]
   - actual: [305.425,135.6060606060606]
-- children[216].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[217].center (mismatch)
   - expected: [304.4,140.4545]
   - actual: [304.40000000000003,140.45454545454544]
-- children[217].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[218].center (mismatch)
   - expected: [217.675,145.303]
   - actual: [217.675,145.30303030303028]
-- children[218].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[219].center (mismatch)
   - expected: [328.425,152.3737]
   - actual: [328.425,152.37373737373736]
-- children[219].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[220].center (mismatch)
   - expected: [309.675,158.0303]
   - actual: [309.675,158.030303030303]
-- children[220].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[221].center (mismatch)
   - expected: [328.425,162.8788]
   - actual: [328.425,162.87878787878788]
-- children[221].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[222].center (mismatch)
   - expected: [282.425,168.9394]
   - actual: [282.425,168.93939393939394]
-- children[222].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[223].center (mismatch)
   - expected: [224.925,173.7879]
   - actual: [224.925,173.78787878787878]
-- children[223].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[224].center (mismatch)
   - expected: [217.675,178.6364]
   - actual: [217.675,178.63636363636363]
-- children[224].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[225].center (mismatch)
   - expected: [240.675,185.7071]
   - actual: [240.675,185.7070707070707]
-- children[225].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[226].center (mismatch)
   - expected: [263.675,191.3636]
   - actual: [263.675,191.36363636363637]
-- children[226].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[227].center (mismatch)
   - expected: [282.425,196.2121]
   - actual: [282.425,196.2121212121212]
-- children[227].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[228].center (mismatch)
   - expected: [224.925,202.2727]
   - actual: [224.925,202.27272727272725]
-- children[228].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[229].center (mismatch)
   - expected: [218.7,207.1212]
   - actual: [218.70000000000002,207.12121212121212]
-- children[229].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[230].center (mismatch)
   - expected: [217.675,216.8182]
   - actual: [217.675,216.8181818181818]
-- children[230].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[231].center (mismatch)
   - expected: [339.925,222.8788]
   - actual: [339.925,222.87878787878788]
-- children[231].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[232].center (mismatch)
   - expected: [328.425,227.7273]
   - actual: [328.425,227.7272727272727]
-- children[232].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[233].center (mismatch)
   - expected: [298.175,232.5758]
   - actual: [298.175,232.57575757575756]
-- children[233].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[234].center (mismatch)
   - expected: [328.425,238.6364]
   - actual: [328.425,238.63636363636363]
-- children[234].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[235].center (mismatch)
   - expected: [305.425,243.4848]
   - actual: [305.425,243.4848484848485]
-- children[235].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[236].center (mismatch)
   - expected: [275.175,248.3333]
   - actual: [275.175,248.33333333333331]
-- children[236].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[237].center (mismatch)
   - expected: [305.425,254.3939]
   - actual: [305.425,254.39393939393938]
-- children[237].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[238].center (mismatch)
   - expected: [282.425,259.2424]
   - actual: [282.425,259.24242424242425]
-- children[238].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[239].center (mismatch)
   - expected: [263.675,264.0909]
   - actual: [263.675,264.09090909090907]
-- children[239].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[240].center (mismatch)
   - expected: [275.175,270.1515]
   - actual: [275.175,270.1515151515151]
-- children[240].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[241].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[242].center (mismatch)
   - expected: [329.2981,22.2723]
   - actual: [329.298125,22.272348484848486]
 - children[242].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[242].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[243].center (mismatch)
   - expected: [274.3019,38.0299]
   - actual: [274.301875,38.02992424242423]
 - children[243].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[243].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[244].center (mismatch)
   - expected: [248.7981,53.7875]
   - actual: [248.798125,53.787499999999994]
 - children[244].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[244].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[245].center (mismatch)
   - expected: [216.8019,70.5552]
   - actual: [216.80187500000002,70.55517676767676]
 - children[245].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[245].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[246].center (mismatch)
   - expected: [271.7981,87.1208]
   - actual: [271.798125,87.12083333333332]
 - children[246].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[246].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[247].center (mismatch)
   - expected: [283.2981,102.8784]
   - actual: [283.298125,102.87840909090907]
 - children[247].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[247].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[248].center (mismatch)
   - expected: [283.2981,118.636]
   - actual: [283.298125,118.63598484848484]
 - children[248].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[248].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[249].center (mismatch)
   - expected: [297.3019,134.3936]
   - actual: [297.301875,134.39356060606062]
 - children[249].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[249].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[250].center (mismatch)
   - expected: [329.2981,151.1612]
   - actual: [329.298125,151.16123737373738]
 - children[250].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[250].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[251].center (mismatch)
   - expected: [273.4288,167.7269]
   - actual: [273.42875000000004,167.72689393939396]
 - children[251].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[251].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[252].center (mismatch)
   - expected: [249.6713,184.4946]
   - actual: [249.67125000000001,184.49457070707072]
 - children[252].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[252].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[253].center (mismatch)
   - expected: [215.9288,201.0602]
   - actual: [215.92875,201.06022727272727]
 - children[253].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[253].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[254].center (mismatch)
   - expected: [341.6713,221.6663]
   - actual: [341.67125,221.6662878787879]
 - children[254].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[254].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[255].center (mismatch)
   - expected: [330.1713,237.4239]
   - actual: [330.17125,237.42386363636365]
 - children[255].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[255].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[256].center (mismatch)
   - expected: [307.1713,253.1814]
   - actual: [307.17125,253.1814393939394]
 - children[256].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[256].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[257].center (mismatch)
   - expected: [284.1713,268.939]
   - actual: [284.17125,268.93901515151515]
 - children[257].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[257].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[258].center (mismatch)
   - expected: [328.425,20.7848]
   - actual: [328.425,20.784848484848485]
-- children[258].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[259].center (mismatch)
   - expected: [275.175,36.5424]
   - actual: [275.175,36.54242424242423]
-- children[259].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[260].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[261].center (mismatch)
   - expected: [217.675,69.0677]
   - actual: [217.675,69.06767676767676]
-- children[261].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[262].center (mismatch)
   - expected: [270.925,85.6333]
   - actual: [270.925,85.63333333333333]
-- children[262].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[263].center (mismatch)
   - expected: [282.425,101.3909]
   - actual: [282.425,101.39090909090908]
-- children[263].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[264].center (mismatch)
   - expected: [282.425,117.1485]
   - actual: [282.425,117.14848484848484]
-- children[264].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[265].center (mismatch)
   - expected: [298.175,132.9061]
   - actual: [298.175,132.9060606060606]
-- children[265].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[266].center (mismatch)
   - expected: [328.425,149.6737]
   - actual: [328.425,149.67373737373737]
-- children[266].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[267].center (mismatch)
   - expected: [275.175,166.2394]
   - actual: [275.175,166.23939393939395]
-- children[267].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[268].center (mismatch)
   - expected: [247.925,183.0071]
   - actual: [247.925,183.0070707070707]
-- children[268].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[269].center (mismatch)
   - expected: [217.675,199.5727]
   - actual: [217.675,199.57272727272726]
-- children[269].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[270].center (mismatch)
   - expected: [339.925,220.1788]
   - actual: [339.925,220.1787878787879]
-- children[270].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[271].center (mismatch)
   - expected: [328.425,235.9364]
   - actual: [328.425,235.93636363636364]
-- children[271].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[272].center (mismatch)
   - expected: [305.425,251.6939]
   - actual: [305.425,251.6939393939394]
-- children[272].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[273].center (mismatch)
   - expected: [282.425,267.4515]
   - actual: [282.425,267.45151515151514]
-- children[273].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[274].fill (extra)
   - expected: undefined
   - actual: false
-- children[274].lineWidth (extra)
+- children[274].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[274].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[274].path (extra)
-  - expected: undefined
+- children[274].path (mismatch)
+  - expected: [["M",186.8,17.424242424242426],["c",17.40241228886626,7.229560604097369,82.02162796931532,5.40326929969139,92,6.060606060606059]]
   - actual: [[186.8,17.424242424242422],[192.07534107861449,19.049646933639277],[198.9643765796514,20.33779191897983],[207.11343411755044,21.328745019062072],[216.16884130675137,22.062573872684013],[225.776925761694,22.579346118643638],[235.58401509681812,22.919129395738967],[245.2364369265634,23.121991342767984],[254.38051886536968,23.227999598528697],[262.66258852767675,23.277221801819103],[269.7289735279243,23.309725591437203],[275.2260014805521,23.365578606180996],[278.8,23.484848484848484]]
 - children[275].from (extra)
   - expected: undefined
@@ -16941,9 +12564,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[275].to (extra)
   - expected: undefined
   - actual: [278.8,33.18181818181818]
-- children[275].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[275].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -16953,9 +12573,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[276].to (extra)
   - expected: undefined
   - actual: [186.8,39.242424242424235]
-- children[276].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[276].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -16965,9 +12582,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[277].to (extra)
   - expected: undefined
   - actual: [186.8,48.93939393939394]
-- children[277].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[277].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -16977,9 +12591,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[278].to (extra)
   - expected: undefined
   - actual: [198.3,55]
-- children[278].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[278].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -16989,9 +12600,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[279].to (extra)
   - expected: undefined
   - actual: [221.3,59.848484848484844]
-- children[279].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[279].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -17001,9 +12609,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[280].to (extra)
   - expected: undefined
   - actual: [244.3,64.69696969696969]
-- children[280].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[280].znId (extra)
   - expected: undefined
   - actual: "4608"
@@ -17013,9 +12618,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[281].to (extra)
   - expected: undefined
   - actual: [186.8,71.76767676767676]
-- children[281].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[281].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -17025,9 +12627,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[282].to (extra)
   - expected: undefined
   - actual: [221.3,88.33333333333333]
-- children[282].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[282].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -17037,9 +12636,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[283].to (extra)
   - expected: undefined
   - actual: [198.3,93.18181818181817]
-- children[283].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[283].znId (extra)
   - expected: undefined
   - actual: "7296"
@@ -17049,9 +12645,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[284].to (extra)
   - expected: undefined
   - actual: [186.8,104.09090909090908]
-- children[284].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[284].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -17061,9 +12654,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[285].to (extra)
   - expected: undefined
   - actual: [186.8,108.93939393939394]
-- children[285].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[285].znId (extra)
   - expected: undefined
   - actual: "8832"
@@ -17073,9 +12663,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[286].to (extra)
   - expected: undefined
   - actual: [186.8,119.84848484848484]
-- children[286].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[286].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -17085,9 +12672,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[287].to (extra)
   - expected: undefined
   - actual: [267.3,124.69696969696969]
-- children[287].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[287].znId (extra)
   - expected: undefined
   - actual: "10368"
@@ -17097,9 +12681,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[288].to (extra)
   - expected: undefined
   - actual: [267.3,135.6060606060606]
-- children[288].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[288].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -17109,35 +12690,32 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[289].to (extra)
   - expected: undefined
   - actual: [267.3,140.45454545454544]
-- children[289].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[289].znId (extra)
   - expected: undefined
   - actual: "11904"
 - children[290].fill (extra)
   - expected: undefined
   - actual: false
-- children[290].lineWidth (extra)
+- children[290].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[290].znId (extra)
   - expected: undefined
   - actual: "12288"
-- children[290].path (extra)
-  - expected: undefined
+- children[290].path (mismatch)
+  - expected: [["M",267.3,140.45454545454544],["c",-9.981911160652716,0.6012067704515129,-70.09421176338276,-1.6889436348469609,-80.5,4.848484848484873]]
   - actual: [[267.3,140.45454545454544],[263.8179150813029,140.5513923310341],[258.59371984490883,140.5684567420901],[251.97407019987392,140.5464294379369],[244.3056220552545,140.52600116879808],[235.93503132010665,140.54786268489715],[227.2089539034867,140.65270473645774],[218.4740457144508,140.88121807370334],[210.0769626620552,141.27409344685742],[202.3643606553561,141.87202160614365],[195.68289560340975,142.7156933017855],[190.37922341527235,143.84579928400652],[186.8,145.30303030303028]]
 - children[291].fill (extra)
   - expected: undefined
   - actual: false
-- children[291].lineWidth (extra)
+- children[291].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[291].znId (extra)
   - expected: undefined
   - actual: "12672"
-- children[291].path (extra)
-  - expected: undefined
+- children[291].path (mismatch)
+  - expected: [["M",186.8,145.3030303030303],["c",8.269057375506913,6.071506412792032,82.02940365182624,6.304411787031004,92,7.070707070707073]]
   - actual: [[186.8,145.30303030303028],[190.15685077998802,146.70295687935334],[195.79361276824267,147.88173338097278],[203.26139346883005,148.86148477645796],[212.11130038581632,149.66433603437832],[221.89444102326755,150.31241212330332],[232.16192288524994,150.82783801180233],[242.46485347582956,151.23273866844474],[252.35434029907248,151.54923906179994],[261.38149085904485,151.7994641604374],[269.09741265981285,152.00553893292653],[275.05321320544255,152.18958834783672],[278.8,152.37373737373736]]
 - children[292].from (extra)
   - expected: undefined
@@ -17145,23 +12723,20 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[292].to (extra)
   - expected: undefined
   - actual: [244.3,168.93939393939394]
-- children[292].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[292].znId (extra)
   - expected: undefined
   - actual: "14208"
 - children[293].fill (extra)
   - expected: undefined
   - actual: false
-- children[293].lineWidth (extra)
+- children[293].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[293].znId (extra)
   - expected: undefined
   - actual: "14976"
-- children[293].path (extra)
-  - expected: undefined
+- children[293].path (mismatch)
+  - expected: [["M",244.3,168.93939393939394],["c",-32.881060084854795,-2.5562644026329906,-47.53536209626449,4.008251876364855,-57.5,4.848484848484844]]
   - actual: [[244.3,168.93939393939394],[236.45162513890105,168.48175320942448],[229.31569473237005,168.35259964678505],[222.8452049819147,168.50038789040454],[216.9931520890428,168.87357257921164],[211.7125322552621,169.4206083521352],[206.95634168208028,170.089949848104],[202.6775765710051,170.8300517060468],[198.82923312354436,171.58936856489242],[195.36430754120573,172.31635506356963],[192.23579602549697,172.95946584100724],[189.3966947779258,173.46715553613402],[186.8,173.78787878787878]]
 - children[294].from (extra)
   - expected: undefined
@@ -17169,9 +12744,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[294].to (extra)
   - expected: undefined
   - actual: [198.3,185.7070707070707]
-- children[294].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[294].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -17181,9 +12753,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[295].to (extra)
   - expected: undefined
   - actual: [198.3,202.27272727272725]
-- children[295].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[295].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -17193,23 +12762,20 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[296].to (extra)
   - expected: undefined
   - actual: [186.8,207.12121212121212]
-- children[296].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[296].znId (extra)
   - expected: undefined
   - actual: "18048"
 - children[297].fill (extra)
   - expected: undefined
   - actual: false
-- children[297].lineWidth (extra)
+- children[297].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[297].znId (extra)
   - expected: undefined
   - actual: "18816"
-- children[297].path (extra)
-  - expected: undefined
+- children[297].path (mismatch)
+  - expected: [["M",186.8,216.8181818181818],["c",15.079192718324293,6.682847219833449,105.01385807577867,5.534327171319035,115,6.060606060606062]]
   - actual: [[186.8,216.8181818181818],[192.03970154702108,218.33124139197446],[199.86086724542133,219.5510015178017],[209.72598321994946,220.51046971721277],[221.09753559535423,221.24265351175666],[233.43801049638435,221.78056042298266],[246.20989404778862,222.15719797243975],[258.87567237431574,222.40557368167714],[270.8978316007144,222.55869507224398],[281.7388578517335,222.64956966568928],[290.8612372521216,222.7112049835623],[297.7274559266275,222.77660854741214],[301.8,222.87878787878788]]
 - children[298].from (extra)
   - expected: undefined
@@ -17217,9 +12783,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[298].to (extra)
   - expected: undefined
   - actual: [278.8,227.7272727272727]
-- children[298].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[298].znId (extra)
   - expected: undefined
   - actual: "19584"
@@ -17229,9 +12792,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[299].to (extra)
   - expected: undefined
   - actual: [267.3,232.57575757575756]
-- children[299].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[299].znId (extra)
   - expected: undefined
   - actual: "19968"
@@ -17241,9 +12801,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[300].to (extra)
   - expected: undefined
   - actual: [278.8,238.63636363636363]
-- children[300].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[300].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -17253,9 +12810,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[301].to (extra)
   - expected: undefined
   - actual: [267.3,243.4848484848485]
-- children[301].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[301].znId (extra)
   - expected: undefined
   - actual: "21120"
@@ -17265,9 +12819,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[302].to (extra)
   - expected: undefined
   - actual: [244.3,248.33333333333331]
-- children[302].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[302].znId (extra)
   - expected: undefined
   - actual: "21504"
@@ -17277,9 +12828,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[303].to (extra)
   - expected: undefined
   - actual: [267.3,254.39393939393938]
-- children[303].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[303].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -17289,9 +12837,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[304].to (extra)
   - expected: undefined
   - actual: [244.3,259.24242424242425]
-- children[304].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[304].znId (extra)
   - expected: undefined
   - actual: "22656"
@@ -17301,9 +12846,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[305].to (extra)
   - expected: undefined
   - actual: [221.3,264.09090909090907]
-- children[305].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[305].znId (extra)
   - expected: undefined
   - actual: "23040"
@@ -17313,9 +12855,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[306].to (extra)
   - expected: undefined
   - actual: [186.8,270.1515151515151]
-- children[306].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[306].znId (extra)
   - expected: undefined
   - actual: "23424"
@@ -17325,9 +12864,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[307].to (extra)
   - expected: undefined
   - actual: [186.8,275]
-- children[307].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[307].znId (extra)
   - expected: undefined
   - actual: "24192"
@@ -17337,30 +12873,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[308].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[308].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[308].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[308].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_0.n_0.***"
 - children[309].center (mismatch)
   - expected: [278.8,23.4848]
   - actual: [278.8,23.484848484848484]
 - children[309].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[309].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[309].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[309].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_384.n_0.***"
 - children[310].center (mismatch)
   - expected: [278.8,22.2098]
   - actual: [278.8,22.209848484848486]
-- children[310].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[310].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -17370,30 +12903,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[311].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[311].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[311].znId (extra)
   - expected: undefined
   - actual: "1536"
+- children[311].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_1536.n_0.***"
 - children[312].center (mismatch)
   - expected: [186.8,39.2424]
   - actual: [186.8,39.242424242424235]
 - children[312].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[312].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[312].znId (extra)
   - expected: undefined
   - actual: "1920"
+- children[312].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_1920.n_0.***"
 - children[313].center (mismatch)
   - expected: [186.8,37.9674]
   - actual: [186.8,37.96742424242424]
-- children[313].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[313].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -17403,24 +12933,21 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[314].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[314].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[314].znId (extra)
   - expected: undefined
   - actual: "3072"
+- children[314].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_3072.n_0.***"
 - children[315].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[315].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[315].znId (extra)
   - expected: undefined
   - actual: "3456"
-- children[316].lineWidth (extra)
+- children[315].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_2.t_3456.n_0.***"
 - children[316].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -17430,39 +12957,36 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[317].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[317].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[317].znId (extra)
   - expected: undefined
   - actual: "4224"
+- children[317].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_4224.n_0.***"
 - children[318].center (mismatch)
   - expected: [244.3,64.697]
   - actual: [244.3,64.69696969696969]
 - children[318].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[318].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[318].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[318].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_4608.n_0.***"
 - children[319].center (mismatch)
   - expected: [186.8,71.7677]
   - actual: [186.8,71.76767676767676]
-- children[319].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[319].znId (extra)
   - expected: undefined
   - actual: "4992"
+- children[319].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_4992.n_0.***"
 - children[320].center (mismatch)
   - expected: [186.8,70.1677]
   - actual: [186.8,70.16767676767677]
-- children[320].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[320].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -17472,18 +12996,15 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[321].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[321].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[321].znId (extra)
   - expected: undefined
   - actual: "6528"
+- children[321].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_6528.n_0.***"
 - children[322].center (mismatch)
   - expected: [221.3,87.0583]
   - actual: [221.3,87.05833333333332]
-- children[322].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[322].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -17493,30 +13014,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[323].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[323].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[323].znId (extra)
   - expected: undefined
   - actual: "7296"
+- children[323].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_7296.n_0.***"
 - children[324].center (mismatch)
   - expected: [186.8,104.0909]
   - actual: [186.8,104.09090909090908]
 - children[324].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[324].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[324].znId (extra)
   - expected: undefined
   - actual: "8064"
+- children[324].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_8064.n_0.***"
 - children[325].center (mismatch)
   - expected: [186.8,102.8159]
   - actual: [186.8,102.81590909090907]
-- children[325].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[325].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -17526,30 +13044,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[326].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[326].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[326].znId (extra)
   - expected: undefined
   - actual: "8832"
+- children[326].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_8832.n_0.***"
 - children[327].center (mismatch)
   - expected: [186.8,119.8485]
   - actual: [186.8,119.84848484848484]
 - children[327].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[327].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[327].znId (extra)
   - expected: undefined
   - actual: "9600"
+- children[327].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_9600.n_0.***"
 - children[328].center (mismatch)
   - expected: [186.8,118.5735]
   - actual: [186.8,118.57348484848484]
-- children[328].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[328].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -17559,30 +13074,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[329].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[329].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[329].znId (extra)
   - expected: undefined
   - actual: "10368"
+- children[329].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_10368.n_0.***"
 - children[330].center (mismatch)
   - expected: [267.3,135.6061]
   - actual: [267.3,135.6060606060606]
 - children[330].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[330].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[330].znId (extra)
   - expected: undefined
   - actual: "11136"
+- children[330].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_11136.n_0.***"
 - children[331].center (mismatch)
   - expected: [267.3,134.3311]
   - actual: [267.3,134.3310606060606]
-- children[331].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[331].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -17592,39 +13104,36 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[332].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[332].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[332].znId (extra)
   - expected: undefined
   - actual: "11904"
+- children[332].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_11904.n_0.***"
 - children[333].center (mismatch)
   - expected: [186.8,145.303]
   - actual: [186.8,145.30303030303028]
 - children[333].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[333].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[333].znId (extra)
   - expected: undefined
   - actual: "12288"
+- children[333].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_12288.n_0.***"
 - children[334].center (mismatch)
   - expected: [278.8,152.3737]
   - actual: [278.8,152.37373737373736]
-- children[334].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[334].znId (extra)
   - expected: undefined
   - actual: "12672"
+- children[334].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_12672.n_0.***"
 - children[335].center (mismatch)
   - expected: [278.8,150.7737]
   - actual: [278.8,150.77373737373736]
-- children[335].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[335].znId (extra)
   - expected: undefined
   - actual: "12672"
@@ -17634,18 +13143,15 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[336].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[336].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[336].znId (extra)
   - expected: undefined
   - actual: "14208"
+- children[336].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_14208.n_0.***"
 - children[337].center (mismatch)
   - expected: [244.3,167.6644]
   - actual: [244.3,167.66439393939393]
-- children[337].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[337].znId (extra)
   - expected: undefined
   - actual: "14208"
@@ -17655,27 +13161,24 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[338].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[338].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[338].znId (extra)
   - expected: undefined
   - actual: "14976"
+- children[338].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_14976.n_0.***"
 - children[339].center (mismatch)
   - expected: [198.3,185.7071]
   - actual: [198.3,185.7070707070707]
-- children[339].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[339].znId (extra)
   - expected: undefined
   - actual: "15744"
+- children[339].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_15744.n_0.***"
 - children[340].center (mismatch)
   - expected: [198.3,184.1071]
   - actual: [198.3,184.1070707070707]
-- children[340].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[340].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -17685,18 +13188,15 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[341].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[341].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[341].znId (extra)
   - expected: undefined
   - actual: "17280"
+- children[341].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_17280.n_0.***"
 - children[342].center (mismatch)
   - expected: [198.3,200.9977]
   - actual: [198.3,200.99772727272725]
-- children[342].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[342].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -17706,42 +13206,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[343].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[343].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[343].znId (extra)
   - expected: undefined
   - actual: "18048"
+- children[343].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_18048.n_0.***"
 - children[344].center (mismatch)
   - expected: [186.8,216.8182]
   - actual: [186.8,216.8181818181818]
 - children[344].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[344].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[344].znId (extra)
   - expected: undefined
   - actual: "18432"
+- children[344].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_18432.n_0.***"
 - children[345].center (mismatch)
   - expected: [301.8,222.8788]
   - actual: [301.8,222.87878787878788]
 - children[345].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[345].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[345].znId (extra)
   - expected: undefined
   - actual: "18816"
+- children[345].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_18816.n_0.***"
 - children[346].center (mismatch)
   - expected: [301.8,221.6038]
   - actual: [301.8,221.60378787878787]
-- children[346].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[346].znId (extra)
   - expected: undefined
   - actual: "18816"
@@ -17751,42 +13248,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[347].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[347].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[347].znId (extra)
   - expected: undefined
   - actual: "19584"
+- children[347].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_19584.n_0.***"
 - children[348].center (mismatch)
   - expected: [267.3,232.5758]
   - actual: [267.3,232.57575757575756]
 - children[348].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[348].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[348].znId (extra)
   - expected: undefined
   - actual: "19968"
+- children[348].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_19968.n_0.***"
 - children[349].center (mismatch)
   - expected: [278.8,238.6364]
   - actual: [278.8,238.63636363636363]
 - children[349].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[349].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[349].znId (extra)
   - expected: undefined
   - actual: "20352"
+- children[349].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_20352.n_0.***"
 - children[350].center (mismatch)
   - expected: [278.8,237.3614]
   - actual: [278.8,237.36136363636362]
-- children[350].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[350].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -17796,42 +13290,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[351].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[351].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[351].znId (extra)
   - expected: undefined
   - actual: "21120"
+- children[351].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_21120.n_0.***"
 - children[352].center (mismatch)
   - expected: [244.3,248.3333]
   - actual: [244.3,248.33333333333331]
 - children[352].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[352].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[352].znId (extra)
   - expected: undefined
   - actual: "21504"
+- children[352].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_21504.n_0.***"
 - children[353].center (mismatch)
   - expected: [267.3,254.3939]
   - actual: [267.3,254.39393939393938]
 - children[353].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[353].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[353].znId (extra)
   - expected: undefined
   - actual: "21888"
+- children[353].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_21888.n_0.***"
 - children[354].center (mismatch)
   - expected: [267.3,253.1189]
   - actual: [267.3,253.11893939393937]
-- children[354].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[354].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -17841,1365 +13332,891 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[355].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[355].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[355].znId (extra)
   - expected: undefined
   - actual: "22656"
+- children[355].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_22656.n_0.***"
 - children[356].center (mismatch)
   - expected: [221.3,264.0909]
   - actual: [221.3,264.09090909090907]
 - children[356].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[356].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[356].znId (extra)
   - expected: undefined
   - actual: "23040"
+- children[356].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_23040.n_0.***"
 - children[357].center (mismatch)
   - expected: [186.8,270.1515]
   - actual: [186.8,270.1515151515151]
 - children[357].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[357].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[357].znId (extra)
   - expected: undefined
   - actual: "23424"
+- children[357].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_23424.n_0.***"
 - children[358].center (mismatch)
   - expected: [186.8,268.8765]
   - actual: [186.8,268.87651515151515]
-- children[358].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[358].znId (extra)
   - expected: undefined
   - actual: "23424"
 - children[359].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[359].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[359].znId (extra)
   - expected: undefined
   - actual: "24192"
+- children[359].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_24192.n_0.***"
 - children[360].center (mismatch)
   - expected: [182.5929,18.5076]
   - actual: [182.59291666666667,18.507575757575754]
 - children[360].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[360].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[361].center (mismatch)
   - expected: [272.7303,24.5682]
   - actual: [272.73025,24.568181818181817]
 - children[361].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[361].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[362].center (mismatch)
   - expected: [283.0071,34.2652]
   - actual: [283.00708333333336,34.265151515151516]
 - children[362].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[362].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[363].center (mismatch)
   - expected: [193.8698,40.3258]
   - actual: [193.86975,40.32575757575757]
 - children[363].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[363].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[364].center (mismatch)
   - expected: [182.5929,50.0227]
   - actual: [182.59291666666667,50.02272727272727]
 - children[364].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[364].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[365].center (mismatch)
   - expected: [193.1616,56.0833]
   - actual: [193.16158333333334,56.083333333333336]
 - children[365].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[365].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[366].center (mismatch)
   - expected: [217.0929,60.9318]
   - actual: [217.09291666666667,60.93181818181818]
 - children[366].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[366].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[367].center (mismatch)
   - expected: [248.5071,65.7803]
   - actual: [248.50708333333336,65.78030303030302]
 - children[367].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[367].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[368].center (mismatch)
   - expected: [178.9239,72.851]
   - actual: [178.92391666666668,72.85101010101009]
 - children[368].size (mismatch)
   - expected: [3.3261,0.7058]
   - actual: [3.3260833333333335,0.7058333333333331]
-- children[368].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[369].center (mismatch)
   - expected: [226.4384,89.4167]
   - actual: [226.43841666666668,89.41666666666666]
 - children[369].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[369].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[370].center (mismatch)
   - expected: [203.4384,94.2652]
   - actual: [203.43841666666668,94.2651515151515]
 - children[370].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[370].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[371].center (mismatch)
   - expected: [191.9384,105.1742]
   - actual: [191.93841666666668,105.17424242424241]
 - children[371].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[371].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[372].center (mismatch)
   - expected: [181.6616,110.0227]
   - actual: [181.66158333333334,110.02272727272727]
 - children[372].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[372].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[373].center (mismatch)
   - expected: [181.6616,120.9318]
   - actual: [181.66158333333334,120.93181818181817]
 - children[373].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[373].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[374].center (mismatch)
   - expected: [262.1616,125.7803]
   - actual: [262.16158333333334,125.78030303030302]
 - children[374].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[374].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[375].center (mismatch)
   - expected: [262.1616,136.6894]
   - actual: [262.16158333333334,136.68939393939394]
 - children[375].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[375].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[376].center (mismatch)
   - expected: [270.4821,141.5379]
   - actual: [270.4820833333334,141.53787878787878]
 - children[376].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[376].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[377].center (mismatch)
   - expected: [182.5929,146.3864]
   - actual: [182.59291666666667,146.38636363636363]
 - children[377].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[377].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[378].center (mismatch)
   - expected: [286.6761,153.4571]
   - actual: [286.67608333333334,153.4570707070707]
 - children[378].size (mismatch)
   - expected: [3.3261,0.7058]
   - actual: [3.3260833333333335,0.7058333333333331]
-- children[378].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[379].center (mismatch)
   - expected: [249.4384,170.0227]
   - actual: [249.43841666666668,170.02272727272728]
 - children[379].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[379].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[380].center (mismatch)
   - expected: [181.6616,174.8712]
   - actual: [181.66158333333334,174.87121212121212]
 - children[380].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[380].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[381].center (mismatch)
   - expected: [190.4239,186.7904]
   - actual: [190.42391666666668,186.79040404040404]
 - children[381].size (mismatch)
   - expected: [3.3261,0.7058]
   - actual: [3.3260833333333335,0.7058333333333331]
-- children[381].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[382].center (mismatch)
   - expected: [203.4384,203.3561]
   - actual: [203.43841666666668,203.3560606060606]
 - children[382].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[382].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[383].center (mismatch)
   - expected: [191.0071,208.2045]
   - actual: [191.00708333333336,208.20454545454547]
 - children[383].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[383].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[384].center (mismatch)
   - expected: [182.5929,217.9015]
   - actual: [182.59291666666667,217.90151515151516]
 - children[384].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[384].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[385].center (mismatch)
   - expected: [306.9384,223.9621]
   - actual: [306.9384166666667,223.96212121212122]
 - children[385].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[385].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[386].center (mismatch)
   - expected: [283.0071,228.8106]
   - actual: [283.00708333333336,228.81060606060603]
 - children[386].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[386].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[387].center (mismatch)
   - expected: [263.0929,233.6591]
   - actual: [263.09291666666667,233.6590909090909]
 - children[387].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[387].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[388].center (mismatch)
   - expected: [283.9384,239.7197]
   - actual: [283.9384166666667,239.71969696969697]
 - children[388].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[388].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[389].center (mismatch)
   - expected: [271.5071,244.5682]
   - actual: [271.50708333333336,244.56818181818184]
 - children[389].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[389].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[390].center (mismatch)
   - expected: [240.0929,249.4167]
   - actual: [240.09291666666667,249.41666666666666]
 - children[390].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[390].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[391].center (mismatch)
   - expected: [272.4384,255.4773]
   - actual: [272.4384166666667,255.47727272727272]
 - children[391].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[391].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[392].center (mismatch)
   - expected: [248.5071,260.3258]
   - actual: [248.50708333333336,260.32575757575756]
 - children[392].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[392].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[393].center (mismatch)
   - expected: [225.5071,265.1742]
   - actual: [225.50708333333336,265.1742424242424]
 - children[393].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[393].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[394].center (mismatch)
   - expected: [191.9384,271.2348]
   - actual: [191.93841666666668,271.23484848484844]
 - children[394].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[394].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[395].center (mismatch)
   - expected: [183.6179,276.0833]
   - actual: [183.61791666666667,276.0833333333333]
 - children[395].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[395].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[396].center (mismatch)
   - expected: [183.175,17.4242]
   - actual: [183.175,17.424242424242422]
-- children[396].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[397].center (mismatch)
   - expected: [275.175,23.4848]
   - actual: [275.175,23.484848484848484]
-- children[397].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[398].center (mismatch)
   - expected: [282.425,33.1818]
   - actual: [282.425,33.18181818181818]
-- children[398].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[399].center (mismatch)
   - expected: [191.425,39.2424]
   - actual: [191.425,39.242424242424235]
-- children[399].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[400].center (mismatch)
   - expected: [183.175,48.9394]
   - actual: [183.175,48.93939393939394]
-- children[400].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[401].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[402].center (mismatch)
   - expected: [217.675,59.8485]
   - actual: [217.675,59.848484848484844]
-- children[402].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[403].center (mismatch)
   - expected: [247.925,64.697]
   - actual: [247.925,64.69696969696969]
-- children[403].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[404].center (mismatch)
   - expected: [182.3,71.7677]
   - actual: [182.3,71.76767676767676]
-- children[404].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[405].center (mismatch)
   - expected: [224.925,88.3333]
   - actual: [224.925,88.33333333333333]
-- children[405].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[406].center (mismatch)
   - expected: [201.925,93.1818]
   - actual: [201.925,93.18181818181817]
-- children[406].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[407].center (mismatch)
   - expected: [190.425,104.0909]
   - actual: [190.425,104.09090909090908]
-- children[407].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[408].center (mismatch)
   - expected: [183.175,108.9394]
   - actual: [183.175,108.93939393939394]
-- children[408].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[409].center (mismatch)
   - expected: [183.175,119.8485]
   - actual: [183.175,119.84848484848484]
-- children[409].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[410].center (mismatch)
   - expected: [263.675,124.697]
   - actual: [263.675,124.69696969696969]
-- children[410].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[411].center (mismatch)
   - expected: [263.675,135.6061]
   - actual: [263.675,135.6060606060606]
-- children[411].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[412].center (mismatch)
   - expected: [269.9,140.4545]
   - actual: [269.90000000000003,140.45454545454544]
-- children[412].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[413].center (mismatch)
   - expected: [183.175,145.303]
   - actual: [183.175,145.30303030303028]
-- children[413].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[414].center (mismatch)
   - expected: [283.3,152.3737]
   - actual: [283.3,152.37373737373736]
-- children[414].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[415].center (mismatch)
   - expected: [247.925,168.9394]
   - actual: [247.925,168.93939393939394]
-- children[415].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[416].center (mismatch)
   - expected: [183.175,173.7879]
   - actual: [183.175,173.78787878787878]
-- children[416].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[417].center (mismatch)
   - expected: [193.8,185.7071]
   - actual: [193.8,185.7070707070707]
-- children[417].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[418].center (mismatch)
   - expected: [201.925,202.2727]
   - actual: [201.925,202.27272727272725]
-- children[418].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[419].center (mismatch)
   - expected: [190.425,207.1212]
   - actual: [190.425,207.12121212121212]
-- children[419].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[420].center (mismatch)
   - expected: [183.175,216.8182]
   - actual: [183.175,216.8181818181818]
-- children[420].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[421].center (mismatch)
   - expected: [305.425,222.8788]
   - actual: [305.425,222.87878787878788]
-- children[421].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[422].center (mismatch)
   - expected: [282.425,227.7273]
   - actual: [282.425,227.7272727272727]
-- children[422].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[423].center (mismatch)
   - expected: [263.675,232.5758]
   - actual: [263.675,232.57575757575756]
-- children[423].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[424].center (mismatch)
   - expected: [282.425,238.6364]
   - actual: [282.425,238.63636363636363]
-- children[424].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[425].center (mismatch)
   - expected: [270.925,243.4848]
   - actual: [270.925,243.4848484848485]
-- children[425].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[426].center (mismatch)
   - expected: [240.675,248.3333]
   - actual: [240.675,248.33333333333331]
-- children[426].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[427].center (mismatch)
   - expected: [270.925,254.3939]
   - actual: [270.925,254.39393939393938]
-- children[427].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[428].center (mismatch)
   - expected: [247.925,259.2424]
   - actual: [247.925,259.24242424242425]
-- children[428].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[429].center (mismatch)
   - expected: [224.925,264.0909]
   - actual: [224.925,264.09090909090907]
-- children[429].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[430].center (mismatch)
   - expected: [190.425,270.1515]
   - actual: [190.425,270.1515151515151]
-- children[430].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[431].center (mismatch)
   - expected: [184.2,275]
   - actual: [184.20000000000002,275]
-- children[431].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[432].center (mismatch)
   - expected: [284.2981,22.2723]
   - actual: [284.298125,22.272348484848486]
 - children[432].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[432].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[433].center (mismatch)
   - expected: [182.3019,38.0299]
   - actual: [182.30187500000002,38.02992424242423]
 - children[433].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[433].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[434].center (mismatch)
   - expected: [202.7981,53.7875]
   - actual: [202.798125,53.787499999999994]
 - children[434].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[434].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[435].center (mismatch)
   - expected: [181.4269,70.5552]
   - actual: [181.42687500000002,70.55517676767676]
 - children[435].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[435].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[436].center (mismatch)
   - expected: [225.7981,87.1208]
   - actual: [225.798125,87.12083333333332]
 - children[436].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[436].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[437].center (mismatch)
   - expected: [182.3019,102.8784]
   - actual: [182.30187500000002,102.87840909090907]
 - children[437].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[437].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[438].center (mismatch)
   - expected: [182.3019,118.636]
   - actual: [182.30187500000002,118.63598484848484]
 - children[438].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[438].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[439].center (mismatch)
   - expected: [271.7981,134.3936]
   - actual: [271.798125,134.39356060606062]
 - children[439].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[439].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[440].center (mismatch)
   - expected: [284.1731,151.1612]
   - actual: [284.173125,151.16123737373738]
 - children[440].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[440].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[441].center (mismatch)
   - expected: [238.9338,167.7269]
   - actual: [238.93375,167.72689393939396]
 - children[441].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[441].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[442].center (mismatch)
   - expected: [204.5463,184.4946]
   - actual: [204.54625000000001,184.49457070707072]
 - children[442].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[442].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[443].center (mismatch)
   - expected: [203.6713,201.0602]
   - actual: [203.67125000000001,201.06022727272727]
 - children[443].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[443].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[444].center (mismatch)
   - expected: [307.1713,221.6663]
   - actual: [307.17125,221.6662878787879]
 - children[444].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[444].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[445].center (mismatch)
   - expected: [284.1713,237.4239]
   - actual: [284.17125,237.42386363636365]
 - children[445].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[445].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[446].center (mismatch)
   - expected: [272.6713,253.1814]
   - actual: [272.67125,253.1814393939394]
 - children[446].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[446].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[447].center (mismatch)
   - expected: [181.4288,268.939]
   - actual: [181.42875,268.93901515151515]
 - children[447].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[447].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[448].center (mismatch)
   - expected: [283.425,20.7848]
   - actual: [283.425,20.784848484848485]
-- children[448].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[449].center (mismatch)
   - expected: [183.175,36.5424]
   - actual: [183.175,36.54242424242423]
-- children[449].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[450].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[451].center (mismatch)
   - expected: [182.3,69.0677]
   - actual: [182.3,69.06767676767676]
-- children[451].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[452].center (mismatch)
   - expected: [224.925,85.6333]
   - actual: [224.925,85.63333333333333]
-- children[452].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[453].center (mismatch)
   - expected: [183.175,101.3909]
   - actual: [183.175,101.39090909090908]
-- children[453].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[454].center (mismatch)
   - expected: [183.175,117.1485]
   - actual: [183.175,117.14848484848484]
-- children[454].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[455].center (mismatch)
   - expected: [270.925,132.9061]
   - actual: [270.925,132.9060606060606]
-- children[455].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[456].center (mismatch)
   - expected: [283.3,149.6737]
   - actual: [283.3,149.67373737373737]
-- children[456].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[457].center (mismatch)
   - expected: [240.68,166.2394]
   - actual: [240.68,166.23939393939395]
-- children[457].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[458].center (mismatch)
   - expected: [202.8,183.0071]
   - actual: [202.8,183.0070707070707]
-- children[458].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[459].center (mismatch)
   - expected: [201.925,199.5727]
   - actual: [201.925,199.57272727272726]
-- children[459].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[460].center (mismatch)
   - expected: [305.425,220.1788]
   - actual: [305.425,220.1787878787879]
-- children[460].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[461].center (mismatch)
   - expected: [282.425,235.9364]
   - actual: [282.425,235.93636363636364]
-- children[461].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[462].center (mismatch)
   - expected: [270.925,251.6939]
   - actual: [270.925,251.6939393939394]
-- children[462].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[463].center (mismatch)
   - expected: [183.175,267.4515]
   - actual: [183.175,267.45151515151514]
-- children[463].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[464].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[465].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[466].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[467].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[468].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[469].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[470].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[471].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[472].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[473].text (mismatch)
-  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 19:55:02 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 20:59:43 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "783_einsiedler-kreuzweg - created by Zupfnoter"
-- children[473].lineWidth (extra)
+- children[473].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[474].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[474].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[475].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[476].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[477].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[478].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[479].fill (extra)
   - expected: undefined
   - actual: true
-- children[479].lineWidth (extra)
+- children[479].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[479].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[479].path (mismatch)
+  - expected: [["M",2.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,290],[1.7999999999999998,294],[3.8,294],[2.8,290]]
 - children[480].fill (extra)
   - expected: undefined
   - actual: true
-- children[480].lineWidth (extra)
+- children[480].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[480].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[480].path (mismatch)
+  - expected: [["M",140.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,290],[139.8,294],[141.8,294],[140.8,290]]
 - children[481].fill (extra)
   - expected: undefined
   - actual: true
-- children[481].lineWidth (extra)
+- children[481].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[481].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[481].path (mismatch)
+  - expected: [["M",416.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,290],[415.8,294],[417.8,294],[416.8,290]]
-- children[482].lineWidth (extra)
+- children[482].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[483].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[483].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[484].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[484].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[485].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[485].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[486].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[486].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[487].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[487].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[488].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[488].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[489].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[489].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[490].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[490].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[491].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[491].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[492].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[492].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[493].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[493].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[494].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[494].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[495].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[495].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[496].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[496].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[497].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[497].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[498].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[498].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[499].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[499].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[500].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[500].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[501].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[501].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[502].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[502].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[503].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[503].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[504].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[504].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[505].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[505].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[506].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[506].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[507].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[507].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[508].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[508].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[509].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[509].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[510].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[510].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[511].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[511].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[512].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[512].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[513].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[513].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[514].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[514].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[515].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[515].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[516].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[516].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[517].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[517].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[518].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[518].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[519].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[520].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[521].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[522].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 
 ## 783_einsiedler-kreuzweg [extract 1]
 
-- Issues: 1489
+- Issues: 1101
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,17.424242424242422]
 - children[0].to (extra)
   - expected: undefined
   - actual: [186.8,17.424242424242422]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1].from (extra)
   - expected: undefined
   - actual: [324.8,23.484848484848484]
 - children[1].to (extra)
   - expected: undefined
   - actual: [278.8,23.484848484848484]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[2].from (extra)
   - expected: undefined
   - actual: [324.8,33.18181818181818]
 - children[2].to (extra)
   - expected: undefined
   - actual: [278.8,33.18181818181818]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[3].from (extra)
   - expected: undefined
   - actual: [278.8,39.242424242424235]
 - children[3].to (extra)
   - expected: undefined
   - actual: [186.8,39.242424242424235]
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[4].from (extra)
   - expected: undefined
   - actual: [221.3,48.93939393939394]
 - children[4].to (extra)
   - expected: undefined
   - actual: [186.8,48.93939393939394]
-- children[4].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[5].from (extra)
   - expected: undefined
   - actual: [244.3,55]
 - children[5].to (extra)
   - expected: undefined
   - actual: [198.3,55]
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[6].from (extra)
   - expected: undefined
   - actual: [267.3,59.848484848484844]
 - children[6].to (extra)
   - expected: undefined
   - actual: [221.3,59.848484848484844]
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[7].from (extra)
   - expected: undefined
   - actual: [278.8,64.69696969696969]
 - children[7].to (extra)
   - expected: undefined
   - actual: [244.3,64.69696969696969]
-- children[7].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[8].from (extra)
   - expected: undefined
   - actual: [221.3,71.76767676767676]
 - children[8].to (extra)
   - expected: undefined
   - actual: [186.8,71.76767676767676]
-- children[8].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[9].from (extra)
   - expected: undefined
   - actual: [267.3,88.33333333333333]
 - children[9].to (extra)
   - expected: undefined
   - actual: [221.3,88.33333333333333]
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[10].from (extra)
   - expected: undefined
   - actual: [244.3,93.18181818181817]
 - children[10].to (extra)
   - expected: undefined
   - actual: [198.3,93.18181818181817]
-- children[10].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[11].from (extra)
   - expected: undefined
   - actual: [278.8,104.09090909090908]
 - children[11].to (extra)
   - expected: undefined
   - actual: [186.8,104.09090909090908]
-- children[11].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[12].from (extra)
   - expected: undefined
   - actual: [221.3,108.93939393939394]
 - children[12].to (extra)
   - expected: undefined
   - actual: [186.8,108.93939393939394]
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[13].from (extra)
   - expected: undefined
   - actual: [278.8,119.84848484848484]
 - children[13].to (extra)
   - expected: undefined
   - actual: [186.8,119.84848484848484]
-- children[13].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[14].from (extra)
   - expected: undefined
   - actual: [301.8,124.69696969696969]
 - children[14].to (extra)
   - expected: undefined
   - actual: [267.3,124.69696969696969]
-- children[14].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[15].from (extra)
   - expected: undefined
   - actual: [301.8,135.6060606060606]
 - children[15].to (extra)
   - expected: undefined
   - actual: [267.3,135.6060606060606]
-- children[15].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[16].from (extra)
   - expected: undefined
   - actual: [301.8,140.45454545454544]
 - children[16].to (extra)
   - expected: undefined
   - actual: [267.3,140.45454545454544]
-- children[16].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[17].from (extra)
   - expected: undefined
   - actual: [221.3,145.30303030303028]
 - children[17].to (extra)
   - expected: undefined
   - actual: [186.8,145.30303030303028]
-- children[17].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[18].from (extra)
   - expected: undefined
   - actual: [324.8,152.37373737373736]
 - children[18].to (extra)
   - expected: undefined
   - actual: [278.8,152.37373737373736]
-- children[18].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[19].from (extra)
   - expected: undefined
   - actual: [278.8,168.93939393939394]
 - children[19].to (extra)
   - expected: undefined
   - actual: [244.3,168.93939393939394]
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[20].from (extra)
   - expected: undefined
   - actual: [221.3,173.78787878787878]
 - children[20].to (extra)
   - expected: undefined
   - actual: [186.8,173.78787878787878]
-- children[20].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[21].from (extra)
   - expected: undefined
   - actual: [244.3,185.7070707070707]
 - children[21].to (extra)
   - expected: undefined
   - actual: [198.3,185.7070707070707]
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[22].from (extra)
   - expected: undefined
   - actual: [221.3,202.27272727272725]
 - children[22].to (extra)
   - expected: undefined
   - actual: [198.3,202.27272727272725]
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[23].from (extra)
   - expected: undefined
   - actual: [221.3,207.12121212121212]
 - children[23].to (extra)
   - expected: undefined
   - actual: [186.8,207.12121212121212]
-- children[23].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[24].from (extra)
   - expected: undefined
   - actual: [221.3,216.8181818181818]
 - children[24].to (extra)
   - expected: undefined
   - actual: [186.8,216.8181818181818]
-- children[24].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[25].from (extra)
   - expected: undefined
   - actual: [336.3,222.87878787878788]
 - children[25].to (extra)
   - expected: undefined
   - actual: [301.8,222.87878787878788]
-- children[25].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[26].from (extra)
   - expected: undefined
   - actual: [324.8,227.7272727272727]
 - children[26].to (extra)
   - expected: undefined
   - actual: [278.8,227.7272727272727]
-- children[26].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[27].from (extra)
   - expected: undefined
   - actual: [301.8,232.57575757575756]
 - children[27].to (extra)
   - expected: undefined
   - actual: [267.3,232.57575757575756]
-- children[27].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[28].from (extra)
   - expected: undefined
   - actual: [324.8,238.63636363636363]
 - children[28].to (extra)
   - expected: undefined
   - actual: [278.8,238.63636363636363]
-- children[28].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[29].from (extra)
   - expected: undefined
   - actual: [301.8,243.4848484848485]
 - children[29].to (extra)
   - expected: undefined
   - actual: [267.3,243.4848484848485]
-- children[29].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[30].from (extra)
   - expected: undefined
   - actual: [278.8,248.33333333333331]
 - children[30].to (extra)
   - expected: undefined
   - actual: [244.3,248.33333333333331]
-- children[30].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[31].from (extra)
   - expected: undefined
   - actual: [301.8,254.39393939393938]
 - children[31].to (extra)
   - expected: undefined
   - actual: [267.3,254.39393939393938]
-- children[31].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[32].from (extra)
   - expected: undefined
   - actual: [278.8,259.24242424242425]
 - children[32].to (extra)
   - expected: undefined
   - actual: [244.3,259.24242424242425]
-- children[32].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[33].from (extra)
   - expected: undefined
   - actual: [267.3,264.09090909090907]
 - children[33].to (extra)
   - expected: undefined
   - actual: [221.3,264.09090909090907]
-- children[33].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[34].from (extra)
   - expected: undefined
   - actual: [278.8,270.1515151515151]
 - children[34].to (extra)
   - expected: undefined
   - actual: [186.8,270.1515151515151]
-- children[34].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[35].from (extra)
   - expected: undefined
   - actual: [278.8,275]
 - children[35].to (extra)
   - expected: undefined
   - actual: [186.8,275]
-- children[35].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[36].fill (extra)
   - expected: undefined
   - actual: false
-- children[36].lineWidth (extra)
+- children[36].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[36].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[36].path (extra)
-  - expected: undefined
+- children[36].path (mismatch)
+  - expected: [["M",221.3,17.424242424242426],["c",59.61953071851397,-1.3271235451790004,93.51710040169344,5.4760415986938025,103.5,6.060606060606059]]
   - actual: [[221.3,17.424242424242422],[235.6700543773591,17.25353879687988],[248.97463569404604,17.37177466568959],[261.22001926586125,17.729127498133316],[272.4124804086048,18.275774761672828],[282.55829443807687,18.96189392376988],[291.6637366700778,19.737662451886234],[299.7350824204077,20.553257813483658],[306.7786070048669,21.358857476023907],[312.80058573925544,22.10463890696876],[317.8072939393737,22.74077957377996],[321.8050069210218,23.21745694391928],[324.8,23.484848484848484]]
 - children[37].from (extra)
   - expected: undefined
@@ -19207,9 +14224,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[37].to (extra)
   - expected: undefined
   - actual: [313.3,28.333333333333332]
-- children[37].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[37].znId (extra)
   - expected: undefined
   - actual: "1152"
@@ -19219,9 +14233,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[38].to (extra)
   - expected: undefined
   - actual: [324.8,33.18181818181818]
-- children[38].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[38].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -19231,9 +14242,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[39].to (extra)
   - expected: undefined
   - actual: [278.8,39.242424242424235]
-- children[39].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[39].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -19243,9 +14251,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[40].to (extra)
   - expected: undefined
   - actual: [221.3,44.090909090909086]
-- children[40].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[40].znId (extra)
   - expected: undefined
   - actual: "2688"
@@ -19255,9 +14260,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[41].to (extra)
   - expected: undefined
   - actual: [221.3,48.93939393939394]
-- children[41].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[41].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -19267,9 +14269,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[42].to (extra)
   - expected: undefined
   - actual: [244.3,55]
-- children[42].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[42].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -19279,9 +14278,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[43].to (extra)
   - expected: undefined
   - actual: [267.3,59.848484848484844]
-- children[43].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[43].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -19291,9 +14287,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[44].to (extra)
   - expected: undefined
   - actual: [278.8,64.69696969696969]
-- children[44].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[44].znId (extra)
   - expected: undefined
   - actual: "4608"
@@ -19303,9 +14296,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[45].to (extra)
   - expected: undefined
   - actual: [221.3,71.76767676767676]
-- children[45].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[45].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -19315,9 +14305,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[46].to (extra)
   - expected: undefined
   - actual: [221.3,77.42424242424242]
-- children[46].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[46].znId (extra)
   - expected: undefined
   - actual: "5760"
@@ -19327,9 +14314,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[47].to (extra)
   - expected: undefined
   - actual: [221.3,82.27272727272727]
-- children[47].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[47].znId (extra)
   - expected: undefined
   - actual: "6144"
@@ -19339,9 +14323,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[48].to (extra)
   - expected: undefined
   - actual: [267.3,88.33333333333333]
-- children[48].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[48].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -19351,9 +14332,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[49].to (extra)
   - expected: undefined
   - actual: [244.3,93.18181818181817]
-- children[49].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[49].znId (extra)
   - expected: undefined
   - actual: "7296"
@@ -19363,9 +14341,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[50].to (extra)
   - expected: undefined
   - actual: [267.3,98.03030303030303]
-- children[50].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[50].znId (extra)
   - expected: undefined
   - actual: "7680"
@@ -19375,9 +14350,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[51].to (extra)
   - expected: undefined
   - actual: [278.8,104.09090909090908]
-- children[51].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[51].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -19387,9 +14359,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[52].to (extra)
   - expected: undefined
   - actual: [221.3,108.93939393939394]
-- children[52].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[52].znId (extra)
   - expected: undefined
   - actual: "8832"
@@ -19399,9 +14368,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[53].to (extra)
   - expected: undefined
   - actual: [221.3,113.78787878787878]
-- children[53].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[53].znId (extra)
   - expected: undefined
   - actual: "9216"
@@ -19411,9 +14377,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[54].to (extra)
   - expected: undefined
   - actual: [278.8,119.84848484848484]
-- children[54].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[54].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -19423,9 +14386,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[55].to (extra)
   - expected: undefined
   - actual: [301.8,124.69696969696969]
-- children[55].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[55].znId (extra)
   - expected: undefined
   - actual: "10368"
@@ -19435,9 +14395,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[56].to (extra)
   - expected: undefined
   - actual: [324.8,129.54545454545453]
-- children[56].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[56].znId (extra)
   - expected: undefined
   - actual: "10752"
@@ -19447,9 +14404,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[57].to (extra)
   - expected: undefined
   - actual: [301.8,135.6060606060606]
-- children[57].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[57].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -19459,23 +14413,20 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[58].to (extra)
   - expected: undefined
   - actual: [301.8,140.45454545454544]
-- children[58].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[58].znId (extra)
   - expected: undefined
   - actual: "11904"
 - children[59].fill (extra)
   - expected: undefined
   - actual: false
-- children[59].lineWidth (extra)
+- children[59].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[59].znId (extra)
   - expected: undefined
   - actual: "12288"
-- children[59].path (extra)
-  - expected: undefined
+- children[59].path (mismatch)
+  - expected: [["M",301.8,140.45454545454544],["c",-16.555209142926607,3.5717713020235804,-70.51808883934729,4.24727807803336,-80.5,4.848484848484873]]
   - actual: [[301.8,140.45454545454544],[296.92897115128426,141.28878251707908],[290.78188880412176,142.01214037894707],[283.64135239979464,142.63441752806764],[275.78996137958507,143.16541245235908],[267.51031518477527,143.61492363973954],[259.0850132566473,143.99274957812736],[250.79665503648337,144.3086887554408],[242.92783996556568,144.57253965959802],[235.76116748517632,144.79410077851736],[229.57923703659753,144.983170600117],[224.6646480611114,145.14954761231522],[221.3,145.30303030303028]]
 - children[60].from (extra)
   - expected: undefined
@@ -19483,9 +14434,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[60].to (extra)
   - expected: undefined
   - actual: [324.8,152.37373737373736]
-- children[60].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[60].znId (extra)
   - expected: undefined
   - actual: "12672"
@@ -19495,9 +14443,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[61].to (extra)
   - expected: undefined
   - actual: [313.3,158.030303030303]
-- children[61].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[61].znId (extra)
   - expected: undefined
   - actual: "13440"
@@ -19507,9 +14452,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[62].to (extra)
   - expected: undefined
   - actual: [324.8,162.87878787878788]
-- children[62].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[62].znId (extra)
   - expected: undefined
   - actual: "13824"
@@ -19519,23 +14461,20 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[63].to (extra)
   - expected: undefined
   - actual: [278.8,168.93939393939394]
-- children[63].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[63].znId (extra)
   - expected: undefined
   - actual: "14208"
 - children[64].fill (extra)
   - expected: undefined
   - actual: false
-- children[64].lineWidth (extra)
+- children[64].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[64].znId (extra)
   - expected: undefined
   - actual: "14976"
-- children[64].path (extra)
-  - expected: undefined
+- children[64].path (mismatch)
+  - expected: [["M",278.8,168.93939393939394],["c",-14.206383391160816,4.44940118930065,-47.53536209626449,4.008251876364855,-57.5,4.848484848484844]]
   - actual: [[278.8,168.93939393939394],[274.8746040971249,169.95342948828554],[270.29995747323596,170.78512242176203],[265.22358421206684,171.45590306200154],[259.79300839735123,171.98720173118213],[254.15575411282288,172.40044875148197],[248.45934544221552,172.7170744450791],[242.85130646926282,172.95850913415163],[237.47916127769858,173.14618314087767],[232.49043395125642,173.3015267874353],[228.03264857367012,173.44597039600262],[224.2533292286734,173.60094428875774],[221.3,173.78787878787878]]
 - children[65].from (extra)
   - expected: undefined
@@ -19543,9 +14482,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[65].to (extra)
   - expected: undefined
   - actual: [221.3,178.63636363636363]
-- children[65].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[65].znId (extra)
   - expected: undefined
   - actual: "15360"
@@ -19555,9 +14491,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[66].to (extra)
   - expected: undefined
   - actual: [244.3,185.7070707070707]
-- children[66].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[66].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -19567,9 +14500,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[67].to (extra)
   - expected: undefined
   - actual: [267.3,191.36363636363637]
-- children[67].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[67].znId (extra)
   - expected: undefined
   - actual: "16512"
@@ -19579,9 +14509,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[68].to (extra)
   - expected: undefined
   - actual: [278.8,196.2121212121212]
-- children[68].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[68].znId (extra)
   - expected: undefined
   - actual: "16896"
@@ -19591,9 +14518,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[69].to (extra)
   - expected: undefined
   - actual: [221.3,202.27272727272725]
-- children[69].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[69].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -19603,23 +14527,20 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[70].to (extra)
   - expected: undefined
   - actual: [221.3,207.12121212121212]
-- children[70].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[70].znId (extra)
   - expected: undefined
   - actual: "18048"
 - children[71].fill (extra)
   - expected: undefined
   - actual: false
-- children[71].lineWidth (extra)
+- children[71].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[71].znId (extra)
   - expected: undefined
   - actual: "18816"
-- children[71].path (extra)
-  - expected: undefined
+- children[71].path (mismatch)
+  - expected: [["M",221.3,216.8181818181818],["c",88.2652980968573,-1.3867054023546128,105.01385807577867,5.534327171319035,115,6.060606060606062]]
   - actual: [[221.3,216.8181818181818],[241.91386604494207,216.6360749557162],[259.77270939074526,216.7490735239864],[275.1013714265181,217.1061272047272],[288.12469354136886,217.6561856796731],[299.0675171244062,218.3481986305589],[308.1546835647385,219.13111573911922],[315.6110342514742,219.95388668708875],[321.66141057372175,220.76546115620218],[326.53065392058966,221.5147888281941],[330.4436056811864,222.15081938479923],[333.6251072446204,222.62250250775227],[336.3,222.87878787878788]]
 - children[72].from (extra)
   - expected: undefined
@@ -19627,9 +14548,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[72].to (extra)
   - expected: undefined
   - actual: [324.8,227.7272727272727]
-- children[72].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[72].znId (extra)
   - expected: undefined
   - actual: "19584"
@@ -19639,9 +14557,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[73].to (extra)
   - expected: undefined
   - actual: [301.8,232.57575757575756]
-- children[73].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[73].znId (extra)
   - expected: undefined
   - actual: "19968"
@@ -19651,9 +14566,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[74].to (extra)
   - expected: undefined
   - actual: [324.8,238.63636363636363]
-- children[74].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[74].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -19663,9 +14575,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[75].to (extra)
   - expected: undefined
   - actual: [301.8,243.4848484848485]
-- children[75].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[75].znId (extra)
   - expected: undefined
   - actual: "21120"
@@ -19675,9 +14584,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[76].to (extra)
   - expected: undefined
   - actual: [278.8,248.33333333333331]
-- children[76].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[76].znId (extra)
   - expected: undefined
   - actual: "21504"
@@ -19687,9 +14593,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[77].to (extra)
   - expected: undefined
   - actual: [301.8,254.39393939393938]
-- children[77].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[77].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -19699,9 +14602,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[78].to (extra)
   - expected: undefined
   - actual: [278.8,259.24242424242425]
-- children[78].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[78].znId (extra)
   - expected: undefined
   - actual: "22656"
@@ -19711,9 +14611,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[79].to (extra)
   - expected: undefined
   - actual: [267.3,264.09090909090907]
-- children[79].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[79].znId (extra)
   - expected: undefined
   - actual: "23040"
@@ -19723,9 +14620,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[80].to (extra)
   - expected: undefined
   - actual: [278.8,270.1515151515151]
-- children[80].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[80].znId (extra)
   - expected: undefined
   - actual: "23424"
@@ -19735,9 +14629,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[81].to (extra)
   - expected: undefined
   - actual: [278.8,275]
-- children[81].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[81].znId (extra)
   - expected: undefined
   - actual: "24192"
@@ -19747,30 +14638,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[82].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[82].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[82].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[82].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_0.n_0.***"
 - children[83].center (mismatch)
   - expected: [324.8,23.4848]
   - actual: [324.8,23.484848484848484]
 - children[83].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[83].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[83].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[83].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_384.n_0.***"
 - children[84].center (mismatch)
   - expected: [324.8,22.2098]
   - actual: [324.8,22.209848484848486]
-- children[84].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[84].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -19780,42 +14668,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[85].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[85].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[85].znId (extra)
   - expected: undefined
   - actual: "1152"
+- children[85].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_1152.n_0.***"
 - children[86].center (mismatch)
   - expected: [324.8,33.1818]
   - actual: [324.8,33.18181818181818]
 - children[86].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[86].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[86].znId (extra)
   - expected: undefined
   - actual: "1536"
+- children[86].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_1536.n_0.***"
 - children[87].center (mismatch)
   - expected: [278.8,39.2424]
   - actual: [278.8,39.242424242424235]
 - children[87].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[87].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[87].znId (extra)
   - expected: undefined
   - actual: "1920"
+- children[87].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_1920.n_0.***"
 - children[88].center (mismatch)
   - expected: [278.8,37.9674]
   - actual: [278.8,37.96742424242424]
-- children[88].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[88].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -19825,36 +14710,33 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[89].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[89].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[89].znId (extra)
   - expected: undefined
   - actual: "2688"
+- children[89].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_2688.n_0.***"
 - children[90].center (mismatch)
   - expected: [221.3,48.9394]
   - actual: [221.3,48.93939393939394]
 - children[90].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[90].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[90].znId (extra)
   - expected: undefined
   - actual: "3072"
+- children[90].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_3072.n_0.***"
 - children[91].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[91].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[91].znId (extra)
   - expected: undefined
   - actual: "3456"
-- children[92].lineWidth (extra)
+- children[91].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.1.notebound.nconf.v_1.t_3456.n_0.***"
 - children[92].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -19864,42 +14746,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[93].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[93].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[93].znId (extra)
   - expected: undefined
   - actual: "4224"
+- children[93].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_4224.n_0.***"
 - children[94].center (mismatch)
   - expected: [278.8,64.697]
   - actual: [278.8,64.69696969696969]
 - children[94].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[94].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[94].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[94].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_4608.n_0.***"
 - children[95].center (mismatch)
   - expected: [221.3,71.7677]
   - actual: [221.3,71.76767676767676]
 - children[95].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[95].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[95].znId (extra)
   - expected: undefined
   - actual: "4992"
+- children[95].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_4992.n_0.***"
 - children[96].center (mismatch)
   - expected: [221.3,70.4927]
   - actual: [221.3,70.49267676767676]
-- children[96].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[96].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -19909,42 +14788,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[97].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[97].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[97].znId (extra)
   - expected: undefined
   - actual: "5760"
+- children[97].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_5760.n_0.***"
 - children[98].center (mismatch)
   - expected: [221.3,82.2727]
   - actual: [221.3,82.27272727272727]
 - children[98].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[98].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[98].znId (extra)
   - expected: undefined
   - actual: "6144"
+- children[98].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_6144.n_0.***"
 - children[99].center (mismatch)
   - expected: [267.3,88.3333]
   - actual: [267.3,88.33333333333333]
 - children[99].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[99].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[99].znId (extra)
   - expected: undefined
   - actual: "6528"
+- children[99].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_6528.n_0.***"
 - children[100].center (mismatch)
   - expected: [267.3,87.0583]
   - actual: [267.3,87.05833333333332]
-- children[100].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[100].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -19954,42 +14830,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[101].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[101].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[101].znId (extra)
   - expected: undefined
   - actual: "7296"
+- children[101].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_7296.n_0.***"
 - children[102].center (mismatch)
   - expected: [267.3,98.0303]
   - actual: [267.3,98.03030303030303]
 - children[102].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[102].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[102].znId (extra)
   - expected: undefined
   - actual: "7680"
+- children[102].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_7680.n_0.***"
 - children[103].center (mismatch)
   - expected: [278.8,104.0909]
   - actual: [278.8,104.09090909090908]
 - children[103].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[103].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[103].znId (extra)
   - expected: undefined
   - actual: "8064"
+- children[103].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_8064.n_0.***"
 - children[104].center (mismatch)
   - expected: [278.8,102.8159]
   - actual: [278.8,102.81590909090907]
-- children[104].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[104].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -19999,42 +14872,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[105].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[105].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[105].znId (extra)
   - expected: undefined
   - actual: "8832"
+- children[105].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_8832.n_0.***"
 - children[106].center (mismatch)
   - expected: [221.3,113.7879]
   - actual: [221.3,113.78787878787878]
 - children[106].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[106].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[106].znId (extra)
   - expected: undefined
   - actual: "9216"
+- children[106].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_9216.n_0.***"
 - children[107].center (mismatch)
   - expected: [278.8,119.8485]
   - actual: [278.8,119.84848484848484]
 - children[107].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[107].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[107].znId (extra)
   - expected: undefined
   - actual: "9600"
+- children[107].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_9600.n_0.***"
 - children[108].center (mismatch)
   - expected: [278.8,118.5735]
   - actual: [278.8,118.57348484848484]
-- children[108].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[108].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -20044,42 +14914,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[109].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[109].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[109].znId (extra)
   - expected: undefined
   - actual: "10368"
+- children[109].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_10368.n_0.***"
 - children[110].center (mismatch)
   - expected: [324.8,129.5455]
   - actual: [324.8,129.54545454545453]
 - children[110].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[110].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[110].znId (extra)
   - expected: undefined
   - actual: "10752"
+- children[110].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_10752.n_0.***"
 - children[111].center (mismatch)
   - expected: [301.8,135.6061]
   - actual: [301.8,135.6060606060606]
 - children[111].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[111].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[111].znId (extra)
   - expected: undefined
   - actual: "11136"
+- children[111].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_11136.n_0.***"
 - children[112].center (mismatch)
   - expected: [301.8,134.3311]
   - actual: [301.8,134.3310606060606]
-- children[112].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[112].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -20089,42 +14956,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[113].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[113].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[113].znId (extra)
   - expected: undefined
   - actual: "11904"
+- children[113].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_11904.n_0.***"
 - children[114].center (mismatch)
   - expected: [221.3,145.303]
   - actual: [221.3,145.30303030303028]
 - children[114].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[114].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[114].znId (extra)
   - expected: undefined
   - actual: "12288"
+- children[114].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_12288.n_0.***"
 - children[115].center (mismatch)
   - expected: [324.8,152.3737]
   - actual: [324.8,152.37373737373736]
 - children[115].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[115].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[115].znId (extra)
   - expected: undefined
   - actual: "12672"
+- children[115].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_12672.n_0.***"
 - children[116].center (mismatch)
   - expected: [324.8,151.0987]
   - actual: [324.8,151.09873737373735]
-- children[116].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[116].znId (extra)
   - expected: undefined
   - actual: "12672"
@@ -20134,42 +14998,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[117].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[117].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[117].znId (extra)
   - expected: undefined
   - actual: "13440"
+- children[117].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_13440.n_0.***"
 - children[118].center (mismatch)
   - expected: [324.8,162.8788]
   - actual: [324.8,162.87878787878788]
 - children[118].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[118].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[118].znId (extra)
   - expected: undefined
   - actual: "13824"
+- children[118].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_13824.n_0.***"
 - children[119].center (mismatch)
   - expected: [278.8,168.9394]
   - actual: [278.8,168.93939393939394]
 - children[119].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[119].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[119].znId (extra)
   - expected: undefined
   - actual: "14208"
+- children[119].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_14208.n_0.***"
 - children[120].center (mismatch)
   - expected: [278.8,167.6644]
   - actual: [278.8,167.66439393939393]
-- children[120].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[120].znId (extra)
   - expected: undefined
   - actual: "14208"
@@ -20179,42 +15040,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[121].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[121].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[121].znId (extra)
   - expected: undefined
   - actual: "14976"
+- children[121].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_14976.n_0.***"
 - children[122].center (mismatch)
   - expected: [221.3,178.6364]
   - actual: [221.3,178.63636363636363]
 - children[122].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[122].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[122].znId (extra)
   - expected: undefined
   - actual: "15360"
+- children[122].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_15360.n_0.***"
 - children[123].center (mismatch)
   - expected: [244.3,185.7071]
   - actual: [244.3,185.7070707070707]
 - children[123].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[123].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[123].znId (extra)
   - expected: undefined
   - actual: "15744"
+- children[123].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_15744.n_0.***"
 - children[124].center (mismatch)
   - expected: [244.3,184.4321]
   - actual: [244.3,184.4320707070707]
-- children[124].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[124].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -20224,42 +15082,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[125].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[125].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[125].znId (extra)
   - expected: undefined
   - actual: "16512"
+- children[125].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_16512.n_0.***"
 - children[126].center (mismatch)
   - expected: [278.8,196.2121]
   - actual: [278.8,196.2121212121212]
 - children[126].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[126].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[126].znId (extra)
   - expected: undefined
   - actual: "16896"
+- children[126].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_16896.n_0.***"
 - children[127].center (mismatch)
   - expected: [221.3,202.2727]
   - actual: [221.3,202.27272727272725]
 - children[127].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[127].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[127].znId (extra)
   - expected: undefined
   - actual: "17280"
+- children[127].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_17280.n_0.***"
 - children[128].center (mismatch)
   - expected: [221.3,200.9977]
   - actual: [221.3,200.99772727272725]
-- children[128].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[128].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -20269,42 +15124,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[129].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[129].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[129].znId (extra)
   - expected: undefined
   - actual: "18048"
+- children[129].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_18048.n_0.***"
 - children[130].center (mismatch)
   - expected: [221.3,216.8182]
   - actual: [221.3,216.8181818181818]
 - children[130].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[130].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[130].znId (extra)
   - expected: undefined
   - actual: "18432"
+- children[130].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_18432.n_0.***"
 - children[131].center (mismatch)
   - expected: [336.3,222.8788]
   - actual: [336.3,222.87878787878788]
 - children[131].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[131].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[131].znId (extra)
   - expected: undefined
   - actual: "18816"
+- children[131].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_18816.n_0.***"
 - children[132].center (mismatch)
   - expected: [336.3,221.6038]
   - actual: [336.3,221.60378787878787]
-- children[132].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[132].znId (extra)
   - expected: undefined
   - actual: "18816"
@@ -20314,42 +15166,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[133].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[133].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[133].znId (extra)
   - expected: undefined
   - actual: "19584"
+- children[133].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_19584.n_0.***"
 - children[134].center (mismatch)
   - expected: [301.8,232.5758]
   - actual: [301.8,232.57575757575756]
 - children[134].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[134].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[134].znId (extra)
   - expected: undefined
   - actual: "19968"
+- children[134].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_19968.n_0.***"
 - children[135].center (mismatch)
   - expected: [324.8,238.6364]
   - actual: [324.8,238.63636363636363]
 - children[135].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[135].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[135].znId (extra)
   - expected: undefined
   - actual: "20352"
+- children[135].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_20352.n_0.***"
 - children[136].center (mismatch)
   - expected: [324.8,237.3614]
   - actual: [324.8,237.36136363636362]
-- children[136].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[136].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -20359,42 +15208,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[137].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[137].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[137].znId (extra)
   - expected: undefined
   - actual: "21120"
+- children[137].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_21120.n_0.***"
 - children[138].center (mismatch)
   - expected: [278.8,248.3333]
   - actual: [278.8,248.33333333333331]
 - children[138].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[138].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[138].znId (extra)
   - expected: undefined
   - actual: "21504"
+- children[138].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_21504.n_0.***"
 - children[139].center (mismatch)
   - expected: [301.8,254.3939]
   - actual: [301.8,254.39393939393938]
 - children[139].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[139].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[139].znId (extra)
   - expected: undefined
   - actual: "21888"
+- children[139].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_21888.n_0.***"
 - children[140].center (mismatch)
   - expected: [301.8,253.1189]
   - actual: [301.8,253.11893939393937]
-- children[140].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[140].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -20404,1016 +15250,629 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[141].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[141].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[141].znId (extra)
   - expected: undefined
   - actual: "22656"
+- children[141].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_22656.n_0.***"
 - children[142].center (mismatch)
   - expected: [267.3,264.0909]
   - actual: [267.3,264.09090909090907]
 - children[142].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[142].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[142].znId (extra)
   - expected: undefined
   - actual: "23040"
+- children[142].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_23040.n_0.***"
 - children[143].center (mismatch)
   - expected: [278.8,270.1515]
   - actual: [278.8,270.1515151515151]
 - children[143].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[143].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[143].znId (extra)
   - expected: undefined
   - actual: "23424"
+- children[143].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_23424.n_0.***"
 - children[144].center (mismatch)
   - expected: [278.8,268.8765]
   - actual: [278.8,268.87651515151515]
-- children[144].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[144].znId (extra)
   - expected: undefined
   - actual: "23424"
 - children[145].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[145].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[145].znId (extra)
   - expected: undefined
   - actual: "24192"
+- children[145].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_1.t_24192.n_0.***"
 - children[146].center (mismatch)
   - expected: [217.0929,18.5076]
   - actual: [217.09291666666667,18.507575757575754]
 - children[146].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[146].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[147].center (mismatch)
   - expected: [329.9384,24.5682]
   - actual: [329.9384166666667,24.568181818181817]
 - children[147].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[147].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[148].center (mismatch)
   - expected: [309.0929,29.4167]
   - actual: [309.09291666666667,29.416666666666664]
 - children[148].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[148].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[149].center (mismatch)
   - expected: [329.0071,34.2652]
   - actual: [329.00708333333336,34.265151515151516]
 - children[149].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[149].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[150].center (mismatch)
   - expected: [283.9384,40.3258]
   - actual: [283.9384166666667,40.32575757575757]
 - children[150].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[150].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[151].center (mismatch)
   - expected: [225.5071,45.1742]
   - actual: [225.50708333333336,45.17424242424242]
 - children[151].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[151].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[152].center (mismatch)
   - expected: [217.0929,50.0227]
   - actual: [217.09291666666667,50.02272727272727]
 - children[152].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[152].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[153].center (mismatch)
   - expected: [239.1616,56.0833]
   - actual: [239.16158333333334,56.083333333333336]
 - children[153].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[153].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[154].center (mismatch)
   - expected: [263.0929,60.9318]
   - actual: [263.09291666666667,60.93181818181818]
 - children[154].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[154].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[155].center (mismatch)
   - expected: [283.0071,65.7803]
   - actual: [283.00708333333336,65.78030303030302]
 - children[155].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[155].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[156].center (mismatch)
   - expected: [226.4384,72.851]
   - actual: [226.43841666666668,72.85101010101009]
 - children[156].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[156].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[157].center (mismatch)
   - expected: [218.1179,78.5076]
   - actual: [218.11791666666667,78.50757575757575]
 - children[157].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[157].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[158].center (mismatch)
   - expected: [217.0929,83.3561]
   - actual: [217.09291666666667,83.3560606060606]
 - children[158].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[158].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[159].center (mismatch)
   - expected: [272.4384,89.4167]
   - actual: [272.4384166666667,89.41666666666666]
 - children[159].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[159].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[160].center (mismatch)
   - expected: [240.0929,94.2652]
   - actual: [240.09291666666667,94.2651515151515]
 - children[160].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[160].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[161].center (mismatch)
   - expected: [263.0929,99.1136]
   - actual: [263.09291666666667,99.11363636363636]
 - children[161].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[161].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[162].center (mismatch)
   - expected: [283.9384,105.1742]
   - actual: [283.9384166666667,105.17424242424241]
 - children[162].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[162].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[163].center (mismatch)
   - expected: [225.5071,110.0227]
   - actual: [225.50708333333336,110.02272727272727]
 - children[163].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[163].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[164].center (mismatch)
   - expected: [217.0929,114.8712]
   - actual: [217.09291666666667,114.87121212121211]
 - children[164].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[164].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[165].center (mismatch)
   - expected: [273.6616,120.9318]
   - actual: [273.66158333333334,120.93181818181817]
 - children[165].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[165].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[166].center (mismatch)
   - expected: [297.5929,125.7803]
   - actual: [297.59291666666667,125.78030303030302]
 - children[166].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[166].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[167].center (mismatch)
   - expected: [329.0071,130.6288]
   - actual: [329.00708333333336,130.62878787878788]
 - children[167].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[167].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[168].center (mismatch)
   - expected: [306.9384,136.6894]
   - actual: [306.9384166666667,136.68939393939394]
 - children[168].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[168].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[169].center (mismatch)
   - expected: [304.9821,141.5379]
   - actual: [304.9820833333334,141.53787878787878]
 - children[169].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[169].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[170].center (mismatch)
   - expected: [217.0929,146.3864]
   - actual: [217.09291666666667,146.38636363636363]
 - children[170].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[170].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[171].center (mismatch)
   - expected: [329.9384,153.4571]
   - actual: [329.9384166666667,153.4570707070707]
 - children[171].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[171].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[172].center (mismatch)
   - expected: [309.0929,159.1136]
   - actual: [309.09291666666667,159.11363636363635]
 - children[172].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[172].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[173].center (mismatch)
   - expected: [329.0071,163.9621]
   - actual: [329.00708333333336,163.96212121212122]
 - children[173].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[173].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[174].center (mismatch)
   - expected: [283.9384,170.0227]
   - actual: [283.9384166666667,170.02272727272728]
 - children[174].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[174].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[175].center (mismatch)
   - expected: [225.5071,174.8712]
   - actual: [225.50708333333336,174.87121212121212]
 - children[175].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[175].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[176].center (mismatch)
   - expected: [217.0929,179.7197]
   - actual: [217.09291666666667,179.71969696969697]
 - children[176].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[176].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[177].center (mismatch)
   - expected: [239.1616,186.7904]
   - actual: [239.16158333333334,186.79040404040404]
 - children[177].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[177].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[178].center (mismatch)
   - expected: [263.0929,192.447]
   - actual: [263.09291666666667,192.44696969696972]
 - children[178].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[178].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[179].center (mismatch)
   - expected: [283.0071,197.2955]
   - actual: [283.00708333333336,197.29545454545453]
 - children[179].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[179].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[180].center (mismatch)
   - expected: [226.4384,203.3561]
   - actual: [226.43841666666668,203.3560606060606]
 - children[180].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[180].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[181].center (mismatch)
   - expected: [218.1179,208.2045]
   - actual: [218.11791666666667,208.20454545454547]
 - children[181].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[181].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[182].center (mismatch)
   - expected: [217.0929,217.9015]
   - actual: [217.09291666666667,217.90151515151516]
 - children[182].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[182].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[183].center (mismatch)
   - expected: [341.4384,223.9621]
   - actual: [341.4384166666667,223.96212121212122]
 - children[183].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[183].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[184].center (mismatch)
   - expected: [329.0071,228.8106]
   - actual: [329.00708333333336,228.81060606060603]
 - children[184].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[184].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[185].center (mismatch)
   - expected: [297.5929,233.6591]
   - actual: [297.59291666666667,233.6590909090909]
 - children[185].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[185].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[186].center (mismatch)
   - expected: [329.9384,239.7197]
   - actual: [329.9384166666667,239.71969696969697]
 - children[186].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[186].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[187].center (mismatch)
   - expected: [306.0071,244.5682]
   - actual: [306.00708333333336,244.56818181818184]
 - children[187].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[187].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[188].center (mismatch)
   - expected: [274.5929,249.4167]
   - actual: [274.59291666666667,249.41666666666666]
 - children[188].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[188].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[189].center (mismatch)
   - expected: [306.9384,255.4773]
   - actual: [306.9384166666667,255.47727272727272]
 - children[189].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[189].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[190].center (mismatch)
   - expected: [283.0071,260.3258]
   - actual: [283.00708333333336,260.32575757575756]
 - children[190].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[190].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[191].center (mismatch)
   - expected: [263.0929,265.1742]
   - actual: [263.09291666666667,265.1742424242424]
 - children[191].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[191].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[192].center (mismatch)
   - expected: [273.6616,271.2348]
   - actual: [273.66158333333334,271.23484848484844]
 - children[192].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[192].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[193].center (mismatch)
   - expected: [275.6179,276.0833]
   - actual: [275.61791666666664,276.0833333333333]
 - children[193].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[193].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[194].center (mismatch)
   - expected: [217.675,17.4242]
   - actual: [217.675,17.424242424242422]
-- children[194].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[195].center (mismatch)
   - expected: [328.425,23.4848]
   - actual: [328.425,23.484848484848484]
-- children[195].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[196].center (mismatch)
   - expected: [309.675,28.3333]
   - actual: [309.675,28.333333333333332]
-- children[196].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[197].center (mismatch)
   - expected: [328.425,33.1818]
   - actual: [328.425,33.18181818181818]
-- children[197].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[198].center (mismatch)
   - expected: [282.425,39.2424]
   - actual: [282.425,39.242424242424235]
-- children[198].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[199].center (mismatch)
   - expected: [224.925,44.0909]
   - actual: [224.925,44.090909090909086]
-- children[199].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[200].center (mismatch)
   - expected: [217.675,48.9394]
   - actual: [217.675,48.93939393939394]
-- children[200].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[201].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[202].center (mismatch)
   - expected: [263.675,59.8485]
   - actual: [263.675,59.848484848484844]
-- children[202].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[203].center (mismatch)
   - expected: [282.425,64.697]
   - actual: [282.425,64.69696969696969]
-- children[203].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[204].center (mismatch)
   - expected: [224.925,71.7677]
   - actual: [224.925,71.76767676767676]
-- children[204].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[205].center (mismatch)
   - expected: [218.7,77.4242]
   - actual: [218.70000000000002,77.42424242424242]
-- children[205].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[206].center (mismatch)
   - expected: [217.675,82.2727]
   - actual: [217.675,82.27272727272727]
-- children[206].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[207].center (mismatch)
   - expected: [270.925,88.3333]
   - actual: [270.925,88.33333333333333]
-- children[207].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[208].center (mismatch)
   - expected: [240.675,93.1818]
   - actual: [240.675,93.18181818181817]
-- children[208].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[209].center (mismatch)
   - expected: [263.675,98.0303]
   - actual: [263.675,98.03030303030303]
-- children[209].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[210].center (mismatch)
   - expected: [282.425,104.0909]
   - actual: [282.425,104.09090909090908]
-- children[210].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[211].center (mismatch)
   - expected: [224.925,108.9394]
   - actual: [224.925,108.93939393939394]
-- children[211].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[212].center (mismatch)
   - expected: [217.675,113.7879]
   - actual: [217.675,113.78787878787878]
-- children[212].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[213].center (mismatch)
   - expected: [275.175,119.8485]
   - actual: [275.175,119.84848484848484]
-- children[213].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[214].center (mismatch)
   - expected: [298.175,124.697]
   - actual: [298.175,124.69696969696969]
-- children[214].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[215].center (mismatch)
   - expected: [328.425,129.5455]
   - actual: [328.425,129.54545454545453]
-- children[215].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[216].center (mismatch)
   - expected: [305.425,135.6061]
   - actual: [305.425,135.6060606060606]
-- children[216].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[217].center (mismatch)
   - expected: [304.4,140.4545]
   - actual: [304.40000000000003,140.45454545454544]
-- children[217].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[218].center (mismatch)
   - expected: [217.675,145.303]
   - actual: [217.675,145.30303030303028]
-- children[218].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[219].center (mismatch)
   - expected: [328.425,152.3737]
   - actual: [328.425,152.37373737373736]
-- children[219].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[220].center (mismatch)
   - expected: [309.675,158.0303]
   - actual: [309.675,158.030303030303]
-- children[220].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[221].center (mismatch)
   - expected: [328.425,162.8788]
   - actual: [328.425,162.87878787878788]
-- children[221].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[222].center (mismatch)
   - expected: [282.425,168.9394]
   - actual: [282.425,168.93939393939394]
-- children[222].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[223].center (mismatch)
   - expected: [224.925,173.7879]
   - actual: [224.925,173.78787878787878]
-- children[223].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[224].center (mismatch)
   - expected: [217.675,178.6364]
   - actual: [217.675,178.63636363636363]
-- children[224].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[225].center (mismatch)
   - expected: [240.675,185.7071]
   - actual: [240.675,185.7070707070707]
-- children[225].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[226].center (mismatch)
   - expected: [263.675,191.3636]
   - actual: [263.675,191.36363636363637]
-- children[226].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[227].center (mismatch)
   - expected: [282.425,196.2121]
   - actual: [282.425,196.2121212121212]
-- children[227].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[228].center (mismatch)
   - expected: [224.925,202.2727]
   - actual: [224.925,202.27272727272725]
-- children[228].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[229].center (mismatch)
   - expected: [218.7,207.1212]
   - actual: [218.70000000000002,207.12121212121212]
-- children[229].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[230].center (mismatch)
   - expected: [217.675,216.8182]
   - actual: [217.675,216.8181818181818]
-- children[230].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[231].center (mismatch)
   - expected: [339.925,222.8788]
   - actual: [339.925,222.87878787878788]
-- children[231].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[232].center (mismatch)
   - expected: [328.425,227.7273]
   - actual: [328.425,227.7272727272727]
-- children[232].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[233].center (mismatch)
   - expected: [298.175,232.5758]
   - actual: [298.175,232.57575757575756]
-- children[233].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[234].center (mismatch)
   - expected: [328.425,238.6364]
   - actual: [328.425,238.63636363636363]
-- children[234].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[235].center (mismatch)
   - expected: [305.425,243.4848]
   - actual: [305.425,243.4848484848485]
-- children[235].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[236].center (mismatch)
   - expected: [275.175,248.3333]
   - actual: [275.175,248.33333333333331]
-- children[236].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[237].center (mismatch)
   - expected: [305.425,254.3939]
   - actual: [305.425,254.39393939393938]
-- children[237].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[238].center (mismatch)
   - expected: [282.425,259.2424]
   - actual: [282.425,259.24242424242425]
-- children[238].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[239].center (mismatch)
   - expected: [263.675,264.0909]
   - actual: [263.675,264.09090909090907]
-- children[239].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[240].center (mismatch)
   - expected: [275.175,270.1515]
   - actual: [275.175,270.1515151515151]
-- children[240].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[241].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[242].center (mismatch)
   - expected: [329.2981,22.2723]
   - actual: [329.298125,22.272348484848486]
 - children[242].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[242].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[243].center (mismatch)
   - expected: [274.3019,38.0299]
   - actual: [274.301875,38.02992424242423]
 - children[243].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[243].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[244].center (mismatch)
   - expected: [248.7981,53.7875]
   - actual: [248.798125,53.787499999999994]
 - children[244].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[244].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[245].center (mismatch)
   - expected: [216.8019,70.5552]
   - actual: [216.80187500000002,70.55517676767676]
 - children[245].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[245].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[246].center (mismatch)
   - expected: [271.7981,87.1208]
   - actual: [271.798125,87.12083333333332]
 - children[246].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[246].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[247].center (mismatch)
   - expected: [283.2981,102.8784]
   - actual: [283.298125,102.87840909090907]
 - children[247].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[247].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[248].center (mismatch)
   - expected: [283.2981,118.636]
   - actual: [283.298125,118.63598484848484]
 - children[248].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[248].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[249].center (mismatch)
   - expected: [297.3019,134.3936]
   - actual: [297.301875,134.39356060606062]
 - children[249].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[249].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[250].center (mismatch)
   - expected: [329.2981,151.1612]
   - actual: [329.298125,151.16123737373738]
 - children[250].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[250].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[251].center (mismatch)
   - expected: [273.4288,167.7269]
   - actual: [273.42875000000004,167.72689393939396]
 - children[251].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[251].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[252].center (mismatch)
   - expected: [249.6713,184.4946]
   - actual: [249.67125000000001,184.49457070707072]
 - children[252].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[252].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[253].center (mismatch)
   - expected: [215.9288,201.0602]
   - actual: [215.92875,201.06022727272727]
 - children[253].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[253].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[254].center (mismatch)
   - expected: [341.6713,221.6663]
   - actual: [341.67125,221.6662878787879]
 - children[254].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[254].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[255].center (mismatch)
   - expected: [330.1713,237.4239]
   - actual: [330.17125,237.42386363636365]
 - children[255].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[255].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[256].center (mismatch)
   - expected: [307.1713,253.1814]
   - actual: [307.17125,253.1814393939394]
 - children[256].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[256].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[257].center (mismatch)
   - expected: [284.1713,268.939]
   - actual: [284.17125,268.93901515151515]
 - children[257].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[257].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[258].center (mismatch)
   - expected: [328.425,20.7848]
   - actual: [328.425,20.784848484848485]
-- children[258].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[259].center (mismatch)
   - expected: [275.175,36.5424]
   - actual: [275.175,36.54242424242423]
-- children[259].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[260].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[261].center (mismatch)
   - expected: [217.675,69.0677]
   - actual: [217.675,69.06767676767676]
-- children[261].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[262].center (mismatch)
   - expected: [270.925,85.6333]
   - actual: [270.925,85.63333333333333]
-- children[262].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[263].center (mismatch)
   - expected: [282.425,101.3909]
   - actual: [282.425,101.39090909090908]
-- children[263].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[264].center (mismatch)
   - expected: [282.425,117.1485]
   - actual: [282.425,117.14848484848484]
-- children[264].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[265].center (mismatch)
   - expected: [298.175,132.9061]
   - actual: [298.175,132.9060606060606]
-- children[265].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[266].center (mismatch)
   - expected: [328.425,149.6737]
   - actual: [328.425,149.67373737373737]
-- children[266].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[267].center (mismatch)
   - expected: [275.175,166.2394]
   - actual: [275.175,166.23939393939395]
-- children[267].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[268].center (mismatch)
   - expected: [247.925,183.0071]
   - actual: [247.925,183.0070707070707]
-- children[268].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[269].center (mismatch)
   - expected: [217.675,199.5727]
   - actual: [217.675,199.57272727272726]
-- children[269].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[270].center (mismatch)
   - expected: [339.925,220.1788]
   - actual: [339.925,220.1787878787879]
-- children[270].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[271].center (mismatch)
   - expected: [328.425,235.9364]
   - actual: [328.425,235.93636363636364]
-- children[271].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[272].center (mismatch)
   - expected: [305.425,251.6939]
   - actual: [305.425,251.6939393939394]
-- children[272].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[273].center (mismatch)
   - expected: [282.425,267.4515]
   - actual: [282.425,267.45151515151514]
-- children[273].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[274].fill (extra)
   - expected: undefined
   - actual: false
-- children[274].lineWidth (extra)
+- children[274].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[274].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[274].path (extra)
-  - expected: undefined
+- children[274].path (mismatch)
+  - expected: [["M",186.8,17.424242424242426],["c",17.40241228886626,7.229560604097369,82.02162796931532,5.40326929969139,92,6.060606060606059]]
   - actual: [[186.8,17.424242424242422],[192.07534107861449,19.049646933639277],[198.9643765796514,20.33779191897983],[207.11343411755044,21.328745019062072],[216.16884130675137,22.062573872684013],[225.776925761694,22.579346118643638],[235.58401509681812,22.919129395738967],[245.2364369265634,23.121991342767984],[254.38051886536968,23.227999598528697],[262.66258852767675,23.277221801819103],[269.7289735279243,23.309725591437203],[275.2260014805521,23.365578606180996],[278.8,23.484848484848484]]
 - children[275].from (extra)
   - expected: undefined
@@ -21421,9 +15880,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[275].to (extra)
   - expected: undefined
   - actual: [278.8,33.18181818181818]
-- children[275].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[275].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -21433,9 +15889,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[276].to (extra)
   - expected: undefined
   - actual: [186.8,39.242424242424235]
-- children[276].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[276].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -21445,9 +15898,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[277].to (extra)
   - expected: undefined
   - actual: [186.8,48.93939393939394]
-- children[277].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[277].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -21457,9 +15907,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[278].to (extra)
   - expected: undefined
   - actual: [198.3,55]
-- children[278].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[278].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -21469,9 +15916,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[279].to (extra)
   - expected: undefined
   - actual: [221.3,59.848484848484844]
-- children[279].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[279].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -21481,9 +15925,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[280].to (extra)
   - expected: undefined
   - actual: [244.3,64.69696969696969]
-- children[280].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[280].znId (extra)
   - expected: undefined
   - actual: "4608"
@@ -21493,9 +15934,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[281].to (extra)
   - expected: undefined
   - actual: [186.8,71.76767676767676]
-- children[281].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[281].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -21505,9 +15943,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[282].to (extra)
   - expected: undefined
   - actual: [221.3,88.33333333333333]
-- children[282].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[282].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -21517,9 +15952,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[283].to (extra)
   - expected: undefined
   - actual: [198.3,93.18181818181817]
-- children[283].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[283].znId (extra)
   - expected: undefined
   - actual: "7296"
@@ -21529,9 +15961,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[284].to (extra)
   - expected: undefined
   - actual: [186.8,104.09090909090908]
-- children[284].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[284].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -21541,9 +15970,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[285].to (extra)
   - expected: undefined
   - actual: [186.8,108.93939393939394]
-- children[285].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[285].znId (extra)
   - expected: undefined
   - actual: "8832"
@@ -21553,9 +15979,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[286].to (extra)
   - expected: undefined
   - actual: [186.8,119.84848484848484]
-- children[286].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[286].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -21565,9 +15988,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[287].to (extra)
   - expected: undefined
   - actual: [267.3,124.69696969696969]
-- children[287].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[287].znId (extra)
   - expected: undefined
   - actual: "10368"
@@ -21577,9 +15997,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[288].to (extra)
   - expected: undefined
   - actual: [267.3,135.6060606060606]
-- children[288].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[288].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -21589,35 +16006,32 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[289].to (extra)
   - expected: undefined
   - actual: [267.3,140.45454545454544]
-- children[289].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[289].znId (extra)
   - expected: undefined
   - actual: "11904"
 - children[290].fill (extra)
   - expected: undefined
   - actual: false
-- children[290].lineWidth (extra)
+- children[290].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[290].znId (extra)
   - expected: undefined
   - actual: "12288"
-- children[290].path (extra)
-  - expected: undefined
+- children[290].path (mismatch)
+  - expected: [["M",267.3,140.45454545454544],["c",-9.981911160652716,0.6012067704515129,-70.09421176338276,-1.6889436348469609,-80.5,4.848484848484873]]
   - actual: [[267.3,140.45454545454544],[263.8179150813029,140.5513923310341],[258.59371984490883,140.5684567420901],[251.97407019987392,140.5464294379369],[244.3056220552545,140.52600116879808],[235.93503132010665,140.54786268489715],[227.2089539034867,140.65270473645774],[218.4740457144508,140.88121807370334],[210.0769626620552,141.27409344685742],[202.3643606553561,141.87202160614365],[195.68289560340975,142.7156933017855],[190.37922341527235,143.84579928400652],[186.8,145.30303030303028]]
 - children[291].fill (extra)
   - expected: undefined
   - actual: false
-- children[291].lineWidth (extra)
+- children[291].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[291].znId (extra)
   - expected: undefined
   - actual: "12672"
-- children[291].path (extra)
-  - expected: undefined
+- children[291].path (mismatch)
+  - expected: [["M",186.8,145.3030303030303],["c",8.269057375506913,6.071506412792032,82.02940365182624,6.304411787031004,92,7.070707070707073]]
   - actual: [[186.8,145.30303030303028],[190.15685077998802,146.70295687935334],[195.79361276824267,147.88173338097278],[203.26139346883005,148.86148477645796],[212.11130038581632,149.66433603437832],[221.89444102326755,150.31241212330332],[232.16192288524994,150.82783801180233],[242.46485347582956,151.23273866844474],[252.35434029907248,151.54923906179994],[261.38149085904485,151.7994641604374],[269.09741265981285,152.00553893292653],[275.05321320544255,152.18958834783672],[278.8,152.37373737373736]]
 - children[292].from (extra)
   - expected: undefined
@@ -21625,23 +16039,20 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[292].to (extra)
   - expected: undefined
   - actual: [244.3,168.93939393939394]
-- children[292].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[292].znId (extra)
   - expected: undefined
   - actual: "14208"
 - children[293].fill (extra)
   - expected: undefined
   - actual: false
-- children[293].lineWidth (extra)
+- children[293].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[293].znId (extra)
   - expected: undefined
   - actual: "14976"
-- children[293].path (extra)
-  - expected: undefined
+- children[293].path (mismatch)
+  - expected: [["M",244.3,168.93939393939394],["c",-32.881060084854795,-2.5562644026329906,-47.53536209626449,4.008251876364855,-57.5,4.848484848484844]]
   - actual: [[244.3,168.93939393939394],[236.45162513890105,168.48175320942448],[229.31569473237005,168.35259964678505],[222.8452049819147,168.50038789040454],[216.9931520890428,168.87357257921164],[211.7125322552621,169.4206083521352],[206.95634168208028,170.089949848104],[202.6775765710051,170.8300517060468],[198.82923312354436,171.58936856489242],[195.36430754120573,172.31635506356963],[192.23579602549697,172.95946584100724],[189.3966947779258,173.46715553613402],[186.8,173.78787878787878]]
 - children[294].from (extra)
   - expected: undefined
@@ -21649,9 +16060,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[294].to (extra)
   - expected: undefined
   - actual: [198.3,185.7070707070707]
-- children[294].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[294].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -21661,9 +16069,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[295].to (extra)
   - expected: undefined
   - actual: [198.3,202.27272727272725]
-- children[295].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[295].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -21673,23 +16078,20 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[296].to (extra)
   - expected: undefined
   - actual: [186.8,207.12121212121212]
-- children[296].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[296].znId (extra)
   - expected: undefined
   - actual: "18048"
 - children[297].fill (extra)
   - expected: undefined
   - actual: false
-- children[297].lineWidth (extra)
+- children[297].color (extra)
   - expected: undefined
-  - actual: 0.2
+  - actual: "black"
 - children[297].znId (extra)
   - expected: undefined
   - actual: "18816"
-- children[297].path (extra)
-  - expected: undefined
+- children[297].path (mismatch)
+  - expected: [["M",186.8,216.8181818181818],["c",15.079192718324293,6.682847219833449,105.01385807577867,5.534327171319035,115,6.060606060606062]]
   - actual: [[186.8,216.8181818181818],[192.03970154702108,218.33124139197446],[199.86086724542133,219.5510015178017],[209.72598321994946,220.51046971721277],[221.09753559535423,221.24265351175666],[233.43801049638435,221.78056042298266],[246.20989404778862,222.15719797243975],[258.87567237431574,222.40557368167714],[270.8978316007144,222.55869507224398],[281.7388578517335,222.64956966568928],[290.8612372521216,222.7112049835623],[297.7274559266275,222.77660854741214],[301.8,222.87878787878788]]
 - children[298].from (extra)
   - expected: undefined
@@ -21697,9 +16099,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[298].to (extra)
   - expected: undefined
   - actual: [278.8,227.7272727272727]
-- children[298].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[298].znId (extra)
   - expected: undefined
   - actual: "19584"
@@ -21709,9 +16108,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[299].to (extra)
   - expected: undefined
   - actual: [267.3,232.57575757575756]
-- children[299].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[299].znId (extra)
   - expected: undefined
   - actual: "19968"
@@ -21721,9 +16117,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[300].to (extra)
   - expected: undefined
   - actual: [278.8,238.63636363636363]
-- children[300].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[300].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -21733,9 +16126,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[301].to (extra)
   - expected: undefined
   - actual: [267.3,243.4848484848485]
-- children[301].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[301].znId (extra)
   - expected: undefined
   - actual: "21120"
@@ -21745,9 +16135,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[302].to (extra)
   - expected: undefined
   - actual: [244.3,248.33333333333331]
-- children[302].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[302].znId (extra)
   - expected: undefined
   - actual: "21504"
@@ -21757,9 +16144,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[303].to (extra)
   - expected: undefined
   - actual: [267.3,254.39393939393938]
-- children[303].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[303].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -21769,9 +16153,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[304].to (extra)
   - expected: undefined
   - actual: [244.3,259.24242424242425]
-- children[304].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[304].znId (extra)
   - expected: undefined
   - actual: "22656"
@@ -21781,9 +16162,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[305].to (extra)
   - expected: undefined
   - actual: [221.3,264.09090909090907]
-- children[305].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[305].znId (extra)
   - expected: undefined
   - actual: "23040"
@@ -21793,9 +16171,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[306].to (extra)
   - expected: undefined
   - actual: [186.8,270.1515151515151]
-- children[306].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[306].znId (extra)
   - expected: undefined
   - actual: "23424"
@@ -21805,9 +16180,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[307].to (extra)
   - expected: undefined
   - actual: [186.8,275]
-- children[307].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[307].znId (extra)
   - expected: undefined
   - actual: "24192"
@@ -21817,30 +16189,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[308].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[308].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[308].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[308].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_0.n_0.***"
 - children[309].center (mismatch)
   - expected: [278.8,23.4848]
   - actual: [278.8,23.484848484848484]
 - children[309].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[309].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[309].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[309].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_384.n_0.***"
 - children[310].center (mismatch)
   - expected: [278.8,22.2098]
   - actual: [278.8,22.209848484848486]
-- children[310].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[310].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -21850,30 +16219,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[311].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[311].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[311].znId (extra)
   - expected: undefined
   - actual: "1536"
+- children[311].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_1536.n_0.***"
 - children[312].center (mismatch)
   - expected: [186.8,39.2424]
   - actual: [186.8,39.242424242424235]
 - children[312].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[312].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[312].znId (extra)
   - expected: undefined
   - actual: "1920"
+- children[312].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_1920.n_0.***"
 - children[313].center (mismatch)
   - expected: [186.8,37.9674]
   - actual: [186.8,37.96742424242424]
-- children[313].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[313].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -21883,24 +16249,21 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[314].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[314].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[314].znId (extra)
   - expected: undefined
   - actual: "3072"
+- children[314].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_3072.n_0.***"
 - children[315].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[315].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[315].znId (extra)
   - expected: undefined
   - actual: "3456"
-- children[316].lineWidth (extra)
+- children[315].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.1.notebound.nconf.v_2.t_3456.n_0.***"
 - children[316].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -21910,39 +16273,36 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[317].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[317].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[317].znId (extra)
   - expected: undefined
   - actual: "4224"
+- children[317].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_4224.n_0.***"
 - children[318].center (mismatch)
   - expected: [244.3,64.697]
   - actual: [244.3,64.69696969696969]
 - children[318].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[318].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[318].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[318].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_4608.n_0.***"
 - children[319].center (mismatch)
   - expected: [186.8,71.7677]
   - actual: [186.8,71.76767676767676]
-- children[319].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[319].znId (extra)
   - expected: undefined
   - actual: "4992"
+- children[319].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_4992.n_0.***"
 - children[320].center (mismatch)
   - expected: [186.8,70.1677]
   - actual: [186.8,70.16767676767677]
-- children[320].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[320].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -21952,18 +16312,15 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[321].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[321].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[321].znId (extra)
   - expected: undefined
   - actual: "6528"
+- children[321].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_6528.n_0.***"
 - children[322].center (mismatch)
   - expected: [221.3,87.0583]
   - actual: [221.3,87.05833333333332]
-- children[322].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[322].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -21973,30 +16330,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[323].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[323].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[323].znId (extra)
   - expected: undefined
   - actual: "7296"
+- children[323].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_7296.n_0.***"
 - children[324].center (mismatch)
   - expected: [186.8,104.0909]
   - actual: [186.8,104.09090909090908]
 - children[324].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[324].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[324].znId (extra)
   - expected: undefined
   - actual: "8064"
+- children[324].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_8064.n_0.***"
 - children[325].center (mismatch)
   - expected: [186.8,102.8159]
   - actual: [186.8,102.81590909090907]
-- children[325].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[325].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -22006,30 +16360,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[326].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[326].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[326].znId (extra)
   - expected: undefined
   - actual: "8832"
+- children[326].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_8832.n_0.***"
 - children[327].center (mismatch)
   - expected: [186.8,119.8485]
   - actual: [186.8,119.84848484848484]
 - children[327].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[327].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[327].znId (extra)
   - expected: undefined
   - actual: "9600"
+- children[327].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_9600.n_0.***"
 - children[328].center (mismatch)
   - expected: [186.8,118.5735]
   - actual: [186.8,118.57348484848484]
-- children[328].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[328].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -22039,30 +16390,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[329].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[329].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[329].znId (extra)
   - expected: undefined
   - actual: "10368"
+- children[329].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_10368.n_0.***"
 - children[330].center (mismatch)
   - expected: [267.3,135.6061]
   - actual: [267.3,135.6060606060606]
 - children[330].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[330].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[330].znId (extra)
   - expected: undefined
   - actual: "11136"
+- children[330].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_11136.n_0.***"
 - children[331].center (mismatch)
   - expected: [267.3,134.3311]
   - actual: [267.3,134.3310606060606]
-- children[331].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[331].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -22072,39 +16420,36 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[332].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[332].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[332].znId (extra)
   - expected: undefined
   - actual: "11904"
+- children[332].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_11904.n_0.***"
 - children[333].center (mismatch)
   - expected: [186.8,145.303]
   - actual: [186.8,145.30303030303028]
 - children[333].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[333].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[333].znId (extra)
   - expected: undefined
   - actual: "12288"
+- children[333].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_12288.n_0.***"
 - children[334].center (mismatch)
   - expected: [278.8,152.3737]
   - actual: [278.8,152.37373737373736]
-- children[334].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[334].znId (extra)
   - expected: undefined
   - actual: "12672"
+- children[334].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_12672.n_0.***"
 - children[335].center (mismatch)
   - expected: [278.8,150.7737]
   - actual: [278.8,150.77373737373736]
-- children[335].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[335].znId (extra)
   - expected: undefined
   - actual: "12672"
@@ -22114,18 +16459,15 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[336].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[336].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[336].znId (extra)
   - expected: undefined
   - actual: "14208"
+- children[336].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_14208.n_0.***"
 - children[337].center (mismatch)
   - expected: [244.3,167.6644]
   - actual: [244.3,167.66439393939393]
-- children[337].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[337].znId (extra)
   - expected: undefined
   - actual: "14208"
@@ -22135,27 +16477,24 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[338].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[338].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[338].znId (extra)
   - expected: undefined
   - actual: "14976"
+- children[338].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_14976.n_0.***"
 - children[339].center (mismatch)
   - expected: [198.3,185.7071]
   - actual: [198.3,185.7070707070707]
-- children[339].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[339].znId (extra)
   - expected: undefined
   - actual: "15744"
+- children[339].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_15744.n_0.***"
 - children[340].center (mismatch)
   - expected: [198.3,184.1071]
   - actual: [198.3,184.1070707070707]
-- children[340].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[340].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -22165,18 +16504,15 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[341].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[341].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[341].znId (extra)
   - expected: undefined
   - actual: "17280"
+- children[341].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_17280.n_0.***"
 - children[342].center (mismatch)
   - expected: [198.3,200.9977]
   - actual: [198.3,200.99772727272725]
-- children[342].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[342].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -22186,42 +16522,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[343].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[343].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[343].znId (extra)
   - expected: undefined
   - actual: "18048"
+- children[343].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_18048.n_0.***"
 - children[344].center (mismatch)
   - expected: [186.8,216.8182]
   - actual: [186.8,216.8181818181818]
 - children[344].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[344].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[344].znId (extra)
   - expected: undefined
   - actual: "18432"
+- children[344].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_18432.n_0.***"
 - children[345].center (mismatch)
   - expected: [301.8,222.8788]
   - actual: [301.8,222.87878787878788]
 - children[345].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[345].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[345].znId (extra)
   - expected: undefined
   - actual: "18816"
+- children[345].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_18816.n_0.***"
 - children[346].center (mismatch)
   - expected: [301.8,221.6038]
   - actual: [301.8,221.60378787878787]
-- children[346].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[346].znId (extra)
   - expected: undefined
   - actual: "18816"
@@ -22231,42 +16564,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[347].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[347].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[347].znId (extra)
   - expected: undefined
   - actual: "19584"
+- children[347].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_19584.n_0.***"
 - children[348].center (mismatch)
   - expected: [267.3,232.5758]
   - actual: [267.3,232.57575757575756]
 - children[348].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[348].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[348].znId (extra)
   - expected: undefined
   - actual: "19968"
+- children[348].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_19968.n_0.***"
 - children[349].center (mismatch)
   - expected: [278.8,238.6364]
   - actual: [278.8,238.63636363636363]
 - children[349].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[349].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[349].znId (extra)
   - expected: undefined
   - actual: "20352"
+- children[349].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_20352.n_0.***"
 - children[350].center (mismatch)
   - expected: [278.8,237.3614]
   - actual: [278.8,237.36136363636362]
-- children[350].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[350].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -22276,42 +16606,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[351].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[351].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[351].znId (extra)
   - expected: undefined
   - actual: "21120"
+- children[351].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_21120.n_0.***"
 - children[352].center (mismatch)
   - expected: [244.3,248.3333]
   - actual: [244.3,248.33333333333331]
 - children[352].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[352].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[352].znId (extra)
   - expected: undefined
   - actual: "21504"
+- children[352].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_21504.n_0.***"
 - children[353].center (mismatch)
   - expected: [267.3,254.3939]
   - actual: [267.3,254.39393939393938]
 - children[353].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[353].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[353].znId (extra)
   - expected: undefined
   - actual: "21888"
+- children[353].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_21888.n_0.***"
 - children[354].center (mismatch)
   - expected: [267.3,253.1189]
   - actual: [267.3,253.11893939393937]
-- children[354].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[354].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -22321,1030 +16648,661 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[355].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[355].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[355].znId (extra)
   - expected: undefined
   - actual: "22656"
+- children[355].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_22656.n_0.***"
 - children[356].center (mismatch)
   - expected: [221.3,264.0909]
   - actual: [221.3,264.09090909090907]
 - children[356].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[356].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[356].znId (extra)
   - expected: undefined
   - actual: "23040"
+- children[356].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_23040.n_0.***"
 - children[357].center (mismatch)
   - expected: [186.8,270.1515]
   - actual: [186.8,270.1515151515151]
 - children[357].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[357].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[357].znId (extra)
   - expected: undefined
   - actual: "23424"
+- children[357].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_23424.n_0.***"
 - children[358].center (mismatch)
   - expected: [186.8,268.8765]
   - actual: [186.8,268.87651515151515]
-- children[358].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[358].znId (extra)
   - expected: undefined
   - actual: "23424"
 - children[359].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[359].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[359].znId (extra)
   - expected: undefined
   - actual: "24192"
+- children[359].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.nconf.v_2.t_24192.n_0.***"
 - children[360].center (mismatch)
   - expected: [182.5929,18.5076]
   - actual: [182.59291666666667,18.507575757575754]
 - children[360].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[360].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[361].center (mismatch)
   - expected: [272.7303,24.5682]
   - actual: [272.73025,24.568181818181817]
 - children[361].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[361].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[362].center (mismatch)
   - expected: [283.0071,34.2652]
   - actual: [283.00708333333336,34.265151515151516]
 - children[362].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[362].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[363].center (mismatch)
   - expected: [193.8698,40.3258]
   - actual: [193.86975,40.32575757575757]
 - children[363].size (mismatch)
   - expected: [2.3948,0.7058]
   - actual: [2.39475,0.7058333333333331]
-- children[363].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[364].center (mismatch)
   - expected: [182.5929,50.0227]
   - actual: [182.59291666666667,50.02272727272727]
 - children[364].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[364].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[365].center (mismatch)
   - expected: [193.1616,56.0833]
   - actual: [193.16158333333334,56.083333333333336]
 - children[365].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[365].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[366].center (mismatch)
   - expected: [217.0929,60.9318]
   - actual: [217.09291666666667,60.93181818181818]
 - children[366].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[366].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[367].center (mismatch)
   - expected: [248.5071,65.7803]
   - actual: [248.50708333333336,65.78030303030302]
 - children[367].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[367].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[368].center (mismatch)
   - expected: [178.9239,72.851]
   - actual: [178.92391666666668,72.85101010101009]
 - children[368].size (mismatch)
   - expected: [3.3261,0.7058]
   - actual: [3.3260833333333335,0.7058333333333331]
-- children[368].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[369].center (mismatch)
   - expected: [226.4384,89.4167]
   - actual: [226.43841666666668,89.41666666666666]
 - children[369].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[369].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[370].center (mismatch)
   - expected: [203.4384,94.2652]
   - actual: [203.43841666666668,94.2651515151515]
 - children[370].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[370].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[371].center (mismatch)
   - expected: [191.9384,105.1742]
   - actual: [191.93841666666668,105.17424242424241]
 - children[371].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[371].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[372].center (mismatch)
   - expected: [181.6616,110.0227]
   - actual: [181.66158333333334,110.02272727272727]
 - children[372].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[372].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[373].center (mismatch)
   - expected: [181.6616,120.9318]
   - actual: [181.66158333333334,120.93181818181817]
 - children[373].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[373].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[374].center (mismatch)
   - expected: [262.1616,125.7803]
   - actual: [262.16158333333334,125.78030303030302]
 - children[374].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[374].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[375].center (mismatch)
   - expected: [262.1616,136.6894]
   - actual: [262.16158333333334,136.68939393939394]
 - children[375].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[375].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[376].center (mismatch)
   - expected: [270.4821,141.5379]
   - actual: [270.4820833333334,141.53787878787878]
 - children[376].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[376].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[377].center (mismatch)
   - expected: [182.5929,146.3864]
   - actual: [182.59291666666667,146.38636363636363]
 - children[377].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[377].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[378].center (mismatch)
   - expected: [286.6761,153.4571]
   - actual: [286.67608333333334,153.4570707070707]
 - children[378].size (mismatch)
   - expected: [3.3261,0.7058]
   - actual: [3.3260833333333335,0.7058333333333331]
-- children[378].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[379].center (mismatch)
   - expected: [249.4384,170.0227]
   - actual: [249.43841666666668,170.02272727272728]
 - children[379].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[379].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[380].center (mismatch)
   - expected: [181.6616,174.8712]
   - actual: [181.66158333333334,174.87121212121212]
 - children[380].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[380].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[381].center (mismatch)
   - expected: [190.4239,186.7904]
   - actual: [190.42391666666668,186.79040404040404]
 - children[381].size (mismatch)
   - expected: [3.3261,0.7058]
   - actual: [3.3260833333333335,0.7058333333333331]
-- children[381].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[382].center (mismatch)
   - expected: [203.4384,203.3561]
   - actual: [203.43841666666668,203.3560606060606]
 - children[382].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[382].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[383].center (mismatch)
   - expected: [191.0071,208.2045]
   - actual: [191.00708333333336,208.20454545454547]
 - children[383].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[383].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[384].center (mismatch)
   - expected: [182.5929,217.9015]
   - actual: [182.59291666666667,217.90151515151516]
 - children[384].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[384].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[385].center (mismatch)
   - expected: [306.9384,223.9621]
   - actual: [306.9384166666667,223.96212121212122]
 - children[385].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[385].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[386].center (mismatch)
   - expected: [283.0071,228.8106]
   - actual: [283.00708333333336,228.81060606060603]
 - children[386].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[386].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[387].center (mismatch)
   - expected: [263.0929,233.6591]
   - actual: [263.09291666666667,233.6590909090909]
 - children[387].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[387].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[388].center (mismatch)
   - expected: [283.9384,239.7197]
   - actual: [283.9384166666667,239.71969696969697]
 - children[388].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[388].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[389].center (mismatch)
   - expected: [271.5071,244.5682]
   - actual: [271.50708333333336,244.56818181818184]
 - children[389].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[389].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[390].center (mismatch)
   - expected: [240.0929,249.4167]
   - actual: [240.09291666666667,249.41666666666666]
 - children[390].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[390].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[391].center (mismatch)
   - expected: [272.4384,255.4773]
   - actual: [272.4384166666667,255.47727272727272]
 - children[391].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[391].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[392].center (mismatch)
   - expected: [248.5071,260.3258]
   - actual: [248.50708333333336,260.32575757575756]
 - children[392].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[392].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[393].center (mismatch)
   - expected: [225.5071,265.1742]
   - actual: [225.50708333333336,265.1742424242424]
 - children[393].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[393].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[394].center (mismatch)
   - expected: [191.9384,271.2348]
   - actual: [191.93841666666668,271.23484848484844]
 - children[394].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[394].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[395].center (mismatch)
   - expected: [183.6179,276.0833]
   - actual: [183.61791666666667,276.0833333333333]
 - children[395].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[395].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[396].center (mismatch)
   - expected: [183.175,17.4242]
   - actual: [183.175,17.424242424242422]
-- children[396].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[397].center (mismatch)
   - expected: [275.175,23.4848]
   - actual: [275.175,23.484848484848484]
-- children[397].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[398].center (mismatch)
   - expected: [282.425,33.1818]
   - actual: [282.425,33.18181818181818]
-- children[398].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[399].center (mismatch)
   - expected: [191.425,39.2424]
   - actual: [191.425,39.242424242424235]
-- children[399].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[400].center (mismatch)
   - expected: [183.175,48.9394]
   - actual: [183.175,48.93939393939394]
-- children[400].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[401].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[402].center (mismatch)
   - expected: [217.675,59.8485]
   - actual: [217.675,59.848484848484844]
-- children[402].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[403].center (mismatch)
   - expected: [247.925,64.697]
   - actual: [247.925,64.69696969696969]
-- children[403].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[404].center (mismatch)
   - expected: [182.3,71.7677]
   - actual: [182.3,71.76767676767676]
-- children[404].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[405].center (mismatch)
   - expected: [224.925,88.3333]
   - actual: [224.925,88.33333333333333]
-- children[405].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[406].center (mismatch)
   - expected: [201.925,93.1818]
   - actual: [201.925,93.18181818181817]
-- children[406].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[407].center (mismatch)
   - expected: [190.425,104.0909]
   - actual: [190.425,104.09090909090908]
-- children[407].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[408].center (mismatch)
   - expected: [183.175,108.9394]
   - actual: [183.175,108.93939393939394]
-- children[408].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[409].center (mismatch)
   - expected: [183.175,119.8485]
   - actual: [183.175,119.84848484848484]
-- children[409].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[410].center (mismatch)
   - expected: [263.675,124.697]
   - actual: [263.675,124.69696969696969]
-- children[410].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[411].center (mismatch)
   - expected: [263.675,135.6061]
   - actual: [263.675,135.6060606060606]
-- children[411].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[412].center (mismatch)
   - expected: [269.9,140.4545]
   - actual: [269.90000000000003,140.45454545454544]
-- children[412].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[413].center (mismatch)
   - expected: [183.175,145.303]
   - actual: [183.175,145.30303030303028]
-- children[413].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[414].center (mismatch)
   - expected: [283.3,152.3737]
   - actual: [283.3,152.37373737373736]
-- children[414].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[415].center (mismatch)
   - expected: [247.925,168.9394]
   - actual: [247.925,168.93939393939394]
-- children[415].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[416].center (mismatch)
   - expected: [183.175,173.7879]
   - actual: [183.175,173.78787878787878]
-- children[416].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[417].center (mismatch)
   - expected: [193.8,185.7071]
   - actual: [193.8,185.7070707070707]
-- children[417].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[418].center (mismatch)
   - expected: [201.925,202.2727]
   - actual: [201.925,202.27272727272725]
-- children[418].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[419].center (mismatch)
   - expected: [190.425,207.1212]
   - actual: [190.425,207.12121212121212]
-- children[419].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[420].center (mismatch)
   - expected: [183.175,216.8182]
   - actual: [183.175,216.8181818181818]
-- children[420].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[421].center (mismatch)
   - expected: [305.425,222.8788]
   - actual: [305.425,222.87878787878788]
-- children[421].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[422].center (mismatch)
   - expected: [282.425,227.7273]
   - actual: [282.425,227.7272727272727]
-- children[422].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[423].center (mismatch)
   - expected: [263.675,232.5758]
   - actual: [263.675,232.57575757575756]
-- children[423].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[424].center (mismatch)
   - expected: [282.425,238.6364]
   - actual: [282.425,238.63636363636363]
-- children[424].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[425].center (mismatch)
   - expected: [270.925,243.4848]
   - actual: [270.925,243.4848484848485]
-- children[425].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[426].center (mismatch)
   - expected: [240.675,248.3333]
   - actual: [240.675,248.33333333333331]
-- children[426].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[427].center (mismatch)
   - expected: [270.925,254.3939]
   - actual: [270.925,254.39393939393938]
-- children[427].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[428].center (mismatch)
   - expected: [247.925,259.2424]
   - actual: [247.925,259.24242424242425]
-- children[428].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[429].center (mismatch)
   - expected: [224.925,264.0909]
   - actual: [224.925,264.09090909090907]
-- children[429].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[430].center (mismatch)
   - expected: [190.425,270.1515]
   - actual: [190.425,270.1515151515151]
-- children[430].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[431].center (mismatch)
   - expected: [184.2,275]
   - actual: [184.20000000000002,275]
-- children[431].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[432].center (mismatch)
   - expected: [284.2981,22.2723]
   - actual: [284.298125,22.272348484848486]
 - children[432].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[432].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[433].center (mismatch)
   - expected: [182.3019,38.0299]
   - actual: [182.30187500000002,38.02992424242423]
 - children[433].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[433].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[434].center (mismatch)
   - expected: [202.7981,53.7875]
   - actual: [202.798125,53.787499999999994]
 - children[434].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[434].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[435].center (mismatch)
   - expected: [181.4269,70.5552]
   - actual: [181.42687500000002,70.55517676767676]
 - children[435].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[435].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[436].center (mismatch)
   - expected: [225.7981,87.1208]
   - actual: [225.798125,87.12083333333332]
 - children[436].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[436].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[437].center (mismatch)
   - expected: [182.3019,102.8784]
   - actual: [182.30187500000002,102.87840909090907]
 - children[437].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[437].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[438].center (mismatch)
   - expected: [182.3019,118.636]
   - actual: [182.30187500000002,118.63598484848484]
 - children[438].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[438].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[439].center (mismatch)
   - expected: [271.7981,134.3936]
   - actual: [271.798125,134.39356060606062]
 - children[439].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[439].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[440].center (mismatch)
   - expected: [284.1731,151.1612]
   - actual: [284.173125,151.16123737373738]
 - children[440].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[440].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[441].center (mismatch)
   - expected: [238.9338,167.7269]
   - actual: [238.93375,167.72689393939396]
 - children[441].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[441].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[442].center (mismatch)
   - expected: [204.5463,184.4946]
   - actual: [204.54625000000001,184.49457070707072]
 - children[442].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[442].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[443].center (mismatch)
   - expected: [203.6713,201.0602]
   - actual: [203.67125000000001,201.06022727272727]
 - children[443].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[443].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[444].center (mismatch)
   - expected: [307.1713,221.6663]
   - actual: [307.17125,221.6662878787879]
 - children[444].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[444].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[445].center (mismatch)
   - expected: [284.1713,237.4239]
   - actual: [284.17125,237.42386363636365]
 - children[445].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[445].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[446].center (mismatch)
   - expected: [272.6713,253.1814]
   - actual: [272.67125,253.1814393939394]
 - children[446].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[446].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[447].center (mismatch)
   - expected: [181.4288,268.939]
   - actual: [181.42875,268.93901515151515]
 - children[447].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[447].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[448].center (mismatch)
   - expected: [283.425,20.7848]
   - actual: [283.425,20.784848484848485]
-- children[448].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[449].center (mismatch)
   - expected: [183.175,36.5424]
   - actual: [183.175,36.54242424242423]
-- children[449].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[450].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[451].center (mismatch)
   - expected: [182.3,69.0677]
   - actual: [182.3,69.06767676767676]
-- children[451].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[452].center (mismatch)
   - expected: [224.925,85.6333]
   - actual: [224.925,85.63333333333333]
-- children[452].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[453].center (mismatch)
   - expected: [183.175,101.3909]
   - actual: [183.175,101.39090909090908]
-- children[453].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[454].center (mismatch)
   - expected: [183.175,117.1485]
   - actual: [183.175,117.14848484848484]
-- children[454].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[455].center (mismatch)
   - expected: [270.925,132.9061]
   - actual: [270.925,132.9060606060606]
-- children[455].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[456].center (mismatch)
   - expected: [283.3,149.6737]
   - actual: [283.3,149.67373737373737]
-- children[456].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[457].center (mismatch)
   - expected: [240.68,166.2394]
   - actual: [240.68,166.23939393939395]
-- children[457].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[458].center (mismatch)
   - expected: [202.8,183.0071]
   - actual: [202.8,183.0070707070707]
-- children[458].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[459].center (mismatch)
   - expected: [201.925,199.5727]
   - actual: [201.925,199.57272727272726]
-- children[459].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[460].center (mismatch)
   - expected: [305.425,220.1788]
   - actual: [305.425,220.1787878787879]
-- children[460].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[461].center (mismatch)
   - expected: [282.425,235.9364]
   - actual: [282.425,235.93636363636364]
-- children[461].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[462].center (mismatch)
   - expected: [270.925,251.6939]
   - actual: [270.925,251.6939393939394]
-- children[462].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[463].center (mismatch)
   - expected: [183.175,267.4515]
   - actual: [183.175,267.45151515151514]
-- children[463].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[464].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[465].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[466].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[467].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[468].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[469].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[470].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[471].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[472].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[473].text (mismatch)
-  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 19:55:02 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 20:59:43 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "783_einsiedler-kreuzweg - created by Zupfnoter"
-- children[473].lineWidth (extra)
+- children[473].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[474].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[474].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[475].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[476].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[477].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[478].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[479].fill (extra)
   - expected: undefined
   - actual: true
-- children[479].lineWidth (extra)
+- children[479].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[479].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[479].path (mismatch)
+  - expected: [["M",140.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,290],[139.8,294],[141.8,294],[140.8,290]]
 - children[480].fill (extra)
   - expected: undefined
   - actual: true
-- children[480].lineWidth (extra)
+- children[480].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[480].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[480].path (mismatch)
+  - expected: [["M",416.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,290],[415.8,294],[417.8,294],[416.8,290]]
-- children[481].lineWidth (extra)
+- children[481].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[482].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[482].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[483].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[483].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[484].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[484].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[485].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[485].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[486].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[486].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[487].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[487].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[488].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[488].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[489].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[489].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[490].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[490].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[491].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[491].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[492].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[492].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[493].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[493].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[494].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[494].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[495].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[495].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[496].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[496].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[497].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[497].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[498].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[498].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[499].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[499].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[500].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[500].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[501].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[501].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[502].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[502].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[503].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[503].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[504].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[504].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[505].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[505].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[506].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[506].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[507].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[507].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[508].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[508].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[509].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[509].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[510].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[510].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[511].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[511].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[512].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[512].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[513].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[513].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[514].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[514].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[515].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[515].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[516].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[516].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[517].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[517].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[518].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[519].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[520].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[521].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 
 ## 783_einsiedler-kreuzweg [extract 3]
 
-- Issues: 803
+- Issues: 596
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,17.476190476190474]
 - children[0].to (extra)
   - expected: undefined
   - actual: [324.8,23.666666666666664]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[0].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -23354,9 +17312,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1].to (extra)
   - expected: undefined
   - actual: [313.3,28.619047619047617]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[1].znId (extra)
   - expected: undefined
   - actual: "1152"
@@ -23366,9 +17321,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[2].to (extra)
   - expected: undefined
   - actual: [324.8,33.57142857142857]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[2].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -23378,9 +17330,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[3].to (extra)
   - expected: undefined
   - actual: [278.8,39.76190476190476]
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[3].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -23390,9 +17339,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[4].to (extra)
   - expected: undefined
   - actual: [221.3,44.71428571428571]
-- children[4].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[4].znId (extra)
   - expected: undefined
   - actual: "2688"
@@ -23402,9 +17348,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[5].to (extra)
   - expected: undefined
   - actual: [221.3,49.666666666666664]
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[5].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -23414,9 +17357,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[6].to (extra)
   - expected: undefined
   - actual: [244.3,55.857142857142854]
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[6].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -23426,9 +17366,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[7].to (extra)
   - expected: undefined
   - actual: [267.3,60.8095238095238]
-- children[7].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[7].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -23438,9 +17375,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[8].to (extra)
   - expected: undefined
   - actual: [278.8,65.76190476190476]
-- children[8].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[8].znId (extra)
   - expected: undefined
   - actual: "4608"
@@ -23450,9 +17384,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[9].to (extra)
   - expected: undefined
   - actual: [221.3,71.95238095238095]
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[9].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -23462,9 +17393,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[10].to (extra)
   - expected: undefined
   - actual: [221.3,76.9047619047619]
-- children[10].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[10].znId (extra)
   - expected: undefined
   - actual: "5760"
@@ -23474,9 +17402,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[11].to (extra)
   - expected: undefined
   - actual: [221.3,81.85714285714285]
-- children[11].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[11].znId (extra)
   - expected: undefined
   - actual: "6144"
@@ -23486,9 +17411,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[12].to (extra)
   - expected: undefined
   - actual: [267.3,88.04761904761904]
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[12].znId (extra)
   - expected: undefined
   - actual: "6528"
@@ -23498,9 +17420,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[13].to (extra)
   - expected: undefined
   - actual: [244.3,93]
-- children[13].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[13].znId (extra)
   - expected: undefined
   - actual: "7296"
@@ -23510,9 +17429,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[14].to (extra)
   - expected: undefined
   - actual: [267.3,97.95238095238093]
-- children[14].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[14].znId (extra)
   - expected: undefined
   - actual: "7680"
@@ -23522,9 +17438,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[15].to (extra)
   - expected: undefined
   - actual: [278.8,104.14285714285712]
-- children[15].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[15].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -23534,9 +17447,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[16].to (extra)
   - expected: undefined
   - actual: [221.3,109.09523809523809]
-- children[16].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[16].znId (extra)
   - expected: undefined
   - actual: "8832"
@@ -23546,9 +17456,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[17].to (extra)
   - expected: undefined
   - actual: [221.3,114.04761904761904]
-- children[17].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[17].znId (extra)
   - expected: undefined
   - actual: "9216"
@@ -23558,9 +17465,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[18].to (extra)
   - expected: undefined
   - actual: [278.8,120.23809523809524]
-- children[18].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[18].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -23570,9 +17474,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[19].to (extra)
   - expected: undefined
   - actual: [301.8,125.19047619047618]
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[19].znId (extra)
   - expected: undefined
   - actual: "10368"
@@ -23582,9 +17483,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[20].to (extra)
   - expected: undefined
   - actual: [324.8,130.1428571428571]
-- children[20].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[20].znId (extra)
   - expected: undefined
   - actual: "10752"
@@ -23594,9 +17492,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[21].to (extra)
   - expected: undefined
   - actual: [301.8,136.33333333333331]
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[21].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -23606,9 +17501,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[22].to (extra)
   - expected: undefined
   - actual: [301.8,141.28571428571428]
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[22].znId (extra)
   - expected: undefined
   - actual: "11904"
@@ -23618,9 +17510,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[23].to (extra)
   - expected: undefined
   - actual: [221.3,146.2380952380952]
-- children[23].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[23].znId (extra)
   - expected: undefined
   - actual: "12288"
@@ -23630,9 +17519,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[24].to (extra)
   - expected: undefined
   - actual: [324.8,152.42857142857142]
-- children[24].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[24].znId (extra)
   - expected: undefined
   - actual: "12672"
@@ -23642,9 +17528,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[25].to (extra)
   - expected: undefined
   - actual: [313.3,157.38095238095235]
-- children[25].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[25].znId (extra)
   - expected: undefined
   - actual: "13440"
@@ -23654,9 +17537,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[26].to (extra)
   - expected: undefined
   - actual: [324.8,162.33333333333331]
-- children[26].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[26].znId (extra)
   - expected: undefined
   - actual: "13824"
@@ -23666,9 +17546,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[27].to (extra)
   - expected: undefined
   - actual: [278.8,168.52380952380952]
-- children[27].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[27].znId (extra)
   - expected: undefined
   - actual: "14208"
@@ -23678,9 +17555,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[28].to (extra)
   - expected: undefined
   - actual: [221.3,173.47619047619045]
-- children[28].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[28].znId (extra)
   - expected: undefined
   - actual: "14976"
@@ -23690,9 +17564,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[29].to (extra)
   - expected: undefined
   - actual: [221.3,178.42857142857142]
-- children[29].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[29].znId (extra)
   - expected: undefined
   - actual: "15360"
@@ -23702,9 +17573,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[30].to (extra)
   - expected: undefined
   - actual: [244.3,184.6190476190476]
-- children[30].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[30].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -23714,9 +17582,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[31].to (extra)
   - expected: undefined
   - actual: [267.3,189.57142857142856]
-- children[31].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[31].znId (extra)
   - expected: undefined
   - actual: "16512"
@@ -23726,9 +17591,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[32].to (extra)
   - expected: undefined
   - actual: [278.8,194.52380952380952]
-- children[32].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[32].znId (extra)
   - expected: undefined
   - actual: "16896"
@@ -23738,9 +17600,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[33].to (extra)
   - expected: undefined
   - actual: [221.3,200.7142857142857]
-- children[33].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[33].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -23750,9 +17609,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[34].to (extra)
   - expected: undefined
   - actual: [221.3,205.66666666666666]
-- children[34].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[34].znId (extra)
   - expected: undefined
   - actual: "18048"
@@ -23762,9 +17618,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[35].to (extra)
   - expected: undefined
   - actual: [336.3,221.76190476190473]
-- children[35].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[35].znId (extra)
   - expected: undefined
   - actual: "18816"
@@ -23774,9 +17627,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[36].to (extra)
   - expected: undefined
   - actual: [324.8,226.7142857142857]
-- children[36].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[36].znId (extra)
   - expected: undefined
   - actual: "19584"
@@ -23786,9 +17636,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[37].to (extra)
   - expected: undefined
   - actual: [301.8,231.66666666666666]
-- children[37].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[37].znId (extra)
   - expected: undefined
   - actual: "19968"
@@ -23798,9 +17645,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[38].to (extra)
   - expected: undefined
   - actual: [324.8,237.85714285714283]
-- children[38].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[38].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -23810,9 +17654,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[39].to (extra)
   - expected: undefined
   - actual: [301.8,242.8095238095238]
-- children[39].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[39].znId (extra)
   - expected: undefined
   - actual: "21120"
@@ -23822,9 +17663,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[40].to (extra)
   - expected: undefined
   - actual: [278.8,247.76190476190473]
-- children[40].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[40].znId (extra)
   - expected: undefined
   - actual: "21504"
@@ -23834,9 +17672,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[41].to (extra)
   - expected: undefined
   - actual: [301.8,253.9523809523809]
-- children[41].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[41].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -23846,9 +17681,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[42].to (extra)
   - expected: undefined
   - actual: [278.8,258.90476190476187]
-- children[42].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[42].znId (extra)
   - expected: undefined
   - actual: "22656"
@@ -23858,9 +17690,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[43].to (extra)
   - expected: undefined
   - actual: [267.3,263.85714285714283]
-- children[43].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[43].znId (extra)
   - expected: undefined
   - actual: "23040"
@@ -23870,9 +17699,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[44].to (extra)
   - expected: undefined
   - actual: [278.8,270.04761904761904]
-- children[44].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[44].znId (extra)
   - expected: undefined
   - actual: "23424"
@@ -23882,9 +17708,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[45].to (extra)
   - expected: undefined
   - actual: [278.8,275]
-- children[45].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.2
 - children[45].znId (extra)
   - expected: undefined
   - actual: "24192"
@@ -23894,30 +17717,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[46].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[46].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[46].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[46].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_0.n_0.***"
 - children[47].center (mismatch)
   - expected: [324.8,23.6667]
   - actual: [324.8,23.666666666666664]
 - children[47].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[47].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[47].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[47].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_384.n_0.***"
 - children[48].center (mismatch)
   - expected: [324.8,22.3917]
   - actual: [324.8,22.391666666666666]
-- children[48].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[48].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -23927,42 +17747,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[49].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[49].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[49].znId (extra)
   - expected: undefined
   - actual: "1152"
+- children[49].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_1152.n_0.***"
 - children[50].center (mismatch)
   - expected: [324.8,33.5714]
   - actual: [324.8,33.57142857142857]
 - children[50].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[50].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[50].znId (extra)
   - expected: undefined
   - actual: "1536"
+- children[50].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_1536.n_0.***"
 - children[51].center (mismatch)
   - expected: [278.8,39.7619]
   - actual: [278.8,39.76190476190476]
 - children[51].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[51].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[51].znId (extra)
   - expected: undefined
   - actual: "1920"
+- children[51].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_1920.n_0.***"
 - children[52].center (mismatch)
   - expected: [278.8,38.4869]
   - actual: [278.8,38.48690476190476]
-- children[52].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[52].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -23972,42 +17789,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[53].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[53].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[53].znId (extra)
   - expected: undefined
   - actual: "2688"
+- children[53].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_2688.n_0.***"
 - children[54].center (mismatch)
   - expected: [221.3,49.6667]
   - actual: [221.3,49.666666666666664]
 - children[54].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[54].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[54].znId (extra)
   - expected: undefined
   - actual: "3072"
+- children[54].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_3072.n_0.***"
 - children[55].center (mismatch)
   - expected: [244.3,55.8571]
   - actual: [244.3,55.857142857142854]
 - children[55].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[55].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[55].znId (extra)
   - expected: undefined
   - actual: "3456"
+- children[55].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_3456.n_0.***"
 - children[56].center (mismatch)
   - expected: [244.3,54.5821]
   - actual: [244.3,54.582142857142856]
-- children[56].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[56].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -24017,42 +17831,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[57].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[57].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[57].znId (extra)
   - expected: undefined
   - actual: "4224"
+- children[57].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_4224.n_0.***"
 - children[58].center (mismatch)
   - expected: [278.8,65.7619]
   - actual: [278.8,65.76190476190476]
 - children[58].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[58].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[58].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[58].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_4608.n_0.***"
 - children[59].center (mismatch)
   - expected: [221.3,71.9524]
   - actual: [221.3,71.95238095238095]
 - children[59].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[59].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[59].znId (extra)
   - expected: undefined
   - actual: "4992"
+- children[59].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_4992.n_0.***"
 - children[60].center (mismatch)
   - expected: [221.3,70.6774]
   - actual: [221.3,70.67738095238094]
-- children[60].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[60].znId (extra)
   - expected: undefined
   - actual: "4992"
@@ -24062,84 +17873,78 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[61].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[61].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[61].znId (extra)
   - expected: undefined
   - actual: "5760"
+- children[61].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_5760.n_0.***"
 - children[62].center (mismatch)
   - expected: [221.3,81.8571]
   - actual: [221.3,81.85714285714285]
 - children[62].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[62].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[62].znId (extra)
   - expected: undefined
   - actual: "6144"
+- children[62].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_6144.n_0.***"
 - children[63].center (mismatch)
   - expected: [267.3,88.0476]
   - actual: [267.3,88.04761904761904]
 - children[63].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[63].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[63].znId (extra)
   - expected: undefined
   - actual: "6528"
+- children[63].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_6528.n_0.***"
 - children[64].center (mismatch)
   - expected: [267.3,86.7726]
   - actual: [267.3,86.77261904761903]
-- children[64].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[64].znId (extra)
   - expected: undefined
   - actual: "6528"
 - children[65].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[65].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[65].znId (extra)
   - expected: undefined
   - actual: "7296"
+- children[65].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_7296.n_0.***"
 - children[66].center (mismatch)
   - expected: [267.3,97.9524]
   - actual: [267.3,97.95238095238093]
 - children[66].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[66].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[66].znId (extra)
   - expected: undefined
   - actual: "7680"
+- children[66].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_7680.n_0.***"
 - children[67].center (mismatch)
   - expected: [278.8,104.1429]
   - actual: [278.8,104.14285714285712]
 - children[67].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[67].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[67].znId (extra)
   - expected: undefined
   - actual: "8064"
+- children[67].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_8064.n_0.***"
 - children[68].center (mismatch)
   - expected: [278.8,102.8679]
   - actual: [278.8,102.86785714285712]
-- children[68].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[68].znId (extra)
   - expected: undefined
   - actual: "8064"
@@ -24149,42 +17954,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[69].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[69].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[69].znId (extra)
   - expected: undefined
   - actual: "8832"
+- children[69].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_8832.n_0.***"
 - children[70].center (mismatch)
   - expected: [221.3,114.0476]
   - actual: [221.3,114.04761904761904]
 - children[70].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[70].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[70].znId (extra)
   - expected: undefined
   - actual: "9216"
+- children[70].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_9216.n_0.***"
 - children[71].center (mismatch)
   - expected: [278.8,120.2381]
   - actual: [278.8,120.23809523809524]
 - children[71].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[71].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[71].znId (extra)
   - expected: undefined
   - actual: "9600"
+- children[71].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_9600.n_0.***"
 - children[72].center (mismatch)
   - expected: [278.8,118.9631]
   - actual: [278.8,118.96309523809524]
-- children[72].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[72].znId (extra)
   - expected: undefined
   - actual: "9600"
@@ -24194,42 +17996,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[73].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[73].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[73].znId (extra)
   - expected: undefined
   - actual: "10368"
+- children[73].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_10368.n_0.***"
 - children[74].center (mismatch)
   - expected: [324.8,130.1429]
   - actual: [324.8,130.1428571428571]
 - children[74].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[74].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[74].znId (extra)
   - expected: undefined
   - actual: "10752"
+- children[74].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_10752.n_0.***"
 - children[75].center (mismatch)
   - expected: [301.8,136.3333]
   - actual: [301.8,136.33333333333331]
 - children[75].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[75].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[75].znId (extra)
   - expected: undefined
   - actual: "11136"
+- children[75].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_11136.n_0.***"
 - children[76].center (mismatch)
   - expected: [301.8,135.0583]
   - actual: [301.8,135.0583333333333]
-- children[76].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[76].znId (extra)
   - expected: undefined
   - actual: "11136"
@@ -24239,42 +18038,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[77].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[77].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[77].znId (extra)
   - expected: undefined
   - actual: "11904"
+- children[77].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_11904.n_0.***"
 - children[78].center (mismatch)
   - expected: [221.3,146.2381]
   - actual: [221.3,146.2380952380952]
 - children[78].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[78].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[78].znId (extra)
   - expected: undefined
   - actual: "12288"
+- children[78].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_12288.n_0.***"
 - children[79].center (mismatch)
   - expected: [324.8,152.4286]
   - actual: [324.8,152.42857142857142]
 - children[79].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[79].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[79].znId (extra)
   - expected: undefined
   - actual: "12672"
+- children[79].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_12672.n_0.***"
 - children[80].center (mismatch)
   - expected: [324.8,151.1536]
   - actual: [324.8,151.1535714285714]
-- children[80].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[80].znId (extra)
   - expected: undefined
   - actual: "12672"
@@ -24284,42 +18080,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[81].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[81].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[81].znId (extra)
   - expected: undefined
   - actual: "13440"
+- children[81].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_13440.n_0.***"
 - children[82].center (mismatch)
   - expected: [324.8,162.3333]
   - actual: [324.8,162.33333333333331]
 - children[82].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[82].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[82].znId (extra)
   - expected: undefined
   - actual: "13824"
+- children[82].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_13824.n_0.***"
 - children[83].center (mismatch)
   - expected: [278.8,168.5238]
   - actual: [278.8,168.52380952380952]
 - children[83].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[83].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[83].znId (extra)
   - expected: undefined
   - actual: "14208"
+- children[83].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_14208.n_0.***"
 - children[84].center (mismatch)
   - expected: [278.8,167.2488]
   - actual: [278.8,167.2488095238095]
-- children[84].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[84].znId (extra)
   - expected: undefined
   - actual: "14208"
@@ -24329,42 +18122,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[85].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[85].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[85].znId (extra)
   - expected: undefined
   - actual: "14976"
+- children[85].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_14976.n_0.***"
 - children[86].center (mismatch)
   - expected: [221.3,178.4286]
   - actual: [221.3,178.42857142857142]
 - children[86].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[86].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[86].znId (extra)
   - expected: undefined
   - actual: "15360"
+- children[86].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_15360.n_0.***"
 - children[87].center (mismatch)
   - expected: [244.3,184.619]
   - actual: [244.3,184.6190476190476]
 - children[87].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[87].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[87].znId (extra)
   - expected: undefined
   - actual: "15744"
+- children[87].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_15744.n_0.***"
 - children[88].center (mismatch)
   - expected: [244.3,183.344]
   - actual: [244.3,183.3440476190476]
-- children[88].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[88].znId (extra)
   - expected: undefined
   - actual: "15744"
@@ -24374,42 +18164,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[89].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[89].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[89].znId (extra)
   - expected: undefined
   - actual: "16512"
+- children[89].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_16512.n_0.***"
 - children[90].center (mismatch)
   - expected: [278.8,194.5238]
   - actual: [278.8,194.52380952380952]
 - children[90].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[90].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[90].znId (extra)
   - expected: undefined
   - actual: "16896"
+- children[90].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_16896.n_0.***"
 - children[91].center (mismatch)
   - expected: [221.3,200.7143]
   - actual: [221.3,200.7142857142857]
 - children[91].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[91].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[91].znId (extra)
   - expected: undefined
   - actual: "17280"
+- children[91].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_17280.n_0.***"
 - children[92].center (mismatch)
   - expected: [221.3,199.4393]
   - actual: [221.3,199.4392857142857]
-- children[92].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[92].znId (extra)
   - expected: undefined
   - actual: "17280"
@@ -24419,42 +18206,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[93].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[93].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[93].znId (extra)
   - expected: undefined
   - actual: "18048"
+- children[93].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_18048.n_0.***"
 - children[94].center (mismatch)
   - expected: [221.3,215.5714]
   - actual: [221.3,215.57142857142856]
 - children[94].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[94].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[94].znId (extra)
   - expected: undefined
   - actual: "18432"
+- children[94].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_18432.n_0.***"
 - children[95].center (mismatch)
   - expected: [336.3,221.7619]
   - actual: [336.3,221.76190476190473]
 - children[95].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[95].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[95].znId (extra)
   - expected: undefined
   - actual: "18816"
+- children[95].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_18816.n_0.***"
 - children[96].center (mismatch)
   - expected: [336.3,220.4869]
   - actual: [336.3,220.48690476190473]
-- children[96].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[96].znId (extra)
   - expected: undefined
   - actual: "18816"
@@ -24464,42 +18248,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[97].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[97].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[97].znId (extra)
   - expected: undefined
   - actual: "19584"
+- children[97].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_19584.n_0.***"
 - children[98].center (mismatch)
   - expected: [301.8,231.6667]
   - actual: [301.8,231.66666666666666]
 - children[98].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[98].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[98].znId (extra)
   - expected: undefined
   - actual: "19968"
+- children[98].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_19968.n_0.***"
 - children[99].center (mismatch)
   - expected: [324.8,237.8571]
   - actual: [324.8,237.85714285714283]
 - children[99].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[99].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[99].znId (extra)
   - expected: undefined
   - actual: "20352"
+- children[99].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_20352.n_0.***"
 - children[100].center (mismatch)
   - expected: [324.8,236.5821]
   - actual: [324.8,236.58214285714283]
-- children[100].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[100].znId (extra)
   - expected: undefined
   - actual: "20352"
@@ -24509,42 +18290,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[101].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[101].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[101].znId (extra)
   - expected: undefined
   - actual: "21120"
+- children[101].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_21120.n_0.***"
 - children[102].center (mismatch)
   - expected: [278.8,247.7619]
   - actual: [278.8,247.76190476190473]
 - children[102].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[102].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[102].znId (extra)
   - expected: undefined
   - actual: "21504"
+- children[102].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_21504.n_0.***"
 - children[103].center (mismatch)
   - expected: [301.8,253.9524]
   - actual: [301.8,253.9523809523809]
 - children[103].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[103].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[103].znId (extra)
   - expected: undefined
   - actual: "21888"
+- children[103].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_21888.n_0.***"
 - children[104].center (mismatch)
   - expected: [301.8,252.6774]
   - actual: [301.8,252.6773809523809]
-- children[104].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[104].znId (extra)
   - expected: undefined
   - actual: "21888"
@@ -24554,1210 +18332,769 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[105].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[105].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[105].znId (extra)
   - expected: undefined
   - actual: "22656"
+- children[105].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_22656.n_0.***"
 - children[106].center (mismatch)
   - expected: [267.3,263.8571]
   - actual: [267.3,263.85714285714283]
 - children[106].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[106].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[106].znId (extra)
   - expected: undefined
   - actual: "23040"
+- children[106].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_23040.n_0.***"
 - children[107].center (mismatch)
   - expected: [278.8,270.0476]
   - actual: [278.8,270.04761904761904]
 - children[107].size (mismatch)
   - expected: [2.625,0.975]
   - actual: [2.625,0.9750000000000001]
-- children[107].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[107].znId (extra)
   - expected: undefined
   - actual: "23424"
+- children[107].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_23424.n_0.***"
 - children[108].center (mismatch)
   - expected: [278.8,268.7726]
   - actual: [278.8,268.77261904761906]
-- children[108].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[108].znId (extra)
   - expected: undefined
   - actual: "23424"
 - children[109].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[109].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[109].znId (extra)
   - expected: undefined
   - actual: "24192"
+- children[109].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notebound.nconf.v_1.t_24192.n_0.***"
 - children[110].center (mismatch)
   - expected: [217.0929,18.5595]
   - actual: [217.09291666666667,18.559523809523807]
 - children[110].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[110].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[111].center (mismatch)
   - expected: [329.9384,24.75]
   - actual: [329.9384166666667,24.749999999999996]
 - children[111].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[111].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[112].center (mismatch)
   - expected: [309.0929,29.7024]
   - actual: [309.09291666666667,29.70238095238095]
 - children[112].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[112].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[113].center (mismatch)
   - expected: [329.0071,34.6548]
   - actual: [329.00708333333336,34.654761904761905]
 - children[113].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[113].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[114].center (mismatch)
   - expected: [283.9384,40.8452]
   - actual: [283.9384166666667,40.845238095238095]
 - children[114].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[114].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[115].center (mismatch)
   - expected: [225.5071,45.7976]
   - actual: [225.50708333333336,45.797619047619044]
 - children[115].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[115].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[116].center (mismatch)
   - expected: [217.0929,50.75]
   - actual: [217.09291666666667,50.75]
 - children[116].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[116].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[117].center (mismatch)
   - expected: [239.1616,56.9405]
   - actual: [239.16158333333334,56.94047619047619]
 - children[117].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[117].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[118].center (mismatch)
   - expected: [263.0929,61.8929]
   - actual: [263.09291666666667,61.89285714285714]
 - children[118].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[118].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[119].center (mismatch)
   - expected: [283.0071,66.8452]
   - actual: [283.00708333333336,66.84523809523809]
 - children[119].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[119].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[120].center (mismatch)
   - expected: [226.4384,73.0357]
   - actual: [226.43841666666668,73.03571428571428]
 - children[120].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[120].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[121].center (mismatch)
   - expected: [218.1179,77.9881]
   - actual: [218.11791666666667,77.98809523809523]
 - children[121].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[121].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[122].center (mismatch)
   - expected: [217.0929,82.9405]
   - actual: [217.09291666666667,82.94047619047618]
 - children[122].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[122].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[123].center (mismatch)
   - expected: [272.4384,89.131]
   - actual: [272.4384166666667,89.13095238095237]
 - children[123].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[123].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[124].center (mismatch)
   - expected: [240.0929,94.0833]
   - actual: [240.09291666666667,94.08333333333333]
 - children[124].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[124].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[125].center (mismatch)
   - expected: [263.0929,99.0357]
   - actual: [263.09291666666667,99.03571428571426]
 - children[125].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[125].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[126].center (mismatch)
   - expected: [283.9384,105.2262]
   - actual: [283.9384166666667,105.22619047619045]
 - children[126].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[126].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[127].center (mismatch)
   - expected: [225.5071,110.1786]
   - actual: [225.50708333333336,110.17857142857142]
 - children[127].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[127].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[128].center (mismatch)
   - expected: [217.0929,115.131]
   - actual: [217.09291666666667,115.13095238095237]
 - children[128].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[128].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[129].center (mismatch)
   - expected: [273.6616,121.3214]
   - actual: [273.66158333333334,121.32142857142857]
 - children[129].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[129].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[130].center (mismatch)
   - expected: [297.5929,126.2738]
   - actual: [297.59291666666667,126.2738095238095]
 - children[130].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[130].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[131].center (mismatch)
   - expected: [329.0071,131.2262]
   - actual: [329.00708333333336,131.22619047619045]
 - children[131].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[131].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[132].center (mismatch)
   - expected: [306.9384,137.4167]
   - actual: [306.9384166666667,137.41666666666666]
 - children[132].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[132].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[133].center (mismatch)
   - expected: [304.9821,142.369]
   - actual: [304.9820833333334,142.36904761904762]
 - children[133].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[133].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[134].center (mismatch)
   - expected: [217.0929,147.3214]
   - actual: [217.09291666666667,147.32142857142856]
 - children[134].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[134].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[135].center (mismatch)
   - expected: [329.9384,153.5119]
   - actual: [329.9384166666667,153.51190476190476]
 - children[135].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[135].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[136].center (mismatch)
   - expected: [309.0929,158.4643]
   - actual: [309.09291666666667,158.4642857142857]
 - children[136].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[136].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[137].center (mismatch)
   - expected: [329.0071,163.4167]
   - actual: [329.00708333333336,163.41666666666666]
 - children[137].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[137].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[138].center (mismatch)
   - expected: [283.9384,169.6071]
   - actual: [283.9384166666667,169.60714285714286]
 - children[138].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[138].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[139].center (mismatch)
   - expected: [225.5071,174.5595]
   - actual: [225.50708333333336,174.5595238095238]
 - children[139].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[139].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[140].center (mismatch)
   - expected: [217.0929,179.5119]
   - actual: [217.09291666666667,179.51190476190476]
 - children[140].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[140].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[141].center (mismatch)
   - expected: [239.1616,185.7024]
   - actual: [239.16158333333334,185.70238095238093]
 - children[141].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[141].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[142].center (mismatch)
   - expected: [263.0929,190.6548]
   - actual: [263.09291666666667,190.6547619047619]
 - children[142].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[142].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[143].center (mismatch)
   - expected: [283.0071,195.6071]
   - actual: [283.00708333333336,195.60714285714286]
 - children[143].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[143].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[144].center (mismatch)
   - expected: [226.4384,201.7976]
   - actual: [226.43841666666668,201.79761904761904]
 - children[144].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[144].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[145].center (mismatch)
   - expected: [218.1179,206.75]
   - actual: [218.11791666666667,206.75]
 - children[145].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[145].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[146].center (mismatch)
   - expected: [217.0929,216.6548]
   - actual: [217.09291666666667,216.6547619047619]
 - children[146].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[146].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[147].center (mismatch)
   - expected: [341.4384,222.8452]
   - actual: [341.4384166666667,222.84523809523807]
 - children[147].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[147].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[148].center (mismatch)
   - expected: [329.0071,227.7976]
   - actual: [329.00708333333336,227.79761904761904]
 - children[148].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[148].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[149].center (mismatch)
   - expected: [297.5929,232.75]
   - actual: [297.59291666666667,232.75]
 - children[149].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[149].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[150].center (mismatch)
   - expected: [329.9384,238.9405]
   - actual: [329.9384166666667,238.94047619047618]
 - children[150].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[150].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[151].center (mismatch)
   - expected: [306.0071,243.8929]
   - actual: [306.00708333333336,243.89285714285714]
 - children[151].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[151].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[152].center (mismatch)
   - expected: [274.5929,248.8452]
   - actual: [274.59291666666667,248.84523809523807]
 - children[152].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[152].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[153].center (mismatch)
   - expected: [306.9384,255.0357]
   - actual: [306.9384166666667,255.03571428571425]
 - children[153].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[153].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[154].center (mismatch)
   - expected: [283.0071,259.9881]
   - actual: [283.00708333333336,259.9880952380952]
 - children[154].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[154].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[155].center (mismatch)
   - expected: [263.0929,264.9405]
   - actual: [263.09291666666667,264.94047619047615]
 - children[155].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[155].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[156].center (mismatch)
   - expected: [273.6616,271.131]
   - actual: [273.66158333333334,271.13095238095235]
 - children[156].size (mismatch)
   - expected: [1.4634,0.7058]
   - actual: [1.4634166666666666,0.7058333333333331]
-- children[156].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[157].center (mismatch)
   - expected: [275.6179,276.0833]
   - actual: [275.61791666666664,276.0833333333333]
 - children[157].size (mismatch)
   - expected: [0.5321,0.7058]
   - actual: [0.5320833333333332,0.7058333333333331]
-- children[157].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[158].center (mismatch)
   - expected: [217.675,17.4762]
   - actual: [217.675,17.476190476190474]
-- children[158].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[159].center (mismatch)
   - expected: [328.425,23.6667]
   - actual: [328.425,23.666666666666664]
-- children[159].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[160].center (mismatch)
   - expected: [309.675,28.619]
   - actual: [309.675,28.619047619047617]
-- children[160].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[161].center (mismatch)
   - expected: [328.425,33.5714]
   - actual: [328.425,33.57142857142857]
-- children[161].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[162].center (mismatch)
   - expected: [282.425,39.7619]
   - actual: [282.425,39.76190476190476]
-- children[162].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[163].center (mismatch)
   - expected: [224.925,44.7143]
   - actual: [224.925,44.71428571428571]
-- children[163].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[164].center (mismatch)
   - expected: [217.675,49.6667]
   - actual: [217.675,49.666666666666664]
-- children[164].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[165].center (mismatch)
   - expected: [240.675,55.8571]
   - actual: [240.675,55.857142857142854]
-- children[165].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[166].center (mismatch)
   - expected: [263.675,60.8095]
   - actual: [263.675,60.8095238095238]
-- children[166].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[167].center (mismatch)
   - expected: [282.425,65.7619]
   - actual: [282.425,65.76190476190476]
-- children[167].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[168].center (mismatch)
   - expected: [224.925,71.9524]
   - actual: [224.925,71.95238095238095]
-- children[168].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[169].center (mismatch)
   - expected: [218.7,76.9048]
   - actual: [218.70000000000002,76.9047619047619]
-- children[169].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[170].center (mismatch)
   - expected: [217.675,81.8571]
   - actual: [217.675,81.85714285714285]
-- children[170].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[171].center (mismatch)
   - expected: [270.925,88.0476]
   - actual: [270.925,88.04761904761904]
-- children[171].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[172].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[173].center (mismatch)
   - expected: [263.675,97.9524]
   - actual: [263.675,97.95238095238093]
-- children[173].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[174].center (mismatch)
   - expected: [282.425,104.1429]
   - actual: [282.425,104.14285714285712]
-- children[174].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[175].center (mismatch)
   - expected: [224.925,109.0952]
   - actual: [224.925,109.09523809523809]
-- children[175].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[176].center (mismatch)
   - expected: [217.675,114.0476]
   - actual: [217.675,114.04761904761904]
-- children[176].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[177].center (mismatch)
   - expected: [275.175,120.2381]
   - actual: [275.175,120.23809523809524]
-- children[177].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[178].center (mismatch)
   - expected: [298.175,125.1905]
   - actual: [298.175,125.19047619047618]
-- children[178].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[179].center (mismatch)
   - expected: [328.425,130.1429]
   - actual: [328.425,130.1428571428571]
-- children[179].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[180].center (mismatch)
   - expected: [305.425,136.3333]
   - actual: [305.425,136.33333333333331]
-- children[180].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[181].center (mismatch)
   - expected: [304.4,141.2857]
   - actual: [304.40000000000003,141.28571428571428]
-- children[181].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[182].center (mismatch)
   - expected: [217.675,146.2381]
   - actual: [217.675,146.2380952380952]
-- children[182].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[183].center (mismatch)
   - expected: [328.425,152.4286]
   - actual: [328.425,152.42857142857142]
-- children[183].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[184].center (mismatch)
   - expected: [309.675,157.381]
   - actual: [309.675,157.38095238095235]
-- children[184].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[185].center (mismatch)
   - expected: [328.425,162.3333]
   - actual: [328.425,162.33333333333331]
-- children[185].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[186].center (mismatch)
   - expected: [282.425,168.5238]
   - actual: [282.425,168.52380952380952]
-- children[186].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[187].center (mismatch)
   - expected: [224.925,173.4762]
   - actual: [224.925,173.47619047619045]
-- children[187].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[188].center (mismatch)
   - expected: [217.675,178.4286]
   - actual: [217.675,178.42857142857142]
-- children[188].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[189].center (mismatch)
   - expected: [240.675,184.619]
   - actual: [240.675,184.6190476190476]
-- children[189].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[190].center (mismatch)
   - expected: [263.675,189.5714]
   - actual: [263.675,189.57142857142856]
-- children[190].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[191].center (mismatch)
   - expected: [282.425,194.5238]
   - actual: [282.425,194.52380952380952]
-- children[191].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[192].center (mismatch)
   - expected: [224.925,200.7143]
   - actual: [224.925,200.7142857142857]
-- children[192].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[193].center (mismatch)
   - expected: [218.7,205.6667]
   - actual: [218.70000000000002,205.66666666666666]
-- children[193].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[194].center (mismatch)
   - expected: [217.675,215.5714]
   - actual: [217.675,215.57142857142856]
-- children[194].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[195].center (mismatch)
   - expected: [339.925,221.7619]
   - actual: [339.925,221.76190476190473]
-- children[195].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[196].center (mismatch)
   - expected: [328.425,226.7143]
   - actual: [328.425,226.7142857142857]
-- children[196].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[197].center (mismatch)
   - expected: [298.175,231.6667]
   - actual: [298.175,231.66666666666666]
-- children[197].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[198].center (mismatch)
   - expected: [328.425,237.8571]
   - actual: [328.425,237.85714285714283]
-- children[198].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[199].center (mismatch)
   - expected: [305.425,242.8095]
   - actual: [305.425,242.8095238095238]
-- children[199].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[200].center (mismatch)
   - expected: [275.175,247.7619]
   - actual: [275.175,247.76190476190473]
-- children[200].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[201].center (mismatch)
   - expected: [305.425,253.9524]
   - actual: [305.425,253.9523809523809]
-- children[201].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[202].center (mismatch)
   - expected: [282.425,258.9048]
   - actual: [282.425,258.90476190476187]
-- children[202].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[203].center (mismatch)
   - expected: [263.675,263.8571]
   - actual: [263.675,263.85714285714283]
-- children[203].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[204].center (mismatch)
   - expected: [275.175,270.0476]
   - actual: [275.175,270.04761904761904]
-- children[204].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[205].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[206].center (mismatch)
   - expected: [329.2981,22.4542]
   - actual: [329.298125,22.454166666666666]
 - children[206].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[206].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[207].center (mismatch)
   - expected: [274.3019,38.5494]
   - actual: [274.301875,38.54940476190475]
 - children[207].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[207].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[208].center (mismatch)
   - expected: [248.7981,54.6446]
   - actual: [248.798125,54.64464285714285]
 - children[208].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[208].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[209].center (mismatch)
   - expected: [216.8019,70.7399]
   - actual: [216.80187500000002,70.73988095238094]
 - children[209].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[209].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[210].center (mismatch)
   - expected: [271.7981,86.8351]
   - actual: [271.798125,86.83511904761903]
 - children[210].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[210].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[211].center (mismatch)
   - expected: [283.2981,102.9304]
   - actual: [283.298125,102.93035714285712]
 - children[211].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[211].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[212].center (mismatch)
   - expected: [283.2981,119.0256]
   - actual: [283.298125,119.02559523809524]
 - children[212].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[212].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[213].center (mismatch)
   - expected: [297.3019,135.1208]
   - actual: [297.301875,135.12083333333334]
 - children[213].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[213].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[214].center (mismatch)
   - expected: [329.2981,151.2161]
   - actual: [329.298125,151.21607142857144]
 - children[214].size (mismatch)
   - expected: [1.0731,1.2512]
   - actual: [1.073125,1.2512499999999998]
-- children[214].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[215].center (mismatch)
   - expected: [273.4288,167.3113]
   - actual: [273.42875000000004,167.31130952380954]
 - children[215].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[215].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[216].center (mismatch)
   - expected: [249.6713,183.4065]
   - actual: [249.67125000000001,183.40654761904761]
 - children[216].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[216].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[217].center (mismatch)
   - expected: [215.9288,199.5018]
   - actual: [215.92875,199.50178571428572]
 - children[217].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[217].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[218].center (mismatch)
   - expected: [341.6713,220.5494]
   - actual: [341.67125,220.54940476190475]
 - children[218].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[218].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[219].center (mismatch)
   - expected: [330.1713,236.6446]
   - actual: [330.17125,236.64464285714286]
 - children[219].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[219].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[220].center (mismatch)
   - expected: [307.1713,252.7399]
   - actual: [307.17125,252.73988095238093]
 - children[220].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[220].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[221].center (mismatch)
   - expected: [284.1713,268.8351]
   - actual: [284.17125,268.83511904761906]
 - children[221].size (mismatch)
   - expected: [1.9462,1.2512]
   - actual: [1.94625,1.2512499999999998]
-- children[221].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[222].center (mismatch)
   - expected: [328.425,20.9667]
   - actual: [328.425,20.966666666666665]
-- children[222].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[223].center (mismatch)
   - expected: [275.175,37.0619]
   - actual: [275.175,37.061904761904756]
-- children[223].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[224].center (mismatch)
   - expected: [247.925,53.1571]
   - actual: [247.925,53.15714285714285]
-- children[224].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[225].center (mismatch)
   - expected: [217.675,69.2524]
   - actual: [217.675,69.25238095238095]
-- children[225].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[226].center (mismatch)
   - expected: [270.925,85.3476]
   - actual: [270.925,85.34761904761903]
-- children[226].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[227].center (mismatch)
   - expected: [282.425,101.4429]
   - actual: [282.425,101.44285714285712]
-- children[227].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[228].center (mismatch)
   - expected: [282.425,117.5381]
   - actual: [282.425,117.53809523809524]
-- children[228].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[229].center (mismatch)
   - expected: [298.175,133.6333]
   - actual: [298.175,133.63333333333333]
-- children[229].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[230].center (mismatch)
   - expected: [328.425,149.7286]
   - actual: [328.425,149.72857142857143]
-- children[230].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[231].center (mismatch)
   - expected: [275.175,165.8238]
   - actual: [275.175,165.82380952380953]
-- children[231].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[232].center (mismatch)
   - expected: [247.925,181.919]
   - actual: [247.925,181.9190476190476]
-- children[232].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[233].center (mismatch)
   - expected: [217.675,198.0143]
   - actual: [217.675,198.0142857142857]
-- children[233].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[234].center (mismatch)
   - expected: [339.925,219.0619]
   - actual: [339.925,219.06190476190474]
-- children[234].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[235].center (mismatch)
   - expected: [328.425,235.1571]
   - actual: [328.425,235.15714285714284]
-- children[235].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[236].center (mismatch)
   - expected: [305.425,251.2524]
   - actual: [305.425,251.25238095238092]
-- children[236].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[237].center (mismatch)
   - expected: [282.425,267.3476]
   - actual: [282.425,267.34761904761905]
-- children[237].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[238].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[239].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[240].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[241].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[242].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[243].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[244].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[245].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[246].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[247].text (mismatch)
-  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 19:55:02 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 20:59:43 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "783_einsiedler-kreuzweg - created by Zupfnoter"
-- children[247].lineWidth (extra)
+- children[247].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[248].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[248].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[249].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[250].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[251].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[252].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[253].fill (extra)
   - expected: undefined
   - actual: true
-- children[253].lineWidth (extra)
+- children[253].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[253].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[253].path (mismatch)
+  - expected: [["M",140.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,290],[139.8,294],[141.8,294],[140.8,290]]
 - children[254].fill (extra)
   - expected: undefined
   - actual: true
-- children[254].lineWidth (extra)
+- children[254].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[254].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[254].path (mismatch)
+  - expected: [["M",416.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,290],[415.8,294],[417.8,294],[416.8,290]]
-- children[255].lineWidth (extra)
+- children[255].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[256].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[256].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[257].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[257].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[258].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[258].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[259].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[259].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[260].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[260].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[261].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[261].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[262].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[262].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[263].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[263].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[264].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[264].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[265].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[265].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[266].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[266].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[267].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[267].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[268].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[268].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[269].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[269].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[270].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[270].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[271].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[271].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[272].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[272].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[273].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[273].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[274].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[274].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[275].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[275].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[276].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[276].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[277].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[277].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[278].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[278].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[279].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[279].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[280].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[280].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[281].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[281].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[282].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[282].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[283].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[283].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[284].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[284].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[285].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[285].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[286].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[286].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[287].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[287].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[288].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[288].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[289].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[289].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[290].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[290].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[291].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[291].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[292].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[293].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[294].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[295].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 
 ## abc-to-song-slur-tuplet-parity [extract 0]
 
-- Issues: 57
+- Issues: 45
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
 - children[0].to (extra)
   - expected: undefined
   - actual: [83.3,24.75]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[0].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -25767,9 +19104,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1].to (extra)
   - expected: undefined
   - actual: [106.3,30.75]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[1].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -25779,9 +19113,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[2].to (extra)
   - expected: undefined
   - actual: [106.3,36.75]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[2].znId (extra)
   - expected: undefined
   - actual: "1024"
@@ -25791,148 +19122,118 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[3].to (extra)
   - expected: undefined
   - actual: [140.8,42.75]
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[3].znId (extra)
   - expected: undefined
   - actual: "1280"
 - children[4].fill (extra)
   - expected: undefined
   - actual: false
-- children[4].lineWidth (extra)
+- children[4].color (extra)
   - expected: undefined
-  - actual: 0.5
-- children[4].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[4].path (mismatch)
+  - expected: [["M",109.425,30.25],["c",0.8177785188481662,1.934228087406059,0.817778518848166,5.0657719125939416,0,7]]
   - actual: [[109.425,30.25],[109.61240757723604,30.757115317618055],[109.76574104952006,31.305804098353537],[109.8850004168521,31.887751649582956],[109.9701856792321,32.49464327868283],[110.02129683666011,33.11816429302967],[110.03833388913613,33.75],[110.02129683666011,34.381835706970335],[109.9701856792321,35.00535672131718],[109.8850004168521,35.61224835041705],[109.76574104952006,36.19419590164646],[109.61240757723604,36.74288468238194],[109.425,37.25]]
 - children[5].fill (extra)
   - expected: undefined
   - actual: false
-- children[5].lineWidth (extra)
+- children[5].color (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "black"
 - children[5].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[5].path (extra)
-  - expected: undefined
+- children[5].draginfo (mismatch)
+  - expected: {"handler":"tuplet","p1":[106.3,30.75],"p2":[140.8,42.75],"cp1":[109.83159671811867,26.68455726635175],"cp2":[140.55360953129406,37.37047476658666],"mp":{"$$id":910,"x":125.4389935934123,"y":29.319143418939586},"conf_key":"extract.0.notebound.tuplet.v_1.768"}
+  - actual: {"handler":"tuplet","p1":[106.3,30.75],"p2":[140.8,42.75],"cp1":[109.83159671811867,26.68455726635175],"cp2":[140.55360953129406,37.37047476658666],"mp":{"x":125.4389935934123,"y":29.319143418939586},"tuplet_options":{"cp1":[5,2],"cp2":[5,-2],"pos":[0,0],"shape":["c"],"show":true},"conf_key":"extract.0.notebound.tuplet.v_1.768","callback":null}
+- children[5].path (mismatch)
+  - expected: [["M",106.3,30.75],["c",3.531596718118682,-4.065442733648251,34.25360953129406,6.620474766586659,34.500000000000014,12]]
   - actual: [[106.3,30.75],[107.71599463148713,30.029351825800372],[110.06469396679773,29.8536986873851],[113.14586870579454,30.153395610793392],[116.7592895483403,30.85879762206448],[120.7047271942978,31.90025974723758],[124.78195234352977,33.208137012351905],[128.79073569589897,34.71278444344668],[132.53084795126819,36.34455706656113],[135.80205980950012,38.033809907734465],[138.40414197045757,39.7108979930059],[140.13686513400327,41.30617634841468],[140.8,42.75]]
 - children[6].center (mismatch)
   - expected: [125.439,29.3191]
   - actual: [125.4389935934123,29.319143418939586]
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[6].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[7].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[7].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[8].lineWidth (extra)
+- children[7].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[8].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[9].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[10].lineWidth (extra)
+- children[9].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[10].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[11].lineWidth (extra)
+- children[10].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
 - children[11].znId (extra)
   - expected: undefined
   - actual: "1024"
-- children[12].lineWidth (extra)
+- children[11].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_1024.n_0.***"
 - children[12].znId (extra)
   - expected: undefined
   - actual: "1280"
-- children[13].lineWidth (extra)
+- children[12].confKey (extra)
   - expected: undefined
-  - actual: 0.1
-- children[14].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_1280.n_0.***"
 - children[15].text (mismatch)
-  - expected: " - created 2026-05-27 19:55:03 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 20:59:43 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
-- children[15].lineWidth (extra)
+- children[15].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[16].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[16].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[17].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
-- children[18].lineWidth (extra)
+- children[18].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[18].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[18].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[19].fill (extra)
   - expected: undefined
   - actual: true
-- children[19].lineWidth (extra)
+- children[19].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[19].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[19].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[20].fill (extra)
   - expected: undefined
   - actual: true
-- children[20].lineWidth (extra)
+- children[20].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[20].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[20].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[23].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[24].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 
 ## decoration [extract 0]
 
-- Issues: 54
+- Issues: 38
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
 - children[0].to (extra)
   - expected: undefined
   - actual: [83.3,24.75]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[0].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -25942,9 +19243,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1].to (extra)
   - expected: undefined
   - actual: [106.3,30.75]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[1].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -25954,151 +19252,106 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[2].to (extra)
   - expected: undefined
   - actual: [117.8,36.75]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[2].znId (extra)
   - expected: undefined
   - actual: "1152"
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[3].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[4].lineWidth (extra)
+- children[3].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[4].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[5].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[6].lineWidth (extra)
+- children[5].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[6].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[7].lineWidth (extra)
+- children[6].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
 - children[7].znId (extra)
   - expected: undefined
   - actual: "1152"
+- children[7].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1152.n_0.***"
 - children[8].size (mismatch)
   - expected: [0.6445,1.2512]
   - actual: [0.6445000000000001,1.2512499999999998]
-- children[8].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[9].center (mismatch)
   - expected: [121.6731,35.3375]
   - actual: [121.67309999999999,35.3375]
 - children[9].size (mismatch)
   - expected: [1.0731,1.7875]
   - actual: [1.0731,1.7874999999999999]
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[10].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[10].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[10].znId (extra)
   - expected: undefined
   - actual: "0"
 - children[10].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.decoration.v_1.t_0.0.pos"
-- children[11].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[11].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[12].znId (extra)
   - expected: undefined
   - actual: "1152"
-- children[13].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[14].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[15].text (mismatch)
-  - expected: " - created 2026-05-27 19:55:03 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 20:59:44 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
-- children[15].lineWidth (extra)
+- children[15].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[16].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[16].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[17].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
-- children[18].lineWidth (extra)
+- children[18].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[18].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[18].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[19].fill (extra)
   - expected: undefined
   - actual: true
-- children[19].lineWidth (extra)
+- children[19].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[19].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[19].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[20].fill (extra)
   - expected: undefined
   - actual: true
-- children[20].lineWidth (extra)
+- children[20].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[20].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[20].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[23].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[24].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 
 ## lyrics [extract 0]
 
-- Issues: 41
+- Issues: 30
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
 - children[0].to (extra)
   - expected: undefined
   - actual: [83.3,24.75]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[0].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -26108,9 +19361,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1].to (extra)
   - expected: undefined
   - actual: [106.3,30.75]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[1].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -26120,112 +19370,82 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[2].to (extra)
   - expected: undefined
   - actual: [117.8,36.75]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[2].znId (extra)
   - expected: undefined
   - actual: "1152"
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[3].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[4].lineWidth (extra)
+- children[3].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[4].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[5].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[6].lineWidth (extra)
+- children[5].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[6].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[7].lineWidth (extra)
+- children[6].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
 - children[7].znId (extra)
   - expected: undefined
   - actual: "1152"
-- children[8].lineWidth (extra)
+- children[7].confKey (extra)
   - expected: undefined
-  - actual: 0.1
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_1152.n_0.***"
 - children[10].text (mismatch)
-  - expected: " - created 2026-05-27 19:55:03 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 20:59:44 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
-- children[10].lineWidth (extra)
+- children[10].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[11].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[11].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[13].fill (extra)
   - expected: undefined
   - actual: true
-- children[13].lineWidth (extra)
+- children[13].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[13].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[13].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[14].fill (extra)
   - expected: undefined
   - actual: true
-- children[14].lineWidth (extra)
+- children[14].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[14].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[14].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[15].fill (extra)
   - expected: undefined
   - actual: true
-- children[15].lineWidth (extra)
+- children[15].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[15].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[15].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[16].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[17].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[18].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 
 ## pause [extract 0]
 
-- Issues: 57
+- Issues: 45
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,16.2]
 - children[0].to (extra)
   - expected: undefined
   - actual: [71.8,18.6]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[0].znId (extra)
   - expected: undefined
   - actual: "96"
@@ -26235,9 +19455,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1].to (extra)
   - expected: undefined
   - actual: [83.3,21.799999999999997]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[1].znId (extra)
   - expected: undefined
   - actual: "192"
@@ -26247,9 +19464,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[2].to (extra)
   - expected: undefined
   - actual: [94.8,25.799999999999997]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[2].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -26259,9 +19473,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[3].to (extra)
   - expected: undefined
   - actual: [106.3,30.799999999999997]
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[3].znId (extra)
   - expected: undefined
   - actual: "576"
@@ -26271,136 +19482,109 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[4].to (extra)
   - expected: undefined
   - actual: [106.3,36.8]
-- children[4].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[4].znId (extra)
   - expected: undefined
   - actual: "960"
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[5].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[5].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[6].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[6].znId (extra)
   - expected: undefined
   - actual: "96"
+- children[6].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_96.n_0.***"
 - children[7].center (mismatch)
   - expected: [83.3,21.8]
   - actual: [83.3,21.799999999999997]
-- children[7].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[7].znId (extra)
   - expected: undefined
   - actual: "192"
+- children[7].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_192.n_0.***"
 - children[8].center (mismatch)
   - expected: [94.8,25.8]
   - actual: [94.8,25.799999999999997]
 - children[8].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[8].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[8].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[8].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[9].center (mismatch)
   - expected: [106.3,30.8]
   - actual: [106.3,30.799999999999997]
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[9].znId (extra)
   - expected: undefined
   - actual: "576"
+- children[9].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_576.n_0.***"
 - children[10].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[10].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[10].znId (extra)
   - expected: undefined
   - actual: "960"
-- children[11].lineWidth (extra)
+- children[10].confKey (extra)
   - expected: undefined
-  - actual: 0.1
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_960.n_0.***"
 - children[13].text (mismatch)
-  - expected: " - created 2026-05-27 19:55:03 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 20:59:44 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
-- children[13].lineWidth (extra)
+- children[13].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[14].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[14].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[15].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[16].fill (extra)
   - expected: undefined
   - actual: true
-- children[16].lineWidth (extra)
+- children[16].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[16].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[16].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[17].fill (extra)
   - expected: undefined
   - actual: true
-- children[17].lineWidth (extra)
+- children[17].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[17].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[17].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
-- children[18].lineWidth (extra)
+- children[18].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[18].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[18].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[20].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 
 ## repeat [extract 0]
 
-- Issues: 55
+- Issues: 41
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,22.5]
 - children[0].to (extra)
   - expected: undefined
   - actual: [83.3,28.5]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[0].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -26410,9 +19594,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1].to (extra)
   - expected: undefined
   - actual: [106.3,34.5]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[1].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -26422,221 +19603,161 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[2].to (extra)
   - expected: undefined
   - actual: [117.8,40.5]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[2].znId (extra)
   - expected: undefined
   - actual: "1152"
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[3].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[4].lineWidth (extra)
+- children[3].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[4].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[5].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[6].lineWidth (extra)
+- children[5].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[6].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[7].lineWidth (extra)
+- children[6].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
 - children[7].znId (extra)
   - expected: undefined
   - actual: "1152"
+- children[7].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1152.n_0.***"
 - children[8].fill (extra)
   - expected: undefined
   - actual: false
-- children[8].lineWidth (extra)
+- children[8].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[8].znId (extra)
   - expected: undefined
   - actual: "goto-0-0"
-- children[8].path (extra)
-  - expected: undefined
+- children[8].path (mismatch)
+  - expected: [["M",123.425,42.775],["l",11.625000000000014,0],["l",0,-21.549999999999997],["M",135.05,42.775],["L",135.05,20.225],["L",67.925,20.225]]
   - actual: [[123.425,42.775],[135.05,42.775],[135.05,21.225],[135.05,42.775],[135.05,20.225],[67.925,20.225]]
 - children[9].fill (extra)
   - expected: undefined
   - actual: true
-- children[9].lineWidth (extra)
+- children[9].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[9].znId (extra)
   - expected: undefined
   - actual: "goto-0-0"
-- children[9].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.1152.p_repeat"
-- children[9].path (extra)
-  - expected: undefined
+- children[9].path (mismatch)
+  - expected: [["M",65.925,20.225],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
   - actual: [[65.925,20.225],[68.425,21.225],[68.425,19.225]]
 - children[10].fill (extra)
   - expected: undefined
   - actual: true
-- children[10].lineWidth (extra)
+- children[10].color (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "black"
 - children[10].znId (extra)
   - expected: undefined
   - actual: "goto-0-0"
-- children[10].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.c_jumplines.v_1.1152.p_repeat"
-- children[10].path (extra)
-  - expected: undefined
-  - actual: []
-- children[11].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[13].text (mismatch)
-  - expected: " - created 2026-05-27 19:55:04 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 20:59:44 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
-- children[13].lineWidth (extra)
+- children[13].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[14].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[14].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[15].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[16].fill (extra)
   - expected: undefined
   - actual: true
-- children[16].lineWidth (extra)
+- children[16].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[16].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[16].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[17].fill (extra)
   - expected: undefined
   - actual: true
-- children[17].lineWidth (extra)
+- children[17].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[17].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[17].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
-- children[18].lineWidth (extra)
+- children[18].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[18].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[18].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[20].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 
 ## single_note [extract 0]
 
-- Issues: 21
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
+- Issues: 14
 - children[0].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[1].lineWidth (extra)
+- children[0].confKey (extra)
   - expected: undefined
-  - actual: 0.1
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[3].text (mismatch)
-  - expected: " - created 2026-05-27 19:55:04 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 20:59:45 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
-- children[3].lineWidth (extra)
+- children[3].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[4].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[4].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[6].fill (extra)
   - expected: undefined
   - actual: true
-- children[6].lineWidth (extra)
+- children[6].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[6].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[6].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[7].fill (extra)
   - expected: undefined
   - actual: true
-- children[7].lineWidth (extra)
+- children[7].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[7].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[7].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[8].fill (extra)
   - expected: undefined
   - actual: true
-- children[8].lineWidth (extra)
+- children[8].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[8].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[8].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[10].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[11].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 
 ## tie [extract 0]
 
-- Issues: 44
+- Issues: 33
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
 - children[0].to (extra)
   - expected: undefined
   - actual: [60.3,24.75]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[0].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -26646,9 +19767,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1].to (extra)
   - expected: undefined
   - actual: [83.3,30.75]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[1].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -26658,121 +19776,91 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[2].to (extra)
   - expected: undefined
   - actual: [106.3,36.75]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[2].znId (extra)
   - expected: undefined
   - actual: "1152"
 - children[3].fill (extra)
   - expected: undefined
   - actual: false
-- children[3].lineWidth (extra)
+- children[3].color (extra)
   - expected: undefined
-  - actual: 0.5
-- children[3].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[3].path (mismatch)
+  - expected: [["M",63.425,18.25],["c",0.8177785188481662,1.934228087406059,0.817778518848166,5.0657719125939416,0,7]]
   - actual: [[63.425,18.25],[63.612407577236034,18.757115317618055],[63.76574104952007,19.305804098353537],[63.885000416852094,19.887751649582956],[63.97018567923211,20.49464327868283],[64.02129683666011,21.11816429302967],[64.03833388913613,21.75],[64.02129683666011,22.381835706970328],[63.97018567923211,23.00535672131717],[63.885000416852094,23.612248350417044],[63.76574104952007,24.194195901646466],[63.612407577236034,24.74288468238194],[63.425,25.25]]
-- children[4].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[4].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[5].lineWidth (extra)
+- children[4].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[5].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[6].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[7].lineWidth (extra)
+- children[6].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[7].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[8].lineWidth (extra)
+- children[7].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
 - children[8].znId (extra)
   - expected: undefined
   - actual: "1152"
-- children[9].lineWidth (extra)
+- children[8].confKey (extra)
   - expected: undefined
-  - actual: 0.1
-- children[10].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_1152.n_0.***"
 - children[11].text (mismatch)
-  - expected: " - created 2026-05-27 19:55:04 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 20:59:45 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
-- children[11].lineWidth (extra)
+- children[11].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[12].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[12].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[13].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[14].fill (extra)
   - expected: undefined
   - actual: true
-- children[14].lineWidth (extra)
+- children[14].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[14].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[14].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[15].fill (extra)
   - expected: undefined
   - actual: true
-- children[15].lineWidth (extra)
+- children[15].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[15].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[15].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[16].fill (extra)
   - expected: undefined
   - actual: true
-- children[16].lineWidth (extra)
+- children[16].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[16].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[16].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[17].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[18].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[20].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 
 ## tuplet [extract 0]
 
-- Issues: 52
+- Issues: 41
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,17]
 - children[0].to (extra)
   - expected: undefined
   - actual: [83.3,21]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[0].znId (extra)
   - expected: undefined
   - actual: "128"
@@ -26782,9 +19870,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1].to (extra)
   - expected: undefined
   - actual: [106.3,25]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[1].znId (extra)
   - expected: undefined
   - actual: "256"
@@ -26794,9 +19879,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[2].to (extra)
   - expected: undefined
   - actual: [117.8,30]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[2].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -26806,169 +19888,130 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[3].to (extra)
   - expected: undefined
   - actual: [140.8,36]
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[3].znId (extra)
   - expected: undefined
   - actual: "768"
 - children[4].fill (extra)
   - expected: undefined
   - actual: false
-- children[4].lineWidth (extra)
+- children[4].color (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "black"
 - children[4].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[4].path (extra)
-  - expected: undefined
+- children[4].draginfo (mismatch)
+  - expected: {"handler":"tuplet","p1":[60.3,17],"p2":[106.3,25],"cp1":[63.127129383395584,12.416623575404124],"cp2":[105.18628236411689,19.73125887639913],"mp":{"$$id":904,"x":84.28521175481967,"y":13.335032409786873},"conf_key":"extract.0.notebound.tuplet.v_1.0"}
+  - actual: {"handler":"tuplet","p1":[60.3,17],"p2":[106.3,25],"cp1":[63.127129383395584,12.416623575404124],"cp2":[105.18628236411689,19.73125887639913],"mp":{"x":84.28521175481967,"y":13.335032409786873},"tuplet_options":{"cp1":[5,2],"cp2":[5,-2],"pos":[0,0],"shape":["c"],"show":true},"conf_key":"extract.0.notebound.tuplet.v_1.0","callback":null}
+- children[4].path (mismatch)
+  - expected: [["M",60.3,17],["c",2.827129383395588,-4.583376424595877,44.88628236411689,2.7312588763991323,46,8]]
   - actual: [[60.3,17],[61.7777171783498,16.093961748144018],[64.61170805192788,15.635257644913409],[68.52357866607394,15.575471350367243],[73.23493506612772,15.866186524564602],[78.46738329742888,16.45898682756457],[83.94252940531717,17.30545591942622],[89.38197943513228,18.357177460208636],[94.50733943221393,19.565735109970902],[99.04021544190182,20.88271252877209],[102.70221350953565,22.25969337667128],[105.21493968045515,23.64826131372756],[106.3,25]]
 - children[5].center (mismatch)
   - expected: [84.2852,13.335]
   - actual: [84.28521175481967,13.335032409786873]
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[5].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[6].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[7].lineWidth (extra)
+- children[6].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[7].znId (extra)
   - expected: undefined
   - actual: "128"
-- children[8].lineWidth (extra)
+- children[7].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_128.n_0.***"
 - children[8].znId (extra)
   - expected: undefined
   - actual: "256"
-- children[9].lineWidth (extra)
+- children[8].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_256.n_0.***"
 - children[9].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[10].lineWidth (extra)
+- children[9].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[10].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[11].lineWidth (extra)
+- children[10].confKey (extra)
   - expected: undefined
-  - actual: 0.1
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
 - children[13].text (mismatch)
-  - expected: " - created 2026-05-27 19:55:05 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 20:59:45 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
-- children[13].lineWidth (extra)
+- children[13].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[14].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[14].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[15].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[16].fill (extra)
   - expected: undefined
   - actual: true
-- children[16].lineWidth (extra)
+- children[16].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[16].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[16].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[17].fill (extra)
   - expected: undefined
   - actual: true
-- children[17].lineWidth (extra)
+- children[17].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[17].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[17].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
-- children[18].lineWidth (extra)
+- children[18].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[18].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[18].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[20].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 
 ## two_voices [extract 0]
 
-- Issues: 63
+- Issues: 47
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
 - children[0].to (extra)
   - expected: undefined
   - actual: [5.425,18.75]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1].from (extra)
   - expected: undefined
   - actual: [83.3,24.75]
 - children[1].to (extra)
   - expected: undefined
   - actual: [25.8,24.75]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[2].from (extra)
   - expected: undefined
   - actual: [106.3,30.75]
 - children[2].to (extra)
   - expected: undefined
   - actual: [48.8,30.75]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[3].from (extra)
   - expected: undefined
   - actual: [117.8,36.75]
 - children[3].to (extra)
   - expected: undefined
   - actual: [60.3,36.75]
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[4].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
 - children[4].to (extra)
   - expected: undefined
   - actual: [83.3,24.75]
-- children[4].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[4].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -26978,9 +20021,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[5].to (extra)
   - expected: undefined
   - actual: [106.3,30.75]
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[5].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -26990,331 +20030,235 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[6].to (extra)
   - expected: undefined
   - actual: [117.8,36.75]
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[6].znId (extra)
   - expected: undefined
   - actual: "1152"
-- children[7].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[7].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[8].lineWidth (extra)
+- children[7].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[8].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[9].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[10].lineWidth (extra)
+- children[9].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[10].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[11].lineWidth (extra)
+- children[10].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
 - children[11].znId (extra)
   - expected: undefined
   - actual: "1152"
-- children[12].lineWidth (extra)
+- children[11].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_1152.n_0.***"
 - children[12].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[13].lineWidth (extra)
+- children[12].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_2.t_0.n_0.***"
 - children[13].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[14].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[14].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[15].lineWidth (extra)
+- children[14].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_2.t_384.n_0.***"
 - children[15].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[16].lineWidth (extra)
+- children[15].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_2.t_768.n_0.***"
 - children[16].znId (extra)
   - expected: undefined
   - actual: "1152"
-- children[17].lineWidth (extra)
+- children[16].confKey (extra)
   - expected: undefined
-  - actual: 0.1
-- children[18].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_2.t_1152.n_0.***"
 - children[19].text (mismatch)
-  - expected: " - created 2026-05-27 19:55:05 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 20:59:46 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
-- children[19].lineWidth (extra)
+- children[19].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[20].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[20].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[22].fill (extra)
   - expected: undefined
   - actual: true
-- children[22].lineWidth (extra)
+- children[22].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[22].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[22].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[23].fill (extra)
   - expected: undefined
   - actual: true
-- children[23].lineWidth (extra)
+- children[23].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[23].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[23].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[24].fill (extra)
   - expected: undefined
   - actual: true
-- children[24].lineWidth (extra)
+- children[24].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[24].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[24].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[25].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[26].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[27].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[28].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 
 ## Twostaff [extract 0]
 
-- Issues: 478
+- Issues: 371
 - children[0].from (extra)
   - expected: undefined
   - actual: [198.3,17]
 - children[0].to (extra)
   - expected: undefined
   - actual: [60.3,17]
-- children[0].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[1].from (extra)
   - expected: undefined
   - actual: [221.3,20.2]
 - children[1].to (extra)
   - expected: undefined
   - actual: [83.3,20.2]
-- children[1].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[2].from (extra)
   - expected: undefined
   - actual: [244.3,23.4]
 - children[2].to (extra)
   - expected: undefined
   - actual: [106.3,23.4]
-- children[2].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[3].from (extra)
   - expected: undefined
   - actual: [278.8,30.599999999999998]
 - children[3].to (extra)
   - expected: undefined
   - actual: [140.8,30.599999999999998]
-- children[3].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[4].from (extra)
   - expected: undefined
   - actual: [301.8,33.8]
 - children[4].to (extra)
   - expected: undefined
   - actual: [163.8,33.8]
-- children[4].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[5].from (extra)
   - expected: undefined
   - actual: [324.8,37]
 - children[5].to (extra)
   - expected: undefined
   - actual: [186.8,37]
-- children[5].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[6].from (extra)
   - expected: undefined
   - actual: [198.3,17]
 - children[6].to (extra)
   - expected: undefined
   - actual: [-76.65,17]
-- children[6].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[7].from (extra)
   - expected: undefined
   - actual: [106.3,23.4]
 - children[7].to (extra)
   - expected: undefined
   - actual: [-30.65,23.4]
-- children[7].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[8].from (extra)
   - expected: undefined
   - actual: [129.3,26.599999999999998]
 - children[8].to (extra)
   - expected: undefined
   - actual: [-7.6499999999999995,26.599999999999998]
-- children[8].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[9].from (extra)
   - expected: undefined
   - actual: [140.8,30.599999999999998]
 - children[9].to (extra)
   - expected: undefined
   - actual: [3.8499999999999996,30.599999999999998]
-- children[9].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[10].from (extra)
   - expected: undefined
   - actual: [186.8,37]
 - children[10].to (extra)
   - expected: undefined
   - actual: [48.8,37]
-- children[10].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[11].from (extra)
   - expected: undefined
   - actual: [198.3,40.199999999999996]
 - children[11].to (extra)
   - expected: undefined
   - actual: [60.3,40.199999999999996]
-- children[11].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[12].from (extra)
   - expected: undefined
   - actual: [140.8,45.449999999999996]
 - children[12].to (extra)
   - expected: undefined
   - actual: [267.3,45.449999999999996]
-- children[12].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[13].from (extra)
   - expected: undefined
   - actual: [140.8,55.449999999999996]
 - children[13].to (extra)
   - expected: undefined
   - actual: [267.3,55.449999999999996]
-- children[13].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[14].from (extra)
   - expected: undefined
   - actual: [186.8,72.94999999999999]
 - children[14].to (extra)
   - expected: undefined
   - actual: [186.8,72.94999999999999]
-- children[14].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[15].from (extra)
   - expected: undefined
   - actual: [186.8,82.94999999999999]
 - children[15].to (extra)
   - expected: undefined
   - actual: [198.3,82.94999999999999]
-- children[15].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[16].from (extra)
   - expected: undefined
   - actual: [198.3,90.44999999999999]
 - children[16].to (extra)
   - expected: undefined
   - actual: [186.8,90.44999999999999]
-- children[16].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[17].from (extra)
   - expected: undefined
   - actual: [244.3,96.44999999999999]
 - children[17].to (extra)
   - expected: undefined
   - actual: [186.8,96.44999999999999]
-- children[17].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[18].from (extra)
   - expected: undefined
   - actual: [198.3,103.95]
 - children[18].to (extra)
   - expected: undefined
   - actual: [140.8,103.95]
-- children[18].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[19].from (extra)
   - expected: undefined
   - actual: [221.3,109.95]
 - children[19].to (extra)
   - expected: undefined
   - actual: [267.3,109.95]
-- children[19].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[20].from (extra)
   - expected: undefined
   - actual: [198.3,117.45]
 - children[20].to (extra)
   - expected: undefined
   - actual: [324.8,117.45]
-- children[20].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[21].from (extra)
   - expected: undefined
   - actual: [198.3,17]
 - children[21].to (extra)
   - expected: undefined
   - actual: [221.3,20.2]
-- children[21].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[21].znId (extra)
   - expected: undefined
   - actual: "96"
@@ -27324,9 +20268,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[22].to (extra)
   - expected: undefined
   - actual: [244.3,23.4]
-- children[22].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[22].znId (extra)
   - expected: undefined
   - actual: "192"
@@ -27336,9 +20277,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[23].to (extra)
   - expected: undefined
   - actual: [278.8,30.599999999999998]
-- children[23].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[23].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -27348,9 +20286,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[24].to (extra)
   - expected: undefined
   - actual: [301.8,33.8]
-- children[24].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[24].znId (extra)
   - expected: undefined
   - actual: "480"
@@ -27360,69 +20295,60 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[25].to (extra)
   - expected: undefined
   - actual: [324.8,37]
-- children[25].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[25].znId (extra)
   - expected: undefined
   - actual: "576"
-- children[26].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[26].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[27].lineWidth (extra)
+- children[26].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
 - children[27].znId (extra)
   - expected: undefined
   - actual: "96"
-- children[28].lineWidth (extra)
+- children[27].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_96.n_0.***"
 - children[28].znId (extra)
   - expected: undefined
   - actual: "192"
+- children[28].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_192.n_0.***"
 - children[29].center (mismatch)
   - expected: [278.8,30.6]
   - actual: [278.8,30.599999999999998]
-- children[29].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[29].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[29].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
 - children[30].center (mismatch)
   - expected: [278.8,29.59]
   - actual: [278.8,29.589999999999996]
-- children[30].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[30].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[31].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[31].znId (extra)
   - expected: undefined
   - actual: "480"
-- children[32].lineWidth (extra)
+- children[31].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_1.t_480.n_0.***"
 - children[32].znId (extra)
   - expected: undefined
   - actual: "576"
+- children[32].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_576.n_0.***"
 - children[33].from (extra)
   - expected: undefined
   - actual: [106.3,23.4]
 - children[33].to (extra)
   - expected: undefined
   - actual: [129.3,26.599999999999998]
-- children[33].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[33].znId (extra)
   - expected: undefined
   - actual: "288"
@@ -27432,87 +20358,78 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[34].to (extra)
   - expected: undefined
   - actual: [198.3,40.199999999999996]
-- children[34].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[34].znId (extra)
   - expected: undefined
   - actual: "672"
-- children[35].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[35].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[36].lineWidth (extra)
+- children[35].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_2.t_0.n_0.***"
 - children[36].znId (extra)
   - expected: undefined
   - actual: "96"
-- children[37].lineWidth (extra)
+- children[36].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_2.t_96.n_0.***"
 - children[37].znId (extra)
   - expected: undefined
   - actual: "192"
+- children[37].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_192.n_0.***"
 - children[38].center (mismatch)
   - expected: [129.3,26.6]
   - actual: [129.3,26.599999999999998]
-- children[38].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[38].znId (extra)
   - expected: undefined
   - actual: "288"
+- children[38].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_288.n_0.***"
 - children[39].center (mismatch)
   - expected: [140.8,30.6]
   - actual: [140.8,30.599999999999998]
-- children[39].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[39].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[39].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_384.n_0.***"
 - children[40].center (mismatch)
   - expected: [140.8,29.59]
   - actual: [140.8,29.589999999999996]
-- children[40].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[40].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[41].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[41].znId (extra)
   - expected: undefined
   - actual: "480"
-- children[42].lineWidth (extra)
+- children[41].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_2.t_480.n_0.***"
 - children[42].znId (extra)
   - expected: undefined
   - actual: "576"
+- children[42].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_576.n_0.***"
 - children[43].center (mismatch)
   - expected: [198.3,40.2]
   - actual: [198.3,40.199999999999996]
-- children[43].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[43].znId (extra)
   - expected: undefined
   - actual: "672"
+- children[43].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_2.t_672.n_0.***"
 - children[44].from (extra)
   - expected: undefined
   - actual: [198.3,17]
 - children[44].to (extra)
   - expected: undefined
   - actual: [106.3,23.4]
-- children[44].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[44].znId (extra)
   - expected: undefined
   - actual: "192"
@@ -27522,9 +20439,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[45].to (extra)
   - expected: undefined
   - actual: [129.3,26.599999999999998]
-- children[45].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[45].znId (extra)
   - expected: undefined
   - actual: "288"
@@ -27534,9 +20448,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[46].to (extra)
   - expected: undefined
   - actual: [140.8,30.599999999999998]
-- children[46].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[46].znId (extra)
   - expected: undefined
   - actual: "384"
@@ -27546,9 +20457,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[47].to (extra)
   - expected: undefined
   - actual: [186.8,37]
-- children[47].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[47].znId (extra)
   - expected: undefined
   - actual: "576"
@@ -27558,9 +20466,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[48].to (extra)
   - expected: undefined
   - actual: [198.3,40.199999999999996]
-- children[48].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[48].znId (extra)
   - expected: undefined
   - actual: "672"
@@ -27570,9 +20475,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[49].to (extra)
   - expected: undefined
   - actual: [140.8,45.449999999999996]
-- children[49].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[49].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -27582,9 +20484,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[50].to (extra)
   - expected: undefined
   - actual: [140.8,50.449999999999996]
-- children[50].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[50].znId (extra)
   - expected: undefined
   - actual: "960"
@@ -27594,9 +20493,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[51].to (extra)
   - expected: undefined
   - actual: [140.8,55.449999999999996]
-- children[51].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[51].znId (extra)
   - expected: undefined
   - actual: "1152"
@@ -27606,9 +20502,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[52].to (extra)
   - expected: undefined
   - actual: [186.8,72.94999999999999]
-- children[52].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[52].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -27618,9 +20511,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[53].to (extra)
   - expected: undefined
   - actual: [186.8,77.94999999999999]
-- children[53].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[53].znId (extra)
   - expected: undefined
   - actual: "1728"
@@ -27630,9 +20520,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[54].to (extra)
   - expected: undefined
   - actual: [186.8,82.94999999999999]
-- children[54].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[54].znId (extra)
   - expected: undefined
   - actual: "1920"
@@ -27642,9 +20529,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[55].to (extra)
   - expected: undefined
   - actual: [198.3,90.44999999999999]
-- children[55].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[55].znId (extra)
   - expected: undefined
   - actual: "2304"
@@ -27654,9 +20538,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[56].to (extra)
   - expected: undefined
   - actual: [244.3,96.44999999999999]
-- children[56].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[56].znId (extra)
   - expected: undefined
   - actual: "2688"
@@ -27666,9 +20547,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[57].to (extra)
   - expected: undefined
   - actual: [198.3,103.95]
-- children[57].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[57].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -27678,9 +20556,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[58].to (extra)
   - expected: undefined
   - actual: [221.3,109.95]
-- children[58].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[58].znId (extra)
   - expected: undefined
   - actual: "3456"
@@ -27690,111 +20565,93 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[59].to (extra)
   - expected: undefined
   - actual: [198.3,117.45]
-- children[59].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.3
 - children[59].znId (extra)
   - expected: undefined
   - actual: "3840"
-- children[60].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[60].znId (extra)
   - expected: undefined
   - actual: "0"
-- children[61].lineWidth (extra)
+- children[60].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_3.t_0.n_0.***"
 - children[61].znId (extra)
   - expected: undefined
   - actual: "192"
+- children[61].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_192.n_0.***"
 - children[62].center (mismatch)
   - expected: [129.3,26.6]
   - actual: [129.3,26.599999999999998]
-- children[62].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[62].znId (extra)
   - expected: undefined
   - actual: "288"
+- children[62].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_288.n_0.***"
 - children[63].center (mismatch)
   - expected: [140.8,30.6]
   - actual: [140.8,30.599999999999998]
-- children[63].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[63].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[63].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_384.n_0.***"
 - children[64].center (mismatch)
   - expected: [140.8,29.25]
   - actual: [140.8,29.249999999999996]
-- children[64].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[64].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[65].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[65].znId (extra)
   - expected: undefined
   - actual: "576"
+- children[65].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_576.n_0.***"
 - children[66].center (mismatch)
   - expected: [198.3,40.2]
   - actual: [198.3,40.199999999999996]
-- children[66].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[66].znId (extra)
   - expected: undefined
   - actual: "672"
+- children[66].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_672.n_0.***"
 - children[67].from (extra)
   - expected: undefined
   - actual: [140.8,45.449999999999996]
 - children[67].to (extra)
   - expected: undefined
   - actual: [186.8,45.449999999999996]
-- children[67].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[67].znId (extra)
   - expected: undefined
   - actual: "768"
 - children[68].center (mismatch)
   - expected: [186.8,45.45]
   - actual: [186.8,45.449999999999996]
-- children[68].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[68].znId (extra)
   - expected: undefined
   - actual: "768"
 - children[69].center (mismatch)
   - expected: [186.8,44.1]
   - actual: [186.8,44.099999999999994]
-- children[69].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[69].znId (extra)
   - expected: undefined
   - actual: "768"
 - children[70].center (mismatch)
   - expected: [140.8,45.45]
   - actual: [140.8,45.449999999999996]
-- children[70].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[70].znId (extra)
   - expected: undefined
   - actual: "768"
+- children[70].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_768.n_0.***"
 - children[71].center (mismatch)
   - expected: [140.8,44.1]
   - actual: [140.8,44.099999999999994]
-- children[71].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[71].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -27804,99 +20661,75 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[72].to (extra)
   - expected: undefined
   - actual: [186.8,50.449999999999996]
-- children[72].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[72].znId (extra)
   - expected: undefined
   - actual: "960"
 - children[73].center (mismatch)
   - expected: [186.8,50.45]
   - actual: [186.8,50.449999999999996]
-- children[73].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[73].znId (extra)
   - expected: undefined
   - actual: "960"
 - children[74].center (mismatch)
   - expected: [140.8,50.45]
   - actual: [140.8,50.449999999999996]
-- children[74].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[74].znId (extra)
   - expected: undefined
   - actual: "960"
+- children[74].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_960.n_0.***"
 - children[75].from (extra)
   - expected: undefined
   - actual: [140.8,55.449999999999996]
 - children[75].to (extra)
   - expected: undefined
   - actual: [186.8,55.449999999999996]
-- children[75].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[75].znId (extra)
   - expected: undefined
   - actual: "1152"
 - children[76].center (mismatch)
   - expected: [186.8,55.45]
   - actual: [186.8,55.449999999999996]
-- children[76].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[76].znId (extra)
   - expected: undefined
   - actual: "1152"
 - children[77].center (mismatch)
   - expected: [140.8,55.45]
   - actual: [140.8,55.449999999999996]
-- children[77].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[77].znId (extra)
   - expected: undefined
   - actual: "1152"
+- children[77].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_1152.n_0.***"
 - children[78].from (extra)
   - expected: undefined
   - actual: [140.8,72.94999999999999]
 - children[78].to (extra)
   - expected: undefined
   - actual: [186.8,72.94999999999999]
-- children[78].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[78].znId (extra)
   - expected: undefined
   - actual: "1536"
 - children[79].center (mismatch)
   - expected: [140.8,72.95]
   - actual: [140.8,72.94999999999999]
-- children[79].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[79].znId (extra)
   - expected: undefined
   - actual: "1536"
-- children[80].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[80].znId (extra)
   - expected: undefined
   - actual: "1536"
 - children[81].center (mismatch)
   - expected: [186.8,72.95]
   - actual: [186.8,72.94999999999999]
-- children[81].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[81].znId (extra)
   - expected: undefined
   - actual: "1536"
-- children[82].lineWidth (extra)
+- children[81].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_3.t_1536.n_0.***"
 - children[82].znId (extra)
   - expected: undefined
   - actual: "1536"
@@ -27906,105 +20739,81 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[83].to (extra)
   - expected: undefined
   - actual: [186.8,77.94999999999999]
-- children[83].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[83].znId (extra)
   - expected: undefined
   - actual: "1728"
 - children[84].center (mismatch)
   - expected: [140.8,77.95]
   - actual: [140.8,77.94999999999999]
-- children[84].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[84].znId (extra)
   - expected: undefined
   - actual: "1728"
 - children[85].center (mismatch)
   - expected: [186.8,77.95]
   - actual: [186.8,77.94999999999999]
-- children[85].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[85].znId (extra)
   - expected: undefined
   - actual: "1728"
+- children[85].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_1728.n_0.***"
 - children[86].from (extra)
   - expected: undefined
   - actual: [106.3,82.94999999999999]
 - children[86].to (extra)
   - expected: undefined
   - actual: [186.8,82.94999999999999]
-- children[86].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[86].znId (extra)
   - expected: undefined
   - actual: "1920"
 - children[87].center (mismatch)
   - expected: [106.3,82.95]
   - actual: [106.3,82.94999999999999]
-- children[87].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[87].znId (extra)
   - expected: undefined
   - actual: "1920"
 - children[88].center (mismatch)
   - expected: [186.8,82.95]
   - actual: [186.8,82.94999999999999]
-- children[88].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[88].znId (extra)
   - expected: undefined
   - actual: "1920"
+- children[88].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_1920.n_0.***"
 - children[89].from (extra)
   - expected: undefined
   - actual: [140.8,90.44999999999999]
 - children[89].to (extra)
   - expected: undefined
   - actual: [198.3,90.44999999999999]
-- children[89].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[89].znId (extra)
   - expected: undefined
   - actual: "2304"
 - children[90].center (mismatch)
   - expected: [140.8,90.45]
   - actual: [140.8,90.44999999999999]
-- children[90].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[90].znId (extra)
   - expected: undefined
   - actual: "2304"
 - children[91].center (mismatch)
   - expected: [140.8,88.675]
   - actual: [140.8,88.67499999999998]
-- children[91].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[91].znId (extra)
   - expected: undefined
   - actual: "2304"
 - children[92].center (mismatch)
   - expected: [198.3,90.45]
   - actual: [198.3,90.44999999999999]
-- children[92].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[92].znId (extra)
   - expected: undefined
   - actual: "2304"
+- children[92].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_2304.n_0.***"
 - children[93].center (mismatch)
   - expected: [198.3,88.675]
   - actual: [198.3,88.67499999999998]
-- children[93].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[93].znId (extra)
   - expected: undefined
   - actual: "2304"
@@ -28014,63 +20823,45 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[94].to (extra)
   - expected: undefined
   - actual: [244.3,96.44999999999999]
-- children[94].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[94].znId (extra)
   - expected: undefined
   - actual: "2688"
 - children[95].center (mismatch)
   - expected: [140.8,96.45]
   - actual: [140.8,96.44999999999999]
-- children[95].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[95].znId (extra)
   - expected: undefined
   - actual: "2688"
 - children[96].center (mismatch)
   - expected: [244.3,96.45]
   - actual: [244.3,96.44999999999999]
-- children[96].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[96].znId (extra)
   - expected: undefined
   - actual: "2688"
+- children[96].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_2688.n_0.***"
 - children[97].from (extra)
   - expected: undefined
   - actual: [163.8,103.95]
 - children[97].to (extra)
   - expected: undefined
   - actual: [198.3,103.95]
-- children[97].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[97].znId (extra)
   - expected: undefined
   - actual: "3072"
-- children[98].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[98].znId (extra)
   - expected: undefined
   - actual: "3072"
-- children[99].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[99].znId (extra)
   - expected: undefined
   - actual: "3072"
-- children[100].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[100].znId (extra)
   - expected: undefined
   - actual: "3072"
-- children[101].lineWidth (extra)
+- children[100].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_3.t_3072.n_0.***"
 - children[101].znId (extra)
   - expected: undefined
   - actual: "3072"
@@ -28080,57 +20871,39 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[102].to (extra)
   - expected: undefined
   - actual: [221.3,109.95]
-- children[102].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[102].znId (extra)
   - expected: undefined
   - actual: "3456"
-- children[103].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[103].znId (extra)
   - expected: undefined
   - actual: "3456"
-- children[104].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[104].znId (extra)
   - expected: undefined
   - actual: "3456"
+- children[104].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_3.t_3456.n_0.***"
 - children[105].from (extra)
   - expected: undefined
   - actual: [163.8,117.45]
 - children[105].to (extra)
   - expected: undefined
   - actual: [198.3,117.45]
-- children[105].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[105].znId (extra)
   - expected: undefined
   - actual: "3840"
-- children[106].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[106].znId (extra)
   - expected: undefined
   - actual: "3840"
-- children[107].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[107].znId (extra)
   - expected: undefined
   - actual: "3840"
-- children[108].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[108].znId (extra)
   - expected: undefined
   - actual: "3840"
-- children[109].lineWidth (extra)
+- children[108].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_3.t_3840.n_0.***"
 - children[109].znId (extra)
   - expected: undefined
   - actual: "3840"
@@ -28140,9 +20913,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[110].to (extra)
   - expected: undefined
   - actual: [-53.650000000000006,20.2]
-- children[110].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[110].znId (extra)
   - expected: undefined
   - actual: "96"
@@ -28152,9 +20922,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[111].to (extra)
   - expected: undefined
   - actual: [25.8,33.8]
-- children[111].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[111].znId (extra)
   - expected: undefined
   - actual: "480"
@@ -28164,9 +20931,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[112].to (extra)
   - expected: undefined
   - actual: [267.3,60.449999999999996]
-- children[112].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[112].znId (extra)
   - expected: undefined
   - actual: "1344"
@@ -28176,9 +20940,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[113].to (extra)
   - expected: undefined
   - actual: [324.8,122.45]
-- children[113].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[113].znId (extra)
   - expected: undefined
   - actual: "4032"
@@ -28188,9 +20949,6 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[114].to (extra)
   - expected: undefined
   - actual: [324.8,126.45]
-- children[114].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[114].znId (extra)
   - expected: undefined
   - actual: "4224"
@@ -28200,225 +20958,195 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[115].to (extra)
   - expected: undefined
   - actual: [324.8,130.45]
-- children[115].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[115].znId (extra)
   - expected: undefined
   - actual: "4416"
-- children[116].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[116].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[116].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_0.n_0.***"
 - children[117].center (mismatch)
   - expected: [-53.65,20.2]
   - actual: [-53.650000000000006,20.2]
-- children[117].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[117].znId (extra)
   - expected: undefined
   - actual: "96"
-- children[118].lineWidth (extra)
+- children[117].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_4.t_96.n_0.***"
 - children[118].znId (extra)
   - expected: undefined
   - actual: "192"
+- children[118].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_192.n_0.***"
 - children[119].center (mismatch)
   - expected: [-7.65,26.6]
   - actual: [-7.6499999999999995,26.599999999999998]
-- children[119].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[119].znId (extra)
   - expected: undefined
   - actual: "288"
+- children[119].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_288.n_0.***"
 - children[120].center (mismatch)
   - expected: [3.85,30.6]
   - actual: [3.8499999999999996,30.599999999999998]
-- children[120].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[120].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[120].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_384.n_0.***"
 - children[121].center (mismatch)
   - expected: [3.85,29.59]
   - actual: [3.8499999999999996,29.589999999999996]
-- children[121].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[121].znId (extra)
   - expected: undefined
   - actual: "384"
-- children[122].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[122].znId (extra)
   - expected: undefined
   - actual: "480"
-- children[123].lineWidth (extra)
+- children[122].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_4.t_480.n_0.***"
 - children[123].znId (extra)
   - expected: undefined
   - actual: "576"
+- children[123].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_576.n_0.***"
 - children[124].center (mismatch)
   - expected: [60.3,40.2]
   - actual: [60.3,40.199999999999996]
-- children[124].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[124].znId (extra)
   - expected: undefined
   - actual: "672"
+- children[124].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_672.n_0.***"
 - children[125].center (mismatch)
   - expected: [267.3,45.45]
   - actual: [267.3,45.449999999999996]
-- children[125].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[125].znId (extra)
   - expected: undefined
   - actual: "768"
-- children[126].lineWidth (extra)
+- children[125].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_4.t_768.n_0.***"
 - children[126].znId (extra)
   - expected: undefined
   - actual: "768"
 - children[127].center (mismatch)
   - expected: [267.3,55.45]
   - actual: [267.3,55.449999999999996]
-- children[127].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[127].znId (extra)
   - expected: undefined
   - actual: "1152"
+- children[127].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_1152.n_0.***"
 - children[128].center (mismatch)
   - expected: [267.3,60.45]
   - actual: [267.3,60.449999999999996]
-- children[128].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[128].znId (extra)
   - expected: undefined
   - actual: "1344"
+- children[128].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_1344.n_0.***"
 - children[129].center (mismatch)
   - expected: [186.8,72.95]
   - actual: [186.8,72.94999999999999]
-- children[129].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[129].znId (extra)
   - expected: undefined
   - actual: "1536"
+- children[129].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_1536.n_0.***"
 - children[130].center (mismatch)
   - expected: [186.8,71.175]
   - actual: [186.8,71.17499999999998]
-- children[130].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[130].znId (extra)
   - expected: undefined
   - actual: "1536"
 - children[131].center (mismatch)
   - expected: [198.3,82.95]
   - actual: [198.3,82.94999999999999]
-- children[131].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[131].znId (extra)
   - expected: undefined
   - actual: "1920"
+- children[131].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_1920.n_0.***"
 - children[132].center (mismatch)
   - expected: [186.8,90.45]
   - actual: [186.8,90.44999999999999]
-- children[132].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[132].znId (extra)
   - expected: undefined
   - actual: "2304"
+- children[132].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_2304.n_0.***"
 - children[133].center (mismatch)
   - expected: [186.8,88.675]
   - actual: [186.8,88.67499999999998]
-- children[133].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[133].znId (extra)
   - expected: undefined
   - actual: "2304"
 - children[134].center (mismatch)
   - expected: [186.8,96.45]
   - actual: [186.8,96.44999999999999]
-- children[134].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[134].znId (extra)
   - expected: undefined
   - actual: "2688"
-- children[135].lineWidth (extra)
+- children[134].confKey (extra)
   - expected: undefined
-  - actual: 0.5
+  - actual: "extract.0.notebound.nconf.v_4.t_2688.n_0.***"
 - children[135].znId (extra)
   - expected: undefined
   - actual: "3072"
-- children[136].lineWidth (extra)
+- children[135].confKey (extra)
   - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_4.t_3072.n_0.***"
 - children[136].znId (extra)
   - expected: undefined
   - actual: "3072"
-- children[137].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[137].znId (extra)
   - expected: undefined
   - actual: "3456"
+- children[137].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_3456.n_0.***"
 - children[138].from (extra)
   - expected: undefined
   - actual: [244.3,117.45]
 - children[138].to (extra)
   - expected: undefined
   - actual: [324.8,117.45]
-- children[138].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[138].znId (extra)
   - expected: undefined
   - actual: "3840"
-- children[139].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[139].znId (extra)
   - expected: undefined
   - actual: "3840"
 - children[140].center (mismatch)
   - expected: [244.3,116.1]
   - actual: [244.3,116.10000000000001]
-- children[140].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[140].znId (extra)
   - expected: undefined
   - actual: "3840"
-- children[141].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[141].znId (extra)
   - expected: undefined
   - actual: "3840"
+- children[141].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_3840.n_0.***"
 - children[142].center (mismatch)
   - expected: [324.8,116.1]
   - actual: [324.8,116.10000000000001]
-- children[142].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[142].znId (extra)
   - expected: undefined
   - actual: "3840"
@@ -28428,127 +21156,88 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[143].to (extra)
   - expected: undefined
   - actual: [324.8,122.45]
-- children[143].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[143].znId (extra)
   - expected: undefined
   - actual: "4032"
-- children[144].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[144].znId (extra)
   - expected: undefined
   - actual: "4032"
-- children[145].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[145].znId (extra)
   - expected: undefined
   - actual: "4032"
+- children[145].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_4032.n_0.***"
 - children[146].from (extra)
   - expected: undefined
   - actual: [244.3,126.45]
 - children[146].to (extra)
   - expected: undefined
   - actual: [324.8,126.45]
-- children[146].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[146].znId (extra)
   - expected: undefined
   - actual: "4224"
-- children[147].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[147].znId (extra)
   - expected: undefined
   - actual: "4224"
-- children[148].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[148].znId (extra)
   - expected: undefined
   - actual: "4224"
+- children[148].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_4.t_4224.n_0.***"
 - children[149].from (extra)
   - expected: undefined
   - actual: [244.3,130.45]
 - children[149].to (extra)
   - expected: undefined
   - actual: [324.8,130.45]
-- children[149].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 - children[149].znId (extra)
   - expected: undefined
   - actual: "4416"
-- children[150].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[150].znId (extra)
   - expected: undefined
   - actual: "4416"
-- children[151].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.5
 - children[151].znId (extra)
   - expected: undefined
   - actual: "4416"
-- children[152].lineWidth (extra)
+- children[151].confKey (extra)
   - expected: undefined
-  - actual: 0.1
-- children[153].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: "extract.0.notebound.nconf.v_4.t_4416.n_0.***"
 - children[154].text (mismatch)
-  - expected: "Twostaff - created 2026-05-27 19:55:05 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
+  - expected: "Twostaff - created 2026-05-27 20:59:46 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "Twostaff - created by Zupfnoter"
-- children[154].lineWidth (extra)
+- children[154].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[155].lineWidth (extra)
+  - actual: {"handler":"annotation"}
+- children[155].draginfo (extra)
   - expected: undefined
-  - actual: 0.1
-- children[156].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
+  - actual: {"handler":"annotation"}
 - children[157].fill (extra)
   - expected: undefined
   - actual: true
-- children[157].lineWidth (extra)
+- children[157].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[157].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[157].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[158].fill (extra)
   - expected: undefined
   - actual: true
-- children[158].lineWidth (extra)
+- children[158].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[158].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[158].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[159].fill (extra)
   - expected: undefined
   - actual: true
-- children[159].lineWidth (extra)
+- children[159].color (extra)
   - expected: undefined
-  - actual: 0.1
-- children[159].path (extra)
-  - expected: undefined
+  - actual: "black"
+- children[159].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
-- children[160].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[161].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[162].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
-- children[163].lineWidth (extra)
-  - expected: undefined
-  - actual: 0.1
 

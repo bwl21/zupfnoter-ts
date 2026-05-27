@@ -360,6 +360,10 @@ function diffFixtureValue(
 }
 
 function compareFixtureValue(actual: unknown, expected: unknown): boolean {
+  if (typeof actual === 'number' && typeof expected === 'number') {
+    return Math.abs(actual - expected) <= 1e-9
+  }
+
   if (Array.isArray(expected)) {
     if (!Array.isArray(actual) || actual.length !== expected.length) return false
     return expected.every((item, index) => compareFixtureValue(actual[index], item))
@@ -368,6 +372,7 @@ function compareFixtureValue(actual: unknown, expected: unknown): boolean {
   if (expected !== null && typeof expected === 'object') {
     if (actual === null || typeof actual !== 'object') return false
     for (const [key, value] of Object.entries(expected)) {
+      if (key.startsWith('$$')) continue
       const actualObject = actual as Record<string, unknown>
       if (!compareFixtureValue(actualObject[key], value)) return false
     }

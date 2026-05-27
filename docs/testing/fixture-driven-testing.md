@@ -207,6 +207,19 @@ produktive Legacy-Pipeline aus und schreibt pro Testfall `input.abc`,
 `song.legacy-raw.json`, `sheet.extract-<nr>.json` und
 `output.extract-<nr>.svg` in `fixtures/cases/<test-case>/`.
 
+Der Export ist ein fachlicher Vertrag: Alles, was eine nachfolgende Stufe liest
+oder für Editor-, Kontextmenü- oder Render-Verhalten nutzt, muss im Export
+enthalten sein. Wenn ein solches Feld fehlt, ist nicht die Parität „leicht
+anders“, sondern der Export unvollständig.
+
+Für die Praxis hilft diese Einteilung:
+- **exportpflichtig**: muss vollständig im Fixture stehen
+- **teilweise exportierbar**: fachliche Hülle ja, interne Unterfelder nein
+- **UI-transient**: gehört nicht in den Fixture-Contract
+
+`draginfo` fällt meist in die zweite Kategorie: relevant ist die Struktur samt
+Handler- und Positionsdaten, nicht aber UI-interne Details wie `callback`.
+
 ```bash
 npm run test:loadsample
 ```
@@ -364,11 +377,39 @@ rein strukturell und vergleicht für jedes Fixture die Tag-Typ-Verteilung von
 Legacy- gegen TS-Ausgabe.
 
 Wichtig: Die Song-/Sheet-Reports verwenden dieselbe Paritätsregel wie die
-Legacy-Tests. Alles, was in einer späteren Stufe gelesen oder für Editor-
- bzw. Interaktionsverhalten ausgewertet wird, gilt als fachlich relevant und
-gehört in die Prüfung. Für Sheet gehören dazu insbesondere `confKey`,
-`confKey.*`, `lineWidth`, `more_conf_keys`, `draginfo`, `path` und `znId`,
-wenn sie im Legacy-Export vorhanden sind.
+Legacy-Tests. Alles, was in einer späteren Stufe gelesen oder für Editor-,
+Interaktions- oder Render-Verhalten ausgewertet wird, gilt als fachlich
+relevant und gehört in die Prüfung. Für Sheet gehören dazu insbesondere
+`confKey`, `confKey.*`, `lineWidth`, `more_conf_keys`, `draginfo`, `path`
+und `znId`, wenn sie im Legacy-Export vorhanden sind.
+
+Für den Export gilt dieselbe Regel umgekehrt: Alles, was spätere Stufen lesen,
+muss im Fixture enthalten sein. Dabei gibt es drei Kategorien:
+- **exportpflichtig**: muss vollständig im Fixture stehen
+- **teilweise exportierbar**: fachliche Hülle ja, interne Unterfelder nein
+- **UI-transient**: gehört nicht in den Fixture-Contract
+
+`draginfo` ist dafür das typische Beispiel für teilweise exportierbare
+Metadaten: Struktur und Handler gehören dazu, interne Details wie `callback`
+oder `tuplet_options` werden bewusst entfernt.
+
+### Feldmatrix für Sheet-Metadaten
+
+Diese Tabelle zeigt, welche nachfolgende Stufe welches Feld tatsächlich liest:
+
+| Feld | SvgEngine | Controller/UI | PdfEngine | Kategorie |
+|------|-----------|---------------|-----------|-----------|
+| `lineWidth` | ja, für Stroke-Dicke | nein | ja, für Zeichnung | exportpflichtig |
+| `confKey` | ja, für Editierbarkeit / SVG-Interaktion | ja, für Edit-Menü und Status | nein | exportpflichtig |
+| `confKey.*` | ja, als Wert von `confKey` mit Edit-Marker | ja, gleiche Edit-Relevanz | nein | exportpflichtig |
+| `more_conf_keys` | ja, für zusätzliche Edit-Optionen | ja, für Kontextmenü-Einträge | nein | exportpflichtig |
+| `draginfo` | ja, für Drag-Handler | indirekt, über den gesetzten Handler | nein | teilweise exportierbar |
+| `path` | ja, für SVG-Pfad-Ausgabe | nein | ja, für PDF-Pfad-Ausgabe | exportpflichtig |
+| `znId` | nein | nein | nein | exportpflichtig, weil fachliche Identität für spätere Stufen |
+
+`draginfo` bleibt dabei teilweise exportierbar: Die Struktur ist fachlich
+relevant, aber interne Unterfelder wie `callback` oder `tuplet_options`
+gehören nicht in den Fixture-Contract.
 
 Die Report-Dateien werden bei jedem Lauf neu geschrieben.
 

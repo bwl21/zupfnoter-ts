@@ -54,6 +54,14 @@ Wichtig für die Parität:
   sobald der Legacy-Export oder eine spätere Stufe sie auswertet.
 - Solche Felder dürfen nicht stillschweigend aus der Vergleichslogik fallen,
   nur weil sie nicht direkt zur Geometrie gehören.
+- Für die Exportlogik gelten dieselben drei Kategorien wie in der allgemeinen
+  Fixture-Spec:
+  - **exportpflichtig**: muss vollständig im Fixture stehen
+  - **teilweise exportierbar**: fachliche Hülle ja, interne Unterfelder nein
+  - **UI-transient**: gehört nicht in den Fixture-Contract
+- `draginfo` ist hier das typische Beispiel für teilweise exportierbare
+  Metadaten: Struktur und Handler gehören dazu, interne Details wie `callback`
+  oder `tuplet_options` werden bewusst entfernt.
 
 ### R2 – `dump_ts_output.spec.ts` für Sheet (neues File)
 

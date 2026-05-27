@@ -22,6 +22,10 @@ export interface Drawable {
   color: string
   lineWidth: number
   confKey?: string
+  /** Legacy-Kontextmenü-Einträge für editorrelevante Alternativen */
+  more_conf_keys?: unknown[]
+  /** Legacy-Dragmetadaten für editierbare Drawables */
+  draginfo?: unknown
   /** Legacy-nahe Zupfnoter-ID des fachlichen Ursprungsobjekts */
   znId?: string
   visible: boolean
