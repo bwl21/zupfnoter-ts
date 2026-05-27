@@ -4,7 +4,6 @@ import { resolve } from 'node:path'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
 
 type ViewSvgSource = 'legacy' | 'ts'
 
@@ -122,7 +121,6 @@ function viewSvgPlugin() {
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
     viewSvgPlugin(),
   ],
   resolve: {
