@@ -14,26 +14,24 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 
 ### ❌ 3015_reference_sheet [extract 0]
 
-- Total opening tags: legacy 887, ts 900 (Δ 13)
+- Total opening tags: legacy 887, ts 1041 (Δ 154)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 78760
-- Diff ratio: 2.557%
+- Differing pixels: 37613
+- Diff ratio: 1.221%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/3015_reference_sheet/diff.png
 
-- Group count: legacy 221, ts 280
-- id count: legacy 594, ts 386
-- class count: legacy 78, ts 722
-- data-* count: legacy 2, ts 561
-- explicit fill count: legacy 164, ts 333
-- explicit stroke count: legacy 153, ts 333
+- Group count: legacy 221, ts 326
+- id count: legacy 594, ts 517
+- class count: legacy 78, ts 713
+- data-* count: legacy 2, ts 529
+- explicit fill count: legacy 164, ts 317
+- explicit stroke count: legacy 153, ts 317
 
   Tag count deltas:
-  - g: 221 -> 280 (+59)
-  - ellipse: 67 -> 119 (+52)
-  - rect: 173 -> 131 (-42)
-  - tspan: 204 -> 178 (-26)
-  - text: 131 -> 108 (-23)
+  - g: 221 -> 326 (+105)
+  - ellipse: 67 -> 142 (+75)
+  - rect: 173 -> 154 (-19)
   - path: 90 -> 83 (-7)
 
   First positional mismatches:
@@ -57,41 +55,39 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline-dashed" id="zn-flowline-flowline-278-8-20-232-8-20-dashed0-10">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M301.8,34.5L232.8,34.5" id="ZN_4" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M278.8,20L232.8,20" fill="none" stroke="black" stroke-dasharray="1.056 1.056" stroke-linecap="butt" stroke-width="0.1" />
+    ts:     <path d="M278.8,20L232.8,20" id="ZN_3" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
 
-- Anchors: legacy 594, ts 386
+- Anchors: legacy 594, ts 517
 - data-conf-key: legacy 0, ts 1
-- data-zn-id: legacy 0, ts 193
-- Hitboxes: legacy 76, ts 108
+- data-zn-id: legacy 0, ts 153
+- Hitboxes: legacy 76, ts 131
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
 
 ### ❌ 246_Horch-was-kommt-von-draussen-rein [extract 0]
 
-- Total opening tags: legacy 2700, ts 3543 (Δ 843)
+- Total opening tags: legacy 2700, ts 3549 (Δ 849)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 33943
-- Diff ratio: 1.102%
+- Differing pixels: 33760
+- Diff ratio: 1.096%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/246_Horch-was-kommt-von-draussen-rein/diff.png
 
-- Group count: legacy 743, ts 1282
-- id count: legacy 2091, ts 1856
-- class count: legacy 261, ts 3192
-- data-* count: legacy 4, ts 2565
-- explicit fill count: legacy 604, ts 1333
-- explicit stroke count: legacy 597, ts 1333
+- Group count: legacy 743, ts 1284
+- id count: legacy 2091, ts 2215
+- class count: legacy 261, ts 2485
+- data-* count: legacy 4, ts 1857
+- explicit fill count: legacy 604, ts 979
+- explicit stroke count: legacy 597, ts 979
 
   Tag count deltas:
-  - g: 743 -> 1282 (+539)
-  - ellipse: 230 -> 575 (+345)
-  - rect: 631 -> 604 (-27)
+  - g: 743 -> 1284 (+541)
+  - ellipse: 230 -> 576 (+346)
+  - rect: 631 -> 605 (-26)
   - path: 394 -> 382 (-12)
-  - text: 349 -> 348 (-1)
-  - tspan: 352 -> 351 (-1)
 
   First positional mismatches:
   - index 0
@@ -114,15 +110,15 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline" id="zn-flowline-1920">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M415.05,19.262L405.3,20.431" id="ZN_4" stroke-width="0.2" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M415.2,16.826L415.05,19.262" fill="none" stroke="black" stroke-linecap="butt" stroke-width="0.2" />
+    ts:     <path d="M415.2,16.826L415.05,19.262" id="ZN_3" stroke-width="0.2" />
 
-- Anchors: legacy 2091, ts 1856
+- Anchors: legacy 2091, ts 2215
 - data-conf-key: legacy 0, ts 0
-- data-zn-id: legacy 0, ts 923
-- Hitboxes: legacy 257, ts 576
+- data-zn-id: legacy 0, ts 574
+- Hitboxes: legacy 257, ts 577
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
 
@@ -136,11 +132,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/783_einsiedler-kreuzweg/diff.png
 
 - Group count: legacy 297, ts 525
-- id count: legacy 834, ts 755
-- class count: legacy 90, ts 1329
-- data-* count: legacy 0, ts 1051
-- explicit fill count: legacy 274, ts 571
-- explicit stroke count: legacy 272, ts 571
+- id count: legacy 834, ts 874
+- class count: legacy 90, ts 1091
+- data-* count: legacy 0, ts 813
+- explicit fill count: legacy 274, ts 452
+- explicit stroke count: legacy 272, ts 452
 
   Tag count deltas:
   - g: 297 -> 525 (+228)
@@ -169,14 +165,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline-dashed" id="zn-flowline-flowline-221-3-17-424242424242422-186-8-17-424242424242422-dashed0-10">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M324.8,23.485L278.8,23.485" id="ZN_4" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M221.3,17.424L186.8,17.424" fill="none" stroke="black" stroke-dasharray="1.056 1.056" stroke-linecap="butt" stroke-width="0.1" />
+    ts:     <path d="M221.3,17.424L186.8,17.424" id="ZN_3" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
 
-- Anchors: legacy 834, ts 755
+- Anchors: legacy 834, ts 874
 - data-conf-key: legacy 0, ts 0
-- data-zn-id: legacy 0, ts 312
+- data-zn-id: legacy 0, ts 232
 - Hitboxes: legacy 90, ts 232
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
@@ -191,11 +187,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/abc-to-song-slur-tuplet-parity/diff.png
 
 - Group count: legacy 21, ts 27
-- id count: legacy 50, ts 31
-- class count: legacy 7, ts 61
-- data-* count: legacy 2, ts 55
-- explicit fill count: legacy 8, ts 27
-- explicit stroke count: legacy 8, ts 27
+- id count: legacy 50, ts 40
+- class count: legacy 7, ts 43
+- data-* count: legacy 2, ts 37
+- explicit fill count: legacy 8, ts 18
+- explicit stroke count: legacy 8, ts 18
 
   Tag count deltas:
   - g: 21 -> 27 (+6)
@@ -223,14 +219,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline" id="zn-flowline-3840">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M83.3,24.75L106.3,30.75" id="ZN_4" stroke-width="0.3" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M60.3,18.75L83.3,24.75" fill="none" stroke="black" stroke-linecap="butt" stroke-width="0.3" />
+    ts:     <path d="M60.3,18.75L83.3,24.75" id="ZN_3" stroke-width="0.3" />
 
-- Anchors: legacy 50, ts 31
+- Anchors: legacy 50, ts 40
 - data-conf-key: legacy 0, ts 0
-- data-zn-id: legacy 0, ts 18
+- data-zn-id: legacy 0, ts 13
 - Hitboxes: legacy 5, ts 6
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
@@ -245,11 +241,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/decoration/diff.png
 
 - Group count: legacy 18, ts 27
-- id count: legacy 45, ts 33
-- class count: legacy 5, ts 64
-- data-* count: legacy 0, ts 55
-- explicit fill count: legacy 9, ts 28
-- explicit stroke count: legacy 9, ts 28
+- id count: legacy 45, ts 39
+- class count: legacy 5, ts 52
+- data-* count: legacy 0, ts 43
+- explicit fill count: legacy 9, ts 22
+- explicit stroke count: legacy 9, ts 22
 
   Tag count deltas:
   - g: 18 -> 27 (+9)
@@ -277,14 +273,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline" id="zn-flowline-3840">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M83.3,24.75L106.3,30.75" id="ZN_4" stroke-width="0.3" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M60.3,18.75L83.3,24.75" fill="none" stroke="black" stroke-linecap="butt" stroke-width="0.3" />
+    ts:     <path d="M60.3,18.75L83.3,24.75" id="ZN_3" stroke-width="0.3" />
 
-- Anchors: legacy 45, ts 33
+- Anchors: legacy 45, ts 39
 - data-conf-key: legacy 0, ts 1
-- data-zn-id: legacy 0, ts 17
+- data-zn-id: legacy 0, ts 14
 - Hitboxes: legacy 5, ts 8
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
@@ -299,11 +295,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/lyrics/diff.png
 
 - Group count: legacy 15, ts 22
-- id count: legacy 37, ts 25
-- class count: legacy 4, ts 50
-- data-* count: legacy 0, ts 45
-- explicit fill count: legacy 7, ts 22
-- explicit stroke count: legacy 7, ts 22
+- id count: legacy 37, ts 31
+- class count: legacy 4, ts 38
+- data-* count: legacy 0, ts 33
+- explicit fill count: legacy 7, ts 16
+- explicit stroke count: legacy 7, ts 16
 
   Tag count deltas:
   - g: 15 -> 22 (+7)
@@ -330,14 +326,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline" id="zn-flowline-3840">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M83.3,24.75L106.3,30.75" id="ZN_4" stroke-width="0.3" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M60.3,18.75L83.3,24.75" fill="none" stroke="black" stroke-linecap="butt" stroke-width="0.3" />
+    ts:     <path d="M60.3,18.75L83.3,24.75" id="ZN_3" stroke-width="0.3" />
 
-- Anchors: legacy 37, ts 25
+- Anchors: legacy 37, ts 31
 - data-conf-key: legacy 0, ts 0
-- data-zn-id: legacy 0, ts 13
+- data-zn-id: legacy 0, ts 10
 - Hitboxes: legacy 4, ts 5
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
@@ -352,11 +348,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/pause/diff.png
 
 - Group count: legacy 20, ts 25
-- id count: legacy 51, ts 29
-- class count: legacy 9, ts 60
-- data-* count: legacy 0, ts 51
-- explicit fill count: legacy 8, ts 28
-- explicit stroke count: legacy 8, ts 28
+- id count: legacy 51, ts 37
+- class count: legacy 9, ts 44
+- data-* count: legacy 0, ts 35
+- explicit fill count: legacy 8, ts 20
+- explicit stroke count: legacy 8, ts 20
 
   Tag count deltas:
   - g: 20 -> 25 (+5)
@@ -383,14 +379,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline" id="zn-flowline-960">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M71.8,18.6L83.3,21.8" id="ZN_4" stroke-width="0.3" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M60.3,16.2L71.8,18.6" fill="none" stroke="black" stroke-linecap="butt" stroke-width="0.3" />
+    ts:     <path d="M60.3,16.2L71.8,18.6" id="ZN_3" stroke-width="0.3" />
 
-- Anchors: legacy 51, ts 29
+- Anchors: legacy 51, ts 37
 - data-conf-key: legacy 0, ts 0
-- data-zn-id: legacy 0, ts 17
+- data-zn-id: legacy 0, ts 12
 - Hitboxes: legacy 9, ts 6
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
@@ -405,11 +401,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/repeat/diff.png
 
 - Group count: legacy 18, ts 24
-- id count: legacy 43, ts 27
-- class count: legacy 4, ts 54
-- data-* count: legacy 0, ts 49
-- explicit fill count: legacy 7, ts 24
-- explicit stroke count: legacy 7, ts 24
+- id count: legacy 43, ts 35
+- class count: legacy 4, ts 38
+- data-* count: legacy 0, ts 33
+- explicit fill count: legacy 7, ts 16
+- explicit stroke count: legacy 7, ts 16
 
   Tag count deltas:
   - g: 18 -> 24 (+6)
@@ -437,14 +433,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline" id="zn-flowline-3840">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M83.3,28.5L106.3,34.5" id="ZN_4" stroke-width="0.3" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M60.3,22.5L83.3,28.5" fill="none" stroke="black" stroke-linecap="butt" stroke-width="0.3" />
+    ts:     <path d="M60.3,22.5L83.3,28.5" id="ZN_3" stroke-width="0.3" />
 
-- Anchors: legacy 43, ts 27
+- Anchors: legacy 43, ts 35
 - data-conf-key: legacy 0, ts 0
-- data-zn-id: legacy 0, ts 15
+- data-zn-id: legacy 0, ts 10
 - Hitboxes: legacy 4, ts 5
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
@@ -459,11 +455,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/single_note/diff.png
 
 - Group count: legacy 12, ts 15
-- id count: legacy 27, ts 14
-- class count: legacy 1, ts 32
-- data-* count: legacy 0, ts 31
-- explicit fill count: legacy 3, ts 15
-- explicit stroke count: legacy 3, ts 15
+- id count: legacy 27, ts 17
+- class count: legacy 1, ts 26
+- data-* count: legacy 0, ts 25
+- explicit fill count: legacy 3, ts 12
+- explicit stroke count: legacy 3, ts 12
 
   Tag count deltas:
   - g: 12 -> 15 (+3)
@@ -494,7 +490,7 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     legacy: <tspan dy="1.2em" x="304.762">
     ts:     <ellipse class="zupfnoter-shape zupfnoter-shape--ellipse zupfnoter-shape--filled" cx="60.3" cy="18" fill="black" rx="2.625" ry="1.275" stroke="black" stroke-width="0" />
 
-- Anchors: legacy 27, ts 14
+- Anchors: legacy 27, ts 17
 - data-conf-key: legacy 0, ts 0
 - data-zn-id: legacy 0, ts 2
 - Hitboxes: legacy 1, ts 1
@@ -511,11 +507,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/tie/diff.png
 
 - Group count: legacy 16, ts 23
-- id count: legacy 39, ts 26
-- class count: legacy 4, ts 52
-- data-* count: legacy 0, ts 47
-- explicit fill count: legacy 7, ts 23
-- explicit stroke count: legacy 7, ts 23
+- id count: legacy 39, ts 33
+- class count: legacy 4, ts 38
+- data-* count: legacy 0, ts 33
+- explicit fill count: legacy 7, ts 16
+- explicit stroke count: legacy 7, ts 16
 
   Tag count deltas:
   - g: 16 -> 23 (+7)
@@ -542,14 +538,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline" id="zn-flowline-3840">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M60.3,24.75L83.3,30.75" id="ZN_4" stroke-width="0.3" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M60.3,18.75L60.3,24.75" fill="none" stroke="black" stroke-linecap="butt" stroke-width="0.3" />
+    ts:     <path d="M60.3,18.75L60.3,24.75" id="ZN_3" stroke-width="0.3" />
 
-- Anchors: legacy 39, ts 26
+- Anchors: legacy 39, ts 33
 - data-conf-key: legacy 0, ts 0
-- data-zn-id: legacy 0, ts 13
+- data-zn-id: legacy 0, ts 10
 - Hitboxes: legacy 4, ts 5
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
@@ -564,11 +560,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/tuplet/diff.png
 
 - Group count: legacy 20, ts 25
-- id count: legacy 47, ts 28
-- class count: legacy 7, ts 56
-- data-* count: legacy 2, ts 51
-- explicit fill count: legacy 7, ts 25
-- explicit stroke count: legacy 7, ts 25
+- id count: legacy 47, ts 36
+- class count: legacy 7, ts 40
+- data-* count: legacy 2, ts 35
+- explicit fill count: legacy 7, ts 17
+- explicit stroke count: legacy 7, ts 17
 
   Tag count deltas:
   - g: 20 -> 25 (+5)
@@ -595,14 +591,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline" id="zn-flowline-1280">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M83.3,21L106.3,25" id="ZN_4" stroke-width="0.3" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M60.3,17L83.3,21" fill="none" stroke="black" stroke-linecap="butt" stroke-width="0.3" />
+    ts:     <path d="M60.3,17L83.3,21" id="ZN_3" stroke-width="0.3" />
 
-- Anchors: legacy 47, ts 28
+- Anchors: legacy 47, ts 36
 - data-conf-key: legacy 0, ts 0
-- data-zn-id: legacy 0, ts 16
+- data-zn-id: legacy 0, ts 11
 - Hitboxes: legacy 5, ts 5
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
@@ -617,11 +613,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/two_voices/diff.png
 
 - Group count: legacy 19, ts 31
-- id count: legacy 50, ts 39
-- class count: legacy 8, ts 73
-- data-* count: legacy 0, ts 63
-- explicit fill count: legacy 12, ts 31
-- explicit stroke count: legacy 12, ts 31
+- id count: legacy 50, ts 49
+- class count: legacy 8, ts 53
+- data-* count: legacy 0, ts 43
+- explicit fill count: legacy 12, ts 21
+- explicit stroke count: legacy 12, ts 21
 
   Tag count deltas:
   - g: 19 -> 31 (+12)
@@ -648,14 +644,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline-dashed" id="zn-flowline-flowline-60-3-18-75-5-425-18-75-dashed0-10">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M83.3,24.75L25.8,24.75" id="ZN_4" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M60.3,18.75L5.425,18.75" fill="none" stroke="black" stroke-dasharray="1.056 1.056" stroke-linecap="butt" stroke-width="0.1" />
+    ts:     <path d="M60.3,18.75L5.425,18.75" id="ZN_3" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
 
-- Anchors: legacy 50, ts 39
+- Anchors: legacy 50, ts 49
 - data-conf-key: legacy 0, ts 0
-- data-zn-id: legacy 0, ts 23
+- data-zn-id: legacy 0, ts 20
 - Hitboxes: legacy 8, ts 10
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0
@@ -670,11 +666,11 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/Twostaff/diff.png
 
 - Group count: legacy 77, ts 166
-- id count: legacy 243, ts 251
-- class count: legacy 67, ts 420
-- data-* count: legacy 0, ts 333
-- explicit fill count: legacy 89, ts 166
-- explicit stroke count: legacy 89, ts 166
+- id count: legacy 243, ts 319
+- class count: legacy 67, ts 284
+- data-* count: legacy 0, ts 197
+- explicit fill count: legacy 89, ts 98
+- explicit stroke count: legacy 89, ts 98
 
   Tag count deltas:
   - g: 77 -> 166 (+89)
@@ -701,14 +697,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
   - index 6
     legacy: <g fill="" id="ZN_4" stroke="black">
-    ts:     <g class="zupfnoter-element zupfnoter-element--flowline zupfnoter-role--flowline-dashed" id="zn-flowline-flowline-198-3-17-60-3-17-dashed0-10">
+    ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
     legacy: <path d="M221.3,20.2L83.3,20.2" id="ZN_4" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
-    ts:     <path class="zupfnoter-shape zupfnoter-shape--flowline" d="M198.3,17L60.3,17" fill="none" stroke="black" stroke-dasharray="1.056 1.056" stroke-linecap="butt" stroke-width="0.1" />
+    ts:     <path d="M198.3,17L60.3,17" id="ZN_3" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
 
-- Anchors: legacy 243, ts 251
+- Anchors: legacy 243, ts 319
 - data-conf-key: legacy 0, ts 0
-- data-zn-id: legacy 0, ts 218
+- data-zn-id: legacy 0, ts 174
 - Hitboxes: legacy 67, ts 87
 - Transparent hitboxes: legacy 0, ts 0
 - Black hitboxes: legacy 0, ts 0

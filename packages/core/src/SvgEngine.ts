@@ -401,9 +401,11 @@ export class SvgEngine {
     const [cx, cy] = el.center
     const [rx, ry] = el.size
     const color = el.color
+    const shapeClass = el.rect ? 'zupfnoter-shape--rect' : 'zupfnoter-shape--ellipse'
+    const role = el.rect ? 'barover' : (el.fill === 'filled' ? 'notehead' : 'notehead-outline')
     const meta = this._buildMeta(
       'Ellipse',
-      el.fill === 'filled' ? 'notehead' : 'notehead-outline',
+      role,
       index,
       el.confKey ?? `ellipse:${formatNumber(cx)}:${formatNumber(cy)}:${formatNumber(rx)}:${formatNumber(ry)}:${el.fill}:${el.dotted ? 'dotted' : 'plain'}:${el.hasbarover ? 'bar' : 'nobar'}`,
       el.confKey,
@@ -413,16 +415,31 @@ export class SvgEngine {
     const parts: string[] = []
 
     if (el.fill === 'filled') {
-      parts.push(svgEllipse(cx, cy, rx, ry, color, color, this._useLegacyFrame ? 0 : el.lineWidth, {
-        class: 'zupfnoter-shape zupfnoter-shape--ellipse zupfnoter-shape--filled',
-      }))
+      if (el.rect) {
+        parts.push(svgRect(cx - rx, cy - ry, 2 * rx, 2 * ry, color, color, this._useLegacyFrame ? 0 : el.lineWidth, {
+          class: `zupfnoter-shape ${shapeClass} zupfnoter-shape--filled`,
+        }))
+      } else {
+        parts.push(svgEllipse(cx, cy, rx, ry, color, color, this._useLegacyFrame ? 0 : el.lineWidth, {
+          class: `zupfnoter-shape ${shapeClass} zupfnoter-shape--filled`,
+        }))
+      }
     } else {
-      parts.push(svgEllipse(cx, cy, rx, ry, 'white', 'white', 0, {
-        class: 'zupfnoter-shape zupfnoter-shape--ellipse zupfnoter-shape--background',
-      }))
-      parts.push(svgEllipse(cx, cy, rx - el.lineWidth / 2, ry - el.lineWidth / 2, 'white', color, el.lineWidth, {
-        class: 'zupfnoter-shape zupfnoter-shape--ellipse zupfnoter-shape--outline',
-      }))
+      if (el.rect) {
+        parts.push(svgRect(cx - rx, cy - ry, 2 * rx, 2 * ry, 'white', 'white', 0, {
+          class: `zupfnoter-shape ${shapeClass} zupfnoter-shape--background`,
+        }))
+        parts.push(svgRect(cx - rx + el.lineWidth / 2, cy - ry + el.lineWidth / 2, 2 * rx - el.lineWidth, 2 * ry - el.lineWidth, 'white', color, el.lineWidth, {
+          class: `zupfnoter-shape ${shapeClass} zupfnoter-shape--outline`,
+        }))
+      } else {
+        parts.push(svgEllipse(cx, cy, rx, ry, 'white', 'white', 0, {
+          class: `zupfnoter-shape ${shapeClass} zupfnoter-shape--background`,
+        }))
+        parts.push(svgEllipse(cx, cy, rx - el.lineWidth / 2, ry - el.lineWidth / 2, 'white', color, el.lineWidth, {
+          class: `zupfnoter-shape ${shapeClass} zupfnoter-shape--outline`,
+        }))
+      }
     }
 
     if (el.dotted) {

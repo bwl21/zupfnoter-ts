@@ -87,105 +87,120 @@
       "center":[221.3,17.4242],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[324.8,23.4848],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[324.8,22.2098],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[313.3,28.3333],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[324.8,33.1818],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,39.2424],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,37.9674],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,44.0909],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,48.9394],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[244.3,55],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[244.3,53.725],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,59.8485],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,64.697],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,71.7677],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,70.4927],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"     :"Glyph",
@@ -199,105 +214,120 @@
       "center":[221.3,82.2727],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,88.3333],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,87.0583],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[244.3,93.1818],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,98.0303],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,104.0909],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,102.8159],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,108.9394],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,113.7879],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,119.8485],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,118.5735],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[301.8,124.697],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[324.8,129.5455],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[301.8,135.6061],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[301.8,134.3311],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"     :"Glyph",
@@ -311,105 +341,120 @@
       "center":[221.3,145.303],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[324.8,152.3737],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[324.8,151.0987],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[313.3,158.0303],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[324.8,162.8788],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,168.9394],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,167.6644],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,173.7879],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,178.6364],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[244.3,185.7071],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[244.3,184.4321],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,191.3636],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,196.2121],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,202.2727],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,200.9977],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"     :"Glyph",
@@ -423,105 +468,120 @@
       "center":[221.3,216.8182],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[336.3,222.8788],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[336.3,221.6038],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[324.8,227.7273],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[301.8,232.5758],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[324.8,238.6364],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[324.8,237.3614],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[301.8,243.4848],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,248.3333],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[301.8,254.3939],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[301.8,253.1189],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,259.2424],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,264.0909],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,270.1515],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,268.8765],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"     :"Glyph",
@@ -535,336 +595,384 @@
       "center":[217.0929,18.5076],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[329.9384,24.5682],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[309.0929,29.4167],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[329.0071,34.2652],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.9384,40.3258],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[225.5071,45.1742],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[217.0929,50.0227],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[239.1616,56.0833],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[263.0929,60.9318],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.0071,65.7803],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[226.4384,72.851],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[218.1179,78.5076],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[217.0929,83.3561],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[272.4384,89.4167],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[240.0929,94.2652],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[263.0929,99.1136],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.9384,105.1742],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[225.5071,110.0227],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[217.0929,114.8712],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[273.6616,120.9318],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[297.5929,125.7803],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[329.0071,130.6288],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[306.9384,136.6894],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[304.9821,141.5379],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[217.0929,146.3864],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[329.9384,153.4571],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[309.0929,159.1136],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[329.0071,163.9621],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.9384,170.0227],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[225.5071,174.8712],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[217.0929,179.7197],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[239.1616,186.7904],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[263.0929,192.447],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.0071,197.2955],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[226.4384,203.3561],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[218.1179,208.2045],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[217.0929,217.9015],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[341.4384,223.9621],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[329.0071,228.8106],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[297.5929,233.6591],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[329.9384,239.7197],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[306.0071,244.5682],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[274.5929,249.4167],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[306.9384,255.4773],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.0071,260.3258],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[263.0929,265.1742],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[273.6616,271.2348],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[275.6179,276.0833],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Annotation",
@@ -1207,112 +1315,128 @@
       "center":[329.2981,22.2723],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[274.3019,38.0299],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[248.7981,53.7875],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[216.8019,70.5552],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[271.7981,87.1208],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.2981,102.8784],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.2981,118.636],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[297.3019,134.3936],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[329.2981,151.1612],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[273.4288,167.7269],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[249.6713,184.4946],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[215.9288,201.0602],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[341.6713,221.6663],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[330.1713,237.4239],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[307.1713,253.1814],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[284.1713,268.939],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Annotation",
@@ -1465,168 +1589,192 @@
       "center":[186.8,17.4242],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,23.4848],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,22.2098],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,33.1818],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,39.2424],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,37.9674],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,48.9394],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[198.3,55],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[198.3,53.725],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,59.8485],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[244.3,64.697],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,71.7677],
       "size"  :[3.5,1.3],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,70.1677],
       "size"  :[3.5,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,88.3333],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,87.0583],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[198.3,93.1818],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,104.0909],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,102.8159],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,108.9394],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,119.8485],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,118.5735],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,124.697],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,135.6061],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,134.3311],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"     :"Glyph",
@@ -1640,182 +1788,208 @@
       "center":[186.8,145.303],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,152.3737],
       "size"  :[3.5,1.3],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,150.7737],
       "size"  :[3.5,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[244.3,168.9394],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[244.3,167.6644],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,173.7879],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[198.3,185.7071],
       "size"  :[3.5,1.3],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[198.3,184.1071],
       "size"  :[3.5,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[198.3,202.2727],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[198.3,200.9977],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,207.1212],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,216.8182],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[301.8,222.8788],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[301.8,221.6038],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,227.7273],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,232.5758],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,238.6364],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[278.8,237.3614],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,243.4848],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[244.3,248.3333],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,254.3939],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[267.3,253.1189],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[244.3,259.2424],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[221.3,264.0909],
       "size"  :[2.625,0.975],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,270.1515],
       "size"  :[2.625,0.975],
       "fill"  :"empty",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[186.8,268.8765],
       "size"  :[2.625,0.15],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"     :"Glyph",
@@ -1829,252 +2003,288 @@
       "center":[182.5929,18.5076],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[272.7303,24.5682],
       "size"  :[2.3948,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.0071,34.2652],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[193.8698,40.3258],
       "size"  :[2.3948,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[182.5929,50.0227],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[193.1616,56.0833],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[217.0929,60.9318],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[248.5071,65.7803],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[178.9239,72.851],
       "size"  :[3.3261,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[226.4384,89.4167],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[203.4384,94.2652],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[191.9384,105.1742],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[181.6616,110.0227],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[181.6616,120.9318],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[262.1616,125.7803],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[262.1616,136.6894],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[270.4821,141.5379],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[182.5929,146.3864],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[286.6761,153.4571],
       "size"  :[3.3261,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[249.4384,170.0227],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[181.6616,174.8712],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[190.4239,186.7904],
       "size"  :[3.3261,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[203.4384,203.3561],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[191.0071,208.2045],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[182.5929,217.9015],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[306.9384,223.9621],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.0071,228.8106],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[263.0929,233.6591],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[283.9384,239.7197],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[271.5071,244.5682],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[240.0929,249.4167],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[272.4384,255.4773],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[248.5071,260.3258],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[225.5071,265.1742],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[191.9384,271.2348],
       "size"  :[1.4634,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[183.6179,276.0833],
       "size"  :[0.5321,0.7058],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Annotation",
@@ -2333,112 +2543,128 @@
       "center":[284.2981,22.2723],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[182.3019,38.0299],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[202.7981,53.7875],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[181.4269,70.5552],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[225.7981,87.1208],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[182.3019,102.8784],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[182.3019,118.636],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[271.7981,134.3936],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[284.1731,151.1612],
       "size"  :[1.0731,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[238.9338,167.7269],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[204.5463,184.4946],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[203.6713,201.0602],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[307.1713,221.6663],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[284.1713,237.4239],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[272.6713,253.1814],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[181.4288,268.939],
       "size"  :[1.9462,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Annotation",
@@ -2618,7 +2844,7 @@
     {
       "type"  :"Annotation",
       "center":[150,289],
-      "text"  :"783_einsiedler-kreuzweg - created 2026-05-24 09:07:54 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]",
+      "text"  :"783_einsiedler-kreuzweg - created 2026-05-27 10:20:17 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]",
       "style" :"smaller",
       "color" :"black"
     },

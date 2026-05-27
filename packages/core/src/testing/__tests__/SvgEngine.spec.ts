@@ -17,6 +17,7 @@ function filledEllipse(overrides: Partial<Ellipse> = {}): Ellipse {
     size: [3.5, 1.7],
     fill: 'filled',
     dotted: false,
+    rect: false,
     hasbarover: false,
     color: 'black',
     lineWidth: 0.5,

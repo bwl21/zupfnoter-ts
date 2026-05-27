@@ -6,7 +6,7 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
 ## Summary
 
 - Cases with reports: 13
-- Required gaps: 3302
+- Required gaps: 3097
 - Warnings: 0
 
 ## Gap Type Overview
@@ -15,8 +15,8 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
 | --- | ---: |
 | different-array-order | 30 |
 | different-length | 2 |
-| different-value | 505 |
-| extra-event | 75 |
+| different-value | 294 |
+| extra-event | 81 |
 | extra-field | 2601 |
 | ignored-by-contract | 730 |
 | missing-event | 89 |
@@ -24,14 +24,14 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
 ## Case Reports
 
 - [246_Horch-was-kommt-von-draussen-rein](fixtures/cases/246_Horch-was-kommt-von-draussen-rein/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 1692
+  - Required gaps: 1627
   - Warnings: 0
   - Matched events: 347
   - Unmatched legacy events: 25
-  - Unmatched TS events: 13
+  - Unmatched TS events: 19
 
 - [3015_reference_sheet](fixtures/cases/3015_reference_sheet/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 526
+  - Required gaps: 386
   - Warnings: 0
   - Matched events: 74
   - Unmatched legacy events: 59

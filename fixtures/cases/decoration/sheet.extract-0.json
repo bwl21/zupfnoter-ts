@@ -8,49 +8,56 @@
       "center":[60.3,18.75],
       "size"  :[2.625,1.275],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[60.3,16.975],
       "size"  :[2.625,0.25],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[83.3,24.75],
       "size"  :[2.625,1.275],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[106.3,30.75],
       "size"  :[2.625,1.275],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[117.8,36.75],
       "size"  :[2.625,1.275],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[109.7445,29.2375],
       "size"  :[0.6445,1.2512],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"  :"Ellipse",
       "center":[121.6731,35.3375],
       "size"  :[1.0731,1.7875],
       "fill"  :"filled",
-      "color" :"white"
+      "color" :"white",
+      "rect"  :true
     },
     {
       "type"     :"Glyph",
@@ -90,7 +97,7 @@
     {
       "type"  :"Annotation",
       "center":[150,289],
-      "text"  :" - created 2026-05-24 09:07:55 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]",
+      "text"  :" - created 2026-05-27 10:20:18 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]",
       "style" :"smaller",
       "color" :"black"
     },

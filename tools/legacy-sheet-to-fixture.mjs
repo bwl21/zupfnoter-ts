@@ -78,6 +78,7 @@ function convertElement(e) {
       if (e['@size'])      entry.size   = toPoint(e['@size'])
       if (e['@fill']      !== undefined) entry.fill  = e['@fill'] ? 'filled' : 'empty'
       if (e['@color'])     entry.color  = e['@color']
+      if (e['@rect']      !== undefined) entry.rect  = e['@rect'] === true
       break
 
     case 'FlowLine':

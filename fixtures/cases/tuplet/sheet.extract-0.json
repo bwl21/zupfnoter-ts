@@ -17,35 +17,40 @@
       "center":[60.3,17],
       "size"  :[1.75,0.85],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[83.3,21],
       "size"  :[1.75,0.85],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[106.3,25],
       "size"  :[1.75,0.85],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[117.8,30],
       "size"  :[2.625,1.275],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Ellipse",
       "center":[140.8,36],
       "size"  :[2.625,1.275],
       "fill"  :"filled",
-      "color" :"black"
+      "color" :"black",
+      "rect"  :false
     },
     {
       "type"  :"Annotation",
@@ -64,7 +69,7 @@
     {
       "type"  :"Annotation",
       "center":[150,289],
-      "text"  :" - created 2026-05-24 09:07:57 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]",
+      "text"  :" - created 2026-05-27 10:20:20 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]",
       "style" :"smaller",
       "color" :"black"
     },
