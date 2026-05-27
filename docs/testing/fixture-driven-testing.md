@@ -363,6 +363,13 @@ Die ersten beiden Reports basieren auf `fixtures/openImplementations.ts` und sin
 rein strukturell und vergleicht für jedes Fixture die Tag-Typ-Verteilung von
 Legacy- gegen TS-Ausgabe.
 
+Wichtig: Die Song-/Sheet-Reports verwenden dieselbe Paritätsregel wie die
+Legacy-Tests. Alles, was in einer späteren Stufe gelesen oder für Editor-
+ bzw. Interaktionsverhalten ausgewertet wird, gilt als fachlich relevant und
+gehört in die Prüfung. Für Sheet gehören dazu insbesondere `confKey`,
+`confKey.*`, `lineWidth`, `more_conf_keys`, `draginfo`, `path` und `znId`,
+wenn sie im Legacy-Export vorhanden sind.
+
 Die Report-Dateien werden bei jedem Lauf neu geschrieben.
 
 ### Wie kommt ein neuer Eintrag hinein?

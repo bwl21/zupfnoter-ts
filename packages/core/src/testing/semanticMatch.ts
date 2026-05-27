@@ -81,6 +81,8 @@ export interface DrawableFixture {
   // Path
   path?: [number, number][]
   confKey?: string
+  more_conf_keys?: unknown
+  draginfo?: unknown
   lineWidth?: number
   visible?: boolean
   // FlowLine
@@ -432,6 +434,14 @@ export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchRe
       fail(mismatches, `${cPath}.color`, fc.color, ac.color)
     }
 
+    // lineWidth / znId (exact when present)
+    if (fc.lineWidth !== undefined && ac.lineWidth !== fc.lineWidth) {
+      fail(mismatches, `${cPath}.lineWidth`, fc.lineWidth, ac.lineWidth)
+    }
+    if (fc.znId !== undefined && ac.znId !== fc.znId) {
+      fail(mismatches, `${cPath}.znId`, fc.znId, ac.znId)
+    }
+
     // fill (exact)
     if (fc.fill !== undefined && ac.fill !== fc.fill) {
       fail(mismatches, `${cPath}.fill`, fc.fill, ac.fill)
@@ -442,9 +452,15 @@ export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchRe
       fail(mismatches, `${cPath}.style`, fc.style, ac.style)
     }
 
-    // confKey (exact for Paths)
-    if (fc.type === 'Path' && fc.confKey !== undefined && ac.confKey !== fc.confKey) {
+    // confKey / editor metadata (exact when present)
+    if (fc.confKey !== undefined && ac.confKey !== fc.confKey) {
       fail(mismatches, `${cPath}.confKey`, fc.confKey, ac.confKey)
+    }
+    if (fc.more_conf_keys !== undefined && !compareFixtureValue(ac.more_conf_keys, fc.more_conf_keys)) {
+      fail(mismatches, `${cPath}.more_conf_keys`, fc.more_conf_keys, ac.more_conf_keys)
+    }
+    if (fc.draginfo !== undefined && !compareFixtureValue(ac.draginfo, fc.draginfo)) {
+      fail(mismatches, `${cPath}.draginfo`, fc.draginfo, ac.draginfo)
     }
 
     // glyphName (exact)

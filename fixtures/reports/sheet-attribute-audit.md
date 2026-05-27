@@ -6,7 +6,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 246_Horch-was-kommt-von-draussen-rein [extract 0]
 
-- Issues: 3956
+- Issues: 4005
 - children[0].from (extra)
   - expected: undefined
   - actual: [415.2,16.826431959139]
@@ -1345,24 +1345,36 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[111].lineWidth (extra)
   - expected: undefined
   - actual: 0.3
+- children[111].path (extra)
+  - expected: undefined
+  - actual: [[362.425,84.46452024808463],[362.51697007073824,84.71338655499511],[362.5922183104331,84.98265499505376],[362.6507447190848,85.26824514163093],[362.6925492966931,85.566076568097],[362.717632043258,85.87206884782233],[362.7259929587797,86.18214155417729],[362.717632043258,86.49221426053225],[362.6925492966931,86.79820654025758],[362.6507447190848,87.09603796672364],[362.5922183104331,87.38162811330082],[362.51697007073824,87.65089655335947],[362.425,87.89976286026996]]
 - children[112].fill (extra)
   - expected: undefined
   - actual: false
 - children[112].lineWidth (extra)
   - expected: undefined
   - actual: 0.3
+- children[112].path (extra)
+  - expected: undefined
+  - actual: [[362.425,123.1727015687705],[362.51697007073824,123.42156787568099],[362.5922183104331,123.69083631573965],[362.6507447190848,123.97642646231681],[362.6925492966931,124.27425788878288],[362.717632043258,124.58025016850821],[362.7259929587797,124.89032287486317],[362.717632043258,125.20039558121813],[362.6925492966931,125.50638786094346],[362.6507447190848,125.80421928740952],[362.5922183104331,126.0898094339867],[362.51697007073824,126.35907787404534],[362.425,126.60794418095584]]
 - children[113].fill (extra)
   - expected: undefined
   - actual: false
 - children[113].lineWidth (extra)
   - expected: undefined
   - actual: 0.3
+- children[113].path (extra)
+  - expected: undefined
+  - actual: [[327.925,163.1959139000365],[328.01697007073824,163.44478020694697],[328.0922183104331,163.71404864700563],[328.1507447190848,163.9996387935828],[328.1925492966931,164.2974702200489],[328.217632043258,164.6034624997742],[328.2259929587797,164.91353520612915],[328.217632043258,165.2236079124841],[328.1925492966931,165.52960019220944],[328.1507447190848,165.82743161867552],[328.0922183104331,166.11302176525268],[328.01697007073824,166.38229020531134],[327.925,166.63115651222182]]
 - children[114].fill (extra)
   - expected: undefined
   - actual: false
 - children[114].lineWidth (extra)
   - expected: undefined
   - actual: 0.3
+- children[114].path (extra)
+  - expected: undefined
+  - actual: [[396.925,181.58199562203575],[397.01697007073824,181.83086192894623],[397.0922183104331,182.1001303690049],[397.1507447190848,182.38572051558205],[397.1925492966931,182.68355194204815],[397.217632043258,182.98954422177346],[397.2259929587797,183.2996169281284],[397.217632043258,183.60968963448337],[397.1925492966931,183.9156819142087],[397.1507447190848,184.21351334067478],[397.0922183104331,184.49910348725194],[397.01697007073824,184.7683719273106],[396.925,185.01723823422108]]
 - children[115].fill (extra)
   - expected: undefined
   - actual: false
@@ -1372,6 +1384,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[115].znId (extra)
   - expected: undefined
   - actual: "tp_1_1"
+- children[115].path (extra)
+  - expected: undefined
+  - actual: [[301.8,269.45850054724554],[289.81878472222223,268.1923708589222],[279.9277777777778,267.74093877943983],[272.1534375,267.94213978703027],[266.52222222222224,268.6339093599254],[263.0605902777778,269.654182976357],[261.795,270.84089611455676],[262.75190972222225,272.03198425275656],[265.9577777777778,273.06538286918806],[271.4390625,273.7790274420832],[279.22222222222223,274.0108534496737],[289.33371527777774,273.59879637019134],[301.8,272.38079168186795]]
 - children[116].center (mismatch)
   - expected: [257.8118,268.582]
   - actual: [257.8118311687643,268.58197259917995]
@@ -5146,6 +5161,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[560].znId (extra)
   - expected: undefined
   - actual: "goto-0-6144"
+- children[560].path (extra)
+  - expected: undefined
+  - actual: [[318.3,219.32772710689528],[261.55,219.32772710689528],[261.55,70.66874315943085],[261.55,219.32772710689528],[261.55,69.66874315943086],[271.175,69.66874315943086]]
 - children[561].fill (extra)
   - expected: undefined
   - actual: true
@@ -5155,6 +5173,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[561].znId (extra)
   - expected: undefined
   - actual: "goto-0-6144"
+- children[561].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.29184.p_repeat"
+- children[561].path (extra)
+  - expected: undefined
+  - actual: [[273.175,69.66874315943086],[270.675,70.66874315943086],[270.675,68.66874315943086]]
 - children[562].fill (extra)
   - expected: undefined
   - actual: true
@@ -5164,6 +5188,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[562].znId (extra)
   - expected: undefined
   - actual: "goto-0-6144"
+- children[562].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.29184.p_repeat"
+- children[562].path (extra)
+  - expected: undefined
+  - actual: []
 - children[563].fill (extra)
   - expected: undefined
   - actual: false
@@ -5173,6 +5203,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[563].znId (extra)
   - expected: undefined
   - actual: "goto-0-566-0"
+- children[563].path (extra)
+  - expected: undefined
+  - actual: [[330.425,204.96355344764686],[353.55,204.96355344764686],[353.55,207.53845311929953],[353.55,204.96355344764686],[353.55,208.53845311929953],[309.425,208.53845311929953]]
 - children[564].fill (extra)
   - expected: undefined
   - actual: true
@@ -5182,6 +5215,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[564].znId (extra)
   - expected: undefined
   - actual: "goto-0-566-0"
+- children[564].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.26880.0.p_begin"
+- children[564].path (extra)
+  - expected: undefined
+  - actual: [[307.425,208.53845311929953],[309.925,209.53845311929953],[309.925,207.53845311929953]]
 - children[565].fill (extra)
   - expected: undefined
   - actual: true
@@ -5191,6 +5230,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[565].znId (extra)
   - expected: undefined
   - actual: "goto-0-566-0"
+- children[565].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.26880.0.p_begin"
+- children[565].path (extra)
+  - expected: undefined
+  - actual: []
 - children[566].fill (extra)
   - expected: undefined
   - actual: false
@@ -5200,6 +5245,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[566].znId (extra)
   - expected: undefined
   - actual: "goto-0-604-1"
+- children[566].path (extra)
+  - expected: undefined
+  - actual: [[330.425,204.96355344764686],[353.55,204.96355344764686],[353.55,228.109905144108],[353.55,204.96355344764686],[353.55,229.109905144108],[342.90000000000003,229.109905144108]]
 - children[567].fill (extra)
   - expected: undefined
   - actual: true
@@ -5209,6 +5257,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[567].znId (extra)
   - expected: undefined
   - actual: "goto-0-604-1"
+- children[567].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.26880.1.p_begin"
+- children[567].path (extra)
+  - expected: undefined
+  - actual: [[340.90000000000003,229.109905144108],[343.40000000000003,230.109905144108],[343.40000000000003,228.109905144108]]
 - children[568].fill (extra)
   - expected: undefined
   - actual: true
@@ -5218,6 +5272,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[568].znId (extra)
   - expected: undefined
   - actual: "goto-0-604-1"
+- children[568].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.26880.1.p_begin"
+- children[568].path (extra)
+  - expected: undefined
+  - actual: []
 - children[569].fill (extra)
   - expected: undefined
   - actual: false
@@ -5227,6 +5287,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[569].znId (extra)
   - expected: undefined
   - actual: "goto-0-660-2"
+- children[569].path (extra)
+  - expected: undefined
+  - actual: [[330.675,253.6562294782926],[319.05,253.6562294782926],[319.05,253.80171470266328],[319.05,253.6562294782926],[319.05,254.80171470266328],[341.2,254.80171470266328]]
 - children[570].fill (extra)
   - expected: undefined
   - actual: true
@@ -5236,6 +5299,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[570].znId (extra)
   - expected: undefined
   - actual: "goto-0-660-2"
+- children[570].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.26880.p_follow"
+- children[570].path (extra)
+  - expected: undefined
+  - actual: [[343.2,254.80171470266328],[340.7,255.80171470266328],[340.7,253.80171470266328]]
 - children[571].fill (extra)
   - expected: undefined
   - actual: true
@@ -5245,6 +5314,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[571].znId (extra)
   - expected: undefined
   - actual: "goto-0-660-2"
+- children[571].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.26880.p_follow"
+- children[571].path (extra)
+  - expected: undefined
+  - actual: []
 - children[572].center (mismatch)
   - expected: [298.9642,205.3801]
   - actual: [298.9641666666667,205.3801197859662]
@@ -7924,6 +7999,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[796].znId (extra)
   - expected: undefined
   - actual: "tp_2_1"
+- children[796].path (extra)
+  - expected: undefined
+  - actual: [[83.3,269.45850054724554],[62.69770473634698,267.69041925338587],[45.81761393209141,267.07731697092504],[32.8759187183406,267.3824239358112],[24.088810226201836,268.36897038399263],[19.67247958678242,269.8001865514177],[19.84311793118959,271.43930267403465],[24.816916390530693,273.04954898779164],[34.810066095912994,274.3941557286371],[50.03875817844379,275.2363531325191],[70.71918376923037,275.33937143538606],[97.06753399938,274.4664408731863],[129.3,272.38079168186795]]
 - children[797].center (mismatch)
   - expected: [16.7459,271.1115]
   - actual: [16.745910850570695,271.11146792371534]
@@ -11557,6 +11635,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1218].znId (extra)
   - expected: undefined
   - actual: "goto-1-6144"
+- children[1218].path (extra)
+  - expected: undefined
+  - actual: [[134.925,227.96441991973734],[181.05,227.96441991973734],[181.05,70.66874315943085],[181.05,227.96441991973734],[181.05,69.66874315943086],[148.425,69.66874315943086]]
 - children[1219].fill (extra)
   - expected: undefined
   - actual: true
@@ -11566,6 +11647,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1219].znId (extra)
   - expected: undefined
   - actual: "goto-1-6144"
+- children[1219].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_2.30336.p_repeat"
+- children[1219].path (extra)
+  - expected: undefined
+  - actual: [[146.425,69.66874315943086],[148.925,70.66874315943086],[148.925,68.66874315943086]]
 - children[1220].fill (extra)
   - expected: undefined
   - actual: true
@@ -11575,6 +11662,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1220].znId (extra)
   - expected: undefined
   - actual: "goto-1-6144"
+- children[1220].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_2.30336.p_repeat"
+- children[1220].path (extra)
+  - expected: undefined
+  - actual: []
 - children[1221].fill (extra)
   - expected: undefined
   - actual: false
@@ -11584,6 +11677,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1221].znId (extra)
   - expected: undefined
   - actual: "goto-1-1121-0"
+- children[1221].path (extra)
+  - expected: undefined
+  - actual: [[43.175,206.42469901495804],[20.049999999999997,206.42469901495804],[20.049999999999997,207.53845311929953],[20.049999999999997,206.42469901495804],[20.049999999999997,208.53845311929953],[52.675,208.53845311929953]]
 - children[1222].fill (extra)
   - expected: undefined
   - actual: true
@@ -11593,6 +11689,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1222].znId (extra)
   - expected: undefined
   - actual: "goto-1-1121-0"
+- children[1222].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_2.27264.0.p_begin"
+- children[1222].path (extra)
+  - expected: undefined
+  - actual: [[54.675,208.53845311929953],[52.175,209.53845311929953],[52.175,207.53845311929953]]
 - children[1223].fill (extra)
   - expected: undefined
   - actual: true
@@ -11602,6 +11704,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1223].znId (extra)
   - expected: undefined
   - actual: "goto-1-1121-0"
+- children[1223].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_2.27264.0.p_begin"
+- children[1223].path (extra)
+  - expected: undefined
+  - actual: []
 - children[1224].fill (extra)
   - expected: undefined
   - actual: false
@@ -11611,6 +11719,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1224].znId (extra)
   - expected: undefined
   - actual: "goto-1-1159-1"
+- children[1224].path (extra)
+  - expected: undefined
+  - actual: [[43.175,206.42469901495804],[20.049999999999997,206.42469901495804],[20.049999999999997,228.209905144108],[20.049999999999997,206.42469901495804],[20.049999999999997,229.209905144108],[76.55,229.209905144108]]
 - children[1225].fill (extra)
   - expected: undefined
   - actual: true
@@ -11620,6 +11731,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1225].znId (extra)
   - expected: undefined
   - actual: "goto-1-1159-1"
+- children[1225].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_2.27264.1.p_begin"
+- children[1225].path (extra)
+  - expected: undefined
+  - actual: [[78.55,229.209905144108],[76.05,230.209905144108],[76.05,228.209905144108]]
 - children[1226].fill (extra)
   - expected: undefined
   - actual: true
@@ -11629,6 +11746,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1226].znId (extra)
   - expected: undefined
   - actual: "goto-1-1159-1"
+- children[1226].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_2.27264.1.p_begin"
+- children[1226].path (extra)
+  - expected: undefined
+  - actual: []
 - children[1227].fill (extra)
   - expected: undefined
   - actual: false
@@ -11638,6 +11761,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1227].znId (extra)
   - expected: undefined
   - actual: "goto-1-1182-2"
+- children[1227].path (extra)
+  - expected: undefined
+  - actual: [[215.675,252.19508391098142],[112.05,252.19508391098142],[112.05,253.90171470266327],[112.05,252.19508391098142],[112.05,254.90171470266327],[90.05,254.90171470266327]]
 - children[1228].fill (extra)
   - expected: undefined
   - actual: true
@@ -11647,6 +11773,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1228].znId (extra)
   - expected: undefined
   - actual: "goto-1-1182-2"
+- children[1228].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_2.27264.p_follow"
+- children[1228].path (extra)
+  - expected: undefined
+  - actual: [[88.05,254.90171470266327],[90.55,255.90171470266327],[90.55,253.90171470266327]]
 - children[1229].fill (extra)
   - expected: undefined
   - actual: true
@@ -11656,6 +11788,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1229].znId (extra)
   - expected: undefined
   - actual: "goto-1-1182-2"
+- children[1229].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_2.27264.p_follow"
+- children[1229].path (extra)
+  - expected: undefined
+  - actual: []
 - children[1230].center (mismatch)
   - expected: [57.4642,205.3801]
   - actual: [57.464166666666664,205.3801197859662]
@@ -11723,7 +11861,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[1243].text (mismatch)
-  - expected: "246_Horch-was-kommt-von-draussen-rein - created 2026-05-27 10:20:16 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: "246_Horch-was-kommt-von-draussen-rein - created 2026-05-27 19:55:01 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "246_Horch-was-kommt-von-draussen-rein - created by Zupfnoter"
 - children[1243].lineWidth (extra)
   - expected: undefined
@@ -11740,18 +11878,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1246].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[1246].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[1247].fill (extra)
   - expected: undefined
   - actual: true
 - children[1247].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[1247].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[1248].fill (extra)
   - expected: undefined
   - actual: true
 - children[1248].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[1248].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[1249].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -11878,7 +12025,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 3015_reference_sheet [extract 0]
 
-- Issues: 755
+- Issues: 785
 - children[0].from (extra)
   - expected: undefined
   - actual: [278.8,20]
@@ -12476,6 +12623,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[61].znId (extra)
   - expected: undefined
   - actual: "goto-0-3072"
+- children[61].path (extra)
+  - expected: undefined
+  - actual: [[307.425,83.875],[319.05,83.875],[319.05,74.32499999999999],[319.05,83.875],[319.05,73.32499999999999],[309.425,73.32499999999999]]
 - children[62].fill (extra)
   - expected: undefined
   - actual: true
@@ -12485,6 +12635,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[62].znId (extra)
   - expected: undefined
   - actual: "goto-0-3072"
+- children[62].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.4224.p_repeat"
+- children[62].path (extra)
+  - expected: undefined
+  - actual: [[307.425,73.32499999999999],[309.925,74.32499999999999],[309.925,72.32499999999999]]
 - children[63].fill (extra)
   - expected: undefined
   - actual: true
@@ -12494,6 +12650,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[63].znId (extra)
   - expected: undefined
   - actual: "goto-0-3072"
+- children[63].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.4224.p_repeat"
+- children[63].path (extra)
+  - expected: undefined
+  - actual: []
 - children[64].center (mismatch)
   - expected: [293.515,114.4667]
   - actual: [293.5255833333333,114.46666666666664]
@@ -12764,6 +12926,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[101].lineWidth (extra)
   - expected: undefined
   - actual: 0.5
+- children[101].path (extra)
+  - expected: undefined
+  - actual: [[235.925,52],[236.11240757723604,52.50711531761805],[236.2657410495201,53.055804098353526],[236.38500041685208,53.63775164958295],[236.47018567923212,54.24464327868283],[236.52129683666013,54.86816429302967],[236.53833388913614,55.5],[236.52129683666013,56.131835706970335],[236.47018567923212,56.75535672131718],[236.38500041685208,57.36224835041705],[236.2657410495201,57.94419590164646],[236.11240757723604,58.49288468238194],[235.925,59]]
 - children[102].fill (extra)
   - expected: undefined
   - actual: false
@@ -12773,6 +12938,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[102].znId (extra)
   - expected: undefined
   - actual: "1536"
+- children[102].path (extra)
+  - expected: undefined
+  - actual: [[232.8,34.5],[233.94583333333335,35.11805555555555],[234.88333333333335,35.94444444444444],[235.6125,36.9375],[236.13333333333335,38.05555555555555],[236.44583333333335,39.25694444444444],[236.55,40.5],[236.44583333333335,41.74305555555555],[236.13333333333335,42.94444444444444],[235.6125,44.0625],[234.88333333333335,45.05555555555556],[233.94583333333335,45.88194444444444],[232.8,46.5]]
 - children[103].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -13649,15 +13817,15 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[218].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[218].confKey (extra)
-  - expected: undefined
-  - actual: "extract.notebound.decoration.v_3.t_6912.0.pos"
 - children[218].lineWidth (extra)
   - expected: undefined
   - actual: 0.5
 - children[218].znId (extra)
   - expected: undefined
   - actual: "6912"
+- children[218].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.decoration.v_3.t_6912.0.pos"
 - children[219].fill (extra)
   - expected: undefined
   - actual: false
@@ -13667,6 +13835,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[219].znId (extra)
   - expected: undefined
   - actual: "goto-2-846-0"
+- children[219].path (extra)
+  - expected: undefined
+  - actual: [[159.75,66.61],[146.55,66.61],[146.55,72.32499999999999],[146.55,66.61],[146.55,73.32499999999999],[156.175,73.32499999999999]]
 - children[220].fill (extra)
   - expected: undefined
   - actual: true
@@ -13676,6 +13847,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[220].znId (extra)
   - expected: undefined
   - actual: "goto-2-846-0"
+- children[220].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_3.2976.0.p_begin"
+- children[220].path (extra)
+  - expected: undefined
+  - actual: [[158.175,73.32499999999999],[155.675,74.32499999999999],[155.675,72.32499999999999]]
 - children[221].fill (extra)
   - expected: undefined
   - actual: true
@@ -13685,6 +13862,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[221].znId (extra)
   - expected: undefined
   - actual: "goto-2-846-0"
+- children[221].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_3.2976.0.p_begin"
+- children[221].path (extra)
+  - expected: undefined
+  - actual: []
 - children[222].fill (extra)
   - expected: undefined
   - actual: false
@@ -13694,6 +13877,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[222].znId (extra)
   - expected: undefined
   - actual: "goto-2-887-1"
+- children[222].path (extra)
+  - expected: undefined
+  - actual: [[159.75,66.61],[146.55,66.61],[146.55,93.32499999999999],[146.55,66.61],[146.55,94.32499999999999],[156.175,94.32499999999999]]
 - children[223].fill (extra)
   - expected: undefined
   - actual: true
@@ -13703,6 +13889,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[223].znId (extra)
   - expected: undefined
   - actual: "goto-2-887-1"
+- children[223].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_3.2976.1.p_begin"
+- children[223].path (extra)
+  - expected: undefined
+  - actual: [[158.175,94.32499999999999],[155.675,95.32499999999999],[155.675,93.32499999999999]]
 - children[224].fill (extra)
   - expected: undefined
   - actual: true
@@ -13712,6 +13904,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[224].znId (extra)
   - expected: undefined
   - actual: "goto-2-887-1"
+- children[224].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_3.2976.1.p_begin"
+- children[224].path (extra)
+  - expected: undefined
+  - actual: []
 - children[225].fill (extra)
   - expected: undefined
   - actual: false
@@ -13721,6 +13919,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[225].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-2"
+- children[225].path (extra)
+  - expected: undefined
+  - actual: [[158.175,83.875],[146.55,83.875],[146.55,133.82499999999996],[146.55,83.875],[146.55,134.82499999999996],[156.175,134.82499999999996]]
 - children[226].fill (extra)
   - expected: undefined
   - actual: true
@@ -13730,6 +13931,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[226].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-2"
+- children[226].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_3.2976.p_end"
+- children[226].path (extra)
+  - expected: undefined
+  - actual: [[158.175,134.82499999999996],[155.675,135.82499999999996],[155.675,133.82499999999996]]
 - children[227].fill (extra)
   - expected: undefined
   - actual: true
@@ -13739,6 +13946,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[227].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-2"
+- children[227].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_3.2976.p_end"
+- children[227].path (extra)
+  - expected: undefined
+  - actual: []
 - children[228].fill (extra)
   - expected: undefined
   - actual: false
@@ -13748,6 +13961,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[228].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-3"
+- children[228].path (extra)
+  - expected: undefined
+  - actual: [[158.175,104.87499999999999],[146.55,104.87499999999999],[146.55,133.82499999999996],[146.55,104.87499999999999],[146.55,134.82499999999996],[156.175,134.82499999999996]]
 - children[229].fill (extra)
   - expected: undefined
   - actual: true
@@ -13757,6 +13973,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[229].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-3"
+- children[229].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_3.2976.p_follow"
+- children[229].path (extra)
+  - expected: undefined
+  - actual: [[158.175,134.82499999999996],[155.675,135.82499999999996],[155.675,133.82499999999996]]
 - children[230].fill (extra)
   - expected: undefined
   - actual: true
@@ -13766,6 +13988,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[230].znId (extra)
   - expected: undefined
   - actual: "goto-2-925-3"
+- children[230].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_3.2976.p_follow"
+- children[230].path (extra)
+  - expected: undefined
+  - actual: []
 - children[231].center (mismatch)
   - expected: [160.9642,70.4667]
   - actual: [160.96416666666667,70.46666666666665]
@@ -13977,7 +14205,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[277].text (mismatch)
-  - expected: "3015_reference_sheet - created 2026-05-27 10:20:17 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: "3015_reference_sheet - created 2026-05-27 19:55:02 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "3015_reference_sheet - created by Zupfnoter"
 - children[277].lineWidth (extra)
   - expected: undefined
@@ -14009,18 +14237,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[285].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[285].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[286].fill (extra)
   - expected: undefined
   - actual: true
 - children[286].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[286].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[287].fill (extra)
   - expected: undefined
   - actual: true
 - children[287].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[287].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[288].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -14147,7 +14384,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 783_einsiedler-kreuzweg [extract 0]
 
-- Issues: 1484
+- Issues: 1492
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,17.424242424242422]
@@ -16695,6 +16932,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[274].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[274].path (extra)
+  - expected: undefined
+  - actual: [[186.8,17.424242424242422],[192.07534107861449,19.049646933639277],[198.9643765796514,20.33779191897983],[207.11343411755044,21.328745019062072],[216.16884130675137,22.062573872684013],[225.776925761694,22.579346118643638],[235.58401509681812,22.919129395738967],[245.2364369265634,23.121991342767984],[254.38051886536968,23.227999598528697],[262.66258852767675,23.277221801819103],[269.7289735279243,23.309725591437203],[275.2260014805521,23.365578606180996],[278.8,23.484848484848484]]
 - children[275].from (extra)
   - expected: undefined
   - actual: [278.8,23.484848484848484]
@@ -16884,6 +17124,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[290].znId (extra)
   - expected: undefined
   - actual: "12288"
+- children[290].path (extra)
+  - expected: undefined
+  - actual: [[267.3,140.45454545454544],[263.8179150813029,140.5513923310341],[258.59371984490883,140.5684567420901],[251.97407019987392,140.5464294379369],[244.3056220552545,140.52600116879808],[235.93503132010665,140.54786268489715],[227.2089539034867,140.65270473645774],[218.4740457144508,140.88121807370334],[210.0769626620552,141.27409344685742],[202.3643606553561,141.87202160614365],[195.68289560340975,142.7156933017855],[190.37922341527235,143.84579928400652],[186.8,145.30303030303028]]
 - children[291].fill (extra)
   - expected: undefined
   - actual: false
@@ -16893,6 +17136,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[291].znId (extra)
   - expected: undefined
   - actual: "12672"
+- children[291].path (extra)
+  - expected: undefined
+  - actual: [[186.8,145.30303030303028],[190.15685077998802,146.70295687935334],[195.79361276824267,147.88173338097278],[203.26139346883005,148.86148477645796],[212.11130038581632,149.66433603437832],[221.89444102326755,150.31241212330332],[232.16192288524994,150.82783801180233],[242.46485347582956,151.23273866844474],[252.35434029907248,151.54923906179994],[261.38149085904485,151.7994641604374],[269.09741265981285,152.00553893292653],[275.05321320544255,152.18958834783672],[278.8,152.37373737373736]]
 - children[292].from (extra)
   - expected: undefined
   - actual: [278.8,152.37373737373736]
@@ -16914,6 +17160,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[293].znId (extra)
   - expected: undefined
   - actual: "14976"
+- children[293].path (extra)
+  - expected: undefined
+  - actual: [[244.3,168.93939393939394],[236.45162513890105,168.48175320942448],[229.31569473237005,168.35259964678505],[222.8452049819147,168.50038789040454],[216.9931520890428,168.87357257921164],[211.7125322552621,169.4206083521352],[206.95634168208028,170.089949848104],[202.6775765710051,170.8300517060468],[198.82923312354436,171.58936856489242],[195.36430754120573,172.31635506356963],[192.23579602549697,172.95946584100724],[189.3966947779258,173.46715553613402],[186.8,173.78787878787878]]
 - children[294].from (extra)
   - expected: undefined
   - actual: [186.8,173.78787878787878]
@@ -16959,6 +17208,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[297].znId (extra)
   - expected: undefined
   - actual: "18816"
+- children[297].path (extra)
+  - expected: undefined
+  - actual: [[186.8,216.8181818181818],[192.03970154702108,218.33124139197446],[199.86086724542133,219.5510015178017],[209.72598321994946,220.51046971721277],[221.09753559535423,221.24265351175666],[233.43801049638435,221.78056042298266],[246.20989404778862,222.15719797243975],[258.87567237431574,222.40557368167714],[270.8978316007144,222.55869507224398],[281.7388578517335,222.64956966568928],[290.8612372521216,222.7112049835623],[297.7274559266275,222.77660854741214],[301.8,222.87878787878788]]
 - children[298].from (extra)
   - expected: undefined
   - actual: [301.8,222.87878787878788]
@@ -18439,7 +18691,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[473].text (mismatch)
-  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 10:20:17 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 19:55:02 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "783_einsiedler-kreuzweg - created by Zupfnoter"
 - children[473].lineWidth (extra)
   - expected: undefined
@@ -18465,18 +18717,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[479].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[479].path (extra)
+  - expected: undefined
+  - actual: [[2.8,290],[1.7999999999999998,294],[3.8,294],[2.8,290]]
 - children[480].fill (extra)
   - expected: undefined
   - actual: true
 - children[480].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[480].path (extra)
+  - expected: undefined
+  - actual: [[140.8,290],[139.8,294],[141.8,294],[140.8,290]]
 - children[481].fill (extra)
   - expected: undefined
   - actual: true
 - children[481].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[481].path (extra)
+  - expected: undefined
+  - actual: [[416.8,290],[415.8,294],[417.8,294],[416.8,290]]
 - children[482].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -18603,7 +18864,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 783_einsiedler-kreuzweg [extract 1]
 
-- Issues: 1478
+- Issues: 1489
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,17.424242424242422]
@@ -18937,6 +19198,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[36].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[36].path (extra)
+  - expected: undefined
+  - actual: [[221.3,17.424242424242422],[235.6700543773591,17.25353879687988],[248.97463569404604,17.37177466568959],[261.22001926586125,17.729127498133316],[272.4124804086048,18.275774761672828],[282.55829443807687,18.96189392376988],[291.6637366700778,19.737662451886234],[299.7350824204077,20.553257813483658],[306.7786070048669,21.358857476023907],[312.80058573925544,22.10463890696876],[317.8072939393737,22.74077957377996],[321.8050069210218,23.21745694391928],[324.8,23.484848484848484]]
 - children[37].from (extra)
   - expected: undefined
   - actual: [324.8,23.484848484848484]
@@ -19210,6 +19474,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[59].znId (extra)
   - expected: undefined
   - actual: "12288"
+- children[59].path (extra)
+  - expected: undefined
+  - actual: [[301.8,140.45454545454544],[296.92897115128426,141.28878251707908],[290.78188880412176,142.01214037894707],[283.64135239979464,142.63441752806764],[275.78996137958507,143.16541245235908],[267.51031518477527,143.61492363973954],[259.0850132566473,143.99274957812736],[250.79665503648337,144.3086887554408],[242.92783996556568,144.57253965959802],[235.76116748517632,144.79410077851736],[229.57923703659753,144.983170600117],[224.6646480611114,145.14954761231522],[221.3,145.30303030303028]]
 - children[60].from (extra)
   - expected: undefined
   - actual: [221.3,145.30303030303028]
@@ -19267,6 +19534,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[64].znId (extra)
   - expected: undefined
   - actual: "14976"
+- children[64].path (extra)
+  - expected: undefined
+  - actual: [[278.8,168.93939393939394],[274.8746040971249,169.95342948828554],[270.29995747323596,170.78512242176203],[265.22358421206684,171.45590306200154],[259.79300839735123,171.98720173118213],[254.15575411282288,172.40044875148197],[248.45934544221552,172.7170744450791],[242.85130646926282,172.95850913415163],[237.47916127769858,173.14618314087767],[232.49043395125642,173.3015267874353],[228.03264857367012,173.44597039600262],[224.2533292286734,173.60094428875774],[221.3,173.78787878787878]]
 - children[65].from (extra)
   - expected: undefined
   - actual: [221.3,173.78787878787878]
@@ -19348,6 +19618,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[71].znId (extra)
   - expected: undefined
   - actual: "18816"
+- children[71].path (extra)
+  - expected: undefined
+  - actual: [[221.3,216.8181818181818],[241.91386604494207,216.6360749557162],[259.77270939074526,216.7490735239864],[275.1013714265181,217.1061272047272],[288.12469354136886,217.6561856796731],[299.0675171244062,218.3481986305589],[308.1546835647385,219.13111573911922],[315.6110342514742,219.95388668708875],[321.66141057372175,220.76546115620218],[326.53065392058966,221.5147888281941],[330.4436056811864,222.15081938479923],[333.6251072446204,222.62250250775227],[336.3,222.87878787878788]]
 - children[72].from (extra)
   - expected: undefined
   - actual: [336.3,222.87878787878788]
@@ -21139,6 +21412,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[274].znId (extra)
   - expected: undefined
   - actual: "384"
+- children[274].path (extra)
+  - expected: undefined
+  - actual: [[186.8,17.424242424242422],[192.07534107861449,19.049646933639277],[198.9643765796514,20.33779191897983],[207.11343411755044,21.328745019062072],[216.16884130675137,22.062573872684013],[225.776925761694,22.579346118643638],[235.58401509681812,22.919129395738967],[245.2364369265634,23.121991342767984],[254.38051886536968,23.227999598528697],[262.66258852767675,23.277221801819103],[269.7289735279243,23.309725591437203],[275.2260014805521,23.365578606180996],[278.8,23.484848484848484]]
 - children[275].from (extra)
   - expected: undefined
   - actual: [278.8,23.484848484848484]
@@ -21328,6 +21604,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[290].znId (extra)
   - expected: undefined
   - actual: "12288"
+- children[290].path (extra)
+  - expected: undefined
+  - actual: [[267.3,140.45454545454544],[263.8179150813029,140.5513923310341],[258.59371984490883,140.5684567420901],[251.97407019987392,140.5464294379369],[244.3056220552545,140.52600116879808],[235.93503132010665,140.54786268489715],[227.2089539034867,140.65270473645774],[218.4740457144508,140.88121807370334],[210.0769626620552,141.27409344685742],[202.3643606553561,141.87202160614365],[195.68289560340975,142.7156933017855],[190.37922341527235,143.84579928400652],[186.8,145.30303030303028]]
 - children[291].fill (extra)
   - expected: undefined
   - actual: false
@@ -21337,6 +21616,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[291].znId (extra)
   - expected: undefined
   - actual: "12672"
+- children[291].path (extra)
+  - expected: undefined
+  - actual: [[186.8,145.30303030303028],[190.15685077998802,146.70295687935334],[195.79361276824267,147.88173338097278],[203.26139346883005,148.86148477645796],[212.11130038581632,149.66433603437832],[221.89444102326755,150.31241212330332],[232.16192288524994,150.82783801180233],[242.46485347582956,151.23273866844474],[252.35434029907248,151.54923906179994],[261.38149085904485,151.7994641604374],[269.09741265981285,152.00553893292653],[275.05321320544255,152.18958834783672],[278.8,152.37373737373736]]
 - children[292].from (extra)
   - expected: undefined
   - actual: [278.8,152.37373737373736]
@@ -21358,6 +21640,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[293].znId (extra)
   - expected: undefined
   - actual: "14976"
+- children[293].path (extra)
+  - expected: undefined
+  - actual: [[244.3,168.93939393939394],[236.45162513890105,168.48175320942448],[229.31569473237005,168.35259964678505],[222.8452049819147,168.50038789040454],[216.9931520890428,168.87357257921164],[211.7125322552621,169.4206083521352],[206.95634168208028,170.089949848104],[202.6775765710051,170.8300517060468],[198.82923312354436,171.58936856489242],[195.36430754120573,172.31635506356963],[192.23579602549697,172.95946584100724],[189.3966947779258,173.46715553613402],[186.8,173.78787878787878]]
 - children[294].from (extra)
   - expected: undefined
   - actual: [186.8,173.78787878787878]
@@ -21403,6 +21688,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[297].znId (extra)
   - expected: undefined
   - actual: "18816"
+- children[297].path (extra)
+  - expected: undefined
+  - actual: [[186.8,216.8181818181818],[192.03970154702108,218.33124139197446],[199.86086724542133,219.5510015178017],[209.72598321994946,220.51046971721277],[221.09753559535423,221.24265351175666],[233.43801049638435,221.78056042298266],[246.20989404778862,222.15719797243975],[258.87567237431574,222.40557368167714],[270.8978316007144,222.55869507224398],[281.7388578517335,222.64956966568928],[290.8612372521216,222.7112049835623],[297.7274559266275,222.77660854741214],[301.8,222.87878787878788]]
 - children[298].from (extra)
   - expected: undefined
   - actual: [301.8,222.87878787878788]
@@ -22883,7 +23171,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[473].text (mismatch)
-  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 10:20:17 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 19:55:02 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "783_einsiedler-kreuzweg - created by Zupfnoter"
 - children[473].lineWidth (extra)
   - expected: undefined
@@ -22909,12 +23197,18 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[479].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[479].path (extra)
+  - expected: undefined
+  - actual: [[140.8,290],[139.8,294],[141.8,294],[140.8,290]]
 - children[480].fill (extra)
   - expected: undefined
   - actual: true
 - children[480].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[480].path (extra)
+  - expected: undefined
+  - actual: [[416.8,290],[415.8,294],[417.8,294],[416.8,290]]
 - children[481].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -23041,7 +23335,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 783_einsiedler-kreuzweg [extract 3]
 
-- Issues: 801
+- Issues: 803
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,17.476190476190474]
@@ -25290,7 +25584,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[247].text (mismatch)
-  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 10:20:18 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: "783_einsiedler-kreuzweg - created 2026-05-27 19:55:02 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "783_einsiedler-kreuzweg - created by Zupfnoter"
 - children[247].lineWidth (extra)
   - expected: undefined
@@ -25316,12 +25610,18 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[253].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[253].path (extra)
+  - expected: undefined
+  - actual: [[140.8,290],[139.8,294],[141.8,294],[140.8,290]]
 - children[254].fill (extra)
   - expected: undefined
   - actual: true
 - children[254].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[254].path (extra)
+  - expected: undefined
+  - actual: [[416.8,290],[415.8,294],[417.8,294],[416.8,290]]
 - children[255].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -25448,7 +25748,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## abc-to-song-slur-tuplet-parity [extract 0]
 
-- Issues: 52
+- Issues: 57
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -25503,6 +25803,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[4].lineWidth (extra)
   - expected: undefined
   - actual: 0.5
+- children[4].path (extra)
+  - expected: undefined
+  - actual: [[109.425,30.25],[109.61240757723604,30.757115317618055],[109.76574104952006,31.305804098353537],[109.8850004168521,31.887751649582956],[109.9701856792321,32.49464327868283],[110.02129683666011,33.11816429302967],[110.03833388913613,33.75],[110.02129683666011,34.381835706970335],[109.9701856792321,35.00535672131718],[109.8850004168521,35.61224835041705],[109.76574104952006,36.19419590164646],[109.61240757723604,36.74288468238194],[109.425,37.25]]
 - children[5].fill (extra)
   - expected: undefined
   - actual: false
@@ -25512,6 +25815,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[5].znId (extra)
   - expected: undefined
   - actual: "768"
+- children[5].path (extra)
+  - expected: undefined
+  - actual: [[106.3,30.75],[107.71599463148713,30.029351825800372],[110.06469396679773,29.8536986873851],[113.14586870579454,30.153395610793392],[116.7592895483403,30.85879762206448],[120.7047271942978,31.90025974723758],[124.78195234352977,33.208137012351905],[128.79073569589897,34.71278444344668],[132.53084795126819,36.34455706656113],[135.80205980950012,38.033809907734465],[138.40414197045757,39.7108979930059],[140.13686513400327,41.30617634841468],[140.8,42.75]]
 - children[6].center (mismatch)
   - expected: [125.439,29.3191]
   - actual: [125.4389935934123,29.319143418939586]
@@ -25564,7 +25870,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[15].text (mismatch)
-  - expected: " - created 2026-05-27 10:20:18 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 19:55:03 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
 - children[15].lineWidth (extra)
   - expected: undefined
@@ -25581,18 +25887,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[18].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[18].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[19].fill (extra)
   - expected: undefined
   - actual: true
 - children[19].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[19].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[20].fill (extra)
   - expected: undefined
   - actual: true
 - children[20].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[20].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[21].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -25608,7 +25923,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## decoration [extract 0]
 
-- Issues: 51
+- Issues: 54
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -25693,15 +26008,15 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[10].fill (extra)
   - expected: undefined
   - actual: "filled"
-- children[10].confKey (extra)
-  - expected: undefined
-  - actual: "extract.notebound.decoration.v_1.t_0.0.pos"
 - children[10].lineWidth (extra)
   - expected: undefined
   - actual: 0.5
 - children[10].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[10].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.decoration.v_1.t_0.0.pos"
 - children[11].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -25721,7 +26036,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[15].text (mismatch)
-  - expected: " - created 2026-05-27 10:20:18 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 19:55:03 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
 - children[15].lineWidth (extra)
   - expected: undefined
@@ -25738,18 +26053,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[18].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[18].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[19].fill (extra)
   - expected: undefined
   - actual: true
 - children[19].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[19].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[20].fill (extra)
   - expected: undefined
   - actual: true
 - children[20].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[20].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[21].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -25765,7 +26089,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## lyrics [extract 0]
 
-- Issues: 38
+- Issues: 41
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -25839,7 +26163,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[10].text (mismatch)
-  - expected: " - created 2026-05-27 10:20:18 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 19:55:03 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
 - children[10].lineWidth (extra)
   - expected: undefined
@@ -25856,18 +26180,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[13].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[13].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[14].fill (extra)
   - expected: undefined
   - actual: true
 - children[14].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[14].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[15].fill (extra)
   - expected: undefined
   - actual: true
 - children[15].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[15].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[16].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -25883,7 +26216,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## pause [extract 0]
 
-- Issues: 54
+- Issues: 57
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,16.2]
@@ -26005,7 +26338,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[13].text (mismatch)
-  - expected: " - created 2026-05-27 10:20:19 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 19:55:03 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
 - children[13].lineWidth (extra)
   - expected: undefined
@@ -26022,18 +26355,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[16].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[16].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[17].fill (extra)
   - expected: undefined
   - actual: true
 - children[17].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[17].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
 - children[18].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[18].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[19].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -26049,7 +26391,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## repeat [extract 0]
 
-- Issues: 47
+- Issues: 55
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,22.5]
@@ -26125,6 +26467,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[8].znId (extra)
   - expected: undefined
   - actual: "goto-0-0"
+- children[8].path (extra)
+  - expected: undefined
+  - actual: [[123.425,42.775],[135.05,42.775],[135.05,21.225],[135.05,42.775],[135.05,20.225],[67.925,20.225]]
 - children[9].fill (extra)
   - expected: undefined
   - actual: true
@@ -26134,6 +26479,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[9].znId (extra)
   - expected: undefined
   - actual: "goto-0-0"
+- children[9].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.1152.p_repeat"
+- children[9].path (extra)
+  - expected: undefined
+  - actual: [[65.925,20.225],[68.425,21.225],[68.425,19.225]]
 - children[10].fill (extra)
   - expected: undefined
   - actual: true
@@ -26143,6 +26494,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[10].znId (extra)
   - expected: undefined
   - actual: "goto-0-0"
+- children[10].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.c_jumplines.v_1.1152.p_repeat"
+- children[10].path (extra)
+  - expected: undefined
+  - actual: []
 - children[11].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -26150,7 +26507,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[13].text (mismatch)
-  - expected: " - created 2026-05-27 10:20:19 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 19:55:04 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
 - children[13].lineWidth (extra)
   - expected: undefined
@@ -26167,18 +26524,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[16].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[16].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[17].fill (extra)
   - expected: undefined
   - actual: true
 - children[17].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[17].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
 - children[18].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[18].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[19].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -26194,7 +26560,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## single_note [extract 0]
 
-- Issues: 18
+- Issues: 21
 - children[0].lineWidth (extra)
   - expected: undefined
   - actual: 0.5
@@ -26208,7 +26574,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[3].text (mismatch)
-  - expected: " - created 2026-05-27 10:20:19 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 19:55:04 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
 - children[3].lineWidth (extra)
   - expected: undefined
@@ -26225,18 +26591,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[6].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[6].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[7].fill (extra)
   - expected: undefined
   - actual: true
 - children[7].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[7].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[8].fill (extra)
   - expected: undefined
   - actual: true
 - children[8].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[8].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[9].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -26252,7 +26627,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## tie [extract 0]
 
-- Issues: 40
+- Issues: 44
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -26295,6 +26670,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[3].lineWidth (extra)
   - expected: undefined
   - actual: 0.5
+- children[3].path (extra)
+  - expected: undefined
+  - actual: [[63.425,18.25],[63.612407577236034,18.757115317618055],[63.76574104952007,19.305804098353537],[63.885000416852094,19.887751649582956],[63.97018567923211,20.49464327868283],[64.02129683666011,21.11816429302967],[64.03833388913613,21.75],[64.02129683666011,22.381835706970328],[63.97018567923211,23.00535672131717],[63.885000416852094,23.612248350417044],[63.76574104952007,24.194195901646466],[63.612407577236034,24.74288468238194],[63.425,25.25]]
 - children[4].lineWidth (extra)
   - expected: undefined
   - actual: 0.5
@@ -26332,7 +26710,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[11].text (mismatch)
-  - expected: " - created 2026-05-27 10:20:20 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 19:55:04 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
 - children[11].lineWidth (extra)
   - expected: undefined
@@ -26349,18 +26727,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[14].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[14].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[15].fill (extra)
   - expected: undefined
   - actual: true
 - children[15].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[15].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[16].fill (extra)
   - expected: undefined
   - actual: true
 - children[16].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[16].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[17].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -26376,7 +26763,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## tuplet [extract 0]
 
-- Issues: 48
+- Issues: 52
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,17]
@@ -26434,6 +26821,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[4].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[4].path (extra)
+  - expected: undefined
+  - actual: [[60.3,17],[61.7777171783498,16.093961748144018],[64.61170805192788,15.635257644913409],[68.52357866607394,15.575471350367243],[73.23493506612772,15.866186524564602],[78.46738329742888,16.45898682756457],[83.94252940531717,17.30545591942622],[89.38197943513228,18.357177460208636],[94.50733943221393,19.565735109970902],[99.04021544190182,20.88271252877209],[102.70221350953565,22.25969337667128],[105.21493968045515,23.64826131372756],[106.3,25]]
 - children[5].center (mismatch)
   - expected: [84.2852,13.335]
   - actual: [84.28521175481967,13.335032409786873]
@@ -26480,7 +26870,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[13].text (mismatch)
-  - expected: " - created 2026-05-27 10:20:20 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 19:55:05 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
 - children[13].lineWidth (extra)
   - expected: undefined
@@ -26497,18 +26887,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[16].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[16].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[17].fill (extra)
   - expected: undefined
   - actual: true
 - children[17].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[17].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
 - children[18].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[18].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[19].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -26524,7 +26923,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## two_voices [extract 0]
 
-- Issues: 60
+- Issues: 63
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -26664,7 +27063,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[19].text (mismatch)
-  - expected: " - created 2026-05-27 10:20:20 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: " - created 2026-05-27 19:55:05 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: " - created by Zupfnoter"
 - children[19].lineWidth (extra)
   - expected: undefined
@@ -26681,18 +27080,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[22].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[22].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[23].fill (extra)
   - expected: undefined
   - actual: true
 - children[23].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[23].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[24].fill (extra)
   - expected: undefined
   - actual: true
 - children[24].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[24].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[25].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
@@ -26708,7 +27116,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## Twostaff [extract 0]
 
-- Issues: 475
+- Issues: 478
 - children[0].from (extra)
   - expected: undefined
   - actual: [198.3,17]
@@ -28093,7 +28501,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: undefined
   - actual: 0.1
 - children[154].text (mismatch)
-  - expected: "Twostaff - created 2026-05-27 10:20:20 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]"
+  - expected: "Twostaff - created 2026-05-27 19:55:05 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]"
   - actual: "Twostaff - created by Zupfnoter"
 - children[154].lineWidth (extra)
   - expected: undefined
@@ -28110,18 +28518,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[157].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[157].path (extra)
+  - expected: undefined
+  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
 - children[158].fill (extra)
   - expected: undefined
   - actual: true
 - children[158].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[158].path (extra)
+  - expected: undefined
+  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
 - children[159].fill (extra)
   - expected: undefined
   - actual: true
 - children[159].lineWidth (extra)
   - expected: undefined
   - actual: 0.1
+- children[159].path (extra)
+  - expected: undefined
+  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
 - children[160].lineWidth (extra)
   - expected: undefined
   - actual: 0.1

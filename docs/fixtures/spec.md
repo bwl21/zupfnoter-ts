@@ -122,6 +122,8 @@ Laufendes Legacy-System (`bwl21/zupfnoter`, Branch `feature/voice-styles_and-oth
 ## Vergleichsstrategie: Semantischer Vergleich
 
 Kein exakter JSON-Vergleich. Geprüft werden nur fachlich relevante Felder.
+Fachlich relevant sind alle Felder, die von späteren Stufen gelesen oder für
+Editor-/Interaktionsverhalten ausgewertet werden.
 
 ### Song-Vergleich (Stufe 2)
 
@@ -152,7 +154,18 @@ Pro Drawable in `children`:
 | `style` | exakt | solid/dashed/dotted |
 | Anzahl children | exakt | Kein Element darf fehlen oder hinzukommen |
 
-Nicht verglichen: `confKey`, `draginfo`, interne Referenzen.
+Zusätzlich fachlich relevant, wenn vom jeweiligen Drawable oder vom Export
+bereitgestellt:
+- `confKey`
+- `confKey.*` als Edit-Marker
+- `lineWidth`
+- `more_conf_keys`
+- `draginfo`
+- `path`
+- `znId`
+
+Nicht verglichen: reine Laufzeit- und Implementierungsdetails, die weder in
+späteren Stufen gelesen noch für Bedienung oder Editorverhalten genutzt werden.
 
 ### Hilfsfunktion `semanticMatch`
 

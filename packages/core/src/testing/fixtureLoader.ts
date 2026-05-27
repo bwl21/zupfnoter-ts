@@ -339,7 +339,9 @@ export function songToFixture(song: Song): SongFixture {
  * Converts a Sheet domain object into the SheetFixture format used for comparison.
  *
  * Only fields relevant for semantic comparison are included.
- * Excluded: confKey, lineWidth, origin, draginfo, visible (invisible elements filtered out).
+ * Excluded: lineWidth, origin, visible (invisible elements are filtered out).
+ * Editor-relevant metadata such as `confKey`, `more_conf_keys`, and `draginfo`
+ * are preserved when present so parity tests can check later-stage contract data.
  * Legacy-facing identifiers like `znId` are preserved when present.
  */
 export function sheetToFixture(sheet: Sheet): SheetFixture {
@@ -347,6 +349,7 @@ export function sheetToFixture(sheet: Sheet): SheetFixture {
     children: sheet.children
       .filter((c) => c.visible !== false)
       .map((c): DrawableFixture => {
+        const source = c as unknown as Record<string, unknown>
         const entry: DrawableFixture = {
           type: c.type,
           znId: c.znId,
@@ -363,6 +366,9 @@ export function sheetToFixture(sheet: Sheet): SheetFixture {
         if ('glyphName' in c && c.glyphName !== undefined) entry.glyphName = c.glyphName
         if ('text'      in c && c.text      !== undefined) entry.text      = c.text
         if ('color'     in c && c.color     !== undefined) entry.color     = c.color
+        if ('path'      in source && source['path']      !== undefined) entry.path      = source['path'] as [number, number][]
+        if ('more_conf_keys' in source && source['more_conf_keys'] !== undefined) entry.more_conf_keys = source['more_conf_keys']
+        if ('draginfo' in source && source['draginfo'] !== undefined) entry.draginfo = source['draginfo']
         return entry
       }),
   }

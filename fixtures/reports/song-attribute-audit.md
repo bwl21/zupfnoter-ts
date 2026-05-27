@@ -2134,7 +2134,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 3015_reference_sheet
 
-- Issues: 158
+- Issues: 156
 - voices[0].entities[0].prevPitch (missing)
   - expected: 67
   - actual: undefined
@@ -2600,12 +2600,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[3].entities[14].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[3].entities[25].confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_3.2976.p_end"
-  - actual: "notebound.c_jumplines.v_3.2976.p_follow"
-- voices[3].entities[25].policy.confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_3.2976.p_end"
-  - actual: "notebound.c_jumplines.v_3.2976.p_follow"
 - voices[3].entities[25].policy.distance (mismatch)
   - expected: 2
   - actual: -2

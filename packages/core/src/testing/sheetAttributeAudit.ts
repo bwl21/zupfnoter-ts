@@ -10,8 +10,6 @@ export interface AttributeIssue {
   actual: unknown
 }
 
-const LEGACY_RELEVANT_EXTRA_FIELDS = ['confKey', 'lineWidth', 'znId'] as const
-
 function compareKnownField(
   expected: DrawableFixture,
   actual: DrawableFixture,
@@ -56,20 +54,12 @@ export function auditSheetAttributes(actual: SheetFixture, expected: SheetFixtur
     compareKnownField(expectedChild, actualChild, 'glyphName', path, issues)
     compareKnownField(expectedChild, actualChild, 'text', path, issues)
     compareKnownField(expectedChild, actualChild, 'color', path, issues)
-
-    for (const field of LEGACY_RELEVANT_EXTRA_FIELDS) {
-      const actualValue = actualChild[field]
-      const expectedValue = expectedChild[field]
-      if (actualValue !== undefined && expectedValue === undefined) {
-        issues.push({
-          path,
-          field,
-          kind: 'extra',
-          expected: undefined,
-          actual: actualValue,
-        })
-      }
-    }
+    compareKnownField(expectedChild, actualChild, 'lineWidth', path, issues)
+    compareKnownField(expectedChild, actualChild, 'znId', path, issues)
+    compareKnownField(expectedChild, actualChild, 'confKey', path, issues)
+    compareKnownField(expectedChild, actualChild, 'draginfo', path, issues)
+    compareKnownField(expectedChild, actualChild, 'more_conf_keys', path, issues)
+    compareKnownField(expectedChild, actualChild, 'path', path, issues)
   }
 
   if (actual.children.length !== expected.children.length) {
