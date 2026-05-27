@@ -63,14 +63,30 @@ interface VoiceState {
   slurCounter: number
   tupletP: number | null
   variantAnchor: PlayableEntity | null
-  pendingVariantEntrySources: PlayableEntity[]
-  pendingVariantExitSources: PlayableEntity[]
+  /** Goto-Distanzen zum Zeitpunkt der Setzung von variantAnchor. */
+  variantAnchorDistances: number[] | null
+  /**
+   * Anstehende Varianten-Eintrittssprunglinien.
+   * Jeder Eintrag speichert die Quelle und die zum Push-Zeitpunkt
+   * gültigen Goto-Distanzen, damit spätere Reset-Vorgänge (z.B. durch
+   * Wiederholungsenden oder nachfolgende @@-Marker) die Werte nicht
+   * überschreiben.
+   */
+  pendingVariantEntrySources: Array<{ source: PlayableEntity; distances: number[] | null }>
+  /**
+   * Anstehende Varianten-Ausstrittssprunglinien.
+   * Analog zu pendingVariantEntrySources speichert auch dieser Eintrag
+   * die Source mit den zum Push-Zeitpunkt gültigen Distanzen.
+   */
+  pendingVariantExitSources: Array<{ source: PlayableEntity; distances: number[] | null }>
   awaitingVariantContinuation: boolean
   variantSectionNo: 0 | 1 | 2
   pendingVariantEndingText: string | null
   pendingVariantEndingDuration: number | null
   pendingGotoDistances: number[] | null
   deferredJumplines: Goto[]
+  /** Zähler für p_begin-Sprunglinien-IDs (über mehrere _resolvePendingVariantGotos-Aufrufe hinweg). */
+  pendingVariantEntryIndex: number
   deferredNoteboundAnnotations: NoteBoundAnnotation[]
   deferredChords: Chordsymbol[]
   /** Ruby-compatible [r:] remark lookup by voice_element[:time]. */
@@ -96,6 +112,7 @@ function createVoiceState(wmeasure: number, countBy: number | null): VoiceState 
     slurCounter: 0,
     tupletP: null,
     variantAnchor: null,
+    variantAnchorDistances: null,
     pendingVariantEntrySources: [],
     pendingVariantExitSources: [],
     awaitingVariantContinuation: false,
@@ -104,6 +121,7 @@ function createVoiceState(wmeasure: number, countBy: number | null): VoiceState 
     pendingVariantEndingDuration: null,
     pendingGotoDistances: null,
     deferredJumplines: [],
+    pendingVariantEntryIndex: 0,
     deferredNoteboundAnnotations: [],
     deferredChords: [],
     remarkTable: {},
@@ -602,16 +620,17 @@ export class AbcToSong {
       const nextVariantNo = (state.variantSectionNo + 1) as 1 | 2
       if (state.variantSectionNo === 0) {
         state.variantAnchor = state.previousNote
-        state.pendingVariantEntrySources.push(state.previousNote)
+        state.variantAnchorDistances = state.pendingGotoDistances
+        state.pendingVariantEntrySources.push({ source: state.previousNote, distances: state.pendingGotoDistances })
       } else if (state.variantAnchor) {
         // When the variant-start bar is also a repeat end (e.g. |:2),
         // variant exits are implicit (handled by the repeat Goto) so
         // we must NOT push an exit source here — it would later create
         // a duplicate follow Goto.
         if (!isRepeatBar) {
-          state.pendingVariantExitSources.push(state.previousNote)
+          state.pendingVariantExitSources.push({ source: state.previousNote, distances: state.variantAnchorDistances })
         }
-        state.pendingVariantEntrySources.push(state.variantAnchor)
+        state.pendingVariantEntrySources.push({ source: state.variantAnchor, distances: state.variantAnchorDistances })
       }
       state.awaitingVariantContinuation = false
       state.variantSectionNo = nextVariantNo
@@ -623,7 +642,7 @@ export class AbcToSong {
     }
     if (sym.rbstop && !isRepeatBar && !hasVariantStart) {
       if (state.previousNote && state.variantSectionNo > 0) {
-        state.pendingVariantExitSources.push(state.previousNote)
+        state.pendingVariantExitSources.push({ source: state.previousNote, distances: state.variantAnchorDistances })
       }
       state.awaitingVariantContinuation = state.pendingVariantExitSources.length > 0
       state.variantNo = 0
@@ -820,7 +839,7 @@ export class AbcToSong {
     voiceIndex: number,
     sym: AbcSymbol,
   ): void {
-    const gotoDistances = state.pendingGotoDistances
+    const currentGotoDistances = state.pendingGotoDistances
     const entrySources = [...state.pendingVariantEntrySources]
     state.pendingVariantEntrySources = []
     const exitSources = state.awaitingVariantContinuation && state.pendingVariantExitSources.length > 0
@@ -831,17 +850,17 @@ export class AbcToSong {
       state.pendingVariantExitSources = []
       state.awaitingVariantContinuation = false
       state.variantAnchor = null
+      state.variantAnchorDistances = null
       state.variantSectionNo = 0
     }
 
-    let idx = 0
-    for (const source of entrySources) {
+    for (const entry of entrySources) {
       const resolvedSource = requireDefined(
-        source,
-        `AbcToSong._resolvePendingVariantGotos(): missing source at index ${idx}`,
+        entry.source,
+        `AbcToSong._resolvePendingVariantGotos(): missing source at index ${state.pendingVariantEntryIndex}`,
       )
       if (resolvedSource === target) {
-        idx += 1
+        state.pendingVariantEntryIndex += 1
         continue
       }
       state.deferredJumplines.push({
@@ -854,28 +873,28 @@ export class AbcToSong {
         barDecorations: [],
         visible: true,
         variant: 0,
-        znId: `goto-${voiceIndex}-${sym.istart}-${idx}`,
-        confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.${idx}.p_begin`,
+        znId: `goto-${voiceIndex}-${sym.istart}-${state.pendingVariantEntryIndex}`,
+        confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.${state.pendingVariantEntryIndex}.p_begin`,
         from: resolvedSource,
         to: target,
         policy: {
-          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.${idx}.p_begin`,
-          distance: gotoDistances?.[0],
+          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.${state.pendingVariantEntryIndex}.p_begin`,
+          distance: entry.distances?.[0],
           fromAnchor: 'after',
           toAnchor: 'before',
           isRepeat: true,
         } as GotoPolicy,
       })
-      idx += 1
+      state.pendingVariantEntryIndex += 1
     }
 
-    for (const source of exitSources) {
+    for (const exit of exitSources) {
       const resolvedSource = requireDefined(
-        source,
-        `AbcToSong._resolvePendingVariantGotos(): missing exit source at index ${idx}`,
+        exit.source,
+        `AbcToSong._resolvePendingVariantGotos(): missing exit source at index ${state.pendingVariantEntryIndex}`,
       )
       if (resolvedSource === target) {
-        idx += 1
+        state.pendingVariantEntryIndex += 1
         continue
       }
       state.deferredJumplines.push({
@@ -888,26 +907,26 @@ export class AbcToSong {
         barDecorations: [],
         visible: true,
         variant: 0,
-        znId: `goto-${voiceIndex}-${sym.istart}-${idx}`,
+        znId: `goto-${voiceIndex}-${sym.istart}-${state.pendingVariantEntryIndex}`,
         confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.p_follow`,
         from: resolvedSource,
         to: target,
         policy: {
           confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.p_follow`,
-          distance: gotoDistances?.[2],
+          distance: exit.distances?.[2] ?? currentGotoDistances?.[2],
           isRepeat: true,
           fromAnchor: 'after',
           toAnchor: 'before',
           verticalAnchor: 'to',
         } as GotoPolicy,
       })
-      idx += 1
+      state.pendingVariantEntryIndex += 1
     }
 
     if (entrySources.length > 0 || exitSources.length > 0) {
       state.pendingGotoDistances = null
     } else {
-      state.pendingGotoDistances = gotoDistances
+      state.pendingGotoDistances = currentGotoDistances
     }
     return
   }

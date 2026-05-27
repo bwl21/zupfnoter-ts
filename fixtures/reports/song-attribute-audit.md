@@ -6,7 +6,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 246_Horch-was-kommt-von-draussen-rein
 
-- Issues: 726
+- Issues: 714
 - voices[0].entities[0].prevPitch (missing)
   - expected: 79
   - actual: undefined
@@ -718,24 +718,12 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[118].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[123].confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_1.26880.1.p_begin"
-  - actual: "notebound.c_jumplines.v_1.26880.0.p_begin"
-- voices[0].entities[123].policy.confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_1.26880.1.p_begin"
-  - actual: "notebound.c_jumplines.v_1.26880.0.p_begin"
-- voices[0].entities[123].policy.distance (missing)
-  - expected: 3
-  - actual: undefined
 - voices[0].entities[124].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.p_follow"
   - actual: "notebound.c_jumplines.v_1.33408.p_follow"
 - voices[0].entities[124].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.p_follow"
   - actual: "notebound.c_jumplines.v_1.33408.p_follow"
-- voices[0].entities[124].policy.distance (missing)
-  - expected: -1
-  - actual: undefined
 - voices[1].entities[0].prevPitch (missing)
   - expected: 79
   - actual: undefined
@@ -1447,24 +1435,12 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[118].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[123].confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_1.26880.1.p_begin"
-  - actual: "notebound.c_jumplines.v_1.26880.0.p_begin"
-- voices[1].entities[123].policy.confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_1.26880.1.p_begin"
-  - actual: "notebound.c_jumplines.v_1.26880.0.p_begin"
-- voices[1].entities[123].policy.distance (missing)
-  - expected: 3
-  - actual: undefined
 - voices[1].entities[124].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.p_follow"
   - actual: "notebound.c_jumplines.v_1.33408.p_follow"
 - voices[1].entities[124].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_1.26880.p_follow"
   - actual: "notebound.c_jumplines.v_1.33408.p_follow"
-- voices[1].entities[124].policy.distance (missing)
-  - expected: -1
-  - actual: undefined
 - voices[2].entities[0].prevPitch (missing)
   - expected: 67
   - actual: undefined
@@ -2167,28 +2143,16 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[2].entities[117].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[2].entities[120].confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_2.27264.1.p_begin"
-  - actual: "notebound.c_jumplines.v_2.27264.0.p_begin"
-- voices[2].entities[120].policy.confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_2.27264.1.p_begin"
-  - actual: "notebound.c_jumplines.v_2.27264.0.p_begin"
-- voices[2].entities[120].policy.distance (missing)
-  - expected: -3
-  - actual: undefined
 - voices[2].entities[121].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_2.27264.p_follow"
   - actual: "notebound.c_jumplines.v_2.33024.p_follow"
 - voices[2].entities[121].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_2.27264.p_follow"
   - actual: "notebound.c_jumplines.v_2.33024.p_follow"
-- voices[2].entities[121].policy.distance (missing)
-  - expected: 3
-  - actual: undefined
 
 ## 3015_reference_sheet
 
-- Issues: 162
+- Issues: 160
 - voices[0].entities[0].prevPitch (missing)
   - expected: 67
   - actual: undefined
@@ -2654,12 +2618,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[3].entities[14].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[3].entities[24].confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_3.2976.1.p_begin"
-  - actual: "notebound.c_jumplines.v_3.2976.0.p_begin"
-- voices[3].entities[24].policy.confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_3.2976.1.p_begin"
-  - actual: "notebound.c_jumplines.v_3.2976.0.p_begin"
 - voices[3].entities[25].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_3.2976.p_end"
   - actual: "notebound.c_jumplines.v_3.4224.p_follow"

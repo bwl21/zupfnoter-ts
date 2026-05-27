@@ -1403,13 +1403,37 @@ export class HarpnotesLayout {
   private _resolveJumplineDistance(goto: Goto, conf: Confstack): number {
     const confKey = goto.confKey ?? goto.policy?.confKey
     if (confKey) {
+      // 1) Exact match with extract prefix (standard path)
       const configuredDistance = conf.get(`extract.${confKey}`) ?? conf.get(confKey)
       if (typeof configuredDistance === 'number') return configuredDistance
 
-      const legacyKey = confKey.replace(/(.*)\.(\d+)\.(\d+)\.(\w+)$/, '$1.$2.$4')
-      if (legacyKey !== confKey) {
-        const legacyConfiguredDistance = conf.get(`extract.${legacyKey}`) ?? conf.get(legacyKey)
-        if (typeof legacyConfiguredDistance === 'number') return legacyConfiguredDistance
+      // 2) Time-independent match: search for suffix under voice-key subtree.
+      //    Legacy config stores time-specific overrides per voice, e.g.:
+      //      notebound.c_jumplines.v_1.26880.p_follow: -3
+      //    The confKey uses the source entity's time (e.g., 33408), which may
+      //    differ from the legacy time due to abc2svg version differences.
+      //    Extract the voice-key prefix and the suffix, then search all time
+      //    sub-keys for a matching entry.
+      //
+      //    confKey pattern: <prefix>.v_<voice>.<time>.<suffix>
+      //    Example: notebound.c_jumplines.v_1.33408.p_follow
+      //      → voicePath: notebound.c_jumplines.v_1
+      //      → suffix:    p_follow
+      const match = confKey.match(/^(.+\.v_\d+)\.(\d+)\.(\w+)$/)
+      if (match) {
+        const voicePath = match[1]
+        const suffix = match[3]
+        if (voicePath !== undefined && suffix !== undefined) {
+          const voiceConfig = conf.get(`extract.${voicePath}`) ?? conf.get(voicePath)
+          if (voiceConfig && typeof voiceConfig === 'object') {
+            for (const timeValue of Object.values(voiceConfig as Record<string, unknown>)) {
+              if (timeValue && typeof timeValue === 'object') {
+                const nested = (timeValue as Record<string, unknown>)[suffix]
+                if (typeof nested === 'number') return nested
+              }
+            }
+          }
+        }
       }
     }
 

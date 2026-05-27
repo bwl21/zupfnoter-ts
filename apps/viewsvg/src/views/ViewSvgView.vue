@@ -430,18 +430,21 @@ function getTrimmedAttribute(element: Element, attributeName: string): string | 
 }
 
 function buildSelectionInfo(source: SvgSource, element: Element): SvgSelectionInfo | null {
-  const role = element.getAttribute('data-role')?.trim() ?? ''
-  const type = element.getAttribute('data-type')?.trim() ?? ''
-  const anchor = element.getAttribute('data-anchor')?.trim() ?? ''
-  const anchorKey = element.getAttribute('data-anchor-key')?.trim() ?? ''
-  const indexValue = element.getAttribute('data-index')?.trim() ?? ''
+  const semanticSourceElement = findSemanticSourceElement(element)
+  const semanticElement = semanticSourceElement ?? element
+
+  const role = getTrimmedAttributeUpTree(element, 'data-role') ?? ''
+  const type = getTrimmedAttributeUpTree(element, 'data-type') ?? ''
+  const anchor = getTrimmedAttributeUpTree(element, 'data-anchor') ?? ''
+  const anchorKey = getTrimmedAttributeUpTree(element, 'data-anchor-key') ?? ''
+  const indexValue = getTrimmedAttributeUpTree(element, 'data-index') ?? ''
   const index = Number.parseInt(indexValue, 10)
   if (role === '' || type === '' || anchor === '' || anchorKey === '' || !Number.isInteger(index)) return null
 
   const elementId = getTrimmedAttribute(element, 'id')
   const className = getTrimmedAttribute(element, 'class')
-  const confKey = getTrimmedAttribute(element, 'data-conf-key')
-  const znId = getTrimmedAttribute(element, 'data-zn-id')
+  const confKey = getTrimmedAttributeUpTree(element, 'data-conf-key')
+  const znId = getTrimmedAttributeUpTree(element, 'data-zn-id')
 
   return {
     source,
@@ -457,7 +460,7 @@ function buildSelectionInfo(source: SvgSource, element: Element): SvgSelectionIn
     znId,
     selectorCandidates: buildSelectionSelectors({
       source,
-      tagName: element.tagName.toLowerCase(),
+      tagName: semanticElement.tagName.toLowerCase(),
       role,
       type,
       anchor,
@@ -470,6 +473,35 @@ function buildSelectionInfo(source: SvgSource, element: Element): SvgSelectionIn
       selectorCandidates: [],
     }),
   }
+}
+
+function getTrimmedAttributeUpTree(element: Element, attributeName: string): string | null {
+  let current: Element | null = element
+  while (current !== null) {
+    const value = current.getAttribute(attributeName)?.trim() ?? ''
+    if (value.length > 0) return value
+    current = current.parentElement
+  }
+  return null
+}
+
+function findSemanticSourceElement(element: Element): Element | null {
+  let current: Element | null = element
+  while (current !== null) {
+    if (
+      getTrimmedAttribute(current, 'data-role') !== null ||
+      getTrimmedAttribute(current, 'data-type') !== null ||
+      getTrimmedAttribute(current, 'data-anchor') !== null ||
+      getTrimmedAttribute(current, 'data-anchor-key') !== null ||
+      getTrimmedAttribute(current, 'data-index') !== null ||
+      getTrimmedAttribute(current, 'data-conf-key') !== null ||
+      getTrimmedAttribute(current, 'data-zn-id') !== null
+    ) {
+      return current
+    }
+    current = current.parentElement
+  }
+  return null
 }
 
 function buildSelectionSelectors(selection: SvgSelectionInfo): string[] {
