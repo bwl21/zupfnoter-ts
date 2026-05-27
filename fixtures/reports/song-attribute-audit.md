@@ -6,7 +6,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 246_Horch-was-kommt-von-draussen-rein
 
-- Issues: 714
+- Issues: 708
 - voices[0].entities[0].prevPitch (missing)
   - expected: 79
   - actual: undefined
@@ -718,12 +718,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[118].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[124].confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_1.26880.p_follow"
-  - actual: "notebound.c_jumplines.v_1.33408.p_follow"
-- voices[0].entities[124].policy.confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_1.26880.p_follow"
-  - actual: "notebound.c_jumplines.v_1.33408.p_follow"
 - voices[1].entities[0].prevPitch (missing)
   - expected: 79
   - actual: undefined
@@ -1435,12 +1429,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[118].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[124].confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_1.26880.p_follow"
-  - actual: "notebound.c_jumplines.v_1.33408.p_follow"
-- voices[1].entities[124].policy.confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_1.26880.p_follow"
-  - actual: "notebound.c_jumplines.v_1.33408.p_follow"
 - voices[2].entities[0].prevPitch (missing)
   - expected: 67
   - actual: undefined
@@ -2143,16 +2131,10 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[2].entities[117].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[2].entities[121].confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_2.27264.p_follow"
-  - actual: "notebound.c_jumplines.v_2.33024.p_follow"
-- voices[2].entities[121].policy.confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_2.27264.p_follow"
-  - actual: "notebound.c_jumplines.v_2.33024.p_follow"
 
 ## 3015_reference_sheet
 
-- Issues: 160
+- Issues: 158
 - voices[0].entities[0].prevPitch (missing)
   - expected: 67
   - actual: undefined
@@ -2620,19 +2602,13 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[3].entities[25].confKey (mismatch)
   - expected: "notebound.c_jumplines.v_3.2976.p_end"
-  - actual: "notebound.c_jumplines.v_3.4224.p_follow"
+  - actual: "notebound.c_jumplines.v_3.2976.p_follow"
 - voices[3].entities[25].policy.confKey (mismatch)
   - expected: "notebound.c_jumplines.v_3.2976.p_end"
-  - actual: "notebound.c_jumplines.v_3.4224.p_follow"
+  - actual: "notebound.c_jumplines.v_3.2976.p_follow"
 - voices[3].entities[25].policy.distance (mismatch)
   - expected: 2
   - actual: -2
-- voices[3].entities[26].confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_3.2976.p_follow"
-  - actual: "notebound.c_jumplines.v_3.4992.p_follow"
-- voices[3].entities[26].policy.confKey (mismatch)
-  - expected: "notebound.c_jumplines.v_3.2976.p_follow"
-  - actual: "notebound.c_jumplines.v_3.4992.p_follow"
 
 ## 783_einsiedler-kreuzweg
 

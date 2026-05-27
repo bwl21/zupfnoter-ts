@@ -846,6 +846,13 @@ export class AbcToSong {
       ? [...state.pendingVariantExitSources]
       : []
 
+    // Legacy verwendet die znId des ersten rbstop der Variantengruppe
+    // (variantAnchor) als Zeit im confKey für p_follow gotos, nicht die Zeit
+    // des exit-source.  Siehe abc2svg_to_harpnotes.rb Zeile 777-778:
+    //   entity = variant_ending_group.first[:rbstop]
+    //   conf_base = "notebound.c_jumplines.#{voice_id}.#{entity.znid}"
+    const variantAnchorTime = state.variantAnchor?.znId ?? state.variantAnchor?.time
+
     if (exitSources.length > 0) {
       state.pendingVariantExitSources = []
       state.awaitingVariantContinuation = false
@@ -908,11 +915,11 @@ export class AbcToSong {
         visible: true,
         variant: 0,
         znId: `goto-${voiceIndex}-${sym.istart}-${state.pendingVariantEntryIndex}`,
-        confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.p_follow`,
+        confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${variantAnchorTime ?? resolvedSource.time}.p_follow`,
         from: resolvedSource,
         to: target,
         policy: {
-          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.p_follow`,
+          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${variantAnchorTime ?? resolvedSource.time}.p_follow`,
           distance: exit.distances?.[2] ?? currentGotoDistances?.[2],
           isRepeat: true,
           fromAnchor: 'after',
