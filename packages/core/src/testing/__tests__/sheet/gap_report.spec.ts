@@ -18,7 +18,7 @@ import {
   renderStageReport,
   type DetectedFailureWithDetails,
 } from '../../gapReporting.js'
-import { getOpenImplementations } from '../../../../../../fixtures/openImplementations.js'
+import { getOpenImplementations } from '../../openImplementations.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const MARKDOWN_REPORT_PATH = resolve(

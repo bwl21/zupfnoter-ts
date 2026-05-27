@@ -17,7 +17,7 @@ import { describe, it, expect } from 'vitest'
 
 import { matchSong, formatMismatches, normalizeRawSongFixture } from '../../semanticMatch.js'
 import { loadFixture, scanFixtureCases, transformFixtureToSong } from '../../fixtureLoader.js'
-import { formatOpenImplementations, getOpenImplementations } from '../../../../../../fixtures/openImplementations.js'
+import { formatOpenImplementations, getOpenImplementations } from '../../openImplementations.js'
 
 const SONG_FIXTURES = scanFixtureCases().filter((testCase) => testCase.hasSongFixture)
 

@@ -11,7 +11,7 @@ import {
   coversDetectedFailure,
   type DetectedFailure,
   type OpenImplementation,
-} from '../../../../fixtures/openImplementations.js'
+} from './openImplementations.js'
 
 export interface DetectedFailureWithDetails extends DetectedFailure {
   mismatchSummary: string

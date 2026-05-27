@@ -15,7 +15,7 @@ import {
 } from '../fixtureLoader.js'
 import { normalizeRawSongFixture } from '../semanticMatch.js'
 import { defaultTestConfig } from '../defaultConfig.js'
-import { formatOpenImplementations, getOpenImplementations } from '../../../../../fixtures/openImplementations.js'
+import { formatOpenImplementations, getOpenImplementations } from '../openImplementations.js'
 
 describe('fixtureLoader', () => {
   it('resolves fixture ABC paths by test case name', () => {
