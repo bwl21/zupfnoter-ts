@@ -268,24 +268,15 @@ onBeforeUnmount(() => {
               v-html="tsSvgMarkup"
             />
           </div>
-          <button
-            type="button"
-            class="viewsvg-blink__badge"
-            @click="toggleBlinkVisible"
-          >
-            <span>{{ visibleBlinkLabel }}</span>
-          </button>
           <div class="viewsvg-blink__legend" role="note" aria-label="Blink mode guide">
-            <span class="viewsvg-blink__legend-title">Blink</span>
-            <span class="viewsvg-blink__legend-item">
-              <span class="viewsvg-blink__swatch viewsvg-blink__swatch--legacy"></span>
-              Legacy
-            </span>
-            <span class="viewsvg-blink__legend-item">
-              <span class="viewsvg-blink__swatch viewsvg-blink__swatch--ts"></span>
-              TS
-            </span>
-            <span class="viewsvg-blink__legend-hint">Chip rechts oben schaltet um</span>
+            <button
+              type="button"
+              class="viewsvg-blink__toggle"
+              :class="{ 'is-legacy': blinkVisible === 'legacy', 'is-ts': blinkVisible === 'ts' }"
+              @click="toggleBlinkVisible"
+            >
+              {{ visibleBlinkLabel }}
+            </button>
           </div>
         </template>
         </div>
@@ -591,84 +582,47 @@ onBeforeUnmount(() => {
   opacity: 1;
 }
 
-.viewsvg-blink__badge {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 3;
-  display: inline-flex;
-  gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgba(15, 23, 42, 0.25);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.95);
-  color: #000000;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
-}
-
-.viewsvg-blink__badge:hover {
-  border-color: rgba(15, 23, 42, 0.5);
-  background: rgba(255, 255, 255, 1);
-}
-
 .viewsvg-blink__legend {
   position: absolute;
   left: 1rem;
   bottom: 1rem;
   z-index: 3;
   display: inline-flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.65rem;
-  max-width: calc(100% - 2rem);
-  padding: 0.55rem 0.75rem;
-  border: 1px solid rgba(15, 23, 42, 0.18);
-  border-radius: 999px;
+  padding: 0.55rem 0.65rem;
   background: rgba(255, 255, 255, 0.94);
   color: var(--viewsvg-text);
   font-size: 0.76rem;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  border-radius: 999px;
   box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
-  pointer-events: none;
+  pointer-events: auto;
 }
 
-.viewsvg-blink__legend-title {
-  color: var(--viewsvg-subtext);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.viewsvg-blink__legend-item {
+.viewsvg-blink__toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  font-weight: 600;
-}
-
-.viewsvg-blink__legend-hint {
-  color: var(--viewsvg-subtext);
-}
-
-.viewsvg-blink__swatch {
-  width: 0.85rem;
-  height: 0.85rem;
-  border: 1px solid rgba(15, 23, 42, 0.35);
-  border-radius: 0.25rem;
+  gap: 0.45rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid rgba(15, 23, 42, 0.24);
+  border-radius: 999px;
   background: #ffffff;
+  color: #000000;
+  font-size: 0.76rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
 }
 
-.viewsvg-blink__swatch--legacy {
-  box-shadow: inset 0 0 0 1px #000000;
+.viewsvg-blink__toggle:hover {
+  border-color: rgba(15, 23, 42, 0.5);
+  background: rgba(255, 255, 255, 1);
 }
 
-.viewsvg-blink__swatch--ts {
-  border-style: dashed;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.55);
+.viewsvg-blink__toggle.is-legacy,
+.viewsvg-blink__toggle.is-ts {
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04);
 }
 
 :deep(.viewsvg-surface) {
