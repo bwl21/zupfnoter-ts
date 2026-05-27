@@ -4,7 +4,11 @@
     {"type":"FlowLine","style":"solid","color":"black"},
     {"type":"FlowLine","style":"solid","color":"black"},
     {"type":"FlowLine","style":"solid","color":"black"},
-    {"type":"Path","color":"black"},
+    {
+      "type"   :"Path",
+      "color"  :"black",
+      "confKey":"extract.0.notebound.tuplet.v_1.0.*"
+    },
     {
       "type"  :"Annotation",
       "center":[84.2852,13.335],
@@ -69,7 +73,7 @@
     {
       "type"  :"Annotation",
       "center":[150,289],
-      "text"  :" - created 2026-05-27 10:20:20 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]",
+      "text"  :" - created 2026-05-27 19:55:05 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]",
       "style" :"smaller",
       "color" :"black"
     },

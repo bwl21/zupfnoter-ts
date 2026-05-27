@@ -468,7 +468,7 @@ export class HarpnotesLayout {
     const resImages = this._layoutImages(conf, extractNr)
 
     // 2. Voices (notes, pauses, flowlines, gotos, tuplets, barnumbers)
-    const { activeVoices, voiceElements, beatMaps } = this._layoutVoices(song, conf)
+    const { activeVoices, voiceElements, beatMaps } = this._layoutVoices(song, extractNr, conf)
 
     // 3. Synchlines
     const resSynchLines = this._layoutSynchLines(song, beatMaps, conf, activeVoices)
@@ -524,6 +524,7 @@ export class HarpnotesLayout {
 
   private _layoutVoices(
     song: Song,
+    extractNr: number | string,
     conf: Confstack,
   ): { activeVoices: number[]; voiceElements: DrawableElement[]; beatMaps: Map<number, BeatCompressionMap> } {
     const layout = conf.get('layout') as LayoutConfig
@@ -568,6 +569,7 @@ export class HarpnotesLayout {
         voice,
         beatCompressionMap,
         voiceNr,
+        extractNr,
         conf,
         layout,
         startpos,
@@ -657,6 +659,7 @@ export class HarpnotesLayout {
     voice: Voice,
     beatMap: BeatCompressionMap,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
     layout: LayoutConfig,
     startpos: number,
@@ -736,6 +739,7 @@ export class HarpnotesLayout {
         layout,
         startpos,
         voiceNr,
+        extractNr,
         conf,
         'solid',
         visibleByPlayable,
@@ -748,6 +752,7 @@ export class HarpnotesLayout {
         layout,
         startpos,
         voiceNr,
+        extractNr,
         conf,
         'dotted',
         visibleByPlayable,
@@ -758,11 +763,11 @@ export class HarpnotesLayout {
 
     // Gotos (jumplines)
     const gotos = showJumplines
-      ? this._layoutVoiceGotos(voice, beatMap, layout, startpos, repeatSignVoices.has(voiceNr), conf)
+      ? this._layoutVoiceGotos(voice, beatMap, layout, startpos, repeatSignVoices.has(voiceNr), extractNr, conf)
       : []
 
     // Tuplets
-    result.push(...this._layoutVoiceTuplets(voice, beatMap, layout, startpos, voiceNr, conf))
+    result.push(...this._layoutVoiceTuplets(voice, beatMap, layout, startpos, voiceNr, extractNr, conf))
     result.push(...playableElements)
 
     const { barnumberBackgrounds, barnumbers, countnoteBackgrounds, countnotes } = this._layoutBarnumbersCountnotes(
@@ -1125,6 +1130,7 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
     style: 'solid' | 'dotted',
     visibleByPlayable: Map<PlayableEntity, boolean>,
@@ -1163,6 +1169,7 @@ export class HarpnotesLayout {
               fill: false,
               color: layout.color.color_default,
               lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
+              confKey: `extract.${extractNr}.notebound.flowline.v_${voiceNr}.${curr.znId}.*`,
               visible,
               znId: curr.znId,
             })
@@ -1245,6 +1252,7 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     hideRepeatGotos: boolean,
+    extractNr: number | string,
     conf: Confstack,
   ): Path[] {
     const result: Path[] = []
@@ -1258,7 +1266,7 @@ export class HarpnotesLayout {
       const toNote = goto.to
       if (!fromNote || !toNote) continue
 
-      const paths = this._makeLegacyJumplinePaths(goto, fromNote, toNote, beatMap, layout, startpos, conf)
+      const paths = this._makeLegacyJumplinePaths(goto, fromNote, toNote, beatMap, layout, startpos, extractNr, conf)
       result.push(...paths)
     }
 
@@ -1272,6 +1280,7 @@ export class HarpnotesLayout {
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
+    extractNr: number | string,
     conf: Confstack,
   ): Path[] {
     let distance = this._resolveJumplineDistance(goto, conf)
@@ -1355,6 +1364,7 @@ export class HarpnotesLayout {
         `l${vcp2[0] - vcutArrow2[0]} ${vcp2[1] - vcutArrow2[1]}`,
         'z',
       ].join('')
+    const confKey = this._buildJumplineConfKey(extractNr, goto.confKey ?? goto.policy?.confKey)
 
     return [
       {
@@ -1364,6 +1374,7 @@ export class HarpnotesLayout {
         fill: false,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,
+        confKey,
         visible: true,
         znId: goto.znId,
       },
@@ -1378,6 +1389,7 @@ export class HarpnotesLayout {
         fill: true,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,
+        confKey,
         visible: true,
         znId: goto.znId,
       },
@@ -1394,6 +1406,7 @@ export class HarpnotesLayout {
         fill: true,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THICK,
+        confKey,
         visible: true,
         znId: goto.znId,
       },
@@ -1408,6 +1421,12 @@ export class HarpnotesLayout {
     }
 
     return goto.policy?.distance ?? 1
+  }
+
+  private _buildJumplineConfKey(extractNr: number | string, confKey: string | undefined): string | undefined {
+    if (confKey === undefined) return undefined
+    if (confKey.startsWith('extract.')) return confKey
+    return `extract.${extractNr}.${confKey}`
   }
 
   private _computeJumplineVerticalCut(
@@ -1430,6 +1449,7 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
   ): DrawableElement[] {
     const result: DrawableElement[] = []
@@ -1469,6 +1489,7 @@ export class HarpnotesLayout {
             fill: false,
             color: layout.color.color_default,
             lineWidth: layout.LINE_THIN,
+            confKey: `extract.${extractNr}.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}.*`,
             visible: true,
             znId: tupletStart.znId,
           })

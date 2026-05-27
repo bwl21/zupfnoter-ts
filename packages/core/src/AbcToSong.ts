@@ -895,7 +895,11 @@ export class AbcToSong {
       state.pendingVariantEntryIndex += 1
     }
 
-    for (const exit of exitSources) {
+    for (let index = 0; index < exitSources.length; index += 1) {
+      const exit = requireDefined(
+        exitSources[index],
+        `AbcToSong._resolvePendingVariantGotos(): missing exit source at index ${index}`,
+      )
       const resolvedSource = requireDefined(
         exit.source,
         `AbcToSong._resolvePendingVariantGotos(): missing exit source at index ${state.pendingVariantEntryIndex}`,
@@ -904,6 +908,7 @@ export class AbcToSong {
         state.pendingVariantEntryIndex += 1
         continue
       }
+      const suffix = index < exitSources.length - 1 ? 'p_end' : 'p_follow'
       state.deferredJumplines.push({
         type: 'Goto' as const,
         beat: target.beat,
@@ -915,11 +920,11 @@ export class AbcToSong {
         visible: true,
         variant: 0,
         znId: `goto-${voiceIndex}-${sym.istart}-${state.pendingVariantEntryIndex}`,
-        confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${variantAnchorTime ?? resolvedSource.time}.p_follow`,
+        confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${variantAnchorTime ?? resolvedSource.time}.${suffix}`,
         from: resolvedSource,
         to: target,
         policy: {
-          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${variantAnchorTime ?? resolvedSource.time}.p_follow`,
+          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${variantAnchorTime ?? resolvedSource.time}.${suffix}`,
           distance: exit.distances?.[2] ?? currentGotoDistances?.[2],
           isRepeat: true,
           fromAnchor: 'after',

@@ -64,6 +64,32 @@ describe('semanticMatch', () => {
     expect(result.passed).toBe(true)
   })
 
+  it('matches path confKeys as part of sheet parity', () => {
+    const fixture: SheetFixture = {
+      children: [
+        {
+          type: 'Path',
+          path: [[0, 0], [1, 1]],
+          confKey: 'extract.0.notebound.flowline.v_1.123.*',
+        },
+      ],
+    }
+
+    const actual: SheetFixture = {
+      children: [
+        {
+          type: 'Path',
+          path: [[0, 0], [1, 1]],
+        },
+      ],
+    }
+
+    const result = matchSheet(actual, fixture)
+
+    expect(result.passed).toBe(false)
+    expect(result.mismatches[0]?.path).toBe('children[0].confKey')
+  })
+
   it('preserves znId during raw song normalization', () => {
     const raw = {
       meta_data: {},

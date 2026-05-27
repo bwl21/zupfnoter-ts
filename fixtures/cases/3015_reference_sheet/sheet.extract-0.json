@@ -240,7 +240,11 @@
       "glyphName":"rest_8",
       "color"    :"black"
     },
-    {"type":"Path","color":"black"},
+    {
+      "type"   :"Path",
+      "color"  :"black",
+      "confKey":"extract.0.notebound.c_jumplines.v_1.4224.p_repeat"
+    },
     {"type":"Path","color":"black"},
     {"type":"Path","color":"black"},
     {
@@ -502,7 +506,11 @@
     {"type":"FlowLine","style":"dotted","color":"black"},
     {"type":"FlowLine","style":"dotted","color":"black"},
     {"type":"Path","color":"black"},
-    {"type":"Path","color":"black"},
+    {
+      "type"   :"Path",
+      "color"  :"black",
+      "confKey":"extract.0.notebound.tuplet.v_2.1536.*"
+    },
     {
       "type"  :"Annotation",
       "center":[238.55,38.5],
@@ -1321,16 +1329,32 @@
       "glyphName":"fermata",
       "color"    :"black"
     },
+    {
+      "type"   :"Path",
+      "color"  :"black",
+      "confKey":"extract.0.notebound.c_jumplines.v_3.2976.0.p_begin"
+    },
     {"type":"Path","color":"black"},
     {"type":"Path","color":"black"},
+    {
+      "type"   :"Path",
+      "color"  :"black",
+      "confKey":"extract.0.notebound.c_jumplines.v_3.2976.1.p_begin"
+    },
     {"type":"Path","color":"black"},
     {"type":"Path","color":"black"},
+    {
+      "type"   :"Path",
+      "color"  :"black",
+      "confKey":"extract.0.notebound.c_jumplines.v_3.2976.p_end"
+    },
     {"type":"Path","color":"black"},
     {"type":"Path","color":"black"},
-    {"type":"Path","color":"black"},
-    {"type":"Path","color":"black"},
-    {"type":"Path","color":"black"},
-    {"type":"Path","color":"black"},
+    {
+      "type"   :"Path",
+      "color"  :"black",
+      "confKey":"extract.0.notebound.c_jumplines.v_3.2976.p_follow"
+    },
     {"type":"Path","color":"black"},
     {"type":"Path","color":"black"},
     {
@@ -1668,7 +1692,7 @@
     {
       "type"  :"Annotation",
       "center":[150,289],
-      "text"  :"3015_reference_sheet - created 2026-05-27 10:20:17 by Zupfnoter v1.17.1-14-g55c859b4 [zupfnoter-cli]",
+      "text"  :"3015_reference_sheet - created 2026-05-27 19:55:02 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]",
       "style" :"smaller",
       "color" :"black"
     },

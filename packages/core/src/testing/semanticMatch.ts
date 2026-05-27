@@ -78,6 +78,8 @@ export interface DrawableFixture {
   center?: [number, number]
   size?: [number, number]
   fill?: boolean
+  // Path
+  path?: [number, number][]
   confKey?: string
   lineWidth?: number
   visible?: boolean
@@ -395,7 +397,7 @@ function normalizeSheetText(text: string | undefined): string | undefined {
  * type, fill, color, style, glyphName, text are compared exactly.
  * The number of children must match exactly.
  *
- * Skipped: confKey, draginfo, internal references.
+ * Skipped: draginfo, internal references.
  */
 export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchResult {
   const mismatches: Mismatch[] = []
@@ -438,6 +440,11 @@ export function matchSheet(actual: SheetFixture, fixture: SheetFixture): MatchRe
     // style (exact)
     if (fc.style !== undefined && ac.style !== fc.style) {
       fail(mismatches, `${cPath}.style`, fc.style, ac.style)
+    }
+
+    // confKey (exact for Paths)
+    if (fc.type === 'Path' && fc.confKey !== undefined && ac.confKey !== fc.confKey) {
+      fail(mismatches, `${cPath}.confKey`, fc.confKey, ac.confKey)
     }
 
     // glyphName (exact)
