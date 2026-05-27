@@ -64,20 +64,22 @@ Branch `feature/voice-styles_and-other-concepts`) mit dem CLI-Modus
 Bequemer Wrapper aus diesem Repo:
 
 ```bash
-npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
+npm run test:loadsample
 ```
 
 Standardmäßig verwendet der Wrapper den Legacy-CLI-Pfad
-`../200_Zupfnotenprojekte/10_Harfenfreizeit-Monbachtal/zupfnoter-cli.min.js`
+`../200_zupfnoter/30_sources/SRC_Zupfnoter/src/zupfnoter-cli.js`
 relativ zum Repo-Root.
 
+Ohne Glob verwendet der Wrapper standardmäßig `fixtures/cases/*/input.abc`.
 Falls nötig kann der CLI-Pfad überschrieben werden, entweder per Environment oder
 als zweites Argument:
 
 ```bash
 export ZUPFNOTER_LEGACY_CLI=/pfad/zu/zupfnoter-cli.min.js
-npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
+npm run test:loadsample
 
+npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
 npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc" "/pfad/zu/zupfnoter-cli.min.js"
 ```
 
@@ -135,7 +137,7 @@ Der Legacy-Exporter nimmt ABC-Dateien und erzeugt pro Datei ein Testfall-Verzeic
 cd ../200_zupfnoter/30_sources/SRC_Zupfnoter/src
 node --max_old_space_size=4096 zupfnoter-cli.js \
   --export-fixtures \
-  "/path/to/zupfnoter-ts/fixtures/cases/*/input.abc" \
+  "/path/to/zupfnoter-ts/fixtures/cases/<test-case>/input.abc" \
   /path/to/zupfnoter-ts/fixtures/cases
 ```
 

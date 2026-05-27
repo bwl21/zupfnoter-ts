@@ -12,10 +12,13 @@ const defaultLegacyCliPath = resolve(
   repoRoot,
   '../200_zupfnoter/30_sources/SRC_Zupfnoter/src/zupfnoter-cli.js',
 )
+const defaultGlobPattern = 'fixtures/cases/*/input.abc'
 
 const usage = [
   'Usage:',
-  '  npm run test:loadsample -- "<glob>"',
+  '  npm run test:loadsample',
+  '  npm run test:recreateLegacy',
+  `  npm run test:loadsample -- "<glob>"  (default: ${defaultGlobPattern})`,
   '',
   `Default legacy CLI: ${defaultLegacyCliPath}`,
   '',
@@ -25,6 +28,7 @@ const usage = [
   '',
   'Optional positional arguments:',
   '  npm run test:loadsample -- "<glob>" "<legacy-cli-path>"',
+  '  npm run test:recreateLegacy -- "<legacy-cli-path>"',
 ].join('\n')
 
 function expandHome(pathValue) {
@@ -61,10 +65,11 @@ function printUsageAndExit(message, exitCode = 1) {
   process.exit(exitCode)
 }
 
-const [globPattern, cliArg] = process.argv.slice(2)
+const [globPatternArg, cliArg] = process.argv.slice(2)
+const globPattern = globPatternArg ?? defaultGlobPattern
 
-if (!globPattern || globPattern === '--help' || globPattern === '-h') {
-  printUsageAndExit(globPattern ? '' : 'Missing ABC glob pattern.', globPattern ? 0 : 1)
+if (globPatternArg === '--help' || globPatternArg === '-h') {
+  printUsageAndExit('', 0)
 }
 
 const legacyCliPath = resolveLegacyCliPath(cliArg)

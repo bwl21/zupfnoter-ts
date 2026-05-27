@@ -208,16 +208,17 @@ produktive Legacy-Pipeline aus und schreibt pro Testfall `input.abc`,
 `output.extract-<nr>.svg` in `fixtures/cases/<test-case>/`.
 
 ```bash
-npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
+npm run test:loadsample
 ```
 
-Der Wrapper expandiert den Glob lokal und ruft die Legacy-CLI pro Datei einzeln in
-dieser Form auf:
+Wenn ein Glob übergeben wird, expandiert der Wrapper ihn lokal und ruft die
+Legacy-CLI pro Datei einzeln in dieser Form auf:
 
 ```bash
 node zupfnoter-cli.min.js --export-fixtures <input.abc> <target-dir>
 ```
 
+Ohne Glob verwendet der Wrapper standardmäßig `fixtures/cases/*/input.abc`.
 Der Standardpfad zur Legacy-CLI ist im Wrapper relativ zum Repository hinterlegt.
 Details und Overrides stehen in `fixtures/README.md`.
 
@@ -300,7 +301,7 @@ pnpm --filter @zupfnoter/core run test:unit -- --update
 
 ### 5. Fixtures neu exportieren (nach Legacy-Änderung)
 
-Siehe `npm run test:loadsample -- "<glob>"` und die ausführliche Beschreibung in `fixtures/README.md`.
+Siehe `npm run test:loadsample` und die ausführliche Beschreibung in `fixtures/README.md`.
 
 ---
 

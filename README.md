@@ -67,7 +67,7 @@ pnpm lint
 Für Fixture- und Legacy-Vergleichsarbeit:
 
 ```sh
-npm run test:loadsample -- "<abc-glob>"
+npm run test:loadsample
 npm run test:gaps
 ```
 
