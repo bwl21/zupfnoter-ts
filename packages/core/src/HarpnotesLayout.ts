@@ -1948,14 +1948,20 @@ export class HarpnotesLayout {
     if (!notes) return result
 
     for (const [, entry] of this._sortSheetAnnotationEntries(notes)) {
-      const ann = entry as { pos?: [number, number]; text?: string; style?: string }
+      const ann = entry as { pos?: [number, number]; text?: string; style?: string; align?: string }
       if (!ann.pos || !ann.text) continue
+      const align: 'left' | 'right' | 'center' = ann.align === 'l'
+        ? 'right'
+        : ann.align === 'center'
+          ? 'center'
+          : 'left'
 
       result.push({
         type: 'Annotation',
         center: ann.pos,
         text: this._normalizeAnnotationText(this._resolveAnnotationPlaceholders(ann.text, metaData, conf, extractNr)),
         style: ann.style ?? 'regular',
+        align,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: true,
