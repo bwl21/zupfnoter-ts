@@ -71,7 +71,7 @@ const deviationOptions: Array<{ kind: DeviationKind; label: string }> = [
 const cases = ref<ViewSvgCaseDetails[]>([])
 const selectedCaseId = ref('')
 const selectedExtract = ref(0)
-const selectedMode = ref<Mode>('side-by-side')
+const selectedMode = ref<Mode>('blink')
 const swipePosition = ref(50)
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -546,6 +546,20 @@ function sourceLabel(source: SvgSource): string {
   return source === 'legacy' ? 'Legacy' : 'TS'
 }
 
+function nodeCategoryLabel(selection: SvgElementInfo | null): string {
+  if (selection === null) return '—'
+
+  const className = selection.className ?? ''
+  const role = selection.semantic?.role ?? ''
+  const type = selection.semantic?.type ?? ''
+
+  if (className.includes('zupfnoter-hitbox') || role === 'hitbox') return 'Hitbox'
+  if (className.includes('zupfnoter-role--barover') || role === 'barover') return 'Barover'
+  if (className.includes('zupfnoter-shape--glyph') || type === 'Glyph' || role === 'rest') return 'Glyph'
+  if (type.length > 0) return type
+  return selection.tagName
+}
+
 function deviationLabel(kind: DeviationKind): string {
   return deviationOptions.find((entry) => entry.kind === kind)?.label ?? 'Sonstiges'
 }
@@ -707,6 +721,7 @@ onBeforeUnmount(() => {
             <div class="viewsvg-prompt-meta">
               <div><strong>Quelle:</strong> {{ hoveredElement.source === 'legacy' ? 'Legacy' : 'TS' }}</div>
               <div><strong>Tag:</strong> {{ hoveredElement.tagName }}</div>
+              <div><strong>Knoten:</strong> {{ nodeCategoryLabel(hoveredElement) }}</div>
               <div><strong>ID:</strong> {{ hoveredElement.elementId ?? '—' }}</div>
               <div><strong>Klasse:</strong> {{ hoveredElement.className ?? '—' }}</div>
             </div>
@@ -740,6 +755,7 @@ onBeforeUnmount(() => {
           <div class="viewsvg-prompt-meta">
             <div><strong>Quelle:</strong> {{ selectedElement.source === 'legacy' ? 'Legacy' : 'TS' }}</div>
             <div><strong>Tag:</strong> {{ selectedElement.tagName }}</div>
+            <div><strong>Knoten:</strong> {{ nodeCategoryLabel(selectedElement) }}</div>
             <div><strong>ID:</strong> {{ selectedElement.elementId ?? '—' }}</div>
             <div><strong>Klasse:</strong> {{ selectedElement.className ?? '—' }}</div>
           </div>
