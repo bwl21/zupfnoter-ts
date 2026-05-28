@@ -85,6 +85,7 @@ const hoveredElement = ref<SvgElementInfo | null>(null)
 const selectedHighlight = ref<SelectionHighlight | null>(null)
 const promptFeedback = ref<string | null>(null)
 const hoverInspectorEnabled = ref(true)
+const hoveredDomClassName = 'viewsvg-hovered-element'
 const sidebarWidth = ref(360)
 let removeSidebarResizeListeners: (() => void) | null = null
 const legacySurfaceRef = ref<HTMLElement | null>(null)
@@ -292,15 +293,6 @@ function clearHoveredElement(): void {
   hoveredDomElement.value = null
 }
 
-async function useHoveredElement(): Promise<void> {
-  if (hoveredElement.value === null) return
-  selectedElement.value = hoveredElement.value
-  selectedDomElement.value = hoveredDomElement.value
-  promptFeedback.value = null
-  await nextTick()
-  refreshSelectionHighlight()
-}
-
 function findSvgElementAtPoint(surface: Element | null, event: MouseEvent): SVGElement | null {
   const directTarget = event.target
   if (directTarget instanceof SVGElement && directTarget.tagName.toLowerCase() !== 'svg') {
@@ -466,6 +458,11 @@ function buildElementInfo(source: SvgSource, element: Element): SvgElementInfo |
   }
 }
 
+function syncHoveredDomClass(previous: Element | null, next: Element | null): void {
+  if (previous !== null) previous.classList.remove(hoveredDomClassName)
+  if (next !== null) next.classList.add(hoveredDomClassName)
+}
+
 function readAttributes(element: Element): SvgAttributeInfo[] {
   return Array.from(element.attributes).map((attribute) => ({
     name: attribute.name,
@@ -608,6 +605,10 @@ function nodeCategoryLabel(selection: SvgElementInfo | null): string {
   if (type.length > 0) return type
   return selection.tagName
 }
+
+watch(hoveredDomElement, (next, previous) => {
+  syncHoveredDomClass(previous, next)
+})
 
 function deviationLabel(kind: DeviationKind): string {
   return deviationOptions.find((entry) => entry.kind === kind)?.label ?? 'Sonstiges'
@@ -753,14 +754,6 @@ onBeforeUnmount(() => {
         <section class="viewsvg-hover-inspector" :class="{ 'is-enabled': hoverInspectorEnabled }">
           <div class="viewsvg-panel__header viewsvg-panel__header--sub">
             <h3>Hover</h3>
-            <button
-              type="button"
-              class="viewsvg-prompt-button viewsvg-prompt-button--ghost"
-              :disabled="hoveredElement === null"
-              @click="useHoveredElement"
-            >
-              Übernehmen
-            </button>
           </div>
 
           <p v-if="hoverInspectorEnabled === false" class="viewsvg-hint">Hover-Inspector ist ausgeschaltet.</p>
@@ -1616,6 +1609,28 @@ onBeforeUnmount(() => {
 
 :deep(.viewsvg-surface .zupfnoter-hitbox) {
   cursor: crosshair;
+}
+
+:deep(.viewsvg-surface .viewsvg-hovered-element path),
+:deep(.viewsvg-surface .viewsvg-hovered-element line),
+:deep(.viewsvg-surface .viewsvg-hovered-element polyline),
+:deep(.viewsvg-surface .viewsvg-hovered-element polygon) {
+  stroke: #d97706 !important;
+  filter: drop-shadow(0 0 0.25rem rgba(217, 119, 6, 0.25));
+}
+
+:deep(.viewsvg-surface .viewsvg-hovered-element rect),
+:deep(.viewsvg-surface .viewsvg-hovered-element ellipse),
+:deep(.viewsvg-surface .viewsvg-hovered-element circle) {
+  stroke: #d97706 !important;
+  fill: rgba(217, 119, 6, 0.16) !important;
+  filter: drop-shadow(0 0 0.25rem rgba(217, 119, 6, 0.25));
+}
+
+:deep(.viewsvg-surface .viewsvg-hovered-element text),
+:deep(.viewsvg-surface .viewsvg-hovered-element tspan) {
+  fill: #d97706 !important;
+  filter: drop-shadow(0 0 0.2rem rgba(217, 119, 6, 0.25));
 }
 
 @media (max-width: 1180px) {
