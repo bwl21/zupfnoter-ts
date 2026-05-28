@@ -16,6 +16,12 @@ Diese Regeln steuern das Verhalten von Coding-Agents.
 - Bestehende Architektur respektieren
 - Bestehende Patterns beibehalten
 
+### Kurzregel für Fix-Trennung
+
+1. Erst Ursache im relevanten Artefakt belegen.
+2. Nur dann trennen, wenn der Teil fachlich unabhängig ist.
+3. Ohne Beleg bleibt der Block zusammen.
+
 ### Verboten
 
 - Kein `any` ohne Begründung
