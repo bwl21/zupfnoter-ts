@@ -985,57 +985,40 @@ export class AbcToSong {
         state.deferredChords.push(chord)
         continue
       }
-      if (extra.type === '^' && (trimmedText.startsWith('|') || trimmedText.startsWith(':|'))) {
+      if (extra.type !== '^') {
         continue
       }
 
-      if (extra.type === '^' && companion.type !== 'Pause' && /^[!#<>]/.test(text.trim())) {
-        const parsedAnnotation = this._parseInlineAnnotation(text, voiceId, companion.time, extraIndex)
-        if (!parsedAnnotation) continue
-
-        const annotation: NoteBoundAnnotation = {
-          type: 'NoteBoundAnnotation' as const,
-          beat: this._timeToBeat(sym.time),
-          time: sym.time,
-          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
-          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
-          decorations: [],
-          barDecorations: [],
-          visible: true,
-          variant: 0,
-          znId: `annot-${voiceIndex}-${sym.istart}`,
-          companion,
-          text: parsedAnnotation.text,
-          position: parsedAnnotation.position,
-          style: parsedAnnotation.style,
-          policy: parsedAnnotation.policy,
-          confKey: parsedAnnotation.confKey,
-        }
-        state.deferredNoteboundAnnotations.push(annotation)
-      } else {
-        const parsedAnnotation = this._parseInlineAnnotation(text, voiceId, companion.time, extraIndex)
-        if (!parsedAnnotation) continue
-
-        const annotation: NoteBoundAnnotation = {
-          type: 'NoteBoundAnnotation' as const,
-          beat: this._timeToBeat(sym.time),
-          time: sym.time,
-          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
-          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
-          decorations: [],
-          barDecorations: [],
-          visible: true,
-          variant: 0,
-          znId: `annot-${voiceIndex}-${sym.istart}`,
-          companion,
-          text: parsedAnnotation.text,
-          position: parsedAnnotation.position,
-          style: parsedAnnotation.style,
-          policy: parsedAnnotation.policy,
-          confKey: parsedAnnotation.confKey,
-        }
-        state.deferredNoteboundAnnotations.push(annotation)
+      if (trimmedText.startsWith('|') || trimmedText.startsWith(':|')) {
+        continue
       }
+
+      if (companion.type === 'Pause' || !/^[!#<>]/.test(text.trim())) {
+        continue
+      }
+
+      const parsedAnnotation = this._parseInlineAnnotation(text, voiceId, companion.time, extraIndex)
+      if (!parsedAnnotation) continue
+
+      const annotation: NoteBoundAnnotation = {
+        type: 'NoteBoundAnnotation' as const,
+        beat: this._timeToBeat(sym.time),
+        time: sym.time,
+        startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+        endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+        decorations: [],
+        barDecorations: [],
+        visible: true,
+        variant: 0,
+        znId: `annot-${voiceIndex}-${sym.istart}`,
+        companion,
+        text: parsedAnnotation.text,
+        position: parsedAnnotation.position,
+        style: parsedAnnotation.style,
+        policy: parsedAnnotation.policy,
+        confKey: parsedAnnotation.confKey,
+      }
+      state.deferredNoteboundAnnotations.push(annotation)
     }
   }
 
