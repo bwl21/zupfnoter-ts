@@ -25,11 +25,47 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
       18,
     ],
     "color": "black",
-    "confKey": undefined,
+    "confKey": "extract.0.notebound.nconf.v_1.t_0.n_0.***",
     "dotted": false,
     "fill": "filled",
     "hasbarover": false,
     "lineWidth": 0.5,
+    "more_conf_keys": [
+      {
+        "conf_key": "extract.0.notebound.nconf.v_1.t_0.n_0.nshift",
+        "icon": "fa fa-arrow-left",
+        "text": "shift left",
+        "value": -0.5,
+      },
+      {
+        "conf_key": "extract.0.notebound.nconf.v_1.t_0.n_0.nshift",
+        "icon": "fa fa-arrow-right",
+        "text": "shift right",
+        "value": 0.5,
+      },
+      {
+        "icon": "fa fa-arrows-v",
+        "text": "---",
+        "value": 0.5,
+      },
+      {
+        "conf_key": "extract.0.notebound.minc.0.minc_f",
+        "icon": "fa fa-arrows-v",
+        "text": "Edit Minc",
+      },
+      {
+        "conf_key": "extract.0.notebound.minc.0.minc_f",
+        "icon": "fa fa-arrow-down",
+        "text": "increase Minc",
+        "value": 0.5,
+      },
+      {
+        "conf_key": "extract.0.notebound.minc.0.minc_f",
+        "icon": "fa fa-arrow-up",
+        "text": "decrease Minc",
+        "value": -0.5,
+      },
+    ],
     "origin": {
       "barDecorations": [],
       "beat": 0,
