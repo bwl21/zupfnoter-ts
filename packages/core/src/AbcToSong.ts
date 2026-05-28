@@ -1095,10 +1095,10 @@ export class AbcToSong {
     const tempoDisplay = parsedBpm ? rawQ : (rawQ ? `${rawQ}=${tempo.bpm}` : '1/4=120')
 
     return {
-      title: info['T']?.split('\n')[0],
-      composer: info['C']?.split('\n')[0] ?? '',
+      title: info['T']?.split('\n').join('\n'),
+      composer: info['C']?.split('\n').join('\n') ?? '',
       number: info['X']?.split('\n')[0],
-      filename: info['F']?.split('\n')[0] ?? '',
+      filename: info['F']?.split('\n').join('\n') ?? '',
       meter: info['M']?.split('\n').filter(Boolean) ?? undefined,
       key: effectiveKey,
       o_key: oKey,
