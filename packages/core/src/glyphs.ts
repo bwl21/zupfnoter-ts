@@ -82,8 +82,8 @@ export const GLYPHS: Record<string, GlyphDef> = {
 
   /** Error glyph — rendered when glyphName is unknown. */
   error: {
-    d: 'M-5,-5 l10,0 l0,10 l-10,0 z M-5,-5 l10,10 M5,-5 l-10,10',
-    w: 10,
+    d: 'M-10,-5 l0,10 l20,-10 l0,10 z',
+    w: 20,
     h: 10,
   },
 }
