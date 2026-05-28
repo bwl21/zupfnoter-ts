@@ -279,10 +279,13 @@ function parseStringNamesText(text: string | undefined): string[] {
 function makeSheetmarkPath(center: [number, number]): [number, number][] {
   const [x, y] = center
   return [
-    [x, y],
-    [x - 1, y + 4],
-    [x + 1, y + 4],
-    [x, y],
+    [x - 0.5, y - 2.5],
+    [x, y - 3.5],
+    [x + 0.5, y - 2.5],
+    [x + 0.5, y + 2.5],
+    [x, y + 3.5],
+    [x - 0.5, y + 2.5],
+    [x - 0.5, y - 2.5],
   ]
 }
 

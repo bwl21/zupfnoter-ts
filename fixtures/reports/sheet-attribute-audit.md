@@ -8883,7 +8883,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[1246].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[1247].fill (extra)
   - expected: undefined
   - actual: true
@@ -8892,7 +8892,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[1247].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[1248].fill (extra)
   - expected: undefined
   - actual: true
@@ -8901,7 +8901,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[1248].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 - children[1249].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -10552,7 +10552,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[285].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[286].fill (extra)
   - expected: undefined
   - actual: true
@@ -10561,7 +10561,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[286].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[287].fill (extra)
   - expected: undefined
   - actual: true
@@ -10570,7 +10570,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[287].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 - children[288].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -13856,7 +13856,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[479].path (mismatch)
   - expected: [["M",2.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,290],[1.7999999999999998,294],[3.8,294],[2.8,290]]
+  - actual: [[2.3,287.5],[2.8,286.5],[3.3,287.5],[3.3,292.5],[2.8,293.5],[2.3,292.5],[2.3,287.5]]
 - children[480].fill (extra)
   - expected: undefined
   - actual: true
@@ -13865,7 +13865,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[480].path (mismatch)
   - expected: [["M",140.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,290],[139.8,294],[141.8,294],[140.8,290]]
+  - actual: [[140.3,287.5],[140.8,286.5],[141.3,287.5],[141.3,292.5],[140.8,293.5],[140.3,292.5],[140.3,287.5]]
 - children[481].fill (extra)
   - expected: undefined
   - actual: true
@@ -13874,7 +13874,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[481].path (mismatch)
   - expected: [["M",416.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,290],[415.8,294],[417.8,294],[416.8,290]]
+  - actual: [[416.3,287.5],[416.8,286.5],[417.3,287.5],[417.3,292.5],[416.8,293.5],[416.3,292.5],[416.3,287.5]]
 - children[482].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -17172,7 +17172,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[479].path (mismatch)
   - expected: [["M",140.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,290],[139.8,294],[141.8,294],[140.8,290]]
+  - actual: [[140.3,287.5],[140.8,286.5],[141.3,287.5],[141.3,292.5],[140.8,293.5],[140.3,292.5],[140.3,287.5]]
 - children[480].fill (extra)
   - expected: undefined
   - actual: true
@@ -17181,7 +17181,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[480].path (mismatch)
   - expected: [["M",416.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,290],[415.8,294],[417.8,294],[416.8,290]]
+  - actual: [[416.3,287.5],[416.8,286.5],[417.3,287.5],[417.3,292.5],[416.8,293.5],[416.3,292.5],[416.3,287.5]]
 - children[481].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -18964,7 +18964,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[253].path (mismatch)
   - expected: [["M",140.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,290],[139.8,294],[141.8,294],[140.8,290]]
+  - actual: [[140.3,287.5],[140.8,286.5],[141.3,287.5],[141.3,292.5],[140.8,293.5],[140.3,292.5],[140.3,287.5]]
 - children[254].fill (extra)
   - expected: undefined
   - actual: true
@@ -18973,7 +18973,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[254].path (mismatch)
   - expected: [["M",416.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,290],[415.8,294],[417.8,294],[416.8,290]]
+  - actual: [[416.3,287.5],[416.8,286.5],[417.3,287.5],[417.3,292.5],[416.8,293.5],[416.3,292.5],[416.3,287.5]]
 - children[255].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -19205,7 +19205,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[18].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[19].fill (extra)
   - expected: undefined
   - actual: true
@@ -19214,7 +19214,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[19].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[20].fill (extra)
   - expected: undefined
   - actual: true
@@ -19223,7 +19223,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[20].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
 ## decoration [extract 0]
 
@@ -19323,7 +19323,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[18].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[19].fill (extra)
   - expected: undefined
   - actual: true
@@ -19332,7 +19332,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[19].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[20].fill (extra)
   - expected: undefined
   - actual: true
@@ -19341,7 +19341,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[20].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
 ## lyrics [extract 0]
 
@@ -19417,7 +19417,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[13].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[14].fill (extra)
   - expected: undefined
   - actual: true
@@ -19426,7 +19426,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[14].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[15].fill (extra)
   - expected: undefined
   - actual: true
@@ -19435,7 +19435,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[15].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
 ## pause [extract 0]
 
@@ -19556,7 +19556,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[16].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[17].fill (extra)
   - expected: undefined
   - actual: true
@@ -19565,7 +19565,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[17].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
@@ -19574,7 +19574,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[18].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
 ## repeat [extract 0]
 
@@ -19683,7 +19683,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[16].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[17].fill (extra)
   - expected: undefined
   - actual: true
@@ -19692,7 +19692,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[17].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
@@ -19701,7 +19701,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[18].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
 ## single_note [extract 0]
 
@@ -19729,7 +19729,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[6].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[7].fill (extra)
   - expected: undefined
   - actual: true
@@ -19738,7 +19738,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[7].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[8].fill (extra)
   - expected: undefined
   - actual: true
@@ -19747,7 +19747,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[8].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
 ## tie [extract 0]
 
@@ -19832,7 +19832,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[14].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[15].fill (extra)
   - expected: undefined
   - actual: true
@@ -19841,7 +19841,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[15].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[16].fill (extra)
   - expected: undefined
   - actual: true
@@ -19850,7 +19850,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[16].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
 ## tuplet [extract 0]
 
@@ -19959,7 +19959,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[16].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[17].fill (extra)
   - expected: undefined
   - actual: true
@@ -19968,7 +19968,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[17].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[18].fill (extra)
   - expected: undefined
   - actual: true
@@ -19977,7 +19977,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[18].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
 ## two_voices [extract 0]
 
@@ -20104,7 +20104,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[22].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[23].fill (extra)
   - expected: undefined
   - actual: true
@@ -20113,7 +20113,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[23].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[24].fill (extra)
   - expected: undefined
   - actual: true
@@ -20122,7 +20122,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[24].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
 ## Twostaff [extract 0]
 
@@ -21221,7 +21221,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[157].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.8,11],[1.7999999999999998,15],[3.8,15],[2.8,11]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
 - children[158].fill (extra)
   - expected: undefined
   - actual: true
@@ -21230,7 +21230,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[158].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.8,11],[139.8,15],[141.8,15],[140.8,11]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
 - children[159].fill (extra)
   - expected: undefined
   - actual: true
@@ -21239,5 +21239,5 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "black"
 - children[159].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.8,11],[415.8,15],[417.8,15],[416.8,11]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
