@@ -302,6 +302,11 @@ async function useHoveredElement(): Promise<void> {
 }
 
 function findSvgElementAtPoint(surface: Element | null, event: MouseEvent): SVGElement | null {
+  const directTarget = event.target
+  if (directTarget instanceof SVGElement && directTarget.tagName.toLowerCase() !== 'svg') {
+    if (surface === null || surface.contains(directTarget)) return directTarget
+  }
+
   if (surface !== null) {
     const elements = document.elementsFromPoint(event.clientX, event.clientY)
     for (const entry of elements) {
@@ -326,7 +331,51 @@ function findSvgElementAtPoint(surface: Element | null, event: MouseEvent): SVGE
     return entry
   }
 
+  const geometryTarget = findSvgGeometryElementAtPoint(surface, event)
+  if (geometryTarget !== null) return geometryTarget
+
   return null
+}
+
+function findSvgGeometryElementAtPoint(surface: Element | null, event: MouseEvent): SVGElement | null {
+  const rootSvg = getRootSvgElement(surface)
+  if (rootSvg === null) return null
+
+  const candidates = Array.from(surface?.querySelectorAll('path, line, polyline, polygon, rect, circle, ellipse') ?? [])
+  for (let index = candidates.length - 1; index >= 0; index -= 1) {
+    const candidate = candidates[index]
+    if (!(candidate instanceof SVGGraphicsElement)) continue
+    if (isVisibleSvgElement(candidate) === false) continue
+
+    const screenCtm = candidate.getScreenCTM()
+    if (screenCtm === null) continue
+
+    const localPoint = new DOMPoint(event.clientX, event.clientY).matrixTransform(screenCtm.inverse())
+    const geometryCandidate = candidate as unknown as SVGGeometryElement
+
+    if (typeof geometryCandidate.isPointInStroke === 'function' && geometryCandidate.isPointInStroke(localPoint)) {
+      return candidate
+    }
+
+    if (typeof geometryCandidate.isPointInFill === 'function' && geometryCandidate.isPointInFill(localPoint)) {
+      return candidate
+    }
+  }
+
+  return null
+}
+
+function getRootSvgElement(surface: Element | null): SVGSVGElement | null {
+  if (surface instanceof SVGSVGElement) return surface
+  const svg = surface?.querySelector('svg') ?? null
+  return svg instanceof SVGSVGElement ? svg : null
+}
+
+function isVisibleSvgElement(element: SVGGraphicsElement): boolean {
+  const style = window.getComputedStyle(element)
+  if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') return false
+  if (style.opacity === '0') return false
+  return true
 }
 
 function getSurfaceElement(source: SvgSource): HTMLElement | null {
@@ -409,8 +458,8 @@ function buildElementInfo(source: SvgSource, element: Element): SvgElementInfo |
   return {
     source,
     tagName: element.tagName.toLowerCase(),
-    elementId: getTrimmedAttribute(element, 'id'),
-    className: getTrimmedAttribute(element, 'class'),
+    elementId: getTrimmedAttributeUpTree(element, 'id'),
+    className: getTrimmedAttributeUpTree(element, 'class'),
     attributes,
     dataAttributes,
     semantic: buildSelectionInfo(source, element),
@@ -1313,6 +1362,7 @@ onBeforeUnmount(() => {
 .viewsvg-blink .viewsvg-surface-host {
   position: absolute;
   inset: 0;
+  pointer-events: none;
 }
 
 .viewsvg-swipe,
@@ -1328,6 +1378,7 @@ onBeforeUnmount(() => {
   inset: 0;
   overflow: auto;
   padding: 1rem;
+  pointer-events: auto;
 }
 
 .viewsvg-swipe__layer--legacy {
