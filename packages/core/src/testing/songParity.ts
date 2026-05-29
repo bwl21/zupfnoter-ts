@@ -672,12 +672,12 @@ function normalizeRepeatInfo(event: Record<string, unknown>, source: SongParityS
   let hasValue = false
 
   const firstInPart = readBoolean(event.firstInPart)
-  if (firstInPart !== undefined) {
+  if (firstInPart === true) {
     repeatInfo.firstInPart = firstInPart
     hasValue = true
   }
   const measureStart = readBoolean(event.measureStart)
-  if (measureStart !== undefined) {
+  if (measureStart === true) {
     repeatInfo.measureStart = measureStart
     hasValue = true
   }
@@ -743,12 +743,12 @@ function normalizeRepeatInfo(event: Record<string, unknown>, source: SongParityS
     hasValue = true
   }
   const jumpStarts = readStringArray(event.jumpStarts)
-  if (jumpStarts !== undefined) {
+  if (jumpStarts !== undefined && jumpStarts.length > 0) {
     repeatInfo.jumpStarts = jumpStarts
     hasValue = true
   }
   const jumpEnds = readStringArray(event.jumpEnds)
-  if (jumpEnds !== undefined) {
+  if (jumpEnds !== undefined && jumpEnds.length > 0) {
     repeatInfo.jumpEnds = jumpEnds
     hasValue = true
   }
