@@ -1303,7 +1303,7 @@ export class AbcToSong {
           typeof rawPos[0] === 'number' &&
           typeof rawPos[1] === 'number'
         ) {
-          return [rawPos[0], rawPos[1]]
+          return shouldAdjustEndPos() ? [rawPos[0], rawPos[1] + 1] : [rawPos[0], rawPos[1]]
         }
       }
       const pos = originRecord[key]
@@ -1313,7 +1313,7 @@ export class AbcToSong {
         typeof pos[0] === 'number' &&
         typeof pos[1] === 'number'
       ) {
-        return [pos[0], pos[1]]
+        return shouldAdjustEndPos() ? [pos[0], pos[1] + 1] : [pos[0], pos[1]]
       }
     }
     const fallback = this._charposToLineCol(fallbackOffset)

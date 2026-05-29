@@ -298,6 +298,19 @@ V:V1 clef=treble-8
     }
   })
 
+  it('extends endPos for accidental-bearing notes to match legacy source spans', () => {
+    const song = transformFixture('246_Horch-was-kommt-von-draussen-rein')
+    const note = song.voices[1]?.entities.find(
+      (entity): entity is PlayableEntity => entity.type === 'Note' && entity.time === 11136,
+    )
+
+    expect(note?.type).toBe('Note')
+    if (note?.type === 'Note') {
+      expect(note.startPos).toEqual([15, 42])
+      expect(note.endPos).toEqual([15, 45])
+    }
+  })
+
   it('extracts title metadata', () => {
     const song = transform(ABC)
     expect(song.metaData.title).toContain('Single Note')
