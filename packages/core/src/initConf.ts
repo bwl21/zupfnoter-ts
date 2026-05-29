@@ -59,7 +59,21 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
     layoutlines: [1, 2, 3, 4],
     legend: { spos: [320, 27], pos: [320, 7], tstyle: 'large', align: 'r', style: 'regular' },
     lyrics: {},
+    images: {},
+    notebound: {
+      minc: {},
+    },
+    sortmark: { size: [2, 4], fill: true, show: false },
     nonflowrest: false,
+    tuplets: { text: '{{tuplet}}' },
+    chords: {
+      voices: [],
+      pos: [3, -2],
+      autopos: true,
+      apbase: [1, -0.5],
+      apanchor: 'box',
+      style: 'large',
+    },
     barnumbers: {
       voices: [],
       pos: [6, -4],
@@ -132,6 +146,12 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
   } as ExtractConfig
 
   return {
+    abc_parser: 'ABC2SVG',
+    template: {
+      filebase: '-no-template-',
+      title: '- no template -',
+    },
+    wrap: 60,
     produce: [0],
     restposition: {
       default: 'center',
@@ -144,6 +164,37 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
         chord: { pos: [0, 0] },
         partname: { pos: [-4, -7] },
         variantend: { pos: [-4, -7] },
+        tuplet: {
+          cp1: [5, 2],
+          cp2: [5, -2],
+          shape: ['c'],
+          show: true,
+        },
+        flowline: {
+          cp1: [0, 10],
+          cp2: [0, -10],
+          shape: ['c'],
+          show: true,
+        },
+      },
+    },
+    annotations: {
+      vl: { text: 'v', pos: [-5, -5] },
+      vt: { text: 'v', pos: [-1, -5] },
+      vb: { text: 'v', pos: [-1, 2] },
+      vr: { text: 'v', pos: [2, -5] },
+      rit: { text: 'rit', pos: [2, -5], style: 'italic' },
+    },
+    templates: {
+      notes: { pos: [320, 6], text: 'ENTER_NOTE', style: 'large' },
+      lyrics: { verses: [1], pos: [350, 70], style: 'regular' },
+      images: { imagename: '', show: true, pos: [10, 10], height: 100 },
+      tuplet: { cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true },
+      annotations: { text: '_vorlage_', pos: [-5, -6] },
+      extracts: {
+        title: '',
+        filenamepart: '-',
+        notes: { T01_number_extract: { text: '{{extract_filename}}' } },
       },
     },
     layout: {

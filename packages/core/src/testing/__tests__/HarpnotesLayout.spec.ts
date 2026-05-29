@@ -212,6 +212,22 @@ describe('HarpnotesLayout', () => {
       expect(ellipses[0]!.center[1]).toBeGreaterThanOrEqual(15) // startpos = 15
     })
 
+    it('uses beam duration styles when layout.beams is enabled', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.layout = {
+        ...(extract0.layout ?? {}),
+        beams: true,
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_SINGLE_NOTE, config)
+      const ellipses = sheet.children.filter((c): c is Ellipse => c.type === 'Ellipse')
+
+      expect(ellipses[0]?.size[0]).toBeCloseTo(config.layout.ELLIPSE_SIZE[0], 1)
+      expect(ellipses[0]?.size[1]).toBeCloseTo(config.layout.ELLIPSE_SIZE[1], 1)
+    })
+
     it('matches snapshot', () => {
       const { sheet } = pipeline(ABC_SINGLE_NOTE)
       const ellipses = sheet.children.filter((c): c is Ellipse => c.type === 'Ellipse')

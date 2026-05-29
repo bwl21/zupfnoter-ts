@@ -82,13 +82,40 @@ describe('Confstack.get() – Punkt-Notation', () => {
     expect(cs.get('layout.ELLIPSE_SIZE')).toEqual([3.5, 1.7])
   })
 
-  it('gibt undefined zurück wenn Pfad nicht existiert', () => {
+  it('gibt den gesamten aktuellen Stack zurück ohne Pfad', () => {
+    const cs = new Confstack()
+    cs.push({ layout: { X_SPACING: 11.5 } })
+    expect(cs.get()).toEqual({ layout: { X_SPACING: 11.5 } })
+  })
+
+  it('löst ohne Pfad Late Binding auf', () => {
+    const cs = new Confstack()
+    cs.push({ layout: { X_SPACING: () => 42 } })
+    expect(cs.get()).toEqual({ layout: { X_SPACING: 42 } })
+  })
+
+  it('liefert ohne Pfad den Rohwert wenn resolve=false gesetzt ist', () => {
+    const cs = new Confstack()
+    cs.push({ layout: { X_SPACING: () => 42 } })
+    const raw = cs.get(undefined, { resolve: false }) as Record<string, unknown>
+    const layout = raw.layout as Record<string, unknown>
+    expect(layout.X_SPACING).toBeInstanceOf(Function)
+  })
+
+  it('liefert den Rohwert ohne Auflösung wenn resolve=false gesetzt ist', () => {
+    const cs = new Confstack()
+    cs.push({ layout: { X_SPACING: () => 42 } })
+    const raw = cs.get('layout.X_SPACING', { resolve: false })
+    expect(typeof raw).toBe('function')
+  })
+
+  it('gibt bei fehlendem Pfad einen Fehler', () => {
     const cs = new Confstack()
     cs.push({ layout: { X_SPACING: 11.5 } })
     expect(() => cs.get('layout.MISSING')).toThrow('confstack: key not available: layout.MISSING')
   })
 
-  it('gibt undefined zurück bei leerem Stack', () => {
+  it('wirft bei leerem Stack für einen Pfad', () => {
     const cs = new Confstack()
     expect(() => cs.get('layout.ELLIPSE_SIZE')).toThrow('confstack: key not available: layout.ELLIPSE_SIZE')
   })
@@ -480,6 +507,45 @@ describe('buildConfstack()', () => {
 
     expect(config.layout.DURATION_TO_BEAMS).toBeDefined()
     expect(base0.layout?.beams).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// initConf()
+// ---------------------------------------------------------------------------
+
+describe('initConf()', () => {
+  it('liefert die legacy-basisnahen Defaults', () => {
+    const conf = new Confstack()
+    const defaults = initConf(conf)
+
+    expect(defaults.abc_parser).toBe('ABC2SVG')
+    expect(defaults.template).toEqual({
+      filebase: '-no-template-',
+      title: '- no template -',
+    })
+    expect(defaults.wrap).toBe(60)
+    expect(defaults.defaults?.notebound).toMatchObject({
+      annotation: { pos: [5, -7] },
+      chord: { pos: [0, 0] },
+      partname: { pos: [-4, -7] },
+      variantend: { pos: [-4, -7] },
+      tuplet: { cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true },
+      flowline: { cp1: [0, 10], cp2: [0, -10], shape: ['c'], show: true },
+    })
+    expect(defaults.extract['0']?.sortmark).toEqual({
+      size: [2, 4],
+      fill: true,
+      show: false,
+    })
+    expect(defaults.annotations).toMatchObject({
+      vl: { text: 'v', pos: [-5, -5] },
+      rit: { text: 'rit', pos: [2, -5], style: 'italic' },
+    })
+    expect(defaults.templates).toMatchObject({
+      notes: { pos: [320, 6], text: 'ENTER_NOTE', style: 'large' },
+      images: { imagename: '', show: true, pos: [10, 10], height: 100 },
+    })
   })
 })
 

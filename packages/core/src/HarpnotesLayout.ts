@@ -35,7 +35,10 @@ import type {
   ZupfnoterConfig,
   ExtractConfig,
   DurationKey,
+  BeamStyle,
+  DurationStyle,
   LayoutConfig,
+  PrinterConfig,
 } from '@zupfnoter/types'
 import { buildConfstack } from './buildConfstack.js'
 import { computeBeatCompression, type BeatCompressionMap } from './BeatPacker.js'
@@ -87,6 +90,16 @@ function applyLegacyBeatSpread(beatMap: BeatCompressionMap, layout: LayoutConfig
   return Object.fromEntries(
     Object.entries(beatMap).map(([beat, compressed]) => [beat, compressed * factor]),
   ) as BeatCompressionMap
+}
+
+function convertBeamStylesToDurationStyles(
+  durationToBeams: Record<DurationKey, BeamStyle>,
+): Record<DurationKey, DurationStyle> {
+  const result = {} as Record<DurationKey, DurationStyle>
+  for (const [duration, [sizeFactor, fill, dotted]] of Object.entries(durationToBeams) as Array<[DurationKey, BeamStyle]>) {
+    result[duration] = { sizeFactor, fill, dotted }
+  }
+  return result
 }
 
 /** Duration (SHORTEST_NOTE scale) → DurationKey. Duration is already on the correct scale. */
@@ -467,56 +480,82 @@ export class HarpnotesLayout {
   */
   layout(song: Song, extractNr: number | string = 0, pageFormat: 'A3' | 'A4' = 'A4'): Sheet {
     const conf = this._layoutPrepareOptions(extractNr)
+    const renderLayout = requireDefined(
+      conf.get('layout') as LayoutConfig | undefined,
+      'HarpnotesLayout.layout(): missing layout configuration',
+    )
+    const renderPrinter = conf.get('printer') as PrinterConfig | undefined
+    const useBeams = renderLayout.beams === true
 
-    // 1. Images
-    const resImages = this._layoutImages(conf, extractNr)
+    conf.push({
+      layout: { ...renderLayout },
+      printer: { ...(renderPrinter ?? {}) },
+    })
+    if (useBeams) {
+      conf.push({
+        layout: {
+          DURATION_TO_STYLE: convertBeamStylesToDurationStyles(renderLayout.DURATION_TO_BEAMS),
+        },
+      })
+    }
 
-    // 2. Voices (notes, pauses, flowlines, gotos, tuplets, barnumbers)
-    const { activeVoices, voiceElements, beatMaps } = this._layoutVoices(song, extractNr, conf)
+    try {
+      // 1. Images
+      const resImages = this._layoutImages(conf, extractNr)
 
-    // 3. Synchlines
-    const resSynchLines = this._layoutSynchLines(song, beatMaps, conf, activeVoices)
+      // 2. Voices (notes, pauses, flowlines, gotos, tuplets, barnumbers)
+      const { activeVoices, voiceElements, beatMaps } = this._layoutVoices(song, extractNr, conf)
 
-    // 4. Legend
-    const resLegend = this._layoutLegend(song.metaData, conf, extractNr)
+      // 3. Synchlines
+      const resSynchLines = this._layoutSynchLines(song, beatMaps, conf, activeVoices)
 
-    // 5. System annotations
-    const resZnAnnotations = this._layoutZnAnnotations(song.metaData, conf)
+      // 4. Legend
+      const resLegend = this._layoutLegend(song.metaData, conf, extractNr)
 
-    // 6. Lyrics
-    const resLyrics = this._layoutLyrics(song, conf)
+      // 5. System annotations
+      const resZnAnnotations = this._layoutZnAnnotations(song.metaData, conf)
 
-    // 7. Sheet annotations
-    const resAnnotations = this._layoutAnnotations(song.metaData, conf, extractNr)
+      // 6. Lyrics
+      const resLyrics = this._layoutLyrics(song, conf)
 
-    // 8. Sheetmarks
-    const resSheetmarks = this._layoutSheetmarks(conf)
+      // 7. Sheet annotations
+      const resAnnotations = this._layoutAnnotations(song.metaData, conf, extractNr)
 
-    // 9. Cutmarks
-    const resCutmarks = this._layoutCutmarks(pageFormat, conf)
+      // 8. Sheetmarks
+      const resSheetmarks = this._layoutSheetmarks(conf)
 
-    // 10. Instrument shape
-    const resInstrument = this._layoutInstrument(conf, extractNr)
-    const children: DrawableElement[] = [
-      ...resImages,
-      ...resSynchLines,
-      ...voiceElements,
-      ...resLegend,
-      ...resAnnotations,
-      ...resZnAnnotations,
-      ...resLyrics,
-      ...resSheetmarks,
-      ...resCutmarks,
-      ...resInstrument,
-    ]
+      // 9. Cutmarks
+      const resCutmarks = this._layoutCutmarks(pageFormat, conf)
 
-    return {
-      children: children.map((child) => (
-        child.more_conf_keys === undefined
-          ? { ...child, more_conf_keys: [] }
-          : child
-      )),
-      activeVoices,
+      // 10. Instrument shape
+      const resInstrument = this._layoutInstrument(conf, extractNr)
+      const children: DrawableElement[] = [
+        ...resImages,
+        ...resSynchLines,
+        ...voiceElements,
+        ...resLegend,
+        ...resAnnotations,
+        ...resZnAnnotations,
+        ...resLyrics,
+        ...resSheetmarks,
+        ...resCutmarks,
+        ...resInstrument,
+      ]
+
+      return {
+        children: children.map((child) => (
+          child.more_conf_keys === undefined
+            ? { ...child, more_conf_keys: [] }
+            : child
+        )),
+        activeVoices,
+      }
+    } finally {
+      if (useBeams) {
+        conf.pop()
+      }
+      conf.pop()
+      conf.pop()
     }
   }
 

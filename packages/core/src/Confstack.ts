@@ -4,7 +4,7 @@
  * Port von `confstack.rb` aus dem Legacy-System.
  *
  * Jede Schicht ist ein eigenständiger Hash. `push(hash)` legt ihn oben auf
- * den Stack. `get(path)` sucht von oben nach unten durch alle Schichten und
+ * den Stack. `get(path?)` sucht von oben nach unten durch alle Schichten und
  * gibt den letzten (untersten) Treffer zurück — d.h. spätere pushes haben
  * niedrigere Priorität als frühere. `pop()` entfernt die oberste Schicht.
  *
@@ -23,6 +23,11 @@ export type ConfigObject = Record<string, unknown>
 /** Ein Konfigurations-Wert: direkt oder als Late-Binding-Funktion. */
 export type ConfigValue = unknown | ((...args: unknown[]) => unknown)
 
+/** Optionen für `get(...)`. */
+export interface ConfstackGetOptions {
+  resolve?: boolean
+}
+
 // ---------------------------------------------------------------------------
 // Confstack
 // ---------------------------------------------------------------------------
@@ -36,6 +41,7 @@ export type ConfigValue = unknown | ((...args: unknown[]) => unknown)
  * außerhalb des Stacks später mutiert wird.
  */
 export class Confstack {
+  strict = true
   private _stack: ConfigObject[] = [{}]
   private _resultFlat: ConfigObject = {}
   private _keysFlat: string[] = []
@@ -81,17 +87,23 @@ export class Confstack {
   /**
    * Liest einen Wert per Punkt-Notation (z.B. `'layout.ELLIPSE_SIZE'`).
    *
-   * Gibt `undefined` zurück wenn der Pfad nicht existiert.
+   * Ohne `path` wird der gesamte aktuelle Stack zurückgegeben.
+   * `resolve: false` liefert den Rohwert ohne Late-Binding-Auflösung.
    * Late-Binding-Werte (Funktionen) werden rekursiv aufgelöst.
    *
-   * Entspricht `get(key)` / `[](key)` in `confstack.rb`.
+   * Entspricht `get(key, options)` / `[](key)` in `confstack.rb`.
    */
-  get(path: string): unknown {
+  get(path?: string, options: ConfstackGetOptions = {}): unknown {
+    if (path === undefined) {
+      return options.resolve === false ? this._resultFlat : this._resolveDependencies(this._resultFlat)
+    }
+
     const value = this._lookup(path)
     if (value === undefined && !this._keysFlat.includes(path)) {
+      if (!this.strict) return undefined
       throw new Error(`confstack: key not available: ${path}`)
     }
-    return this._resolveDependencies(value)
+    return options.resolve === false ? value : this._resolveDependencies(value)
   }
 
   /**
@@ -101,7 +113,7 @@ export class Confstack {
    * Entspricht `get()` ohne Argument in `confstack.rb`.
    */
   getAll(): ConfigObject {
-    return this._resolveDependencies(this._resultFlat) as ConfigObject
+    return this.get(undefined) as ConfigObject
   }
 
   /**
@@ -119,14 +131,11 @@ export class Confstack {
    * Wie `get()`, aber wirft einen Fehler wenn kein Wert gefunden wurde.
    */
   require(path: string): unknown {
-    try {
-      return this.get(path)
-    } catch (error) {
-      if (error instanceof Error && error.message === `confstack: key not available: ${path}`) {
-        throw new Error(`Confstack.require(): no value found for path '${path}'`)
-      }
-      throw error
+    const value = this._lookup(path)
+    if (value === undefined && !this._keysFlat.includes(path)) {
+      throw new Error(`Confstack.require(): no value found for path '${path}'`)
     }
+    return this._resolveDependencies(value)
   }
 
   /**

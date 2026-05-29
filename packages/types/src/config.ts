@@ -205,6 +205,16 @@ export interface AnnotationConfig {
   style: string
 }
 
+/**
+ * Konfiguration für ein eingebettetes Bild im Sheet.
+ */
+export interface ImageConfig {
+  show?: boolean
+  imagename?: string
+  pos?: [number, number]
+  height?: number
+}
+
 export interface PositionedTextConfig {
   pos?: [number, number]
   text?: string
@@ -224,6 +234,26 @@ export interface DefaultNoteboundConfig {
   variantend?: {
     pos?: [number, number]
   }
+  tuplet?: {
+    cp1?: [number, number]
+    cp2?: [number, number]
+    shape?: string[]
+    show?: boolean
+  }
+  flowline?: {
+    cp1?: [number, number]
+    cp2?: [number, number]
+    shape?: string[]
+    show?: boolean
+  }
+}
+
+/**
+ * Konfiguration eines eingebetteten Vorlagenobjekts aus `init_conf.rb`.
+ */
+export interface TemplateConfig {
+  filebase: string
+  title: string
 }
 
 /**
@@ -270,11 +300,22 @@ export interface ExtractConfig {
   barnumbers?: BarnumberConfig
   legend?: LegendConfig
   notes?: Record<string, AnnotationConfig>
+  images?: Record<string, ImageConfig>
   repeatsigns?: Record<string, unknown>
   lyrics?: Record<string, unknown>
   nonflowrest?: boolean
   countnotes?: Record<string, unknown>
   stringnames?: Record<string, unknown>
+  sortmark?: {
+    size?: [number, number]
+    fill?: boolean
+    show?: boolean
+  }
+  tuplets?: {
+    text?: string
+  }
+  chords?: Record<string, unknown>
+  instrument_shape?: string | null
   notebound?: Record<string, unknown>
   /** Layout-Overrides für diesen Extrakt */
   layout?: Partial<LayoutConfig>
@@ -290,6 +331,9 @@ export interface ExtractConfig {
  * Vollständige Zupfnoter-Konfiguration (aus dem `%%%%zupfnoter`-Block im ABC).
  */
 export interface ZupfnoterConfig {
+  abc_parser?: string
+  template?: TemplateConfig
+  wrap?: number
   layout: LayoutConfig
   extract: Record<string, ExtractConfig>
   printer: PrinterConfig
@@ -298,9 +342,10 @@ export interface ZupfnoterConfig {
   defaults?: {
     notebound?: DefaultNoteboundConfig
   }
+  annotations?: Record<string, PositionedTextConfig>
+  templates?: Record<string, unknown>
   /** Reihenfolge der zu erzeugenden Extrakte. Legacy-default für Sheet-Fixtures ist der erste Eintrag. */
   produce?: number[]
-  annotations?: Record<string, PositionedTextConfig>
   /** Preset-Schnelleinstellungen für den Konfigurations-Editor (addconf). */
   presets?: Record<string, Record<string, unknown>>
 }

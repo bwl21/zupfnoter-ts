@@ -27,6 +27,7 @@ export function buildConfstack(
   extractNr: number | string = 0,
 ): Confstack {
   const stack = new Confstack()
+  stack.strict = false
   const extractKey = String(extractNr)
   const baseExtract = config.extract['0']
   const targetExtract = config.extract[extractKey]
@@ -72,5 +73,14 @@ export function buildConfstack(
  */
 function extractToLayer(extract: ExtractConfig): ConfigObject {
   const { layout: _layout, printer: _printer, ...rest } = extract
-  return { extract: rest } as unknown as ConfigObject
+  const notebound = (rest.notebound ?? {}) as Record<string, unknown>
+  return {
+    extract: {
+      ...rest,
+      notebound: {
+        minc: {},
+        ...notebound,
+      },
+    },
+  } as unknown as ConfigObject
 }
