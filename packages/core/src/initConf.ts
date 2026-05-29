@@ -209,6 +209,24 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
         d1:  { sizeFactor: 0.05, fill: 'filled', dotted: false },
       },
 
+      // Legacy-Beam-Mapping (wird bei layout.beams=true referenziert).
+      DURATION_TO_BEAMS: {
+        err: [1, 'filled', false],
+        d96: [1, 'empty', false],
+        d64: [1, 'empty', false],
+        d48: [1, 'empty', true, 0],
+        d32: [1, 'empty', false, 0],
+        d24: [1, 'filled', true, 0],
+        d16: [1, 'filled', false, 0],
+        d12: [1, 'filled', true, 1],
+        d8:  [1, 'filled', false, 1],
+        d6:  [1, 'filled', true, 2],
+        d4:  [1, 'filled', false, 2],
+        d3:  [1, 'filled', true, 3],
+        d2:  [1, 'filled', false, 3],
+        d1:  [1, 'filled', false, 4],
+      },
+
       // Pausendauer → Glyph-Stil (Werte aus Legacy init_conf.rb, NICHT harpnotes.rb)
       REST_TO_GLYPH: {
         err: { scale: [2,   2  ], glyphName: 'rest_1',  dotted: false },

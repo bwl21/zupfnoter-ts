@@ -52,6 +52,7 @@ export type {
   FontStyle,
   DurationKey,
   DurationStyle,
+  BeamStyle,
   GlyphName,
   RestStyle,
   RestPositionMode,

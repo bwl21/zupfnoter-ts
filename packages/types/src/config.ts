@@ -52,6 +52,12 @@ export interface DurationStyle {
 }
 
 /**
+ * Legacy-Beam-Stil für eine Notendauer.
+ * Entspricht `DURATION_TO_BEAMS` in `init_conf.rb`.
+ */
+export type BeamStyle = [sizeFactor: number, fill: FillStyle, dotted: boolean, flags?: number]
+
+/**
  * Glyph-Name für Pausenzeichen.
  * Entspricht den Schlüsseln in `Glyph::GLYPHS` in `harpnotes.rb`.
  */
@@ -120,6 +126,9 @@ export interface LayoutConfig {
   }
   FONT_STYLE_DEF: Record<string, FontStyle>
   DURATION_TO_STYLE: Record<DurationKey, DurationStyle>
+  DURATION_TO_BEAMS: Record<DurationKey, BeamStyle>
+  /** Legacy-Schalter für alternative Notenfahnen-/Balkendarstellung. */
+  beams?: boolean
   /** Mapping Notendauer → Pausenzeichen-Stil */
   REST_TO_GLYPH: Record<DurationKey, RestStyle>
   /** ABC decorations that legacy renders as text annotations instead of glyphs. */

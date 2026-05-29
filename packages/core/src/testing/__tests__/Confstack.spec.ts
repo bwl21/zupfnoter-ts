@@ -14,7 +14,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { Confstack } from '../../Confstack.js'
+import { Confstack, DeleteMe } from '../../Confstack.js'
 import { buildConfstack } from '../../buildConfstack.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
@@ -35,6 +35,16 @@ describe('Confstack – Stack-Operationen', () => {
     expect(cs.depth).toBe(1)
     cs.push({ b: 2 })
     expect(cs.depth).toBe(2)
+  })
+
+  it('push erstellt einen Snapshot und bleibt gegen Außenmutation stabil', () => {
+    const cs = new Confstack()
+    const fragment = { layout: { X_SPACING: 11.5 } }
+    cs.push(fragment)
+
+    fragment.layout.X_SPACING = 99
+
+    expect(cs.get('layout.X_SPACING')).toBe(11.5)
   })
 
   it('pop verringert depth', () => {
@@ -204,16 +214,21 @@ describe('Confstack.set()', () => {
     expect(cs.get('layout.X_SPACING')).toBe(20.0)
   })
 
-  it('set() schreibt direkt in die oberste Schicht', () => {
-    // set() entspricht []= in confstack.rb: schreibt in @confstack.last,
-    // ist nicht per pop() rückgängig zu machen (anders als push+pop).
+  it('set() legt eine neue Schicht an und ist per pop() rückgängig zu machen', () => {
     const cs = new Confstack()
     cs.push({ layout: { X_SPACING: 11.5 } })
     cs.set('layout.X_SPACING', 20.0)
     expect(cs.get('layout.X_SPACING')).toBe(20.0)
     cs.pop()
-    // Nach pop() ist die Schicht weg — kein Wert mehr vorhanden
+    expect(cs.get('layout.X_SPACING')).toBe(11.5)
+  })
+
+  it('DeleteMe löscht den Schlüssel aus der obersten Schicht', () => {
+    const cs = new Confstack()
+    cs.push({ layout: { X_SPACING: 11.5, Y_SCALE: 1.0 } })
+    cs.set('layout.X_SPACING', DeleteMe)
     expect(cs.get('layout.X_SPACING')).toBeUndefined()
+    expect(cs.get('layout.Y_SCALE')).toBe(1.0)
   })
 })
 
@@ -419,6 +434,30 @@ describe('buildConfstack()', () => {
     }
     const cs = buildConfstack(config, 0)
     expect(cs.get('printer.showBorder')).toBe(true)
+  })
+
+  it('stellt das Legacy-Beam-Mapping bereit', () => {
+    const base0 = defaultTestConfig.extract['0']
+    if (base0 === undefined) {
+      throw new Error('defaultTestConfig.extract[0] missing')
+    }
+    const baseLayout = base0.layout ?? {}
+    const config: ZupfnoterConfig = {
+      ...defaultTestConfig,
+      extract: {
+        ...defaultTestConfig.extract,
+        '0': {
+          ...base0,
+          layout: {
+            ...baseLayout,
+            beams: true,
+          },
+        },
+      },
+    }
+    const cs = buildConfstack(config, 0)
+    expect(cs.get('layout.beams')).toBe(true)
+    expect(cs.get('layout.DURATION_TO_BEAMS')).toBeDefined()
   })
 })
 

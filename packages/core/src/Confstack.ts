@@ -28,17 +28,12 @@ export type ConfigValue = unknown | ((...args: unknown[]) => unknown)
 // ---------------------------------------------------------------------------
 
 /**
- * Stack-basierter Konfigurations-Resolver.
+ * Legacy-faithful conf stack.
  *
- * Entspricht `Confstack` in `confstack.rb`.
- *
- * Jede Schicht ist ein eigenständiger Hash. `get(path)` sucht von oben nach
- * unten und gibt den letzten Treffer zurück (unterste Schicht hat Vorrang,
- * da sie die Defaults enthält und obere Schichten spezifischere Werte haben).
- *
- * Intern wird nach jedem `push`/`pop` ein flaches Result-Objekt berechnet
- * (`_flatten`), das alle Schlüssel als verschachtelten Hash enthält.
- * `get()` liest immer aus diesem vorberechneten Result.
+ * Jede `push()`-Schicht erzeugt einen vollständigen Snapshot, indem die
+ * vorherige Schicht tief kopiert und mit dem neuen Overlay tief gemergt wird.
+ * Dadurch bleibt ein gepushter Wert auch dann stabil, wenn der Ursprung
+ * außerhalb des Stacks später mutiert wird.
  */
 export class Confstack {
   private _stack: ConfigObject[] = []
@@ -50,7 +45,10 @@ export class Confstack {
    * Entspricht `push(hash)` in `confstack.rb`.
    */
   push(config: ConfigObject): void {
-    this._stack.push(config)
+    const base = this._stack.length === 0
+      ? {}
+      : this._stack[this._stack.length - 1]
+    this._stack.push(deepMerge(base, config))
     this._flatten()
   }
 
@@ -124,11 +122,25 @@ export class Confstack {
    * Entspricht `[]=(key, value)` in `confstack.rb`.
    */
   set(path: string, value: unknown): void {
+    if (value === DeleteMe || value instanceof DeleteMe) {
+      this.delete(path)
+      return
+    }
+
+    const fragment = buildNestedValue(path.split('.'), value)
+    this.push(fragment)
+  }
+
+  /**
+   * Löscht einen Wert aus der obersten Schicht.
+   * Entspricht `delete(key)` in `confstack2.rb`.
+   */
+  delete(path: string): void {
     if (this._stack.length === 0) {
       this._stack.push({})
     }
-    const top = requireDefined(this._stack[this._stack.length - 1], 'Confstack.set(): stack is empty')
-    updateNestedValue(top, path.split('.'), value)
+    const top = requireDefined(this._stack[this._stack.length - 1], 'Confstack.delete(): stack is empty')
+    deleteNestedValue(top, path.split('.'))
     this._flatten()
   }
 
@@ -219,6 +231,13 @@ export class Confstack {
     return result
   }
 }
+
+/**
+ * Legacy delete sentinel.
+ *
+ * Entspricht `Confstack::DeleteMe` in `confstack2.rb`.
+ */
+export class DeleteMe {}
 
 // ---------------------------------------------------------------------------
 // Late-Binding-Auflösung
@@ -321,19 +340,88 @@ function setNestedValue(obj: ConfigObject, parts: string[], value: unknown): voi
 }
 
 /**
- * Aktualisiert einen Wert in einem verschachtelten Objekt per Pfad-Array.
- * Entspricht `_update_hash()` in `confstack.rb`.
+ * Baut ein verschachteltes Objekt für einen Punkt-Pfad.
+ * Entspricht der Ruby-Implementierung von `[]=` über verschachtelte Hashes.
  */
-function updateNestedValue(obj: ConfigObject, parts: string[], value: unknown): void {
+function buildNestedValue(parts: string[], value: unknown): ConfigObject {
+  if (parts.length === 0) return {}
+  return parts
+    .slice()
+    .reverse()
+    .reduce<unknown>((current, part) => ({ [part]: current }), value) as ConfigObject
+}
+
+/**
+ * Löscht einen verschachtelten Wert per Pfad-Array.
+ * Entspricht `delete(key)` in `confstack2.rb`.
+ */
+function deleteNestedValue(obj: ConfigObject, parts: string[]): void {
   if (parts.length === 0) return
   if (parts.length === 1) {
-    const key = requireDefined(parts[0], 'Confstack.updateNestedValue(): missing path segment')
-    obj[key] = value
+    const key = requireDefined(parts[0], 'Confstack.deleteNestedValue(): missing path segment')
+    delete obj[key]
     return
   }
-  const key = requireDefined(parts[0], 'Confstack.updateNestedValue(): missing path segment')
-  if (typeof obj[key] !== 'object' || obj[key] === null || Array.isArray(obj[key])) {
-    obj[key] = {}
+
+  const key = requireDefined(parts[0], 'Confstack.deleteNestedValue(): missing path segment')
+  const next = obj[key]
+  if (next === null || typeof next !== 'object' || Array.isArray(next)) {
+    return
   }
-  updateNestedValue(obj[key] as ConfigObject, parts.slice(1), value)
+
+  deleteNestedValue(next as ConfigObject, parts.slice(1))
+}
+
+/**
+ * Tiefes Kopieren eines Konfigurationswerts.
+ */
+function deepClone(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(entry => deepClone(entry))
+  }
+  if (value !== null && typeof value === 'object') {
+    const result: ConfigObject = {}
+    for (const [key, entry] of Object.entries(value as ConfigObject)) {
+      result[key] = deepClone(entry)
+    }
+    return result
+  }
+  return value
+}
+
+/**
+ * Ruby-ähnliches `deep_merge` ohne Seiteneffekte.
+ */
+function deepMerge(base: unknown, override: unknown): ConfigObject {
+  if (override === undefined) {
+    return deepClone(base) as ConfigObject
+  }
+  if (
+    base === null ||
+    override === null ||
+    typeof base !== 'object' ||
+    typeof override !== 'object' ||
+    Array.isArray(base) ||
+    Array.isArray(override)
+  ) {
+    return deepClone(override) as ConfigObject
+  }
+
+  const result: ConfigObject = deepClone(base) as ConfigObject
+  for (const [key, value] of Object.entries(override as ConfigObject)) {
+    const current = result[key]
+    if (
+      current !== null &&
+      typeof current === 'object' &&
+      !Array.isArray(current) &&
+      value !== null &&
+      typeof value === 'object' &&
+      !Array.isArray(value)
+    ) {
+      result[key] = deepMerge(current, value) as ConfigObject
+    } else {
+      result[key] = deepClone(value)
+    }
+  }
+  return result
 }
