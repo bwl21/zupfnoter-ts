@@ -15,6 +15,7 @@ Diese Regeln steuern das Verhalten von Coding-Agents.
 - Keine unnötigen Refactorings
 - Bestehende Architektur respektieren
 - Bestehende Patterns beibehalten
+- Antworten standardmäßig kurz und sparsam halten; bei Unsicherheit lieber kurz nachfragen oder den Schritt absichern, statt still in die falsche Richtung weiterzuarbeiten
 
 ### Kurzregel für Fix-Trennung
 

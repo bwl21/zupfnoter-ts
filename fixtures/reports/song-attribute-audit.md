@@ -2604,6 +2604,4462 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - expected: 2
   - actual: -2
 
+## 694_Sheep-may-safely-graze
+
+- Issues: 1484
+- voices[0].entities[0].prevPitch (missing)
+  - expected: 65
+  - actual: undefined
+- voices[0].entities[0].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[0].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[1].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[1].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[2].endPos[1] (mismatch)
+  - expected: 16
+  - actual: 15
+- voices[0].entities[2].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[2].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[3].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[3].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[4].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[4].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[5].endPos[1] (mismatch)
+  - expected: 26
+  - actual: 24
+- voices[0].entities[5].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[5].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[6].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[6].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[7].endPos[1] (mismatch)
+  - expected: 36
+  - actual: 35
+- voices[0].entities[7].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[7].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[8].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[8].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[9].endPos[1] (mismatch)
+  - expected: 44
+  - actual: 43
+- voices[0].entities[9].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[9].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[10].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[10].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[11].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[11].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[12].endPos[1] (mismatch)
+  - expected: 57
+  - actual: 56
+- voices[0].entities[12].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[12].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[13].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[13].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[14].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[14].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[15].endPos[1] (mismatch)
+  - expected: 65
+  - actual: 64
+- voices[0].entities[15].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[15].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[16].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[16].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[17].endPos[1] (mismatch)
+  - expected: 78
+  - actual: 77
+- voices[0].entities[17].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[17].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[18].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[18].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[19].endPos[1] (mismatch)
+  - expected: 86
+  - actual: 85
+- voices[0].entities[19].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[19].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[20].slurStarts (mismatch)
+  - expected: [10]
+  - actual: []
+- voices[0].entities[20].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[20].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[21].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[21].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[22].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[22].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[23].endPos[1] (mismatch)
+  - expected: 15
+  - actual: 14
+- voices[0].entities[23].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[23].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[24].slurStarts[0] (mismatch)
+  - expected: 11
+  - actual: 10
+- voices[0].entities[24].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[24].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[25].endPos[1] (mismatch)
+  - expected: 20
+  - actual: 19
+- voices[0].entities[25].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[25].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[26].slurStarts[0] (mismatch)
+  - expected: 12
+  - actual: 11
+- voices[0].entities[26].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[26].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[27].endPos[1] (mismatch)
+  - expected: 24
+  - actual: 23
+- voices[0].entities[27].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[27].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[28].slurStarts[0] (mismatch)
+  - expected: 13
+  - actual: 12
+- voices[0].entities[28].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[28].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[29].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[29].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[30].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[30].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[31].endPos[1] (mismatch)
+  - expected: 37
+  - actual: 36
+- voices[0].entities[31].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[31].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[32].slurStarts[0] (mismatch)
+  - expected: 14
+  - actual: 13
+- voices[0].entities[32].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[32].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[33].endPos[1] (mismatch)
+  - expected: 42
+  - actual: 41
+- voices[0].entities[33].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[33].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[34].slurStarts[0] (mismatch)
+  - expected: 15
+  - actual: 14
+- voices[0].entities[34].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[34].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[35].endPos[1] (mismatch)
+  - expected: 46
+  - actual: 45
+- voices[0].entities[35].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[35].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[36].slurStarts (mismatch)
+  - expected: [16]
+  - actual: []
+- voices[0].entities[36].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[36].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[37].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[37].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[38].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[38].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[39].endPos[1] (mismatch)
+  - expected: 66
+  - actual: 65
+- voices[0].entities[39].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[39].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[40].slurStarts[0] (mismatch)
+  - expected: 17
+  - actual: 15
+- voices[0].entities[40].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[40].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[41].endPos[1] (mismatch)
+  - expected: 71
+  - actual: 70
+- voices[0].entities[41].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[41].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[42].slurStarts[0] (mismatch)
+  - expected: 18
+  - actual: 16
+- voices[0].entities[42].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[42].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[43].endPos[1] (mismatch)
+  - expected: 75
+  - actual: 74
+- voices[0].entities[43].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[43].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[44].slurStarts[0] (mismatch)
+  - expected: 19
+  - actual: 17
+- voices[0].entities[44].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[44].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[45].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[45].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[46].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[46].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[47].endPos[1] (mismatch)
+  - expected: 88
+  - actual: 87
+- voices[0].entities[47].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[47].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[48].slurStarts[0] (mismatch)
+  - expected: 20
+  - actual: 18
+- voices[0].entities[48].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[48].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[49].endPos[1] (mismatch)
+  - expected: 93
+  - actual: 92
+- voices[0].entities[49].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[49].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[50].slurStarts[0] (mismatch)
+  - expected: 21
+  - actual: 19
+- voices[0].entities[50].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[50].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[51].endPos[1] (mismatch)
+  - expected: 97
+  - actual: 96
+- voices[0].entities[51].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[51].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[52].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[52].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[53].slurStarts (mismatch)
+  - expected: [22]
+  - actual: []
+- voices[0].entities[53].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[53].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[54].endPos[1] (mismatch)
+  - expected: 15
+  - actual: 14
+- voices[0].entities[54].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[54].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[55].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[55].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[56].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[56].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[57].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[57].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[58].slurStarts[0] (mismatch)
+  - expected: 23
+  - actual: 20
+- voices[0].entities[58].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[58].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[59].endPos[1] (mismatch)
+  - expected: 36
+  - actual: 35
+- voices[0].entities[59].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[59].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[60].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[60].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[61].slurStarts (mismatch)
+  - expected: [24]
+  - actual: []
+- voices[0].entities[61].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[61].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[62].endPos[1] (mismatch)
+  - expected: 55
+  - actual: 54
+- voices[0].entities[62].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[62].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[63].slurStarts (mismatch)
+  - expected: [25]
+  - actual: []
+- voices[0].entities[63].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[63].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[64].endPos[1] (mismatch)
+  - expected: 68
+  - actual: 67
+- voices[0].entities[64].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[64].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[65].slurStarts[0] (mismatch)
+  - expected: 26
+  - actual: 21
+- voices[0].entities[65].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[65].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[66].endPos[1] (mismatch)
+  - expected: 76
+  - actual: 75
+- voices[0].entities[66].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[66].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[67].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[67].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[68].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[68].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[69].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[69].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[70].slurStarts[0] (mismatch)
+  - expected: 27
+  - actual: 22
+- voices[0].entities[70].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[70].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[71].endPos[1] (mismatch)
+  - expected: 15
+  - actual: 14
+- voices[0].entities[71].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[71].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[72].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[72].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[73].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[73].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[74].endPos[1] (mismatch)
+  - expected: 37
+  - actual: 38
+- voices[0].entities[74].slurStarts (mismatch)
+  - expected: [28]
+  - actual: []
+- voices[0].entities[74].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[74].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[75].endPos[1] (mismatch)
+  - expected: 44
+  - actual: 43
+- voices[0].entities[75].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[75].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[76].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[76].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[77].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[77].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[78].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[78].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[79].slurStarts[0] (mismatch)
+  - expected: 29
+  - actual: 23
+- voices[0].entities[79].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[79].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[80].endPos[1] (mismatch)
+  - expected: 65
+  - actual: 64
+- voices[0].entities[80].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[80].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[81].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[81].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[82].slurStarts[0] (mismatch)
+  - expected: 30
+  - actual: 24
+- voices[0].entities[82].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[82].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[83].endPos[1] (mismatch)
+  - expected: 81
+  - actual: 80
+- voices[0].entities[83].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[83].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[84].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[84].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[85].slurStarts[0] (mismatch)
+  - expected: 31
+  - actual: 25
+- voices[0].entities[85].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[85].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[86].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[86].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[87].endPos[1] (mismatch)
+  - expected: 24
+  - actual: 23
+- voices[0].entities[87].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[87].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[88].slurStarts[0] (mismatch)
+  - expected: 32
+  - actual: 26
+- voices[0].entities[88].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[88].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[89].endPos[1] (mismatch)
+  - expected: 29
+  - actual: 28
+- voices[0].entities[89].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[89].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[90].slurStarts[0] (mismatch)
+  - expected: 33
+  - actual: 27
+- voices[0].entities[90].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[90].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[91].endPos[1] (mismatch)
+  - expected: 33
+  - actual: 32
+- voices[0].entities[91].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[91].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[92].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[92].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[93].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[93].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[94].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[94].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[95].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[95].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[96].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[96].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[97].slurStarts[0] (mismatch)
+  - expected: 34
+  - actual: 28
+- voices[0].entities[97].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[97].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[98].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[98].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[99].endPos[1] (mismatch)
+  - expected: 67
+  - actual: 66
+- voices[0].entities[99].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[99].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[100].slurStarts[0] (mismatch)
+  - expected: 35
+  - actual: 29
+- voices[0].entities[100].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[100].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[101].endPos[1] (mismatch)
+  - expected: 72
+  - actual: 71
+- voices[0].entities[101].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[101].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[102].slurStarts[0] (mismatch)
+  - expected: 36
+  - actual: 30
+- voices[0].entities[102].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[102].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[103].endPos[1] (mismatch)
+  - expected: 76
+  - actual: 75
+- voices[0].entities[103].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[103].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[104].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[104].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[105].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[105].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[106].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[106].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[107].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[107].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[108].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[108].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[109].nextPitch (mismatch)
+  - expected: 74
+  - actual: 65
+- voices[0].entities[109].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[109].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[110].nextPitch (mismatch)
+  - expected: 72
+  - actual: 65
+- voices[0].entities[110].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[110].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[111].nextPitch (mismatch)
+  - expected: 70
+  - actual: 65
+- voices[0].entities[111].prevPitch (mismatch)
+  - expected: 74
+  - actual: 65
+- voices[0].entities[111].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[111].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[112].nextPitch (mismatch)
+  - expected: 72
+  - actual: 67
+- voices[0].entities[112].prevPitch (mismatch)
+  - expected: 72
+  - actual: 65
+- voices[0].entities[112].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[112].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[113].prevPitch (mismatch)
+  - expected: 70
+  - actual: 65
+- voices[0].entities[113].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[113].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[114].prevPitch (mismatch)
+  - expected: 72
+  - actual: 67
+- voices[0].entities[114].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[114].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[115].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[115].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[116].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[116].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[117].slurStarts (mismatch)
+  - expected: [37]
+  - actual: []
+- voices[0].entities[117].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[117].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[118].endPos[1] (mismatch)
+  - expected: 16
+  - actual: 15
+- voices[0].entities[118].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[118].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[119].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[119].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[120].slurStarts[0] (mismatch)
+  - expected: 38
+  - actual: 31
+- voices[0].entities[120].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[120].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[121].endPos[1] (mismatch)
+  - expected: 24
+  - actual: 23
+- voices[0].entities[121].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[121].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[122].slurStarts[0] (mismatch)
+  - expected: 39
+  - actual: 32
+- voices[0].entities[122].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[122].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[123].endPos[1] (mismatch)
+  - expected: 34
+  - actual: 33
+- voices[0].entities[123].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[123].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[124].slurStarts[0] (mismatch)
+  - expected: 40
+  - actual: 33
+- voices[0].entities[124].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[124].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[125].endPos[1] (mismatch)
+  - expected: 42
+  - actual: 41
+- voices[0].entities[125].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[125].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[126].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[126].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[127].slurStarts[0] (mismatch)
+  - expected: 41
+  - actual: 34
+- voices[0].entities[127].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[127].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[128].endPos[1] (mismatch)
+  - expected: 55
+  - actual: 54
+- voices[0].entities[128].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[128].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[129].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[129].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[130].slurStarts[0] (mismatch)
+  - expected: 42
+  - actual: 35
+- voices[0].entities[130].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[130].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[131].endPos[1] (mismatch)
+  - expected: 63
+  - actual: 62
+- voices[0].entities[131].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[131].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[132].slurStarts[0] (mismatch)
+  - expected: 43
+  - actual: 36
+- voices[0].entities[132].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[132].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[133].endPos[1] (mismatch)
+  - expected: 77
+  - actual: 76
+- voices[0].entities[133].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[133].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[134].slurStarts[0] (mismatch)
+  - expected: 44
+  - actual: 37
+- voices[0].entities[134].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[134].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[135].endPos[1] (mismatch)
+  - expected: 85
+  - actual: 84
+- voices[0].entities[135].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[135].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[136].slurStarts (mismatch)
+  - expected: [45]
+  - actual: []
+- voices[0].entities[136].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[136].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[137].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[137].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[138].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[138].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[139].endPos[1] (mismatch)
+  - expected: 15
+  - actual: 14
+- voices[0].entities[139].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[139].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[140].slurStarts[0] (mismatch)
+  - expected: 46
+  - actual: 38
+- voices[0].entities[140].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[140].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[141].endPos[1] (mismatch)
+  - expected: 20
+  - actual: 19
+- voices[0].entities[141].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[141].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[142].slurStarts[0] (mismatch)
+  - expected: 47
+  - actual: 39
+- voices[0].entities[142].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[142].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[143].endPos[1] (mismatch)
+  - expected: 24
+  - actual: 23
+- voices[0].entities[143].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[143].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[144].slurStarts[0] (mismatch)
+  - expected: 48
+  - actual: 40
+- voices[0].entities[144].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[144].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[145].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[145].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[146].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[146].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[147].endPos[1] (mismatch)
+  - expected: 37
+  - actual: 36
+- voices[0].entities[147].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[147].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[148].slurStarts[0] (mismatch)
+  - expected: 49
+  - actual: 41
+- voices[0].entities[148].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[148].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[149].endPos[1] (mismatch)
+  - expected: 42
+  - actual: 41
+- voices[0].entities[149].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[149].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[150].slurStarts[0] (mismatch)
+  - expected: 50
+  - actual: 42
+- voices[0].entities[150].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[150].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[151].endPos[1] (mismatch)
+  - expected: 46
+  - actual: 45
+- voices[0].entities[151].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[151].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[152].slurStarts (mismatch)
+  - expected: [51]
+  - actual: []
+- voices[0].entities[152].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[152].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[153].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[153].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[154].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[154].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[155].endPos[1] (mismatch)
+  - expected: 65
+  - actual: 64
+- voices[0].entities[155].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[155].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[156].slurStarts[0] (mismatch)
+  - expected: 52
+  - actual: 43
+- voices[0].entities[156].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[156].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[157].endPos[1] (mismatch)
+  - expected: 70
+  - actual: 69
+- voices[0].entities[157].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[157].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[158].slurStarts[0] (mismatch)
+  - expected: 53
+  - actual: 44
+- voices[0].entities[158].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[158].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[159].endPos[1] (mismatch)
+  - expected: 74
+  - actual: 73
+- voices[0].entities[159].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[159].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[160].slurStarts (mismatch)
+  - expected: [54]
+  - actual: []
+- voices[0].entities[160].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[160].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[161].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[161].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[162].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[162].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[163].endPos[1] (mismatch)
+  - expected: 18
+  - actual: 17
+- voices[0].entities[163].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[163].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[164].slurStarts[0] (mismatch)
+  - expected: 55
+  - actual: 45
+- voices[0].entities[164].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[164].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[165].endPos[1] (mismatch)
+  - expected: 30
+  - actual: 29
+- voices[0].entities[165].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[165].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[166].slurStarts[0] (mismatch)
+  - expected: 56
+  - actual: 46
+- voices[0].entities[166].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[166].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[167].endPos[1] (mismatch)
+  - expected: 34
+  - actual: 33
+- voices[0].entities[167].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[167].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[168].nextPitch (missing)
+  - expected: 70
+  - actual: undefined
+- voices[0].entities[168].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[168].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[0].prevPitch (missing)
+  - expected: 65
+  - actual: undefined
+- voices[1].entities[0].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[0].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[1].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[1].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[2].endPos[1] (mismatch)
+  - expected: 16
+  - actual: 15
+- voices[1].entities[2].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[2].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[3].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[3].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[4].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[4].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[5].endPos[1] (mismatch)
+  - expected: 26
+  - actual: 24
+- voices[1].entities[5].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[5].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[6].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[6].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[7].endPos[1] (mismatch)
+  - expected: 36
+  - actual: 35
+- voices[1].entities[7].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[7].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[8].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[8].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[9].endPos[1] (mismatch)
+  - expected: 44
+  - actual: 43
+- voices[1].entities[9].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[9].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[10].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[10].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[11].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[11].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[12].endPos[1] (mismatch)
+  - expected: 57
+  - actual: 56
+- voices[1].entities[12].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[12].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[13].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[13].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[14].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[14].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[15].endPos[1] (mismatch)
+  - expected: 65
+  - actual: 64
+- voices[1].entities[15].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[15].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[16].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[16].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[17].endPos[1] (mismatch)
+  - expected: 78
+  - actual: 77
+- voices[1].entities[17].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[17].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[18].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[18].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[19].endPos[1] (mismatch)
+  - expected: 86
+  - actual: 85
+- voices[1].entities[19].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[19].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[20].slurStarts (mismatch)
+  - expected: [10]
+  - actual: []
+- voices[1].entities[20].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[20].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[21].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[21].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[22].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[22].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[23].endPos[1] (mismatch)
+  - expected: 15
+  - actual: 14
+- voices[1].entities[23].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[23].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[24].slurStarts[0] (mismatch)
+  - expected: 11
+  - actual: 10
+- voices[1].entities[24].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[24].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[25].endPos[1] (mismatch)
+  - expected: 20
+  - actual: 19
+- voices[1].entities[25].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[25].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[26].slurStarts[0] (mismatch)
+  - expected: 12
+  - actual: 11
+- voices[1].entities[26].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[26].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[27].endPos[1] (mismatch)
+  - expected: 24
+  - actual: 23
+- voices[1].entities[27].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[27].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[28].slurStarts[0] (mismatch)
+  - expected: 13
+  - actual: 12
+- voices[1].entities[28].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[28].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[29].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[29].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[30].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[30].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[31].endPos[1] (mismatch)
+  - expected: 37
+  - actual: 36
+- voices[1].entities[31].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[31].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[32].slurStarts[0] (mismatch)
+  - expected: 14
+  - actual: 13
+- voices[1].entities[32].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[32].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[33].endPos[1] (mismatch)
+  - expected: 42
+  - actual: 41
+- voices[1].entities[33].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[33].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[34].slurStarts[0] (mismatch)
+  - expected: 15
+  - actual: 14
+- voices[1].entities[34].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[34].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[35].endPos[1] (mismatch)
+  - expected: 46
+  - actual: 45
+- voices[1].entities[35].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[35].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[36].slurStarts (mismatch)
+  - expected: [16]
+  - actual: []
+- voices[1].entities[36].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[36].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[37].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[37].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[38].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[38].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[39].endPos[1] (mismatch)
+  - expected: 66
+  - actual: 65
+- voices[1].entities[39].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[39].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[40].slurStarts[0] (mismatch)
+  - expected: 17
+  - actual: 15
+- voices[1].entities[40].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[40].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[41].endPos[1] (mismatch)
+  - expected: 71
+  - actual: 70
+- voices[1].entities[41].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[41].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[42].slurStarts[0] (mismatch)
+  - expected: 18
+  - actual: 16
+- voices[1].entities[42].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[42].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[43].endPos[1] (mismatch)
+  - expected: 75
+  - actual: 74
+- voices[1].entities[43].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[43].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[44].slurStarts[0] (mismatch)
+  - expected: 19
+  - actual: 17
+- voices[1].entities[44].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[44].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[45].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[45].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[46].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[46].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[47].endPos[1] (mismatch)
+  - expected: 88
+  - actual: 87
+- voices[1].entities[47].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[47].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[48].slurStarts[0] (mismatch)
+  - expected: 20
+  - actual: 18
+- voices[1].entities[48].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[48].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[49].endPos[1] (mismatch)
+  - expected: 93
+  - actual: 92
+- voices[1].entities[49].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[49].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[50].slurStarts[0] (mismatch)
+  - expected: 21
+  - actual: 19
+- voices[1].entities[50].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[50].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[51].endPos[1] (mismatch)
+  - expected: 97
+  - actual: 96
+- voices[1].entities[51].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[51].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[52].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[52].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[53].slurStarts (mismatch)
+  - expected: [22]
+  - actual: []
+- voices[1].entities[53].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[53].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[54].endPos[1] (mismatch)
+  - expected: 15
+  - actual: 14
+- voices[1].entities[54].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[54].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[55].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[55].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[56].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[56].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[57].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[57].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[58].slurStarts[0] (mismatch)
+  - expected: 23
+  - actual: 20
+- voices[1].entities[58].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[58].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[59].endPos[1] (mismatch)
+  - expected: 36
+  - actual: 35
+- voices[1].entities[59].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[59].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[60].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[60].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[61].slurStarts (mismatch)
+  - expected: [24]
+  - actual: []
+- voices[1].entities[61].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[61].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[62].endPos[1] (mismatch)
+  - expected: 55
+  - actual: 54
+- voices[1].entities[62].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[62].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[63].slurStarts (mismatch)
+  - expected: [25]
+  - actual: []
+- voices[1].entities[63].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[63].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[64].endPos[1] (mismatch)
+  - expected: 68
+  - actual: 67
+- voices[1].entities[64].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[64].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[65].slurStarts[0] (mismatch)
+  - expected: 26
+  - actual: 21
+- voices[1].entities[65].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[65].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[66].endPos[1] (mismatch)
+  - expected: 76
+  - actual: 75
+- voices[1].entities[66].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[66].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[67].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[67].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[68].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[68].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[69].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[69].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[70].slurStarts[0] (mismatch)
+  - expected: 27
+  - actual: 22
+- voices[1].entities[70].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[70].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[71].endPos[1] (mismatch)
+  - expected: 15
+  - actual: 14
+- voices[1].entities[71].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[71].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[72].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[72].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[73].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[73].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[74].endPos[1] (mismatch)
+  - expected: 37
+  - actual: 38
+- voices[1].entities[74].slurStarts (mismatch)
+  - expected: [28]
+  - actual: []
+- voices[1].entities[74].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[74].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[75].endPos[1] (mismatch)
+  - expected: 44
+  - actual: 43
+- voices[1].entities[75].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[75].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[76].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[76].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[77].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[77].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[78].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[78].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[79].slurStarts[0] (mismatch)
+  - expected: 29
+  - actual: 23
+- voices[1].entities[79].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[79].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[80].endPos[1] (mismatch)
+  - expected: 65
+  - actual: 64
+- voices[1].entities[80].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[80].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[81].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[81].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[82].slurStarts[0] (mismatch)
+  - expected: 30
+  - actual: 24
+- voices[1].entities[82].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[82].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[83].endPos[1] (mismatch)
+  - expected: 81
+  - actual: 80
+- voices[1].entities[83].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[83].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[84].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[84].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[85].slurStarts[0] (mismatch)
+  - expected: 31
+  - actual: 25
+- voices[1].entities[85].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[85].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[86].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[86].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[87].endPos[1] (mismatch)
+  - expected: 24
+  - actual: 23
+- voices[1].entities[87].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[87].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[88].slurStarts[0] (mismatch)
+  - expected: 32
+  - actual: 26
+- voices[1].entities[88].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[88].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[89].endPos[1] (mismatch)
+  - expected: 29
+  - actual: 28
+- voices[1].entities[89].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[89].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[90].slurStarts[0] (mismatch)
+  - expected: 33
+  - actual: 27
+- voices[1].entities[90].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[90].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[91].endPos[1] (mismatch)
+  - expected: 33
+  - actual: 32
+- voices[1].entities[91].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[91].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[92].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[92].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[93].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[93].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[94].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[94].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[95].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[95].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[96].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[96].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[97].slurStarts[0] (mismatch)
+  - expected: 34
+  - actual: 28
+- voices[1].entities[97].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[97].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[98].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[98].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[99].endPos[1] (mismatch)
+  - expected: 67
+  - actual: 66
+- voices[1].entities[99].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[99].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[100].slurStarts[0] (mismatch)
+  - expected: 35
+  - actual: 29
+- voices[1].entities[100].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[100].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[101].endPos[1] (mismatch)
+  - expected: 72
+  - actual: 71
+- voices[1].entities[101].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[101].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[102].slurStarts[0] (mismatch)
+  - expected: 36
+  - actual: 30
+- voices[1].entities[102].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[102].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[103].endPos[1] (mismatch)
+  - expected: 76
+  - actual: 75
+- voices[1].entities[103].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[103].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[104].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[104].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[105].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[105].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[106].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[106].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[107].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[107].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[108].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[108].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[109].nextPitch (mismatch)
+  - expected: 74
+  - actual: 65
+- voices[1].entities[109].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[109].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[110].nextPitch (mismatch)
+  - expected: 72
+  - actual: 65
+- voices[1].entities[110].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[110].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[111].nextPitch (mismatch)
+  - expected: 70
+  - actual: 65
+- voices[1].entities[111].prevPitch (mismatch)
+  - expected: 74
+  - actual: 65
+- voices[1].entities[111].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[111].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[112].nextPitch (mismatch)
+  - expected: 72
+  - actual: 67
+- voices[1].entities[112].prevPitch (mismatch)
+  - expected: 72
+  - actual: 65
+- voices[1].entities[112].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[112].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[113].prevPitch (mismatch)
+  - expected: 70
+  - actual: 65
+- voices[1].entities[113].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[113].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[114].prevPitch (mismatch)
+  - expected: 72
+  - actual: 67
+- voices[1].entities[114].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[114].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[115].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[115].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[116].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[116].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[117].slurStarts (mismatch)
+  - expected: [37]
+  - actual: []
+- voices[1].entities[117].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[117].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[118].endPos[1] (mismatch)
+  - expected: 16
+  - actual: 15
+- voices[1].entities[118].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[118].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[119].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[119].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[120].slurStarts[0] (mismatch)
+  - expected: 38
+  - actual: 31
+- voices[1].entities[120].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[120].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[121].endPos[1] (mismatch)
+  - expected: 24
+  - actual: 23
+- voices[1].entities[121].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[121].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[122].slurStarts[0] (mismatch)
+  - expected: 39
+  - actual: 32
+- voices[1].entities[122].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[122].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[123].endPos[1] (mismatch)
+  - expected: 34
+  - actual: 33
+- voices[1].entities[123].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[123].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[124].slurStarts[0] (mismatch)
+  - expected: 40
+  - actual: 33
+- voices[1].entities[124].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[124].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[125].endPos[1] (mismatch)
+  - expected: 42
+  - actual: 41
+- voices[1].entities[125].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[125].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[126].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[126].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[127].slurStarts[0] (mismatch)
+  - expected: 41
+  - actual: 34
+- voices[1].entities[127].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[127].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[128].endPos[1] (mismatch)
+  - expected: 55
+  - actual: 54
+- voices[1].entities[128].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[128].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[129].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[129].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[130].slurStarts[0] (mismatch)
+  - expected: 42
+  - actual: 35
+- voices[1].entities[130].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[130].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[131].endPos[1] (mismatch)
+  - expected: 63
+  - actual: 62
+- voices[1].entities[131].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[131].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[132].slurStarts[0] (mismatch)
+  - expected: 43
+  - actual: 36
+- voices[1].entities[132].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[132].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[133].endPos[1] (mismatch)
+  - expected: 77
+  - actual: 76
+- voices[1].entities[133].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[133].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[134].slurStarts[0] (mismatch)
+  - expected: 44
+  - actual: 37
+- voices[1].entities[134].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[134].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[135].endPos[1] (mismatch)
+  - expected: 85
+  - actual: 84
+- voices[1].entities[135].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[135].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[136].slurStarts (mismatch)
+  - expected: [45]
+  - actual: []
+- voices[1].entities[136].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[136].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[137].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[137].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[138].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[138].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[139].endPos[1] (mismatch)
+  - expected: 15
+  - actual: 14
+- voices[1].entities[139].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[139].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[140].slurStarts[0] (mismatch)
+  - expected: 46
+  - actual: 38
+- voices[1].entities[140].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[140].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[141].endPos[1] (mismatch)
+  - expected: 20
+  - actual: 19
+- voices[1].entities[141].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[141].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[142].slurStarts[0] (mismatch)
+  - expected: 47
+  - actual: 39
+- voices[1].entities[142].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[142].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[143].endPos[1] (mismatch)
+  - expected: 24
+  - actual: 23
+- voices[1].entities[143].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[143].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[144].slurStarts[0] (mismatch)
+  - expected: 48
+  - actual: 40
+- voices[1].entities[144].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[144].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[145].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[145].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[146].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[146].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[147].endPos[1] (mismatch)
+  - expected: 37
+  - actual: 36
+- voices[1].entities[147].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[147].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[148].slurStarts[0] (mismatch)
+  - expected: 49
+  - actual: 41
+- voices[1].entities[148].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[148].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[149].endPos[1] (mismatch)
+  - expected: 42
+  - actual: 41
+- voices[1].entities[149].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[149].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[150].slurStarts[0] (mismatch)
+  - expected: 50
+  - actual: 42
+- voices[1].entities[150].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[150].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[151].endPos[1] (mismatch)
+  - expected: 46
+  - actual: 45
+- voices[1].entities[151].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[151].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[152].slurStarts (mismatch)
+  - expected: [51]
+  - actual: []
+- voices[1].entities[152].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[152].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[153].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[153].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[154].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[154].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[155].endPos[1] (mismatch)
+  - expected: 65
+  - actual: 64
+- voices[1].entities[155].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[155].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[156].slurStarts[0] (mismatch)
+  - expected: 52
+  - actual: 43
+- voices[1].entities[156].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[156].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[157].endPos[1] (mismatch)
+  - expected: 70
+  - actual: 69
+- voices[1].entities[157].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[157].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[158].slurStarts[0] (mismatch)
+  - expected: 53
+  - actual: 44
+- voices[1].entities[158].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[158].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[159].endPos[1] (mismatch)
+  - expected: 74
+  - actual: 73
+- voices[1].entities[159].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[159].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[160].slurStarts (mismatch)
+  - expected: [54]
+  - actual: []
+- voices[1].entities[160].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[160].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[161].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[161].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[162].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[162].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[163].endPos[1] (mismatch)
+  - expected: 18
+  - actual: 17
+- voices[1].entities[163].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[163].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[164].slurStarts[0] (mismatch)
+  - expected: 55
+  - actual: 45
+- voices[1].entities[164].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[164].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[165].endPos[1] (mismatch)
+  - expected: 30
+  - actual: 29
+- voices[1].entities[165].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[165].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[166].slurStarts[0] (mismatch)
+  - expected: 56
+  - actual: 46
+- voices[1].entities[166].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[166].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[167].endPos[1] (mismatch)
+  - expected: 34
+  - actual: 33
+- voices[1].entities[167].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[167].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[168].nextPitch (missing)
+  - expected: 70
+  - actual: undefined
+- voices[1].entities[168].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[168].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[0].prevPitch (missing)
+  - expected: 63
+  - actual: undefined
+- voices[2].entities[0].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[0].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[1].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[1].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[2].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[2].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[3].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[3].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[4].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[4].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[5].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[5].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[6].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[6].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[7].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[7].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[8].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[8].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[9].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[9].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[10].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[10].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[11].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[11].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[12].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[12].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[13].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[13].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[14].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[14].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[15].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[15].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[16].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[16].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[17].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[17].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[18].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[18].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[19].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[19].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[20].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[20].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[21].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[21].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[22].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[22].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[23].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[23].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[24].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[24].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[25].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[25].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[26].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[26].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[27].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[27].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[28].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[28].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[29].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[29].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[30].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[30].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[31].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[31].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[32].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[32].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[33].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[33].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[34].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[34].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[35].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[2].entities[35].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[0].prevPitch (missing)
+  - expected: 50
+  - actual: undefined
+- voices[3].entities[0].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[0].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[1].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[1].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[2].endPos[1] (mismatch)
+  - expected: 21
+  - actual: 20
+- voices[3].entities[2].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[2].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[3].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[3].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[4].endPos[1] (mismatch)
+  - expected: 29
+  - actual: 28
+- voices[3].entities[4].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[4].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[5].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[5].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[6].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[6].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[7].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[7].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[8].endPos[1] (mismatch)
+  - expected: 55
+  - actual: 54
+- voices[3].entities[8].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[8].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[9].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[9].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[10].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[10].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[11].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[11].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[12].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[12].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[13].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[13].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[14].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[14].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[15].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[15].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[16].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[16].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[17].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[17].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[18].slurStarts (mismatch)
+  - expected: [4]
+  - actual: []
+- voices[3].entities[18].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[18].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[19].endPos[1] (mismatch)
+  - expected: 70
+  - actual: 69
+- voices[3].entities[19].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[19].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[20].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[20].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[21].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[21].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[22].slurStarts[0] (mismatch)
+  - expected: 5
+  - actual: 4
+- voices[3].entities[22].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[22].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[23].endPos[1] (mismatch)
+  - expected: 28
+  - actual: 27
+- voices[3].entities[23].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[23].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[24].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[24].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[25].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[25].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[26].endPos[1] (mismatch)
+  - expected: 45
+  - actual: 46
+- voices[3].entities[26].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[26].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[27].nextPitch (mismatch)
+  - expected: 53
+  - actual: 48
+- voices[3].entities[27].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[27].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[28].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[28].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[29].prevPitch (mismatch)
+  - expected: 53
+  - actual: 48
+- voices[3].entities[29].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[29].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[30].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[30].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[31].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[31].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[32].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[32].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[33].nextPitch (mismatch)
+  - expected: 63
+  - actual: 60
+- voices[3].entities[33].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[33].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[34].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[34].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[35].prevPitch (mismatch)
+  - expected: 63
+  - actual: 60
+- voices[3].entities[35].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[35].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[36].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[36].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[37].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[37].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[38].nextPitch (mismatch)
+  - expected: 62
+  - actual: 58
+- voices[3].entities[38].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[38].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[39].nextPitch (mismatch)
+  - expected: 58
+  - actual: 55
+- voices[3].entities[39].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[39].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[40].nextPitch (mismatch)
+  - expected: 57
+  - actual: 53
+- voices[3].entities[40].prevPitch (mismatch)
+  - expected: 62
+  - actual: 58
+- voices[3].entities[40].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[40].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[41].prevPitch (mismatch)
+  - expected: 58
+  - actual: 55
+- voices[3].entities[41].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[41].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[42].nextPitch (mismatch)
+  - expected: 58
+  - actual: 48
+- voices[3].entities[42].prevPitch (mismatch)
+  - expected: 57
+  - actual: 53
+- voices[3].entities[42].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[42].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[43].nextPitch (mismatch)
+  - expected: 57
+  - actual: 53
+- voices[3].entities[43].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[43].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[44].prevPitch (mismatch)
+  - expected: 58
+  - actual: 48
+- voices[3].entities[44].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[44].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[45].prevPitch (mismatch)
+  - expected: 57
+  - actual: 53
+- voices[3].entities[45].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[45].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[46].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[46].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[47].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[47].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[48].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[48].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[49].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[49].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[50].nextPitch (mismatch)
+  - expected: 50
+  - actual: 46
+- voices[3].entities[50].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[50].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[51].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[51].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[52].prevPitch (mismatch)
+  - expected: 50
+  - actual: 46
+- voices[3].entities[52].slurStarts[0] (mismatch)
+  - expected: 6
+  - actual: 5
+- voices[3].entities[52].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[52].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[53].endPos[1] (mismatch)
+  - expected: 9
+  - actual: 8
+- voices[3].entities[53].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[53].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[54].slurStarts[0] (mismatch)
+  - expected: 7
+  - actual: 6
+- voices[3].entities[54].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[54].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[55].endPos[1] (mismatch)
+  - expected: 17
+  - actual: 16
+- voices[3].entities[55].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[55].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[56].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[56].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[57].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[57].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[58].slurStarts[0] (mismatch)
+  - expected: 8
+  - actual: 7
+- voices[3].entities[58].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[58].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[59].endPos[1] (mismatch)
+  - expected: 44
+  - actual: 43
+- voices[3].entities[59].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[59].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[60].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[60].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[61].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[61].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[62].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[62].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[63].slurStarts[0] (mismatch)
+  - expected: 9
+  - actual: 8
+- voices[3].entities[63].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[63].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[64].endPos[1] (mismatch)
+  - expected: 76
+  - actual: 75
+- voices[3].entities[64].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[64].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[65].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[65].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[66].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[66].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[67].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[67].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[68].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[68].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[69].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[69].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[70].nextPitch (missing)
+  - expected: 50
+  - actual: undefined
+- voices[3].entities[70].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[3].entities[70].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[0].prevPitch (missing)
+  - expected: 46
+  - actual: undefined
+- voices[4].entities[0].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[0].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[1].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[1].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[2].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[2].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[3].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[3].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[4].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[4].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[5].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[5].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[6].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[6].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[7].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[7].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[8].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[8].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[9].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[9].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[10].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[10].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[11].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[11].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[12].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[12].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[13].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[13].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[14].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[14].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[15].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[15].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[16].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[16].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[17].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[17].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[18].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[18].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[19].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[19].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[20].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[20].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[21].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[21].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[22].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[22].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[23].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[23].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[24].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[24].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[25].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[25].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[26].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[26].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[27].endPos[1] (mismatch)
+  - expected: 54
+  - actual: 53
+- voices[4].entities[27].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[27].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[28].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[28].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[29].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[29].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[30].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[30].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[31].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[31].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[32].slurStarts (mismatch)
+  - expected: [2]
+  - actual: []
+- voices[4].entities[32].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[32].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[33].endPos[1] (mismatch)
+  - expected: 92
+  - actual: 91
+- voices[4].entities[33].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[33].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[34].slurStarts[0] (mismatch)
+  - expected: 3
+  - actual: 2
+- voices[4].entities[34].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[34].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[35].endPos[1] (mismatch)
+  - expected: 11
+  - actual: 10
+- voices[4].entities[35].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[35].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[36].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[36].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[37].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[37].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[38].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[38].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[39].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[39].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[40].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[40].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[41].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[41].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[42].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[42].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[43].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[43].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[44].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[44].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[45].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[45].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[46].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[46].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[47].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[47].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[48].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[48].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[49].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[49].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[50].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[50].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[51].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[51].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[52].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[52].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[53].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[53].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[54].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[54].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[55].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[55].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[56].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[56].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[57].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[57].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[58].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[58].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[59].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[59].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[60].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[60].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[61].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[61].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[62].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[62].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[63].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[63].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[64].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[64].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[65].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[65].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[66].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[66].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[67].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[67].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[68].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[68].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[69].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[69].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[70].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[70].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[71].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[71].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[72].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[72].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[73].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[73].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[74].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[74].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[75].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[75].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[76].nextPitch (missing)
+  - expected: 46
+  - actual: undefined
+- voices[4].entities[76].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[4].entities[76].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[0].prevPitch (missing)
+  - expected: 50
+  - actual: undefined
+- voices[5].entities[0].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[0].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[1].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[1].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[2].endPos[1] (mismatch)
+  - expected: 21
+  - actual: 20
+- voices[5].entities[2].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[2].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[3].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[3].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[4].endPos[1] (mismatch)
+  - expected: 29
+  - actual: 28
+- voices[5].entities[4].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[4].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[5].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[5].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[6].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[6].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[7].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[7].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[8].endPos[1] (mismatch)
+  - expected: 55
+  - actual: 54
+- voices[5].entities[8].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[8].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[9].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[9].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[10].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[10].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[11].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[11].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[12].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[12].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[13].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[13].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[14].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[14].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[15].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[15].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[16].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[16].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[17].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[17].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[18].slurStarts (mismatch)
+  - expected: [4]
+  - actual: []
+- voices[5].entities[18].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[18].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[19].endPos[1] (mismatch)
+  - expected: 69
+  - actual: 68
+- voices[5].entities[19].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[19].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[20].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[20].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[21].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[21].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[22].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[22].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[23].slurStarts[0] (mismatch)
+  - expected: 5
+  - actual: 4
+- voices[5].entities[23].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[23].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[24].endPos[1] (mismatch)
+  - expected: 28
+  - actual: 27
+- voices[5].entities[24].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[24].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[25].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[25].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[26].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[26].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[27].endPos[1] (mismatch)
+  - expected: 45
+  - actual: 46
+- voices[5].entities[27].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[27].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[28].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[28].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[29].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[29].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[30].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[30].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[31].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[31].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[32].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[32].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[33].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[33].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[34].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[34].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[35].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[35].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[36].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[36].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[37].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[37].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[38].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[38].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[39].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[39].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[40].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[40].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[41].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[41].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[42].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[42].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[43].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[43].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[44].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[44].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[45].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[45].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[46].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[46].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[47].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[47].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[48].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[48].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[49].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[49].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[50].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[50].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[51].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[51].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[52].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[52].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[53].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[53].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[54].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[54].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[55].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[55].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[56].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[56].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[57].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[57].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[58].slurStarts[0] (mismatch)
+  - expected: 6
+  - actual: 5
+- voices[5].entities[58].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[58].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[59].endPos[1] (mismatch)
+  - expected: 9
+  - actual: 8
+- voices[5].entities[59].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[59].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[60].slurStarts[0] (mismatch)
+  - expected: 7
+  - actual: 6
+- voices[5].entities[60].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[60].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[61].endPos[1] (mismatch)
+  - expected: 17
+  - actual: 16
+- voices[5].entities[61].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[61].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[62].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[62].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[63].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[63].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[64].slurStarts[0] (mismatch)
+  - expected: 8
+  - actual: 7
+- voices[5].entities[64].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[64].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[65].endPos[1] (mismatch)
+  - expected: 44
+  - actual: 43
+- voices[5].entities[65].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[65].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[66].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[66].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[67].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[67].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[68].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[68].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[69].slurStarts[0] (mismatch)
+  - expected: 9
+  - actual: 8
+- voices[5].entities[69].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[69].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[70].endPos[1] (mismatch)
+  - expected: 79
+  - actual: 78
+- voices[5].entities[70].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[70].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[71].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[71].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[72].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[72].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[73].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[73].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[74].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[74].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[75].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[75].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[76].nextPitch (missing)
+  - expected: 46
+  - actual: undefined
+- voices[5].entities[76].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[5].entities[76].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+
 ## 783_einsiedler-kreuzweg
 
 - Issues: 271
