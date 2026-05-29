@@ -6,7 +6,7 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
 ## Summary
 
 - Cases with reports: 14
-- Required gaps: 268
+- Required gaps: 264
 - Warnings: 0
 
 ## Gap Type Overview
@@ -15,7 +15,7 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
 | --- | ---: |
 | different-array-order | 4 |
 | different-length | 2 |
-| different-value | 8 |
+| different-value | 4 |
 | extra-event | 83 |
 | extra-field | 14 |
 | ignored-by-contract | 1334 |
@@ -67,7 +67,7 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
   - Unmatched TS events: 0
 
 - [lyrics](fixtures/cases/lyrics/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 9
+  - Required gaps: 5
   - Warnings: 0
   - Matched events: 8
   - Unmatched legacy events: 0

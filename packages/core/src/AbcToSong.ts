@@ -1445,7 +1445,12 @@ export class AbcToSong {
     const aLy = (sym as Record<string, unknown>)['a_ly'] as Array<{ t?: string }> | undefined
     if (!aLy || aLy.length === 0) return null
     // Mirrors Ruby: a_ly[0].t, with ABC lyric continuation and extender cleanup.
-    return aLy[0]?.t?.replace(/\n/g, '-').replace(/_/g, '') ?? ''
+    const firstLyric = aLy[0]
+    const text = firstLyric?.t?.replace(/\n/g, '-').replace(/_/g, '') ?? ''
+    if ((firstLyric as { ln?: unknown } | undefined)?.ln === 1 && text.length > 0 && !text.endsWith('-')) {
+      return `${text}-`
+    }
+    return text
   }
 
   private _parseInlineAnnotation(

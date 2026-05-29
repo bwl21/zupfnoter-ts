@@ -150,6 +150,20 @@ C
   })
 })
 
+describe('AbcToSong – lyrics', () => {
+  it('preserves the legacy lyric hyphenation marker', () => {
+    const song = transformFixture('lyrics')
+    const firstNote = song.voices
+      .flatMap((voice) => voice.entities)
+      .find((entity) => entity.type === 'Note' && entity.time === 0)
+
+    expect(firstNote?.type).toBe('Note')
+    if (firstNote?.type === 'Note') {
+      expect(firstNote.lyrics).toBe('Hel-')
+    }
+  })
+})
+
 interface SlurTupletParityEntity {
   type: string
   time: number
