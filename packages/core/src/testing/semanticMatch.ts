@@ -658,6 +658,16 @@ function normalizeRawEntity(entity: Record<string, unknown>): EntityFixture {
   if ('@visible'   in entity) out.visible  = entity['@visible']   as boolean
   if ('@pitch'     in entity) out.pitch    = entity['@pitch']     as number
   if ('@duration'  in entity) out.duration = entity['@duration']  as number
+  if (out.type === 'SynchPoint') {
+    const proxyNote = getRawSynchPointProxyNote(entity)
+    if (proxyNote !== undefined) {
+      if (out.pitch === undefined && '@pitch' in proxyNote) out.pitch = proxyNote['@pitch'] as number
+      if (out.variant === undefined && '@variant' in proxyNote) out.variant = proxyNote['@variant'] as 0 | 1 | 2
+      if (out.measureStart === undefined && '@measure_start' in proxyNote) {
+        out.measureStart = proxyNote['@measure_start'] as boolean
+      }
+    }
+  }
   if ('@annotations' in entity && entity['@annotations'] && typeof entity['@annotations'] === 'object' && !Array.isArray(entity['@annotations'])) {
     const annotations = entity['@annotations'] as Record<string, unknown>
     if (typeof annotations.text === 'string') out.text = annotations.text
@@ -693,6 +703,14 @@ function normalizeRawEntity(entity: Record<string, unknown>): EntityFixture {
     }
   }
   return out
+}
+
+function getRawSynchPointProxyNote(entity: Record<string, unknown>): Record<string, unknown> | undefined {
+  const notes = entity['@notes']
+  if (!Array.isArray(notes) || notes.length === 0) return undefined
+  const proxy = notes[notes.length - 1]
+  if (typeof proxy !== 'object' || proxy === null) return undefined
+  return proxy as Record<string, unknown>
 }
 
 function normalizeRawVoice(voice: unknown): VoiceFixture {

@@ -451,7 +451,10 @@ export class AbcToSong {
     if (mappedNotes.length === 1) {
       result = [requireDefined(mappedNotes[0], 'AbcToSong._transformNote(): expected note at index 0')]
     } else {
-      const first = requireDefined(mappedNotes[0], 'AbcToSong._transformNote(): expected first note in synch point')
+      const proxyNote = requireDefined(
+        mappedNotes[mappedNotes.length - 1],
+        'AbcToSong._transformNote(): expected proxy note in synch point',
+      )
       const synch: SynchPoint = {
         type: 'SynchPoint' as const,
         beat,
@@ -460,11 +463,11 @@ export class AbcToSong {
         endPos,
         decorations,
         barDecorations: [],
-        visible: first.visible,
+        visible: proxyNote.visible,
         variant: state.variantNo,
-        znId: first.znId,
+        znId: proxyNote.znId,
         duration,
-        pitch: first.pitch,
+        pitch: proxyNote.pitch,
         tieStart: false,
         tieEnd: false,
         tuplet,

@@ -108,4 +108,29 @@ describe('semanticMatch', () => {
     const fixture = normalizeRawSongFixture(raw)
     expect(fixture.voices[0]?.entities[0]?.znId).toBe('384')
   })
+
+  it('derives synchpoint proxy fields from the last raw note', () => {
+    const raw = {
+      meta_data: {},
+      voices: [[
+        {
+          class: 'Harpnotes::Music::SynchPoint',
+          '@notes': [
+            { '@pitch': 59, '@variant': 0, '@measure_start': false },
+            { '@pitch': 63, '@variant': 2, '@measure_start': true },
+          ],
+          '@synched_notes': [],
+        },
+      ]],
+      beat_maps: [{}],
+    }
+
+    const fixture = normalizeRawSongFixture(raw)
+    const entity = fixture.voices[0]?.entities[0]
+
+    expect(entity?.type).toBe('SynchPoint')
+    expect(entity?.pitch).toBe(63)
+    expect(entity?.variant).toBe(2)
+    expect(entity?.measureStart).toBe(true)
+  })
 })

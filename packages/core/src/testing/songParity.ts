@@ -908,8 +908,28 @@ function normalizeLegacyEvent(
   const variant = readNumber(entity['@variant']) ?? readNumber(entity.variant)
   if (variant === 0 || variant === 1 || variant === 2) event.variant = variant
 
+  if (kind === 'SynchPoint') {
+    const proxyNote = getLegacySynchPointProxyNote(entity)
+    if (proxyNote !== undefined) {
+      if (event.pitch === undefined) {
+        const proxyPitch = readNumber(proxyNote['@pitch']) ?? readNumber(proxyNote.pitch)
+        if (proxyPitch !== undefined) event.pitch = proxyPitch
+      }
+      if (event.variant === undefined) {
+        const proxyVariant = readNumber(proxyNote['@variant']) ?? readNumber(proxyNote.variant)
+        if (proxyVariant === 0 || proxyVariant === 1 || proxyVariant === 2) event.variant = proxyVariant
+      }
+    }
+  }
+
   const measureCount = readNumber(entity['@measure_count']) ?? readNumber(entity.measureCount)
-  const measureStart = readBoolean(entity['@measure_start']) ?? readBoolean(entity.measureStart)
+  let measureStart = readBoolean(entity['@measure_start']) ?? readBoolean(entity.measureStart)
+  if (measureStart === undefined && kind === 'SynchPoint') {
+    const proxyNote = getLegacySynchPointProxyNote(entity)
+    if (proxyNote !== undefined) {
+      measureStart = readBoolean(proxyNote['@measure_start']) ?? readBoolean(proxyNote.measureStart)
+    }
+  }
   const firstInPart = readBoolean(entity['@first_in_part']) ?? readBoolean(entity.firstInPart)
   const countNote = typeof entity['@count_note'] === 'string' || entity['@count_note'] === null
     ? entity['@count_note']
@@ -979,6 +999,14 @@ function normalizeLegacyEvent(
   }
 
   return finalizeEvent(event)
+}
+
+function getLegacySynchPointProxyNote(entity: Record<string, unknown>): Record<string, unknown> | undefined {
+  const notes = entity['@notes']
+  if (!Array.isArray(notes) || notes.length === 0) return undefined
+  const proxy = notes[notes.length - 1]
+  if (!isRecord(proxy)) return undefined
+  return proxy
 }
 
 function normalizeTsEvent(
