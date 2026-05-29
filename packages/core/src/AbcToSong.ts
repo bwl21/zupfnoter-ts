@@ -985,6 +985,27 @@ export class AbcToSong {
         state.deferredChords.push(chord)
         continue
       }
+      if (extra.type === '_' && companion.type !== 'Pause') {
+        const chord: Chordsymbol = {
+          type: 'Chordsymbol' as const,
+          beat: this._timeToBeat(sym.time),
+          time: sym.time,
+          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+          decorations: [],
+          barDecorations: [],
+          visible: true,
+          variant: state.variantNo,
+          znId: `chord-${voiceIndex}-${sym.istart}`,
+          confKey: `notebound.chord.v_${voiceId}.${companion.time}.${extraIndex}`,
+          companion,
+          text: this._normalizeChordText(text),
+          position: this._getDefaultNoteBoundPosition('chord', [0, 0]),
+          style: 'large',
+        }
+        state.deferredChords.push(chord)
+        continue
+      }
       if (extra.type !== '^') {
         continue
       }
@@ -993,7 +1014,26 @@ export class AbcToSong {
         continue
       }
 
-      if (companion.type === 'Pause' || !/^[!#<>]/.test(text.trim())) {
+      const hasExplicitAnnotationMarker = /^[!#]/.test(trimmedText) || trimmedText.startsWith('@@')
+      if (extra.type === '^' && companion.type !== 'Pause' && !hasExplicitAnnotationMarker && !/\s/.test(trimmedText)) {
+        const chord: Chordsymbol = {
+          type: 'Chordsymbol' as const,
+          beat: this._timeToBeat(sym.time),
+          time: sym.time,
+          startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
+          endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+          decorations: [],
+          barDecorations: [],
+          visible: true,
+          variant: state.variantNo,
+          znId: `chord-${voiceIndex}-${sym.istart}`,
+          confKey: `notebound.chord.v_${voiceId}.${companion.time}.${extraIndex}`,
+          companion,
+          text: this._normalizeChordText(text),
+          position: this._getDefaultNoteBoundPosition('chord', [0, 0]),
+          style: 'large',
+        }
+        state.deferredChords.push(chord)
         continue
       }
 
@@ -1060,7 +1100,7 @@ export class AbcToSong {
 
   private _extractMetaData(model: AbcModel): SongMetaData {
     const info = model.info
-    const writtenKey = info['K']?.split('\n')[0]
+    const writtenKey = info['K']?.split('\n')[0]?.trim().split(/\s+/)[0]
 
     // Effektive Tonart aus der ersten Stimme ermitteln (berücksichtigt shift=)
     const firstVoice = model.voices[0]

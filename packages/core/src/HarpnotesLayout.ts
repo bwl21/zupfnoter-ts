@@ -33,6 +33,7 @@ import type {
 } from '@zupfnoter/types'
 import type {
   ZupfnoterConfig,
+  ExtractConfig,
   DurationKey,
   LayoutConfig,
 } from '@zupfnoter/types'
@@ -463,7 +464,7 @@ export class HarpnotesLayout {
   /**
    * Main entry point: Song → Sheet.
    * Corresponds to Layout::Default#layout in harpnotes.rb.
-   */
+  */
   layout(song: Song, extractNr: number | string = 0, pageFormat: 'A3' | 'A4' = 'A4'): Sheet {
     const conf = this._layoutPrepareOptions(extractNr)
 
@@ -480,7 +481,7 @@ export class HarpnotesLayout {
     const resLegend = this._layoutLegend(song.metaData, conf, extractNr)
 
     // 5. System annotations
-    const resZnAnnotations = this._layoutZnAnnotations(song.metaData)
+    const resZnAnnotations = this._layoutZnAnnotations(song.metaData, conf)
 
     // 6. Lyrics
     const resLyrics = this._layoutLyrics(song, conf)
@@ -496,7 +497,6 @@ export class HarpnotesLayout {
 
     // 10. Instrument shape
     const resInstrument = this._layoutInstrument(conf, extractNr)
-
     const children: DrawableElement[] = [
       ...resImages,
       ...resSynchLines,
@@ -528,6 +528,13 @@ export class HarpnotesLayout {
     return buildConfstack(this._config, extractNr)
   }
 
+  private _resolveExtractOptions(conf: Confstack): ExtractConfig {
+    return requireDefined(
+      conf.get('extract') as ExtractConfig | undefined,
+      'HarpnotesLayout._resolveExtractOptions(): missing extract options',
+    )
+  }
+
   // ---------------------------------------------------------------------------
   // Voices
   // ---------------------------------------------------------------------------
@@ -537,13 +544,14 @@ export class HarpnotesLayout {
     extractNr: number | string,
     conf: Confstack,
   ): { activeVoices: number[]; voiceElements: DrawableElement[]; beatMaps: Map<number, BeatCompressionMap> } {
+    const extractOptions = this._resolveExtractOptions(conf)
     const layout = conf.get('layout') as LayoutConfig
-    const activeVoiceNrs = (conf.get('extract.voices') as number[] | undefined) ?? [1]
-    const flowlineVoices = new Set((conf.get('extract.flowlines') as number[] | undefined) ?? [])
-    const subflowlineVoices = new Set((conf.get('extract.subflowlines') as number[] | undefined) ?? [])
-    const jumplineVoices = new Set((conf.get('extract.jumplines') as number[] | undefined) ?? [])
-    const layoutlineVoices = (conf.get('extract.layoutlines') as number[] | undefined) ?? []
-    const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
+    const activeVoiceNrs = extractOptions.voices ?? [1]
+    const flowlineVoices = new Set(extractOptions.flowlines ?? [])
+    const subflowlineVoices = new Set(extractOptions.subflowlines ?? [])
+    const jumplineVoices = new Set(extractOptions.jumplines ?? [])
+    const layoutlineVoices = extractOptions.layoutlines ?? []
+    const startpos = extractOptions.startpos ?? 15
 
     // Compute beat compression for all layout voices.
     // layoutlineVoices contains 1-based voice numbers (from config);
@@ -572,8 +580,8 @@ export class HarpnotesLayout {
       const showFlowlines = flowlineVoices.has(voiceNr)
       const showSubflowlines = subflowlineVoices.has(voiceNr)
       const showJumplines = jumplineVoices.has(voiceNr)
-      const nonflowrest = (conf.get('extract.nonflowrest') as boolean | undefined) ?? false
-      const synchedPlayables = this._buildSynchedPlayableSet(song, activeVoiceNrs, conf)
+      const nonflowrest = extractOptions.nonflowrest ?? false
+      const synchedPlayables = this._buildSynchedPlayableSet(song, activeVoiceNrs, extractOptions)
 
       const elements = this._layoutVoice(
         voice,
@@ -638,11 +646,11 @@ export class HarpnotesLayout {
   private _buildSynchedPlayableSet(
     song: Song,
     activeVoiceNrs: number[],
-    conf: Confstack,
+    extractOptions: ExtractConfig,
   ): Set<PlayableEntity> {
     const result = new Set<PlayableEntity>()
     const activeVoices = new Set(activeVoiceNrs)
-    const synchlinePairs = (conf.get('extract.synchlines') as number[][] | undefined) ?? []
+    const synchlinePairs = extractOptions.synchlines ?? []
 
     for (const [leftVoiceNr, rightVoiceNr] of synchlinePairs) {
       if (leftVoiceNr === undefined || rightVoiceNr === undefined) continue
@@ -1676,7 +1684,7 @@ export class HarpnotesLayout {
     activeVoiceNrs: number[],
   ): FlowLine[] {
     const result: FlowLine[] = []
-    const layout = this._config.layout
+    const layout = conf.get('layout') as LayoutConfig
     const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
     const synchlinePairs = (conf.get('extract.synchlines') as number[][] | undefined) ?? []
     const activeVoices = new Set(activeVoiceNrs)
@@ -1793,13 +1801,14 @@ export class HarpnotesLayout {
   ): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const legendConf = conf.get('extract.legend') as Record<string, unknown> | undefined
+    const extractOptions = this._resolveExtractOptions(conf)
+    const legendConf = extractOptions.legend as Record<string, unknown> | undefined
 
     const titlePos = (legendConf?.['pos'] as [number, number] | undefined) ?? [320, 7]
     const titleStyle = (legendConf?.['tstyle'] as string | undefined) ?? 'large'
     const secondaryPos = (legendConf?.['spos'] as [number, number] | undefined) ?? [320, 27]
     const secondaryStyle = (legendConf?.['style'] as string | undefined) ?? 'regular'
-    const extractTitle = (conf.get('extract.title') as string | undefined) ?? String(extractNr)
+    const extractTitle = extractOptions.title ?? String(extractNr)
     const legendAlign = legendConf?.['align'] as string | undefined
     const align: 'left' | 'right' | 'center' = legendAlign === 'l'
       ? 'right'
@@ -1829,7 +1838,7 @@ export class HarpnotesLayout {
       .filter((entry) => entry !== undefined)
       .join('\n')
 
-    if (secondaryText && conf.get('extract.notes.T06_legend') === undefined) {
+    if (secondaryText && extractOptions.notes?.T06_legend === undefined) {
       result.push({
         type: 'Annotation',
         center: secondaryPos,
@@ -1848,9 +1857,10 @@ export class HarpnotesLayout {
     return result
   }
 
-  private _layoutZnAnnotations(metaData: SongMetaData): Annotation[] {
+  private _layoutZnAnnotations(metaData: SongMetaData, conf: Confstack): Annotation[] {
     const filename = metaData.filename ?? ''
     const checksum = metaData.checksum ?? ''
+    const layout = conf.get('layout') as LayoutConfig
 
     return [
       {
@@ -1858,8 +1868,8 @@ export class HarpnotesLayout {
         center: [150, 289],
         text: `${filename} - created by Zupfnoter`,
         style: 'smaller',
-        color: this._config.layout.color.color_default,
-        lineWidth: this._config.layout.LINE_THIN,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
         visible: true,
         more_conf_keys: [],
         draginfo: this._annotationDraginfo(),
@@ -1869,8 +1879,8 @@ export class HarpnotesLayout {
         center: [325, 289],
         text: 'Zupfnoter: https://www.zupfnoter.de',
         style: 'smaller',
-        color: this._config.layout.color.color_default,
-        lineWidth: this._config.layout.LINE_THIN,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
         visible: true,
         more_conf_keys: [],
         draginfo: this._annotationDraginfo(),
@@ -1880,8 +1890,8 @@ export class HarpnotesLayout {
         center: [380, 289],
         text: checksum,
         style: 'smaller',
-        color: this._config.layout.color.color_default,
-        lineWidth: this._config.layout.LINE_THIN,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
         visible: true,
       },
     ]
@@ -1940,10 +1950,15 @@ export class HarpnotesLayout {
   // Sheet annotations
   // ---------------------------------------------------------------------------
 
-  private _layoutAnnotations(metaData: SongMetaData, conf: Confstack, extractNr: number | string): Annotation[] {
+  private _layoutAnnotations(
+    metaData: SongMetaData,
+    conf: Confstack,
+    extractNr: number | string,
+  ): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const notes = conf.get('extract.notes') as Record<string, unknown> | undefined
+    const extractOptions = this._resolveExtractOptions(conf)
+    const notes = extractOptions.notes as Record<string, unknown> | undefined
 
     if (!notes) return result
 
@@ -1959,7 +1974,7 @@ export class HarpnotesLayout {
       result.push({
         type: 'Annotation',
         center: ann.pos,
-        text: this._normalizeAnnotationText(this._resolveAnnotationPlaceholders(ann.text, metaData, conf, extractNr)),
+        text: this._normalizeAnnotationText(this._resolveAnnotationPlaceholders(ann.text, metaData, extractOptions, extractNr)),
         style: ann.style ?? 'regular',
         align,
         color: layout.color.color_default,
@@ -2006,7 +2021,7 @@ export class HarpnotesLayout {
   private _resolveAnnotationPlaceholders(
     text: string,
     metaData: SongMetaData,
-    conf: Confstack,
+    extractOptions: ExtractConfig,
     extractNr: number | string,
   ): string {
     const produce = this._config.produce ?? []
@@ -2014,8 +2029,8 @@ export class HarpnotesLayout {
       .map((nr) => this._config.extract[String(nr)]?.filenamepart)
       .filter((part): part is string => part !== undefined)
       .join(' ')
-    const extractFilename = (conf.get('extract.filenamepart') as string | undefined) ?? ''
-    const extractTitle = (conf.get('extract.title') as string | undefined) ?? String(extractNr)
+    const extractFilename = extractOptions.filenamepart ?? ''
+    const extractTitle = extractOptions.title ?? String(extractNr)
     const placeholders: Record<string, string> = {
       composer: metaData.composer ?? '',
       key: metaData.key ?? '',
@@ -2335,6 +2350,7 @@ export class HarpnotesLayout {
 
   private _layoutInstrument(conf: Confstack, _extractNr: number | string): DrawableElement[] {
     const shape = conf.get('extract.instrument_shape') as string | undefined
+    const layout = conf.get('layout') as LayoutConfig
 
     if (!shape) return []
 
@@ -2345,8 +2361,8 @@ export class HarpnotesLayout {
         type: 'Path',
         path: pathData,
         fill: false,
-        color: this._config.layout.color.color_default,
-        lineWidth: this._config.layout.LINE_THIN,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
         visible: true,
         more_conf_keys: [],
       }]
@@ -2364,8 +2380,7 @@ export class HarpnotesLayout {
 
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const a4Pages = (conf.get('printer.a4Pages') as number[] | undefined)
-      ?? this._config.printer.a4Pages
+    const a4Pages = (conf.get('printer.a4Pages') as number[] | undefined) ?? []
     const xSpacing = layout.X_SPACING
     if (a4Pages.length <= 1) return result
 

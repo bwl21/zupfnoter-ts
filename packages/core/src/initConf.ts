@@ -16,6 +16,7 @@
  */
 
 import type { ZupfnoterConfig } from '@zupfnoter/types'
+import type { ExtractConfig } from '@zupfnoter/types'
 import type { Confstack } from './Confstack.js'
 
 // ---------------------------------------------------------------------------
@@ -42,6 +43,94 @@ function cutStringNames(strings: string[]): string {
  *              Closures werden erst bei Zugriff ausgewertet (lazy).
  */
 export function initConf(conf: Confstack): ZupfnoterConfig {
+  const extract0 = {
+    title: 'alle Stimmen',
+    startpos: 15,
+    voices: [1, 2, 3, 4],
+    synchlines: [[1, 2], [3, 4]],
+    flowlines: [1, 3],
+    subflowlines: [2, 4],
+    jumplines: [1, 3],
+    repeatsigns: {
+      voices: [],
+      left: { pos: [-7, -2], text: '|:', style: 'bold' },
+      right: { pos: [5, -2], text: ':|', style: 'bold' },
+    },
+    layoutlines: [1, 2, 3, 4],
+    legend: { spos: [320, 27], pos: [320, 7], tstyle: 'large', align: 'r', style: 'regular' },
+    lyrics: {},
+    nonflowrest: false,
+    barnumbers: {
+      voices: [],
+      pos: [6, -4],
+      autopos: true,
+      apanchor: 'box',
+      apbase: [1, 1],
+      style: 'small_bold',
+      prefix: '',
+    },
+    countnotes: {
+      voices: [],
+      pos: [3, -2],
+      autopos: true,
+      apbase: [1, -0.5],
+      apanchor: 'box',
+      style: 'smaller',
+    },
+    stringnames: {
+      text: 'G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G',
+      vpos: [],
+      style: 'small',
+      marks: { vpos: [11], hpos: [43, 55, 79] },
+    },
+    notes: {},
+    printer: {
+      a3Offset: [0, 0],
+      a4Offset: [-5, 0],
+      a4Pages: [0, 1, 2],
+      showBorder: false,
+    },
+    layout: {
+      limit_a3: true,
+      bottomup: false,
+      beams: false,
+      jumpline_anchor: [3, 1],
+      color: {
+        color_default: 'black',
+        color_variant1: 'grey',
+        color_variant2: 'dimgrey',
+      },
+      LINE_THIN: 0.1,
+      LINE_MEDIUM: 0.3,
+      LINE_THICK: 0.5,
+      PITCH_OFFSET: -43,
+      X_SPACING: 11.5,
+      X_OFFSET: 2.8,
+      ELLIPSE_SIZE: [3.5, 1.7],
+      REST_SIZE: [4, 2],
+      DRAWING_AREA_SIZE: [400, 282],
+      instrument: '37-strings-g-g',
+      tuning: 'fixed',
+      packer: {
+        pack_method: 0,
+        pack_max_spreadfactor: 2,
+        pack_min_increment: 0.2,
+      },
+    },
+  } as ExtractConfig
+  const extract1 = {
+    title: 'Sopran, Alt',
+    voices: [1, 2],
+  } as ExtractConfig
+  const extract2 = {
+    title: 'Tenor, Bass',
+    voices: [3, 4],
+  } as ExtractConfig
+  const extract3 = {
+    title: 'Melodie',
+    voices: [1],
+  } as ExtractConfig
+
   return {
     produce: [0],
     restposition: {
@@ -183,54 +272,10 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
     },
 
     extract: {
-      '0': {
-        title: 'alle Stimmen',
-        startpos: 15,
-        voices: [1, 2, 3, 4],
-        synchlines: [[1, 2], [3, 4]],
-        flowlines: [1, 3],
-        subflowlines: [2, 4],
-        jumplines: [1, 3],
-        repeatsigns: {
-          voices: [],
-          left: { pos: [-7, -2], text: '|:', style: 'bold' },
-          right: { pos: [5, -2], text: ':|', style: 'bold' },
-        },
-        layoutlines: [1, 2, 3, 4],
-        legend: { spos: [320, 27], pos: [320, 7], tstyle: 'large', align: 'r', style: 'regular' },
-        lyrics: {},
-        nonflowrest: false,
-        barnumbers: {
-          voices: [],
-          pos: [6, -4],
-          autopos: true,
-          apanchor: 'box',
-          apbase: [1, 1],
-          style: 'small_bold',
-          prefix: '',
-        },
-        countnotes: {
-          voices: [],
-          pos: [3, -2],
-          autopos: true,
-          apbase: [1, -0.5],
-          apanchor: 'box',
-          style: 'smaller',
-        },
-        stringnames: {
-          text: 'G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G',
-          vpos: [],
-          style: 'small',
-          marks: { vpos: [11], hpos: [43, 55, 79] },
-        },
-        notes: {},
-        printer: {
-          a3Offset: [0, 0],
-          a4Offset: [-5, 0],
-          a4Pages: [0, 1, 2],
-          showBorder: false,
-        },
-      },
+      '0': extract0,
+      '1': extract1,
+      '2': extract2,
+      '3': extract3,
     },
 
     printer: {
