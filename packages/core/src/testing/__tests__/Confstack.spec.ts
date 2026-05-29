@@ -25,17 +25,17 @@ import type { ZupfnoterConfig } from '@zupfnoter/types'
 // ---------------------------------------------------------------------------
 
 describe('Confstack – Stack-Operationen', () => {
-  it('startet mit depth 0', () => {
+  it('startet mit depth 1', () => {
     const cs = new Confstack()
-    expect(cs.depth).toBe(0)
+    expect(cs.depth).toBe(1)
   })
 
   it('push erhöht depth', () => {
     const cs = new Confstack()
     cs.push({ a: 1 })
-    expect(cs.depth).toBe(1)
-    cs.push({ b: 2 })
     expect(cs.depth).toBe(2)
+    cs.push({ b: 2 })
+    expect(cs.depth).toBe(3)
   })
 
   it('push erstellt einen Snapshot und bleibt gegen Außenmutation stabil', () => {
@@ -52,11 +52,12 @@ describe('Confstack – Stack-Operationen', () => {
     const cs = new Confstack()
     cs.push({ x: 42 })
     cs.pop()
-    expect(cs.depth).toBe(0)
+    expect(cs.depth).toBe(1)
   })
 
   it('pop auf leerem Stack wirft', () => {
     const cs = new Confstack()
+    cs.pop()
     expect(() => cs.pop()).toThrow('stack is empty')
   })
 
@@ -84,12 +85,12 @@ describe('Confstack.get() – Punkt-Notation', () => {
   it('gibt undefined zurück wenn Pfad nicht existiert', () => {
     const cs = new Confstack()
     cs.push({ layout: { X_SPACING: 11.5 } })
-    expect(cs.get('layout.MISSING')).toBeUndefined()
+    expect(() => cs.get('layout.MISSING')).toThrow('confstack: key not available: layout.MISSING')
   })
 
   it('gibt undefined zurück bei leerem Stack', () => {
     const cs = new Confstack()
-    expect(cs.get('layout.ELLIPSE_SIZE')).toBeUndefined()
+    expect(() => cs.get('layout.ELLIPSE_SIZE')).toThrow('confstack: key not available: layout.ELLIPSE_SIZE')
   })
 
   it('liest tief verschachtelte Werte', () => {
@@ -152,12 +153,12 @@ describe('Confstack.get() – Late Binding', () => {
     expect(cs.get('layout.X_SPACING')).toBe(42)
   })
 
-  it('wertet Funktion bei jedem Zugriff neu aus', () => {
+  it('wertet Funktion beim zweiten Zugriff aus dem Cache aus', () => {
     let counter = 0
     const cs = new Confstack()
     cs.push({ counter: () => ++counter })
     expect(cs.get('counter')).toBe(1)
-    expect(cs.get('counter')).toBe(2)
+    expect(cs.get('counter')).toBe(1)
   })
 
   it('nicht-Funktionswerte werden direkt zurückgegeben', () => {
@@ -228,7 +229,7 @@ describe('Confstack.set()', () => {
     const cs = new Confstack()
     cs.push({ layout: { X_SPACING: 11.5, Y_SCALE: 1.0 } })
     cs.set('layout.X_SPACING', DeleteMe)
-    expect(cs.get('layout.X_SPACING')).toBeUndefined()
+    expect(() => cs.get('layout.X_SPACING')).toThrow('confstack: key not available: layout.X_SPACING')
     expect(cs.get('layout.Y_SCALE')).toBe(1.0)
   })
 })

@@ -36,9 +36,11 @@ export type ConfigValue = unknown | ((...args: unknown[]) => unknown)
  * außerhalb des Stacks später mutiert wird.
  */
 export class Confstack {
-  private _stack: ConfigObject[] = []
+  private _stack: ConfigObject[] = [{}]
   private _resultFlat: ConfigObject = {}
   private _keysFlat: string[] = []
+  private _lookupCache = new Map<string, unknown>()
+  private _resultCache = new WeakMap<Function, unknown>()
 
   /**
    * Legt eine neue Konfigurationsschicht oben auf den Stack.
@@ -49,6 +51,8 @@ export class Confstack {
       ? {}
       : this._stack[this._stack.length - 1]
     this._stack.push(deepMerge(base, config))
+    this._lookupCache.clear()
+    this._resultCache = new WeakMap()
     this._flatten()
   }
 
@@ -62,6 +66,8 @@ export class Confstack {
       throw new Error('Confstack.pop(): stack is empty')
     }
     this._stack.pop()
+    this._lookupCache.clear()
+    this._resultCache = new WeakMap()
     this._flatten()
   }
 
@@ -81,8 +87,11 @@ export class Confstack {
    * Entspricht `get(key)` / `[](key)` in `confstack.rb`.
    */
   get(path: string): unknown {
-    const value = digPath(this._resultFlat, path.split('.'))
-    return resolveDependencies(value)
+    const value = this._lookup(path)
+    if (value === undefined && !this._keysFlat.includes(path)) {
+      throw new Error(`confstack: key not available: ${path}`)
+    }
+    return this._resolveDependencies(value)
   }
 
   /**
@@ -92,7 +101,7 @@ export class Confstack {
    * Entspricht `get()` ohne Argument in `confstack.rb`.
    */
   getAll(): ConfigObject {
-    return resolveDependencies(this._resultFlat) as ConfigObject
+    return this._resolveDependencies(this._resultFlat) as ConfigObject
   }
 
   /**
@@ -101,20 +110,23 @@ export class Confstack {
    * Gibt `undefined` zurück wenn der Pfad nicht existiert.
    */
   getSubtree(prefix: string): ConfigObject | undefined {
-    const value = digPath(this._resultFlat, prefix.split('.'))
+    const value = this._lookup(prefix)
     if (value === undefined) return undefined
-    return resolveDependencies(value) as ConfigObject
+    return this._resolveDependencies(value) as ConfigObject
   }
 
   /**
    * Wie `get()`, aber wirft einen Fehler wenn kein Wert gefunden wurde.
    */
   require(path: string): unknown {
-    const value = this.get(path)
-    if (value === undefined) {
-      throw new Error(`Confstack.require(): no value found for path '${path}'`)
+    try {
+      return this.get(path)
+    } catch (error) {
+      if (error instanceof Error && error.message === `confstack: key not available: ${path}`) {
+        throw new Error(`Confstack.require(): no value found for path '${path}'`)
+      }
+      throw error
     }
-    return value
   }
 
   /**
@@ -158,7 +170,9 @@ export class Confstack {
    */
   resetTo(level: number): void {
     if (level < 0) level = 0
-    this._stack = this._stack.slice(0, level)
+    this._stack = this._stack.slice(0, level + 1)
+    this._lookupCache.clear()
+    this._resultCache = new WeakMap()
     this._flatten()
   }
 
@@ -195,40 +209,57 @@ export class Confstack {
    * - Baut daraus einen verschachtelten Hash auf
    */
   private _flatten(): void {
-    // Alle Schlüssel aus allen Schichten sammeln (unique)
-    const allKeys = new Set<string>()
-    for (const layer of this._stack) {
-      for (const key of getKeys(layer)) {
-        allKeys.add(key)
-      }
-    }
-    this._keysFlat = Array.from(allKeys)
-
-    // Für jeden Schlüssel: letzten Treffer von unten finden
-    // (confstack.rb: `@confstack.map { |s| _get_one(s, key) }.compact.last`)
-    const flat: ConfigObject = {}
-    for (const key of this._keysFlat) {
-      const value = this._getOne(key)
-      if (value !== undefined) {
-        setNestedValue(flat, key.split('.'), value)
-      }
-    }
-    this._resultFlat = flat
+    const top = this._stack[this._stack.length - 1]
+    this._resultFlat = top ?? {}
+    this._keysFlat = top === undefined ? [] : getKeys(top)
   }
 
   /**
-   * Sucht einen Schlüssel in allen Schichten und gibt den letzten Treffer zurück.
-   * Entspricht `_get(key)` in `confstack.rb`.
+   * Liest einen Wert ohne Late-Binding-Auflösung aus der obersten Schicht.
    */
-  private _getOne(key: string): unknown {
-    let result: unknown = undefined
-    for (const layer of this._stack) {
-      const value = digPath(layer, key.split('.'))
-      if (value !== undefined) {
-        result = value
-      }
+  private _lookup(path: string): unknown {
+    if (this._lookupCache.has(path)) {
+      return this._lookupCache.get(path)
     }
-    return result
+
+    const top = this._stack[this._stack.length - 1]
+    const value = top === undefined ? undefined : digPath(top, path.split('.'))
+    this._lookupCache.set(path, value)
+    return value
+  }
+
+  /**
+   * Löst Late-Binding-Werte rekursiv unter Berücksichtigung des Legacy-Caches auf.
+   */
+  private _resolveDependencies(value: unknown, callstack: Set<Function> = new Set()): unknown {
+    if (typeof value === 'function') {
+      const fn = value as () => unknown
+      if (this._resultCache.has(fn)) {
+        return this._resultCache.get(fn)
+      }
+      if (callstack.has(fn)) {
+        throw new Error('Confstack: circular late-binding dependency detected')
+      }
+      const next = new Set(callstack)
+      next.add(fn)
+      const result = this._resolveDependencies(fn(), next)
+      this._resultCache.set(fn, result)
+      return result
+    }
+
+    if (Array.isArray(value)) {
+      return value.map(item => this._resolveDependencies(item, callstack))
+    }
+
+    if (value !== null && typeof value === 'object') {
+      const result: ConfigObject = {}
+      for (const [k, v] of Object.entries(value as ConfigObject)) {
+        result[k] = this._resolveDependencies(v, callstack)
+      }
+      return result
+    }
+
+    return value
   }
 }
 
