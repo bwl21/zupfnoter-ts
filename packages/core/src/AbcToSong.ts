@@ -1158,7 +1158,7 @@ export class AbcToSong {
       : {
         text: null,
       }
-    const template = {
+    const template = config.template ?? {
       filebase: '-no-template-',
       title: '- no template -',
     }

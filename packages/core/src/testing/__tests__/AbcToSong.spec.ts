@@ -137,6 +137,17 @@ C
       ],
     })
   })
+
+  it('uses the template from the resolved config', () => {
+    const song = transformFixture('694_Sheep-may-safely-graze')
+
+    expect(song.harpnoteOptions).toMatchObject({
+      template: {
+        filebase: '9999_Voerlage-Monbachtal-2024',
+        title: 'Vorlage Monbachtal 2024',
+      },
+    })
+  })
 })
 
 interface SlurTupletParityEntity {
