@@ -209,7 +209,8 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
         d1:  { sizeFactor: 0.05, fill: 'filled', dotted: false },
       },
 
-      // Legacy-Beam-Mapping (wird bei layout.beams=true referenziert).
+      // Teil der vollständigen Default-Konfiguration; bei layout.beams=true
+      // wird diese Tabelle später anstelle von DURATION_TO_STYLE verwendet.
       DURATION_TO_BEAMS: {
         err: [1, 'filled', false],
         d96: [1, 'empty', false],

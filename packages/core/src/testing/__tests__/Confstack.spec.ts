@@ -16,6 +16,7 @@
 import { describe, it, expect } from 'vitest'
 import { Confstack, DeleteMe } from '../../Confstack.js'
 import { buildConfstack } from '../../buildConfstack.js'
+import { initConf } from '../../initConf.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
 
@@ -404,11 +405,15 @@ describe('buildConfstack()', () => {
   })
 
   it('Layout-Override eines Extrakts überschreibt globale Layout-Werte', () => {
+    const base0 = defaultTestConfig.extract['0']
+    if (base0 === undefined) {
+      throw new Error('defaultTestConfig.extract[0] missing')
+    }
     const config: ZupfnoterConfig = {
       ...defaultTestConfig,
       extract: {
         '0': {
-          ...defaultTestConfig.extract['0']!,
+          ...base0,
           layout: {
             X_SPACING: 99.0,
           },
@@ -421,11 +426,15 @@ describe('buildConfstack()', () => {
   })
 
   it('Printer-Override eines Extrakts überschreibt globale Printer-Werte', () => {
+    const base0 = defaultTestConfig.extract['0']
+    if (base0 === undefined) {
+      throw new Error('defaultTestConfig.extract[0] missing')
+    }
     const config: ZupfnoterConfig = {
       ...defaultTestConfig,
       extract: {
         '0': {
-          ...defaultTestConfig.extract['0']!,
+          ...base0,
           printer: {
             showBorder: true,
           },
@@ -458,6 +467,18 @@ describe('buildConfstack()', () => {
     const cs = buildConfstack(config, 0)
     expect(cs.get('layout.beams')).toBe(true)
     expect(cs.get('layout.DURATION_TO_BEAMS')).toBeDefined()
+  })
+
+  it('liefert die vollständige Default-Konfiguration schon in initConf()', () => {
+    const conf = new Confstack()
+    const config = initConf(conf)
+    const base0 = config.extract['0']
+    if (base0 === undefined) {
+      throw new Error('initConf() extract[0] missing')
+    }
+
+    expect(config.layout.DURATION_TO_BEAMS).toBeDefined()
+    expect(base0.layout?.beams).toBe(false)
   })
 })
 
