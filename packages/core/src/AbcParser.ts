@@ -87,8 +87,29 @@ function countSlurStartsFromSource(source: string, startOffset: number): number[
   if (startOffset <= 0) return []
 
   let index = startOffset - 1
-  while (index >= 0 && /\s/.test(source[index] ?? '')) {
-    index -= 1
+  const skipDecorationsBackward = (): void => {
+    while (index >= 0) {
+      if (source[index] !== '!') return
+
+      let left = index - 1
+      while (left >= 0 && source[left] !== '!') {
+        left -= 1
+      }
+      if (left < 0) return
+
+      index = left - 1
+      while (index >= 0 && /\s/.test(source[index] ?? '')) {
+        index -= 1
+      }
+    }
+  }
+
+  while (index >= 0) {
+    while (index >= 0 && /\s/.test(source[index] ?? '')) {
+      index -= 1
+    }
+    skipDecorationsBackward()
+    if (source[index] !== '!') break
   }
 
   let count = 0

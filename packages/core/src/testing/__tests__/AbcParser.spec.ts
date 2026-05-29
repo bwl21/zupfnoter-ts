@@ -42,6 +42,14 @@ K:C
 ((((C D)))) |]
 `
 
+const DECORATED_SLUR_ABC = `X:1
+T:Decorated Slur
+M:4/4
+L:1/4
+K:C
+(!3!C D) |]
+`
+
 function expectedLegacyChecksum(abcText: string): string {
   let checksum = 0x12345678
   const stripped = abcText.trim()
@@ -130,6 +138,15 @@ describe('AbcParser', () => {
       const firstNote = noteSymbols[0]
 
       expect(firstNote?.slur_sls).toEqual([1, 2, 3, 4])
+    })
+
+    it('counts slur starts before inline decorations', () => {
+      const parser = new AbcParser()
+      const model = parser.parse(DECORATED_SLUR_ABC)
+      const voice = model.voices[0]
+      const firstNote = voice?.symbols.find((s) => s.type === ABC_TYPE.NOTE)
+
+      expect(firstNote?.slur_sls).toEqual([1])
     })
 
     it('collects errors for invalid ABC without throwing', () => {
