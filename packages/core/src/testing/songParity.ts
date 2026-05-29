@@ -1502,6 +1502,27 @@ function withGapExcerpt<T extends SongGap>(gap: T, legacy?: NormalizedEvent, ts?
   }
 }
 
+function describeAbcEndGap(legacy: NormalizedEvent, ts: NormalizedEvent): { impact: string; messageSuffix: string } {
+  const legacyOffsets = legacy.sourceOffsets?.join('..')
+  const tsOffsets = ts.sourceOffsets?.join('..')
+  const offsetsDiffer =
+    legacy.sourceOffsets !== undefined &&
+    ts.sourceOffsets !== undefined &&
+    (legacy.sourceOffsets[0] !== ts.sourceOffsets[0] || legacy.sourceOffsets[1] !== ts.sourceOffsets[1])
+
+  const offsetNote =
+    legacyOffsets !== undefined || tsOffsets !== undefined
+      ? ` Raw istart/iend spans: ${legacyOffsets ?? '-'} vs ${tsOffsets ?? '-'}.`
+      : ''
+
+  return {
+    impact: offsetsDiffer
+      ? 'abcEnd diverges together with the raw istart/iend span reported by abc2svg. Fix the ABC input at this position; TS should not compensate the offset.'
+      : 'abcEnd diverges on a shared raw span. Re-check the ABC input and the abc2svg boundary handling at this position.',
+    messageSuffix: `${offsetNote} Correct the ABC source here instead of adding a TS endoffset adjustment.`,
+  }
+}
+
 function formatAbcPosition(event?: NormalizedEvent): string | undefined {
   if (!event) return undefined
   const start = event.abcStart !== undefined ? event.abcStart.join(':') : undefined
@@ -1523,6 +1544,7 @@ function compareFieldValue(
   tsValue: unknown,
   contractField: ContractSection,
 ): SongGap | null {
+  const abcEndGapHint = fieldPath === 'abcEnd' ? describeAbcEndGap(legacy, ts) : undefined
   if (legacyValue === undefined && tsValue === undefined) return null
   if (legacyValue === undefined) {
     return withGapExcerpt({
@@ -1539,8 +1561,14 @@ function compareFieldValue(
       tsJsonPath: formatPath(ts.sourcePath, fieldPath),
       tsValue,
       matchQuality: 'exact-source',
-      impact: 'TS emits a field not present in legacy; downstream consumers may rely on this value only in the new pipeline.',
-      message: `Extra field ${fieldPath}`,
+      impact:
+        fieldPath === 'abcEnd'
+          ? abcEndGapHint?.impact ?? 'TS emits a field not present in legacy; downstream consumers may rely on this value only in the new pipeline.'
+          : 'TS emits a field not present in legacy; downstream consumers may rely on this value only in the new pipeline.',
+      message:
+        fieldPath === 'abcEnd'
+          ? `Extra field ${fieldPath}.${abcEndGapHint?.messageSuffix ?? ''}`
+          : `Extra field ${fieldPath}`,
     }, legacy, ts)
   }
   if (tsValue === undefined) {
@@ -1558,8 +1586,14 @@ function compareFieldValue(
       tsJsonPath: ts.sourcePath,
       legacyValue,
       matchQuality: 'exact-source',
-      impact: 'Legacy carries a field that the TS pipeline dropped; later layout or debug stages may diverge because of the missing data.',
-      message: `Missing field ${fieldPath}`,
+      impact:
+        fieldPath === 'abcEnd'
+          ? abcEndGapHint?.impact ?? 'Legacy carries a field that the TS pipeline dropped; later layout or debug stages may diverge because of the missing data.'
+          : 'Legacy carries a field that the TS pipeline dropped; later layout or debug stages may diverge because of the missing data.',
+      message:
+        fieldPath === 'abcEnd'
+          ? `Missing field ${fieldPath}.${abcEndGapHint?.messageSuffix ?? ''}`
+          : `Missing field ${fieldPath}`,
     }, legacy, ts)
   }
 
@@ -1580,8 +1614,14 @@ function compareFieldValue(
         legacyValue,
         tsValue,
         matchQuality: 'exact-source',
-        impact: 'Array cardinality differs; ordering and semantic groupings can shift in downstream consumers.',
-        message: `Different length at ${fieldPath}`,
+        impact:
+          fieldPath === 'abcEnd'
+            ? abcEndGapHint?.impact ?? 'Array cardinality differs; ordering and semantic groupings can shift in downstream consumers.'
+            : 'Array cardinality differs; ordering and semantic groupings can shift in downstream consumers.',
+        message:
+          fieldPath === 'abcEnd'
+            ? `Different length at ${fieldPath}.${abcEndGapHint?.messageSuffix ?? ''}`
+            : `Different length at ${fieldPath}`,
       }, legacy, ts)
     }
     const sameOrder = legacyValue.every((entry, index) => valuesEqual(entry, tsValue[index]))
@@ -1604,8 +1644,14 @@ function compareFieldValue(
           legacyValue,
           tsValue,
           matchQuality: 'sequence',
-          impact: 'The array carries the same members in a different order, which is still a semantic change for order-sensitive consumers.',
-          message: `Different array order at ${fieldPath}`,
+          impact:
+            fieldPath === 'abcEnd'
+              ? abcEndGapHint?.impact ?? 'The array carries the same members in a different order, which is still a semantic change for order-sensitive consumers.'
+              : 'The array carries the same members in a different order, which is still a semantic change for order-sensitive consumers.',
+          message:
+            fieldPath === 'abcEnd'
+              ? `Different array order at ${fieldPath}.${abcEndGapHint?.messageSuffix ?? ''}`
+              : `Different array order at ${fieldPath}`,
         }, legacy, ts)
       }
       return withGapExcerpt({
@@ -1623,8 +1669,14 @@ function compareFieldValue(
         legacyValue,
         tsValue,
         matchQuality: 'exact-source',
-        impact: 'Array content diverges, so later layout and annotation logic can no longer be trusted to behave identically.',
-        message: `Different value at ${fieldPath}`,
+        impact:
+          fieldPath === 'abcEnd'
+            ? abcEndGapHint?.impact ?? 'Array content diverges, so later layout and annotation logic can no longer be trusted to behave identically.'
+            : 'Array content diverges, so later layout and annotation logic can no longer be trusted to behave identically.',
+        message:
+          fieldPath === 'abcEnd'
+            ? `Different value at ${fieldPath}.${abcEndGapHint?.messageSuffix ?? ''}`
+            : `Different value at ${fieldPath}`,
       }, legacy, ts)
     }
     return null
@@ -1646,8 +1698,14 @@ function compareFieldValue(
       legacyValue,
       tsValue,
       matchQuality: 'exact-source',
-      impact: 'A type change usually means the field cannot be consumed by the same downstream logic anymore.',
-      message: `Different type at ${fieldPath}`,
+      impact:
+        fieldPath === 'abcEnd'
+          ? abcEndGapHint?.impact ?? 'A type change usually means the field cannot be consumed by the same downstream logic anymore.'
+          : 'A type change usually means the field cannot be consumed by the same downstream logic anymore.',
+      message:
+        fieldPath === 'abcEnd'
+          ? `Different type at ${fieldPath}.${abcEndGapHint?.messageSuffix ?? ''}`
+          : `Different type at ${fieldPath}`,
     }, legacy, ts)
   }
 
@@ -1667,8 +1725,14 @@ function compareFieldValue(
       legacyValue,
       tsValue,
       matchQuality: 'exact-source',
-      impact: 'The value changed even though the field exists on both sides; this is a true semantic divergence.',
-      message: `Different value at ${fieldPath}`,
+      impact:
+        fieldPath === 'abcEnd'
+          ? abcEndGapHint?.impact ?? 'The value changed even though the field exists on both sides; this is a true semantic divergence.'
+          : 'The value changed even though the field exists on both sides; this is a true semantic divergence.',
+      message:
+        fieldPath === 'abcEnd'
+          ? `Different value at ${fieldPath}.${abcEndGapHint?.messageSuffix ?? ''}`
+          : `Different value at ${fieldPath}`,
     }, legacy, ts)
   }
 

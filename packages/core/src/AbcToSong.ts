@@ -1289,44 +1289,6 @@ export class AbcToSong {
   }
 
   private _symbolPosition(sym: AbcSymbol, key: 'start_pos' | 'end_pos', fallbackOffset: number): [number, number] {
-    const adjustLegacyEndOffset = (offset: number): number => {
-      if (key !== 'end_pos' || this._source === null) return offset
-      if (offset < 0 || offset >= this._source.length) return offset
-
-      const source = this._source
-      const currentChar = source[offset]
-
-      if (currentChar === '\n' || currentChar === '\r') {
-        let index = offset - 1
-        while (index >= 0) {
-          const char = source[index]
-          if (char === undefined) break
-          if (char === '\n' || char === '\r') {
-            index -= 1
-            continue
-          }
-          if (!/\s/.test(char)) break
-          index -= 1
-        }
-        return index >= 0 ? index : offset
-      }
-
-      if (currentChar === ')' || currentChar === ']' || currentChar === '}') {
-        let index = offset
-        while (index < source.length) {
-          const char = source[index]
-          if (char !== ')' && char !== ']' && char !== '}') break
-          index += 1
-        }
-        while (index < source.length && /\s/.test(source[index] ?? '')) {
-          index += 1
-        }
-        return Math.max(offset, index - 1)
-      }
-
-      return offset
-    }
-
     const origin = (sym as Record<string, unknown>)['origin']
     if (origin && typeof origin === 'object' && !Array.isArray(origin)) {
       const originRecord = origin as Record<string, unknown>
@@ -1352,10 +1314,7 @@ export class AbcToSong {
         return [pos[0], pos[1]]
       }
     }
-    const fallback = this._charposToLineCol(fallbackOffset)
-    const adjustedOffset = adjustLegacyEndOffset(fallbackOffset)
-    if (adjustedOffset === fallbackOffset) return fallback
-    return this._charposToLineCol(adjustedOffset)
+    return this._charposToLineCol(fallbackOffset)
   }
 
   private _symbolSourceOffsets(sym: AbcSymbol): [number, number] {
