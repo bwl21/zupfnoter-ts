@@ -1277,18 +1277,42 @@ export class AbcToSong {
   }
 
   private _symbolPosition(sym: AbcSymbol, key: 'start_pos' | 'end_pos', fallbackOffset: number): [number, number] {
-    const shouldAdjustEndPos = (): boolean => {
-      if (key !== 'end_pos') return false
-      const notes = sym.notes
-      if (!Array.isArray(notes) || notes.length === 0) return false
-      // abc2svg 1.x reports some accidental-bearing notes one column too early in iend.
-      // Legacy end_pos includes the accidental, so we compensate only for those cases.
-      return notes.some((note) => {
-        if (!note || typeof note !== 'object') return false
-        const record = note as Record<string, unknown>
-        const acc = record.acc
-        return typeof acc === 'number' && acc !== 0
-      })
+    const adjustLegacyEndOffset = (offset: number): number => {
+      if (key !== 'end_pos' || this._source === null) return offset
+      if (offset < 0 || offset >= this._source.length) return offset
+
+      const source = this._source
+      const currentChar = source[offset]
+
+      if (currentChar === '\n' || currentChar === '\r') {
+        let index = offset - 1
+        while (index >= 0) {
+          const char = source[index]
+          if (char === undefined) break
+          if (char === '\n' || char === '\r') {
+            index -= 1
+            continue
+          }
+          if (!/\s/.test(char)) break
+          index -= 1
+        }
+        return index >= 0 ? index : offset
+      }
+
+      if (currentChar === ')' || currentChar === ']' || currentChar === '}') {
+        let index = offset
+        while (index < source.length) {
+          const char = source[index]
+          if (char !== ')' && char !== ']' && char !== '}') break
+          index += 1
+        }
+        while (index < source.length && /\s/.test(source[index] ?? '')) {
+          index += 1
+        }
+        return Math.max(offset, index - 1)
+      }
+
+      return offset
     }
 
     const origin = (sym as Record<string, unknown>)['origin']
@@ -1303,7 +1327,7 @@ export class AbcToSong {
           typeof rawPos[0] === 'number' &&
           typeof rawPos[1] === 'number'
         ) {
-          return shouldAdjustEndPos() ? [rawPos[0], rawPos[1] + 1] : [rawPos[0], rawPos[1]]
+          return [rawPos[0], rawPos[1]]
         }
       }
       const pos = originRecord[key]
@@ -1313,11 +1337,13 @@ export class AbcToSong {
         typeof pos[0] === 'number' &&
         typeof pos[1] === 'number'
       ) {
-        return shouldAdjustEndPos() ? [pos[0], pos[1] + 1] : [pos[0], pos[1]]
+        return [pos[0], pos[1]]
       }
     }
     const fallback = this._charposToLineCol(fallbackOffset)
-    return shouldAdjustEndPos() ? [fallback[0], fallback[1] + 1] : fallback
+    const adjustedOffset = adjustLegacyEndOffset(fallbackOffset)
+    if (adjustedOffset === fallbackOffset) return fallback
+    return this._charposToLineCol(adjustedOffset)
   }
 
   private _makeZnId(sym: AbcSymbol, _voiceIndex: number): string {
