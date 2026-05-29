@@ -6,21 +6,20 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
 ## Summary
 
 - Cases with reports: 14
-- Required gaps: 264
-- Warnings: 0
+- Required gaps: 256
+- Warnings: 2
 
 ## Gap Type Overview
 
 | Gap category | Count |
 | --- | ---: |
-| different-array-order | 4 |
 | different-length | 2 |
-| different-value | 4 |
 | extra-event | 83 |
 | extra-field | 14 |
 | ignored-by-contract | 1334 |
 | missing-event | 91 |
 | missing-field | 66 |
+| normalization-warning | 2 |
 
 ## Case Reports
 
@@ -32,7 +31,7 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
   - Unmatched TS events: 19
 
 - [3015_reference_sheet](fixtures/cases/3015_reference_sheet/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 125
+  - Required gaps: 123
   - Warnings: 0
   - Matched events: 74
   - Unmatched legacy events: 59
@@ -53,8 +52,8 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
   - Unmatched TS events: 0
 
 - [abc-to-song-slur-tuplet-parity](fixtures/cases/abc-to-song-slur-tuplet-parity/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 9
-  - Warnings: 0
+  - Required gaps: 5
+  - Warnings: 2
   - Matched events: 10
   - Unmatched legacy events: 0
   - Unmatched TS events: 0
@@ -116,7 +115,7 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
   - Unmatched TS events: 0
 
 - [Twostaff](fixtures/cases/Twostaff/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 13
+  - Required gaps: 11
   - Warnings: 0
   - Matched events: 58
   - Unmatched legacy events: 1

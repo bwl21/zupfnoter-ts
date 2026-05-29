@@ -1262,6 +1262,25 @@ export class AbcToSong {
   /** Convert character offset to [line, column] (1-based) */
   private _charposToLineCol(offset: number): [number, number] {
     if (offset <= 0 || this._sourceLineStarts.length === 0) return [1, 1]
+    if (this._source !== null && offset < this._source.length) {
+      const currentChar = this._source[offset]
+      if (currentChar === '\n' || currentChar === '\r') {
+        let index = offset - 1
+        while (index >= 0) {
+          const char = this._source[index]
+          if (char === undefined) break
+          if (char === '\n' || char === '\r') {
+            index -= 1
+            continue
+          }
+          if (!/\s/.test(char)) break
+          index -= 1
+        }
+        if (index >= 0) {
+          return this._charposToLineCol(index)
+        }
+      }
+    }
 
     let left = 0
     let right = this._sourceLineStarts.length - 1

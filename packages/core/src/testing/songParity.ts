@@ -1544,8 +1544,30 @@ function compareFieldValue(
   tsValue: unknown,
   contractField: ContractSection,
 ): SongGap | null {
-  const abcEndGapHint = fieldPath === 'abcEnd' ? describeAbcEndGap(legacy, ts) : undefined
+  const abcEndGapHint = fieldPath === 'abcEnd' ? describeAbcEndGap(legacy, ts) : null
   if (legacyValue === undefined && tsValue === undefined) return null
+
+  if (fieldPath === 'abcEnd' && !valuesEqual(legacyValue, tsValue)) {
+    return withGapExcerpt({
+      category: 'normalization-warning',
+      caseId,
+      stage: 'song',
+      voiceIndex: legacy.voiceIndex,
+      voiceId: legacy.voiceId,
+      measure: legacy.measure,
+      beat: legacy.beat,
+      eventKind: legacy.kind,
+      stableKey: legacy.stableKey,
+      legacyJsonPath: formatPath(legacy.sourcePath, fieldPath),
+      tsJsonPath: formatPath(ts.sourcePath, fieldPath),
+      legacyValue,
+      tsValue,
+      matchQuality: 'exact-source',
+      impact: abcEndGapHint?.impact ?? 'abcEnd diverges; treat this as a normalization warning instead of a required gap.',
+      message: `Normalization warning at ${fieldPath}.${abcEndGapHint?.messageSuffix ?? ''}`,
+    }, legacy, ts)
+  }
+
   if (legacyValue === undefined) {
     return withGapExcerpt({
       category: 'extra-field',
@@ -2165,17 +2187,23 @@ export function compareNormalizedSongs(
     const legacyEvent = legacyEvents[match.legacyIndex]
     const tsEvent = tsEvents[match.tsIndex]
     if (legacyEvent === undefined || tsEvent === undefined) continue
+    const eventGaps = compareEvents(caseId, legacyEvent, tsEvent)
     matchedEvents.push({
       quality: match.quality,
       legacy: legacyEvent,
       ts: tsEvent,
       trace: traceMap.get(match.legacyIndex) ?? buildTraceEntry(legacyEvent.voiceIndex, legacyEvent),
     })
-    gaps.push(...compareEvents(caseId, legacyEvent, tsEvent))
+    gaps.push(...eventGaps)
+    const hasAbcEndNormalizationWarning = eventGaps.some(
+      (gap) =>
+        gap.category === 'normalization-warning' &&
+        (gap.legacyJsonPath?.endsWith('.abcEnd') ?? false),
+    )
     if (match.quality === 'ambiguous') {
       gaps.push(createAmbiguousGap(caseId, legacyEvent, match.reason))
     }
-    if (match.quality !== 'exact-source' && match.quality !== 'exact-position') {
+    if (match.quality !== 'exact-source' && match.quality !== 'exact-position' && !hasAbcEndNormalizationWarning) {
       gaps.push(withGapExcerpt({
         category: 'different-array-order',
         caseId,
@@ -2260,7 +2288,6 @@ export function compareNormalizedSongs(
   }
 
   const diagnostics = [...legacy.diagnostics, ...ts.diagnostics]
-  const warningCount = diagnostics.filter((diag) => diag.category === 'normalization-warning').length
   for (const diag of diagnostics) {
     gaps.push({
       category: diag.category,
@@ -2283,6 +2310,7 @@ export function compareNormalizedSongs(
   }
 
   const requiredGapCount = gaps.filter((gap) => gap.category !== 'ignored-by-contract' && gap.category !== 'normalization-warning').length
+  const warningCount = gaps.filter((gap) => gap.category === 'normalization-warning').length
 
   return {
     caseId,
