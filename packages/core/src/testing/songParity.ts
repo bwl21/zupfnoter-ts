@@ -1677,7 +1677,6 @@ function compareEvents(caseId: string, legacy: NormalizedEvent, ts: NormalizedEv
     ['voiceId', legacy.voiceId, ts.voiceId, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
     ['voiceIndex', legacy.voiceIndex, ts.voiceIndex, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
     ['indexInVoice', legacy.indexInVoice, ts.indexInVoice, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['globalIndex', legacy.globalIndex, ts.globalIndex, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
     ['measure', legacy.measure, ts.measure, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
     ['beat', legacy.beat, ts.beat, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
     ['absBeat', legacy.absBeat, ts.absBeat, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],

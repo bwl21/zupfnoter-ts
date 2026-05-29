@@ -125,8 +125,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 3544, ts 5170 (Δ 1626)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 174515
-- Diff ratio: 5.666%
+- Differing pixels: 18572
+- Diff ratio: 0.603%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/694_Sheep-may-safely-graze/diff.png
 
 - Group count: legacy 863, ts 1807
@@ -166,7 +166,7 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     ts:     <g fill="" id="ZN_29" stroke="black">
   - index 7
     legacy: <path d="M83.3,16.812L37.3,16.812" id="ZN_4" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
-    ts:     <path d="M301.8,194.315L232.8,194.315" id="ZN_29" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
+    ts:     <path d="M301.8,194.194L232.8,194.194" id="ZN_29" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
 
 - Anchors: legacy 2601, ts 3131
 - data-conf-key: legacy 0, ts 319
