@@ -286,6 +286,7 @@ export function songToFixture(song: Song): SongFixture {
           time: e.time,
           startPos: e.startPos,
           endPos: e.endPos,
+          sourceOffsets: 'sourceOffsets' in e ? e.sourceOffsets : undefined,
           measureStart: 'measureStart' in e ? e.measureStart : undefined,
           measureCount: 'measureCount' in e ? e.measureCount : undefined,
           firstInPart: 'firstInPart' in e ? e.firstInPart : undefined,

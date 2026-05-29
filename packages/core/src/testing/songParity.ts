@@ -1046,6 +1046,11 @@ function normalizeTsEvent(
     event.abcEnd = endPos
   }
 
+  const sourceOffsets = readPoint(entity.sourceOffsets)
+  if (sourceOffsets !== undefined) {
+    event.sourceOffsets = sourceOffsets
+  }
+
   if (event.abcExcerpt === undefined && startPos !== undefined && endPos !== undefined) {
     event.abcExcerpt = extractAbcExcerptFromPositions(context.abcText, startPos, endPos)
   }

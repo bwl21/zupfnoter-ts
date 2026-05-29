@@ -401,6 +401,7 @@ export class AbcToSong {
     const beat = this._timeToBeat(sym.time)
     const startPos = this._symbolPosition(sym, 'start_pos', sym.istart)
     const endPos = this._symbolPosition(sym, 'end_pos', sym.iend)
+    const sourceOffsets = this._symbolSourceOffsets(sym)
     const decorations = this._parseDecorations(sym)
     const { tuplet, tupletStart, tupletEnd } = this._parseTuplet(sym, state)
     const lyrics = this._parseLyrics(sym)
@@ -419,6 +420,7 @@ export class AbcToSong {
       time: sym.time,
       startPos,
       endPos,
+      sourceOffsets,
       decorations,
       barDecorations: [],
       visible: !(sym.invis ?? sym.invisible ?? false),
@@ -461,6 +463,7 @@ export class AbcToSong {
         time: sym.time,
         startPos,
         endPos,
+        sourceOffsets,
         decorations,
         barDecorations: [],
         visible: proxyNote.visible,
@@ -554,6 +557,7 @@ export class AbcToSong {
       time: sym.time,
       startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
       endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+      sourceOffsets: this._symbolSourceOffsets(sym),
       decorations: this._parseDecorations(sym),
       barDecorations: [],
       visible: !(sym.invis ?? sym.invisible ?? false),
@@ -735,6 +739,7 @@ export class AbcToSong {
       time: sym.time,
       startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
       endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+      sourceOffsets: this._symbolSourceOffsets(sym),
       decorations: [],
       barDecorations: [],
       visible: true,
@@ -810,6 +815,7 @@ export class AbcToSong {
       time: sym.time,
       startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
       endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+      sourceOffsets: this._symbolSourceOffsets(sym),
       decorations: [],
       barDecorations: [],
       visible: true,
@@ -879,6 +885,7 @@ export class AbcToSong {
         time: sym.time,
         startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
         endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+        sourceOffsets: this._symbolSourceOffsets(sym),
         decorations: [],
         barDecorations: [],
         visible: true,
@@ -918,6 +925,7 @@ export class AbcToSong {
         time: sym.time,
         startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
         endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+        sourceOffsets: this._symbolSourceOffsets(sym),
         decorations: [],
         barDecorations: [],
         visible: true,
@@ -974,6 +982,7 @@ export class AbcToSong {
           time: sym.time,
           startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
           endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+          sourceOffsets: this._symbolSourceOffsets(sym),
           decorations: [],
           barDecorations: [],
           visible: true,
@@ -995,6 +1004,7 @@ export class AbcToSong {
           time: sym.time,
           startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
           endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+          sourceOffsets: this._symbolSourceOffsets(sym),
           decorations: [],
           barDecorations: [],
           visible: true,
@@ -1025,6 +1035,7 @@ export class AbcToSong {
           time: sym.time,
           startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
           endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+          sourceOffsets: this._symbolSourceOffsets(sym),
           decorations: [],
           barDecorations: [],
           visible: true,
@@ -1049,6 +1060,7 @@ export class AbcToSong {
         time: sym.time,
         startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
         endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
+        sourceOffsets: this._symbolSourceOffsets(sym),
         decorations: [],
         barDecorations: [],
         visible: true,
@@ -1344,6 +1356,10 @@ export class AbcToSong {
     const adjustedOffset = adjustLegacyEndOffset(fallbackOffset)
     if (adjustedOffset === fallbackOffset) return fallback
     return this._charposToLineCol(adjustedOffset)
+  }
+
+  private _symbolSourceOffsets(sym: AbcSymbol): [number, number] {
+    return [sym.istart, sym.iend]
   }
 
   private _makeZnId(sym: AbcSymbol, _voiceIndex: number): string {

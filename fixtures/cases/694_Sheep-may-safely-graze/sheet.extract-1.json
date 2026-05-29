@@ -15519,7 +15519,7 @@
       "more_conf_keys":[],
       "draginfo"      :{"handler":"annotation"},
       "center"        :[344,19],
-      "text"          :"Sopran, Alt\nM: JS Bach BWV 208\nOriginaltitel: Sheep may safely graze\nBearb.: Ruth u. Bernhard Weichel\nTakt: 4/4 (1/4=120)\nTonart: Bb",
+      "text"          :"Sopran, Alt\nM: JS Bach BWV 208\nOriginaltitel: Sheep may safely graze\nBearb.: Ruth u. Bernhard Weichel\nTakt: 4/4 (1/4=120 )\nTonart: Bb",
       "style"         :"small",
       "color"         :"black"
     },
@@ -15538,7 +15538,7 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[],
       "center"        :[150,289],
-      "text"          :"694_Sheep-may-safely-graze - created 2026-05-28 10:46:22 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]",
+      "text"          :"694_Sheep-may-safely-graze - created 2026-05-29 19:14:37 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]",
       "style"         :"smaller",
       "color"         :"black"
     },
@@ -15556,7 +15556,7 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[],
       "center"        :[380,289],
-      "text"          :"529 470 151",
+      "text"          :"539 869 904",
       "style"         :"smaller",
       "color"         :"black"
     },

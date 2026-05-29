@@ -23,6 +23,7 @@ export interface EntityFixture {
   confKey?: string
   decorations?: string[]
   endPos?: [number, number]
+  sourceOffsets?: [number, number]
   firstInPart?: boolean
   countNote?: string | null
   lyrics?: string | null

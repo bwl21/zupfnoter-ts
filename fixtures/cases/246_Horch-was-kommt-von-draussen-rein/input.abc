@@ -12,9 +12,9 @@ K:F
 V:1 treble nm="Sopran" snm="S."
 V:1 shift=^G_B
 [K:F]!p! z "A" f z e d.d3 | z B z A !tenuto!G.G3 | z!<(! G!<)! z F E_E!f!=EC | z8 |:$S F3 G AA .B2 | %5
- c .d2 c-!p! c4 | G2 E2 !tenuto!E4 |$ (dd^c)=c!f! z4 | F3 G A2 .B2 | c d2 !>!c- c4 |$ %10
- BBG"A"e z!f! !>!G3 | !tenuto!f.f z (c f!mf!f e2) | (B2 B2 d2 cB |$ AA FA-) A4 | (G2 E2 G4) | %15
- (ff e!>!_e-) e4 |$ (B2 B2 d2 cB | A2 F2 A4) "^@@3,3,-1" |1 (G2 E2 G2 B2 | A8) "^@@-6" :|2 %20
+ c .d2 c-!p! c4 | G2 E2 !tenuto!E4 |$ (dd^c )=c!f! z4 | F3 G A2 .B2 | c d2 !>!c- c4 |$ %10
+ BBG"A"e z!f! !>!G3 | !tenuto!f.f z (c f!mf!f e2 ) | (B2 B2 d2 cB |$ AA FA- ) A4 | (G2 E2 G4 ) | %15
+ (ff e!>!_e- ) e4 |$ (B2 B2 d2 cB | A2 F2 A4 ) "^@@3,3,-1" |1 (G2 E2 G2 B2 | A8 ) "^@@-6" :|2 %20
 !p! z .c z c !tenuto!B2 !tenuto!G2 | z c z c d2B2 ||  .$!f! z .c z c !tenuto!B2 !tenuto!G2 |  %47
  (3!tenuto! [r: tp_1_1] G2 !tenuto!E2 !tenuto!G2 !tenuto!B2 !tenuto!e2 | !>!f3"A" f z4 |] %49
 %

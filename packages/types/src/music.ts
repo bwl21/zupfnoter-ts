@@ -18,6 +18,8 @@ export interface MusicEntity {
   beat: number
   /** Position in der Zeitdomäne (abc2svg-Einheiten, 1536 = ganze Note) */
   time: number
+  /** Roh-Quellspanne aus abc2svg [startChar, endChar] */
+  sourceOffsets?: [number, number]
   /** Start-Position im ABC-Quelltext [Zeile, Spalte] */
   startPos: [number, number]
   /** End-Position im ABC-Quelltext [Zeile, Spalte] */
