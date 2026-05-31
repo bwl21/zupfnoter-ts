@@ -27,6 +27,7 @@ export function buildConfstack(
   extractNr: number | string = 0,
 ): Confstack {
   const stack = new Confstack()
+  stack.strict = false
   const extractKey = String(extractNr)
   const baseExtract = config.extract['0']
   const targetExtract = config.extract[extractKey]
@@ -40,6 +41,12 @@ export function buildConfstack(
   // Schicht 2: Basis-Extrakt (extract.0), wenn wir nicht bereits Extrakt 0 sind
   if (extractKey !== '0' && baseExtract) {
     stack.push(extractToLayer(baseExtract))
+    if (baseExtract.printer) {
+      stack.push({ printer: baseExtract.printer as unknown as ConfigObject })
+    }
+    if (baseExtract.layout) {
+      stack.push({ layout: baseExtract.layout as unknown as ConfigObject })
+    }
   }
 
   // Schicht 3: Ziel-Extrakt (ohne layout/printer-Overrides)
@@ -66,5 +73,14 @@ export function buildConfstack(
  */
 function extractToLayer(extract: ExtractConfig): ConfigObject {
   const { layout: _layout, printer: _printer, ...rest } = extract
-  return { extract: rest } as unknown as ConfigObject
+  const notebound = (rest.notebound ?? {}) as Record<string, unknown>
+  return {
+    extract: {
+      ...rest,
+      notebound: {
+        minc: {},
+        ...notebound,
+      },
+    },
+  } as unknown as ConfigObject
 }

@@ -31,6 +31,7 @@ export type {
   Voice,
   BeatMap,
   SongMetaData,
+  SongDiagnostic,
   Song,
 } from './music.js'
 
@@ -51,8 +52,11 @@ export type {
   FontStyle,
   DurationKey,
   DurationStyle,
+  BeamStyle,
   GlyphName,
   RestStyle,
+  RestPositionMode,
+  RestPositionConfig,
   LayoutConfig,
   PrinterConfig,
   BarnumberConfig,

@@ -28,6 +28,7 @@ export interface FontStyle {
  */
 export type DurationKey =
   | 'err'   // Fehler / unbekannt
+  | 'd96'   // punktierte ganze
   | 'd64'   // ganze Note
   | 'd48'   // punktierte halbe
   | 'd32'   // halbe
@@ -48,9 +49,13 @@ export interface DurationStyle {
   sizeFactor: number
   fill: FillStyle
   dotted: boolean
-  /** Balken über der Ellipse (für halbe Noten) */
-  hasbarover?: boolean
 }
+
+/**
+ * Legacy-Beam-Stil für eine Notendauer.
+ * Entspricht `DURATION_TO_BEAMS` in `init_conf.rb`.
+ */
+export type BeamStyle = [sizeFactor: number, fill: FillStyle, dotted: boolean, flags?: number]
 
 /**
  * Glyph-Name für Pausenzeichen.
@@ -70,6 +75,14 @@ export interface RestStyle {
   /** Name des Glyphen */
   glyphName: GlyphName
   dotted: boolean
+}
+
+export interface DecorationAnnotationConfig {
+  text: string
+  pos: [number, number]
+  style: string
+  align?: 'left' | 'right' | 'center'
+  show?: 'all'
 }
 
 // ---------------------------------------------------------------------------
@@ -113,8 +126,13 @@ export interface LayoutConfig {
   }
   FONT_STYLE_DEF: Record<string, FontStyle>
   DURATION_TO_STYLE: Record<DurationKey, DurationStyle>
+  DURATION_TO_BEAMS: Record<DurationKey, BeamStyle>
+  /** Legacy-Schalter für alternative Notenfahnen-/Balkendarstellung. */
+  beams?: boolean
   /** Mapping Notendauer → Pausenzeichen-Stil */
   REST_TO_GLYPH: Record<DurationKey, RestStyle>
+  /** ABC decorations that legacy renders as text annotations instead of glyphs. */
+  DECORATIIONS_AS_ANNOTATIONS: Record<string, DecorationAnnotationConfig>
   /** Instrument-Bezeichnung (z.B. 'Harp') */
   instrument: string
   packer: { pack_method: 0 | 1 | 2 | 3 | 10; pack_min_increment?: number; pack_max_spreadfactor?: number }
@@ -122,6 +140,14 @@ export interface LayoutConfig {
   limit_a3: boolean
   /** Gitternetz anzeigen */
   grid: boolean
+  /** Legacy switch for drawing explicit ABC slurs. Ties are always drawn. */
+  SHOW_SLUR?: boolean
+  /** Jumpline anchor offset relative to the note size. */
+  jumpline_anchor: [number, number]
+  /** Vertical gap for long jumplines; 0 draws an unbroken vertical line. */
+  jumpline_vcut?: number
+  /** Mirror before/after anchors for bottom-up instruments. */
+  bottomup?: boolean
 }
 
 // ---------------------------------------------------------------------------
@@ -179,10 +205,72 @@ export interface AnnotationConfig {
   style: string
 }
 
+/**
+ * Konfiguration für ein eingebettetes Bild im Sheet.
+ */
+export interface ImageConfig {
+  show?: boolean
+  imagename?: string
+  pos?: [number, number]
+  height?: number
+}
+
 export interface PositionedTextConfig {
   pos?: [number, number]
   text?: string
   style?: string
+}
+
+export interface DefaultNoteboundConfig {
+  annotation?: {
+    pos?: [number, number]
+  }
+  chord?: {
+    pos?: [number, number]
+  }
+  partname?: {
+    pos?: [number, number]
+  }
+  variantend?: {
+    pos?: [number, number]
+  }
+  tuplet?: {
+    cp1?: [number, number]
+    cp2?: [number, number]
+    shape?: string[]
+    show?: boolean
+  }
+  flowline?: {
+    cp1?: [number, number]
+    cp2?: [number, number]
+    shape?: string[]
+    show?: boolean
+  }
+}
+
+/**
+ * Konfiguration eines eingebetteten Vorlagenobjekts aus `init_conf.rb`.
+ */
+export interface TemplateConfig {
+  filebase: string
+  title: string
+}
+
+/**
+ * Modus für die horizontale Positionierung von Pausen.
+ */
+export type RestPositionMode = 'center' | 'next' | 'previous'
+
+/**
+ * Pausenpositionierung aus `restposition`.
+ */
+export interface RestPositionConfig {
+  /** Standardmodus für normale Pausen */
+  default: RestPositionMode
+  /** Modus für Pausen direkt am Wiederholungsanfang */
+  repeatstart: RestPositionMode | 'default'
+  /** Modus für Pausen direkt am Wiederholungsende */
+  repeatend: RestPositionMode | 'default'
 }
 
 /**
@@ -212,11 +300,22 @@ export interface ExtractConfig {
   barnumbers?: BarnumberConfig
   legend?: LegendConfig
   notes?: Record<string, AnnotationConfig>
+  images?: Record<string, ImageConfig>
   repeatsigns?: Record<string, unknown>
   lyrics?: Record<string, unknown>
   nonflowrest?: boolean
   countnotes?: Record<string, unknown>
   stringnames?: Record<string, unknown>
+  sortmark?: {
+    size?: [number, number]
+    fill?: boolean
+    show?: boolean
+  }
+  tuplets?: {
+    text?: string
+  }
+  chords?: Record<string, unknown>
+  instrument_shape?: string | null
   notebound?: Record<string, unknown>
   /** Layout-Overrides für diesen Extrakt */
   layout?: Partial<LayoutConfig>
@@ -232,12 +331,21 @@ export interface ExtractConfig {
  * Vollständige Zupfnoter-Konfiguration (aus dem `%%%%zupfnoter`-Block im ABC).
  */
 export interface ZupfnoterConfig {
+  abc_parser?: string
+  template?: TemplateConfig
+  wrap?: number
   layout: LayoutConfig
   extract: Record<string, ExtractConfig>
   printer: PrinterConfig
+  /** Pausenpositionierung nach Legacy-Konfiguration */
+  restposition: RestPositionConfig
+  defaults?: {
+    notebound?: DefaultNoteboundConfig
+  }
+  annotations?: Record<string, PositionedTextConfig>
+  templates?: Record<string, unknown>
   /** Reihenfolge der zu erzeugenden Extrakte. Legacy-default für Sheet-Fixtures ist der erste Eintrag. */
   produce?: number[]
-  annotations?: Record<string, PositionedTextConfig>
   /** Preset-Schnelleinstellungen für den Konfigurations-Editor (addconf). */
   presets?: Record<string, Record<string, unknown>>
 }

@@ -18,6 +18,8 @@ export interface MusicEntity {
   beat: number
   /** Position in der Zeitdomäne (abc2svg-Einheiten, 1536 = ganze Note) */
   time: number
+  /** Roh-Quellspanne aus abc2svg [startChar, endChar] */
+  sourceOffsets?: [number, number]
   /** Start-Position im ABC-Quelltext [Zeile, Spalte] */
   startPos: [number, number]
   /** End-Position im ABC-Quelltext [Zeile, Spalte] */
@@ -55,8 +57,8 @@ export interface Playable extends MusicEntity {
   measureCount: number
   jumpStarts: string[]
   jumpEnds: string[]
-  slurStarts: string[]
-  slurEnds: string[]
+  slurStarts: number[]
+  slurEnds: number[]
   countNote: string | null
   lyrics: string | null
   /**
@@ -81,6 +83,11 @@ export interface Playable extends MusicEntity {
    * Entspricht `next_playable` im Legacy-System.
    */
   nextPlayable?: PlayableEntity
+  /**
+   * Legacy-Flag für die nächste Part-Grenze.
+   * Entspricht `next_first_in_part` im Legacy-System.
+   */
+  nextFirstInPart?: boolean
 }
 
 /**
@@ -184,6 +191,10 @@ export interface GotoPolicy {
   level?: number
   distance?: number
   isRepeat?: boolean
+  fromAnchor?: 'before' | 'after'
+  toAnchor?: 'before' | 'after'
+  verticalAnchor?: 'from' | 'to'
+  padding?: number
 }
 
 // ---------------------------------------------------------------------------
@@ -226,11 +237,28 @@ export interface BeatMap {
 export interface SongMetaData {
   title?: string
   composer?: string
+  number?: string
   filename?: string
-  meter?: string
+  meter?: string | string[]
   key?: string
-  tempo?: number
+  o_key?: string
+  tempo?: number | { duration: number[]; bpm: number }
+  tempo_display?: string
   tempoDisplay?: string
+  checksum?: string
+  /** Diagnosen aus der ABC-zu-Song-Transformation */
+  diagnostics?: SongDiagnostic[]
+}
+
+export interface SongDiagnostic {
+  /** Schweregrad der Diagnose */
+  severity: 'error'
+  /** Diagnose-Text */
+  message: string
+  /** Start-Position im ABC-Quelltext [Zeile, Spalte] */
+  startPos: [number, number]
+  /** End-Position im ABC-Quelltext [Zeile, Spalte] */
+  endPos: [number, number]
 }
 
 /**
