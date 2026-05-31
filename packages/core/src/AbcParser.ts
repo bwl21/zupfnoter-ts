@@ -22,6 +22,7 @@ import abc2svgSource from '../vendor/abc2svg-1.js?raw'
 // ---------------------------------------------------------------------------
 
 interface Abc2svgUser {
+  keep_remark?: boolean
   img_out?: (svg: string) => void
   errbld?: (severity: number, msg: string, fname: string | undefined, line: number | undefined, col: number | undefined) => void
   read_file: (name: string) => string | null
@@ -58,12 +59,14 @@ interface Abc2svgSymbol {
   bar_type?: string
   text?: string
   ti1?: number
+  sls?: Array<{ ty?: number; [key: string]: unknown }>
   slur_sls?: number[]
   slur_end?: number
   rbstart?: number
   rbstop?: number
   invisible?: boolean
   invis?: boolean
+  a_dd?: Array<{ name?: string; [key: string]: unknown }>
   a_gch?: Array<{ type: string; text?: string; [key: string]: unknown }>
   next?: Abc2svgSymbol
   [key: string]: unknown
@@ -78,6 +81,231 @@ export interface AbcParseError {
   message: string
   line?: number
   column?: number
+}
+
+function countSlurStartsFromSource(source: string, startOffset: number): number[] {
+  if (startOffset <= 0) return []
+
+  let index = startOffset - 1
+  const skipDecorationsBackward = (): void => {
+    while (index >= 0) {
+      if (source[index] !== '!') return
+
+      let left = index - 1
+      while (left >= 0 && source[left] !== '!') {
+        left -= 1
+      }
+      if (left < 0) return
+
+      index = left - 1
+      while (index >= 0 && /\s/.test(source[index] ?? '')) {
+        index -= 1
+      }
+    }
+  }
+
+  while (index >= 0) {
+    while (index >= 0 && /\s/.test(source[index] ?? '')) {
+      index -= 1
+    }
+    skipDecorationsBackward()
+    if (source[index] !== '!') break
+  }
+
+  let count = 0
+  while ((source[index] ?? '') === '(') {
+    count += 1
+    index -= 1
+  }
+
+  return Array.from({ length: count }, (_value, arrayIndex) => arrayIndex + 1)
+}
+
+function normalizeSymbol(
+  liveSymbol: Abc2svgSymbol,
+  source: string,
+  nextSymbol?: AbcSymbol,
+): AbcSymbol {
+  const normalized = {
+    ...liveSymbol,
+    next: nextSymbol,
+  } as AbcSymbol
+
+  const normalizedNotes = normalizeChordNoteOrder(liveSymbol, source)
+  if (normalizedNotes !== undefined) {
+    normalized.notes = normalizedNotes
+  }
+
+  const slurStarts = Array.isArray(liveSymbol.slur_sls)
+    ? liveSymbol.slur_sls.filter((value): value is number => typeof value === 'number')
+    : countSlurStartsFromSource(source, liveSymbol.istart)
+  if (slurStarts.length > 0) {
+    normalized.slur_sls = slurStarts
+  }
+
+  return normalized
+}
+
+function diatonicStepForLetter(letter: string): number | null {
+  switch (letter.toUpperCase()) {
+    case 'C': return 0
+    case 'D': return 1
+    case 'E': return 2
+    case 'F': return 3
+    case 'G': return 4
+    case 'A': return 5
+    case 'B': return 6
+    default: return null
+  }
+}
+
+function semitoneOffsetForStep(step: number): number | null {
+  switch (step) {
+    case 0: return 0
+    case 1: return 2
+    case 2: return 4
+    case 3: return 5
+    case 4: return 7
+    case 5: return 9
+    case 6: return 11
+    default: return null
+  }
+}
+
+function normalizeChordNoteOrder(liveSymbol: Abc2svgSymbol, source: string): Abc2svgSymbol['notes'] | undefined {
+  const liveNotes = liveSymbol.notes
+  if (!Array.isArray(liveNotes) || liveNotes.length <= 1) return liveNotes
+
+  const sourceSlice = source.slice(liveSymbol.istart, liveSymbol.iend)
+  const openIndex = sourceSlice.indexOf('[')
+  const closeIndex = sourceSlice.indexOf(']', openIndex + 1)
+  if (openIndex < 0 || closeIndex < 0) return liveNotes
+
+  const chordSource = sourceSlice.slice(openIndex + 1, closeIndex)
+  const liveMidis = liveNotes.map((note) => note.midi)
+  const sourceMidis = parseChordSourceMidis(chordSource, liveMidis)
+  if (sourceMidis === null || sourceMidis.length !== liveNotes.length) return liveNotes
+
+  const notesByMidi = new Map<number, typeof liveNotes>()
+  for (const note of liveNotes) {
+    const bucket = notesByMidi.get(note.midi)
+    if (bucket === undefined) {
+      notesByMidi.set(note.midi, [note])
+    } else {
+      bucket.push(note)
+    }
+  }
+
+  const reordered: typeof liveNotes = new Array(liveNotes.length)
+  for (const [index, midi] of sourceMidis.entries()) {
+    const bucket = notesByMidi.get(midi)
+    const liveNote = bucket?.shift()
+    if (liveNote === undefined) return liveNotes
+    reordered[index] = liveNote
+  }
+
+  return reordered.every((note) => note !== undefined) ? reordered : liveNotes
+}
+
+function parseChordSourceMidis(chordSource: string, liveMidis: number[]): number[] | null {
+  const sortedLiveMidis = [...liveMidis].sort((left, right) => left - right)
+
+  const parse = (index: number, remainingMidis: number[]): number[] | null => {
+    let cursor = index
+    while (cursor < chordSource.length) {
+      const char = chordSource[cursor]
+      if (char !== ',' && char !== ' ' && char !== '\t') break
+      cursor += 1
+    }
+
+    if (cursor >= chordSource.length) {
+      return remainingMidis.length === 0 ? [] : null
+    }
+
+    let accidental = 0
+    while (cursor < chordSource.length) {
+      const char = chordSource[cursor]
+      if (char === '^') {
+        accidental += 1
+      } else if (char === '_') {
+        accidental -= 1
+      } else if (char === '=') {
+        accidental = 0
+      } else {
+        break
+      }
+      cursor += 1
+    }
+
+    const letter = chordSource[cursor]
+    if (letter === undefined) return null
+    const step = diatonicStepForLetter(letter)
+    if (step === null) return null
+    cursor += 1
+
+    let markEnd = cursor
+    while (markEnd < chordSource.length) {
+      const char = chordSource[markEnd]
+      if (char !== '\'' && char !== ',') break
+      markEnd += 1
+    }
+
+    for (let split = cursor; split <= markEnd; split += 1) {
+      const midi = abcPitchToMidi(letter, chordSource.slice(cursor, split), accidental, step)
+      const midiIndex = remainingMidis.indexOf(midi)
+      if (midiIndex < 0) continue
+
+      const nextRemaining = remainingMidis.slice()
+      nextRemaining.splice(midiIndex, 1)
+      const tail = parse(split, nextRemaining)
+      if (tail !== null) return [midi, ...tail]
+    }
+
+    return null
+  }
+
+  return parse(0, sortedLiveMidis)
+}
+
+function abcPitchToMidi(letter: string, octaveMarks: string, accidental: number, step: number): number {
+  const semitoneOffset = semitoneOffsetForStep(step)
+  if (semitoneOffset === null) return 48 + accidental
+
+  let midi = 48 + semitoneOffset
+
+  if (letter >= 'a' && letter <= 'g') midi += 12
+  for (const char of octaveMarks) {
+    if (char === '\'') midi += 12
+    if (char === ',') midi -= 12
+  }
+
+  return midi + accidental
+}
+
+function computeLegacyChecksum(abcText: string): string {
+  const markerIndex = abcText.indexOf('%%%%zupfnoter.config')
+
+  const relevantText = markerIndex >= 0 ? abcText.slice(0, markerIndex) : abcText
+
+  let checksum = 0x12345678
+  const text = relevantText.trim()
+
+  for (let index = 0; index < text.length; index += 1) {
+    checksum += text.charCodeAt(index) * (index + 1)
+  }
+
+  const groups = checksum.toString().match(/.{1,3}/g)
+  return groups === null ? '' : groups.join(' ')
+}
+
+function buildLineStarts(source: string): number[] {
+  const lineStarts = [0]
+  for (let index = 0; index < source.length; index += 1) {
+    if (source[index] === '\n') {
+      lineStarts.push(index + 1)
+    }
+  }
+  return lineStarts
 }
 
 function loadAbc2svg(): Abc2svgExports {
@@ -126,6 +354,7 @@ export class AbcParser {
     this._model = null
 
     const user: Abc2svgUser = {
+      keep_remark: true,
       // Suppress SVG output — we only need the model
       img_out: (_svg: string) => { /* no-op */ },
 
@@ -143,7 +372,14 @@ export class AbcParser {
       read_file: (_name: string) => null,
 
       get_abcmodel: (tsfirst, voice_tb, music_types, info) => {
-        this._model = AbcParser._buildModel(tsfirst, voice_tb, music_types, info)
+        this._model = AbcParser._buildModel(
+          tsfirst,
+          voice_tb,
+          music_types,
+          info,
+          computeLegacyChecksum(abcText),
+          abcText,
+        )
       },
     }
 
@@ -170,6 +406,8 @@ export class AbcParser {
     voice_tb: Abc2svgVoice[],
     music_types: string[],
     info: Record<string, string>,
+    checksum: string,
+    source: string,
   ): AbcModel {
     // Build reverse map: type name → numeric id
     const music_type_ids: Record<string, number> = {}
@@ -194,7 +432,7 @@ export class AbcParser {
     }
 
     const voices: AbcVoice[] = voice_tb.map((v) => {
-      const symbols: AbcSymbol[] = AbcParser._collectSymbols(v.sym)
+      const symbols: AbcSymbol[] = AbcParser._collectSymbols(v.sym, source)
 
       return {
         voice_properties: {
@@ -208,17 +446,28 @@ export class AbcParser {
       }
     })
 
-    return { voices, music_types, music_type_ids, info }
+    return {
+      voices,
+      music_types,
+      music_type_ids,
+      info,
+      checksum,
+      sourceLineStarts: buildLineStarts(source),
+      source,
+    }
   }
 
   /** Walk the linked-list of symbols in a voice and collect them into an array */
-  private static _collectSymbols(first: Abc2svgSymbol | undefined): AbcSymbol[] {
-    const result: AbcSymbol[] = []
+  private static _collectSymbols(first: Abc2svgSymbol | undefined, source: string): AbcSymbol[] {
+    const liveSymbols: Abc2svgSymbol[] = []
     let sym: Abc2svgSymbol | undefined = first
     while (sym) {
-      result.push(sym as unknown as AbcSymbol)
+      liveSymbols.push(sym)
       sym = sym.next
     }
-    return result
+
+    return liveSymbols.map((liveSymbol, index) =>
+      normalizeSymbol(liveSymbol, source, liveSymbols[index + 1] as unknown as AbcSymbol | undefined),
+    )
   }
 }
