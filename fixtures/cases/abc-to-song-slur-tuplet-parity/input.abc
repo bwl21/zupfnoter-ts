@@ -1,0 +1,8 @@
+X:1
+T:ABC to Song Slur Tuplet Parity
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] ((((C D)))) (3E-E G |]
