@@ -79,8 +79,8 @@ export function mergeSongConfig(
 // ---------------------------------------------------------------------------
 
 function deepMerge(base: unknown, override: unknown): unknown {
-  if (override === undefined || override === null) return base
-  if (!isPlainObject(base) || !isPlainObject(override)) return override
+  if (override === undefined || override === null) return cloneValue(base)
+  if (!isPlainObject(base) || !isPlainObject(override)) return cloneValue(override)
 
   const result: Record<string, unknown> = { ...base }
   for (const key of Object.keys(override)) {
@@ -94,4 +94,16 @@ function deepMerge(base: unknown, override: unknown): unknown {
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function cloneValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((entry) => cloneValue(entry))
+  }
+  if (isPlainObject(value)) {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [key, cloneValue(entry)]),
+    )
+  }
+  return value
 }

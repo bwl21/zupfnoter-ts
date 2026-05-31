@@ -89,6 +89,8 @@ export interface AbcSymbol {
   text?: string
   /** Tie start flag */
   ti1?: number
+  /** abc2svg slur descriptors attached to this symbol */
+  sls?: Array<{ ty?: number; [key: string]: unknown }>
   /** Slur start IDs */
   slur_sls?: number[]
   /** Number of slurs ending here */
@@ -100,6 +102,8 @@ export interface AbcSymbol {
   /** Symbol is invisible */
   invisible?: boolean
   invis?: boolean
+  /** Decorations attached to this symbol (abc2svg: a_dd[]) */
+  a_dd?: Array<{ name?: string; [key: string]: unknown }>
   /** Chord symbols and annotations attached to this symbol (abc2svg: a_gch[]) */
   a_gch?: AbcExtra[]
   [key: string]: unknown
@@ -145,6 +149,10 @@ export interface AbcVoice {
  */
 export interface AbcModel {
   voices: AbcVoice[]
+  /** Zero-based character offsets for each line start in the original ABC source. */
+  sourceLineStarts: number[]
+  /** Original ABC source text as parsed by abc2svg. */
+  source: string
   /**
    * Maps numeric type values to human-readable names.
    * Index matches ABC_TYPE constants.
@@ -155,4 +163,6 @@ export interface AbcModel {
   music_type_ids: Record<string, number>
   /** ABC header fields: T, C, M, K, Q, etc. (newline-separated if multiple) */
   info: Record<string, string>
+  /** Legacy checksum over the stripped ABC source, used in sheet footer annotations. */
+  checksum: string
 }
