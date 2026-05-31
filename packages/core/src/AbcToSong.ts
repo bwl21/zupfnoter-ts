@@ -368,7 +368,7 @@ export class AbcToSong {
       case 'bar':
         return this._transformBar(sym, index, voiceIndex, state)
       case 'part':
-        return this._transformPart(sym, state)
+        return this._transformPart(sym)
       case 'tempo':
       case 'clef':
       case 'key':
@@ -768,7 +768,7 @@ export class AbcToSong {
   // Part marker
   // ---------------------------------------------------------------------------
 
-  private _transformPart(sym: AbcSymbol, state: VoiceState): VoiceEntity | null {
+  private _transformPart(sym: AbcSymbol): VoiceEntity | null {
     // Mirrors Ruby: part markers are stored by time and attached to the same-time playable.
     this._partTable[sym.time] = sym.text ?? ''
     return null
