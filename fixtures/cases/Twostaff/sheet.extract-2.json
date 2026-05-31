@@ -107,48 +107,6 @@
     },
     {
       "type"          :"FlowLine",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "style"         :"dashed",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "style"         :"dashed",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "style"         :"dashed",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "style"         :"dashed",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "style"         :"dashed",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "style"         :"dashed",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
       "lineWidth"     :0.2,
       "more_conf_keys":[],
       "style"         :"solid",
@@ -187,31 +145,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_0.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_0.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_0.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_0.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "conf_key":"extract.2.notebound.minc.0.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "conf_key":"extract.2.notebound.minc.0.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "conf_key":"extract.2.notebound.minc.0.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -228,31 +186,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_96.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_96.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_96.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_96.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.96.minc_f",
+          "conf_key":"extract.2.notebound.minc.96.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.96.minc_f",
+          "conf_key":"extract.2.notebound.minc.96.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.96.minc_f",
+          "conf_key":"extract.2.notebound.minc.96.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -269,31 +227,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_192.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_192.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_192.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_192.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
+          "conf_key":"extract.2.notebound.minc.192.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
+          "conf_key":"extract.2.notebound.minc.192.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
+          "conf_key":"extract.2.notebound.minc.192.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -310,31 +268,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_384.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_384.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_384.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_384.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "conf_key":"extract.2.notebound.minc.384.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "conf_key":"extract.2.notebound.minc.384.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "conf_key":"extract.2.notebound.minc.384.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -361,31 +319,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_480.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_480.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_480.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_480.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.480.minc_f",
+          "conf_key":"extract.2.notebound.minc.480.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.480.minc_f",
+          "conf_key":"extract.2.notebound.minc.480.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.480.minc_f",
+          "conf_key":"extract.2.notebound.minc.480.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -402,31 +360,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_576.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_576.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_1.t_576.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_1.t_576.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
+          "conf_key":"extract.2.notebound.minc.576.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
+          "conf_key":"extract.2.notebound.minc.576.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
+          "conf_key":"extract.2.notebound.minc.576.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -503,13 +461,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_0.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_0.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_0.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_0.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -526,13 +484,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_96.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_96.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_96.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_96.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -549,13 +507,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_192.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_192.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_192.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_192.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -572,13 +530,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_384.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_384.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_384.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_384.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -595,13 +553,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_480.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_480.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_480.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_480.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -618,13 +576,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_576.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_576.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_1.t_576.align",
+          "conf_key":"extract.2.notebound.countnote.v_1.t_576.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -651,13 +609,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_1.t_384.align",
+          "conf_key":"extract.2.notebound.barnumber.v_1.t_384.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_1.t_384.align",
+          "conf_key":"extract.2.notebound.barnumber.v_1.t_384.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -719,690 +677,6 @@
       "color"         :"black"
     },
     {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.3,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_0.n_0.nshift",
-          "text"    :"shift left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :-0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_0.n_0.nshift",
-          "text"    :"shift right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :0.5
-        },
-        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
-        {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
-          "text"    :"Edit Minc",
-          "icon"    :"fa fa-arrows-v"
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
-          "text"    :"increase Minc",
-          "icon"    :"fa fa-arrow-down",
-          "value"   :0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
-          "text"    :"decrease Minc",
-          "icon"    :"fa fa-arrow-up",
-          "value"   :-0.5
-        }
-      ],
-      "center"        :[60.3,17],
-      "size"          :[1.05,0.39],
-      "fill"          :"filled",
-      "color"         :"black",
-      "rect"          :false
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.3,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_96.n_0.nshift",
-          "text"    :"shift left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :-0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_96.n_0.nshift",
-          "text"    :"shift right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :0.5
-        },
-        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
-        {
-          "conf_key":"extract.0.notebound.minc.96.minc_f",
-          "text"    :"Edit Minc",
-          "icon"    :"fa fa-arrows-v"
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.96.minc_f",
-          "text"    :"increase Minc",
-          "icon"    :"fa fa-arrow-down",
-          "value"   :0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.96.minc_f",
-          "text"    :"decrease Minc",
-          "icon"    :"fa fa-arrow-up",
-          "value"   :-0.5
-        }
-      ],
-      "center"        :[83.3,20.2],
-      "size"          :[1.05,0.39],
-      "fill"          :"filled",
-      "color"         :"black",
-      "rect"          :false
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.3,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_192.n_0.nshift",
-          "text"    :"shift left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :-0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_192.n_0.nshift",
-          "text"    :"shift right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :0.5
-        },
-        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
-        {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
-          "text"    :"Edit Minc",
-          "icon"    :"fa fa-arrows-v"
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
-          "text"    :"increase Minc",
-          "icon"    :"fa fa-arrow-down",
-          "value"   :0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
-          "text"    :"decrease Minc",
-          "icon"    :"fa fa-arrow-up",
-          "value"   :-0.5
-        }
-      ],
-      "center"        :[106.3,23.4],
-      "size"          :[1.05,0.39],
-      "fill"          :"filled",
-      "color"         :"black",
-      "rect"          :false
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.3,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_288.n_0.nshift",
-          "text"    :"shift left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :-0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_288.n_0.nshift",
-          "text"    :"shift right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :0.5
-        },
-        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
-        {
-          "conf_key":"extract.0.notebound.minc.288.minc_f",
-          "text"    :"Edit Minc",
-          "icon"    :"fa fa-arrows-v"
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.288.minc_f",
-          "text"    :"increase Minc",
-          "icon"    :"fa fa-arrow-down",
-          "value"   :0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.288.minc_f",
-          "text"    :"decrease Minc",
-          "icon"    :"fa fa-arrow-up",
-          "value"   :-0.5
-        }
-      ],
-      "center"        :[129.3,26.6],
-      "size"          :[1.05,0.39],
-      "fill"          :"filled",
-      "color"         :"black",
-      "rect"          :false
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.3,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_384.n_0.nshift",
-          "text"    :"shift left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :-0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_384.n_0.nshift",
-          "text"    :"shift right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :0.5
-        },
-        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
-        {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
-          "text"    :"Edit Minc",
-          "icon"    :"fa fa-arrows-v"
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
-          "text"    :"increase Minc",
-          "icon"    :"fa fa-arrow-down",
-          "value"   :0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
-          "text"    :"decrease Minc",
-          "icon"    :"fa fa-arrow-up",
-          "value"   :-0.5
-        }
-      ],
-      "center"        :[140.8,30.6],
-      "size"          :[1.05,0.39],
-      "fill"          :"filled",
-      "color"         :"black",
-      "rect"          :false
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[140.8,29.91],
-      "size"          :[1.05,0.15],
-      "fill"          :"filled",
-      "color"         :"black",
-      "rect"          :true
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.3,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_480.n_0.nshift",
-          "text"    :"shift left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :-0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_480.n_0.nshift",
-          "text"    :"shift right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :0.5
-        },
-        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
-        {
-          "conf_key":"extract.0.notebound.minc.480.minc_f",
-          "text"    :"Edit Minc",
-          "icon"    :"fa fa-arrows-v"
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.480.minc_f",
-          "text"    :"increase Minc",
-          "icon"    :"fa fa-arrow-down",
-          "value"   :0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.480.minc_f",
-          "text"    :"decrease Minc",
-          "icon"    :"fa fa-arrow-up",
-          "value"   :-0.5
-        }
-      ],
-      "center"        :[163.8,33.8],
-      "size"          :[1.05,0.39],
-      "fill"          :"filled",
-      "color"         :"black",
-      "rect"          :false
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.3,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_576.n_0.nshift",
-          "text"    :"shift left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :-0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_576.n_0.nshift",
-          "text"    :"shift right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :0.5
-        },
-        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
-        {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
-          "text"    :"Edit Minc",
-          "icon"    :"fa fa-arrows-v"
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
-          "text"    :"increase Minc",
-          "icon"    :"fa fa-arrow-down",
-          "value"   :0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
-          "text"    :"decrease Minc",
-          "icon"    :"fa fa-arrow-up",
-          "value"   :-0.5
-        }
-      ],
-      "center"        :[186.8,37],
-      "size"          :[1.05,0.39],
-      "fill"          :"filled",
-      "color"         :"black",
-      "rect"          :false
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.3,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_672.n_0.nshift",
-          "text"    :"shift left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :-0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.nconf.v_2.t_672.n_0.nshift",
-          "text"    :"shift right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :0.5
-        },
-        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
-        {
-          "conf_key":"extract.0.notebound.minc.672.minc_f",
-          "text"    :"Edit Minc",
-          "icon"    :"fa fa-arrows-v"
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.672.minc_f",
-          "text"    :"increase Minc",
-          "icon"    :"fa fa-arrow-down",
-          "value"   :0.5
-        },
-        {
-          "conf_key":"extract.0.notebound.minc.672.minc_f",
-          "text"    :"decrease Minc",
-          "icon"    :"fa fa-arrow-up",
-          "value"   :-0.5
-        }
-      ],
-      "center"        :[198.3,40.2],
-      "size"          :[1.05,0.39],
-      "fill"          :"filled",
-      "color"         :"black",
-      "rect"          :false
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[57.6679,18.0833],
-      "size"          :[0.5321,0.7058],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[80.6679,20.8433],
-      "size"          :[0.5321,0.5042],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[103.6679,24.4833],
-      "size"          :[0.5321,0.7058],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[126.6679,27.2433],
-      "size"          :[0.5321,0.5042],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[138.1679,31.6833],
-      "size"          :[0.5321,0.7058],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[161.1679,34.4433],
-      "size"          :[0.5321,0.5042],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[184.1679,38.0833],
-      "size"          :[0.5321,0.7058],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[195.6679,40.8433],
-      "size"          :[0.5321,0.5042],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_0.align",
-          "text"    :"countnote left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :"l"
-        },
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_0.align",
-          "text"    :"countnote right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :"r"
-        }
-      ],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[58.25,17],
-      "text"          :"3",
-      "style"         :"smaller",
-      "color"         :"black"
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_96.align",
-          "text"    :"countnote left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :"l"
-        },
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_96.align",
-          "text"    :"countnote right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :"r"
-        }
-      ],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[81.25,19.75],
-      "text"          :"u",
-      "style"         :"smaller",
-      "color"         :"black"
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_192.align",
-          "text"    :"countnote left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :"l"
-        },
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_192.align",
-          "text"    :"countnote right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :"r"
-        }
-      ],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[104.25,23.4],
-      "text"          :"4",
-      "style"         :"smaller",
-      "color"         :"black"
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_288.align",
-          "text"    :"countnote left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :"l"
-        },
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_288.align",
-          "text"    :"countnote right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :"r"
-        }
-      ],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[127.25,26.15],
-      "text"          :"u",
-      "style"         :"smaller",
-      "color"         :"black"
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_384.align",
-          "text"    :"countnote left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :"l"
-        },
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_384.align",
-          "text"    :"countnote right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :"r"
-        }
-      ],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[138.75,30.6],
-      "text"          :"1",
-      "style"         :"smaller",
-      "color"         :"black"
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_480.align",
-          "text"    :"countnote left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :"l"
-        },
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_480.align",
-          "text"    :"countnote right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :"r"
-        }
-      ],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[161.75,33.35],
-      "text"          :"u",
-      "style"         :"smaller",
-      "color"         :"black"
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_576.align",
-          "text"    :"countnote left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :"l"
-        },
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_576.align",
-          "text"    :"countnote right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :"r"
-        }
-      ],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[184.75,37],
-      "text"          :"2",
-      "style"         :"smaller",
-      "color"         :"black"
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_672.align",
-          "text"    :"countnote left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :"l"
-        },
-        {
-          "conf_key":"extract.0.notebound.countnote.v_2.t_672.align",
-          "text"    :"countnote right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :"r"
-        }
-      ],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[196.25,39.75],
-      "text"          :"u",
-      "style"         :"smaller",
-      "color"         :"black"
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[143.7231,29.3875],
-      "size"          :[1.0731,1.2512],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[
-        {
-          "conf_key":"extract.0.notebound.barnumber.v_2.t_384.align",
-          "text"    :"barnumber left",
-          "icon"    :"fa fa-arrow-left",
-          "value"   :"l"
-        },
-        {
-          "conf_key":"extract.0.notebound.barnumber.v_2.t_384.align",
-          "text"    :"barnumber right",
-          "icon"    :"fa fa-arrow-right",
-          "value"   :"r"
-        }
-      ],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[142.85,27.9],
-      "text"          :"1",
-      "style"         :"small_bold",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.2,
-      "more_conf_keys":[],
-      "style"         :"solid",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.2,
-      "more_conf_keys":[],
-      "style"         :"solid",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.2,
-      "more_conf_keys":[],
-      "style"         :"solid",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.2,
-      "more_conf_keys":[],
-      "style"         :"solid",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.2,
-      "more_conf_keys":[],
-      "style"         :"solid",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.2,
-      "more_conf_keys":[],
-      "style"         :"solid",
-      "color"         :"black"
-    },
-    {
-      "type"          :"FlowLine",
-      "lineWidth"     :0.2,
-      "more_conf_keys":[],
-      "style"         :"solid",
-      "color"         :"black"
-    },
-    {
       "type"          :"FlowLine",
       "lineWidth"     :0.2,
       "more_conf_keys":[],
@@ -1470,31 +744,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_0.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_0.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_0.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_0.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "conf_key":"extract.2.notebound.minc.0.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "conf_key":"extract.2.notebound.minc.0.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "conf_key":"extract.2.notebound.minc.0.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -1511,31 +785,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_192.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_192.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_192.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_192.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
+          "conf_key":"extract.2.notebound.minc.192.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
+          "conf_key":"extract.2.notebound.minc.192.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
+          "conf_key":"extract.2.notebound.minc.192.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -1552,31 +826,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_288.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_288.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_288.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_288.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.288.minc_f",
+          "conf_key":"extract.2.notebound.minc.288.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.288.minc_f",
+          "conf_key":"extract.2.notebound.minc.288.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.288.minc_f",
+          "conf_key":"extract.2.notebound.minc.288.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -1593,31 +867,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_384.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_384.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_384.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_384.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "conf_key":"extract.2.notebound.minc.384.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "conf_key":"extract.2.notebound.minc.384.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "conf_key":"extract.2.notebound.minc.384.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -1644,31 +918,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_576.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_576.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_576.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_576.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
+          "conf_key":"extract.2.notebound.minc.576.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
+          "conf_key":"extract.2.notebound.minc.576.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
+          "conf_key":"extract.2.notebound.minc.576.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -1685,31 +959,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_672.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_672.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_672.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_672.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.672.minc_f",
+          "conf_key":"extract.2.notebound.minc.672.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.672.minc_f",
+          "conf_key":"extract.2.notebound.minc.672.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.672.minc_f",
+          "conf_key":"extract.2.notebound.minc.672.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -1753,31 +1027,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_768.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_768.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_768.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_768.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.768.minc_f",
+          "conf_key":"extract.2.notebound.minc.768.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.768.minc_f",
+          "conf_key":"extract.2.notebound.minc.768.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.768.minc_f",
+          "conf_key":"extract.2.notebound.minc.768.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -1821,31 +1095,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_960.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_960.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_960.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_960.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.960.minc_f",
+          "conf_key":"extract.2.notebound.minc.960.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.960.minc_f",
+          "conf_key":"extract.2.notebound.minc.960.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.960.minc_f",
+          "conf_key":"extract.2.notebound.minc.960.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -1879,31 +1153,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_1152.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_1152.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_1152.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_1152.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.1152.minc_f",
+          "conf_key":"extract.2.notebound.minc.1152.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.1152.minc_f",
+          "conf_key":"extract.2.notebound.minc.1152.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.1152.minc_f",
+          "conf_key":"extract.2.notebound.minc.1152.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -1947,31 +1221,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_1536.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_1536.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_1536.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_1536.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.1536.minc_f",
+          "conf_key":"extract.2.notebound.minc.1536.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.1536.minc_f",
+          "conf_key":"extract.2.notebound.minc.1536.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.1536.minc_f",
+          "conf_key":"extract.2.notebound.minc.1536.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -2015,31 +1289,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_1728.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_1728.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_1728.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_1728.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.1728.minc_f",
+          "conf_key":"extract.2.notebound.minc.1728.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.1728.minc_f",
+          "conf_key":"extract.2.notebound.minc.1728.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.1728.minc_f",
+          "conf_key":"extract.2.notebound.minc.1728.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -2073,31 +1347,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_1920.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_1920.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_1920.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_1920.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.1920.minc_f",
+          "conf_key":"extract.2.notebound.minc.1920.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.1920.minc_f",
+          "conf_key":"extract.2.notebound.minc.1920.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.1920.minc_f",
+          "conf_key":"extract.2.notebound.minc.1920.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -2141,31 +1415,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_2304.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_2304.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_2304.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_2304.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.2304.minc_f",
+          "conf_key":"extract.2.notebound.minc.2304.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.2304.minc_f",
+          "conf_key":"extract.2.notebound.minc.2304.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.2304.minc_f",
+          "conf_key":"extract.2.notebound.minc.2304.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -2209,31 +1483,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_2688.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_2688.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_2688.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_2688.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.2688.minc_f",
+          "conf_key":"extract.2.notebound.minc.2688.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.2688.minc_f",
+          "conf_key":"extract.2.notebound.minc.2688.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.2688.minc_f",
+          "conf_key":"extract.2.notebound.minc.2688.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -2277,31 +1551,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_3072.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_3072.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_3072.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_3072.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.3072.minc_f",
+          "conf_key":"extract.2.notebound.minc.3072.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.3072.minc_f",
+          "conf_key":"extract.2.notebound.minc.3072.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.3072.minc_f",
+          "conf_key":"extract.2.notebound.minc.3072.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -2345,31 +1619,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_3456.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_3456.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_3456.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_3456.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.3456.minc_f",
+          "conf_key":"extract.2.notebound.minc.3456.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.3456.minc_f",
+          "conf_key":"extract.2.notebound.minc.3456.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.3456.minc_f",
+          "conf_key":"extract.2.notebound.minc.3456.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -2413,31 +1687,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_3840.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_3840.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_3.t_3840.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_3.t_3840.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.3840.minc_f",
+          "conf_key":"extract.2.notebound.minc.3840.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.3840.minc_f",
+          "conf_key":"extract.2.notebound.minc.3840.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.3840.minc_f",
+          "conf_key":"extract.2.notebound.minc.3840.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -2634,13 +1908,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_0.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_0.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_0.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_0.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2657,13 +1931,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_192.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_192.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_192.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_192.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2680,13 +1954,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_288.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_288.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_288.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_288.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2703,13 +1977,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_384.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_384.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_384.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_384.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2726,13 +2000,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_576.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_576.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_576.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_576.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2749,13 +2023,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_672.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_672.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_672.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_672.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2772,13 +2046,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_768.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_768.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_768.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_768.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2795,13 +2069,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_960.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_960.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_960.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_960.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2818,13 +2092,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_1152.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_1152.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_1152.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_1152.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2841,13 +2115,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_1536.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_1536.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_1536.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_1536.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2864,13 +2138,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_1728.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_1728.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_1728.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_1728.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2887,13 +2161,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_1920.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_1920.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_1920.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_1920.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2910,13 +2184,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_2304.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_2304.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_2304.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_2304.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2933,13 +2207,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_2688.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_2688.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_2688.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_2688.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2956,13 +2230,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_3072.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_3072.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_3072.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_3072.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -2979,13 +2253,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_3456.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_3456.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_3456.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_3456.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -3002,13 +2276,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_3840.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_3840.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_3.t_3840.align",
+          "conf_key":"extract.2.notebound.countnote.v_3.t_3840.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -3085,13 +2359,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_384.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_384.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_384.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_384.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -3108,13 +2382,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_768.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_768.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_768.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_768.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -3131,13 +2405,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_1536.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_1536.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_1536.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_1536.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -3154,13 +2428,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_2304.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_2304.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_2304.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_2304.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -3177,13 +2451,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_3072.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_3072.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_3072.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_3072.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -3200,13 +2474,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_3840.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_3840.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_3.t_3840.align",
+          "conf_key":"extract.2.notebound.barnumber.v_3.t_3840.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -3356,31 +2630,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_0.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_0.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_0.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_0.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "conf_key":"extract.2.notebound.minc.0.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "conf_key":"extract.2.notebound.minc.0.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "conf_key":"extract.2.notebound.minc.0.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3397,31 +2671,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_96.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_96.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_96.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_96.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.96.minc_f",
+          "conf_key":"extract.2.notebound.minc.96.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.96.minc_f",
+          "conf_key":"extract.2.notebound.minc.96.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.96.minc_f",
+          "conf_key":"extract.2.notebound.minc.96.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3438,31 +2712,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_192.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_192.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_192.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_192.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
+          "conf_key":"extract.2.notebound.minc.192.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
+          "conf_key":"extract.2.notebound.minc.192.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.192.minc_f",
+          "conf_key":"extract.2.notebound.minc.192.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3479,31 +2753,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_288.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_288.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_288.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_288.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.288.minc_f",
+          "conf_key":"extract.2.notebound.minc.288.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.288.minc_f",
+          "conf_key":"extract.2.notebound.minc.288.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.288.minc_f",
+          "conf_key":"extract.2.notebound.minc.288.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3520,31 +2794,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_384.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_384.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_384.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_384.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "conf_key":"extract.2.notebound.minc.384.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "conf_key":"extract.2.notebound.minc.384.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "conf_key":"extract.2.notebound.minc.384.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3571,31 +2845,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_480.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_480.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_480.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_480.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.480.minc_f",
+          "conf_key":"extract.2.notebound.minc.480.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.480.minc_f",
+          "conf_key":"extract.2.notebound.minc.480.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.480.minc_f",
+          "conf_key":"extract.2.notebound.minc.480.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3612,31 +2886,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_576.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_576.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_576.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_576.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
+          "conf_key":"extract.2.notebound.minc.576.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
+          "conf_key":"extract.2.notebound.minc.576.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.576.minc_f",
+          "conf_key":"extract.2.notebound.minc.576.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3653,31 +2927,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_672.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_672.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_672.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_672.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.672.minc_f",
+          "conf_key":"extract.2.notebound.minc.672.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.672.minc_f",
+          "conf_key":"extract.2.notebound.minc.672.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.672.minc_f",
+          "conf_key":"extract.2.notebound.minc.672.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3694,31 +2968,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_768.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_768.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_768.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_768.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.768.minc_f",
+          "conf_key":"extract.2.notebound.minc.768.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.768.minc_f",
+          "conf_key":"extract.2.notebound.minc.768.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.768.minc_f",
+          "conf_key":"extract.2.notebound.minc.768.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3745,31 +3019,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_1152.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_1152.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_1152.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_1152.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.1152.minc_f",
+          "conf_key":"extract.2.notebound.minc.1152.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.1152.minc_f",
+          "conf_key":"extract.2.notebound.minc.1152.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.1152.minc_f",
+          "conf_key":"extract.2.notebound.minc.1152.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3786,31 +3060,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_1344.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_1344.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_1344.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_1344.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.1344.minc_f",
+          "conf_key":"extract.2.notebound.minc.1344.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.1344.minc_f",
+          "conf_key":"extract.2.notebound.minc.1344.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.1344.minc_f",
+          "conf_key":"extract.2.notebound.minc.1344.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3827,31 +3101,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_1536.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_1536.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_1536.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_1536.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.1536.minc_f",
+          "conf_key":"extract.2.notebound.minc.1536.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.1536.minc_f",
+          "conf_key":"extract.2.notebound.minc.1536.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.1536.minc_f",
+          "conf_key":"extract.2.notebound.minc.1536.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3878,31 +3152,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_1920.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_1920.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_1920.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_1920.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.1920.minc_f",
+          "conf_key":"extract.2.notebound.minc.1920.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.1920.minc_f",
+          "conf_key":"extract.2.notebound.minc.1920.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.1920.minc_f",
+          "conf_key":"extract.2.notebound.minc.1920.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3919,31 +3193,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_2304.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_2304.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_2304.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_2304.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.2304.minc_f",
+          "conf_key":"extract.2.notebound.minc.2304.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.2304.minc_f",
+          "conf_key":"extract.2.notebound.minc.2304.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.2304.minc_f",
+          "conf_key":"extract.2.notebound.minc.2304.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -3970,31 +3244,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_2688.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_2688.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_2688.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_2688.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.2688.minc_f",
+          "conf_key":"extract.2.notebound.minc.2688.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.2688.minc_f",
+          "conf_key":"extract.2.notebound.minc.2688.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.2688.minc_f",
+          "conf_key":"extract.2.notebound.minc.2688.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -4011,31 +3285,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_3072.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_3072.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_3072.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_3072.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.3072.minc_f",
+          "conf_key":"extract.2.notebound.minc.3072.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.3072.minc_f",
+          "conf_key":"extract.2.notebound.minc.3072.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.3072.minc_f",
+          "conf_key":"extract.2.notebound.minc.3072.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -4062,31 +3336,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_3456.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_3456.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_3456.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_3456.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.3456.minc_f",
+          "conf_key":"extract.2.notebound.minc.3456.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.3456.minc_f",
+          "conf_key":"extract.2.notebound.minc.3456.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.3456.minc_f",
+          "conf_key":"extract.2.notebound.minc.3456.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -4130,31 +3404,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_3840.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_3840.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_3840.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_3840.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.3840.minc_f",
+          "conf_key":"extract.2.notebound.minc.3840.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.3840.minc_f",
+          "conf_key":"extract.2.notebound.minc.3840.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.3840.minc_f",
+          "conf_key":"extract.2.notebound.minc.3840.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -4198,31 +3472,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_4032.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_4032.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_4032.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_4032.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.4032.minc_f",
+          "conf_key":"extract.2.notebound.minc.4032.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.4032.minc_f",
+          "conf_key":"extract.2.notebound.minc.4032.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.4032.minc_f",
+          "conf_key":"extract.2.notebound.minc.4032.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -4256,31 +3530,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_4224.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_4224.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_4224.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_4224.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.4224.minc_f",
+          "conf_key":"extract.2.notebound.minc.4224.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.4224.minc_f",
+          "conf_key":"extract.2.notebound.minc.4224.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.4224.minc_f",
+          "conf_key":"extract.2.notebound.minc.4224.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -4314,31 +3588,31 @@
       "lineWidth"     :0.3,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_4416.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_4416.n_0.nshift",
           "text"    :"shift left",
           "icon"    :"fa fa-arrow-left",
           "value"   :-0.5
         },
         {
-          "conf_key":"extract.0.notebound.nconf.v_4.t_4416.n_0.nshift",
+          "conf_key":"extract.2.notebound.nconf.v_4.t_4416.n_0.nshift",
           "text"    :"shift right",
           "icon"    :"fa fa-arrow-right",
           "value"   :0.5
         },
         {"text":"---","icon":"fa fa-arrows-v","value":0.5},
         {
-          "conf_key":"extract.0.notebound.minc.4416.minc_f",
+          "conf_key":"extract.2.notebound.minc.4416.minc_f",
           "text"    :"Edit Minc",
           "icon"    :"fa fa-arrows-v"
         },
         {
-          "conf_key":"extract.0.notebound.minc.4416.minc_f",
+          "conf_key":"extract.2.notebound.minc.4416.minc_f",
           "text"    :"increase Minc",
           "icon"    :"fa fa-arrow-down",
           "value"   :0.5
         },
         {
-          "conf_key":"extract.0.notebound.minc.4416.minc_f",
+          "conf_key":"extract.2.notebound.minc.4416.minc_f",
           "text"    :"decrease Minc",
           "icon"    :"fa fa-arrow-up",
           "value"   :-0.5
@@ -4565,13 +3839,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_0.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_0.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_0.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_0.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4588,13 +3862,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_96.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_96.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_96.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_96.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4611,13 +3885,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_192.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_192.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_192.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_192.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4634,13 +3908,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_288.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_288.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_288.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_288.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4657,13 +3931,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_384.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_384.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_384.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_384.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4680,13 +3954,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_480.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_480.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_480.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_480.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4703,13 +3977,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_576.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_576.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_576.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_576.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4726,13 +4000,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_672.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_672.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_672.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_672.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4749,13 +4023,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_768.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_768.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_768.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_768.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4772,13 +4046,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_1152.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_1152.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_1152.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_1152.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4795,13 +4069,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_1344.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_1344.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_1344.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_1344.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4818,13 +4092,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_1536.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_1536.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_1536.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_1536.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4841,13 +4115,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_1920.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_1920.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_1920.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_1920.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4864,13 +4138,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_2304.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_2304.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_2304.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_2304.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4887,13 +4161,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_2688.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_2688.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_2688.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_2688.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4910,13 +4184,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_3072.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_3072.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_3072.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_3072.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4933,13 +4207,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_3456.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_3456.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_3456.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_3456.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4956,13 +4230,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_3840.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_3840.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_3840.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_3840.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -4979,13 +4253,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_4032.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_4032.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_4032.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_4032.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -5002,13 +4276,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_4224.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_4224.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_4224.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_4224.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -5025,13 +4299,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_4416.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_4416.align",
           "text"    :"countnote left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.countnote.v_4.t_4416.align",
+          "conf_key":"extract.2.notebound.countnote.v_4.t_4416.align",
           "text"    :"countnote right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -5108,13 +4382,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_384.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_384.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_384.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_384.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -5131,13 +4405,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_768.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_768.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_768.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_768.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -5154,13 +4428,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_1536.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_1536.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_1536.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_1536.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -5177,13 +4451,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_2304.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_2304.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_2304.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_2304.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -5200,13 +4474,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_3072.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_3072.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_3072.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_3072.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -5223,13 +4497,13 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_3840.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_3840.align",
           "text"    :"barnumber left",
           "icon"    :"fa fa-arrow-left",
           "value"   :"l"
         },
         {
-          "conf_key":"extract.0.notebound.barnumber.v_4.t_3840.align",
+          "conf_key":"extract.2.notebound.barnumber.v_4.t_3840.align",
           "text"    :"barnumber right",
           "icon"    :"fa fa-arrow-right",
           "value"   :"r"
@@ -5271,7 +4545,7 @@
         ["L",284.55,15.61],
         ["L",-70.60000000000001,15.61]
       ],
-      "confKey"       :"extract.0.notebound.c_jumplines.v_4.1344.p_repeat"
+      "confKey"       :"extract.2.notebound.c_jumplines.v_4.1344.p_repeat"
     },
     {
       "type"          :"Path",
@@ -5317,7 +4591,7 @@
       "more_conf_keys":[],
       "draginfo"      :{"handler":"annotation"},
       "center"        :[411,17],
-      "text"          :"-X",
+      "text"          :"-B",
       "style"         :"bold",
       "color"         :"black"
     },
@@ -5367,7 +4641,7 @@
       "more_conf_keys":[],
       "draginfo"      :{"handler":"annotation"},
       "center"        :[360,51],
-      "text"          :"Bearbeitungsansicht\nBernhard Weichel\nTakt: 4/8 (1/4=120)\nTonart: G",
+      "text"          :"Tenor, Bass, Melodie\nBernhard Weichel\nTakt: 4/8 (1/4=120)\nTonart: G",
       "style"         :"small",
       "color"         :"black"
     },
@@ -5414,20 +4688,6 @@
       "more_conf_keys":[],
       "path"          :[
         ["M",2.3,287.5],
-        ["l",0.5,-1],
-        ["l",0.5,1],
-        ["l",0,5],
-        ["l",-0.5,1],
-        ["l",-0.5,-1],
-        ["l",0,-5]
-      ]
-    },
-    {
-      "type"          :"Path",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "path"          :[
-        ["M",140.3,287.5],
         ["l",0.5,-1],
         ["l",0.5,1],
         ["l",0,5],

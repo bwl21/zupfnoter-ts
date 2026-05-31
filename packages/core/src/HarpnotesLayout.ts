@@ -2314,7 +2314,7 @@ export class HarpnotesLayout {
     const apbase = (conf.get('extract.barnumbers.apbase') as [number, number] | undefined) ?? [1, 1]
     const size = playableSize(playable, layout)
     const sizeWithDot: [number, number] = [
-      size[0] + (playable.type === 'Note' && playable.duration % 3 === 0 ? 1 : 0),
+      size[0] + (playableDotted(playable, layout) ? 1 : 0),
       size[1],
     ]
     const previous = playable.prevPlayable ?? playable

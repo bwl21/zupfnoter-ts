@@ -23068,14 +23068,19 @@
       "text": null
     },
     "template": {
-      "filebase": "-no-template-",
-      "title": "- no template -"
+      "filebase": "9999_Vorlage-Monbachtal-2025",
+      "title": "Vorlage Monbachtal 2025"
     },
     "print": [
       {
-        "title": "alle Stimmen",
-        "view_id": 0,
-        "filenamepart": "alle_Stimmen"
+        "title": "Melodie, Begleitung",
+        "view_id": 1,
+        "filenamepart": "-A"
+      },
+      {
+        "title": "Tenor, Bass, Melodie",
+        "view_id": 2,
+        "filenamepart": "-B"
       }
     ]
   }

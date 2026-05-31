@@ -6159,7 +6159,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 757_Andante-grazioso-Mozart
 
-- Issues: 708
+- Issues: 702
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -6184,9 +6184,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[3].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[4].nextPitch (mismatch)
-  - expected: 69
-  - actual: 66
 - voices[0].entities[4].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -6199,12 +6196,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[5].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[5].pitch (mismatch)
-  - expected: 69
-  - actual: 66
-- voices[0].entities[6].prevPitch (mismatch)
-  - expected: 69
-  - actual: 66
 - voices[0].entities[6].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -6715,9 +6706,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[3].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[4].nextPitch (mismatch)
-  - expected: 69
-  - actual: 66
 - voices[1].entities[4].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -6730,12 +6718,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[5].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[5].pitch (mismatch)
-  - expected: 69
-  - actual: 66
-- voices[1].entities[6].prevPitch (mismatch)
-  - expected: 69
-  - actual: 66
 - voices[1].entities[6].tupletStart (missing)
   - expected: null
   - actual: undefined

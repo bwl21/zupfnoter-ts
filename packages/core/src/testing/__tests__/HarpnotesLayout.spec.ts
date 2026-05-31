@@ -143,6 +143,16 @@ K:C
 V:V1 clef=treble-8
 [V:V1] C D E F | G A B c |]`
 
+const ABC_DOTTED_SYNCHPOINT_BARNUMBER = `X:1
+T:Dotted SynchPoint Barnumber Test
+M:3/4
+L:1/8
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] C3 D3 | [G,B]3 C3 |]`
+
 const ABC_COUNTNOTES = `X:1
 T:Countnote Test
 M:4/4
@@ -455,6 +465,58 @@ V:V1 clef=treble-8
       )
       expect(annotations.length).toBeGreaterThanOrEqual(2)
       expect(annotations.every((entry) => /^\d+$/.test(entry.text))).toBe(true)
+    })
+
+    it('adds dotted width for SynchPoint barnumber autopositioning', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      extract0.barnumbers = {
+        voices: [1],
+        autopos: true,
+        style: 'barnumber_probe',
+      }
+
+      const { song, sheet } = pipelineWithConfig(ABC_DOTTED_SYNCHPOINT_BARNUMBER, config)
+      const synchPoint = song.voices[0]?.entities.find(
+        (entity) => entity.type === 'SynchPoint' && entity.measureStart,
+      )
+      expect(synchPoint?.type).toBe('SynchPoint')
+      if (!synchPoint || synchPoint.type !== 'SynchPoint') {
+        throw new Error('Expected dotted measure-start SynchPoint')
+      }
+
+      const proxy = synchPoint.notes[synchPoint.notes.length - 1]
+      expect(proxy).toBeDefined()
+      if (!proxy) throw new Error('Expected proxy note for SynchPoint')
+
+      const proxyEllipse = sheet.children
+        .filter((child): child is Ellipse => child.type === 'Ellipse')
+        .filter((child) => (
+          child.origin?.time === proxy.time
+          && child.origin?.pitch === proxy.pitch
+          && child.size[1] > 0.2
+        ))[0]
+      expect(proxyEllipse).toBeDefined()
+      if (!proxyEllipse) throw new Error('Expected proxy ellipse for SynchPoint')
+
+      const barnumber = sheet.children.find(
+        (child): child is Annotation => (
+          child.type === 'Annotation'
+          && child.style === 'barnumber_probe'
+          && child.text === '2'
+        ),
+      )
+      expect(barnumber).toBeDefined()
+      if (!barnumber) throw new Error('Expected barnumber annotation for measure 2')
+
+      expect(barnumber.center[0]).toBeCloseTo(proxyEllipse.center[0] + proxyEllipse.size[0] + 2, 5)
     })
 
     it('renders configured countnotes for each counted playable', () => {
