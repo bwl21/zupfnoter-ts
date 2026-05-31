@@ -139,7 +139,9 @@ export class Confstack {
   }
 
   /**
-   * Schreibt einen Wert per Punkt-Notation direkt in die oberste Schicht.
+   * Schreibt einen Wert per Punkt-Notation als neue oberste Schicht.
+   * Bei `DeleteMe` wird stattdessen `delete()` aufgerufen.
+   * Der gesetzte Wert ist damit per `pop()` wieder rückgängig zu machen.
    * Entspricht `[]=(key, value)` in `confstack.rb`.
    */
   set(path: string, value: unknown): void {
