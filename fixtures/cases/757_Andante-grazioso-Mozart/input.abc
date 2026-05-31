@@ -1,25 +1,39 @@
-X:1
-T:Zupfnoter test - Twostaff.abc
-C:Bernhard Weichel
-F:Twostaff
-M:4/8
-L:1/16
-Q:1/4
-K:G
-%%score T1 T2 (B1 B2)
-V:T1           clef=treble-8  name="v1"   snm="v1"
-V:T2           clef=treble-8  name="v2"   snm="v2"
-%V:B1  middle=D, clef=bass      name="Basso I"    snm="B.I"  transpose=-24
-%V:B2  middle=D, clef=bass      name="Basso II"   snm="B.II" transpose=-24
-%            End of header, start of tune body:
-% 1
-[V:T1]  cde2 | gab2 |
-[V:T2]  CDEF | GABc  |
-[V:B1]  C2,E,F, | G,2B,C |
-[V:B2]  C,,D,,E,,F,, | G,,A,,B,,C, |      | F4       F2 F2              :|
-          B,4     C4              | B,4     B,4             | G,4    F4              | [EB]2    [EB]2 [EB]2 [EB]2   |]
-[V:B1] |  [B,G,]2 [B,G,]2 [B,G,]4 | [G,B,]2 [G,B,]2 [E,B,]4 | [G,C]4 [G,e,]4         | [=A,C]4  [F,D]4              |
-[A,C]4
+X:757
+T:Mozart Variation - Andante grazioso
+F:757_Andante-grazioso-Mozart
+C:Wolfgang Amadeus Mozart (1756-1791)
+C:Bearb.: Ruth und Bernhard Weichel
+S:https://musescore.com/user/31766891/scores/6842509
+%%scale 0.83
+%%pagewidth 21.01cm
+%%leftmargin 1.00cm
+%%rightmargin 1.00cm
+%%score { ( 1 2 ) | ( 3 4 ) }
+L:1/8
+Q:1/4=70
+M:6/8
+I:linebreak $
+K:A shift=AG
+V:1 treble nm="Piano" snm="Pno."
+V:2 treble 
+V:3 bass 
+V:4 bass 
+V:1
+|:!mp! [A^c]>dc e2 e | [GB]>^cB d2 d | [FA]2 A B2 B | [A^c]2 e/d/ [Ac]2 B |$ [A^c]>dc e2 e | [GB]>^cB d2 d | %6
+ [FA]2 B ^c2 [Bd] | [A^c]2 [E^GB] [EA]3 ::$ e>^fe f2 f | a>^gf ^fe.e | e^c.A ed.B | %11
+ e^c.A [Ac]2 [^GB] :|$!mf! ^c>dc e2 e | B>^cB d2 d | A2 B ^c2 [Bd] | [A^c]2 [^GB] [GB]2 [A^c] |$ %16
+!f! [A^c]2 [^Gd] [Ae]2 ^f/a/ | A2 ^c/B/ A3 | !fermata![^ca]6 |] %19
+V:2
+|: x6 | x6 | x6 | x2 B A2 ^G |$ x6 | x6 | x4 x B | E2 D ^C2 x ::$ x6 | x6 | x6 | x6 :|$ x6 | x6 | %14
+ x4 ^F | E2 E E3 |$ E2 E x3 | x2 ^G A3 | A6 |] %19
+V:3
+|: E2 E E2 E | E2 E E2 E | E2 E E2 E | E2 D, E,3 |$ E2 E E2 E | E2 E E2 E | E2 E E2 D, | %7
+ E,2 E, ^C,2 z ::$ A,^CE A,D^F | A,D^F A,^C.E | ^C2 z D2 z | ^C2 .^D E3 :|$ E2 E E2 E | %13
+ E2 E E2 E | E2 E E2 D, | E,2 E, A,,3 |$ A,2 B, ^C2 D | ^C2 D ^C3 | [E,A,]6 |] %19
+V:4
+|: A,>B,A, ^C2 C | ^G,>A,G, B,2 B, | ^F,2 F, ^G,2 G, | A,2 x4 |$ A,>B,A, ^C2 C | ^G,>A,G, B,2 B, | %6
+ ^F,2 ^G, A,2 x | x3 A,,2 x ::$ x6 | x6 | A,2 x ^G,2 x | A,2 .^F, E,3 :|$ A,>B,A, ^C2 C | %13
+ ^G,>A,G, B,2 B, | ^F,2 ^G, A,2 x | x6 |$ A,,2 B,, ^C,2 D, | E,2 E, A,3 | A,,6 |] %19
 
 %%%%zupfnoter.config
 
@@ -34,7 +48,7 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
     "0" : {
       "title"        : "Bearbeitungsansicht",
       "filenamepart" : "-X",
-      "voices"       : [1, 2, 3, 4],
+      "voices"       : [1, 3, 4],
       "flowlines"    : [1, 2, 3, 4],
       "subflowlines" : [0],
       "jumplines"    : [1, 2, 3, 4],
@@ -79,7 +93,7 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
           "style" : "small"
         },
         "T04_to_order"            : {
-          "pos"   : [325, 279],
+          "pos"   : [150, 284],
           "text"  : "Privatkopie\n",
           "style" : "small"
         },
@@ -90,7 +104,7 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
           "align" : "l"
         },
         "T06_legend"              : {
-          "pos"   : [360, 51],
+          "pos"   : [350, 40],
           "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}",
           "style" : "small"
         },
@@ -116,11 +130,15 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
         "jumpline_vcut"     : 5
       },
       "printer"      : {"show_border": false},
-      "stringnames"  : {"vpos": [4], "marks": {"vpos": [290]}}
+      "stringnames"  : {"vpos": [4], "marks": {"vpos": [290]}},
+      "notebound"    : {
+        "countnote" : {"v_3": {"t_8448": {"pos": [2.75, 0]}}}
+      }
     },
     "1" : {
       "title"        : "Melodie, Begleitung",
       "filenamepart" : "-A",
+      "voices"       : [1],
       "notes"        : {"T01_number_extract": {"text": "-A"}},
       "layout"       : {
         "limit_a3"     : false,
@@ -137,6 +155,14 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
       "stringnames"  : {
         "text"  : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
         "marks" : {"hpos": [55, 79]}
+      },
+      "notebound"    : {
+        "c_jumplines" : {
+          "v_1" : {
+            "13632" : {"p_repeat": -6},
+            "8640"  : {"p_repeat": -3}
+          }
+        }
       }
     },
     "2" : {
@@ -145,7 +171,7 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
       "voices"       : [1, 3, 4],
       "notes"        : {"T01_number_extract": {"text": "-B"}},
       "layout"       : {
-        "limit_a3"     : true,
+        "limit_a3"     : false,
         "instrument"   : "37-strings-g-g",
         "PITCH_OFFSET" : -43,
         "X_OFFSET"     : 2.80,
@@ -159,6 +185,21 @@ V:T2           clef=treble-8  name="v2"   snm="v2"
       "stringnames"  : {
         "text"  : "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
         "marks" : {"hpos": [43, 79]}
+      },
+      "notebound"    : {
+        "c_jumplines" : {
+          "v_3" : {"9024": {"p_repeat": 11}},
+          "v_4" : {"9024": {"p_repeat": 2}}
+        },
+        "flowline"    : {
+          "v_3" : {
+            "17088" : {"cp1": [7.42, 10.13], "cp2": [-2.26, -11.18]},
+            "3840"  : {"cp1": [8.40, 45.99], "cp2": [-3.22, -15.34]},
+            "7872"  : {"cp1": [6, 47.59], "cp2": [-2.20, -11.43]}
+          },
+          "v_4" : {"20736": {"cp1": [-1.61, 62.16]}}
+        },
+        "barnumber"   : {"v_4": {"t_0": {"align": "r"}}}
       }
     },
     "3" : {
