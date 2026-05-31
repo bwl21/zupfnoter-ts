@@ -846,6 +846,7 @@ export class HarpnotesLayout {
       voiceNr,
       extractNr,
       conf,
+      visibleByPlayable,
     )
     result.push(...countnoteBackgrounds, ...countnotes, ...barnumberBackgrounds, ...barnumbers)
     result.push(...decorationBackgrounds, ...decorations)
@@ -2099,6 +2100,7 @@ export class HarpnotesLayout {
     voiceNr: number,
     extractNr: number | string,
     conf: Confstack,
+    visibleByPlayable: Map<PlayableEntity, boolean>,
   ): {
     barnumberBackgrounds: Ellipse[]
     barnumbers: Annotation[]
@@ -2112,13 +2114,14 @@ export class HarpnotesLayout {
     const barnumberVoices = new Set((conf.get('extract.barnumbers.voices') as number[] | undefined) ?? [])
     const countnoteVoices = new Set((conf.get('extract.countnotes.voices') as number[] | undefined) ?? [])
     let measureStartBeat: number | null = null
-    let skippedBarnumberMeasureStarts = 0
+    const visiblePlayables = voice.entities.filter(
+      (entity): entity is PlayableEntity =>
+        (entity.type === 'Note' || entity.type === 'Pause' || entity.type === 'SynchPoint') &&
+        (visibleByPlayable.get(entity) ?? entity.visible),
+    )
 
-    for (const entity of voice.entities) {
-      if (entity.type !== 'Note' && entity.type !== 'Pause' && entity.type !== 'SynchPoint') continue
-      const playable = entity as PlayableEntity
-      const skipBarnumberMeasureStart = this._isLegacyVariantLeadInMeasureStart(playable)
-      if ((playable.measureStart && !skipBarnumberMeasureStart) || measureStartBeat === null) {
+    for (const playable of visiblePlayables) {
+      if (playable.measureStart || measureStartBeat === null) {
         measureStartBeat = playable.beat
       }
 
@@ -2168,12 +2171,11 @@ export class HarpnotesLayout {
       if (
         barnumberVoices.has(voiceNr) &&
         playable.measureStart &&
-        playable.measureCount &&
-        !skipBarnumberMeasureStart
+        playable.measureCount !== undefined
       ) {
         const offset = this._barnumberOffset(playable, layout, voiceNr, conf)
         const side = this._barnumberSide(playable, voiceNr, conf)
-        const barnumber = playable.measureCount - skippedBarnumberMeasureStarts
+        const barnumber = playable.measureCount
         const barnumberAlignKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}.align`
 
         const annotation: Annotation = {
@@ -2203,10 +2205,6 @@ export class HarpnotesLayout {
         }
         barnumberBackgrounds.push(this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, 0.2))
         barnumbers.push(annotation)
-      }
-
-      if (skipBarnumberMeasureStart) {
-        skippedBarnumberMeasureStarts += 1
       }
     }
 
