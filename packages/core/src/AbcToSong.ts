@@ -444,9 +444,7 @@ export class AbcToSong {
       lyrics,
     }))
 
-    const mappedNotes = mappedNotesUnordered.length > 1 && state.measureCount === 2
-      ? [...mappedNotesUnordered].reverse()
-      : mappedNotesUnordered
+    const mappedNotes = mappedNotesUnordered
 
     let result: PlayableEntity[]
 
