@@ -33,13 +33,22 @@ import type {
 } from '@zupfnoter/types'
 import type {
   ZupfnoterConfig,
+  ExtractConfig,
   DurationKey,
+  BeamStyle,
+  DurationStyle,
   LayoutConfig,
+  PrinterConfig,
 } from '@zupfnoter/types'
 import { buildConfstack } from './buildConfstack.js'
 import { computeBeatCompression, type BeatCompressionMap } from './BeatPacker.js'
 import type { Confstack } from './Confstack.js'
 import { requireDefined } from './requireDefined.js'
+import {
+  createDefaultAnnotationTextMetrics,
+  type AnnotationTextMetrics,
+  type HarpnotesLayoutOptions,
+} from './TextMetrics.js'
 
 // ---------------------------------------------------------------------------
 // Coordinate helpers (module-level pure functions)
@@ -58,16 +67,45 @@ function pitchToX(pitch: number, layout: LayoutConfig): number {
   return (pitch + layout.PITCH_OFFSET) * layout.X_SPACING + layout.X_OFFSET
 }
 
-/** Beat → Y position in mm via BeatCompressionMap */
+/** Beat → Y position in mm via BeatCompressionMap. Legacy uses Y_SCALE / BEAT_RESOLUTION. */
 function beatToY(beat: number, beatMap: BeatCompressionMap, layout: LayoutConfig, startpos: number): number {
   const compressed = beatMap[beat] ?? beat
-  return compressed * layout.Y_SCALE + startpos
+  return compressed * (layout.Y_SCALE / layout.BEAT_RESOLUTION) + startpos
+}
+
+function applyLegacyBeatSpread(beatMap: BeatCompressionMap, layout: LayoutConfig, startpos: number): BeatCompressionMap {
+  const maximalBeat = Math.max(0, ...Object.values(beatMap))
+  if (maximalBeat === 0) return beatMap
+
+  const baseBeatSpacing = layout.Y_SCALE / layout.BEAT_RESOLUTION
+  if (baseBeatSpacing === 0) return beatMap
+
+  const fullBeatSpacing = (layout.DRAWING_AREA_SIZE[1] - startpos) / maximalBeat
+  const maxSpreadFactor = layout.packer.pack_max_spreadfactor ?? 1
+  const effectiveBeatSpacing = Math.min(fullBeatSpacing, maxSpreadFactor * baseBeatSpacing)
+  const factor = effectiveBeatSpacing / baseBeatSpacing
+
+  if (factor === 1) return beatMap
+
+  return Object.fromEntries(
+    Object.entries(beatMap).map(([beat, compressed]) => [beat, compressed * factor]),
+  ) as BeatCompressionMap
+}
+
+function convertBeamStylesToDurationStyles(
+  durationToBeams: Record<DurationKey, BeamStyle>,
+): Record<DurationKey, DurationStyle> {
+  const result = {} as Record<DurationKey, DurationStyle>
+  for (const [duration, [sizeFactor, fill, dotted]] of Object.entries(durationToBeams) as Array<[DurationKey, BeamStyle]>) {
+    result[duration] = { sizeFactor, fill, dotted }
+  }
+  return result
 }
 
 /** Duration (SHORTEST_NOTE scale) → DurationKey. Duration is already on the correct scale. */
 function durationToKey(duration: number): DurationKey {
   const key = `d${duration}` as DurationKey
-  const valid: DurationKey[] = ['d64','d48','d32','d24','d16','d12','d8','d6','d4','d3','d2','d1']
+  const valid: DurationKey[] = ['d96','d64','d48','d32','d24','d16','d12','d8','d6','d4','d3','d2','d1']
   return valid.includes(key) ? key : 'err'
 }
 
@@ -76,6 +114,173 @@ function variantToColor(variant: 0 | 1 | 2, layout: LayoutConfig): string {
   if (variant === 1) return layout.color.color_variant1
   if (variant === 2) return layout.color.color_variant2
   return layout.color.color_default
+}
+
+function playableCenter(
+  playable: PlayableEntity,
+  beatMap: BeatCompressionMap,
+  layout: LayoutConfig,
+  startpos: number,
+): [number, number] {
+  const proxy = playableLayoutProxy(playable)
+  return [
+    playableX(proxy, layout),
+    beatToY(proxy.beat, beatMap, layout, startpos),
+  ]
+}
+
+function playableX(playable: PlayableEntity, layout: LayoutConfig): number {
+  const proxy = playableLayoutProxy(playable)
+  const x = pitchToX(proxy.pitch, layout)
+  return x + playableHorizontalShift(proxy, layout, x)
+}
+
+function playableSize(playable: PlayableEntity, layout: LayoutConfig): [number, number] {
+  const proxy = playableLayoutProxy(playable)
+  if (proxy.type === 'Pause') {
+    const dKey = durationToKey(proxy.duration)
+    const restStyle = layout.REST_TO_GLYPH[dKey] ?? layout.REST_TO_GLYPH['err']
+    if (!restStyle) return layout.REST_SIZE
+    return [layout.REST_SIZE[0] * restStyle.scale[0], layout.REST_SIZE[1] * restStyle.scale[1]]
+  }
+
+  const dKey = durationToKey(proxy.duration)
+  const style = layout.DURATION_TO_STYLE[dKey] ?? requireDefined(
+    layout.DURATION_TO_STYLE['err'],
+    'HarpnotesLayout.playableSize(): missing fallback duration style "err"',
+  )
+  return [layout.ELLIPSE_SIZE[0] * style.sizeFactor, layout.ELLIPSE_SIZE[1] * style.sizeFactor]
+}
+
+function playableDotted(playable: PlayableEntity, layout: LayoutConfig): boolean {
+  const proxy = playableLayoutProxy(playable)
+  const dKey = durationToKey(proxy.duration)
+  if (proxy.type === 'Pause') {
+    return (layout.REST_TO_GLYPH[dKey] ?? layout.REST_TO_GLYPH['err'])?.dotted ?? false
+  }
+
+  const style = layout.DURATION_TO_STYLE[dKey] ?? layout.DURATION_TO_STYLE['err']
+  return style?.dotted ?? false
+}
+
+function playableLayoutProxy(playable: PlayableEntity): PlayableEntity {
+  if (playable.type !== 'SynchPoint') return playable
+  return playable.notes[playable.notes.length - 1] ?? playable
+}
+
+function playableHorizontalShift(playable: PlayableEntity, layout: LayoutConfig, x: number): number {
+  if (!layout.limit_a3) return 0
+
+  const size = playableSize(playable, layout)
+  let shift = 0
+  if (x < 5) {
+    shift += size[0]
+  }
+  if (x > 415) {
+    shift -= size[0]
+    if (playableDotted(playable, layout)) {
+      shift -= 1.5
+    }
+  }
+  return shift
+}
+
+function addPoint(point: [number, number], offset: [number, number]): [number, number] {
+  return [point[0] + offset[0], point[1] + offset[1]]
+}
+
+function subtractPoint(a: [number, number], b: [number, number]): [number, number] {
+  return [a[0] - b[0], a[1] - b[1]]
+}
+
+function orientationX(delta: number): -1 | 0 | 1 {
+  if (delta < 0) return -1
+  if (delta > 0) return 1
+  return 0
+}
+
+function orientationY(delta: number): -1 | 0 | 1 {
+  if (delta < 0) return -1
+  if (delta > 0) return 1
+  return 0
+}
+
+function swapJumplineAnchor(anchor: 'before' | 'after'): 'before' | 'after' {
+  return anchor === 'before' ? 'after' : 'before'
+}
+
+function comparePosition(a: number, b: number): 1 | 2 | 3 {
+  if (a < b) return 1
+  if (a > b) return 3
+  return 2
+}
+
+function computeNotePosition(
+  previousX: number,
+  currentX: number,
+  nextX: number,
+): ['l' | 'r', 'l' | 'r'] {
+  if (currentX < 10) return ['r', 'r']
+  if (currentX > 410) return ['l', 'l']
+
+  const key = `${comparePosition(previousX, currentX)}${comparePosition(nextX, currentX)}`
+  const lookup: Record<string, ['l' | 'r', 'l' | 'r']> = {
+    '11': ['r', 'r'],
+    '12': ['r', 'l'],
+    '13': ['r', 'l'],
+    '21': ['r', 'r'],
+    '22': ['r', 'l'],
+    '23': ['l', 'l'],
+    '31': ['l', 'r'],
+    '32': ['l', 'r'],
+    '33': ['l', 'l'],
+  }
+  return lookup[key] ?? ['r', 'l']
+}
+
+function playablesByBeat(voice: Voice): Map<number, PlayableEntity> {
+  const result = new Map<number, PlayableEntity>()
+  for (const entity of voice.entities) {
+    if (entity.type === 'Note' || entity.type === 'Pause' || entity.type === 'SynchPoint') {
+      result.set(entity.beat, entity as PlayableEntity)
+    }
+  }
+  return result
+}
+
+function addSynchedPlayable(result: Set<PlayableEntity>, playable: PlayableEntity): void {
+  result.add(playable)
+  if (playable.type === 'SynchPoint') {
+    for (const note of playable.notes) {
+      result.add(note)
+    }
+    for (const note of playable.synchedNotes) {
+      result.add(note)
+    }
+  }
+}
+
+function computeCountnoteText(playable: PlayableEntity, measureStartBeat: number): string {
+  const beatUnit = 48
+  const start = (playable.beat - measureStartBeat) / beatUnit
+  const length = playable.duration / 16
+  const startIndex = Math.floor(start)
+  const end = start + length
+  const endIndex = Math.ceil(end)
+
+  if (Number.isInteger(start) && Number.isInteger(end) && length >= 1) {
+    const beats = Array.from(
+      { length: Math.max(1, endIndex - startIndex) },
+      (_, index) => String(startIndex + index + 1),
+    )
+    return beats.join('-')
+  }
+
+  const quarter = Math.floor(start)
+  const subdivision = Math.round((start - quarter) * 4)
+  if (subdivision === 2) return 'u'
+  if (subdivision === 3) return 'e'
+  return String(quarter + 1)
 }
 
 function parseStringNamesText(text: string | undefined): string[] {
@@ -88,11 +293,172 @@ function parseStringNamesText(text: string | undefined): string[] {
 function makeSheetmarkPath(center: [number, number]): [number, number][] {
   const [x, y] = center
   return [
-    [x, y],
-    [x - 1, y + 4],
-    [x + 1, y + 4],
-    [x, y],
+    [x - 0.5, y - 2.5],
+    [x, y - 3.5],
+    [x + 0.5, y - 2.5],
+    [x + 0.5, y + 2.5],
+    [x, y + 3.5],
+    [x - 0.5, y + 2.5],
+    [x - 0.5, y - 2.5],
   ]
+}
+
+function rotatePoint(point: [number, number], angle: number): [number, number] {
+  const [x, y] = point
+  const cos = Math.cos(angle)
+  const sin = Math.sin(angle)
+  return [x * cos - y * sin, x * sin + y * cos]
+}
+
+interface AnnotatedBezierOptions {
+  cp1: [number, number]
+  cp2: [number, number]
+  pos: [number, number]
+  shape: string[]
+  show: boolean
+}
+
+const DEFAULT_TUPLET_OPTIONS: AnnotatedBezierOptions = {
+  cp1: [5, 2],
+  cp2: [5, -2],
+  pos: [0, 0],
+  shape: ['c'],
+  show: true,
+}
+
+const DEFAULT_FLOWLINE_OPTIONS: AnnotatedBezierOptions = {
+  cp1: [0, 10],
+  cp2: [0, -10],
+  pos: [0, 0],
+  shape: ['c'],
+  show: true,
+}
+
+function normalizePoint(value: unknown, fallback: [number, number]): [number, number] {
+  if (
+    Array.isArray(value) &&
+    typeof value[0] === 'number' &&
+    typeof value[1] === 'number'
+  ) {
+    return [value[0], value[1]]
+  }
+  return fallback
+}
+
+function normalizeStringArray(value: unknown, fallback: string[]): string[] {
+  if (Array.isArray(value) && value.every((entry) => typeof entry === 'string')) {
+    return value
+  }
+  return fallback
+}
+
+function mergeAnnotatedBezierOptions(
+  defaults: AnnotatedBezierOptions,
+  override: unknown,
+): AnnotatedBezierOptions {
+  if (override === undefined || override === null || typeof override !== 'object') return defaults
+  const values = override as Record<string, unknown>
+  return {
+    cp1: normalizePoint(values['cp1'], defaults.cp1),
+    cp2: normalizePoint(values['cp2'], defaults.cp2),
+    pos: normalizePoint(values['pos'], defaults.pos),
+    shape: normalizeStringArray(values['shape'], defaults.shape),
+    show: typeof values['show'] === 'boolean' ? values['show'] : defaults.show,
+  }
+}
+
+function midpoint(a: [number, number], b: [number, number]): [number, number] {
+  return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]
+}
+
+function scalePoint(point: [number, number], factor: number): [number, number] {
+  return [point[0] * factor, point[1] * factor]
+}
+
+function normalizeVector(point: [number, number]): [number, number] {
+  const length = Math.hypot(point[0], point[1])
+  if (length === 0) return [0, 0]
+  return [point[0] / length, point[1] / length]
+}
+
+function cubicPoint(
+  p1: [number, number],
+  cp1: [number, number],
+  cp2: [number, number],
+  delta: [number, number],
+  t: number,
+): [number, number] {
+  const u = 1 - t
+  return [
+    p1[0] + 3 * u * u * t * cp1[0] + 3 * u * t * t * cp2[0] + t * t * t * delta[0],
+    p1[1] + 3 * u * u * t * cp1[1] + 3 * u * t * t * cp2[1] + t * t * t * delta[1],
+  ]
+}
+
+function makeAnnotatedBezierPath(
+  p1: [number, number],
+  p2: [number, number],
+  options: AnnotatedBezierOptions,
+): { path: [number, number][]; pathData: string; anchor: [number, number]; cp1: [number, number]; cp2: [number, number] } {
+  const delta = subtractPoint(p2, p1)
+  const angle = Math.atan2(delta[1], delta[0])
+  const cp1 = rotatePoint(rotatePoint(options.cp1, angle), -Math.PI * 0.5)
+  const cp2 = addPoint(delta, rotatePoint(rotatePoint(options.cp2, angle), -Math.PI * 0.5))
+
+  const cpa1 = addPoint(p1, cp1)
+  const cpa2 = addPoint(p1, cp2)
+  const cpm1 = midpoint(p1, cpa1)
+  const cpm2 = midpoint(p2, cpa2)
+  const cpmm = midpoint(cpa1, cpa2)
+  const cpmm1 = midpoint(cpm1, cpmm)
+  const cpmm2 = midpoint(cpm2, cpmm)
+  const tangent = subtractPoint(cpmm1, cpmm2)
+  const normal = tangent[0] === 0 && tangent[1] === 0
+    ? [0, 0] as [number, number]
+    : normalizeVector([-tangent[1], tangent[0]])
+  const baseAnchor = cpa1[0] <= p1[0] && p1[0] <= p2[0]
+    ? addPoint(midpoint(cpmm1, cpmm2), addPoint(scalePoint(normal, -2), [-2, -2]))
+    : addPoint(midpoint(cpmm1, cpmm2), addPoint(scalePoint(normal, 2), [0, -2]))
+  const anchor = addPoint(baseAnchor, options.pos)
+
+  const path: [number, number][] = []
+  const pathDataParts: string[] = [`M${p1[0]} ${p1[1]}`]
+  if (options.shape.includes('c')) {
+    for (let i = 0; i <= 12; i++) {
+      path.push(cubicPoint(p1, cp1, cp2, delta, i / 12))
+    }
+    pathDataParts.push(`c${cp1[0]} ${cp1[1]} ${cp2[0]} ${cp2[1]} ${delta[0]} ${delta[1]}`)
+  }
+  if (options.shape.includes('l')) {
+    path.push(p1, cpa1, cpa2, p2)
+    pathDataParts.push(`l${cp1[0]} ${cp1[1]}L${cpa2[0]} ${cpa2[1]}L${p2[0]} ${p2[1]}`)
+  }
+
+  return { path, pathData: pathDataParts.join(''), anchor, cp1, cp2 }
+}
+
+function makeLegacySlurPath(p1: [number, number], p2: [number, number]): { path: [number, number][]; pathData: string } {
+  const delta = subtractPoint(p2, p1)
+  const length = Math.hypot(delta[0], delta[1])
+  const angle = Math.atan2(delta[1], delta[0])
+  const cpTemplate = rotatePoint([0.3 * length, 0], angle)
+  const cp1 = rotatePoint(cpTemplate, -0.4)
+  const cp2 = addPoint(delta, rotatePoint([-cpTemplate[0], -cpTemplate[1]], 0.4))
+  const points: [number, number][] = []
+
+  for (let i = 0; i <= 12; i++) {
+    const t = i / 12
+    const u = 1 - t
+    points.push([
+      p1[0] + 3 * u * u * t * cp1[0] + 3 * u * t * t * cp2[0] + t * t * t * delta[0],
+      p1[1] + 3 * u * u * t * cp1[1] + 3 * u * t * t * cp2[1] + t * t * t * delta[1],
+    ])
+  }
+
+  return {
+    path: points,
+    pathData: `M${p1[0]} ${p1[1]}c${cp1[0]} ${cp1[1]} ${cp2[0]} ${cp2[1]} ${delta[0]} ${delta[1]}`,
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -101,63 +467,96 @@ function makeSheetmarkPath(center: [number, number]): [number, number][] {
 
 export class HarpnotesLayout {
   private _config: ZupfnoterConfig
+  private _annotationTextMetrics: AnnotationTextMetrics
 
-  constructor(config: ZupfnoterConfig) {
+  constructor(config: ZupfnoterConfig, options: HarpnotesLayoutOptions = {}) {
     this._config = config
+    this._annotationTextMetrics = options.annotationTextMetrics ?? createDefaultAnnotationTextMetrics()
   }
 
   /**
    * Main entry point: Song → Sheet.
    * Corresponds to Layout::Default#layout in harpnotes.rb.
-   */
+  */
   layout(song: Song, extractNr: number | string = 0, pageFormat: 'A3' | 'A4' = 'A4'): Sheet {
     const conf = this._layoutPrepareOptions(extractNr)
-    const layout = conf.get('layout') as LayoutConfig
+    const renderLayout = requireDefined(
+      conf.get('layout') as LayoutConfig | undefined,
+      'HarpnotesLayout.layout(): missing layout configuration',
+    )
+    const renderPrinter = conf.get('printer') as PrinterConfig | undefined
+    const useBeams = renderLayout.beams === true
 
-    // 1. Images
-    const resImages = this._layoutImages(conf, extractNr)
+    conf.push({
+      layout: { ...renderLayout },
+      printer: { ...(renderPrinter ?? {}) },
+    })
+    if (useBeams) {
+      conf.push({
+        layout: {
+          DURATION_TO_STYLE: convertBeamStylesToDurationStyles(renderLayout.DURATION_TO_BEAMS),
+        },
+      })
+    }
 
-    // 2. Voices (notes, pauses, flowlines, gotos, tuplets, barnumbers)
-    const { activeVoices, voiceElements, beatMaps } = this._layoutVoices(song, conf)
+    try {
+      // 1. Images
+      const resImages = this._layoutImages(conf, extractNr)
 
-    // 3. Synchlines
-    const resSynchLines = this._layoutSynchLines(song, beatMaps, conf)
+      // 2. Voices (notes, pauses, flowlines, gotos, tuplets, barnumbers)
+      const { activeVoices, voiceElements, beatMaps } = this._layoutVoices(song, extractNr, conf)
 
-    // 4. Legend
-    const resLegend = this._layoutLegend(song.metaData, conf, extractNr)
+      // 3. Synchlines
+      const resSynchLines = this._layoutSynchLines(song, beatMaps, conf, activeVoices)
 
-    // 5. System annotations
-    const resZnAnnotations = this._layoutZnAnnotations(song.metaData)
+      // 4. Legend
+      const resLegend = this._layoutLegend(song.metaData, conf, extractNr)
 
-    // 6. Lyrics
-    const resLyrics = this._layoutLyrics(song, beatMaps, conf)
+      // 5. System annotations
+      const resZnAnnotations = this._layoutZnAnnotations(song.metaData, conf)
 
-    // 7. Sheet annotations
-    const resAnnotations = this._layoutAnnotations(conf, extractNr)
+      // 6. Lyrics
+      const resLyrics = this._layoutLyrics(song, conf)
 
-    // 8. Sheetmarks
-    const resSheetmarks = this._layoutSheetmarks(conf)
+      // 7. Sheet annotations
+      const resAnnotations = this._layoutAnnotations(song.metaData, conf, extractNr)
 
-    // 9. Cutmarks
-    const resCutmarks = this._layoutCutmarks(pageFormat, conf)
+      // 8. Sheetmarks
+      const resSheetmarks = this._layoutSheetmarks(conf)
 
-    // 10. Instrument shape
-    const resInstrument = this._layoutInstrument(conf, extractNr)
+      // 9. Cutmarks
+      const resCutmarks = this._layoutCutmarks(pageFormat, conf)
 
-    const children: DrawableElement[] = [
-      ...resImages,
-      ...voiceElements,
-      ...resSynchLines,
-      ...resLegend,
-      ...resZnAnnotations,
-      ...resLyrics,
-      ...resAnnotations,
-      ...resSheetmarks,
-      ...resCutmarks,
-      ...resInstrument,
-    ]
+      // 10. Instrument shape
+      const resInstrument = this._layoutInstrument(conf, extractNr)
+      const children: DrawableElement[] = [
+        ...resImages,
+        ...resSynchLines,
+        ...voiceElements,
+        ...resLegend,
+        ...resAnnotations,
+        ...resZnAnnotations,
+        ...resLyrics,
+        ...resSheetmarks,
+        ...resCutmarks,
+        ...resInstrument,
+      ]
 
-    return { children, activeVoices }
+      return {
+        children: children.map((child) => (
+          child.more_conf_keys === undefined
+            ? { ...child, more_conf_keys: [] }
+            : child
+        )),
+        activeVoices,
+      }
+    } finally {
+      if (useBeams) {
+        conf.pop()
+      }
+      conf.pop()
+      conf.pop()
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -168,35 +567,49 @@ export class HarpnotesLayout {
     return buildConfstack(this._config, extractNr)
   }
 
+  private _resolveExtractOptions(conf: Confstack): ExtractConfig {
+    return requireDefined(
+      conf.get('extract') as ExtractConfig | undefined,
+      'HarpnotesLayout._resolveExtractOptions(): missing extract options',
+    )
+  }
+
   // ---------------------------------------------------------------------------
   // Voices
   // ---------------------------------------------------------------------------
 
   private _layoutVoices(
     song: Song,
+    extractNr: number | string,
     conf: Confstack,
   ): { activeVoices: number[]; voiceElements: DrawableElement[]; beatMaps: Map<number, BeatCompressionMap> } {
+    const extractOptions = this._resolveExtractOptions(conf)
     const layout = conf.get('layout') as LayoutConfig
-    const activeVoiceNrs = (conf.get('extract.voices') as number[] | undefined) ?? [1]
-    const flowlineVoices = new Set((conf.get('extract.flowlines') as number[] | undefined) ?? [])
-    const subflowlineVoices = new Set((conf.get('extract.subflowlines') as number[] | undefined) ?? [])
-    const jumplineVoices = new Set((conf.get('extract.jumplines') as number[] | undefined) ?? [])
-    const layoutlineVoices = (conf.get('extract.layoutlines') as number[] | undefined) ?? activeVoiceNrs
-    const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
+    const activeVoiceNrs = extractOptions.voices ?? [1]
+    const flowlineVoices = new Set(extractOptions.flowlines ?? [])
+    const subflowlineVoices = new Set(extractOptions.subflowlines ?? [])
+    const jumplineVoices = new Set(extractOptions.jumplines ?? [])
+    const layoutlineVoices = extractOptions.layoutlines ?? []
+    const startpos = extractOptions.startpos ?? 15
 
     // Compute beat compression for all layout voices.
     // layoutlineVoices contains 1-based voice numbers (from config);
     // computeBeatCompression expects 0-based indices into song.voices.
-    const layoutlineIndices = layoutlineVoices.map(v => v - 1)
-    const beatCompressionMap = computeBeatCompression(song, layoutlineIndices, conf)
+    const layoutlineIndices = Array.from(new Set([...activeVoiceNrs, ...layoutlineVoices]))
+    const beatCompressionMap = applyLegacyBeatSpread(
+      computeBeatCompression(song, layoutlineIndices, conf),
+      layout,
+      startpos,
+    )
 
     const beatMaps = new Map<number, BeatCompressionMap>()
     const voiceElements: DrawableElement[] = []
     const activeVoices: number[] = []
 
     for (const voiceNr of activeVoiceNrs) {
-      // voices are 1-based in config, 0-based in song.voices
-      const voiceIdx = voiceNr - 1
+      // voices are 1-based in config; song.voices[0] is the legacy V1 duplicate,
+      // so song.voices[voiceNr] is the real voice
+      const voiceIdx = voiceNr
       const voice = song.voices[voiceIdx]
       if (!voice) continue
 
@@ -206,17 +619,22 @@ export class HarpnotesLayout {
       const showFlowlines = flowlineVoices.has(voiceNr)
       const showSubflowlines = subflowlineVoices.has(voiceNr)
       const showJumplines = jumplineVoices.has(voiceNr)
+      const nonflowrest = extractOptions.nonflowrest ?? false
+      const synchedPlayables = this._buildSynchedPlayableSet(song, activeVoiceNrs, extractOptions)
 
       const elements = this._layoutVoice(
         voice,
         beatCompressionMap,
         voiceNr,
+        extractNr,
         conf,
         layout,
         startpos,
         showFlowlines,
         showSubflowlines,
         showJumplines,
+        nonflowrest,
+        synchedPlayables,
       )
       voiceElements.push(...elements)
     }
@@ -224,65 +642,340 @@ export class HarpnotesLayout {
     return { activeVoices, voiceElements, beatMaps }
   }
 
+  private _computePlayableVisibility(
+    voice: Voice,
+    showFlowlines: boolean,
+    showSubflowlines: boolean,
+    nonflowrest: boolean,
+    synchedPlayables: Set<PlayableEntity>,
+  ): Map<PlayableEntity, boolean> {
+    const playables = voice.entities.filter(
+      (e): e is PlayableEntity => e.type === 'Note' || e.type === 'Pause' || e.type === 'SynchPoint',
+    )
+    const visibleByPlayable = new Map<PlayableEntity, boolean>()
+
+    for (const playable of playables) {
+      visibleByPlayable.set(playable, playable.visible)
+    }
+
+    if (nonflowrest) return visibleByPlayable
+
+    let previous: PlayableEntity | null = null
+    for (const playable of playables) {
+      let visible = visibleByPlayable.get(playable) ?? playable.visible
+
+      if (playable.type === 'Pause' && !showFlowlines) {
+        visible = false
+      }
+      if (playable.type === 'Pause' && !showSubflowlines && !showFlowlines) {
+        visible = false
+      }
+      visibleByPlayable.set(playable, visible)
+
+      if (!showFlowlines && visible && !synchedPlayables.has(playable) && previous) {
+        visibleByPlayable.set(previous, true)
+      }
+
+      previous = playable
+    }
+
+    return visibleByPlayable
+  }
+
+  private _buildSynchedPlayableSet(
+    song: Song,
+    activeVoiceNrs: number[],
+    extractOptions: ExtractConfig,
+  ): Set<PlayableEntity> {
+    const result = new Set<PlayableEntity>()
+    const activeVoices = new Set(activeVoiceNrs)
+    const synchlinePairs = extractOptions.synchlines ?? []
+
+    for (const [leftVoiceNr, rightVoiceNr] of synchlinePairs) {
+      if (leftVoiceNr === undefined || rightVoiceNr === undefined) continue
+      if (!activeVoices.has(leftVoiceNr) || !activeVoices.has(rightVoiceNr)) continue
+
+      const leftVoice = song.voices[leftVoiceNr]
+      const rightVoice = song.voices[rightVoiceNr]
+      if (!leftVoice || !rightVoice) continue
+
+      const leftByBeat = playablesByBeat(leftVoice)
+      const rightByBeat = playablesByBeat(rightVoice)
+      for (const [beat, leftPlayable] of leftByBeat) {
+        const rightPlayable = rightByBeat.get(beat)
+        if (!rightPlayable || !leftPlayable.visible || !rightPlayable.visible) continue
+        addSynchedPlayable(result, leftPlayable)
+        addSynchedPlayable(result, rightPlayable)
+      }
+    }
+
+    return result
+  }
+
   private _layoutVoice(
     voice: Voice,
     beatMap: BeatCompressionMap,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
     layout: LayoutConfig,
     startpos: number,
     showFlowlines: boolean,
     showSubflowlines: boolean,
     showJumplines: boolean,
+    nonflowrest: boolean,
+    synchedPlayables: Set<PlayableEntity>,
   ): DrawableElement[] {
-    const result: DrawableElement[] = []
+    const playableElements: DrawableElement[] = []
+    const decorationBackgrounds: Ellipse[] = []
+    const decorations: DrawableElement[] = []
     const repeatSignVoices = new Set((conf.get('extract.repeatsigns.voices') as number[] | undefined) ?? [])
+    const visibleByPlayable = this._computePlayableVisibility(
+      voice,
+      showFlowlines,
+      showSubflowlines,
+      nonflowrest,
+      synchedPlayables,
+    )
 
     // Layout all playables
     for (const entity of voice.entities) {
       if (entity.type === 'Note') {
-        result.push(this._layoutNote(entity as Note, beatMap, layout, startpos))
+        const note = entity as Note
+        const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note), voiceNr, extractNr, 0, true)
+        playableElements.push(drawable)
+        if (note.measureStart && !this._isLegacyVariantLeadInMeasureStart(note)) {
+          playableElements.push(this._layoutMeasureBarover(drawable, layout))
+        }
+        const noteDecorations = this._layoutDecorations(note, drawable, layout, voiceNr, conf)
+        decorationBackgrounds.push(...noteDecorations.backgrounds)
+        decorations.push(...noteDecorations.decorations)
       } else if (entity.type === 'Pause') {
-        const glyph = this._layoutPause(entity as Pause, beatMap, layout, startpos)
-        if (glyph) result.push(glyph)
+        const pause = entity as Pause
+        const glyph = this._layoutPause(pause, beatMap, layout, startpos, visibleByPlayable.get(pause), voiceNr, extractNr, 0, true)
+        if (glyph) {
+          playableElements.push(glyph)
+          if (pause.measureStart && !this._isLegacyVariantLeadInMeasureStart(pause)) {
+            playableElements.push(this._layoutMeasureBarover(glyph, layout))
+          }
+          const pauseDecorations = this._layoutDecorations(pause, glyph, layout, voiceNr, conf)
+          decorationBackgrounds.push(...pauseDecorations.backgrounds)
+          decorations.push(...pauseDecorations.decorations)
+        }
       } else if (entity.type === 'SynchPoint') {
         const sp = entity as SynchPoint
-        for (const note of sp.notes) {
-          result.push(this._layoutNote(note, beatMap, layout, startpos))
+        let decorationRoot: Ellipse | null = null
+        const synchLine = this._layoutSynchPointLine(sp, beatMap, layout, startpos, visibleByPlayable.get(sp))
+        if (synchLine) playableElements.push(synchLine)
+        for (const [noteIndex, note] of sp.notes.entries()) {
+          const legacyNoteIndex = sp.notes.length - 1 - noteIndex
+          const drawable = this._layoutNote(
+            note,
+            beatMap,
+            layout,
+            startpos,
+            visibleByPlayable.get(sp),
+            voiceNr,
+            extractNr,
+            legacyNoteIndex,
+            legacyNoteIndex === 0,
+          )
+          playableElements.push(drawable)
+          if (
+            note.measureStart &&
+            !this._isLegacyVariantLeadInMeasureStart(note)
+          ) {
+            playableElements.push(this._layoutMeasureBarover(drawable, layout))
+          }
+          decorationRoot ??= drawable
+        }
+        if (decorationRoot) {
+          const spDecorations = this._layoutDecorations(sp, decorationRoot, layout, voiceNr, conf)
+          decorationBackgrounds.push(...spDecorations.backgrounds)
+          decorations.push(...spDecorations.decorations)
         }
       }
     }
 
+    const result: DrawableElement[] = []
+
     // Flowlines
     if (showFlowlines) {
-      result.push(...this._layoutVoiceFlowlines(voice, beatMap, layout, startpos, 'solid'))
+      result.push(...this._layoutVoiceFlowlines(
+        voice,
+        beatMap,
+        layout,
+        startpos,
+        voiceNr,
+        extractNr,
+        conf,
+        'solid',
+        visibleByPlayable,
+      ))
     }
     if (showSubflowlines) {
-      result.push(...this._layoutVoiceFlowlines(voice, beatMap, layout, startpos, 'dashed'))
+      result.push(...this._layoutVoiceFlowlines(
+        voice,
+        beatMap,
+        layout,
+        startpos,
+        voiceNr,
+        extractNr,
+        conf,
+        'dotted',
+        visibleByPlayable,
+        synchedPlayables,
+      ))
     }
+    result.push(...this._layoutVoiceSlurs(voice, beatMap, layout, startpos, conf))
 
     // Gotos (jumplines)
-    if (showJumplines) {
-      result.push(...this._layoutVoiceGotos(voice, beatMap, layout, startpos, repeatSignVoices.has(voiceNr)))
-    }
+    const gotos = showJumplines
+      ? this._layoutVoiceGotos(voice, beatMap, layout, startpos, repeatSignVoices.has(voiceNr), extractNr, conf)
+      : []
 
     // Tuplets
-    result.push(...this._layoutVoiceTuplets(voice, beatMap, layout, startpos))
+    result.push(...this._layoutVoiceTuplets(voice, beatMap, layout, startpos, voiceNr, extractNr, conf))
+    result.push(...playableElements)
 
-    const { barnumbers, countnotes } = this._layoutBarnumbersCountnotes(
+    const { barnumberBackgrounds, barnumbers, countnoteBackgrounds, countnotes } = this._layoutBarnumbersCountnotes(
       voice,
       beatMap,
       layout,
       startpos,
       voiceNr,
+      extractNr,
       conf,
+      visibleByPlayable,
     )
-    result.push(...barnumbers, ...countnotes)
+    result.push(...countnoteBackgrounds, ...countnotes, ...barnumberBackgrounds, ...barnumbers)
+    result.push(...decorationBackgrounds, ...decorations)
 
-    result.push(...this._layoutVoiceRepeatSigns(voice, beatMap, layout, startpos, voiceNr, conf))
-    result.push(...this._layoutVoiceNoteboundAnnotations(voice, beatMap, layout, startpos, voiceNr, conf))
+    if (showJumplines) {
+      result.push(...gotos)
+    }
+
+    const repeatSigns = this._layoutVoiceRepeatSigns(voice, beatMap, layout, startpos, voiceNr, conf)
+    const noteboundAnnotations = this._layoutVoiceNoteboundAnnotations(voice, beatMap, layout, startpos, voiceNr, conf)
+    const orderedAnnotations = [...noteboundAnnotations, ...repeatSigns]
+    const annotationBackgrounds = orderedAnnotations.map((annotation) => (
+      this._annotationBackground(annotation, 'left', layout, 0.5)
+    ))
+    result.push(...annotationBackgrounds, ...orderedAnnotations)
+
+    return result.map((child) => (
+      child.more_conf_keys === undefined
+        ? { ...child, more_conf_keys: [] }
+        : child
+    ))
+  }
+
+  private _layoutVoiceSlurs(
+    voice: Voice,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    conf: Confstack,
+  ): Path[] {
+    const result: Path[] = []
+    const playables = voice.entities.filter(
+      (e): e is PlayableEntity => e.type === 'Note' || e.type === 'Pause' || e.type === 'SynchPoint',
+    )
+    const firstPlayable = playables[0]
+    if (!firstPlayable) return result
+
+    const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
+    const showSlur = (conf.get('layout.SHOW_SLUR') as boolean | undefined) ?? false
+    const slurIndex = new Map<number, PlayableEntity>()
+    let tieStart: PlayableEntity = firstPlayable
+
+    for (const playable of playables) {
+      if (playable.tieEnd) {
+        result.push(...this._layoutTiePaths(tieStart, playable, beatMap, layout, startpos, bottomup))
+      }
+
+      if (playable.tieStart) {
+        tieStart = playable
+      }
+
+      for (const id of playable.slurStarts) {
+        slurIndex.set(id, playable)
+      }
+      const firstSlurStart = playable.slurStarts[0]
+      if (firstSlurStart !== undefined) {
+        slurIndex.set(firstSlurStart, playable)
+      }
+
+      if (showSlur) {
+        for (const id of playable.slurEnds) {
+          const beginSlur = slurIndex.get(id) ?? firstPlayable
+          const p1 = addPoint(playableCenter(beginSlur, beatMap, layout, startpos), [3, 0])
+          const p2 = addPoint(playableCenter(playable, beatMap, layout, startpos), [3, 0])
+          result.push({
+            type: 'Path',
+            ...makeLegacySlurPath(p1, p2),
+            fill: false,
+            color: layout.color.color_default,
+            lineWidth: layout.LINE_MEDIUM,
+            visible: true,
+            more_conf_keys: [],
+          })
+        }
+      }
+    }
 
     return result
+  }
+
+  private _layoutTiePaths(
+    tieStart: PlayableEntity,
+    playable: PlayableEntity,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    bottomup: boolean,
+  ): Path[] {
+    if (playable.type === 'SynchPoint' && tieStart.type === 'SynchPoint') {
+      return playable.notes.flatMap((note, index) => {
+        const startNote = tieStart.notes[index]
+        if (!startNote) return []
+        return [
+          this._layoutSingleTiePath(startNote, note, beatMap, layout, startpos, bottomup, playable.variant),
+        ]
+      })
+    }
+
+    return [
+      this._layoutSingleTiePath(tieStart, playable, beatMap, layout, startpos, bottomup, playable.variant),
+    ]
+  }
+
+  private _layoutSingleTiePath(
+    from: PlayableEntity,
+    to: PlayableEntity,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    bottomup: boolean,
+    variant: 0 | 1 | 2,
+  ): Path {
+    const fromCenter = playableCenter(from, beatMap, layout, startpos)
+    const toCenter = playableCenter(to, beatMap, layout, startpos)
+    const fromSize = playableSize(from, layout)
+    const toSize = playableSize(to, layout)
+    const dx = Math.max(fromSize[0], toSize[0]) + 0.5
+    const p1 = addPoint(fromCenter, [dx, -0.5])
+    const p2 = addPoint(toCenter, [dx, 0.5])
+
+    return {
+      type: 'Path',
+      ...(bottomup ? makeLegacySlurPath(p2, p1) : makeLegacySlurPath(p1, p2)),
+      fill: false,
+      color: variantToColor(variant, layout),
+      lineWidth: layout.LINE_THICK,
+      visible: true,
+      more_conf_keys: [],
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -294,9 +987,12 @@ export class HarpnotesLayout {
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
+    visible = note.visible,
+    voiceNr?: number,
+    extractNr?: number | string,
+    noteIndex = 0,
+    enableEditorMeta = true,
   ): Ellipse {
-    const x = pitchToX(note.pitch, layout)
-    const y = beatToY(note.beat, beatMap, layout, startpos)
     const dKey = durationToKey(note.duration)
     const style = layout.DURATION_TO_STYLE[dKey]
     const effectiveStyle = style !== undefined
@@ -306,18 +1002,36 @@ export class HarpnotesLayout {
         'HarpnotesLayout._layoutNote(): missing fallback duration style "err"',
       )
     const color = variantToColor(note.variant, layout)
+    const size: [number, number] = [
+      layout.ELLIPSE_SIZE[0] * effectiveStyle.sizeFactor,
+      layout.ELLIPSE_SIZE[1] * effectiveStyle.sizeFactor,
+    ]
+    const x = playableX(note, layout)
+    const y = beatToY(note.beat, beatMap, layout, startpos)
+    const confBase = voiceNr !== undefined && extractNr !== undefined
+      ? `extract.${extractNr}.notebound.nconf.v_${voiceNr}.t_${note.time}.n_${noteIndex}`
+      : undefined
 
     return {
       type: 'Ellipse',
       center: [x, y],
-      size: [layout.ELLIPSE_SIZE[0] * effectiveStyle.sizeFactor, layout.ELLIPSE_SIZE[1] * effectiveStyle.sizeFactor],
+      size,
       fill: effectiveStyle.fill,
       dotted: effectiveStyle.dotted,
-      hasbarover: effectiveStyle.hasbarover ?? false,
+      rect: false,
+      hasbarover: false,
       color,
       lineWidth: layout.LINE_THICK,
-      visible: note.visible,
-      confKey: note.confKey,
+      visible,
+      confKey: enableEditorMeta && confBase !== undefined ? `${confBase}.***` : undefined,
+      more_conf_keys: enableEditorMeta
+        ? this._buildPlayableMoreConfKeys(
+          confBase !== undefined ? `${confBase}.***` : undefined,
+          note.time,
+          extractNr ?? 0,
+        )
+        : [],
+      znId: note.znId,
       origin: note,
     }
   }
@@ -327,14 +1041,22 @@ export class HarpnotesLayout {
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
+    visible = pause.visible,
+    voiceNr?: number,
+    extractNr?: number | string,
+    noteIndex = 0,
+    enableEditorMeta = true,
   ): Glyph | null {
     if (pause.invisible) return null
 
-    const x = pitchToX(pause.pitch, layout)
+    const x = playableX(pause, layout)
     const y = beatToY(pause.beat, beatMap, layout, startpos)
     const dKey = durationToKey(pause.duration)
     const restStyle = layout.REST_TO_GLYPH?.[dKey] ?? layout.REST_TO_GLYPH?.['err']
     if (!restStyle) return null
+    const confBase = voiceNr !== undefined && extractNr !== undefined
+      ? `extract.${extractNr}.notebound.nconf.v_${voiceNr}.t_${pause.time}.n_${noteIndex}`
+      : undefined
 
     const color = variantToColor(pause.variant, layout)
 
@@ -347,9 +1069,216 @@ export class HarpnotesLayout {
       fill: 'filled',
       color,
       lineWidth: layout.LINE_THICK,
-      visible: pause.visible,
-      confKey: pause.confKey,
+      visible,
+      confKey: enableEditorMeta && confBase !== undefined ? `${confBase}.***` : undefined,
+      more_conf_keys: enableEditorMeta
+        ? this._buildPlayableMoreConfKeys(
+          confBase !== undefined ? `${confBase}.***` : undefined,
+          pause.time,
+          extractNr ?? 0,
+        )
+        : [],
+      znId: pause.znId,
     }
+  }
+
+  private _layoutDecorations(
+    playable: PlayableEntity,
+    root: Ellipse | Glyph,
+    layout: LayoutConfig,
+    voiceNr: number,
+    conf: Confstack,
+  ): { backgrounds: Ellipse[]; decorations: DrawableElement[] } {
+    const backgrounds: Ellipse[] = []
+    const result: DrawableElement[] = []
+    const annotationDecorations = layout.DECORATIIONS_AS_ANNOTATIONS ?? {}
+    const decorationSize: [number, number] = [root.size[0] * 0.8, root.size[1] * 0.8]
+    const defaultOffset: [number, number] = [
+      0,
+      Math.round(-root.size[1] / 0.8 - (playable.measureStart ? 2 : 1)),
+    ]
+    const decorations = [
+      ...playable.decorations,
+      ...playable.barDecorations,
+    ].filter((decoration) => decoration !== '')
+
+    for (const [index, decoration] of decorations.entries()) {
+      const overrideKey = `extract.notebound.decoration.v_${voiceNr}.t_${playable.time}.${index}`
+      const legacyZnIdOverrideKey = `extract.notebound.decoration.v_${voiceNr}.t_${playable.znId}.${index}`
+      const configuredOffset = (conf.get(`${overrideKey}.pos`) as [number, number] | undefined)
+        ?? (conf.get(`${legacyZnIdOverrideKey}.pos`) as [number, number] | undefined)
+      const offset = configuredOffset ?? defaultOffset
+      const visible = (conf.get(`${overrideKey}.show`) as boolean | undefined)
+        ?? (conf.get(`${legacyZnIdOverrideKey}.show`) as boolean | undefined)
+        ?? true
+      if (!visible) continue
+
+      const center: [number, number] = [root.center[0] + offset[0], root.center[1] + offset[1]]
+      const annotation = annotationDecorations[decoration] as
+        | {
+          pos: [number, number]
+          style: string
+          text: string
+          align?: 'left' | 'right' | 'center'
+        }
+        | undefined
+
+      if (annotation) {
+        const annotationCenter: [number, number] = [
+          center[0] + annotation.pos[0],
+          center[1] + annotation.pos[1],
+        ]
+        const style = (conf.get(`${overrideKey}.style`) as string | undefined)
+          ?? (conf.get(`${legacyZnIdOverrideKey}.style`) as string | undefined)
+          ?? annotation.style
+        const drawable: Annotation = {
+          type: 'Annotation',
+          center: annotationCenter,
+          text: annotation.text,
+          style,
+          align: annotation.align,
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THIN,
+          visible: true,
+          more_conf_keys: [],
+          draginfo: this._annotationDraginfo(),
+          znId: playable.znId,
+          origin: playable,
+        }
+        backgrounds.push(this._annotationBackground(drawable, annotation.align ?? 'left', layout, 0.2))
+        result.push(drawable)
+      } else {
+        result.push({
+          type: 'Glyph',
+          center,
+          size: decorationSize,
+          glyphName: decoration,
+          dotted: false,
+          fill: 'filled',
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THIN,
+          visible: true,
+          confKey: `${overrideKey}.pos`,
+          more_conf_keys: [],
+          draginfo: this._annotationDraginfo(),
+          znId: playable.znId,
+        })
+      }
+    }
+
+    return { backgrounds, decorations: result }
+  }
+
+  private _buildPlayableMoreConfKeys(
+    rootConfKey: string | undefined,
+    playableTime: number,
+    extractNr: number | string,
+  ): Array<Record<string, unknown>> {
+    if (rootConfKey === undefined) return []
+
+    const shiftConfKey = `${rootConfKey.replace(/\.[^.]+$/, '')}.nshift`
+    const mincConfKey = `extract.${extractNr}.notebound.minc.${playableTime}.minc_f`
+
+    return [
+      {
+        conf_key: shiftConfKey,
+        text: 'shift left',
+        icon: 'fa fa-arrow-left',
+        value: -0.5,
+      },
+      {
+        conf_key: shiftConfKey,
+        text: 'shift right',
+        icon: 'fa fa-arrow-right',
+        value: 0.5,
+      },
+      {
+        text: '---',
+        icon: 'fa fa-arrows-v',
+        value: 0.5,
+      },
+      {
+        conf_key: mincConfKey,
+        text: 'Edit Minc',
+        icon: 'fa fa-arrows-v',
+      },
+      {
+        conf_key: mincConfKey,
+        text: 'increase Minc',
+        icon: 'fa fa-arrow-down',
+        value: 0.5,
+      },
+      {
+        conf_key: mincConfKey,
+        text: 'decrease Minc',
+        icon: 'fa fa-arrow-up',
+        value: -0.5,
+      },
+    ]
+  }
+
+  private _annotationDraginfo(): Record<string, unknown> {
+    return { handler: 'annotation' }
+  }
+
+  private _layoutMeasureBarover(root: Ellipse | Glyph, layout: LayoutConfig): Ellipse {
+    const baroverY = root.size[1] + layout.LINE_THICK
+    return {
+      type: 'Ellipse',
+      center: [root.center[0], root.center[1] - baroverY],
+      size: [root.size[0], layout.LINE_THICK / 2],
+      fill: 'filled',
+      dotted: false,
+      rect: true,
+      hasbarover: false,
+      color: root.color,
+      lineWidth: layout.LINE_THIN,
+      visible: root.visible,
+      znId: root.znId,
+      more_conf_keys: [],
+    }
+  }
+
+  private _annotationBackground(
+    annotation: Annotation,
+    align: 'left' | 'right' | 'center',
+    layout: LayoutConfig,
+    padding: number,
+    shiftEu = false,
+  ): Ellipse {
+    const size = this._annotationSize(annotation.text, annotation.style, layout)
+    const halfSize: [number, number] = [size[0] * 0.5, size[1] * 0.5]
+    const paddedSize: [number, number] = [halfSize[0] + padding, halfSize[1] + padding]
+    const backgroundX = align === 'left'
+      ? halfSize[0]
+      : align === 'right'
+        ? -halfSize[0]
+        : 0
+    let backgroundY = halfSize[1]
+    if (shiftEu) {
+      backgroundY = halfSize[1] - padding * 0.7
+      paddedSize[1] *= 0.5
+    } else if (!/[|gyqp]/.test(annotation.text)) {
+      backgroundY = halfSize[1] - padding * 0.5
+      paddedSize[1] *= 0.7
+    }
+
+    return {
+      type: 'Ellipse',
+      center: [annotation.center[0] + backgroundX, annotation.center[1] + backgroundY],
+      size: paddedSize,
+      fill: 'filled',
+      dotted: false,
+      rect: true,
+      hasbarover: false,
+      color: 'white',
+      lineWidth: layout.LINE_THIN,
+      visible: true,
+    }
+  }
+
+  private _annotationSize(text: string, style: string, layout: LayoutConfig): [number, number] {
+    return this._annotationTextMetrics.measureAnnotation(text, style, layout)
   }
 
   // ---------------------------------------------------------------------------
@@ -361,34 +1290,118 @@ export class HarpnotesLayout {
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
-    style: 'solid' | 'dashed',
-  ): FlowLine[] {
-    const result: FlowLine[] = []
+    voiceNr: number,
+    extractNr: number | string,
+    conf: Confstack,
+    style: 'solid' | 'dotted',
+    visibleByPlayable: Map<PlayableEntity, boolean>,
+    synchedPlayables?: Set<PlayableEntity>,
+  ): DrawableElement[] {
+    const result: DrawableElement[] = []
     const playables = voice.entities.filter(
       (e): e is PlayableEntity => e.type === 'Note' || e.type === 'Pause' || e.type === 'SynchPoint',
+    )
+    const noteBoundPlayables = new Set(
+      voice.entities
+        .filter((e): e is NoteBoundAnnotation => e.type === 'NoteBoundAnnotation')
+        .map((e) => e.companion),
     )
 
     let prev: PlayableEntity | null = null
     for (const curr of playables) {
-      if (prev && !curr.firstInPart) {
-        const fromX = pitchToX(prev.pitch, layout)
-        const fromY = beatToY(prev.beat, beatMap, layout, startpos)
-        const toX = pitchToX(curr.pitch, layout)
-        const toY = beatToY(curr.beat, beatMap, layout, startpos)
+      if (prev && !curr.firstInPart && !synchedPlayables?.has(curr)) {
+        if (this._skipLegacyFlowline(prev, curr, style, noteBoundPlayables)) {
+          prev = curr
+          continue
+        }
 
-        result.push({
-          type: 'FlowLine',
-          from: [fromX, fromY],
-          to: [toX, toY],
-          style,
-          color: layout.color.color_default,
-          lineWidth: layout.LINE_THIN,
-          visible: curr.visible && prev.visible,
-        })
+        const from = playableCenter(prev, beatMap, layout, startpos)
+        const to = playableCenter(curr, beatMap, layout, startpos)
+        const visible = (visibleByPlayable.get(curr) ?? curr.visible) && (visibleByPlayable.get(prev) ?? prev.visible)
+        const override = conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.znId}`)
+          ?? conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.time}`)
+
+        if (override !== undefined) {
+          const options = mergeAnnotatedBezierOptions(DEFAULT_FLOWLINE_OPTIONS, override)
+          if (options.show) {
+            result.push({
+              type: 'Path',
+              ...makeAnnotatedBezierPath(from, to, options),
+              fill: false,
+              color: layout.color.color_default,
+              lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
+              confKey: `extract.${extractNr}.notebound.flowline.v_${voiceNr}.${curr.znId}.*`,
+              visible,
+              more_conf_keys: [],
+              znId: curr.znId,
+            })
+          }
+        } else {
+          result.push({
+            type: 'FlowLine',
+            from,
+            to,
+            style,
+            color: layout.color.color_default,
+            lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
+            visible,
+            znId: curr.znId,
+          })
+        }
       }
       prev = curr
     }
     return result
+  }
+
+  private _skipLegacyFlowline(
+    prev: PlayableEntity,
+    curr: PlayableEntity,
+    style: 'solid' | 'dotted',
+    noteBoundPlayables: Set<PlayableEntity>,
+  ): boolean {
+    if (curr.measureStart === true && prev.variant !== curr.variant) return true
+    if (style !== 'solid') return false
+    if (curr.type === 'Pause') {
+      return prev.type === 'Pause' &&
+        curr.duration < prev.duration &&
+        !noteBoundPlayables.has(prev) &&
+        !noteBoundPlayables.has(curr)
+    }
+    return false
+  }
+
+  private _layoutSynchPointLine(
+    synchPoint: SynchPoint,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    visible: boolean | undefined,
+  ): FlowLine | null {
+    const noteCenters = synchPoint.notes.map((note) => ({
+      note,
+      center: playableCenter(note, beatMap, layout, startpos),
+    }))
+    if (noteCenters.length < 2) return null
+
+    const leftmost = noteCenters.reduce((left, current) => (
+      current.center[0] < left.center[0] ? current : left
+    ))
+    const rightmost = noteCenters.reduce((right, current) => (
+      current.center[0] > right.center[0] ? current : right
+    ))
+    if (leftmost.note === rightmost.note) return null
+
+    return {
+      type: 'FlowLine',
+      from: leftmost.center,
+      to: rightmost.center,
+      style: 'dashed',
+      color: variantToColor(leftmost.note.variant, layout),
+      lineWidth: layout.LINE_THIN,
+      visible: visible === true,
+      znId: synchPoint.znId,
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -401,6 +1414,8 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     hideRepeatGotos: boolean,
+    extractNr: number | string,
+    conf: Confstack,
   ): Path[] {
     const result: Path[] = []
 
@@ -413,46 +1428,202 @@ export class HarpnotesLayout {
       const toNote = goto.to
       if (!fromNote || !toNote) continue
 
-      const fromX = pitchToX(fromNote.pitch, layout)
-      const fromY = beatToY(fromNote.beat, beatMap, layout, startpos)
-      const toX = pitchToX(toNote.pitch, layout)
-      const toY = beatToY(toNote.beat, beatMap, layout, startpos)
-
-      const distance = goto.policy?.distance ?? -10
-      const vertX = fromX + distance
-
-      // Jumpline: from → vertical column → to (L-shaped path)
-      result.push({
-        type: 'Path',
-        path: [
-          [fromX, fromY],
-          [vertX, fromY],
-          [vertX, toY],
-          [toX, toY],
-        ],
-        fill: false,
-        color: layout.color.color_default,
-        lineWidth: layout.LINE_THICK,
-        visible: true,
-      })
-
-      // Arrowhead at destination (filled triangle)
-      const arrowSize = 2
-      result.push({
-        type: 'Path',
-        path: [
-          [toX, toY],
-          [toX - arrowSize, toY - arrowSize],
-          [toX + arrowSize, toY - arrowSize],
-        ],
-        fill: true,
-        color: layout.color.color_default,
-        lineWidth: layout.LINE_THICK,
-        visible: true,
-      })
+      const paths = this._makeLegacyJumplinePaths(goto, fromNote, toNote, beatMap, layout, startpos, extractNr, conf)
+      result.push(...paths)
     }
 
     return result
+  }
+
+  private _makeLegacyJumplinePaths(
+    goto: Goto,
+    fromNote: PlayableEntity,
+    toNote: PlayableEntity,
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    extractNr: number | string,
+    conf: Confstack,
+  ): Path[] {
+    let distance = this._resolveJumplineDistance(goto, conf)
+    if (distance === 0) return []
+    if (distance > 0) distance -= 1
+
+    let fromAnchor = goto.policy?.fromAnchor ?? 'after'
+    let toAnchor = goto.policy?.toAnchor ?? 'before'
+    const verticalAnchor = goto.policy?.verticalAnchor ?? 'from'
+
+    const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
+    if (bottomup) {
+      fromAnchor = swapJumplineAnchor(fromAnchor)
+      toAnchor = swapJumplineAnchor(toAnchor)
+    }
+
+    const anchor = (
+      conf.get('layout.jumpline_anchor') as [number, number] | undefined
+    ) ?? layout.jumpline_anchor
+    const configuredVerticalCut = (
+      conf.get('layout.jumpline_vcut') as number | undefined
+    ) ?? layout.jumpline_vcut ?? 0
+    const verticalCut = this._computeJumplineVerticalCut(fromNote, toNote, configuredVerticalCut)
+    const fromCenter = playableCenter(fromNote, beatMap, layout, startpos)
+    const toCenter = playableCenter(toNote, beatMap, layout, startpos)
+    const fromSize = playableSize(fromNote, layout)
+    const toSize = playableSize(toNote, layout)
+    const verticalOffset = goto.confKey?.endsWith('.p_end') === true && distance < 0
+      ? Math.abs((distance + 0.5) * layout.X_SPACING)
+      : (distance + 0.5) * layout.X_SPACING
+    const verticalBase = verticalAnchor === 'to' ? toCenter : fromCenter
+    const verticalX = verticalBase[0] + verticalOffset
+    const startOrientation = orientationX(verticalX - fromCenter[0])
+    const endOrientation = orientationX(verticalX - toCenter[0])
+    const fromAnchorSign = fromAnchor === 'before' ? -1 : 1
+    const toAnchorSign = toAnchor === 'before' ? -1 : 1
+
+    const startOffset: [number, number] = [
+      (fromSize[0] + anchor[0]) * startOrientation,
+      (fromSize[1] + anchor[1]) * fromAnchorSign,
+    ]
+    const endOffset: [number, number] = [
+      (toSize[0] + anchor[0]) * endOrientation,
+      (toSize[1] + anchor[1]) * toAnchorSign,
+    ]
+
+    const p1 = addPoint(fromCenter, startOffset)
+    const p2: [number, number] = [verticalX, fromCenter[1] + startOffset[1]]
+    const p3: [number, number] = [verticalX, toCenter[1] + endOffset[1]]
+    const p4 = addPoint(toCenter, endOffset)
+    const p4Line = addPoint(p4, [2 * endOrientation, 0])
+    const dy = p3[1] - p2[1]
+    const verticalCutY = verticalCut === 0 ? dy : (dy > 0 ? verticalCut : -verticalCut)
+    const vcp2 = addPoint(p2, [0, verticalCutY])
+    const vcp3 = addPoint(p3, [0, -verticalCutY])
+    const verticalOrientation = orientationY(p2[1] - p3[1])
+    const lineCutEnd = addPoint(vcp2, [0, verticalOrientation])
+    const arrow1 = addPoint(p4, [2.5 * endOrientation, 1])
+    const arrow2 = addPoint(p4, [2.5 * endOrientation, -1])
+    const vcutArrow1 = addPoint(vcp2, [0.5, 1.5 * verticalOrientation])
+    const vcutArrow2 = addPoint(vcp2, [-0.5, 1.5 * verticalOrientation])
+    const outlinePathData = [
+      `M${p1[0]} ${p1[1]}`,
+      `l${p2[0] - p1[0]} ${p2[1] - p1[1]}`,
+      `l${lineCutEnd[0] - p2[0]} ${lineCutEnd[1] - p2[1]}`,
+      `M${vcp3[0]} ${vcp3[1]}`,
+      `L${p3[0]} ${p3[1]}`,
+      `L${p4Line[0]} ${p4Line[1]}`,
+    ].join('')
+    const arrowPathData = [
+      `M${p4[0]} ${p4[1]}`,
+      `l${arrow1[0] - p4[0]} ${arrow1[1] - p4[1]}`,
+      `l${arrow2[0] - arrow1[0]} ${arrow2[1] - arrow1[1]}`,
+      `l${p4[0] - arrow2[0]} ${p4[1] - arrow2[1]}`,
+      'z',
+    ].join('')
+    const vcutArrowPathData = verticalCut === 0
+      ? undefined
+      : [
+        `M${vcp2[0]} ${vcp2[1]}`,
+        `l${vcutArrow1[0] - vcp2[0]} ${vcutArrow1[1] - vcp2[1]}`,
+        `l${vcutArrow2[0] - vcutArrow1[0]} ${vcutArrow2[1] - vcutArrow1[1]}`,
+        `l${vcp2[0] - vcutArrow2[0]} ${vcp2[1] - vcutArrow2[1]}`,
+        'z',
+      ].join('')
+    const confKey = this._buildJumplineConfKey(extractNr, goto.confKey ?? goto.policy?.confKey)
+
+    return [
+      {
+        type: 'Path',
+        path: [p1, p2, lineCutEnd, vcp3, p3, p4Line],
+        pathData: outlinePathData,
+        fill: false,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THICK,
+        confKey,
+        visible: true,
+        more_conf_keys: [],
+        draginfo: {
+          handler: 'jumpline',
+          jumpline: {
+            from: {
+              center: fromCenter,
+              size: fromSize,
+              anchor: 'after',
+            },
+            to: {
+              center: toCenter,
+              size: toSize,
+              anchor: 'before',
+            },
+            vertical: verticalOffset,
+            vertical_anchor: verticalAnchor,
+            padding: null,
+            xspacing: layout.X_SPACING,
+            jumpline_anchor: anchor,
+            verticalcut: verticalCut,
+          },
+          xspacing: layout.X_SPACING,
+        },
+        znId: goto.znId,
+      },
+      {
+        type: 'Path',
+        path: [
+          p4,
+          arrow1,
+          arrow2,
+        ],
+        pathData: arrowPathData,
+        fill: true,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
+        visible: true,
+        more_conf_keys: [],
+        znId: goto.znId,
+      },
+      {
+        type: 'Path',
+        path: verticalCut === 0
+          ? []
+          : [
+            vcp2,
+            vcutArrow1,
+            vcutArrow2,
+          ],
+        pathData: vcutArrowPathData,
+        fill: true,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
+        visible: true,
+        more_conf_keys: [],
+        znId: goto.znId,
+      },
+    ]
+  }
+
+  private _resolveJumplineDistance(goto: Goto, conf: Confstack): number {
+    const confKey = goto.confKey ?? goto.policy?.confKey
+    if (confKey) {
+      const configuredDistance = conf.get(`extract.${confKey}`) ?? conf.get(confKey)
+      if (typeof configuredDistance === 'number') return configuredDistance
+    }
+
+    return goto.policy?.distance ?? 1
+  }
+
+  private _buildJumplineConfKey(extractNr: number | string, confKey: string | undefined): string | undefined {
+    if (confKey === undefined) return undefined
+    if (confKey.startsWith('extract.')) return confKey
+    return `extract.${extractNr}.${confKey}`
+  }
+
+  private _computeJumplineVerticalCut(
+    fromNote: PlayableEntity,
+    toNote: PlayableEntity,
+    configuredVerticalCut: number,
+  ): number {
+    const adjacentToFrom = fromNote.prevPlayable === toNote || fromNote.nextPlayable === toNote
+    const adjacentToTarget = toNote.prevPlayable === fromNote || toNote.nextPlayable === fromNote
+    return adjacentToFrom || adjacentToTarget ? 0 : configuredVerticalCut
   }
 
   // ---------------------------------------------------------------------------
@@ -464,6 +1635,9 @@ export class HarpnotesLayout {
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
+    voiceNr: number,
+    extractNr: number | string,
+    conf: Confstack,
   ): DrawableElement[] {
     const result: DrawableElement[] = []
     const playables = voice.entities.filter(
@@ -479,37 +1653,58 @@ export class HarpnotesLayout {
         tupletNum = p.tuplet
       }
       if (p.tupletEnd && tupletStart) {
-        const x1 = pitchToX(tupletStart.pitch, layout)
-        const y1 = beatToY(tupletStart.beat, beatMap, layout, startpos)
-        const x2 = pitchToX(p.pitch, layout)
-        const y2 = beatToY(p.beat, beatMap, layout, startpos)
-        const bracketY = Math.min(y1, y2) - 3
+        const override = conf.get(`extract.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}`)
+          ?? conf.get(`extract.notebound.tuplet.v_${voiceNr}.${tupletStart.time}`)
+        const options = mergeAnnotatedBezierOptions(DEFAULT_TUPLET_OPTIONS, override)
 
-        // Bracket path
-        result.push({
-          type: 'Path',
-          path: [
-            [x1, y1 - 2],
-            [x1, bracketY],
-            [x2, bracketY],
-            [x2, y2 - 2],
-          ],
-          fill: false,
-          color: layout.color.color_default,
-          lineWidth: layout.LINE_THIN,
-          visible: true,
-        })
+        if (options.show) {
+          const p1 = playableCenter(tupletStart, beatMap, layout, startpos)
+          const p2 = playableCenter(p, beatMap, layout, startpos)
+          const { path, pathData, anchor, cp1, cp2 } = makeAnnotatedBezierPath(p1, p2, options)
+          const configuredText = conf.get('extract.tuplets.text')
+          const text = (
+            typeof configuredText === 'string'
+              ? configuredText
+              : String(tupletNum)
+          ).replaceAll('{{tuplet}}', String(tupletNum))
+          const configuredStyle = conf.get('extract.tuplets.style')
 
-        // Tuplet number annotation
-        result.push({
-          type: 'Annotation',
-          center: [(x1 + x2) / 2, bracketY - 1],
-          text: String(tupletNum),
-          style: 'smaller',
-          color: layout.color.color_default,
-          lineWidth: layout.LINE_THIN,
-          visible: true,
-        })
+          result.push({
+            type: 'Path',
+            path,
+            pathData,
+            fill: false,
+            color: layout.color.color_default,
+            lineWidth: layout.LINE_THIN,
+            confKey: `extract.${extractNr}.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}.*`,
+            visible: true,
+            more_conf_keys: [],
+            draginfo: {
+              handler: 'tuplet',
+              p1,
+              p2,
+              cp1: addPoint(p1, cp1),
+              cp2: addPoint(p1, cp2),
+              mp: { x: anchor[0], y: anchor[1] },
+              tuplet_options: options,
+              conf_key: `extract.${extractNr}.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}`,
+              callback: null,
+            },
+            znId: tupletStart.znId,
+          })
+          result.push({
+            type: 'Annotation',
+            center: anchor,
+            text,
+            style: typeof configuredStyle === 'string' ? configuredStyle : 'small',
+            color: layout.color.color_default,
+            lineWidth: layout.LINE_THIN,
+            visible: true,
+            more_conf_keys: [],
+            draginfo: this._annotationDraginfo(),
+            znId: tupletStart.znId,
+          })
+        }
 
         tupletStart = null
       }
@@ -526,16 +1721,19 @@ export class HarpnotesLayout {
     song: Song,
     beatMaps: Map<number, BeatCompressionMap>,
     conf: Confstack,
+    activeVoiceNrs: number[],
   ): FlowLine[] {
     const result: FlowLine[] = []
-    const layout = this._config.layout
+    const layout = conf.get('layout') as LayoutConfig
     const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
     const synchlinePairs = (conf.get('extract.synchlines') as number[][] | undefined) ?? []
+    const activeVoices = new Set(activeVoiceNrs)
 
     for (const [v1Nr, v2Nr] of synchlinePairs) {
       if (v1Nr === undefined || v2Nr === undefined) continue
-      const voice1 = song.voices[v1Nr - 1]
-      const voice2 = song.voices[v2Nr - 1]
+      if (!activeVoices.has(v1Nr) || !activeVoices.has(v2Nr)) continue
+      const voice1 = song.voices[v1Nr]
+      const voice2 = song.voices[v2Nr]
       if (!voice1 || !voice2) continue
 
       const beatMap1 = beatMaps.get(v1Nr) ?? beatMaps.values().next().value
@@ -564,12 +1762,13 @@ export class HarpnotesLayout {
 
         result.push({
           type: 'FlowLine',
-          from: [pitchToX(p1.pitch, layout), beatToY(beat, beatMap1, layout, startpos)],
-          to:   [pitchToX(p2.pitch, layout), beatToY(beat, beatMap2, layout, startpos)],
-          style: 'dotted',
+          from: playableCenter(p1, beatMap1, layout, startpos),
+          to: playableCenter(p2, beatMap2, layout, startpos),
+          style: 'dashed',
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: p1.visible && p2.visible,
+          more_conf_keys: [],
         })
       }
     }
@@ -600,6 +1799,7 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
+          more_conf_keys: [],
         })
       }
     }
@@ -611,15 +1811,18 @@ export class HarpnotesLayout {
         const x = pitchToX(pitch, layout)
         const text = labels[index % labels.length] ?? '~'
         for (const y of vpos) {
-          result.push({
-            type: 'Annotation',
-            center: [x, y],
-            text,
-            style,
-            color: layout.color.color_default,
-            lineWidth: layout.LINE_THIN,
-            visible: true,
-          })
+        result.push({
+          type: 'Annotation',
+          center: [x, y],
+          text,
+          style,
+          align: 'center',
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THIN,
+          visible: true,
+          more_conf_keys: [],
+          draginfo: this._annotationDraginfo(),
+        })
         }
       }
     }
@@ -638,13 +1841,20 @@ export class HarpnotesLayout {
   ): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const legendConf = conf.get('extract.legend') as Record<string, unknown> | undefined
+    const extractOptions = this._resolveExtractOptions(conf)
+    const legendConf = extractOptions.legend as Record<string, unknown> | undefined
 
     const titlePos = (legendConf?.['pos'] as [number, number] | undefined) ?? [320, 7]
     const titleStyle = (legendConf?.['tstyle'] as string | undefined) ?? 'large'
     const secondaryPos = (legendConf?.['spos'] as [number, number] | undefined) ?? [320, 27]
     const secondaryStyle = (legendConf?.['style'] as string | undefined) ?? 'regular'
-    const extractTitle = (conf.get('extract.title') as string | undefined) ?? String(extractNr)
+    const extractTitle = extractOptions.title ?? String(extractNr)
+    const legendAlign = legendConf?.['align'] as string | undefined
+    const align: 'left' | 'right' | 'center' = legendAlign === 'l'
+      ? 'right'
+      : legendAlign === 'center'
+        ? 'center'
+        : 'left'
 
     if (metaData.title) {
       result.push({
@@ -652,9 +1862,13 @@ export class HarpnotesLayout {
         center: titlePos,
         text: metaData.title,
         style: titleStyle,
+        align,
+        confKey: `extract.${extractNr}.legend.pos`,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
+        draginfo: this._annotationDraginfo(),
       })
     }
 
@@ -664,24 +1878,29 @@ export class HarpnotesLayout {
       .filter((entry) => entry !== undefined)
       .join('\n')
 
-    if (secondaryText) {
+    if (secondaryText && extractOptions.notes?.T06_legend === undefined) {
       result.push({
         type: 'Annotation',
         center: secondaryPos,
         text: secondaryText,
         style: secondaryStyle,
+        align,
+        confKey: `extract.${extractNr}.legend.spos`,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
+        draginfo: this._annotationDraginfo(),
       })
     }
 
     return result
   }
 
-  private _layoutZnAnnotations(metaData: SongMetaData): Annotation[] {
-    const filename = metaData.filename
-    if (!filename) return []
+  private _layoutZnAnnotations(metaData: SongMetaData, conf: Confstack): Annotation[] {
+    const filename = metaData.filename ?? ''
+    const checksum = metaData.checksum ?? ''
+    const layout = conf.get('layout') as LayoutConfig
 
     return [
       {
@@ -689,17 +1908,30 @@ export class HarpnotesLayout {
         center: [150, 289],
         text: `${filename} - created by Zupfnoter`,
         style: 'smaller',
-        color: this._config.layout.color.color_default,
-        lineWidth: this._config.layout.LINE_THIN,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
+        draginfo: this._annotationDraginfo(),
       },
       {
         type: 'Annotation',
         center: [325, 289],
         text: 'Zupfnoter: https://www.zupfnoter.de',
         style: 'smaller',
-        color: this._config.layout.color.color_default,
-        lineWidth: this._config.layout.LINE_THIN,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
+        visible: true,
+        more_conf_keys: [],
+        draginfo: this._annotationDraginfo(),
+      },
+      {
+        type: 'Annotation',
+        center: [380, 289],
+        text: checksum,
+        style: 'smaller',
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
         visible: true,
       },
     ]
@@ -711,13 +1943,10 @@ export class HarpnotesLayout {
 
   private _layoutLyrics(
     song: Song,
-    beatMaps: Map<number, BeatCompressionMap>,
     conf: Confstack,
   ): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
-    const activeVoiceNrs = (conf.get('extract.voices') as number[] | undefined) ?? [1]
     const lyricsConf = (conf.get('extract.lyrics') as Record<string, { verses?: number[]; pos?: [number, number]; style?: string }> | undefined) ?? {}
     const rawLyrics = song.harpnoteOptions?.['lyrics']
 
@@ -746,36 +1975,12 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
+          more_conf_keys: [],
+          draginfo: this._annotationDraginfo(),
         })
       }
 
       return result
-    }
-
-    for (const voiceNr of activeVoiceNrs) {
-      const voice = song.voices[voiceNr - 1]
-      if (!voice) continue
-      const beatMap = beatMaps.get(voiceNr)
-      if (!beatMap) continue
-
-      for (const entity of voice.entities) {
-        if (entity.type !== 'Note' && entity.type !== 'SynchPoint') continue
-        const playable = entity as PlayableEntity
-        if (!playable.lyrics) continue
-
-        const x = pitchToX(playable.pitch, layout)
-        const y = beatToY(playable.beat, beatMap, layout, startpos)
-
-        result.push({
-          type: 'Annotation',
-          center: [x, y + layout.ELLIPSE_SIZE[1] + 2],
-          text: playable.lyrics,
-          style: 'small',
-          color: layout.color.color_default,
-          lineWidth: layout.LINE_THIN,
-          visible: playable.visible,
-        })
-      }
     }
 
     return result
@@ -785,29 +1990,102 @@ export class HarpnotesLayout {
   // Sheet annotations
   // ---------------------------------------------------------------------------
 
-  private _layoutAnnotations(conf: Confstack, _extractNr: number | string): Annotation[] {
+  private _layoutAnnotations(
+    metaData: SongMetaData,
+    conf: Confstack,
+    extractNr: number | string,
+  ): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const notes = conf.get('extract.notes') as Record<string, unknown> | undefined
+    const extractOptions = this._resolveExtractOptions(conf)
+    const notes = extractOptions.notes as Record<string, unknown> | undefined
 
     if (!notes) return result
 
-    for (const [, entry] of Object.entries(notes)) {
-      const ann = entry as { pos?: [number, number]; text?: string; style?: string }
+    for (const [, entry] of this._sortSheetAnnotationEntries(notes)) {
+      const ann = entry as { pos?: [number, number]; text?: string; style?: string; align?: string }
       if (!ann.pos || !ann.text) continue
+      const align: 'left' | 'right' | 'center' = ann.align === 'l'
+        ? 'right'
+        : ann.align === 'center'
+          ? 'center'
+          : 'left'
 
       result.push({
         type: 'Annotation',
         center: ann.pos,
-        text: ann.text,
+        text: this._normalizeAnnotationText(this._resolveAnnotationPlaceholders(ann.text, metaData, extractOptions, extractNr)),
         style: ann.style ?? 'regular',
+        align,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
+        draginfo: this._annotationDraginfo(),
       })
     }
 
     return result
+  }
+
+  private _sortSheetAnnotationEntries(notes: Record<string, unknown>): Array<[string, unknown]> {
+    const entries = Object.entries(notes)
+    if (entries.some(([key]) => !key.startsWith('T'))) return entries
+
+    const legacyOrder = new Map([
+      ['T01_number', 0],
+      ['T01_number_extract', 1],
+    ])
+    return entries.sort(([left], [right]) => {
+      const leftOrder = legacyOrder.get(left) ?? 100
+      const rightOrder = legacyOrder.get(right) ?? 100
+      if (leftOrder !== rightOrder) return leftOrder - rightOrder
+      return 0
+    })
+  }
+
+  private _normalizeAnnotationText(text: string): string {
+    return Array.from(text.replaceAll(/[„“‚’—–]/g, (char) => {
+      const replacements: Record<string, string> = {
+        '„': '"',
+        '“': '"',
+        '‚': "'",
+        '’': "'",
+        '—': '-',
+        '–': '-',
+      }
+      return replacements[char] ?? char
+    })).map((char) => char.charCodeAt(0) > 255 ? '¿' : char).join('')
+  }
+
+  private _resolveAnnotationPlaceholders(
+    text: string,
+    metaData: SongMetaData,
+    extractOptions: ExtractConfig,
+    extractNr: number | string,
+  ): string {
+    const produce = this._config.produce ?? []
+    const printedExtracts = produce
+      .map((nr) => this._config.extract[String(nr)]?.filenamepart)
+      .filter((part): part is string => part !== undefined)
+      .join(' ')
+    const extractFilename = extractOptions.filenamepart ?? ''
+    const extractTitle = extractOptions.title ?? String(extractNr)
+    const placeholders: Record<string, string> = {
+      composer: metaData.composer ?? '',
+      key: metaData.key ?? '',
+      meter: Array.isArray(metaData.meter) ? metaData.meter.join(', ') : (metaData.meter ?? ''),
+      number: metaData.number ?? '',
+      tempo: metaData.tempoDisplay ?? '',
+      title: metaData.title ?? '',
+      extract_title: extractTitle,
+      extract_filename: extractFilename,
+      printed_extracts: printedExtracts,
+      watermark: '',
+      current_year: String(new Date().getFullYear()),
+    }
+
+    return text.replaceAll(/\{\{([^}]+)\}\}/g, (match, key: string) => placeholders[key] ?? match)
   }
 
   // ---------------------------------------------------------------------------
@@ -820,53 +2098,257 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
-  ): { barnumbers: Annotation[]; countnotes: Annotation[] } {
+    visibleByPlayable: Map<PlayableEntity, boolean>,
+  ): {
+    barnumberBackgrounds: Ellipse[]
+    barnumbers: Annotation[]
+    countnoteBackgrounds: Ellipse[]
+    countnotes: Annotation[]
+  } {
+    const barnumberBackgrounds: Ellipse[] = []
     const barnumbers: Annotation[] = []
+    const countnoteBackgrounds: Ellipse[] = []
     const countnotes: Annotation[] = []
     const barnumberVoices = new Set((conf.get('extract.barnumbers.voices') as number[] | undefined) ?? [])
     const countnoteVoices = new Set((conf.get('extract.countnotes.voices') as number[] | undefined) ?? [])
+    let measureStartBeat: number | null = null
+    const visiblePlayables = voice.entities.filter(
+      (entity): entity is PlayableEntity =>
+        (entity.type === 'Note' || entity.type === 'Pause' || entity.type === 'SynchPoint') &&
+        (visibleByPlayable.get(entity) ?? entity.visible),
+    )
 
-    for (const entity of voice.entities) {
-      if (entity.type !== 'Note' && entity.type !== 'Pause' && entity.type !== 'SynchPoint') continue
-      const playable = entity as PlayableEntity
-
-      const x = pitchToX(playable.pitch, layout)
-      const y = beatToY(playable.beat, beatMap, layout, startpos)
-
-      if (countnoteVoices.has(voiceNr) && playable.variant > 0) {
-        const pos = (conf.get('extract.countnotes.pos') as [number, number] | undefined) ?? [3, -2]
-        countnotes.push({
-          type: 'Annotation',
-          center: [x + pos[0], y + pos[1]],
-          text: String(playable.variant),
-          style: (conf.get('extract.countnotes.style') as string | undefined) ?? 'smaller',
-          color: layout.color.color_default,
-          lineWidth: layout.LINE_THIN,
-          visible: playable.visible,
-        })
+    for (const playable of visiblePlayables) {
+      if (playable.measureStart || measureStartBeat === null) {
+        measureStartBeat = playable.beat
       }
 
-      if (barnumberVoices.has(voiceNr) && playable.measureStart && playable.measureCount) {
-        const basePos = (conf.get('extract.barnumbers.pos') as [number, number] | undefined) ?? [6, -4]
-        const autoPos = (conf.get('extract.barnumbers.autopos') as boolean | undefined) ?? true
-        const effectivePos: [number, number] = autoPos
-          ? [basePos[0] + layout.ELLIPSE_SIZE[0] - 0.125, basePos[1] + 3.025]
-          : basePos
+      const [x, y] = playableCenter(playable, beatMap, layout, startpos)
 
-        barnumbers.push({
+      if (countnoteVoices.has(voiceNr)) {
+        const countnoteText = this._countnoteText(playable, measureStartBeat, voiceNr, conf)
+        const offset = this._countnoteOffset(playable, layout, voiceNr, conf)
+        const style = (conf.get('extract.countnotes.style') as string | undefined) ?? 'smaller'
+        const side = this._countnoteSide(playable, voiceNr, conf)
+        const shiftEu = /^[aoveu]$/.test(countnoteText)
+        const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
+        const shiftY = shiftEu ? fontSize * layout.MM_PER_POINT * 0.25 : 0
+        const align: 'left' | 'right' = side === 'l' ? 'right' : 'left'
+        const countnoteAlignKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}.align`
+        const annotation: Annotation = {
           type: 'Annotation',
-          center: [x + effectivePos[0], y + effectivePos[1]],
-          text: `${(conf.get('extract.barnumbers.prefix') as string | undefined) ?? ''}${playable.measureCount}`,
-          style: (conf.get('extract.barnumbers.style') as string | undefined) ?? 'small_bold',
+          center: [x + offset[0], y + offset[1] - shiftY],
+          text: countnoteText,
+          style,
+          align,
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: playable.visible,
-        })
+          more_conf_keys: [
+            {
+              conf_key: countnoteAlignKey,
+              text: 'countnote left',
+              icon: 'fa fa-arrow-left',
+              value: 'l',
+            },
+            {
+              conf_key: countnoteAlignKey,
+              text: 'countnote right',
+              icon: 'fa fa-arrow-right',
+              value: 'r',
+            },
+          ],
+          draginfo: this._annotationDraginfo(),
+        }
+        countnoteBackgrounds.push(
+          this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05, shiftEu),
+        )
+        countnotes.push(annotation)
+      }
+
+      if (
+        barnumberVoices.has(voiceNr) &&
+        playable.measureStart &&
+        playable.measureCount !== undefined
+      ) {
+        const offset = this._barnumberOffset(playable, layout, voiceNr, conf)
+        const side = this._barnumberSide(playable, voiceNr, conf)
+        const barnumber = playable.measureCount
+        const barnumberAlignKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}.align`
+
+        const annotation: Annotation = {
+          type: 'Annotation',
+          center: [x + offset[0], y + offset[1]],
+          text: `${(conf.get('extract.barnumbers.prefix') as string | undefined) ?? ''}${barnumber}`,
+          style: (conf.get('extract.barnumbers.style') as string | undefined) ?? 'small_bold',
+          align: side === 'l' ? 'right' : 'left',
+          color: layout.color.color_default,
+          lineWidth: layout.LINE_THIN,
+          visible: playable.visible,
+          more_conf_keys: [
+            {
+              conf_key: barnumberAlignKey,
+              text: 'barnumber left',
+              icon: 'fa fa-arrow-left',
+              value: 'l',
+            },
+            {
+              conf_key: barnumberAlignKey,
+              text: 'barnumber right',
+              icon: 'fa fa-arrow-right',
+              value: 'r',
+            },
+          ],
+          draginfo: this._annotationDraginfo(),
+        }
+        barnumberBackgrounds.push(this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, 0.2))
+        barnumbers.push(annotation)
       }
     }
 
-    return { barnumbers, countnotes }
+    return { barnumberBackgrounds, barnumbers, countnoteBackgrounds, countnotes }
+  }
+
+  private _isLegacyVariantLeadInMeasureStart(playable: PlayableEntity): boolean {
+    return Boolean(
+      playable.measureStart &&
+      playable.duration < 32 &&
+      playable.nextPlayable?.measureStart &&
+      playable.nextPlayable.variant === playable.variant,
+    )
+  }
+
+  private _countnoteText(
+    playable: PlayableEntity,
+    measureStartBeat: number,
+    voiceNr: number,
+    conf: Confstack,
+  ): string {
+    const fallback = playable.countNote ?? computeCountnoteText(playable, measureStartBeat)
+    const leftPattern = conf.get('extract.countnotes.cntextleft') as string | undefined
+    const rightPattern = conf.get('extract.countnotes.cntextright') as string | undefined
+    const patterns = [leftPattern, rightPattern].filter((pattern): pattern is string => pattern !== undefined)
+    if (patterns.length === 0) return fallback
+
+    const side = this._countnoteSide(playable, voiceNr, conf)
+    const pattern = side === 'l'
+      ? (patterns[0] ?? fallback)
+      : (patterns[patterns.length - 1] ?? fallback)
+    const text = pattern
+      .replaceAll('{lyrics}', playable.lyrics ?? '')
+      .replaceAll('{countnote}', fallback)
+    return text === '' ? '~' : text
+  }
+
+  private _countnoteOffset(
+    playable: PlayableEntity,
+    layout: LayoutConfig,
+    voiceNr: number,
+    conf: Confstack,
+  ): [number, number] {
+    const overrideKey = `extract.notebound.countnote.v_${voiceNr}.t_${playable.time}`
+    const overridePos = conf.get(`${overrideKey}.pos`) as [number, number] | undefined
+    if (overridePos) return overridePos
+
+    const fixedPos = (conf.get('extract.countnotes.pos') as [number, number] | undefined) ?? [3, -2]
+    const autoPos = (conf.get('extract.countnotes.autopos') as boolean | undefined) ?? true
+    if (!autoPos) return fixedPos
+
+    const side = this._countnoteSide(playable, voiceNr, conf)
+    const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
+    const apanchor = (conf.get('extract.countnotes.apanchor') as string | undefined) ?? 'box'
+    const apbase = (conf.get('extract.countnotes.apbase') as [number, number] | undefined) ?? [1, -0.5]
+    const size = playableSize(playable, layout)
+    const sizeWithDot: [number, number] = [
+      size[0] + (playable.type === 'Note' && playable.duration % 3 === 0 ? 1 : 0),
+      size[1],
+    ]
+    const tieOffset = side === 'r' && (playable.tieStart || playable.tieEnd) ? 1 : 0
+    const dsizeY = apanchor === 'center' ? 0 : size[1]
+    const x = tieOffset + (side === 'l' ? -(size[0] + apbase[0]) : sizeWithDot[0] + apbase[0])
+    const y = bottomup ? -(dsizeY + apbase[1] + 2) : dsizeY + apbase[1]
+    return [x, y]
+  }
+
+  private _countnoteSide(
+    playable: PlayableEntity,
+    voiceNr: number,
+    conf: Confstack,
+  ): 'l' | 'r' {
+    const overrideKey = `extract.notebound.countnote.v_${voiceNr}.t_${playable.time}`
+    const overrideAlign = conf.get(`${overrideKey}.align`) as 'l' | 'r' | 'auto' | undefined
+    if (overrideAlign && overrideAlign !== 'auto') return overrideAlign
+
+    const layout = conf.get('layout') as LayoutConfig
+    const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
+    const previous = playable.prevPlayable ?? playable
+    const next = playable.nextPlayable ?? playable
+    const previousX = playableX(previous, layout)
+    const currentX = playableX(playable, layout)
+    const nextX = playableX(next, layout)
+    const sides = bottomup
+      ? computeNotePosition(nextX, currentX, previousX).reverse() as ['l' | 'r', 'l' | 'r']
+      : computeNotePosition(previousX, currentX, nextX)
+    return sides[1]
+  }
+
+  private _barnumberOffset(
+    playable: PlayableEntity,
+    layout: LayoutConfig,
+    voiceNr: number,
+    conf: Confstack,
+  ): [number, number] {
+    const overrideKey = `extract.notebound.barnumber.v_${voiceNr}.t_${playable.time}`
+    const overridePos = conf.get(`${overrideKey}.pos`) as [number, number] | undefined
+    if (overridePos) return overridePos
+
+    const fixedPos = (conf.get('extract.barnumbers.pos') as [number, number] | undefined) ?? [6, -4]
+    const autoPos = (conf.get('extract.barnumbers.autopos') as boolean | undefined) ?? true
+    if (!autoPos) return fixedPos
+
+    const side = this._barnumberSide(playable, voiceNr, conf)
+    const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
+    const apanchor = (conf.get('extract.barnumbers.apanchor') as string | undefined) ?? 'box'
+    const apbase = (conf.get('extract.barnumbers.apbase') as [number, number] | undefined) ?? [1, 1]
+    const size = playableSize(playable, layout)
+    const sizeWithDot: [number, number] = [
+      size[0] + (playableDotted(playable, layout) ? 1 : 0),
+      size[1],
+    ]
+    const previous = playable.prevPlayable ?? playable
+    const next = playable.nextPlayable ?? playable
+    const previousX = playableX(previous, layout)
+    const currentX = playableX(playable, layout)
+    const nextX = playableX(next, layout)
+    const tieOffset = side === 'r' && (playable.tieStart || playable.tieEnd) ? 1 : 0
+    const dsizeY = apanchor === 'center' ? 0 : size[1]
+    const x = tieOffset + (side === 'l' ? -(size[0] + apbase[0]) : sizeWithDot[0] + apbase[0])
+    const y = bottomup ? dsizeY + apbase[1] : -(dsizeY + apbase[1] + 2.7)
+    return [x, y]
+  }
+
+  private _barnumberSide(
+    playable: PlayableEntity,
+    voiceNr: number,
+    conf: Confstack,
+  ): 'l' | 'r' {
+    const overrideKey = `extract.notebound.barnumber.v_${voiceNr}.t_${playable.time}`
+    const overrideAlign = conf.get(`${overrideKey}.align`) as 'l' | 'r' | 'auto' | undefined
+    if (overrideAlign && overrideAlign !== 'auto') return overrideAlign
+
+    const layout = conf.get('layout') as LayoutConfig
+    const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
+    const previous = playable.prevPlayable ?? playable
+    const next = playable.nextPlayable ?? playable
+    const previousX = playableX(previous, layout)
+    const currentX = playableX(playable, layout)
+    const nextX = playableX(next, layout)
+    const [defaultSide] = bottomup
+      ? computeNotePosition(nextX, currentX, previousX).reverse() as ['l' | 'r', 'l' | 'r']
+      : computeNotePosition(previousX, currentX, nextX)
+    return defaultSide
   }
 
   // ---------------------------------------------------------------------------
@@ -892,6 +2374,7 @@ export class HarpnotesLayout {
         lineWidth: 0,
         visible: true,
         confKey: `extract.${extractNr}.images.${nr}.pos`,
+        more_conf_keys: [],
       })
     }
 
@@ -904,6 +2387,7 @@ export class HarpnotesLayout {
 
   private _layoutInstrument(conf: Confstack, _extractNr: number | string): DrawableElement[] {
     const shape = conf.get('extract.instrument_shape') as string | undefined
+    const layout = conf.get('layout') as LayoutConfig
 
     if (!shape) return []
 
@@ -914,9 +2398,10 @@ export class HarpnotesLayout {
         type: 'Path',
         path: pathData,
         fill: false,
-        color: this._config.layout.color.color_default,
-        lineWidth: this._config.layout.LINE_THIN,
+        color: layout.color.color_default,
+        lineWidth: layout.LINE_THIN,
         visible: true,
+        more_conf_keys: [],
       }]
     } catch {
       return []
@@ -932,8 +2417,7 @@ export class HarpnotesLayout {
 
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const a4Pages = (conf.get('printer.a4Pages') as number[] | undefined)
-      ?? this._config.printer.a4Pages
+    const a4Pages = (conf.get('printer.a4Pages') as number[] | undefined) ?? []
     const xSpacing = layout.X_SPACING
     if (a4Pages.length <= 1) return result
 
@@ -974,38 +2458,84 @@ export class HarpnotesLayout {
     const repeatVoices = new Set((conf.get('extract.repeatsigns.voices') as number[] | undefined) ?? [])
     if (!repeatVoices.has(voiceNr)) return []
 
-    const leftPos = (conf.get('extract.repeatsigns.left.pos') as [number, number] | undefined) ?? [-7, -2]
-    const rightPos = (conf.get('extract.repeatsigns.right.pos') as [number, number] | undefined) ?? [5, -2]
-    const style = (conf.get('extract.repeatsigns.left.style') as string | undefined)
-      ?? (conf.get('extract.repeatsigns.right.style') as string | undefined)
-      ?? 'bold'
     const result: Annotation[] = []
 
     for (const entity of voice.entities) {
       if (entity.type !== 'Goto') continue
       const goto = entity as Goto
+      if (!goto.from || !goto.to) continue
 
-      result.push({
-        type: 'Annotation',
-        center: [pitchToX(goto.to.pitch, layout) + leftPos[0], beatToY(goto.to.beat, beatMap, layout, startpos) + leftPos[1]],
-        text: (conf.get('extract.repeatsigns.left.text') as string | undefined) ?? '|:',
-        style,
-        color: layout.color.color_default,
-        lineWidth: layout.LINE_THIN,
-        visible: goto.visible,
-      })
-      result.push({
-        type: 'Annotation',
-        center: [pitchToX(goto.from.pitch, layout) + rightPos[0], beatToY(goto.from.beat, beatMap, layout, startpos) + rightPos[1]],
-        text: (conf.get('extract.repeatsigns.right.text') as string | undefined) ?? ':|',
-        style,
-        color: layout.color.color_default,
-        lineWidth: layout.LINE_THIN,
-        visible: goto.visible,
-      })
+      const begin = this._makeRepeatSignAnnotation(
+        goto,
+        'begin',
+        beatMap,
+        layout,
+        startpos,
+        conf,
+      )
+      const end = this._makeRepeatSignAnnotation(
+        goto,
+        'end',
+        beatMap,
+        layout,
+        startpos,
+        conf,
+      )
+
+      result.push(end, begin)
     }
 
     return result
+  }
+
+  private _makeRepeatSignAnnotation(
+    goto: Goto,
+    pointRole: 'begin' | 'end',
+    beatMap: BeatCompressionMap,
+    layout: LayoutConfig,
+    startpos: number,
+    conf: Confstack,
+  ): Annotation {
+    const companion = pointRole === 'begin' ? goto.to : goto.from
+    const attachSide = this._repeatSignAttachSide(goto, pointRole)
+    const pos = (
+      conf.get(`extract.repeatsigns.${attachSide}.pos`) as [number, number] | undefined
+    ) ?? (attachSide === 'left' ? [-7, -2] : [5, -2])
+    const text = (
+      conf.get(`extract.repeatsigns.${attachSide}.text`) as string | undefined
+    ) ?? (attachSide === 'left' ? '|:' : ':|')
+    const style = (
+      conf.get(`extract.repeatsigns.${attachSide}.style`) as string | undefined
+    ) ?? 'bold'
+
+    return {
+      type: 'Annotation',
+      center: [
+        playableCenter(companion, beatMap, layout, startpos)[0] + pos[0],
+        playableCenter(companion, beatMap, layout, startpos)[1] + pos[1],
+      ],
+      text,
+      style,
+      color: layout.color.color_default,
+      lineWidth: layout.LINE_THIN,
+      visible: goto.visible,
+      more_conf_keys: [],
+      draginfo: this._annotationDraginfo(),
+    }
+  }
+
+  private _repeatSignAttachSide(goto: Goto, pointRole: 'begin' | 'end'): 'left' | 'right' {
+    if (pointRole === 'begin') {
+      const companion = goto.to
+      if (goto.to === goto.from) return 'left'
+      const nextPitch = companion.nextPitch ?? companion.pitch
+      return companion.pitch <= nextPitch ? 'left' : 'right'
+    }
+
+    const companion = goto.from
+    if (goto.to === goto.from) return 'right'
+    const prevPitch = companion.prevPitch ?? companion.pitch
+    return prevPitch <= companion.pitch ? 'right' : 'left'
   }
 
   private _layoutVoiceNoteboundAnnotations(
@@ -1018,13 +2548,59 @@ export class HarpnotesLayout {
   ): Annotation[] {
     const result: Annotation[] = []
 
+    const annotationEntities = voice.entities
+      .filter((entity): entity is NoteBoundAnnotation | NewPart =>
+        entity.type === 'NoteBoundAnnotation' || entity.type === 'NewPart',
+      )
+
+    const existingVariantEndTimes = new Set(
+      annotationEntities
+        .filter((entity): entity is NoteBoundAnnotation =>
+          entity.type === 'NoteBoundAnnotation' && entity.policy === 'Goto',
+        )
+        .map((entity) => entity.companion.time),
+    )
+
     for (const entity of voice.entities) {
+      if (entity.type !== 'Goto' || entity.policy.isRepeat !== true || entity.to.variant !== 2) continue
+      if (existingVariantEndTimes.has(entity.to.time)) continue
+      annotationEntities.push({
+        type: 'NoteBoundAnnotation' as const,
+        beat: entity.to.beat,
+        time: entity.to.time,
+        startPos: entity.startPos,
+        endPos: entity.endPos,
+        decorations: [],
+        barDecorations: [],
+        visible: true,
+        variant: 0,
+        znId: `layout-variantend-${voiceNr}-${entity.to.time}`,
+        companion: entity.to,
+        text: String(entity.to.variant),
+        position: [-4, -7],
+        style: 'regular',
+        policy: 'Goto',
+        confKey: `notebound.variantend.v_${voiceNr}.${entity.to.time}`,
+      })
+      existingVariantEndTimes.add(entity.to.time)
+    }
+
+    annotationEntities.sort((a, b) => {
+      const aIsPartname = a.type === 'NewPart' || (a.type === 'NoteBoundAnnotation' && a.confKey?.includes('notebound.partname') === true)
+      const bIsPartname = b.type === 'NewPart' || (b.type === 'NoteBoundAnnotation' && b.confKey?.includes('notebound.partname') === true)
+      if (aIsPartname !== bIsPartname) return aIsPartname ? -1 : 1
+      if (a.type !== b.type) return a.type === 'NewPart' ? -1 : 1
+      if (a.type !== 'NoteBoundAnnotation' || b.type !== 'NoteBoundAnnotation') return 0
+      if (a.policy === b.policy) return 0
+      return a.policy === 'Goto' ? -1 : 1
+    })
+
+    for (const entity of annotationEntities) {
       if (entity.type !== 'NoteBoundAnnotation' && entity.type !== 'NewPart') continue
 
       const companion = entity.companion
       const center: [number, number] = [
-        pitchToX(companion.pitch, layout),
-        beatToY(companion.beat, beatMap, layout, startpos),
+        ...playableCenter(companion, beatMap, layout, startpos),
       ]
 
       let text = ''
@@ -1034,16 +2610,17 @@ export class HarpnotesLayout {
 
       if (entity.type === 'NoteBoundAnnotation') {
         const annotation = entity as NoteBoundAnnotation
+        if (annotation.text.length === 0) continue
         text = annotation.text
         style = annotation.style
         offset = annotation.position
-        confBase = annotation.confKey ?? `notebound.annotation.v_${voiceNr}.${companion.time}`
+        confBase = `extract.${annotation.confKey ?? `notebound.annotation.v_${voiceNr}.${companion.time}`}`
       } else {
         const part = entity as NewPart
         text = part.name
         style = 'bold'
         offset = [-4, -7]
-        confBase = `notebound.partname.v_${voiceNr}.${companion.time}`
+        confBase = `extract.notebound.partname.v_${voiceNr}.${companion.time}`
       }
 
       const configuredOffset = conf.get(`${confBase}.pos`) as [number, number] | undefined
@@ -1059,6 +2636,8 @@ export class HarpnotesLayout {
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: companion.visible,
+        draginfo: this._annotationDraginfo(),
+        more_conf_keys: [],
       })
     }
 

@@ -11,7 +11,7 @@ export type { AbcParseError } from './AbcParser.js'
 
 export { AbcToSong } from './AbcToSong.js'
 
-export { Confstack } from './Confstack.js'
+export { Confstack, DeleteMe } from './Confstack.js'
 export type { ConfigObject, ConfigValue } from './Confstack.js'
 
 export { buildConfstack } from './buildConfstack.js'
@@ -20,6 +20,13 @@ export { computeBeatCompression } from './BeatPacker.js'
 export type { BeatCompressionMap } from './BeatPacker.js'
 
 export { HarpnotesLayout } from './HarpnotesLayout.js'
+export {
+  HeuristicAnnotationTextMetrics,
+  JsPdfAnnotationTextMetrics,
+  createJsPdfAnnotationTextMetrics,
+  createDefaultAnnotationTextMetrics,
+} from './TextMetrics.js'
+export type { HarpnotesLayoutOptions, AnnotationTextMetrics, JsPdfConstructor } from './TextMetrics.js'
 
 export { SvgEngine } from './SvgEngine.js'
 export type { SvgEngineOptions } from './SvgEngine.js'
