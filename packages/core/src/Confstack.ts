@@ -4,7 +4,7 @@
  * Port von `confstack.rb` aus dem Legacy-System.
  *
  * Jede Schicht ist ein eigenständiger Hash. `push(hash)` legt ihn oben auf
- * den Stack. `get(path)` sucht von oben nach unten durch alle Schichten und
+ * den Stack. `get(path?)` sucht von oben nach unten durch alle Schichten und
  * gibt den letzten (untersten) Treffer zurück — d.h. spätere pushes haben
  * niedrigere Priorität als frühere. `pop()` entfernt die oberste Schicht.
  *
@@ -23,34 +23,42 @@ export type ConfigObject = Record<string, unknown>
 /** Ein Konfigurations-Wert: direkt oder als Late-Binding-Funktion. */
 export type ConfigValue = unknown | ((...args: unknown[]) => unknown)
 
+/** Optionen für `get(...)`. */
+export interface ConfstackGetOptions {
+  resolve?: boolean
+}
+
 // ---------------------------------------------------------------------------
 // Confstack
 // ---------------------------------------------------------------------------
 
 /**
- * Stack-basierter Konfigurations-Resolver.
+ * Legacy-faithful conf stack.
  *
- * Entspricht `Confstack` in `confstack.rb`.
- *
- * Jede Schicht ist ein eigenständiger Hash. `get(path)` sucht von oben nach
- * unten und gibt den letzten Treffer zurück (unterste Schicht hat Vorrang,
- * da sie die Defaults enthält und obere Schichten spezifischere Werte haben).
- *
- * Intern wird nach jedem `push`/`pop` ein flaches Result-Objekt berechnet
- * (`_flatten`), das alle Schlüssel als verschachtelten Hash enthält.
- * `get()` liest immer aus diesem vorberechneten Result.
+ * Jede `push()`-Schicht erzeugt einen vollständigen Snapshot, indem die
+ * vorherige Schicht tief kopiert und mit dem neuen Overlay tief gemergt wird.
+ * Dadurch bleibt ein gepushter Wert auch dann stabil, wenn der Ursprung
+ * außerhalb des Stacks später mutiert wird.
  */
 export class Confstack {
-  private _stack: ConfigObject[] = []
+  strict = true
+  private _stack: ConfigObject[] = [{}]
   private _resultFlat: ConfigObject = {}
   private _keysFlat: string[] = []
+  private _lookupCache = new Map<string, unknown>()
+  private _resultCache = new WeakMap<Function, unknown>()
 
   /**
    * Legt eine neue Konfigurationsschicht oben auf den Stack.
    * Entspricht `push(hash)` in `confstack.rb`.
    */
   push(config: ConfigObject): void {
-    this._stack.push(config)
+    const base = this._stack.length === 0
+      ? {}
+      : this._stack[this._stack.length - 1]
+    this._stack.push(deepMerge(base, config))
+    this._lookupCache.clear()
+    this._resultCache = new WeakMap()
     this._flatten()
   }
 
@@ -64,6 +72,8 @@ export class Confstack {
       throw new Error('Confstack.pop(): stack is empty')
     }
     this._stack.pop()
+    this._lookupCache.clear()
+    this._resultCache = new WeakMap()
     this._flatten()
   }
 
@@ -77,14 +87,23 @@ export class Confstack {
   /**
    * Liest einen Wert per Punkt-Notation (z.B. `'layout.ELLIPSE_SIZE'`).
    *
-   * Gibt `undefined` zurück wenn der Pfad nicht existiert.
+   * Ohne `path` wird der gesamte aktuelle Stack zurückgegeben.
+   * `resolve: false` liefert den Rohwert ohne Late-Binding-Auflösung.
    * Late-Binding-Werte (Funktionen) werden rekursiv aufgelöst.
    *
-   * Entspricht `get(key)` / `[](key)` in `confstack.rb`.
+   * Entspricht `get(key, options)` / `[](key)` in `confstack.rb`.
    */
-  get(path: string): unknown {
-    const value = digPath(this._resultFlat, path.split('.'))
-    return resolveDependencies(value)
+  get(path?: string, options: ConfstackGetOptions = {}): unknown {
+    if (path === undefined) {
+      return options.resolve === false ? this._resultFlat : this._resolveDependencies(this._resultFlat)
+    }
+
+    const value = this._lookup(path)
+    if (value === undefined && !this._keysFlat.includes(path)) {
+      if (!this.strict) return undefined
+      throw new Error(`confstack: key not available: ${path}`)
+    }
+    return options.resolve === false ? value : this._resolveDependencies(value)
   }
 
   /**
@@ -94,7 +113,7 @@ export class Confstack {
    * Entspricht `get()` ohne Argument in `confstack.rb`.
    */
   getAll(): ConfigObject {
-    return resolveDependencies(this._resultFlat) as ConfigObject
+    return this.get(undefined) as ConfigObject
   }
 
   /**
@@ -103,32 +122,48 @@ export class Confstack {
    * Gibt `undefined` zurück wenn der Pfad nicht existiert.
    */
   getSubtree(prefix: string): ConfigObject | undefined {
-    const value = digPath(this._resultFlat, prefix.split('.'))
+    const value = this._lookup(prefix)
     if (value === undefined) return undefined
-    return resolveDependencies(value) as ConfigObject
+    return this._resolveDependencies(value) as ConfigObject
   }
 
   /**
    * Wie `get()`, aber wirft einen Fehler wenn kein Wert gefunden wurde.
    */
   require(path: string): unknown {
-    const value = this.get(path)
-    if (value === undefined) {
+    const value = this._lookup(path)
+    if (value === undefined && !this._keysFlat.includes(path)) {
       throw new Error(`Confstack.require(): no value found for path '${path}'`)
     }
-    return value
+    return this._resolveDependencies(value)
   }
 
   /**
-   * Schreibt einen Wert per Punkt-Notation direkt in die oberste Schicht.
+   * Schreibt einen Wert per Punkt-Notation als neue oberste Schicht.
+   * Bei `DeleteMe` wird stattdessen `delete()` aufgerufen.
+   * Der gesetzte Wert ist damit per `pop()` wieder rückgängig zu machen.
    * Entspricht `[]=(key, value)` in `confstack.rb`.
    */
   set(path: string, value: unknown): void {
+    if (value === DeleteMe || value instanceof DeleteMe) {
+      this.delete(path)
+      return
+    }
+
+    const fragment = buildNestedValue(path.split('.'), value)
+    this.push(fragment)
+  }
+
+  /**
+   * Löscht einen Wert aus der obersten Schicht.
+   * Entspricht `delete(key)` in `confstack2.rb`.
+   */
+  delete(path: string): void {
     if (this._stack.length === 0) {
       this._stack.push({})
     }
-    const top = requireDefined(this._stack[this._stack.length - 1], 'Confstack.set(): stack is empty')
-    updateNestedValue(top, path.split('.'), value)
+    const top = requireDefined(this._stack[this._stack.length - 1], 'Confstack.delete(): stack is empty')
+    deleteNestedValue(top, path.split('.'))
     this._flatten()
   }
 
@@ -146,7 +181,9 @@ export class Confstack {
    */
   resetTo(level: number): void {
     if (level < 0) level = 0
-    this._stack = this._stack.slice(0, level)
+    this._stack = this._stack.slice(0, level + 1)
+    this._lookupCache.clear()
+    this._resultCache = new WeakMap()
     this._flatten()
   }
 
@@ -183,42 +220,66 @@ export class Confstack {
    * - Baut daraus einen verschachtelten Hash auf
    */
   private _flatten(): void {
-    // Alle Schlüssel aus allen Schichten sammeln (unique)
-    const allKeys = new Set<string>()
-    for (const layer of this._stack) {
-      for (const key of getKeys(layer)) {
-        allKeys.add(key)
-      }
-    }
-    this._keysFlat = Array.from(allKeys)
-
-    // Für jeden Schlüssel: letzten Treffer von unten finden
-    // (confstack.rb: `@confstack.map { |s| _get_one(s, key) }.compact.last`)
-    const flat: ConfigObject = {}
-    for (const key of this._keysFlat) {
-      const value = this._getOne(key)
-      if (value !== undefined) {
-        setNestedValue(flat, key.split('.'), value)
-      }
-    }
-    this._resultFlat = flat
+    const top = this._stack[this._stack.length - 1]
+    this._resultFlat = top ?? {}
+    this._keysFlat = top === undefined ? [] : getKeys(top)
   }
 
   /**
-   * Sucht einen Schlüssel in allen Schichten und gibt den letzten Treffer zurück.
-   * Entspricht `_get(key)` in `confstack.rb`.
+   * Liest einen Wert ohne Late-Binding-Auflösung aus der obersten Schicht.
    */
-  private _getOne(key: string): unknown {
-    let result: unknown = undefined
-    for (const layer of this._stack) {
-      const value = digPath(layer, key.split('.'))
-      if (value !== undefined) {
-        result = value
-      }
+  private _lookup(path: string): unknown {
+    if (this._lookupCache.has(path)) {
+      return this._lookupCache.get(path)
     }
-    return result
+
+    const top = this._stack[this._stack.length - 1]
+    const value = top === undefined ? undefined : digPath(top, path.split('.'))
+    this._lookupCache.set(path, value)
+    return value
+  }
+
+  /**
+   * Löst Late-Binding-Werte rekursiv unter Berücksichtigung des Legacy-Caches auf.
+   */
+  private _resolveDependencies(value: unknown, callstack: Set<Function> = new Set()): unknown {
+    if (typeof value === 'function') {
+      const fn = value as () => unknown
+      if (this._resultCache.has(fn)) {
+        return this._resultCache.get(fn)
+      }
+      if (callstack.has(fn)) {
+        throw new Error('Confstack: circular late-binding dependency detected')
+      }
+      const next = new Set(callstack)
+      next.add(fn)
+      const result = this._resolveDependencies(fn(), next)
+      this._resultCache.set(fn, result)
+      return result
+    }
+
+    if (Array.isArray(value)) {
+      return value.map(item => this._resolveDependencies(item, callstack))
+    }
+
+    if (value !== null && typeof value === 'object') {
+      const result: ConfigObject = {}
+      for (const [k, v] of Object.entries(value as ConfigObject)) {
+        result[k] = this._resolveDependencies(v, callstack)
+      }
+      return result
+    }
+
+    return value
   }
 }
+
+/**
+ * Legacy delete sentinel.
+ *
+ * Entspricht `Confstack::DeleteMe` in `confstack2.rb`.
+ */
+export class DeleteMe {}
 
 // ---------------------------------------------------------------------------
 // Late-Binding-Auflösung
@@ -321,19 +382,88 @@ function setNestedValue(obj: ConfigObject, parts: string[], value: unknown): voi
 }
 
 /**
- * Aktualisiert einen Wert in einem verschachtelten Objekt per Pfad-Array.
- * Entspricht `_update_hash()` in `confstack.rb`.
+ * Baut ein verschachteltes Objekt für einen Punkt-Pfad.
+ * Entspricht der Ruby-Implementierung von `[]=` über verschachtelte Hashes.
  */
-function updateNestedValue(obj: ConfigObject, parts: string[], value: unknown): void {
+function buildNestedValue(parts: string[], value: unknown): ConfigObject {
+  if (parts.length === 0) return {}
+  return parts
+    .slice()
+    .reverse()
+    .reduce<unknown>((current, part) => ({ [part]: current }), value) as ConfigObject
+}
+
+/**
+ * Löscht einen verschachtelten Wert per Pfad-Array.
+ * Entspricht `delete(key)` in `confstack2.rb`.
+ */
+function deleteNestedValue(obj: ConfigObject, parts: string[]): void {
   if (parts.length === 0) return
   if (parts.length === 1) {
-    const key = requireDefined(parts[0], 'Confstack.updateNestedValue(): missing path segment')
-    obj[key] = value
+    const key = requireDefined(parts[0], 'Confstack.deleteNestedValue(): missing path segment')
+    delete obj[key]
     return
   }
-  const key = requireDefined(parts[0], 'Confstack.updateNestedValue(): missing path segment')
-  if (typeof obj[key] !== 'object' || obj[key] === null || Array.isArray(obj[key])) {
-    obj[key] = {}
+
+  const key = requireDefined(parts[0], 'Confstack.deleteNestedValue(): missing path segment')
+  const next = obj[key]
+  if (next === null || typeof next !== 'object' || Array.isArray(next)) {
+    return
   }
-  updateNestedValue(obj[key] as ConfigObject, parts.slice(1), value)
+
+  deleteNestedValue(next as ConfigObject, parts.slice(1))
+}
+
+/**
+ * Tiefes Kopieren eines Konfigurationswerts.
+ */
+function deepClone(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(entry => deepClone(entry))
+  }
+  if (value !== null && typeof value === 'object') {
+    const result: ConfigObject = {}
+    for (const [key, entry] of Object.entries(value as ConfigObject)) {
+      result[key] = deepClone(entry)
+    }
+    return result
+  }
+  return value
+}
+
+/**
+ * Ruby-ähnliches `deep_merge` ohne Seiteneffekte.
+ */
+function deepMerge(base: unknown, override: unknown): ConfigObject {
+  if (override === undefined) {
+    return deepClone(base) as ConfigObject
+  }
+  if (
+    base === null ||
+    override === null ||
+    typeof base !== 'object' ||
+    typeof override !== 'object' ||
+    Array.isArray(base) ||
+    Array.isArray(override)
+  ) {
+    return deepClone(override) as ConfigObject
+  }
+
+  const result: ConfigObject = deepClone(base) as ConfigObject
+  for (const [key, value] of Object.entries(override as ConfigObject)) {
+    const current = result[key]
+    if (
+      current !== null &&
+      typeof current === 'object' &&
+      !Array.isArray(current) &&
+      value !== null &&
+      typeof value === 'object' &&
+      !Array.isArray(value)
+    ) {
+      result[key] = deepMerge(current, value) as ConfigObject
+    } else {
+      result[key] = deepClone(value)
+    }
+  }
+  return result
 }

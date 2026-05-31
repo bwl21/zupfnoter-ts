@@ -22,6 +22,12 @@ export interface Drawable {
   color: string
   lineWidth: number
   confKey?: string
+  /** Legacy-Kontextmenü-Einträge für editorrelevante Alternativen */
+  more_conf_keys?: unknown[]
+  /** Legacy-Dragmetadaten für editierbare Drawables */
+  draginfo?: unknown
+  /** Legacy-nahe Zupfnoter-ID des fachlichen Ursprungsobjekts */
+  znId?: string
   visible: boolean
 }
 
@@ -41,6 +47,8 @@ export interface Ellipse extends Drawable {
   size: [number, number]
   fill: FillStyle
   dotted: boolean
+  /** Als Rechteck rendern (für Taktstriche, Annotations-Hintergründe) */
+  rect: boolean
   /** Balken über der Ellipse (für halbe Noten) */
   hasbarover: boolean
   /** Rückverweis auf die zugehörige Note oder Pause */
@@ -67,6 +75,8 @@ export interface FlowLine extends Drawable {
 export interface Path extends Drawable {
   readonly type: 'Path'
   path: [number, number][]
+  /** Exakter SVG-`d`-String für Legacy-nahe Kurven oder Pfade. */
+  pathData?: string
   fill: boolean
 }
 
@@ -79,6 +89,8 @@ export interface Annotation extends Drawable {
   center: [number, number]
   text: string
   style: string
+  /** Textausrichtung wie im Legacy-SVG. */
+  align?: 'left' | 'right' | 'center'
   size?: [number, number]
   origin?: PlayableEntity
 }

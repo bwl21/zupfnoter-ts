@@ -14,8 +14,9 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { Confstack } from '../../Confstack.js'
+import { Confstack, DeleteMe } from '../../Confstack.js'
 import { buildConfstack } from '../../buildConfstack.js'
+import { initConf } from '../../initConf.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
 
@@ -24,28 +25,39 @@ import type { ZupfnoterConfig } from '@zupfnoter/types'
 // ---------------------------------------------------------------------------
 
 describe('Confstack – Stack-Operationen', () => {
-  it('startet mit depth 0', () => {
+  it('startet mit depth 1', () => {
     const cs = new Confstack()
-    expect(cs.depth).toBe(0)
+    expect(cs.depth).toBe(1)
   })
 
   it('push erhöht depth', () => {
     const cs = new Confstack()
     cs.push({ a: 1 })
-    expect(cs.depth).toBe(1)
-    cs.push({ b: 2 })
     expect(cs.depth).toBe(2)
+    cs.push({ b: 2 })
+    expect(cs.depth).toBe(3)
+  })
+
+  it('push erstellt einen Snapshot und bleibt gegen Außenmutation stabil', () => {
+    const cs = new Confstack()
+    const fragment = { layout: { X_SPACING: 11.5 } }
+    cs.push(fragment)
+
+    fragment.layout.X_SPACING = 99
+
+    expect(cs.get('layout.X_SPACING')).toBe(11.5)
   })
 
   it('pop verringert depth', () => {
     const cs = new Confstack()
     cs.push({ x: 42 })
     cs.pop()
-    expect(cs.depth).toBe(0)
+    expect(cs.depth).toBe(1)
   })
 
   it('pop auf leerem Stack wirft', () => {
     const cs = new Confstack()
+    cs.pop()
     expect(() => cs.pop()).toThrow('stack is empty')
   })
 
@@ -70,15 +82,42 @@ describe('Confstack.get() – Punkt-Notation', () => {
     expect(cs.get('layout.ELLIPSE_SIZE')).toEqual([3.5, 1.7])
   })
 
-  it('gibt undefined zurück wenn Pfad nicht existiert', () => {
+  it('gibt den gesamten aktuellen Stack zurück ohne Pfad', () => {
     const cs = new Confstack()
     cs.push({ layout: { X_SPACING: 11.5 } })
-    expect(cs.get('layout.MISSING')).toBeUndefined()
+    expect(cs.get()).toEqual({ layout: { X_SPACING: 11.5 } })
   })
 
-  it('gibt undefined zurück bei leerem Stack', () => {
+  it('löst ohne Pfad Late Binding auf', () => {
     const cs = new Confstack()
-    expect(cs.get('layout.ELLIPSE_SIZE')).toBeUndefined()
+    cs.push({ layout: { X_SPACING: () => 42 } })
+    expect(cs.get()).toEqual({ layout: { X_SPACING: 42 } })
+  })
+
+  it('liefert ohne Pfad den Rohwert wenn resolve=false gesetzt ist', () => {
+    const cs = new Confstack()
+    cs.push({ layout: { X_SPACING: () => 42 } })
+    const raw = cs.get(undefined, { resolve: false }) as Record<string, unknown>
+    const layout = raw.layout as Record<string, unknown>
+    expect(layout.X_SPACING).toBeInstanceOf(Function)
+  })
+
+  it('liefert den Rohwert ohne Auflösung wenn resolve=false gesetzt ist', () => {
+    const cs = new Confstack()
+    cs.push({ layout: { X_SPACING: () => 42 } })
+    const raw = cs.get('layout.X_SPACING', { resolve: false })
+    expect(typeof raw).toBe('function')
+  })
+
+  it('gibt bei fehlendem Pfad einen Fehler', () => {
+    const cs = new Confstack()
+    cs.push({ layout: { X_SPACING: 11.5 } })
+    expect(() => cs.get('layout.MISSING')).toThrow('confstack: key not available: layout.MISSING')
+  })
+
+  it('wirft bei leerem Stack für einen Pfad', () => {
+    const cs = new Confstack()
+    expect(() => cs.get('layout.ELLIPSE_SIZE')).toThrow('confstack: key not available: layout.ELLIPSE_SIZE')
   })
 
   it('liest tief verschachtelte Werte', () => {
@@ -141,12 +180,12 @@ describe('Confstack.get() – Late Binding', () => {
     expect(cs.get('layout.X_SPACING')).toBe(42)
   })
 
-  it('wertet Funktion bei jedem Zugriff neu aus', () => {
+  it('wertet Funktion beim zweiten Zugriff aus dem Cache aus', () => {
     let counter = 0
     const cs = new Confstack()
     cs.push({ counter: () => ++counter })
     expect(cs.get('counter')).toBe(1)
-    expect(cs.get('counter')).toBe(2)
+    expect(cs.get('counter')).toBe(1)
   })
 
   it('nicht-Funktionswerte werden direkt zurückgegeben', () => {
@@ -204,16 +243,21 @@ describe('Confstack.set()', () => {
     expect(cs.get('layout.X_SPACING')).toBe(20.0)
   })
 
-  it('set() schreibt direkt in die oberste Schicht', () => {
-    // set() entspricht []= in confstack.rb: schreibt in @confstack.last,
-    // ist nicht per pop() rückgängig zu machen (anders als push+pop).
+  it('set() legt eine neue Schicht an und ist per pop() rückgängig zu machen', () => {
     const cs = new Confstack()
     cs.push({ layout: { X_SPACING: 11.5 } })
     cs.set('layout.X_SPACING', 20.0)
     expect(cs.get('layout.X_SPACING')).toBe(20.0)
     cs.pop()
-    // Nach pop() ist die Schicht weg — kein Wert mehr vorhanden
-    expect(cs.get('layout.X_SPACING')).toBeUndefined()
+    expect(cs.get('layout.X_SPACING')).toBe(11.5)
+  })
+
+  it('DeleteMe löscht den Schlüssel aus der obersten Schicht', () => {
+    const cs = new Confstack()
+    cs.push({ layout: { X_SPACING: 11.5, Y_SCALE: 1.0 } })
+    cs.set('layout.X_SPACING', DeleteMe)
+    expect(() => cs.get('layout.X_SPACING')).toThrow('confstack: key not available: layout.X_SPACING')
+    expect(cs.get('layout.Y_SCALE')).toBe(1.0)
   })
 })
 
@@ -389,11 +433,15 @@ describe('buildConfstack()', () => {
   })
 
   it('Layout-Override eines Extrakts überschreibt globale Layout-Werte', () => {
+    const base0 = defaultTestConfig.extract['0']
+    if (base0 === undefined) {
+      throw new Error('defaultTestConfig.extract[0] missing')
+    }
     const config: ZupfnoterConfig = {
       ...defaultTestConfig,
       extract: {
         '0': {
-          ...defaultTestConfig.extract['0']!,
+          ...base0,
           layout: {
             X_SPACING: 99.0,
           },
@@ -406,11 +454,15 @@ describe('buildConfstack()', () => {
   })
 
   it('Printer-Override eines Extrakts überschreibt globale Printer-Werte', () => {
+    const base0 = defaultTestConfig.extract['0']
+    if (base0 === undefined) {
+      throw new Error('defaultTestConfig.extract[0] missing')
+    }
     const config: ZupfnoterConfig = {
       ...defaultTestConfig,
       extract: {
         '0': {
-          ...defaultTestConfig.extract['0']!,
+          ...base0,
           printer: {
             showBorder: true,
           },
@@ -419,6 +471,81 @@ describe('buildConfstack()', () => {
     }
     const cs = buildConfstack(config, 0)
     expect(cs.get('printer.showBorder')).toBe(true)
+  })
+
+  it('stellt das Legacy-Beam-Mapping bereit', () => {
+    const base0 = defaultTestConfig.extract['0']
+    if (base0 === undefined) {
+      throw new Error('defaultTestConfig.extract[0] missing')
+    }
+    const baseLayout = base0.layout ?? {}
+    const config: ZupfnoterConfig = {
+      ...defaultTestConfig,
+      extract: {
+        ...defaultTestConfig.extract,
+        '0': {
+          ...base0,
+          layout: {
+            ...baseLayout,
+            beams: true,
+          },
+        },
+      },
+    }
+    const cs = buildConfstack(config, 0)
+    expect(cs.get('layout.beams')).toBe(true)
+    expect(cs.get('layout.DURATION_TO_BEAMS')).toBeDefined()
+  })
+
+  it('liefert die vollständige Default-Konfiguration schon in initConf()', () => {
+    const conf = new Confstack()
+    const config = initConf(conf)
+    const base0 = config.extract['0']
+    if (base0 === undefined) {
+      throw new Error('initConf() extract[0] missing')
+    }
+
+    expect(config.layout.DURATION_TO_BEAMS).toBeDefined()
+    expect(base0.layout?.beams).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// initConf()
+// ---------------------------------------------------------------------------
+
+describe('initConf()', () => {
+  it('liefert die legacy-basisnahen Defaults', () => {
+    const conf = new Confstack()
+    const defaults = initConf(conf)
+
+    expect(defaults.abc_parser).toBe('ABC2SVG')
+    expect(defaults.template).toEqual({
+      filebase: '-no-template-',
+      title: '- no template -',
+    })
+    expect(defaults.wrap).toBe(60)
+    expect(defaults.defaults?.notebound).toMatchObject({
+      annotation: { pos: [5, -7] },
+      chord: { pos: [0, 0] },
+      partname: { pos: [-4, -7] },
+      variantend: { pos: [-4, -7] },
+      tuplet: { cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true },
+      flowline: { cp1: [0, 10], cp2: [0, -10], shape: ['c'], show: true },
+    })
+    expect(defaults.extract['0']?.sortmark).toEqual({
+      size: [2, 4],
+      fill: true,
+      show: false,
+    })
+    expect(defaults.annotations).toMatchObject({
+      vl: { text: 'v', pos: [-5, -5] },
+      rit: { text: 'rit', pos: [2, -5], style: 'italic' },
+    })
+    expect(defaults.templates).toMatchObject({
+      notes: { pos: [320, 6], text: 'ENTER_NOTE', style: 'large' },
+      images: { imagename: '', show: true, pos: [10, 10], height: 100 },
+    })
   })
 })
 
