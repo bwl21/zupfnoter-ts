@@ -50,6 +50,14 @@ K:C
 (!3!C D) |]
 `
 
+const CHORD_ORDER_ABC = `X:1
+T:Chord Order
+M:4/4
+L:1/4
+K:C
+[B,G,]2 |]
+`
+
 function expectedLegacyChecksum(abcText: string): string {
   let checksum = 0x12345678
   const stripped = abcText.trim()
@@ -128,6 +136,17 @@ describe('AbcParser', () => {
       expect(noteSymbol).toBeDefined()
       expect(noteSymbol!.notes).toBeDefined()
       expect(noteSymbol!.notes![0]!.midi).toBeGreaterThan(0)
+    })
+
+    it('restores multi-note order from the ABC source text', () => {
+      const parser = new AbcParser()
+      const model = parser.parse(CHORD_ORDER_ABC)
+
+      const voice = model.voices[0]
+      const chord = voice?.symbols.find((symbol) => symbol.type === ABC_TYPE.NOTE && symbol.notes && symbol.notes.length === 2)
+      const midi = chord?.notes?.map((note) => note.midi)
+
+      expect(midi).toEqual([59, 55])
     })
 
     it('normalizes slur starts into legacy slur_sls on the first note', () => {
