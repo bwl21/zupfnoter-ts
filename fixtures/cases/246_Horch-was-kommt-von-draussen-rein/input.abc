@@ -1,0 +1,122 @@
+X:1
+T:Horch, was kommt von draussen rein
+F:246_Horch-was-kommt-von-draussen-rein
+%%scale 0.84
+%%pagewidth 21.67cm
+I:score 1 2
+L:1/8
+M:4/4
+Q:1/4=120
+I:linebreak $
+K:F
+V:1 treble nm="Sopran" snm="S."
+V:1 shift=^G_B
+[K:F]!p! z "A" f z e d.d3 | z B z A !tenuto!G.G3 | z!<(! G!<)! z F E_E!f!=EC | z8 |:$S F3 G AA .B2 | %5
+ c .d2 c-!p! c4 | G2 E2 !tenuto!E4 |$ (dd^c )=c!f! z4 | F3 G A2 .B2 | c d2 !>!c- c4 |$ %10
+ BBG"A"e z!f! !>!G3 | !tenuto!f.f z (c f!mf!f e2 ) | (B2 B2 d2 cB |$ AA FA- ) A4 | (G2 E2 G4 ) | %15
+ (ff e!>!_e- ) e4 |$ (B2 B2 d2 cB | A2 F2 A4 ) "^@@3,3,-1" |1 (G2 E2 G2 B2 | A8 ) "^@@-6" :|2 %20
+!p! z .c z c !tenuto!B2 !tenuto!G2 | z c z c d2B2 ||  .$!f! z .c z c !tenuto!B2 !tenuto!G2 |  %47
+ (3!tenuto! [r: tp_1_1] G2 !tenuto!E2 !tenuto!G2 !tenuto!B2 !tenuto!e2 | !>!f3"A" f z4 |] %49
+%
+V:2 bass nm="Bariton"   octave=-1 shift=^G_Eb
+[K:C]c'2 b2 a2 g2 | f2e2d2c2 | B2 A2  G2 z G | z G z G A2 B2 ||:
+c2 B2 A2 ^G2 | G2 c2 G2 ^F2 | =F2 B2 G2 ^D2 | E2 cG zGz G | c2B2A2^G2 | G2 c2 G2 ^F2 |  
+F2 B2G2B2 | cc z G c2 E2 | F2 G2 A2 c2 | B2 G2 E2 C2 |  A2 F2 D2 A^G | GC z CDDEE | 
+F2G2A2F2 | E2 "^!?" A2G2E2 "^@@-3,3,3" |1 F2D2 B2 d2 | cc z G A2 B2 "^@@5" :|]2 G G2 G g4 | GG2G g4 ||
+G G2 G g4 |  (3 [r: tp_2_1] G2D2B2 d2B2 | c3 c z4 |]
+
+%%%%zupfnoter.config
+
+{
+  "produce"  : [0],
+  "extract"  : {
+    "0" : {
+      "voices"      : [1, 2],
+      "flowlines"   : [1, 2],
+      "synchlines"  : [[0]],
+      "jumplines"   : [1, 2],
+      "layoutlines" : [1, 2],
+      "barnumbers"  : {"voices": [1, 2]},
+      "countnotes"  : {"voices": [1, 2]},
+      "legend"      : {"pos": [289, 9], "spos": [372, 41]},
+      "notes"       : {
+        "T01_number"              : {
+          "pos"   : [391, 27],
+          "text"  : "RBW-246",
+          "style" : "bold"
+        },
+        "T01_number_extract"      : {"pos": [409, 27], "text": " -S", "style": "bold"},
+        "T02_copyright_music"     : {
+          "pos"   : [370, 262],
+          "text"  : "© Privatkopie",
+          "style" : "small"
+        },
+        "T03_copyright_harpnotes" : {
+          "pos"   : [357, 270],
+          "text"  : "© 2017 Notenbild: Bernhard Weichel",
+          "style" : "small"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
+        }
+      },
+      "layout"      : {
+        "limit_a3"          : true,
+        "LINE_THIN"         : 0.10,
+        "LINE_MEDIUM"       : 0.20,
+        "LINE_THICK"        : 0.30,
+        "ELLIPSE_SIZE"      : [3.50, 1.30],
+        "REST_SIZE"         : [4, 1.50],
+        "DRAWING_AREA_SIZE" : [400, 282],
+        "packer"            : {
+          "pack_method"           : 1,
+          "pack_max_spreadfactor" : 2,
+          "pack_min_increment"    : 0.30
+        }
+      },
+      "stringnames" : {"vpos": [5]},
+      "notebound"   : {
+        "variantend"  : {"v_2": {"30720": {"pos": [-7, -7]}}},
+        "countnote"   : {"v_1": {"t_29184": {"pos": [-11.35, -1]}}},
+        "c_jumplines" : {"v_1": {"26880": {"p_follow": -3}}},
+        "tuplet"      : {
+          "v_1" : {
+            "tp_1_1" : {"cp1": [-52.07, -6.91], "cp2": [-54.61, 6.70]}
+          },
+          "v_2" : {
+            "tp_1_1" : {
+              "show"  : true,
+              "cp1"   : [-60, -5],
+              "cp2"   : [-60, 5],
+              "shape" : ["c"]
+            },
+            "tp_2_1" : {
+              "show"  : true,
+              "cp1"   : [4, -90],
+              "cp2"   : [-20, -140],
+              "shape" : ["c"],
+              "pos"   : [0, 0]
+            }
+          }
+        },
+        "minc"        : {"27648": {"minc_f": 0.20}},
+        "barnumber"   : {
+          "v_1" : {
+            "t_16896" : {"pos": [-1.40, -4.50]},
+            "t_30720" : {"pos": [0.60, -4.75]},
+            "t_36864" : {"pos": [-3.47, -5.83]},
+            "t_38400" : {"pos": [-2.47, -4.83]}
+          },
+          "v_2" : {
+            "t_30720" : {"pos": [0.40, -4.50]},
+            "t_6144"  : {"pos": [3.48, -5.83]}
+          }
+        }
+      }
+    }
+  },
+  "$schema"  : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version" : "1.6.0 dev 2"
+}

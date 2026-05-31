@@ -1,0 +1,399 @@
+{
+  "children":[
+    {
+      "type"          :"FlowLine",
+      "lineWidth"     :0.3,
+      "more_conf_keys":[],
+      "style"         :"solid",
+      "color"         :"black"
+    },
+    {
+      "type"          :"FlowLine",
+      "lineWidth"     :0.3,
+      "more_conf_keys":[],
+      "style"         :"solid",
+      "color"         :"black"
+    },
+    {
+      "type"          :"FlowLine",
+      "lineWidth"     :0.3,
+      "more_conf_keys":[],
+      "style"         :"solid",
+      "color"         :"black"
+    },
+    {
+      "type"          :"FlowLine",
+      "lineWidth"     :0.3,
+      "more_conf_keys":[],
+      "style"         :"solid",
+      "color"         :"black"
+    },
+    {
+      "type"          :"Path",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "draginfo"      :{
+        "handler" :"tuplet",
+        "p1"      :[60.3,17],
+        "p2"      :[106.3,25],
+        "cp1"     :[63.127129383395584,12.416623575404124],
+        "cp2"     :[105.18628236411689,19.73125887639913],
+        "mp"      :{"$$id":904,"x":84.28521175481967,"y":13.335032409786873},
+        "conf_key":"extract.0.notebound.tuplet.v_1.0"
+      },
+      "path"          :[
+        ["M",60.3,17],
+        [
+          "c",
+          2.827129383395588,
+          -4.583376424595877,
+          44.88628236411689,
+          2.7312588763991323,
+          46,
+          8
+        ]
+      ],
+      "confKey"       :"extract.0.notebound.tuplet.v_1.0.*"
+    },
+    {
+      "type"          :"Annotation",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "draginfo"      :{"handler":"annotation"},
+      "center"        :[84.2852,13.335],
+      "text"          :"3",
+      "style"         :"small",
+      "color"         :"black"
+    },
+    {
+      "type"          :"Ellipse",
+      "lineWidth"     :0.5,
+      "more_conf_keys":[
+        {
+          "conf_key":"extract.0.notebound.nconf.v_1.t_0.n_0.nshift",
+          "text"    :"shift left",
+          "icon"    :"fa fa-arrow-left",
+          "value"   :-0.5
+        },
+        {
+          "conf_key":"extract.0.notebound.nconf.v_1.t_0.n_0.nshift",
+          "text"    :"shift right",
+          "icon"    :"fa fa-arrow-right",
+          "value"   :0.5
+        },
+        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
+        {
+          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "text"    :"Edit Minc",
+          "icon"    :"fa fa-arrows-v"
+        },
+        {
+          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "text"    :"increase Minc",
+          "icon"    :"fa fa-arrow-down",
+          "value"   :0.5
+        },
+        {
+          "conf_key":"extract.0.notebound.minc.0.minc_f",
+          "text"    :"decrease Minc",
+          "icon"    :"fa fa-arrow-up",
+          "value"   :-0.5
+        }
+      ],
+      "center"        :[60.3,17],
+      "size"          :[1.75,0.85],
+      "fill"          :"filled",
+      "color"         :"black",
+      "rect"          :false
+    },
+    {
+      "type"          :"Ellipse",
+      "lineWidth"     :0.5,
+      "more_conf_keys":[
+        {
+          "conf_key":"extract.0.notebound.nconf.v_1.t_128.n_0.nshift",
+          "text"    :"shift left",
+          "icon"    :"fa fa-arrow-left",
+          "value"   :-0.5
+        },
+        {
+          "conf_key":"extract.0.notebound.nconf.v_1.t_128.n_0.nshift",
+          "text"    :"shift right",
+          "icon"    :"fa fa-arrow-right",
+          "value"   :0.5
+        },
+        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
+        {
+          "conf_key":"extract.0.notebound.minc.128.minc_f",
+          "text"    :"Edit Minc",
+          "icon"    :"fa fa-arrows-v"
+        },
+        {
+          "conf_key":"extract.0.notebound.minc.128.minc_f",
+          "text"    :"increase Minc",
+          "icon"    :"fa fa-arrow-down",
+          "value"   :0.5
+        },
+        {
+          "conf_key":"extract.0.notebound.minc.128.minc_f",
+          "text"    :"decrease Minc",
+          "icon"    :"fa fa-arrow-up",
+          "value"   :-0.5
+        }
+      ],
+      "center"        :[83.3,21],
+      "size"          :[1.75,0.85],
+      "fill"          :"filled",
+      "color"         :"black",
+      "rect"          :false
+    },
+    {
+      "type"          :"Ellipse",
+      "lineWidth"     :0.5,
+      "more_conf_keys":[
+        {
+          "conf_key":"extract.0.notebound.nconf.v_1.t_256.n_0.nshift",
+          "text"    :"shift left",
+          "icon"    :"fa fa-arrow-left",
+          "value"   :-0.5
+        },
+        {
+          "conf_key":"extract.0.notebound.nconf.v_1.t_256.n_0.nshift",
+          "text"    :"shift right",
+          "icon"    :"fa fa-arrow-right",
+          "value"   :0.5
+        },
+        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
+        {
+          "conf_key":"extract.0.notebound.minc.256.minc_f",
+          "text"    :"Edit Minc",
+          "icon"    :"fa fa-arrows-v"
+        },
+        {
+          "conf_key":"extract.0.notebound.minc.256.minc_f",
+          "text"    :"increase Minc",
+          "icon"    :"fa fa-arrow-down",
+          "value"   :0.5
+        },
+        {
+          "conf_key":"extract.0.notebound.minc.256.minc_f",
+          "text"    :"decrease Minc",
+          "icon"    :"fa fa-arrow-up",
+          "value"   :-0.5
+        }
+      ],
+      "center"        :[106.3,25],
+      "size"          :[1.75,0.85],
+      "fill"          :"filled",
+      "color"         :"black",
+      "rect"          :false
+    },
+    {
+      "type"          :"Ellipse",
+      "lineWidth"     :0.5,
+      "more_conf_keys":[
+        {
+          "conf_key":"extract.0.notebound.nconf.v_1.t_384.n_0.nshift",
+          "text"    :"shift left",
+          "icon"    :"fa fa-arrow-left",
+          "value"   :-0.5
+        },
+        {
+          "conf_key":"extract.0.notebound.nconf.v_1.t_384.n_0.nshift",
+          "text"    :"shift right",
+          "icon"    :"fa fa-arrow-right",
+          "value"   :0.5
+        },
+        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
+        {
+          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "text"    :"Edit Minc",
+          "icon"    :"fa fa-arrows-v"
+        },
+        {
+          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "text"    :"increase Minc",
+          "icon"    :"fa fa-arrow-down",
+          "value"   :0.5
+        },
+        {
+          "conf_key":"extract.0.notebound.minc.384.minc_f",
+          "text"    :"decrease Minc",
+          "icon"    :"fa fa-arrow-up",
+          "value"   :-0.5
+        }
+      ],
+      "center"        :[117.8,30],
+      "size"          :[2.625,1.275],
+      "fill"          :"filled",
+      "color"         :"black",
+      "rect"          :false
+    },
+    {
+      "type"          :"Ellipse",
+      "lineWidth"     :0.5,
+      "more_conf_keys":[
+        {
+          "conf_key":"extract.0.notebound.nconf.v_1.t_768.n_0.nshift",
+          "text"    :"shift left",
+          "icon"    :"fa fa-arrow-left",
+          "value"   :-0.5
+        },
+        {
+          "conf_key":"extract.0.notebound.nconf.v_1.t_768.n_0.nshift",
+          "text"    :"shift right",
+          "icon"    :"fa fa-arrow-right",
+          "value"   :0.5
+        },
+        {"text":"---","icon":"fa fa-arrows-v","value":0.5},
+        {
+          "conf_key":"extract.0.notebound.minc.768.minc_f",
+          "text"    :"Edit Minc",
+          "icon"    :"fa fa-arrows-v"
+        },
+        {
+          "conf_key":"extract.0.notebound.minc.768.minc_f",
+          "text"    :"increase Minc",
+          "icon"    :"fa fa-arrow-down",
+          "value"   :0.5
+        },
+        {
+          "conf_key":"extract.0.notebound.minc.768.minc_f",
+          "text"    :"decrease Minc",
+          "icon"    :"fa fa-arrow-up",
+          "value"   :-0.5
+        }
+      ],
+      "center"        :[140.8,36],
+      "size"          :[2.625,1.275],
+      "fill"          :"filled",
+      "color"         :"black",
+      "rect"          :false
+    },
+    {
+      "type"          :"Annotation",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "draginfo"      :{"handler":"annotation"},
+      "center"        :[320,7],
+      "text"          :"Tuplet Test",
+      "style"         :"large",
+      "color"         :"black"
+    },
+    {
+      "type"          :"Annotation",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "draginfo"      :{"handler":"annotation"},
+      "center"        :[320,27],
+      "text"          :"alle Stimmen\nZupfnoter TS Tests\nTakt: 4/4 (1/4=120)\nTonart: C",
+      "style"         :"regular",
+      "color"         :"black"
+    },
+    {
+      "type"          :"Annotation",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "center"        :[150,289],
+      "text"          :" - created 2026-05-31 18:33:52 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]",
+      "style"         :"smaller",
+      "color"         :"black"
+    },
+    {
+      "type"          :"Annotation",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "center"        :[325,289],
+      "text"          :"Zupfnoter: https://www.zupfnoter.de",
+      "style"         :"smaller",
+      "color"         :"black"
+    },
+    {
+      "type"          :"Annotation",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "center"        :[380,289],
+      "text"          :"305 905 829",
+      "style"         :"smaller",
+      "color"         :"black"
+    },
+    {
+      "type"          :"Path",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "path"          :[
+        ["M",2.3,8.5],
+        ["l",0.5,-1],
+        ["l",0.5,1],
+        ["l",0,5],
+        ["l",-0.5,1],
+        ["l",-0.5,-1],
+        ["l",0,-5]
+      ]
+    },
+    {
+      "type"          :"Path",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "path"          :[
+        ["M",140.3,8.5],
+        ["l",0.5,-1],
+        ["l",0.5,1],
+        ["l",0,5],
+        ["l",-0.5,1],
+        ["l",-0.5,-1],
+        ["l",0,-5]
+      ]
+    },
+    {
+      "type"          :"Path",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "path"          :[
+        ["M",416.3,8.5],
+        ["l",0.5,-1],
+        ["l",0.5,1],
+        ["l",0,5],
+        ["l",-0.5,1],
+        ["l",-0.5,-1],
+        ["l",0,-5]
+      ]
+    },
+    {
+      "type"          :"Annotation",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "center"        :[143.675,4],
+      "text"          :"x",
+      "style"         :"small",
+      "color"         :"black"
+    },
+    {
+      "type"          :"Annotation",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "center"        :[143.675,290],
+      "text"          :"x",
+      "style"         :"small",
+      "color"         :"black"
+    },
+    {
+      "type"          :"Annotation",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "center"        :[281.675,4],
+      "text"          :"x",
+      "style"         :"small",
+      "color"         :"black"
+    },
+    {
+      "type"          :"Annotation",
+      "lineWidth"     :0.1,
+      "more_conf_keys":[],
+      "center"        :[281.675,290],
+      "text"          :"x",
+      "style"         :"small",
+      "color"         :"black"
+    }
+  ]
+}

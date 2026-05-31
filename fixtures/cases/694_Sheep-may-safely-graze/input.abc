@@ -1,0 +1,342 @@
+X:694
+F:694_Sheep-may-safely-graze 
+T:Schafe sollen sicher weiden
+C:M: JS Bach BWV 208
+C:Originaltitel: Sheep may safely graze
+C:Bearb.: Ruth u. Bernhard Weichel
+S:https://musescore.com/user/6900646/scores/1729516
+%%scale 0.83
+%%pagewidth 21.01cm
+%%leftmargin 1.00cm
+%%rightmargin 1.00cm
+%%score { ( 1 2  ) | ( 3 4  ) } 5
+L:1/4
+Q:1/4=120
+M:4/4
+I:linebreak $
+K:C shift=DC
+V:1 treble nm="Piano" snm="Pno."
+L:1/8
+V:2 treble 
+V:3 bass 
+V:4 bass 
+V:1
+!mf! !2!G2 (GE ) G2 ((GE ) ) | (G2 A2 ) (A2 c2 ) | !2!F2 (FD ) F2 (FD ) | (F2 !3!B2 ) (B2 d2 ) | %4
+ (!3!c2 c/d/e ) (ce )(dG ) | (c2 c/d/e ) (ce )(dG ) |$ (!2!c2 !3!e/f/g ) (ec )(dB ) | (c2 e/f/g ) (ec )(dB ) | %8
+ c4 (!2!e2 d2 ) | d6 e2 | f4 (a2 g2 ) | e4 (!1!d2 !3!c2 ) | (!5!e2 c2 ) (B2 A2 ) | d6 e2 |$ %14
+ !3!B4 (A2 G2 ) | G8 |!mp! G4 (!2!_B2 !1!A2 ) | A6 B2 | c4 (e2 d2 ) | !3!B4 (A2 G2 ) | %20
+"_cresc." !3!c2 (c/d/e ) (ce )(dG ) | !5!g2 e2 d2 c2 |$ !3!c2 (c/d/e ) (ce )(dG ) | !5!g2 e2 d2 c2 | %24
+ !4!f6 g2 | !5!!1![Ge]2 !5!
+!1![Gd]2 !4!!1![Gc]2 !5!!2![Ad]2 | !3!!1!B6 !4!c2 | %27
+ c2!mf! (!2!GE ) G2 (GE ) | (G2 A2 ) (A2 c2 ) | !2!F2 (FD ) F2 (FD ) |$ (F2 !3!B2 ) (B2 d2 ) | %31
+ (!3!c2 c/d/e ) (ce )(dG ) | (c2 c/d/e ) (ce )(dG ) | (!2!c2 !3!e/f/g ) (ec )(dB ) | %34
+ (!2!c2 !3!e/f/g )"^rit." (ec )(dB ) | c8 |] %36
+V:2
+ x4 | x4 | x4 | x4 | x4 | x4 |$ x4 | x4 | x4 | x4 | x4 | x4 | x4 | x4 |$ x4 | x4 | x4 | x4 | x4 | %19
+ x4 | x4 | x4 |$ x4 | x4 | x4 | x4 | F4 | x4 | x4 | x4 |$ x4 | x4 | x4 | x4 | x4 | x4 |] %36
+V:3
+ !5!!3!E,4 | (E, F, ) (F, A, ) | !3!!2!D,4 | D,2 (D, F, ) | !1!E,4 | E,4 |$ %6
+ !5!!1!F,2 G,3/2 F,/ | !1!E,3 E, | !4!!2!E,2 !5!!1!G,2 | (!1!A,2 B,2 )  | %10
+ !5!!2!G,4 | !1!G,2 (F, E, ) | A,2 E,2 | ^F,2 G,2 |$ [D,G,]2 C2 | B,4 | C4 | C4 | %18
+ [C]4 | !5!!2!!1![DF]4 | !2!!1![E]2 !4!!2![C] [B,] | [E]4  |$ [CE]2 [A,C] [G,B,] | %23
+ E4 | [D,A,C]2 [G,B,]2 | !3!E, F,G, !4!A, | !1!!3!D4 | E2 !3!!5![C,E,]2 | %28
+ (E, F, ) (F, A, ) | !2!!3!D,4 |$ D,2 (D, F, ) | E,4 | E,4 | !1!!5!E,2 (G, F, ) | %34
+ !1!!3!E, G,/F,/ G, F, | E,4 |] %36
+V:4
+ C,C,C,C, | C,4 | C,C,C,C, | C,2 C,2 | !2!C,2 B,,2 | A,,2 C,2 |$ C,2 B,,2 | !4!A,,2 B,,2  | C,4 | %9
+ !5!!2![C,]3 [C,] | C,4 | !5!C,4 | C,4 | C,2 (B,, C, ) |$ D,2 D,2| G,2 F,2 | (!1!!4!E,2 C,2 ) | %17
+ (F,2 E,2 ) | D,4 | G,4 | !2!!1!C2 !4!!2!A, G, | C2 B, C |$ C2 A, G, | %23
+ C2 B, C | D,2 G,2 | !3!C, D, E, !4!F, | !1!!3!G,2 G,2 | C,2 !3!!5!C,2 | C,2C,2 | C,C,C,C, |$ C,2 C,2 | C,2 B,,2 | %32
+ C,2 B,,2 | A,,2 C,2 |$ C,2 B,,2 | !4!C,4 |] %36
+V:5
+ !5!!3!E,4 | (E, F, ) (F, A, ) | !3!!2!D,4 | D,2 (D, F, ) | !1!E,4 | E,4 |$ %6
+ !5!!1!F,2 G,3/2 F,/ | !1!E,3 E, | !4!!2!E,2 !5!!1!G,2 | (!1!A,2 B, ) x | %10
+ !5!!2!G,4 | !1!G,2 (F, E, ) | A,2 E,2 | ^F,2 G,2 |$ D,2 C2 | B,4 | C4 | C4 | %18
+ C4 | !5!!2!!1!G,4 | !2!!1!C2 !4!!2!A, G, | C2 B, C |$ C2 A, G, | %23
+ C2 B, C | D,2 G,2 | !3!C, D, E, !4!F, | !1!!3!G,4 | C z !3!!5!C,2 | %28
+ (E, F, ) (F, A, ) | !2!!3!C,4 |$ D,2 (D, F, ) | E,4 | E,4 | !1!!5!F,,2 (G,, G,, ) | %34
+ !1!!3!A,, G,,/F,,/ G,, G,, | C,4 |] %36
+
+%%%%zupfnoter.config
+
+{
+  "produce"      : [1, 2],
+  "restposition" : {
+    "default"     : "previous",
+    "repeatstart" : "next",
+    "repeatend"   : "default"
+  },
+  "extract"      : {
+    "0" : {
+      "title"        : "Bearbeitungsansicht",
+      "filenamepart" : "-X",
+      "voices"       : [1, 2, 3, 4],
+      "flowlines"    : [1, 2, 3, 4],
+      "subflowlines" : [0],
+      "repeatsigns"  : {
+        "voices" : [1, 2, 3, 4],
+        "left"   : {"style": "large"},
+        "right"  : {"style": "large"}
+      },
+      "layoutlines"  : [],
+      "barnumbers"   : {
+        "voices"   : [1, 2, 3, 4],
+        "pos"      : [6, -4],
+        "autopos"  : true,
+        "apbase"   : [1, 0],
+        "style"    : "small_bold",
+        "apanchor" : "center",
+        "prefix"   : ""
+      },
+      "countnotes"   : {
+        "voices"   : [1, 2, 3, 4],
+        "pos"      : [3, -2],
+        "autopos"  : true,
+        "apbase"   : [1, 0],
+        "style"    : "smaller",
+        "apanchor" : "center"
+      },
+      "legend"       : {"pos": [410, 8], "spos": [345, 66], "align": "l"},
+      "lyrics"       : {
+        "1" : {"verses": [1], "pos": [273, 74], "style": "small"},
+        "2" : {
+          "verses" : [2],
+          "pos"    : [324, 136],
+          "style"  : "small"
+        },
+        "3" : {
+          "verses" : [8],
+          "pos"    : [325, 164],
+          "style"  : "small"
+        }
+      },
+      "notes"        : {
+        "T01_number"              : {
+          "pos"   : [410, 17],
+          "text"  : "XXX-{{number}}",
+          "style" : "bold",
+          "align" : "l"
+        },
+        "T01_number_extract"      : {
+          "pos"   : [411, 17],
+          "text"  : "{{extract_filename}}",
+          "style" : "bold"
+        },
+        "T02_copyright_music"     : {"pos": [325, 280], "text": "", "style": "small"},
+        "T03_copyright_harpnotes" : {
+          "pos"   : [325, 284],
+          "text"  : "© {{current_year}} Notenbild: Bernhard Weichel",
+          "style" : "small"
+        },
+        "T04_to_order"            : {
+          "pos"   : [325, 279],
+          "text"  : "Privatkopie\n",
+          "style" : "small"
+        },
+        "T05_printed_extracts"    : {
+          "pos"   : [410, 22],
+          "text"  : "{{printed_extracts}}",
+          "style" : "smaller",
+          "align" : "l"
+        },
+        "T06_legend"              : {
+          "pos"   : [344, 19],
+          "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}} )\nTonart: {{key}}",
+          "style" : "small"
+        },
+        "T99_do_not_copy"         : {
+          "pos"   : [380, 284],
+          "text"  : "Bitte nicht kopieren",
+          "style" : "small_bold"
+        }
+      },
+      "tuplets"      : {"text": "- {{tuplet}} -", "style": "small"},
+      "layout"       : {
+        "LINE_MEDIUM"       : 0.20,
+        "LINE_THICK"        : 0.30,
+        "ELLIPSE_SIZE"      : [3.50, 1.30],
+        "REST_SIZE"         : [4, 1.50],
+        "DRAWING_AREA_SIZE" : [400, 275],
+        "beams"             : false,
+        "packer"            : {
+          "pack_method"           : 1,
+          "pack_max_spreadfactor" : 2,
+          "pack_min_increment"    : 0.40
+        }
+      },
+      "printer"      : {"show_border": false},
+      "stringnames"  : {"vpos": [4], "marks": {"vpos": [290]}},
+      "notebound"    : {
+        "countnote" : {"v_4": {"t_36480": {"align": "l"}}},
+        "minc"      : {
+          "10752" : {"minc_f": 0.50},
+          "37632" : {"minc_f": 0.50},
+          "38400" : {"minc_f": 0.50},
+          "49536" : {"minc_f": 0.50},
+          "50688" : {"minc_f": 0.50},
+          "52224" : {"minc_f": 0.50},
+          "53760" : {"minc_f": 0.50}
+        },
+        "flowline"  : {
+          "v_1" : {"9024": {"cp2": [-2.64, -58.59]}},
+          "v_4" : {
+            "36864" : {"cp1": [4.01, 17.13], "cp2": [-3.53, -92.95]}
+          }
+        },
+        "barnumber" : {
+          "v_2" : {
+            "t_384"  : {"align": "r"},
+            "t_6528" : {"align": "r"}
+          },
+          "v_3" : {
+            "t_1920"  : {"align": "l"},
+            "t_36864" : {"align": "r"}
+          }
+        }
+      }
+    },
+    "1" : {
+      "filenamepart" : "-A",
+      "lyrics"       : {
+        "1" : {"pos": [276, 68]},
+        "2" : {"pos": [323, 127]},
+        "3" : {"pos": [324, 158]}
+      },
+      "notes"        : {"T01_number_extract": {"text": "-A"}},
+      "layout"       : {
+        "limit_a3"     : false,
+        "instrument"   : "25-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [-5, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [55, 79]}
+      },
+      "notebound"    : {
+        "countnote" : {
+          "v_1" : {
+            "t_1152"  : {"align": "l"},
+            "t_22656" : {"align": "l"},
+            "t_25728" : {"align": "l"},
+            "t_3072"  : {"align": "l"},
+            "t_33408" : {"pos": [3.63, 0], "align": "l"},
+            "t_3456"  : {"align": "l"},
+            "t_384"   : {"align": "l"},
+            "t_4224"  : {"align": "l"},
+            "t_42624" : {"align": "l"},
+            "t_45696" : {"align": "l"},
+            "t_9600"  : {"align": "l"}
+          }
+        },
+        "minc"      : {
+          "11232" : {"minc_f": -0.50},
+          "12288" : {"minc_f": 0.50},
+          "13248" : {"minc_f": 0.50},
+          "15360" : {"minc_f": -0.50},
+          "27648" : {"minc_f": -0.50},
+          "31488" : {"minc_f": 0.50},
+          "34560" : {"minc_f": 0.50},
+          "49152" : {"minc_f": 0.50},
+          "51168" : {"minc_f": -0.50},
+          "52704" : {"minc_f": -0.50},
+          "53376" : {"minc_f": 0.50},
+          "6912"  : {"minc_f": 0.50},
+          "9696"  : {"minc_f": -0.50}
+        },
+        "barnumber" : {
+          "v_1" : {
+            "t_23040" : {"align": "r"},
+            "t_24576" : {"align": "r"},
+            "t_26112" : {"align": "r"}
+          }
+        }
+      }
+    },
+    "2" : {
+      "title"        : "Tenor, Bass, Melodie",
+      "filenamepart" : "-B",
+      "voices"       : [1, 3, 4],
+      "lyrics"       : {
+        "1" : {"verses": [1], "pos": [278, 75]},
+        "2" : {"verses": [2]},
+        "3" : {"pos": [324, 167]}
+      },
+      "notes"        : {"T01_number_extract": {"text": "-B"}},
+      "layout"       : {
+        "limit_a3"     : true,
+        "instrument"   : "37-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [0, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [0, 1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [43, 79]}
+      },
+      "notebound"    : {
+        "countnote" : {
+          "v_3" : {"t_9984": {"align": "r"}},
+          "v_4" : {"t_14208": {"align": "r"}}
+        },
+        "minc"      : {
+          "20736" : {"minc_f": 0.50},
+          "21120" : {"minc_f": 0.50}
+        }
+      }
+    },
+    "3" : {
+      "filenamepart" : "-M",
+      "notes"        : {"T01_number_extract": {"text": "-M"}},
+      "layout"       : {
+        "limit_a3"     : false,
+        "instrument"   : "25-strings-g-g",
+        "PITCH_OFFSET" : -43,
+        "X_OFFSET"     : 2.80,
+        "X_SPACING"    : 11.50
+      },
+      "printer"      : {
+        "a3_offset" : [-5, 0],
+        "a4_offset" : [-5, 0],
+        "a4_pages"  : [1, 2]
+      },
+      "stringnames"  : {
+        "text"  : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
+        "marks" : {"hpos": [55, 79]}
+      }
+    },
+    "4" : {
+      "filenamepart" : "A2",
+      "notes"        : {
+        "T01_number_extract" : {
+          "pos"   : [411, 17],
+          "text"  : "{{extract_filename}}",
+          "style" : "bold"
+        }
+      }
+    },
+    "5" : {
+      "filenamepart" : "B2",
+      "notes"        : {
+        "T01_number_extract" : {"text": "{{extract_filename}}"}
+      }
+    }
+  },
+  "$schema"      : "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json",
+  "$version"     : "V_1.9.0-10-g85c6eb6",
+  "template"     : {
+    "title"    : "Vorlage Monbachtal 2024",
+    "filebase" : "9999_Voerlage-Monbachtal-2024"
+  }
+}

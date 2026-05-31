@@ -22,17 +22,18 @@ fixtures/
 └── cases/
     ├── single_note/
     │   ├── input.abc       # ABC-Notation, optional mit %%%%zupfnoter.config
-    │   ├── song.json       # Stufe-2-Referenz: Song
-    │   ├── sheet.json      # Stufe-3-Referenz: Sheet (Fallback/Legacy alias für Extrakt 0)
-    │   ├── sheet.extract-0.json # Stufe-3-Referenz für einen konkreten Extrakt
+    │   ├── song.legacy-raw.json # Stufe-2-Referenz: Rohdump aus Legacy-CLI (@music_model.to_json)
+    │   ├── sheet.extract-0.json # Stufe-3-Referenz für Extrakt 0
+    │   ├── output.extract-0.svg # Stufe-4-Referenz für Extrakt 0
     │   └── _ts_output/     # generierte TS-Ausgabe, nicht Referenz
+    │   └── _parity/song/   # harte Song-Parity-Artefakte (normalisiert, Report, Debug)
     └── ...
 ```
 
 Die Tests scannen `fixtures/cases/*/input.abc` automatisch. Ein neuer Testfall wird
-für Song-Vergleiche aufgenommen, sobald zusätzlich `song.json` existiert; für
-Sheet-Vergleiche entsprechend mit `sheet.json` oder mindestens einer
-`sheet.extract-<nr>.json`.
+für Song-Vergleiche aufgenommen, sobald zusätzlich `song.legacy-raw.json` existiert; für
+Sheet-Vergleiche entsprechend mit mindestens einer `sheet.extract-<nr>.json`; für
+SVG-Vergleiche mit mindestens einer `output.extract-<nr>.svg`.
 
 Bekannte, noch nicht portierte Legacy-Aspekte werden nicht testfallspezifisch im
 Fixture-Verzeichnis gepflegt, sondern zentral im Testcode als globale Capability-Liste.
@@ -52,7 +53,6 @@ sind.
 | `tie` | Bindebögen |
 | `decoration` | Fermata, Dynamik |
 | `lyrics` | Liedtext (w:-Zeilen) |
-| `02_twoStaff` | Legacy-Testcase aus `30_sources/SRC_Zupfnoter/testcases/` |
 | `Twostaff` | Legacy-Testcase aus `30_sources/SRC_Zupfnoter/testcases/` |
 
 ## Fixtures neu erzeugen (Legacy-Export)
@@ -64,20 +64,22 @@ Branch `feature/voice-styles_and-other-concepts`) mit dem CLI-Modus
 Bequemer Wrapper aus diesem Repo:
 
 ```bash
-npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
+npm run test:loadsample
 ```
 
 Standardmäßig verwendet der Wrapper den Legacy-CLI-Pfad
-`../200_Zupfnotenprojekte/10_Harfenfreizeit-Monbachtal/zupfnoter-cli.min.js`
+`../200_zupfnoter/30_sources/SRC_Zupfnoter/src/zupfnoter-cli.js`
 relativ zum Repo-Root.
 
+Ohne Glob verwendet der Wrapper standardmäßig `fixtures/cases/*/input.abc`.
 Falls nötig kann der CLI-Pfad überschrieben werden, entweder per Environment oder
 als zweites Argument:
 
 ```bash
 export ZUPFNOTER_LEGACY_CLI=/pfad/zu/zupfnoter-cli.min.js
-npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
+npm run test:loadsample
 
+npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
 npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc" "/pfad/zu/zupfnoter-cli.min.js"
 ```
 
@@ -91,12 +93,40 @@ Für jede aufgelöste ABC-Datei ruft er die Legacy-CLI einzeln auf als
 Die TS-Pipeline-Ausgabe kann als Vergleichsbasis erzeugt werden:
 
 ```bash
-cd packages/core
-npx vitest run src/testing/__tests__/song/dump_ts_output.spec.ts
-# Schreibt: fixtures/cases/<name>/_ts_output/song.json
+pnpm test
 ```
 
-Diese Dateien sind **nicht** die Referenz-Fixtures — sie zeigen nur, was die TS-Pipeline
+`pnpm test` führt die normalen Workspace-Tests aus und schreibt dabei zusätzlich die
+TS-Dumps nach `fixtures/cases/<name>/_ts_output/`.
+
+Für gezielte Einzel-Dumps gibt es zusätzlich:
+
+```bash
+pnpm test:dump:song
+pnpm test:dump:sheet
+pnpm test:dump:svg
+```
+
+Für harte Song-Parity-Vergleiche gibt es den dedizierten Runner:
+
+```bash
+pnpm parity:song 3015_reference_sheet
+pnpm parity:song --all
+```
+
+Der Runner schreibt pro Case Artefakte nach
+`fixtures/cases/<name>/_parity/song/`:
+
+- `normalized/legacy.normalized-song.json`
+- `normalized/ts.normalized-song.json`
+- `reports/song-gap-report.md`
+- `reports/song-gap-report.json`
+- `debug/matched-events.json`
+- `debug/unmatched-legacy-events.json`
+- `debug/unmatched-ts-events.json`
+- `debug/matching-trace.json`
+
+Diese Dateien sind **nicht** die Referenz-Fixtures. Sie zeigen nur, was die TS-Pipeline
 aktuell produziert. Vergleiche sie mit dem Legacy-Export, um Abweichungen zu finden.
 
 ### 2. Legacy-Fixtures exportieren
@@ -107,7 +137,7 @@ Der Legacy-Exporter nimmt ABC-Dateien und erzeugt pro Datei ein Testfall-Verzeic
 cd ../200_zupfnoter/30_sources/SRC_Zupfnoter/src
 node --max_old_space_size=4096 zupfnoter-cli.js \
   --export-fixtures \
-  "/path/to/zupfnoter-ts/fixtures/cases/*/input.abc" \
+  "/path/to/zupfnoter-ts/fixtures/cases/<test-case>/input.abc" \
   /path/to/zupfnoter-ts/fixtures/cases
 ```
 
@@ -115,9 +145,9 @@ Für jede Eingabedatei wird geschrieben:
 
 ```text
 fixtures/cases/<test-case>/input.abc
-fixtures/cases/<test-case>/song.json
-fixtures/cases/<test-case>/sheet.json
+fixtures/cases/<test-case>/song.legacy-raw.json
 fixtures/cases/<test-case>/sheet.extract-<nr>.json
+fixtures/cases/<test-case>/output.extract-<nr>.svg
 ```
 
 Wenn die Eingabe `fixtures/cases/<name>/input.abc` heißt, verwendet der Exporter
@@ -138,8 +168,8 @@ Reason: <Begründung der Änderung>"
 Nach dem Befüllen der Fixtures:
 
 ```bash
-pnpm --filter @zupfnoter/core run test:unit
-npm run test:gaps
+pnpm test
+pnpm test:gaps
 ```
 
 Schlagen Tests fehl, zeigt `formatMismatches` den genauen Pfad der Abweichung:
@@ -149,11 +179,18 @@ voices[0].entities[2].pitch:
   actual:   48
 ```
 
-`npm run test:gaps` gibt zusätzlich eine kompakte Prompt-Zusammenfassung der aktuell
-gepflegten Gap-IDs aus, schreibt `fixtures/reports/gap-report.md` als lesbare
-Arbeitsliste und erzeugt `fixtures/reports/open_implementations_template.ts`
-für neue unklassifizierte Failures. So kann `fixtures/openImplementations.ts`
-gezielt manuell bereinigt oder ergänzt werden.
+`pnpm test:gaps` erzeugt drei stufenbezogene Markdown-Reports unter
+`fixtures/reports/`:
+
+- `song-gap-report.md` (Stufe 2, registry-basiert)
+- `sheet-gap-report.md` (Stufe 3, registry-basiert)
+- `svg-gap-report.md` (Stufe 4, strukturelle Tag-Count-Analyse)
+
+Der Song-Report ist ein globaler Index auf die case-basierten `_parity/song`
+Artefakte und verweist zusätzlich auf die manuelle Gap-Liste in
+`fixtures/openImplementations.ts`. Der SVG-Report
+vergleicht für jedes Fixture die Tag-Typ-Verteilung der Legacy-Ausgabe gegen die
+TS-Ausgabe und zeigt die ersten positionalen Tag-Abweichungen.
 
 ## TS-Ausgabe als Bootstrap-Referenz
 
@@ -163,13 +200,16 @@ nicht als Verifikation gegen das Legacy-System.
 
 ```bash
 # Song-Fixtures (Stufe 2):
-cd packages/core
-npx vitest run src/testing/__tests__/song/dump_ts_output.spec.ts
-cp fixtures/cases/<name>/_ts_output/song.json fixtures/cases/<name>/song.json
+pnpm test:dump:song
+cp fixtures/cases/<name>/_ts_output/song.json fixtures/cases/<name>/song.legacy-raw.json
 
 # Sheet-Fixtures (Stufe 3):
-npx vitest run src/testing/__tests__/sheet/dump_ts_output.spec.ts
-cp fixtures/cases/<name>/_ts_output/sheet.json fixtures/cases/<name>/sheet.json
+pnpm test:dump:sheet
+cp fixtures/cases/<name>/_ts_output/sheet.extract-0.json fixtures/cases/<name>/sheet.extract-0.json
+
+# SVG-Fixtures (Stufe 4):
+pnpm test:dump:svg
+cp fixtures/cases/<name>/_ts_output/output.extract-0.svg fixtures/cases/<name>/output.extract-0.svg
 ```
 
 ## Fixture-Format
@@ -211,10 +251,8 @@ cp fixtures/cases/<name>/_ts_output/sheet.json fixtures/cases/<name>/sheet.json
 }
 ```
 
-Bei mehreren zu vergleichenden Extrakten liegen zusätzlich Dateien der Form
-`sheet.extract-<nr>.json` im Testfallordner. Die Sheet-Vergleichstests iterieren über
-diese Extrakt-Fixtures einzeln. Fehlen sie, wird aus Kompatibilitätsgründen `sheet.json`
-als Extrakt-0-Referenz verwendet.
+Die Sheet-Referenzen liegen als `sheet.extract-<nr>.json` im Testfallordner.
+Die Sheet-Vergleichstests iterieren über diese Extrakt-Fixtures einzeln.
 
 ## Vergleichsstrategie
 

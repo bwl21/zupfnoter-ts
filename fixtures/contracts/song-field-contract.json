@@ -1,0 +1,266 @@
+{
+  "version": 1,
+  "meta": {
+    "required": [
+      "title",
+      "composer",
+      "number",
+      "filename",
+      "meter",
+      "key",
+      "tempo",
+      "tempoDisplay",
+      "checksum"
+    ],
+    "optional": [
+      "oKey",
+      "tempoDisplayLegacy",
+      "diagnostics"
+    ],
+    "ignored": [
+      "_comment"
+    ],
+    "aliases": {
+      "oKey": [
+        "o_key"
+      ],
+      "tempoDisplay": [
+        "tempo_display"
+      ],
+      "tempoDisplayLegacy": [
+        "tempoDisplay"
+      ]
+    },
+    "tolerances": {}
+  },
+  "song": {
+    "required": [
+      "harpnoteOptions"
+    ],
+    "optional": [
+      "beatMaps"
+    ],
+    "ignored": [],
+    "aliases": {
+      "harpnoteOptions": [
+        "harpnote_options"
+      ],
+      "beatMaps": [
+        "beat_maps"
+      ]
+    },
+    "tolerances": {}
+  },
+  "voice": {
+    "required": [
+      "voiceIndex",
+      "events"
+    ],
+    "optional": [
+      "voiceId",
+      "name",
+      "showVoice",
+      "showFlowline",
+      "showJumpline"
+    ],
+    "ignored": [],
+    "aliases": {},
+    "tolerances": {}
+  },
+  "event": {
+    "required": [
+      "stableKey",
+      "kind",
+      "voiceId",
+      "voiceIndex",
+      "indexInVoice",
+      "globalIndex",
+      "sourcePath"
+    ],
+    "optional": [
+      "measure",
+      "beat",
+      "absBeat",
+      "duration",
+      "abcStart",
+      "abcEnd",
+      "abcText",
+      "pitch",
+      "octave",
+      "string",
+      "fret",
+      "decorations",
+      "lyrics",
+      "variant",
+      "repeatInfo",
+      "gotoInfo",
+      "raw",
+      "debug"
+    ],
+    "ignored": [
+      "prevPlayable",
+      "nextPlayable"
+    ],
+    "aliases": {
+      "abcStart": [
+        "startPos"
+      ],
+      "abcEnd": [
+        "endPos"
+      ],
+      "abcText": [
+        "text"
+      ],
+      "absBeat": [
+        "beat"
+      ],
+      "voiceId": [
+        "voiceIndex"
+      ]
+    },
+    "tolerances": {
+      "beat": 0,
+      "absBeat": 0,
+      "duration": 0,
+      "pitch": 0,
+      "octave": 0,
+      "string": 0,
+      "fret": 0
+    },
+    "kinds": {
+      "Note": {
+        "required": [
+          "pitch",
+          "duration"
+        ],
+        "optional": [
+          "measure",
+          "beat",
+          "absBeat",
+          "abcStart",
+          "abcEnd",
+          "decorations",
+          "lyrics",
+          "variant"
+        ],
+        "ignored": [
+          "repeatInfo.tieStart",
+          "repeatInfo.tieEnd",
+          "repeatInfo.firstInPart"
+        ],
+        "aliases": {},
+        "tolerances": {}
+      },
+      "Pause": {
+        "required": [
+          "pitch",
+          "duration"
+        ],
+        "optional": [
+          "measure",
+          "beat",
+          "absBeat",
+          "abcStart",
+          "abcEnd",
+          "decorations",
+          "variant"
+        ],
+        "ignored": [],
+        "aliases": {},
+        "tolerances": {}
+      },
+      "SynchPoint": {
+        "required": [
+          "pitch",
+          "duration"
+        ],
+        "optional": [
+          "measure",
+          "beat",
+          "absBeat",
+          "abcStart",
+          "abcEnd",
+          "decorations",
+          "variant"
+        ],
+        "ignored": [],
+        "aliases": {},
+        "tolerances": {}
+      },
+      "MeasureStart": {
+        "required": [],
+        "optional": [
+          "measure",
+          "beat",
+          "absBeat"
+        ],
+        "ignored": [],
+        "aliases": {},
+        "tolerances": {}
+      },
+      "NewPart": {
+        "required": [],
+        "optional": [
+          "measure",
+          "beat",
+          "absBeat",
+          "abcText"
+        ],
+        "ignored": [],
+        "aliases": {},
+        "tolerances": {}
+      },
+      "NoteBoundAnnotation": {
+        "required": [
+          "abcText"
+        ],
+        "optional": [
+          "measure",
+          "beat",
+          "absBeat",
+          "abcStart",
+          "abcEnd",
+          "decorations",
+          "variant"
+        ],
+        "ignored": [],
+        "aliases": {},
+        "tolerances": {}
+      },
+      "Chordsymbol": {
+        "required": [
+          "abcText"
+        ],
+        "optional": [
+          "measure",
+          "beat",
+          "absBeat",
+          "abcStart",
+          "abcEnd",
+          "decorations",
+          "variant"
+        ],
+        "ignored": [],
+        "aliases": {},
+        "tolerances": {}
+      },
+      "Goto": {
+        "required": [
+          "gotoInfo"
+        ],
+        "optional": [
+          "measure",
+          "beat",
+          "absBeat",
+          "abcStart",
+          "abcEnd",
+          "decorations",
+          "variant"
+        ],
+        "ignored": [],
+        "aliases": {},
+        "tolerances": {}
+      }
+    }
+  }
+}
