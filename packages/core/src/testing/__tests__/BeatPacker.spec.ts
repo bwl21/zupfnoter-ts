@@ -21,6 +21,7 @@ import type { DurationKey, DurationStyle } from '@zupfnoter/types'
 
 const DURATION_TO_STYLE: Record<DurationKey, DurationStyle> = {
   err: { sizeFactor: 2,    fill: 'filled', dotted: false },
+  d96: { sizeFactor: 1,    fill: 'empty',  dotted: true  },
   d64: { sizeFactor: 1,    fill: 'empty',  dotted: false },
   d48: { sizeFactor: 0.75, fill: 'empty',  dotted: true  },
   d32: { sizeFactor: 0.75, fill: 'empty',  dotted: false },
@@ -287,6 +288,34 @@ describe('computeBeatCompression – method 1 (collision)', () => {
     }
   })
 
+  it('berücksichtigt extract.notebound.minc', () => {
+    const conf = new Confstack()
+    conf.push({
+      layout: {
+        DURATION_TO_STYLE,
+        BEAT_RESOLUTION,
+        packer: { pack_method: 1, pack_min_increment: 0 },
+      },
+      extract: {
+        notebound: {
+          minc: {
+            96: { minc_f: 1 },
+          },
+        },
+      },
+    })
+
+    const notes = [
+      makeNote(0, 96, { pitch: 60, time: 0, prevPitch: 60, nextPitch: 62 }),
+      makeNote(96, 96, { pitch: 62, time: 96, prevPitch: 60, nextPitch: 64 }),
+    ]
+    const song = makeSong(notes)
+    const result = computeBeatCompression(song, [0], conf)
+
+    expect(result[0]).toBe(0)
+    expect(result[96]).toBe(384)
+  })
+
   it('Positionen wachsen monoton mit pack_min_increment > 0', () => {
     const conf = new Confstack()
     conf.push({
@@ -310,6 +339,7 @@ describe('computeBeatCompression – method 1 (collision)', () => {
       expect(positions[i]).toBeGreaterThan(positions[i - 1]!)
     }
   })
+
 })
 
 // ---------------------------------------------------------------------------

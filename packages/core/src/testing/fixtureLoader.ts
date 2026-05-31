@@ -12,7 +12,9 @@ import type { Song, Sheet, ZupfnoterConfig } from '@zupfnoter/types'
 import { AbcParser } from '../AbcParser.js'
 import { AbcToSong } from '../AbcToSong.js'
 import { HarpnotesLayout } from '../HarpnotesLayout.js'
+import { SvgEngine } from '../SvgEngine.js'
 import { extractSongConfig, mergeSongConfig } from '../extractSongConfig.js'
+import { LegacyFixtureAnnotationTextMetrics } from './legacyAnnotationTextMetrics.js'
 import type { SongFixture, SheetFixture, DrawableFixture, EntityFixture } from './semanticMatch.js'
 import { defaultTestConfig } from './defaultConfig.js'
 
@@ -31,10 +33,10 @@ export interface PipelineFixture {
     abc: string
   }
   config: ZupfnoterConfig
-  song: SongFixture | null
-  sheet: SheetFixture | null
+  /** Raw `@music_model.to_json` dump from the legacy CLI (`song.legacy-raw.json`). */
+  song: unknown | null
   sheetExtracts: Record<string, SheetFixture>
-  output_svg: string | null
+  outputSvgExtracts: Record<string, string>
 }
 
 export interface FixtureCase {
@@ -43,6 +45,7 @@ export interface FixtureCase {
   dir: string
   hasSongFixture: boolean
   hasSheetFixture: boolean
+  hasOutputSvgFixture: boolean
 }
 
 function loadJson<T>(path: string): T {
@@ -74,6 +77,10 @@ function fixtureCaseDir(name: string): string {
   return resolve(FIXTURE_CASES_ROOT, name)
 }
 
+function resolveSongFixturePath(dir: string): string {
+  return resolve(dir, 'song.legacy-raw.json')
+}
+
 function listSheetExtractFiles(dir: string): string[] {
   return readdirSync(dir)
     .filter((name) => /^sheet\.extract-\d+\.json$/.test(name))
@@ -87,6 +94,27 @@ function loadSheetExtractFixtures(dir: string): Record<string, SheetFixture> {
       const match = filename.match(/^sheet\.extract-(\d+)\.json$/)
       if (!match) throw new Error(`Invalid sheet extract fixture filename: ${filename}`)
       return [match[1], loadJson<SheetFixture>(resolve(dir, filename))]
+    }),
+  )
+}
+
+function listOutputSvgFiles(dir: string): string[] {
+  return readdirSync(dir)
+    .filter((name) => name === 'output.svg' || /^output\.extract-\d+\.svg$/.test(name))
+    .sort((a, b) => a.localeCompare(b))
+}
+
+function loadOutputSvgFixtures(dir: string): Record<string, string> {
+  const svgFiles = listOutputSvgFiles(dir)
+  if (svgFiles.includes('output.svg')) {
+    return { '0': loadText(resolve(dir, 'output.svg')) }
+  }
+
+  return Object.fromEntries(
+    svgFiles.map((filename) => {
+      const match = filename.match(/^output\.extract-(\d+)\.svg$/)
+      if (!match) throw new Error(`Invalid svg extract fixture filename: ${filename}`)
+      return [match[1], loadText(resolve(dir, filename))]
     }),
   )
 }
@@ -109,8 +137,9 @@ export function scanFixtureCases(): FixtureCase[] {
       name,
       id: name,
       dir,
-      hasSongFixture: existsSync(resolve(dir, 'song.json')),
-      hasSheetFixture: existsSync(resolve(dir, 'sheet.json')) || listSheetExtractFiles(dir).length > 0,
+      hasSongFixture: existsSync(resolve(dir, 'song.legacy-raw.json')),
+      hasSheetFixture: listSheetExtractFiles(dir).length > 0,
+      hasOutputSvgFixture: listOutputSvgFiles(dir).length > 0,
     }))
     .sort((a, b) => a.id.localeCompare(b.id))
 }
@@ -138,25 +167,21 @@ export function loadFixture(testCaseOrName: FixtureCase | string): PipelineFixtu
   const dir = fixtureCaseDir(name)
   const abc = loadText(resolve(dir, 'input.abc'))
   const sheetExtracts = loadSheetExtractFixtures(dir)
+  const outputSvgExtracts = loadOutputSvgFixtures(dir)
   return {
     name,
     id: name,
     dir,
     input: { abc },
     config: fixtureConfigFromAbc(abc),
-    song: safeLoadJson<SongFixture>(resolve(dir, 'song.json')),
-    sheet: safeLoadJson<SheetFixture>(resolve(dir, 'sheet.json')),
+    song: safeLoadJson<unknown>(resolveSongFixturePath(dir)),
     sheetExtracts,
-    output_svg: safeLoadText(resolve(dir, 'output.svg')),
+    outputSvgExtracts,
   }
 }
 
-export function loadSongFixture(name: string): SongFixture {
-  return loadJson<SongFixture>(resolve(fixtureCaseDir(name), 'song.json'))
-}
-
-export function loadSheetFixture(name: string): SheetFixture {
-  return loadJson<SheetFixture>(resolve(fixtureCaseDir(name), 'sheet.json'))
+export function loadSongFixture(name: string): unknown {
+  return loadJson<unknown>(resolveSongFixturePath(fixtureCaseDir(name)))
 }
 
 export function loadSheetExtractFixture(name: string, extractNr: number | string): SheetFixture {
@@ -189,26 +214,41 @@ export function transformFixtureToSheet(
   const model = new AbcParser().parse(fixture.input.abc)
   const song = new AbcToSong().transform(model, fixture.config)
   const target = resolveFixtureSheetRenderTarget(fixture.config, extractNr)
-  const sheet = new HarpnotesLayout(fixture.config).layout(song, target.extractNr, target.pageFormat)
+  const sheet = new HarpnotesLayout(fixture.config, {
+    annotationTextMetrics: new LegacyFixtureAnnotationTextMetrics(),
+  }).layout(song, target.extractNr, target.pageFormat)
   return sheetToFixture(sheet)
 }
 
 export function getSheetFixtureTargets(fixture: PipelineFixture): Array<{ extractNr: number; expected: SheetFixture }> {
-  const extractEntries = Object.entries(fixture.sheetExtracts)
-  if (extractEntries.length > 0) {
-    return extractEntries
-      .map(([extractNr, expected]) => ({
-        extractNr: Number.parseInt(extractNr, 10),
-        expected,
-      }))
-      .sort((a, b) => a.extractNr - b.extractNr)
-  }
+  return Object.entries(fixture.sheetExtracts)
+    .map(([extractNr, expected]) => ({
+      extractNr: Number.parseInt(extractNr, 10),
+      expected,
+    }))
+    .sort((a, b) => a.extractNr - b.extractNr)
+}
 
-  if (fixture.sheet !== null) {
-    return [{ extractNr: 0, expected: fixture.sheet }]
-  }
+export function getOutputSvgFixtureTargets(fixture: PipelineFixture): Array<{ extractNr: number; expected: string }> {
+  return Object.entries(fixture.outputSvgExtracts)
+    .map(([extractNr, expected]) => ({
+      extractNr: Number.parseInt(extractNr, 10),
+      expected,
+    }))
+    .sort((a, b) => a.extractNr - b.extractNr)
+}
 
-  return []
+export function transformFixtureToSvg(
+  fixture: PipelineFixture,
+  extractNr: number | string = 0,
+): string {
+  const model = new AbcParser().parse(fixture.input.abc)
+  const song = new AbcToSong().transform(model, fixture.config)
+  const target = resolveFixtureSheetRenderTarget(fixture.config, extractNr)
+  const sheet = new HarpnotesLayout(fixture.config, {
+    annotationTextMetrics: new LegacyFixtureAnnotationTextMetrics(),
+  }).layout(song, target.extractNr, target.pageFormat)
+  return new SvgEngine().draw(sheet)
 }
 
 export function saveFixtureOutput(fixture: PipelineFixture, stage: FixtureStage, data: unknown): void {
@@ -225,11 +265,13 @@ export function saveFixtureOutput(fixture: PipelineFixture, stage: FixtureStage,
  *
  * All entity types are included (Note, Pause, SynchPoint, MeasureStart, NewPart,
  * Goto, Chordsymbol, NoteBoundAnnotation). Fields not present on a given type
- * are omitted (not set to null).
+ * are omitted (not set to null). Legacy-facing identifiers like `znId` are
+ * preserved so downstream comparisons can keep the same semantic anchor.
  */
 export function songToFixture(song: Song): SongFixture {
   return {
     meta_data: song.metaData as Record<string, unknown>,
+    harpnote_options: song.harpnoteOptions as Record<string, unknown> | undefined,
     voices: song.voices.map((v) => ({
       entities: v.entities.map((e): EntityFixture => {
         const entry: EntityFixture = {
@@ -237,9 +279,37 @@ export function songToFixture(song: Song): SongFixture {
           beat: e.beat,
           variant: e.variant,
           visible: e.visible,
+          barDecorations: e.barDecorations,
+          confKey: e.confKey,
+          decorations: e.decorations.length > 0 ? e.decorations : undefined,
+          znId: e.znId,
+          time: e.time,
+          startPos: e.startPos,
+          endPos: e.endPos,
+          sourceOffsets: 'sourceOffsets' in e ? e.sourceOffsets : undefined,
+          measureStart: 'measureStart' in e ? e.measureStart : undefined,
+          measureCount: 'measureCount' in e ? e.measureCount : undefined,
+          firstInPart: 'firstInPart' in e ? e.firstInPart : undefined,
+          countNote: 'countNote' in e ? e.countNote : undefined,
+          lyrics: 'lyrics' in e ? (e.lyrics ?? '') : undefined,
+          tuplet: 'tuplet' in e ? e.tuplet : undefined,
+          tupletStart: 'tupletStart' in e && 'tuplet' in e && e.tuplet > 1 ? e.tupletStart : undefined,
+          tupletEnd: 'tupletEnd' in e ? (e.tupletEnd ? true : undefined) : undefined,
+          slurStarts: 'slurStarts' in e ? e.slurStarts : undefined,
+          slurEnds: 'slurEnds' in e ? e.slurEnds : undefined,
+          jumpStarts: 'jumpStarts' in e ? e.jumpStarts : undefined,
+          jumpEnds: 'jumpEnds' in e ? e.jumpEnds : undefined,
         }
         if ('pitch' in e) entry['pitch'] = (e as { pitch: number }).pitch
         if ('duration' in e) entry['duration'] = (e as { duration: number }).duration
+        if ('tieStart' in e) entry['tieStart'] = (e as { tieStart: boolean }).tieStart
+        if ('tieEnd' in e) entry['tieEnd'] = (e as { tieEnd: boolean }).tieEnd
+        if ('time' in e && (e as { time?: number }).time !== undefined) entry['time'] = (e as { time: number }).time
+        if ('prevPitch' in e && (e as { prevPitch?: number }).prevPitch !== undefined) entry['prevPitch'] = (e as { prevPitch: number }).prevPitch
+        if ('nextPitch' in e && (e as { nextPitch?: number }).nextPitch !== undefined) entry['nextPitch'] = (e as { nextPitch: number }).nextPitch
+        if ('text' in e && typeof (e as { text?: string }).text === 'string') entry['text'] = (e as { text: string }).text
+        if ('position' in e && Array.isArray((e as { position?: [number, number] }).position)) entry['position'] = (e as { position: [number, number] }).position
+        if ('style' in e && typeof (e as { style?: string }).style === 'string') entry['style'] = (e as { style: string }).style
         if (
           entry.duration === undefined &&
           'companion' in e &&
@@ -249,6 +319,11 @@ export function songToFixture(song: Song): SongFixture {
           typeof e.companion.duration === 'number'
         ) {
           entry.duration = e.companion.duration
+        }
+        if (e.type === 'Goto') {
+          entry['from'] = e.from.beat
+          entry['to'] = e.to.beat
+          entry['policy'] = e.policy as Record<string, unknown>
         }
         return entry
       }),
@@ -265,14 +340,24 @@ export function songToFixture(song: Song): SongFixture {
  * Converts a Sheet domain object into the SheetFixture format used for comparison.
  *
  * Only fields relevant for semantic comparison are included.
- * Excluded: confKey, lineWidth, origin, draginfo, visible (invisible elements filtered out).
+ * Excluded: lineWidth, origin, visible (invisible elements are filtered out).
+ * Editor-relevant metadata such as `confKey`, `more_conf_keys`, and `draginfo`
+ * are preserved when present so parity tests can check later-stage contract data.
+ * Legacy-facing identifiers like `znId` are preserved when present.
  */
 export function sheetToFixture(sheet: Sheet): SheetFixture {
   return {
     children: sheet.children
       .filter((c) => c.visible !== false)
       .map((c): DrawableFixture => {
-        const entry: DrawableFixture = { type: c.type }
+        const source = c as unknown as Record<string, unknown>
+        const entry: DrawableFixture = {
+          type: c.type,
+          znId: c.znId,
+          confKey: c.confKey,
+          lineWidth: c.lineWidth,
+          visible: c.visible,
+        }
         if ('center'    in c && c.center    !== undefined) entry.center    = c.center
         if ('size'      in c && c.size      !== undefined) entry.size      = c.size
         if ('fill'      in c && c.fill      !== undefined) entry.fill      = c.fill as DrawableFixture['fill']
@@ -282,6 +367,9 @@ export function sheetToFixture(sheet: Sheet): SheetFixture {
         if ('glyphName' in c && c.glyphName !== undefined) entry.glyphName = c.glyphName
         if ('text'      in c && c.text      !== undefined) entry.text      = c.text
         if ('color'     in c && c.color     !== undefined) entry.color     = c.color
+        if ('path'      in source && source['path']      !== undefined) entry.path      = source['path'] as [number, number][]
+        if ('more_conf_keys' in source && source['more_conf_keys'] !== undefined) entry.more_conf_keys = source['more_conf_keys']
+        if ('draginfo' in source && source['draginfo'] !== undefined) entry.draginfo = source['draginfo']
         return entry
       }),
   }

@@ -17,6 +17,7 @@ function filledEllipse(overrides: Partial<Ellipse> = {}): Ellipse {
     size: [3.5, 1.7],
     fill: 'filled',
     dotted: false,
+    rect: false,
     hasbarover: false,
     color: 'black',
     lineWidth: 0.5,
@@ -256,6 +257,8 @@ describe('SvgEngine', () => {
 
     it('uses font size from style', () => {
       const eng = new SvgEngine({
+        width: 400,
+        height: 282,
         fontStyles: { regular: { fontSize: 5, fontStyle: 'normal' } },
       })
       const svg = eng.draw(makeSheet([annotation({ style: 'regular' })]))

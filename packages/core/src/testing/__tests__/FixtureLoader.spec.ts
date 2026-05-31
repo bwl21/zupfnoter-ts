@@ -1,16 +1,21 @@
 import { describe, expect, it } from 'vitest'
-
 import {
   fixtureConfigFromAbc,
   fixtureAbcPath,
+  getOutputSvgFixtureTargets,
   getSheetFixtureTargets,
   loadFixture,
+  loadSongFixture,
   loadSheetExtractFixture,
+  songToFixture,
   resolveFixtureSheetRenderTarget,
   scanFixtureCases,
+  transformFixtureToSong,
+  transformFixtureToSheet,
 } from '../fixtureLoader.js'
+import { normalizeRawSongFixture } from '../semanticMatch.js'
 import { defaultTestConfig } from '../defaultConfig.js'
-import { formatOpenImplementations, getOpenImplementations } from '../../../../../fixtures/openImplementations.js'
+import { formatOpenImplementations, getOpenImplementations } from '../openImplementations.js'
 
 describe('fixtureLoader', () => {
   it('resolves fixture ABC paths by test case name', () => {
@@ -47,8 +52,11 @@ describe('fixtureLoader', () => {
 
     expect(fixture.input.abc).toContain('T:Single Note Test')
     expect(fixture.config.layout.SHORTEST_NOTE).toBe(defaultTestConfig.layout.SHORTEST_NOTE)
-    expect(fixture.song?.voices.length).toBeGreaterThan(0)
-    expect(fixture.sheet?.children.length).toBeGreaterThan(0)
+    expect(fixture.song).not.toBeNull()
+    expect(Object.keys(fixture.sheetExtracts)).toContain('0')
+    expect(fixture.sheetExtracts['0']?.children.length).toBeGreaterThan(0)
+    expect(Object.keys(fixture.outputSvgExtracts)).toContain('0')
+    expect(fixture.outputSvgExtracts['0']).toContain('<svg')
   })
 
   it('uses extract-specific sheet fixtures when present', () => {
@@ -60,13 +68,68 @@ describe('fixtureLoader', () => {
     expect(targets[0]?.expected).toEqual(loadSheetExtractFixture('3015_reference_sheet', 0))
   })
 
-  it('falls back to sheet.json as extract 0 when no extract-specific sheet fixtures exist', () => {
+  it('uses extract-specific svg fixtures when present and falls back to extract 0 legacy naming', () => {
+    const singleNoteFixture = loadFixture('single_note')
+    expect(getOutputSvgFixtureTargets(singleNoteFixture).map((target) => target.extractNr)).toEqual([0])
+
+    const fixtureWithLegacySvgName = {
+      ...singleNoteFixture,
+      outputSvgExtracts: { '0': '<svg />' },
+    }
+
+    expect(getOutputSvgFixtureTargets(fixtureWithLegacySvgName)).toEqual([
+      { extractNr: 0, expected: '<svg />' },
+    ])
+  })
+
+  it('loads song fixtures from song.legacy-raw.json', () => {
+    const fixture = loadFixture('repeat')
+
+    expect(fixture.song).not.toBeNull()
+    const normalized = normalizeRawSongFixture(fixture.song)
+    const expected = normalizeRawSongFixture(loadSongFixture('repeat'))
+    expect(normalized.beat_maps).toEqual(expected.beat_maps)
+    expect(normalized.beat_maps).toEqual([
+      { '0': 0, '48': 48, '96': 96, '144': 144 },
+      { '0': 0, '48': 48, '96': 96, '144': 144 },
+    ])
+  })
+
+  it('preserves znId in generated song and sheet fixtures', () => {
+    const fixture = loadFixture('single_note')
+    const songFixture = transformFixtureToSong(fixture)
+    const sheetFixture = transformFixtureToSheet(fixture, 0)
+
+    expect(songFixture.voices[0]?.entities.some((entity) => entity.znId === '0')).toBe(true)
+    expect(sheetFixture.children.some((child) => child.znId === '0')).toBe(true)
+  })
+
+  it('matches legacy tuplet marker handling in song fixtures', () => {
+    const singleNoteFixture = transformFixtureToSong(loadFixture('single_note'))
+    const singleNote = singleNoteFixture.voices
+      .flatMap((voice) => voice.entities)
+      .find((entity) => entity.type === 'Note')
+
+    expect(singleNote?.tupletStart).toBeUndefined()
+    expect(singleNote?.tupletEnd).toBeUndefined()
+
+    const tupletFixture = transformFixtureToSong(loadFixture('tuplet'))
+    const tupletNotes = tupletFixture.voices
+      .flatMap((voice) => voice.entities)
+      .filter((entity) => entity.type === 'Note' && 'tuplet' in entity && entity.tuplet === 3)
+
+    expect(tupletNotes.some((entity) => entity.tupletStart === true)).toBe(true)
+    expect(tupletNotes.some((entity) => entity.tupletStart === false)).toBe(true)
+    expect(tupletNotes.some((entity) => entity.tupletEnd === true)).toBe(true)
+  })
+
+  it('loads extract-specific sheet fixtures for simple single-extract cases', () => {
     const fixture = loadFixture('single_note')
     const targets = getSheetFixtureTargets(fixture)
 
-    expect(Object.keys(fixture.sheetExtracts)).toEqual([])
+    expect(Object.keys(fixture.sheetExtracts)).toEqual(['0'])
     expect(targets.map((target) => target.extractNr)).toEqual([0])
-    expect(targets[0]?.expected).toEqual(fixture.sheet)
+    expect(targets[0]?.expected).toEqual(fixture.sheetExtracts['0'])
   })
 
   it('keeps sheet fixture rendering on the legacy edit-view target', () => {
@@ -99,11 +162,22 @@ describe('fixtureLoader', () => {
   it('formats the global open-implementation registry by stage', () => {
     const openSheetImplementations = getOpenImplementations('sheet')
     const formatted = formatOpenImplementations(openSheetImplementations)
+    const firstImplementation = openSheetImplementations[0]
+    if (!firstImplementation) {
+      expect(openSheetImplementations).toEqual([])
+      expect(formatted).toBe('')
+      return
+    }
 
-    expect(openSheetImplementations.length).toBeGreaterThan(0)
     expect(formatted).toContain('Open implementations for this stage (')
-    expect(formatted).toContain('sheet.barnumbers-config')
-    expect(formatted).toContain('Prompt: implement the listed gaps with legacy parity')
+    expect(formatted).toContain(firstImplementation.id)
+    expect(formatted).toContain('Entries:')
+    if (firstImplementation.fixtures?.length) {
+      expect(formatted).toContain(`fixtures: ${firstImplementation.fixtures.join(', ')}`)
+    }
+    if (firstImplementation.prompt) {
+      expect(formatted).toContain(`prompt: ${firstImplementation.prompt}`)
+    }
   })
 
   it('discovers fixture cases from test case directories', () => {
@@ -113,5 +187,6 @@ describe('fixtureLoader', () => {
     expect(cases.map((testCase) => testCase.id)).toContain('Twostaff')
     expect(cases.find((testCase) => testCase.id === 'single_note')?.hasSongFixture).toBe(true)
     expect(cases.find((testCase) => testCase.id === 'single_note')?.hasSheetFixture).toBe(true)
+    expect(cases.find((testCase) => testCase.id === 'single_note')?.hasOutputSvgFixture).toBe(true)
   })
 })

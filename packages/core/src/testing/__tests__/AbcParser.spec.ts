@@ -34,6 +34,41 @@ K:INVALID_KEY_THAT_DOES_NOT_EXIST
 C |]
 `
 
+const SLUR_ABC = `X:1
+T:Slur
+M:4/4
+L:1/4
+K:C
+((((C D)))) |]
+`
+
+const DECORATED_SLUR_ABC = `X:1
+T:Decorated Slur
+M:4/4
+L:1/4
+K:C
+(!3!C D) |]
+`
+
+const CHORD_ORDER_ABC = `X:1
+T:Chord Order
+M:4/4
+L:1/4
+K:C
+[B,G,]2 |]
+`
+
+function expectedLegacyChecksum(abcText: string): string {
+  let checksum = 0x12345678
+  const stripped = abcText.trim()
+
+  for (let index = 0; index < stripped.length; index += 1) {
+    checksum += stripped.charCodeAt(index) * (index + 1)
+  }
+
+  return String(checksum).match(/.{1,3}/g)?.join(' ') ?? String(checksum)
+}
+
 describe('AbcParser', () => {
   describe('parse()', () => {
     it('returns an AbcModel for valid single-voice ABC', () => {
@@ -69,6 +104,13 @@ describe('AbcParser', () => {
       expect(model.info['T']).toContain('Test')
     })
 
+    it('computes the legacy source checksum', () => {
+      const parser = new AbcParser()
+      const model = parser.parse(SINGLE_NOTE_ABC)
+
+      expect(model.checksum).toBe(expectedLegacyChecksum(SINGLE_NOTE_ABC))
+    })
+
     it('returns two voices for two-voice ABC', () => {
       const parser = new AbcParser()
       const model = parser.parse(TWO_VOICE_ABC)
@@ -94,6 +136,36 @@ describe('AbcParser', () => {
       expect(noteSymbol).toBeDefined()
       expect(noteSymbol!.notes).toBeDefined()
       expect(noteSymbol!.notes![0]!.midi).toBeGreaterThan(0)
+    })
+
+    it('restores multi-note order from the ABC source text', () => {
+      const parser = new AbcParser()
+      const model = parser.parse(CHORD_ORDER_ABC)
+
+      const voice = model.voices[0]
+      const chord = voice?.symbols.find((symbol) => symbol.type === ABC_TYPE.NOTE && symbol.notes && symbol.notes.length === 2)
+      const midi = chord?.notes?.map((note) => note.midi)
+
+      expect(midi).toEqual([59, 55])
+    })
+
+    it('normalizes slur starts into legacy slur_sls on the first note', () => {
+      const parser = new AbcParser()
+      const model = parser.parse(SLUR_ABC)
+      const voice = model.voices[0]
+      const noteSymbols = voice?.symbols.filter((s) => s.type === ABC_TYPE.NOTE) ?? []
+      const firstNote = noteSymbols[0]
+
+      expect(firstNote?.slur_sls).toEqual([1, 2, 3, 4])
+    })
+
+    it('counts slur starts before inline decorations', () => {
+      const parser = new AbcParser()
+      const model = parser.parse(DECORATED_SLUR_ABC)
+      const voice = model.voices[0]
+      const firstNote = voice?.symbols.find((s) => s.type === ABC_TYPE.NOTE)
+
+      expect(firstNote?.slur_sls).toEqual([1])
     })
 
     it('collects errors for invalid ABC without throwing', () => {

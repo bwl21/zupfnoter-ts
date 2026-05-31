@@ -3,9 +3,6 @@
   "references": [
     { "path": "./packages/types" },
     { "path": "./packages/core" },
-    { "path": "./apps/web/tsconfig.node.json" },
-    { "path": "./apps/web/tsconfig.app.json" },
-    { "path": "./apps/web/tsconfig.vitest.json" },
     { "path": "./apps/cli" }
   ]
 }

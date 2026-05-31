@@ -2,7 +2,7 @@
 
 exports[`HarpnotesLayout > full sheet snapshot > single_note sheet matches snapshot 1`] = `
 {
-  "Annotation": 6,
+  "Annotation": 9,
   "Ellipse": 1,
   "Path": 3,
 }
@@ -10,9 +10,9 @@ exports[`HarpnotesLayout > full sheet snapshot > single_note sheet matches snaps
 
 exports[`HarpnotesLayout > full sheet snapshot > two_voices sheet matches snapshot 1`] = `
 {
-  "Annotation": 6,
-  "Ellipse": 8,
-  "FlowLine": 10,
+  "Annotation": 9,
+  "Ellipse": 10,
+  "FlowLine": 7,
   "Path": 3,
 }
 `;
@@ -22,23 +22,59 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
   {
     "center": [
       60.3,
-      16.4,
+      18,
     ],
     "color": "black",
-    "confKey": undefined,
+    "confKey": "extract.0.notebound.nconf.v_1.t_0.n_0.***",
     "dotted": false,
     "fill": "filled",
     "hasbarover": false,
     "lineWidth": 0.5,
+    "more_conf_keys": [
+      {
+        "conf_key": "extract.0.notebound.nconf.v_1.t_0.n_0.nshift",
+        "icon": "fa fa-arrow-left",
+        "text": "shift left",
+        "value": -0.5,
+      },
+      {
+        "conf_key": "extract.0.notebound.nconf.v_1.t_0.n_0.nshift",
+        "icon": "fa fa-arrow-right",
+        "text": "shift right",
+        "value": 0.5,
+      },
+      {
+        "icon": "fa fa-arrows-v",
+        "text": "---",
+        "value": 0.5,
+      },
+      {
+        "conf_key": "extract.0.notebound.minc.0.minc_f",
+        "icon": "fa fa-arrows-v",
+        "text": "Edit Minc",
+      },
+      {
+        "conf_key": "extract.0.notebound.minc.0.minc_f",
+        "icon": "fa fa-arrow-down",
+        "text": "increase Minc",
+        "value": 0.5,
+      },
+      {
+        "conf_key": "extract.0.notebound.minc.0.minc_f",
+        "icon": "fa fa-arrow-up",
+        "text": "decrease Minc",
+        "value": -0.5,
+      },
+    ],
     "origin": {
       "barDecorations": [],
       "beat": 0,
-      "countNote": null,
+      "countNote": "4",
       "decorations": [],
       "duration": 16,
       "endPos": [
-        1,
-        1,
+        9,
+        9,
       ],
       "firstInPart": false,
       "jumpEnds": [],
@@ -50,8 +86,8 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
       "slurEnds": [],
       "slurStarts": [],
       "startPos": [
-        1,
-        1,
+        9,
+        8,
       ],
       "tieEnd": false,
       "tieStart": false,
@@ -62,14 +98,16 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
       "type": "Note",
       "variant": 0,
       "visible": true,
-      "znId": "0-88",
+      "znId": "0",
     },
+    "rect": false,
     "size": [
-      2.4499999999999997,
-      1.19,
+      2.625,
+      1.275,
     ],
     "type": "Ellipse",
     "visible": true,
+    "znId": "0",
   },
 ]
 `;

@@ -1,0 +1,19 @@
+{
+  "name": "@local/ai-task",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "ai-task": "dist/cli.js"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2",
+    "tsx": "^4.19.2"
+  }
+}

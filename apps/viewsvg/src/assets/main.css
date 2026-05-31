@@ -1,0 +1,52 @@
+@import './base.css';
+
+:root {
+  color-scheme: light;
+  --viewsvg-bg: #ffffff;
+  --viewsvg-panel: rgba(255, 255, 255, 0.96);
+  --viewsvg-panel-border: rgba(15, 23, 42, 0.14);
+  --viewsvg-panel-soft: rgba(15, 23, 42, 0.04);
+  --viewsvg-text: #0f172a;
+  --viewsvg-subtext: #475569;
+  --viewsvg-accent: #0f172a;
+  --viewsvg-accent-strong: #334155;
+  --viewsvg-danger: #b91c1c;
+  --viewsvg-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--viewsvg-bg);
+  color: var(--viewsvg-text);
+  font-family:
+    'Inter',
+    'Avenir Next',
+    'Segoe UI',
+    sans-serif;
+}
+
+#app {
+  min-height: 100%;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+svg {
+  display: block;
+}
