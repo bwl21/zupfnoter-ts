@@ -4,16 +4,260 @@
  *
  * Tests the full ABC → Song transformation for the minimal fixtures.
  */
+import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
+import type { Goto, PlayableEntity, Song } from '@zupfnoter/types'
+import type { AbcModel, AbcSymbol } from '../../AbcModel.js'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { defaultTestConfig } from '../defaultConfig.js'
+import { fixtureConfigFromAbc, readFixtureAbc } from '../fixtureLoader.js'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const REPO_ROOT = resolve(__dirname, '../../../../..')
 
 function transform(abcText: string) {
   const parser = new AbcParser()
   const model = parser.parse(abcText)
   const transformer = new AbcToSong()
   return transformer.transform(model, defaultTestConfig)
+}
+
+function transformWithConfig(abcText: string, config: typeof defaultTestConfig) {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const transformer = new AbcToSong()
+  return transformer.transform(model, config)
+}
+
+function transformFixture(name: string) {
+  const abc = readFixtureAbc(name)
+  const parser = new AbcParser()
+  const model = parser.parse(abc)
+  const transformer = new AbcToSong()
+  return transformer.transform(model, fixtureConfigFromAbc(abc))
+}
+
+function transformWithoutCountBy(abcText: string) {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const voice = model.voices[0]
+  if (voice) {
+    voice.voice_properties.meter.a_meter = []
+  }
+  const transformer = new AbcToSong()
+  return transformer.transform(model, defaultTestConfig)
+}
+
+function transformRawDuration(rawDuration: number) {
+  const musicTypes = Array.from({ length: 18 }, () => '')
+  musicTypes[8] = 'note'
+  const model: AbcModel = {
+    voices: [{
+      voice_properties: {
+        id: 'V1',
+        meter: { wmeasure: 1536, a_meter: [{ bot: 4, top: 4 }] },
+        key: {},
+      },
+      symbols: [{
+        type: 8,
+        time: 0,
+        dur: rawDuration,
+        istart: 0,
+        iend: 1,
+        notes: [{ midi: 60, dur: rawDuration }],
+      }],
+    }],
+    music_types: musicTypes,
+    music_type_ids: { note: 8 },
+    info: {},
+    checksum: '',
+    sourceLineStarts: [0],
+    source: '',
+  }
+  const transformer = new AbcToSong()
+  return transformer.transform(model, defaultTestConfig)
+}
+
+function countFromRawDuration(rawDuration: number): string | null | undefined {
+  return transformRawDuration(rawDuration)
+    .voices[0]?.entities
+    .find((entity) => entity.type === 'Note')
+    ?.countNote
+}
+
+function transformSymbols(symbols: AbcSymbol[]) {
+  const musicTypes = Array.from({ length: 18 }, () => '')
+  musicTypes[8] = 'note'
+  const model: AbcModel = {
+    voices: [{
+      voice_properties: {
+        id: 'V1',
+        meter: { wmeasure: 1536, a_meter: [{ bot: 4, top: 4 }] },
+        key: {},
+      },
+      symbols,
+    }],
+    music_types: musicTypes,
+    music_type_ids: { note: 8 },
+    info: {},
+    checksum: '',
+    sourceLineStarts: [0],
+    source: '',
+  }
+  const transformer = new AbcToSong()
+  return transformer.transform(model, defaultTestConfig)
+}
+
+describe('AbcToSong – harpnote options', () => {
+  it('includes the legacy template and print defaults', () => {
+    const song = transform(`X:1
+T:Options Test
+M:4/4
+K:C
+C
+`)
+
+    expect(song.harpnoteOptions).toMatchObject({
+      lyrics: {
+        text: null,
+      },
+      template: {
+        filebase: '-no-template-',
+        title: '- no template -',
+      },
+      print: [
+        {
+          title: 'alle Stimmen',
+          view_id: 0,
+          filenamepart: 'alle_Stimmen',
+        },
+      ],
+    })
+  })
+
+  it('uses the template from the resolved config', () => {
+    const song = transformFixture('694_Sheep-may-safely-graze')
+
+    expect(song.harpnoteOptions).toMatchObject({
+      template: {
+        filebase: '9999_Voerlage-Monbachtal-2024',
+        title: 'Vorlage Monbachtal 2024',
+      },
+    })
+  })
+})
+
+describe('AbcToSong – lyrics', () => {
+  it('preserves the legacy lyric hyphenation marker', () => {
+    const song = transformFixture('lyrics')
+    const firstNote = song.voices
+      .flatMap((voice) => voice.entities)
+      .find((entity) => entity.type === 'Note' && entity.time === 0)
+
+    expect(firstNote?.type).toBe('Note')
+    if (firstNote?.type === 'Note') {
+      expect(firstNote.lyrics).toBe('Hel-')
+    }
+  })
+})
+
+interface SlurTupletParityEntity {
+  type: string
+  time: number
+  znId: string
+  duration: number
+  pitch: number
+  slurStartsCount: number
+  slurEndsCount: number
+  tuplet: number
+  tupletStart: boolean
+  tupletEnd: boolean
+  countNote: string | null
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function asNumber(value: unknown): number {
+  return typeof value === 'number' ? value : 0
+}
+
+function asString(value: unknown): string {
+  return typeof value === 'string' ? value : ''
+}
+
+function asNullableString(value: unknown): string | null {
+  return typeof value === 'string' ? value : null
+}
+
+function arrayLength(value: unknown): number {
+  return Array.isArray(value) ? value.length : 0
+}
+
+function legacyType(entity: Record<string, unknown>): string {
+  const explicitType = entity['type']
+  if (typeof explicitType === 'string') return explicitType
+
+  const className = entity['class']
+  if (typeof className !== 'string') return ''
+
+  return className.slice(className.lastIndexOf(':') + 1)
+}
+
+function normalizeTsSlurTupletParity(song: Song): SlurTupletParityEntity[] {
+  const voice = song.voices[1] ?? song.voices[0]
+  if (!voice) return []
+
+  return voice.entities
+    .filter((entity): entity is PlayableEntity => 'duration' in entity && 'pitch' in entity)
+    .map((entity) => ({
+      type: entity.type,
+      time: entity.time,
+      znId: entity.znId,
+      duration: entity.duration,
+      pitch: entity.pitch,
+      slurStartsCount: entity.slurStarts.length,
+      slurEndsCount: entity.slurEnds.length,
+      tuplet: entity.tuplet,
+      tupletStart: entity.tupletStart,
+      tupletEnd: entity.tupletEnd,
+      countNote: entity.countNote,
+    }))
+}
+
+function normalizeLegacySlurTupletParity(rawSong: unknown): SlurTupletParityEntity[] {
+  if (!isRecord(rawSong)) return []
+
+  const voices = rawSong['voices']
+  if (!Array.isArray(voices)) return []
+
+  const voice = voices[1] ?? voices[0]
+  if (!Array.isArray(voice)) return []
+
+  return voice
+    .filter(isRecord)
+    .map((entity) => ({
+      type: legacyType(entity),
+      time: asNumber(entity['@time']),
+      znId: asString(entity['@znid']),
+      duration: asNumber(entity['@duration']),
+      pitch: asNumber(entity['@pitch']),
+      slurStartsCount: arrayLength(entity['@slur_starts']),
+      slurEndsCount: arrayLength(entity['@slur_ends']),
+      tuplet: asNumber(entity['@tuplet']),
+      tupletStart: Boolean(entity['@tuplet_start']),
+      tupletEnd: Boolean(entity['@tuplet_end']),
+      countNote: asNullableString(entity['@count_note']),
+    }))
+}
+
+function readLegacyRawSong(fixtureName: string): unknown {
+  const path = resolve(REPO_ROOT, 'fixtures/cases', fixtureName, 'song.legacy-raw.json')
+  return JSON.parse(readFileSync(path, 'utf-8')) as unknown
 }
 
 // ---------------------------------------------------------------------------
@@ -68,6 +312,30 @@ V:V1 clef=treble-8
     }
   })
 
+  it('tracks the ABC source position for note entities', () => {
+    const song = transform(ABC)
+    const note = song.voices[0]!.entities.find((e) => e.type === 'Note')
+    if (note?.type === 'Note') {
+      expect(note.startPos[0]).toBe(8)
+      expect(note.endPos[0]).toBe(8)
+      expect(note.startPos[1]).toBeGreaterThan(0)
+      expect(note.endPos[1]).toBeGreaterThan(note.startPos[1])
+    }
+  })
+
+  it('extends endPos for accidental-bearing notes to match legacy source spans', () => {
+    const song = transformFixture('246_Horch-was-kommt-von-draussen-rein')
+    const note = song.voices[1]?.entities.find(
+      (entity): entity is PlayableEntity => entity.type === 'Note' && entity.time === 11136,
+    )
+
+    expect(note?.type).toBe('Note')
+    if (note?.type === 'Note') {
+      expect(note.startPos).toEqual([15, 42])
+      expect(note.endPos).toEqual([15, 45])
+    }
+  })
+
   it('extracts title metadata', () => {
     const song = transform(ABC)
     expect(song.metaData.title).toContain('Single Note')
@@ -76,6 +344,47 @@ V:V1 clef=treble-8
   it('produces a BeatMap', () => {
     const song = transform(ABC)
     expect(song.beatMaps.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('reports invalid remark znId and uses legacy fallback', () => {
+    const song = transform(`X:1
+T:Invalid Remark ZnId Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+r:bad-id
+[V:V1] C |]
+`)
+    const note = song.voices[0]?.entities.find((e) => e.type === 'Note')
+
+    expect(note?.znId).toBe('_bad-id_')
+    expect(song.metaData.diagnostics).toEqual([
+      {
+        severity: 'error',
+        message: 'illegal character in [r:] (must be of [a-z][a-z0.9_])',
+        startPos: [8, 1],
+        endPos: [8, 9],
+      },
+    ])
+  })
+
+  it('uses a valid [r:] remark as znId', () => {
+    const song = transform(`X:1
+T:Valid Remark ZnId Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+r:custom_id
+[V:V1] C |]
+`)
+    const note = song.voices[0]?.entities.find((e) => e.type === 'Note')
+
+    expect(note?.znId).toBe('custom_id')
+    expect(song.metaData.diagnostics ?? []).toEqual([])
   })
 })
 
@@ -154,6 +463,82 @@ V:V1 clef=treble-8
     const annotations = song.voices[0]!.entities.filter((e) => e.type === 'NoteBoundAnnotation')
     expect(annotations.length).toBe(1)
   })
+
+  it('applies repeatend=previous to a rest before a repeat end', () => {
+    const song = transformWithConfig(`X:1
+T:Repeat End Restposition Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] |: C z :| D |]
+`, {
+      ...defaultTestConfig,
+      restposition: {
+        ...defaultTestConfig.restposition,
+        repeatend: 'previous',
+      },
+    })
+    const pause = song.voices[0]?.entities.find((e) => e.type === 'Pause')
+    expect(pause?.type).toBe('Pause')
+    if (pause?.type === 'Pause') {
+      expect(pause.pitch).toBe(48)
+    }
+  })
+
+  it('marks rests after inline part markers as firstInPart without emitting NewPart entities', () => {
+    const song = transform(`X:1
+T:Inline Part Rest Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] C [P:Rests] z |]
+`)
+    const pause = song.voices[0]?.entities.find((e) => e.type === 'Pause')
+    const partAnnotations = song.voices[0]?.entities.filter((e) => e.type === 'NoteBoundAnnotation') ?? []
+    expect(song.voices[0]?.entities.some((e) => e.type === 'NewPart')).toBe(false)
+    expect(pause?.type).toBe('Pause')
+    expect(partAnnotations).toHaveLength(1)
+    expect((partAnnotations[0] as { text?: string } | undefined)?.text).toBe('Rests')
+    if (pause?.type === 'Pause') {
+      expect(pause.firstInPart).toBe(true)
+    }
+  })
+
+  it('shares inline part markers across voices via a transformer-global part table', () => {
+    const song = transform(`X:1
+T:Inline Part Shared Across Voices
+M:4/4
+L:1/4
+K:C
+%%score (V1) (V2)
+V:V1 clef=treble-8
+V:V2 clef=treble-8
+[V:V1] [P:Rests] z |]
+[V:V2] C |]
+`)
+    const voice1Playable = song.voices[1]?.entities.find((e) => e.type === 'Pause')
+    const voice2Playable = song.voices[2]?.entities.find((e) => e.type === 'Note')
+    const voice1Annotations = song.voices[1]?.entities.filter((e) => e.type === 'NoteBoundAnnotation') ?? []
+    const voice2Annotations = song.voices[2]?.entities.filter((e) => e.type === 'NoteBoundAnnotation') ?? []
+    expect(voice1Playable?.type).toBe('Pause')
+    expect(song.voices[1]?.entities.some((e) => e.type === 'NewPart')).toBe(false)
+    expect(song.voices[2]?.entities.some((e) => e.type === 'NewPart')).toBe(false)
+    expect(voice2Playable?.type).toBe('Note')
+    expect(voice1Annotations).toHaveLength(1)
+    expect(voice2Annotations).toHaveLength(1)
+    expect((voice1Annotations[0] as { text?: string } | undefined)?.text).toBe('Rests')
+    expect((voice2Annotations[0] as { text?: string } | undefined)?.text).toBe('Rests')
+    if (voice1Playable?.type === 'Pause') {
+      expect(voice1Playable.firstInPart).toBe(true)
+    }
+    if (voice2Playable?.type === 'Note') {
+      expect(voice2Playable.firstInPart).toBe(true)
+    }
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -177,6 +562,57 @@ V:V1 clef=treble-8
     expect(gotos.length).toBeGreaterThanOrEqual(1)
   })
 
+  it('sets verticalAnchor=to for variant-ending exit gotos', () => {
+    const song = transformFixture('246_Horch-was-kommt-von-draussen-rein')
+    const gotos = song.voices.flatMap((voice) => voice.entities).filter((entity): entity is Goto => entity.type === 'Goto')
+    const exitGotos = gotos.filter((goto) => goto.policy.verticalAnchor === 'to')
+
+    expect(exitGotos.length).toBeGreaterThan(0)
+  })
+
+  it('preserves legacy repeat and variant jump distances', () => {
+    const song = transformFixture('246_Horch-was-kommt-von-draussen-rein')
+    const gotos = song.voices.flatMap((voice) => voice.entities).filter((entity): entity is Goto => entity.type === 'Goto')
+
+    const repeatGoto = gotos.find((goto) => goto.confKey === 'notebound.c_jumplines.v_1.29184.p_repeat')
+    expect(repeatGoto?.policy.distance).toBe(-6)
+    expect(repeatGoto?.policy.level).toBe(3)
+
+    const beginGoto = gotos.find((goto) => goto.confKey === 'notebound.c_jumplines.v_1.26880.0.p_begin')
+    expect(beginGoto?.policy.distance).toBe(3)
+    expect(beginGoto?.policy.fromAnchor).toBe('after')
+    expect(beginGoto?.policy.toAnchor).toBe('before')
+
+  })
+
+})
+
+// ---------------------------------------------------------------------------
+// decorations
+// ---------------------------------------------------------------------------
+
+describe('AbcToSong – decorations', () => {
+  const ABC = `X:1
+T:Decoration Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] !fermata!C D !f!E !p!F |]
+`
+
+  it('preserves supported note decorations', () => {
+    const song = transform(ABC)
+    const notes = song.voices[0]?.entities.filter((e) => e.type === 'Note') ?? []
+
+    expect(notes.map((note) => note.decorations)).toEqual([
+      ['fermata'],
+      [],
+      ['f'],
+      ['p'],
+    ])
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -206,5 +642,144 @@ V:V1 clef=treble-8
     const notes = song.voices[0]!.entities.filter((e) => e.type === 'Note')
     const tieEnd = notes.find((n) => n.type === 'Note' && n.tieEnd)
     expect(tieEnd).toBeDefined()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// slur / tuplet
+// ---------------------------------------------------------------------------
+
+describe('AbcToSong – slur / tuplet', () => {
+  it('matches regenerated legacy output for the focused slur and tuplet fixture', () => {
+    const fixtureName = 'abc-to-song-slur-tuplet-parity'
+    const song = transform(readFixtureAbc(fixtureName))
+    const expected = normalizeLegacySlurTupletParity(readLegacyRawSong(fixtureName))
+
+    expect(normalizeTsSlurTupletParity(song)).toEqual(expected)
+  })
+
+  it.each([
+    [0x1, [1]],
+    [0x11, [1, 2]],
+    [0x1111, [1, 2, 3, 4]],
+  ])('decodes slur_sls=%s as a legacy bitfield', (slur_sls, expectedStarts) => {
+    const song = transformSymbols([{
+      type: 8,
+      time: 0,
+      dur: 384,
+      istart: 0,
+      iend: 1,
+      notes: [{ midi: 60, dur: 384 }],
+      // Legacy abc2svg stores slur_sls as 4-bit groups, not as an array.
+      slur_sls: slur_sls as unknown as number[],
+    }])
+    const note = song.voices[0]?.entities.find((entity) => entity.type === 'Note')
+
+    expect(note?.slurStarts).toEqual(expectedStarts)
+  })
+
+  it('uses legacy abc2svg tuplet fields for a triplet', () => {
+    const song = transformSymbols([
+      {
+        type: 8,
+        time: 0,
+        dur: 256,
+        istart: 0,
+        iend: 1,
+        notes: [{ midi: 60, dur: 256 }],
+        in_tuplet: true,
+        tp: [{ p: 3 }],
+      },
+      {
+        type: 8,
+        time: 256,
+        dur: 256,
+        istart: 2,
+        iend: 3,
+        notes: [{ midi: 62, dur: 256 }],
+        in_tuplet: true,
+      },
+      {
+        type: 8,
+        time: 512,
+        dur: 256,
+        istart: 4,
+        iend: 5,
+        notes: [{ midi: 65, dur: 256 }],
+        in_tuplet: true,
+        tpe: true,
+      },
+    ])
+    const notes = song.voices[0]?.entities.filter((entity) => entity.type === 'Note') ?? []
+
+    expect(notes.map((note) => note.tuplet)).toEqual([3, 3, 3])
+    expect(notes[0]?.tupletStart).toBe(true)
+    expect(notes[0]?.tupletEnd).toBe(false)
+    expect(notes[1]?.tupletStart).toBe(false)
+    expect(notes[1]?.tupletEnd).toBe(false)
+    expect(notes[2]?.tupletStart).toBe(false)
+    expect(notes[2]?.tupletEnd).toBe(true)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// countNote
+// ---------------------------------------------------------------------------
+
+describe('AbcToSong – countNote', () => {
+  it('matches legacy count strings for regular durations', () => {
+    expect(countFromRawDuration(384)).toBe('1')
+    expect(countFromRawDuration(192)).toBe('1')
+    expect(countFromRawDuration(288)).toBe('1-e-u')
+  })
+
+  it('applies countNote to Note, SynchPoint and Pause', () => {
+    const song = transform(`X:1
+T:Count Note Entity Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] | [CE] z C |]
+`)
+    const synchPoint = song.voices[0]?.entities.find((entity) => entity.type === 'SynchPoint')
+    const pause = song.voices[0]?.entities.find((entity) => entity.type === 'Pause')
+    const note = song.voices[0]?.entities.find((entity) => entity.type === 'Note')
+
+    expect(synchPoint?.countNote).toBe('1')
+    expect(pause?.countNote).toBe('2')
+    expect(note?.countNote).toBe('3')
+  })
+
+  it('uses tra/la for tuplet counts', () => {
+    const song = transform(`X:1
+T:Tuplet Count Note Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] | (3 C D E |]
+`)
+    const notes = song.voices[0]?.entities.filter((entity) => entity.type === 'Note') ?? []
+
+    expect(notes[0]?.countNote).toBe('tra')
+    expect(notes[1]?.countNote).toBe('la')
+  })
+
+  it('uses x when meter count base is missing', () => {
+    const song = transformWithoutCountBy(`X:1
+T:Missing Count Base Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] C |]
+`)
+    const note = song.voices[0]?.entities.find((entity) => entity.type === 'Note')
+
+    expect(note?.countNote).toBe('x')
   })
 })

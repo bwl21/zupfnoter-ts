@@ -65,7 +65,6 @@ Abgelegt unter `fixtures/abc/legacy/`.
 
 | Datei | Testet |
 |-------|--------|
-| `02_twoStaff.abc` | Mehrstimmigkeit, Parts |
 | `Twostaff.abc` | Standardfall |
 
 ---
@@ -123,6 +122,19 @@ Laufendes Legacy-System (`bwl21/zupfnoter`, Branch `feature/voice-styles_and-oth
 ## Vergleichsstrategie: Semantischer Vergleich
 
 Kein exakter JSON-Vergleich. Geprüft werden nur fachlich relevante Felder.
+Fachlich relevant sind alle Felder, die von späteren Stufen gelesen oder für
+Editor-/Interaktionsverhalten ausgewertet werden.
+
+Für den Fixture-Export gilt dieselbe Regel in umgekehrter Richtung:
+Alles, was eine nachfolgende Stufe liest oder für Bedienung, Editor,
+Kontextmenü oder Renderer auswertet, muss im Export enthalten sein.
+Fehlende solche Felder sind keine tolerierbare Abweichung, sondern ein
+unvollständiger Fixture-Export.
+
+Dabei gibt es drei Kategorien:
+- **exportpflichtig**: muss vollständig im Fixture stehen
+- **teilweise exportierbar**: fachliche Hülle ja, interne Unterfelder nein
+- **UI-transient**: gehört nicht in den Fixture-Contract
 
 ### Song-Vergleich (Stufe 2)
 
@@ -153,7 +165,38 @@ Pro Drawable in `children`:
 | `style` | exakt | solid/dashed/dotted |
 | Anzahl children | exakt | Kein Element darf fehlen oder hinzukommen |
 
-Nicht verglichen: `confKey`, `draginfo`, interne Referenzen.
+Zusätzlich fachlich relevant, wenn vom jeweiligen Drawable oder vom Export
+bereitgestellt:
+- `confKey`
+- `confKey.*` als Edit-Marker
+- `lineWidth`
+- `more_conf_keys`
+- `draginfo`
+- `path`
+- `znId`
+
+Die Exportlogik muss diese Felder schreiben, sobald sie im Legacy oder in einer
+späteren Stufe gelesen werden. Die Paritätsprüfung darf sie deshalb nicht nur
+kennen, sondern muss sie bei vorhandenem Fixture auch vergleichen.
+
+`draginfo` ist ein Beispiel für teilweise exportierbare Metadaten: Die Struktur
+selbst ist fachlich relevant, aber Implementierungsdetails wie `callback` oder
+`tuplet_options` werden im Legacy-Export bewusst entfernt.
+
+### Feldmatrix für Sheet-Metadaten
+
+| Feld | Gelesen von | Kategorie |
+|------|-------------|-----------|
+| `lineWidth` | SvgEngine, PdfEngine | exportpflichtig |
+| `confKey` | SvgEngine, Controller/UI | exportpflichtig |
+| `confKey.*` | SvgEngine, Controller/UI | exportpflichtig |
+| `more_conf_keys` | SvgEngine, Controller/UI | exportpflichtig |
+| `draginfo` | SvgEngine, Controller/UI | teilweise exportierbar |
+| `path` | SvgEngine, PdfEngine | exportpflichtig |
+| `znId` | spätere Stufen / fachliche Identität | exportpflichtig |
+
+Nicht verglichen: reine Laufzeit- und Implementierungsdetails, die weder in
+späteren Stufen gelesen noch für Bedienung oder Editorverhalten genutzt werden.
 
 ### Hilfsfunktion `semanticMatch`
 

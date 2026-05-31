@@ -1,6 +1,6 @@
 # Current State
 
-Stand: 2026-04-26
+Stand: 2026-04-29
 
 Dieses Dokument beschreibt den aktuellen Zustand von `zupfnoter-ts` als technisches
 Arbeits- und Architektur-Snapshot.
@@ -37,6 +37,15 @@ Root-Skripte orchestrieren die Arbeitsabläufe über PNPM:
 - `pnpm build` baut alle Workspaces.
 - `pnpm test:unit` führt die Workspace-Tests aus.
 - `pnpm type-check` und `pnpm lint` laufen workspace-weit.
+
+Bekannter Tooling-Gap:
+
+- `pnpm --filter @zupfnoter/core run type-check` scheitert derzeit mit `TS6059`,
+  weil Core-Testdateien `fixtures/openImplementations.ts` über
+  `fixtures/openImplementations.js` importieren. Die Datei liegt außerhalb von
+  `packages/core/src`, während `packages/core/tsconfig.json` `rootDir: "src"`
+  setzt. Das ist ein Projektstruktur-/TSConfig-Thema und kein Hinweis auf einen
+  fachlichen Layout- oder Fixture-Paritätsfehler.
 
 ## Implementierter Kern
 
@@ -111,6 +120,7 @@ Die Architektur- und Migrationsdokumentation ist bereits breit angelegt:
 
 - Phasen-Dokumente liegen unter `docs/phase-*`
 - Architektur- und Analyse-Notizen liegen unter `docs/architecture`
+- Die fortschreibbare SVG-/Konfigurations-Paritätstabelle liegt unter `docs/architecture/svg-parity-table.md`
 - Fixture-Strategien sind unter `docs/fixtures` und `docs/testing` beschrieben
 - Voice-Styles sind dokumentiert, aber noch nicht implementiert
 

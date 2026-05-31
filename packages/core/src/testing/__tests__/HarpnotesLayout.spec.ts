@@ -9,19 +9,41 @@ import { describe, it, expect } from 'vitest'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { HarpnotesLayout } from '../../HarpnotesLayout.js'
+import type { AnnotationTextMetrics } from '../../TextMetrics.js'
 import { defaultTestConfig } from '../defaultConfig.js'
-import { loadFixture, transformFixtureToSheet } from '../fixtureLoader.js'
 import type { Ellipse, Glyph, FlowLine, Path, Annotation } from '@zupfnoter/types'
+import type { ZupfnoterConfig } from '@zupfnoter/types'
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 function pipeline(abcText: string) {
+  return pipelineWithConfig(abcText, defaultTestConfig)
+}
+
+function pipelineWithConfig(abcText: string, config: ZupfnoterConfig) {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const song = new AbcToSong().transform(model, config)
+  const sheet = new HarpnotesLayout(config).layout(song, 0, 'A4')
+  return { song, sheet }
+}
+
+function clonedDefaultConfig(): ZupfnoterConfig {
+  return {
+    ...defaultTestConfig,
+    extract: Object.fromEntries(
+      Object.entries(defaultTestConfig.extract).map(([key, value]) => [key, { ...value }]),
+    ),
+  }
+}
+
+function pipelineWithLayout(abcText: string, layout: HarpnotesLayout) {
   const parser = new AbcParser()
   const model = parser.parse(abcText)
   const song = new AbcToSong().transform(model, defaultTestConfig)
-  const sheet = new HarpnotesLayout(defaultTestConfig).layout(song, 0, 'A4')
+  const sheet = layout.layout(song, 0, 'A4')
   return { song, sheet }
 }
 
@@ -61,6 +83,46 @@ K:C
 V:V1 clef=treble-8
 [V:V1] C z E F |]`
 
+const ABC_TRAILING_PAUSE = `X:1
+T:Trailing Pause Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] C z |]`
+
+const ABC_ANNOTATED_TRAILING_RESTS = `X:1
+T:Annotated Trailing Rests Test
+M:4/4
+L:1/8
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] "^#tail" z3 z |]`
+
+const ABC_NOTEBOUND_ANNOTATION = `X:1
+T:Notebound Annotation Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] "^override target" C |]`
+
+const ABC_SYNCHPOINT_TRIAD = `X:1
+T:SynchPoint Triad Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] [ECG] |]`
+
 const ABC_REPEAT = `X:1
 T:Repeat Test
 M:4/4
@@ -81,6 +143,26 @@ K:C
 V:V1 clef=treble-8
 [V:V1] C D E F | G A B c |]`
 
+const ABC_DOTTED_SYNCHPOINT_BARNUMBER = `X:1
+T:Dotted SynchPoint Barnumber Test
+M:3/4
+L:1/8
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] C3 D3 | [G,B]3 C3 |]`
+
+const ABC_COUNTNOTES = `X:1
+T:Countnote Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] C D E F |]`
+
 const ABC_LEGEND = `X:1
 T:Legend Test
 C:Test Composer
@@ -91,6 +173,16 @@ K:C
 %%score (V1)
 V:V1 clef=treble-8
 [V:V1] C |]`
+
+const ABC_DECORATIONS = `X:1
+T:Decoration Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] !fermata!C D !f!E !p!F |]`
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -130,6 +222,22 @@ describe('HarpnotesLayout', () => {
       expect(ellipses[0]!.center[1]).toBeGreaterThanOrEqual(15) // startpos = 15
     })
 
+    it('uses beam duration styles when layout.beams is enabled', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.layout = {
+        ...(extract0.layout ?? {}),
+        beams: true,
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_SINGLE_NOTE, config)
+      const ellipses = sheet.children.filter((c): c is Ellipse => c.type === 'Ellipse')
+
+      expect(ellipses[0]?.size[0]).toBeCloseTo(config.layout.ELLIPSE_SIZE[0], 1)
+      expect(ellipses[0]?.size[1]).toBeCloseTo(config.layout.ELLIPSE_SIZE[1], 1)
+    })
+
     it('matches snapshot', () => {
       const { sheet } = pipeline(ABC_SINGLE_NOTE)
       const ellipses = sheet.children.filter((c): c is Ellipse => c.type === 'Ellipse')
@@ -158,6 +266,33 @@ describe('HarpnotesLayout', () => {
     })
   })
 
+  describe('synchpoint', () => {
+    it('anchors the dashed line at the leftmost and rightmost note like legacy', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      expect(extract0).toBeDefined()
+      if (!extract0) return
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+
+      const { sheet } = pipelineWithConfig(ABC_SYNCHPOINT_TRIAD, config)
+      const ellipses = sheet.children.filter((child): child is Ellipse => child.type === 'Ellipse')
+      const synchLine = sheet.children.find(
+        (child): child is FlowLine => child.type === 'FlowLine' && child.style === 'dashed',
+      )
+
+      expect(ellipses.length).toBe(3)
+      expect(synchLine).toBeDefined()
+      const xs = ellipses.map((ellipse) => ellipse.center[0]).sort((left, right) => left - right)
+      expect(synchLine?.from[0]).toBeCloseTo(xs[0] ?? 0)
+      expect(synchLine?.to[0]).toBeCloseTo(xs[2] ?? 0)
+    })
+  })
+
   describe('pause', () => {
     it('produces a Glyph for the pause', () => {
       const { sheet } = pipeline(ABC_PAUSE)
@@ -182,6 +317,119 @@ describe('HarpnotesLayout', () => {
       expect(glyphs[0]!.center[0]).toBeCloseTo(centeredX, 0)
       expect(glyphs[0]!.center[0]).not.toBeCloseTo(hardcodedX, 0)
     })
+
+    it('hides rests without flowlines unless nonflowrest is enabled', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = [1]
+      extract0.synchlines = []
+      extract0.nonflowrest = false
+
+      const hiddenSheet = pipelineWithConfig(ABC_TRAILING_PAUSE, config).sheet
+      const hiddenRests = hiddenSheet.children.filter((c): c is Glyph => c.type === 'Glyph')
+      expect(hiddenRests[0]?.visible).toBe(false)
+
+      extract0.nonflowrest = true
+      const visibleSheet = pipelineWithConfig(ABC_TRAILING_PAUSE, config).sheet
+      const visibleRests = visibleSheet.children.filter((c): c is Glyph => c.type === 'Glyph')
+      expect(visibleRests[0]?.visible).toBe(true)
+    })
+
+    it('keeps the solid flowline after an annotated longer rest', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = [1]
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      config.annotations = {
+        ...(config.annotations ?? {}),
+        tail: {
+          text: 'tail',
+          style: 'small',
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_ANNOTATED_TRAILING_RESTS, config)
+      const flowlines = sheet.children.filter((child): child is FlowLine => child.type === 'FlowLine')
+
+      expect(flowlines).toHaveLength(1)
+      expect(flowlines[0]?.style).toBe('solid')
+    })
+
+    it('orders part annotations before regular note-bound annotations', () => {
+      const config = clonedDefaultConfig()
+      config.annotations = {
+        ...(config.annotations ?? {}),
+        note: {
+          text: 'note',
+          style: 'small',
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(
+        `X:1
+T:Part Ordering Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] "^#note" C [P:Rests] z |]`,
+        config,
+      )
+      const annotations = sheet.children.filter(
+        (child): child is Annotation => child.type === 'Annotation' && (child.text === 'Rests' || child.text === 'note'),
+      )
+
+      expect(annotations.map((annotation) => annotation.text)).toEqual(['Rests', 'note'])
+    })
+
+  })
+
+  describe('decorations', () => {
+    it('does not synthesize a barover for fermata decorations', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+
+      const { sheet } = pipelineWithConfig(
+        `X:1
+T:Fermata Without Barover Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] !fermata!C |]`,
+        config,
+      )
+      const blackEllipses = sheet.children.filter(
+        (child): child is Ellipse => child.type === 'Ellipse' && child.color === 'black',
+      )
+      const fermatas = sheet.children.filter(
+        (child): child is Glyph => child.type === 'Glyph' && child.glyphName === 'fermata',
+      )
+
+      expect(blackEllipses).toHaveLength(1)
+      expect(fermatas).toHaveLength(1)
+    })
   })
 
   describe('repeat / goto', () => {
@@ -195,12 +443,115 @@ describe('HarpnotesLayout', () => {
 
   describe('barnumbers', () => {
     it('produces Annotation elements for bar numbers', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      extract0.barnumbers = {
+        voices: [1],
+        autopos: false,
+        pos: [0, 0],
+        style: 'barnumber_probe',
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_BARNUMBERS, config)
       const annotations = sheet.children.filter(
-        (c): c is Annotation => c.type === 'Annotation' && /^\d+$/.test(c.text ?? ''),
+        (c): c is Annotation => c.type === 'Annotation' && c.style === 'barnumber_probe',
       )
-      expect(annotations.length).toBeGreaterThanOrEqual(3)
+      expect(annotations.length).toBeGreaterThanOrEqual(2)
+      expect(annotations.every((entry) => /^\d+$/.test(entry.text))).toBe(true)
+    })
+
+    it('adds dotted width for SynchPoint barnumber autopositioning', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      extract0.barnumbers = {
+        voices: [1],
+        autopos: true,
+        style: 'barnumber_probe',
+      }
+
+      const { song, sheet } = pipelineWithConfig(ABC_DOTTED_SYNCHPOINT_BARNUMBER, config)
+      const synchPoint = song.voices[0]?.entities.find(
+        (entity) => entity.type === 'SynchPoint' && entity.measureStart,
+      )
+      expect(synchPoint?.type).toBe('SynchPoint')
+      if (!synchPoint || synchPoint.type !== 'SynchPoint') {
+        throw new Error('Expected dotted measure-start SynchPoint')
+      }
+
+      const proxy = synchPoint.notes[synchPoint.notes.length - 1]
+      expect(proxy).toBeDefined()
+      if (!proxy) throw new Error('Expected proxy note for SynchPoint')
+
+      const proxyEllipse = sheet.children
+        .filter((child): child is Ellipse => child.type === 'Ellipse')
+        .filter((child) => (
+          child.origin?.time === proxy.time
+          && child.origin?.pitch === proxy.pitch
+          && child.size[1] > 0.2
+        ))[0]
+      expect(proxyEllipse).toBeDefined()
+      if (!proxyEllipse) throw new Error('Expected proxy ellipse for SynchPoint')
+
+      const barnumber = sheet.children.find(
+        (child): child is Annotation => (
+          child.type === 'Annotation'
+          && child.style === 'barnumber_probe'
+          && child.text === '2'
+        ),
+      )
+      expect(barnumber).toBeDefined()
+      if (!barnumber) throw new Error('Expected barnumber annotation for measure 2')
+
+      expect(barnumber.center[0]).toBeCloseTo(proxyEllipse.center[0] + proxyEllipse.size[0] + 2, 5)
+    })
+
+    it('renders configured countnotes for each counted playable', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      extract0.countnotes = {
+        voices: [1],
+        autopos: false,
+        pos: [2, 3],
+        style: 'countnote_probe',
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_COUNTNOTES, config)
+      const notes = sheet.children.filter((c): c is Ellipse => (
+        c.type === 'Ellipse' && c.origin !== undefined
+      ))
+      const countnotes = sheet.children.filter(
+        (c): c is Annotation => c.type === 'Annotation' && c.style === 'countnote_probe',
+      )
+
+      expect(countnotes.map((entry) => entry.text)).toEqual(['1', '2', '3', '4'])
+      expect(countnotes.length).toBe(notes.length)
+      for (const [index, countnote] of countnotes.entries()) {
+        const note = notes[index]
+        expect(note).toBeDefined()
+        expect(countnote.center[0]).toBeCloseTo((note?.center[0] ?? 0) + 2)
+        expect(countnote.center[1]).toBeCloseTo((note?.center[1] ?? 0) + 3)
+      }
     })
   })
 
@@ -212,42 +563,238 @@ describe('HarpnotesLayout', () => {
       expect(legend).toBeDefined()
       expect(annotations.some(a => a.text.includes('Test Composer'))).toBe(true)
     })
+
+    it('uses injected annotation text metrics for annotation backgrounds', () => {
+      const metrics: AnnotationTextMetrics = {
+        measureAnnotation: () => [10, 8],
+      }
+
+      const { sheet } = pipelineWithLayout(
+        ABC_NOTEBOUND_ANNOTATION,
+        new HarpnotesLayout(defaultTestConfig, { annotationTextMetrics: metrics }),
+      )
+
+      const background = sheet.children.find(
+        (child): child is Ellipse => child.type === 'Ellipse' && child.color === 'white',
+      )
+
+      expect(background).toBeDefined()
+      expect(background?.size[0]).toBeCloseTo(5.5)
+      expect(background?.size[1]).toBeCloseTo(4.5)
+    })
+
+    it('renders the legacy sheet footer annotations', () => {
+      const { song, sheet } = pipeline(ABC_SINGLE_NOTE)
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+
+      expect(
+        annotations.some((a) => a.center[0] === 150 && a.center[1] === 289 && a.text === ' - created by Zupfnoter'),
+      ).toBe(true)
+      expect(
+        annotations.some((a) => a.center[0] === 325 && a.center[1] === 289 && a.text === 'Zupfnoter: https://www.zupfnoter.de'),
+      ).toBe(true)
+      expect(
+        annotations.some((a) => a.center[0] === 380 && a.center[1] === 289 && a.text === song.metaData.checksum),
+      ).toBe(true)
+    })
+
+    it('resolves sheet annotation placeholders and lets notes.T06_legend replace the secondary legend', () => {
+      const config = clonedDefaultConfig()
+      config.produce = [0]
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.title = 'Probe Extract'
+      extract0.filenamepart = '-P'
+      extract0.notes = {
+        T06_legend: {
+          pos: [90, 40],
+          text: '{{extract_title}}\n{{composer}}\n{{number}}\n{{printed_extracts}}\n{{current_year}}',
+          style: 'placeholder_probe',
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_LEGEND, config)
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      const placeholderLegend = annotations.find((a) => a.style === 'placeholder_probe')
+
+      expect(placeholderLegend?.center).toEqual([90, 40])
+      expect(placeholderLegend?.text).toBe(`Probe Extract\nTest Composer\n1\n-P\n${new Date().getFullYear()}`)
+      expect(annotations.some((a) => a.center[0] === 320 && a.center[1] === 27)).toBe(false)
+    })
+  })
+
+  describe('decorations', () => {
+    it('renders glyph and annotation decorations with annotation backgrounds', () => {
+      const { sheet } = pipeline(ABC_DECORATIONS)
+      const glyphs = sheet.children.filter((c): c is Glyph => c.type === 'Glyph')
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      const backgrounds = sheet.children.filter(
+        (c): c is Ellipse => c.type === 'Ellipse' && c.color === 'white',
+      )
+
+      expect(glyphs.some((glyph) => glyph.glyphName === 'fermata')).toBe(true)
+      expect(annotations.some((annotation) => annotation.text === 'f' && annotation.style === 'small_italic')).toBe(true)
+      expect(annotations.some((annotation) => annotation.text === 'p' && annotation.style === 'small_italic')).toBe(true)
+      expect(backgrounds.length).toBe(2)
+    })
   })
 
   describe('sheetmarks', () => {
-    it('renders configured string names and cutmarks from the reference sheet fixture', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+    it('renders configured string names and cutmarks', () => {
+      const config = clonedDefaultConfig()
+      config.printer = { ...config.printer, a4Pages: [0, 1] }
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.stringnames = {
+        vpos: [6],
+        text: 'string_a string_b',
+        style: 'stringname_probe',
+        marks: {
+          hpos: [48],
+          vpos: [9],
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_SINGLE_NOTE, config)
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
-      expect(annotations.some((a) => a.text === 'G' && a.center[1] === 5)).toBe(true)
-      expect(annotations.some((a) => a.text === 'x' && a.center[1] === 4)).toBe(true)
-      expect(annotations.some((a) => a.text === 'x' && a.center[1] === 290)).toBe(true)
+      const stringNames = annotations.filter((a) => a.style === 'stringname_probe')
+      const cutmarks = annotations.filter((a) => a.text === 'x' && a.style === 'small')
+      const sheetmarks = sheet.children.filter((c): c is Path => c.type === 'Path' && c.fill)
+
+      expect(stringNames.length).toBe(37)
+      expect(new Set(stringNames.map((entry) => entry.text))).toEqual(new Set(['string_a', 'string_b']))
+      expect(sheetmarks.length).toBe(1)
+      expect(cutmarks.some((entry) => entry.center[1] === 4)).toBe(true)
+      expect(cutmarks.some((entry) => entry.center[1] === 290)).toBe(true)
     })
 
-    it('renders grouped lyric blocks from extract.lyrics config', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+    it('renders configured sheet annotations', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.notes = {
+        first: {
+          pos: [50, 30],
+          text: 'sheet_annotation_probe_a',
+          style: 'sheet_annotation_probe',
+        },
+        second: {
+          pos: [110, 225],
+          text: 'sheet_annotation_probe_b',
+          style: 'sheet_annotation_probe',
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_SINGLE_NOTE, config)
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
-      expect(annotations.some((a) => a.center[0] === 50 && a.center[1] === 30 && a.text.includes('Notes'))).toBe(true)
-      expect(annotations.some((a) => a.center[0] === 110 && a.center[1] === 225 && a.text.includes('Variant ending'))).toBe(true)
+      const configured = annotations.filter((a) => a.style === 'sheet_annotation_probe')
+
+      expect(configured.map((entry) => entry.center)).toEqual([[50, 30], [110, 225]])
+      expect(configured.map((entry) => entry.text)).toEqual(['sheet_annotation_probe_a', 'sheet_annotation_probe_b'])
     })
 
-    it('renders repeat signs and overridden notebound annotations from the reference sheet fixture', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+    it('renders configured repeat signs', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.repeatsigns = {
+        voices: [1],
+        left: { pos: [-7, -2], text: '|:', style: 'repeat_probe' },
+        right: { pos: [5, -2], text: ':|', style: 'repeat_probe' },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_REPEAT, config)
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
-      expect(annotations.some((a) => a.text === '|:' && a.style === 'bold')).toBe(true)
-      expect(annotations.some((a) => a.text === ':|' && a.style === 'bold')).toBe(true)
-      expect(annotations.some((a) => a.text === '(26) Mehrklang mit \nSynchronisationslinie')).toBe(true)
-      expect(annotations.some((a) => a.text === '(27) Abschnittsname')).toBe(true)
+      const repeats = annotations.filter((a) => a.style === 'repeat_probe')
+      expect(repeats.map((entry) => entry.text).sort()).toEqual([':|', '|:'])
     })
 
-    it('renders the split legend positions from the reference sheet fixture', () => {
-      const fixture = loadFixture('3015_reference_sheet')
-      const sheet = transformFixtureToSheet(fixture, 0)
+    it('applies extract.notebound.annotation overrides to note-bound annotations', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      extract0.notebound = {
+        annotation: {
+          v_1: {
+            0: {
+              pos: [11, 13],
+              style: 'override_probe',
+            },
+          },
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_NOTEBOUND_ANNOTATION, config)
+      const note = sheet.children.find((c): c is Ellipse => c.type === 'Ellipse')
+      const annotation = sheet.children.find(
+        (c): c is Annotation => c.type === 'Annotation' && c.style === 'override_probe',
+      )
+
+      expect(note).toBeDefined()
+      expect(annotation?.center[0]).toBeCloseTo((note?.center[0] ?? 0) + 11)
+      expect(annotation?.center[1]).toBeCloseTo((note?.center[1] ?? 0) + 13)
+    })
+
+    it('uses the legacy repeat-sign side selection based on neighbouring pitches', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+
+      extract0.repeatsigns = {
+        voices: [1],
+        left: { pos: [-7, -2], text: '|:', style: 'bold' },
+        right: { pos: [5, -2], text: ':|', style: 'bold' },
+      }
+
+      const { sheet } = pipelineWithConfig(
+        `X:1
+T:Repeat Attach Side
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] |: G E D C :|`,
+        config,
+      )
+
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
-      expect(annotations.some((a) => a.center[0] === 325 && a.center[1] === 8 && a.text === 'Zupfnoter Reference Sheet')).toBe(true)
-      expect(annotations.some((a) => a.center[0] === 344 && a.center[1] === 28 && a.text.includes('alle Stimmen'))).toBe(true)
+      const beginRepeat = annotations.find((a) => a.text === ':|')
+      const endRepeat = annotations.find((a) => a.text === '|:')
+
+      expect(beginRepeat).toBeDefined()
+      expect(endRepeat).toBeDefined()
+      expect(beginRepeat?.style).toBe('bold')
+      expect(endRepeat?.style).toBe('bold')
+      expect((beginRepeat?.center[0] ?? 0) > (endRepeat?.center[0] ?? 0)).toBe(true)
+    })
+
+    it('renders configured split legend positions', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.title = 'legend_secondary_probe_text'
+      extract0.legend = {
+        pos: [325, 8],
+        spos: [344, 28],
+        tstyle: 'legend_title_probe',
+        style: 'legend_secondary_probe',
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_LEGEND, config)
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      const title = annotations.find((a) => a.style === 'legend_title_probe')
+      const secondary = annotations.find((a) => a.style === 'legend_secondary_probe')
+
+      expect(title?.center).toEqual([325, 8])
+      expect(secondary?.center).toEqual([344, 28])
     })
   })
 

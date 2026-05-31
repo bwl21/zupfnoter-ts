@@ -1,0 +1,136 @@
+import { describe, expect, it } from 'vitest'
+
+import { matchSheet, matchSong, normalizeRawSongFixture, type SheetFixture, type SongFixture } from '../semanticMatch.js'
+
+describe('semanticMatch', () => {
+  it('compares beat maps as part of song parity', () => {
+    const fixture: SongFixture = {
+      meta_data: {},
+      voices: [{ entities: [] }],
+      beat_maps: [{ '0': 0, '96': 96 }],
+    }
+
+    const actual: SongFixture = {
+      meta_data: {},
+      voices: [{ entities: [] }],
+      beat_maps: [{ '0': 0, '96': 144 }],
+    }
+
+    const result = matchSong(actual, fixture)
+
+    expect(result.passed).toBe(false)
+    expect(result.mismatches[0]?.path).toBe('beat_maps[0]')
+  })
+
+  it('ignores legacy exporter residue in beat maps', () => {
+    const fixture: SongFixture = {
+      meta_data: {},
+      voices: [{ entities: [] }],
+      beat_maps: [{ '0': 0, '96': 96, entries: {} as unknown as number }],
+    }
+
+    const actual: SongFixture = {
+      meta_data: {},
+      voices: [{ entities: [] }],
+      beat_maps: [{ '0': 0, '96': 96 }],
+    }
+
+    const result = matchSong(actual, fixture)
+
+    expect(result.passed).toBe(true)
+  })
+
+  it('normalizes created-footer timestamps in sheet annotation text', () => {
+    const fixture: SheetFixture = {
+      children: [
+        {
+          type: 'Annotation',
+          text: 'demo.abc - created 2026-04-28 15:40:22 by Zupfnoter v1.17.1 [zupfnoter-cli]',
+        },
+      ],
+    }
+
+    const actual: SheetFixture = {
+      children: [
+        {
+          type: 'Annotation',
+          text: 'demo.abc - created by Zupfnoter',
+        },
+      ],
+    }
+
+    const result = matchSheet(actual, fixture)
+
+    expect(result.passed).toBe(true)
+  })
+
+  it('matches path confKeys as part of sheet parity', () => {
+    const fixture: SheetFixture = {
+      children: [
+        {
+          type: 'Path',
+          path: [[0, 0], [1, 1]],
+          confKey: 'extract.0.notebound.flowline.v_1.123.*',
+        },
+      ],
+    }
+
+    const actual: SheetFixture = {
+      children: [
+        {
+          type: 'Path',
+          path: [[0, 0], [1, 1]],
+        },
+      ],
+    }
+
+    const result = matchSheet(actual, fixture)
+
+    expect(result.passed).toBe(false)
+    expect(result.mismatches[0]?.path).toBe('children[0].confKey')
+  })
+
+  it('preserves znId during raw song normalization', () => {
+    const raw = {
+      meta_data: {},
+      voices: [[
+        {
+          class: 'Harpnotes::Music::Note',
+          '@beat': 0,
+          '@visible': true,
+          '@znid': '384',
+          '@pitch': 60,
+        },
+      ]],
+      beat_maps: [{}],
+    }
+
+    const fixture = normalizeRawSongFixture(raw)
+    expect(fixture.voices[0]?.entities[0]?.znId).toBe('384')
+  })
+
+  it('derives synchpoint proxy fields from the last raw note', () => {
+    const raw = {
+      meta_data: {},
+      voices: [[
+        {
+          class: 'Harpnotes::Music::SynchPoint',
+          '@notes': [
+            { '@pitch': 59, '@variant': 0, '@measure_start': false },
+            { '@pitch': 63, '@variant': 2, '@measure_start': true },
+          ],
+          '@synched_notes': [],
+        },
+      ]],
+      beat_maps: [{}],
+    }
+
+    const fixture = normalizeRawSongFixture(raw)
+    const entity = fixture.voices[0]?.entities[0]
+
+    expect(entity?.type).toBe('SynchPoint')
+    expect(entity?.pitch).toBe(63)
+    expect(entity?.variant).toBe(2)
+    expect(entity?.measureStart).toBe(true)
+  })
+})

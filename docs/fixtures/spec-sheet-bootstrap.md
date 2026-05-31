@@ -46,8 +46,22 @@ export function sheetToFixture(sheet: Sheet): SheetFixture {
 }
 ```
 
-Felder die **nicht** ins Fixture übernommen werden: `confKey`, `lineWidth`, `origin`,
-`visible` (bereits gefiltert), `draginfo`.
+Felder die **nicht** ins Fixture übernommen werden: `lineWidth`, `origin`,
+`visible` (bereits gefiltert).
+
+Wichtig für die Parität:
+- `confKey`, `confKey.*`, `more_conf_keys` und `draginfo` sind fachlich relevant,
+  sobald der Legacy-Export oder eine spätere Stufe sie auswertet.
+- Solche Felder dürfen nicht stillschweigend aus der Vergleichslogik fallen,
+  nur weil sie nicht direkt zur Geometrie gehören.
+- Für die Exportlogik gelten dieselben drei Kategorien wie in der allgemeinen
+  Fixture-Spec:
+  - **exportpflichtig**: muss vollständig im Fixture stehen
+  - **teilweise exportierbar**: fachliche Hülle ja, interne Unterfelder nein
+  - **UI-transient**: gehört nicht in den Fixture-Contract
+- `draginfo` ist hier das typische Beispiel für teilweise exportierbare
+  Metadaten: Struktur und Handler gehören dazu, interne Details wie `callback`
+  oder `tuplet_options` werden bewusst entfernt.
 
 ### R2 – `dump_ts_output.spec.ts` für Sheet (neues File)
 
@@ -118,6 +132,11 @@ Felder-Mapping (Legacy Ruby → TS):
 | `@color` | `color` | `string` |
 
 Nicht übernommen: `@line_width`, `@conf_key`, `@visible` (nur sichtbare Elemente exportieren).
+
+Für die Paritätsprüfung gilt zusätzlich: Wenn ein Legacy-Drawable editorrelevante
+Metadaten wie `conf_key`, `more_conf_keys` oder `draginfo` trägt, müssen diese in
+der Vergleichsschicht berücksichtigt werden, auch wenn sie nicht 1:1 im
+Fixture-JSON landen.
 
 Usage:
 ```bash
