@@ -168,7 +168,7 @@ export class AbcToSong {
       const v1 = voices[0] as Voice
       voices.unshift({
         index: 0,
-        entities: [...v1.entities],
+        entities: structuredClone(v1.entities),
         name: v1.name,
         showVoice: true,
         showFlowline: true,
