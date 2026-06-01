@@ -4,6 +4,10 @@
 **Branch:** `feature/phase-4-svg`  
 **Commit:** `cdb5e55`
 
+> **Abweichungen (Stand 2026-06):**
+> - **Default-Maße:** Spec sagt `width: 400, height: 282`, Code hat `420 × 297` (DIN A3)
+> - **`DurationStyle.hasbarover`:** Spec-Zeile 74/75 behauptet das Feld existiere auf `DurationStyle` und werde von `_layoutNote` gesetzt. Code hat **kein `hasbarover` auf `DurationStyle`**, und `_layoutNote` setzt `hasbarover: false` (das Feld auf `Ellipse` wird nie auf `true` gesetzt). Barover werden stattdessen als `rect: true`-Ellipsen via `_layoutMeasureBarover` erzeugt.
+
 ---
 
 ## Ziel

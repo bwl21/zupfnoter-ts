@@ -1,5 +1,12 @@
 # Spec: Phase 1 – `@zupfnoter/types`
 
+> **Abweichungen (Stand 2026-06):**
+> - `Playable.slurStarts`/`slurEnds`: Spec sagt `string[]`, Code hat `number[]`
+> - `LayoutConfig.packer.pack_method`: Spec sagt `0 | 1 | 2 | 10`, Code hat `0 | 1 | 2 | 3 | 10`
+> - Ca. +30 % neue Typen gegenüber Spec (BeamStyle, RestStyle, RestPositionConfig, RestPositionMode, GlyphName, DefaultNoteboundConfig, TemplateConfig, ImageConfig, PositionedTextConfig, DecorationAnnotationConfig, GotoPolicy.isRepeat/fromAnchor/toAnchor/verticalAnchor/padding, SongMetaData.number/o_key/tempo_display/checksum, Drawable.more_conf_keys/draginfo/znId, Ellipse.rect/hasbarover, Path.pathData?, Annotation.align?)
+> - `DurationStyle` hat kein `hasbarover?`-Feld (Spec-Zeile 241 nicht implementiert)
+> - Spec wurde vor Implementation als Entwurf geschrieben, nie nachgezogen
+
 ## Problem
 
 `packages/types/src/index.ts` ist ein leerer Platzhalter. Phase 1 definiert alle

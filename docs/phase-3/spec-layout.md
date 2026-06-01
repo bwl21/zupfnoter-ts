@@ -1,5 +1,15 @@
 # Spec: Phase 3.3 – HarpnotesLayout (Song → Sheet)
 
+> **Abweichungen (Stand 2026-06):**
+> - **Constructor:** Code hat `constructor(config, options?)` mit zus. `HarpnotesLayoutOptions`
+> - **Methoden:** Spec listet 17, Code hat **~40+** (Slurs, Ties, Decorations, ZnAnnotations, RepeatSigns, NoteboundAnnotations, MeasureBarover, Countnotes, PlayableVisibility u.v.m.)
+> - **Gelöscht/umbenannt:** `_layoutVoiceSubflowlines` → in `_layoutVoiceFlowlines` mit `style: 'dotted'` integriert; `_layoutBarnumbers` → `_layoutBarnumbersCountnotes`
+> - **Signaturen abweichend:** `pitchToX(pitch, conf)` → `pitchToX(pitch, layout: LayoutConfig)`; `beatToY(beat, beatMap, conf)` → `beatToY(beat, beatMap, layout, startpos)`; `variantToColor(variant, conf)` → `variantToColor(variant, layout)`
+> - **Render-Reihenfolge falsch:** Spec sagt 1.Images 2.Synchlines 3.Voices ... Code hat **1.Images 2.Voices 3.Synchlines** usw.
+> - **`hasbarover`:** Spec sagt „wenn `note.measureStart` → `hasbarover: true`", aber Code setzt `hasbarover` immer auf `false` und erzeugt Barover als separate `rect: true`-Ellipsen via `_layoutMeasureBarover`
+> - Siehe auch: [#29 – BeatPacker: measureStart-Inkrement durch Geometrie ersetzen](https://github.com/bwl21/zupfnoter-ts/issues/29)
+> - **Spec wurde vor Implementation als reiner Plan geschrieben**, Code hat sich frei weiterentwickelt
+
 ## Problem
 
 Stufe 2 der Transformationskette (`Song → Sheet`) ist noch nicht implementiert.
