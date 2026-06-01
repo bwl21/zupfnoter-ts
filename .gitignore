@@ -45,3 +45,4 @@ __screenshots__/
 # Generated fixture output (dev helper, not reference data)
 fixtures/cases/*/_ts_output/
 fixtures/cases/*/_parity/
+/docs/phase-5/000_raw/
