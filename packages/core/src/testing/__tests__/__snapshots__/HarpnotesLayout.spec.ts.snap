@@ -85,6 +85,10 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
       "pitch": 48,
       "slurEnds": [],
       "slurStarts": [],
+      "sourceOffsets": [
+        88,
+        89,
+      ],
       "startPos": [
         9,
         8,

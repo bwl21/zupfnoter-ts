@@ -332,7 +332,7 @@ V:V1 clef=treble-8
     expect(note?.type).toBe('Note')
     if (note?.type === 'Note') {
       expect(note.startPos).toEqual([15, 42])
-      expect(note.endPos).toEqual([15, 45])
+      expect(note.endPos).toEqual([15, 44])
     }
   })
 
@@ -365,7 +365,7 @@ r:bad-id
         severity: 'error',
         message: 'illegal character in [r:] (must be of [a-z][a-z0.9_])',
         startPos: [8, 1],
-        endPos: [8, 9],
+        endPos: [8, 8],
       },
     ])
   })
