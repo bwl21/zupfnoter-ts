@@ -787,7 +787,9 @@ export class HarpnotesLayout {
           ) {
             playableElements.push(this._layoutMeasureBarover(drawable, layout))
           }
-          decorationRoot ??= drawable
+          if (legacyNoteIndex === 0) {
+            decorationRoot = drawable
+          }
         }
         if (decorationRoot) {
           const spDecorations = this._layoutDecorations(sp, decorationRoot, layout, voiceNr, conf)
@@ -2004,7 +2006,7 @@ export class HarpnotesLayout {
 
     for (const [, entry] of this._sortSheetAnnotationEntries(notes)) {
       const ann = entry as { pos?: [number, number]; text?: string; style?: string; align?: string }
-      if (!ann.pos || !ann.text) continue
+      if (!ann.pos || ann.text === undefined) continue
       const align: 'left' | 'right' | 'center' = ann.align === 'l'
         ? 'right'
         : ann.align === 'center'
@@ -2261,8 +2263,9 @@ export class HarpnotesLayout {
     const apanchor = (conf.get('extract.countnotes.apanchor') as string | undefined) ?? 'box'
     const apbase = (conf.get('extract.countnotes.apbase') as [number, number] | undefined) ?? [1, -0.5]
     const size = playableSize(playable, layout)
+    const proxy = playableLayoutProxy(playable)
     const sizeWithDot: [number, number] = [
-      size[0] + (playable.type === 'Note' && playable.duration % 3 === 0 ? 1 : 0),
+      size[0] + (proxy.type !== 'Pause' && proxy.duration % 3 === 0 ? 1 : 0),
       size[1],
     ]
     const tieOffset = side === 'r' && (playable.tieStart || playable.tieEnd) ? 1 : 0

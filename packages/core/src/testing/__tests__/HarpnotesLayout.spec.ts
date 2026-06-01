@@ -553,6 +553,56 @@ V:V1 clef=treble-8
         expect(countnote.center[1]).toBeCloseTo((note?.center[1] ?? 0) + 3)
       }
     })
+
+    it('adds dotted width for SynchPoint countnote autopositioning', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+      extract0.countnotes = {
+        voices: [1],
+        autopos: true,
+        style: 'countnote_probe',
+      }
+
+      const { song, sheet } = pipelineWithConfig(ABC_DOTTED_SYNCHPOINT_BARNUMBER, config)
+      const synchPoint = song.voices[0]?.entities.find(
+        (entity) => entity.type === 'SynchPoint' && entity.measureStart,
+      )
+      expect(synchPoint?.type).toBe('SynchPoint')
+      if (!synchPoint || synchPoint.type !== 'SynchPoint') {
+        throw new Error('Expected dotted measure-start SynchPoint')
+      }
+
+      const proxy = synchPoint.notes[synchPoint.notes.length - 1]
+      expect(proxy).toBeDefined()
+      if (!proxy) throw new Error('Expected proxy note for SynchPoint')
+
+      const proxyEllipse = sheet.children
+        .filter((child): child is Ellipse => child.type === 'Ellipse')
+        .filter((child) => (
+          child.origin?.time === proxy.time
+          && child.origin?.pitch === proxy.pitch
+          && child.size[1] > 0.2
+        ))[0]
+      expect(proxyEllipse).toBeDefined()
+      if (!proxyEllipse) throw new Error('Expected proxy ellipse for SynchPoint')
+
+      const countnote = sheet.children
+        .filter((child): child is Annotation => child.type === 'Annotation' && child.style === 'countnote_probe')
+        .sort((a, b) => (
+          Math.abs(a.center[1] - proxyEllipse.center[1]) - Math.abs(b.center[1] - proxyEllipse.center[1])
+        ))[0]
+      expect(countnote).toBeDefined()
+      if (!countnote) throw new Error('Expected countnote annotation for measure-start SynchPoint')
+
+      expect(countnote.center[0]).toBeCloseTo(proxyEllipse.center[0] + proxyEllipse.size[0] + 2, 5)
+    })
   })
 
   describe('legend', () => {
@@ -621,6 +671,26 @@ V:V1 clef=treble-8
       expect(placeholderLegend?.text).toBe(`Probe Extract\nTest Composer\n1\n-P\n${new Date().getFullYear()}`)
       expect(annotations.some((a) => a.center[0] === 320 && a.center[1] === 27)).toBe(false)
     })
+
+    it('keeps explicitly configured sheet annotations with empty text', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.notes = {
+        T02_empty: {
+          pos: [325, 280],
+          text: '',
+          style: 'small',
+        },
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_SINGLE_NOTE, config)
+      const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
+      const emptyAnnotation = annotations.find((a) => a.center[0] === 325 && a.center[1] === 280)
+
+      expect(emptyAnnotation?.text).toBe('')
+      expect(emptyAnnotation?.style).toBe('small')
+    })
   })
 
   describe('decorations', () => {
@@ -636,6 +706,72 @@ V:V1 clef=treble-8
       expect(annotations.some((annotation) => annotation.text === 'f' && annotation.style === 'small_italic')).toBe(true)
       expect(annotations.some((annotation) => annotation.text === 'p' && annotation.style === 'small_italic')).toBe(true)
       expect(backgrounds.length).toBe(2)
+    })
+
+    it('anchors SynchPoint decorations to the legacy proxy note', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = []
+      extract0.subflowlines = []
+      extract0.jumplines = []
+      extract0.layoutlines = []
+      extract0.synchlines = []
+
+      const { song, sheet } = pipelineWithConfig(
+        `X:1
+T:SynchPoint Decoration Anchor Test
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] !f![CE] !fermata![DF] |]`,
+        config,
+      )
+      const synchPoints = song.voices[0]?.entities.filter(
+        (entity) => entity.type === 'SynchPoint',
+      )
+      const fProxy = synchPoints?.[0]?.type === 'SynchPoint'
+        ? synchPoints[0].notes[synchPoints[0].notes.length - 1]
+        : undefined
+      const fermataProxy = synchPoints?.[1]?.type === 'SynchPoint'
+        ? synchPoints[1].notes[synchPoints[1].notes.length - 1]
+        : undefined
+
+      const decorationAnnotation = sheet.children.find(
+        (child): child is Annotation => child.type === 'Annotation' && child.text === 'f',
+      )
+      const fermata = sheet.children.find(
+        (child): child is Glyph => child.type === 'Glyph' && child.glyphName === 'fermata',
+      )
+      const fProxyEllipse = sheet.children.find(
+        (child): child is Ellipse => (
+          child.type === 'Ellipse'
+          && child.origin?.time === fProxy?.time
+          && child.origin?.pitch === fProxy?.pitch
+        ),
+      )
+      const fermataProxyEllipse = sheet.children.find(
+        (child): child is Ellipse => (
+          child.type === 'Ellipse'
+          && child.origin?.time === fermataProxy?.time
+          && child.origin?.pitch === fermataProxy?.pitch
+        ),
+      )
+
+      expect(decorationAnnotation).toBeDefined()
+      expect(fermata).toBeDefined()
+      expect(fProxyEllipse).toBeDefined()
+      expect(fermataProxyEllipse).toBeDefined()
+      if (!decorationAnnotation || !fermata || !fProxyEllipse || !fermataProxyEllipse) {
+        throw new Error('Expected SynchPoint decorations to be rendered')
+      }
+
+      expect(decorationAnnotation.center[0]).toBeCloseTo(fProxyEllipse.center[0] + 3, 5)
+      expect(fermata.center[0]).toBeCloseTo(fermataProxyEllipse.center[0], 5)
     })
   })
 
