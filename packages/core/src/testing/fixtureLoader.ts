@@ -48,6 +48,9 @@ export interface FixtureCase {
   hasOutputSvgFixture: boolean
 }
 
+const FIXTURE_ABC_CONFIG_MARKER = '%%%%zupfnoter.config'
+const COMPACT_SLUR_CLOSE_PATTERN = /(?:[A-Ga-gxXzZ][,']*(?:\d+(?:\/\d*)?|\/\d+|\/)?|\])\)+/g
+
 function loadJson<T>(path: string): T {
   const raw = readFileSync(path, 'utf-8')
   return JSON.parse(raw) as T
@@ -75,6 +78,28 @@ function safeLoadText(path: string): string | null {
 
 function fixtureCaseDir(name: string): string {
   return resolve(FIXTURE_CASES_ROOT, name)
+}
+
+function stripFixtureConfigBlock(abcText: string): string {
+  const markerIndex = abcText.indexOf(FIXTURE_ABC_CONFIG_MARKER)
+  return markerIndex >= 0 ? abcText.slice(0, markerIndex) : abcText
+}
+
+export function validateFixtureAbcPreconditions(abcText: string): string[] {
+  const issues: string[] = []
+  const abcWithoutConfig = stripFixtureConfigBlock(abcText)
+  const matches = abcWithoutConfig.matchAll(COMPACT_SLUR_CLOSE_PATTERN)
+
+  for (const match of matches) {
+    const token = match[0]
+    if (typeof token !== 'string' || !token.endsWith(')')) continue
+    issues.push(
+      `Known abc2svg source-position pitfall in ABC input: compact slur-close token "${token}". ` +
+      `Write the slur end with whitespace, e.g. "A ))" instead of "A))".`,
+    )
+  }
+
+  return issues
 }
 
 function resolveSongFixturePath(dir: string): string {

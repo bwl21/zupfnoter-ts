@@ -5,6 +5,7 @@ import {
   getOutputSvgFixtureTargets,
   getSheetFixtureTargets,
   loadFixture,
+  readFixtureAbc,
   loadSongFixture,
   loadSheetExtractFixture,
   songToFixture,
@@ -12,12 +13,20 @@ import {
   scanFixtureCases,
   transformFixtureToSong,
   transformFixtureToSheet,
+  validateFixtureAbcPreconditions,
 } from '../fixtureLoader.js'
 import { normalizeRawSongFixture } from '../semanticMatch.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 import { formatOpenImplementations, getOpenImplementations } from '../openImplementations.js'
 
 describe('fixtureLoader', () => {
+  const KNOWN_COMPACT_SLUR_CLOSE_FIXTURES = [
+    '02_twoStaff',
+    '3015_reference_sheet',
+    'Twostaff',
+    'abc-to-song-slur-tuplet-parity',
+  ]
+
   it('resolves fixture ABC paths by test case name', () => {
     expect(fixtureAbcPath('single_note')).toBe('fixtures/cases/single_note/input.abc')
     expect(fixtureAbcPath('Twostaff')).toBe('fixtures/cases/Twostaff/input.abc')
@@ -188,5 +197,54 @@ describe('fixtureLoader', () => {
     expect(cases.find((testCase) => testCase.id === 'single_note')?.hasSongFixture).toBe(true)
     expect(cases.find((testCase) => testCase.id === 'single_note')?.hasSheetFixture).toBe(true)
     expect(cases.find((testCase) => testCase.id === 'single_note')?.hasOutputSvgFixture).toBe(true)
+  })
+
+  it('accepts whitespace-separated slur-close tokens in fixture ABC input', () => {
+    const issues = validateFixtureAbcPreconditions(
+      [
+        'X:1',
+        'T:Spaced Slur Close',
+        'K:C',
+        '%%score (V1)',
+        'V:V1',
+        '[V:V1] A )) |]',
+      ].join('\n'),
+    )
+
+    expect(issues).toEqual([])
+  })
+
+  it('rejects compact slur-close tokens in fixture ABC input with a clear remediation hint', () => {
+    const issues = validateFixtureAbcPreconditions(
+      [
+        'X:1',
+        'T:Compact Slur Close',
+        'K:C',
+        '%%score (V1)',
+        'V:V1',
+        '[V:V1] A)) |]',
+      ].join('\n'),
+    )
+
+    expect(issues).toHaveLength(1)
+    expect(issues[0]).toContain('A))')
+    expect(issues[0]).toContain('A ))')
+  })
+
+  it('tracks the current baseline of fixture ABC cases with compact slur-close tokens', () => {
+    const violatingFixtures = scanFixtureCases()
+      .map((testCase) => ({
+        id: testCase.id,
+        issues: validateFixtureAbcPreconditions(readFixtureAbc(testCase.id)),
+      }))
+      .filter((entry) => entry.issues.length > 0)
+
+    expect(violatingFixtures.map((entry) => entry.id).sort()).toEqual(
+      [...KNOWN_COMPACT_SLUR_CLOSE_FIXTURES].sort(),
+    )
+    const allIssuesContainRemediationHint = violatingFixtures
+      .flatMap((entry) => entry.issues)
+      .every((issue) => issue.includes('A ))'))
+    expect(allIssuesContainRemediationHint).toBe(true)
   })
 })

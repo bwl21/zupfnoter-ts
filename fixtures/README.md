@@ -35,6 +35,18 @@ für Song-Vergleiche aufgenommen, sobald zusätzlich `song.legacy-raw.json` exis
 Sheet-Vergleiche entsprechend mit mindestens einer `sheet.extract-<nr>.json`; für
 SVG-Vergleiche mit mindestens einer `output.extract-<nr>.svg`.
 
+### Bekannte ABC-Eingaberegel für Fixtures
+
+Für Fixture-ABC gilt eine zusätzliche Schreibregel wegen eines bekannten
+abc2svg-Positionsproblems bei Slur-Enden:
+
+- kompakte Slur-Endtokens nicht direkt an den Notentoken schreiben, also nicht `A))`
+- Stattdessen mit Leerzeichen trennen, also `A ))`
+
+Der Fixture-Loader prüft diese ABC-Eingaberegel und meldet kompakte
+Slur-Endtokens mit einer klaren Fehlermeldung, damit neue Fälle nicht erst
+über schwer verständliche `endPos`-Abweichungen auffallen.
+
 Bekannte, noch nicht portierte Legacy-Aspekte werden nicht testfallspezifisch im
 Fixture-Verzeichnis gepflegt, sondern zentral im Testcode als globale Capability-Liste.
 Vergleichstests bleiben aktiv; bei Fehlschlägen wird diese stage-spezifische Liste an die
