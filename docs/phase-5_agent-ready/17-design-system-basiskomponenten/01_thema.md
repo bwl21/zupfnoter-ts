@@ -3,7 +3,7 @@
 ## Status
 
 ☑ Architektur ausgearbeitet  
-☐ Implementiert
+☑ Implementiert
 
 ## Diskussion
 

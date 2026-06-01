@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import ZupfnoterWorkbench from '../workbench/ZupfnoterWorkbench.vue'
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <ZupfnoterWorkbench />
 </template>
