@@ -45,6 +45,8 @@ Nach Änderungen möglichst ausführen:
 | Experimentell | `wip/<name>` | – | Wegwerfen |
 
 - Bei Feature-Wechsel: alter Branch lokal committen (kein Push), neuen Branch von `main` aus starten
+- Jedes neue Feature → neuer Agenten-Thread (gilt für opencode, Codex, Cursor etc.)
+- Push nur auf ausdrückliches User-Request
 - PR nur erstellen wenn Copilot Review gewünscht ist
 - Nach Merge: Feature-Branch löschen
 
