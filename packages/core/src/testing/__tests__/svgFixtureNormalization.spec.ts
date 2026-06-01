@@ -27,4 +27,11 @@ describe('SVG fixture normalization', () => {
 
     expect(matchSvg(actual, expected).passed).toBe(true)
   })
+
+  it('normalizes created-footer timestamps in svg text content', () => {
+    const actual = '<svg xmlns="http://www.w3.org/2000/svg"><text><tspan x="10" dy="1.2em">demo.abc - created 2026-04-28 15:40:22 by Zupfnoter v1.17.1 [zupfnoter-cli]</tspan></text></svg>'
+    const expected = '<svg xmlns="http://www.w3.org/2000/svg"><text><tspan x="10" dy="1.2em">demo.abc - created by Zupfnoter</tspan></text></svg>'
+
+    expect(normalizeSvgFixture(actual)).toEqual(normalizeSvgFixture(expected))
+  })
 })

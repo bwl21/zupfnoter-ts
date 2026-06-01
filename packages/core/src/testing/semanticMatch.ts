@@ -383,7 +383,7 @@ function compareFixtureValue(actual: unknown, expected: unknown): boolean {
   return actual === expected
 }
 
-function normalizeSheetText(text: string | undefined): string | undefined {
+export function normalizeCreatedFooterText(text: string | undefined): string | undefined {
   if (text === undefined) return undefined
   const createdMatch = text.match(CREATED_FOOTER_PATTERN)
   if (createdMatch) {
@@ -391,6 +391,17 @@ function normalizeSheetText(text: string | undefined): string | undefined {
     return `${filename} - created by Zupfnoter`
   }
   return text
+}
+
+function normalizeCreatedFooterTextNodes(markup: string): string {
+  return markup.replace(/>([^<>]+)</g, (match, text) => {
+    const normalizedText = normalizeCreatedFooterText(text)
+    return normalizedText === text ? match : `>${normalizedText}<`
+  })
+}
+
+function normalizeSheetText(text: string | undefined): string | undefined {
+  return normalizeCreatedFooterText(text)
 }
 
 // ---------------------------------------------------------------------------
@@ -566,7 +577,8 @@ function normalizeSvgTag(tag: string): string {
 
 export function normalizeSvgFixture(svg: string): SvgFixture {
   const withoutLineEndings = svg.replace(/\r\n?/g, '\n').trim()
-  const normalizedTags = withoutLineEndings.replace(SVG_TAG_PATTERN, normalizeSvgTag)
+  const normalizedFooterText = normalizeCreatedFooterTextNodes(withoutLineEndings)
+  const normalizedTags = normalizedFooterText.replace(SVG_TAG_PATTERN, normalizeSvgTag)
   const collapsedWhitespace = normalizedTags
     .replace(/>\s+</g, '><')
     .replace(/\s+/g, ' ')

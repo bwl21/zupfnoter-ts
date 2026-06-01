@@ -6,10 +6,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 246_Horch-was-kommt-von-draussen-rein
 
-- Issues: 685
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 79
-  - actual: undefined
+- Issues: 682
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -693,9 +690,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[0].entities[118].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 79
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -1381,9 +1375,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[118].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[2].entities[0].prevPitch (missing)
-  - expected: 67
-  - actual: undefined
 - voices[2].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -2065,10 +2056,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 3015_reference_sheet
 
-- Issues: 153
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 67
-  - actual: undefined
+- Issues: 148
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -2191,9 +2179,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[0].entities[21].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 67
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -2318,9 +2303,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[21].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[2].entities[0].prevPitch (missing)
-  - expected: 63
-  - actual: undefined
 - voices[2].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -2438,9 +2420,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[2].entities[22].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[3].entities[0].prevPitch (missing)
-  - expected: 57
-  - actual: undefined
 - voices[3].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -2513,9 +2492,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[3].entities[13].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[3].entities[14].nextPitch (missing)
-  - expected: 57
-  - actual: undefined
 - voices[3].entities[14].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -2528,10 +2504,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 694_Sheep-may-safely-graze
 
-- Issues: 1209
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 65
-  - actual: undefined
+- Issues: 1198
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -3540,17 +3513,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[167].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[168].nextPitch (missing)
-  - expected: 70
-  - actual: undefined
 - voices[0].entities[168].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[0].entities[168].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 65
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -4560,17 +4527,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[167].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[168].nextPitch (missing)
-  - expected: 70
-  - actual: undefined
 - voices[1].entities[168].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[1].entities[168].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[2].entities[0].prevPitch (missing)
-  - expected: 63
   - actual: undefined
 - voices[2].entities[0].tupletStart (missing)
   - expected: null
@@ -4787,9 +4748,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[2].entities[35].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[3].entities[0].prevPitch (missing)
-  - expected: 50
   - actual: undefined
 - voices[3].entities[0].tupletStart (missing)
   - expected: null
@@ -5211,17 +5169,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[3].entities[69].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[3].entities[70].nextPitch (missing)
-  - expected: 50
-  - actual: undefined
 - voices[3].entities[70].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[3].entities[70].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[4].entities[0].prevPitch (missing)
-  - expected: 46
   - actual: undefined
 - voices[4].entities[0].tupletStart (missing)
   - expected: null
@@ -5679,17 +5631,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[4].entities[75].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[4].entities[76].nextPitch (missing)
-  - expected: 46
-  - actual: undefined
 - voices[4].entities[76].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[4].entities[76].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[5].entities[0].prevPitch (missing)
-  - expected: 50
   - actual: undefined
 - voices[5].entities[0].tupletStart (missing)
   - expected: null
@@ -6147,9 +6093,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[5].entities[75].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[5].entities[76].nextPitch (missing)
-  - expected: 46
-  - actual: undefined
 - voices[5].entities[76].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -6159,7 +6102,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 757_Andante-grazioso-Mozart
 
-- Issues: 702
+- Issues: 693
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -6376,9 +6319,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[35].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[36].policy.level (mismatch)
-  - expected: 2
-  - actual: 3
 - voices[0].entities[37].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -6513,7 +6453,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[0].entities[59].policy.level (mismatch)
   - expected: 2
-  - actual: 4
+  - actual: 3
 - voices[0].entities[60].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -6898,9 +6838,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[35].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[36].policy.level (mismatch)
-  - expected: 2
-  - actual: 3
 - voices[1].entities[37].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -7035,7 +6972,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[1].entities[59].policy.level (mismatch)
   - expected: 2
-  - actual: 4
+  - actual: 3
 - voices[1].entities[60].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -7203,9 +7140,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[1].entities[87].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[2].entities[0].prevPitch (missing)
-  - expected: 69
   - actual: undefined
 - voices[2].entities[0].tupletStart (missing)
   - expected: null
@@ -7408,17 +7342,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[2].entities[34].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[2].entities[35].nextPitch (missing)
-  - expected: 67
-  - actual: undefined
 - voices[2].entities[35].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[2].entities[35].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[3].entities[0].prevPitch (missing)
-  - expected: 62
   - actual: undefined
 - voices[3].entities[0].tupletStart (missing)
   - expected: null
@@ -7606,9 +7534,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[3].entities[30].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[3].entities[31].policy.level (mismatch)
-  - expected: 2
-  - actual: 3
 - voices[3].entities[32].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -7725,7 +7650,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[3].entities[51].policy.level (mismatch)
   - expected: 2
-  - actual: 4
+  - actual: 3
 - voices[3].entities[52].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -7863,9 +7788,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[3].entities[74].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[4].entities[0].prevPitch (missing)
-  - expected: 55
   - actual: undefined
 - voices[4].entities[0].tupletStart (missing)
   - expected: null
@@ -8065,9 +7987,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[4].entities[32].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[4].entities[33].policy.level (mismatch)
-  - expected: 2
-  - actual: 3
 - voices[4].entities[34].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -8124,7 +8043,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[4].entities[43].policy.level (mismatch)
   - expected: 2
-  - actual: 4
+  - actual: 3
 - voices[4].entities[44].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -8257,9 +8176,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[4].entities[65].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[4].entities[66].nextPitch (missing)
-  - expected: 43
-  - actual: undefined
 - voices[4].entities[66].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -8269,10 +8185,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 783_einsiedler-kreuzweg
 
-- Issues: 267
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 62
-  - actual: undefined
+- Issues: 264
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -8560,9 +8473,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[0].entities[47].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 62
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -8852,9 +8762,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[47].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[2].entities[0].prevPitch (missing)
-  - expected: 59
-  - actual: undefined
 - voices[2].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9074,10 +8981,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## abc-to-song-slur-tuplet-parity
 
-- Issues: 18
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 48
-  - actual: undefined
+- Issues: 14
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9098,12 +9002,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[0].entities[3].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[0].entities[4].nextPitch (missing)
-  - expected: 55
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 48
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -9126,16 +9024,10 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[3].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[4].nextPitch (missing)
-  - expected: 55
-  - actual: undefined
 
 ## decoration
 
-- Issues: 20
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 48
-  - actual: undefined
+- Issues: 16
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9154,17 +9046,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[2].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[3].nextPitch (missing)
-  - expected: 53
-  - actual: undefined
 - voices[0].entities[3].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[0].entities[3].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 48
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -9183,9 +9069,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[1].entities[2].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[3].nextPitch (missing)
-  - expected: 53
   - actual: undefined
 - voices[1].entities[3].tupletStart (missing)
   - expected: null
@@ -9196,10 +9079,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## lyrics
 
-- Issues: 20
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 48
-  - actual: undefined
+- Issues: 16
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9218,17 +9098,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[2].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[3].nextPitch (missing)
-  - expected: 53
-  - actual: undefined
 - voices[0].entities[3].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[0].entities[3].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 48
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -9248,9 +9122,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[2].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[3].nextPitch (missing)
-  - expected: 53
-  - actual: undefined
 - voices[1].entities[3].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9260,10 +9131,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## pause
 
-- Issues: 26
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 48
-  - actual: undefined
+- Issues: 24
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9299,9 +9167,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[0].entities[5].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 48
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -9342,10 +9207,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## repeat
 
-- Issues: 22
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 48
-  - actual: undefined
+- Issues: 16
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9364,20 +9226,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[2].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[3].nextPitch (missing)
-  - expected: 53
-  - actual: undefined
 - voices[0].entities[3].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[0].entities[3].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[0].entities[4].policy.level (mismatch)
-  - expected: 2
-  - actual: 3
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 48
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -9397,39 +9250,21 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[2].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[3].nextPitch (missing)
-  - expected: 53
-  - actual: undefined
 - voices[1].entities[3].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[1].entities[3].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[4].policy.level (mismatch)
-  - expected: 2
-  - actual: 3
 
 ## single_note
 
-- Issues: 8
-- voices[0].entities[0].nextPitch (missing)
-  - expected: 48
-  - actual: undefined
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 48
-  - actual: undefined
+- Issues: 4
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[0].entities[0].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].nextPitch (missing)
-  - expected: 48
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 48
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -9440,10 +9275,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## tie
 
-- Issues: 20
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 48
-  - actual: undefined
+- Issues: 16
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9462,17 +9294,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[2].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[3].nextPitch (missing)
-  - expected: 52
-  - actual: undefined
 - voices[0].entities[3].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[0].entities[3].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 48
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -9491,9 +9317,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[1].entities[2].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[3].nextPitch (missing)
-  - expected: 52
   - actual: undefined
 - voices[1].entities[3].tupletStart (missing)
   - expected: null
@@ -9504,10 +9327,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## tuplet
 
-- Issues: 16
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 48
-  - actual: undefined
+- Issues: 12
 - voices[0].entities[0].tupletEnd (missing)
   - expected: null
   - actual: undefined
@@ -9520,17 +9340,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[3].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[4].nextPitch (missing)
-  - expected: 55
-  - actual: undefined
 - voices[0].entities[4].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[0].entities[4].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 48
   - actual: undefined
 - voices[1].entities[0].tupletEnd (missing)
   - expected: null
@@ -9544,9 +9358,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[3].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[4].nextPitch (missing)
-  - expected: 55
-  - actual: undefined
 - voices[1].entities[4].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9556,10 +9367,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## two_voices
 
-- Issues: 30
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 48
-  - actual: undefined
+- Issues: 24
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9578,17 +9386,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[2].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[3].nextPitch (missing)
-  - expected: 53
-  - actual: undefined
 - voices[0].entities[3].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[0].entities[3].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 48
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -9608,17 +9410,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[2].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[3].nextPitch (missing)
-  - expected: 53
-  - actual: undefined
 - voices[1].entities[3].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[1].entities[3].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[2].entities[0].prevPitch (missing)
-  - expected: 43
   - actual: undefined
 - voices[2].entities[0].tupletStart (missing)
   - expected: null
@@ -9638,9 +9434,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[2].entities[2].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[2].entities[3].nextPitch (missing)
-  - expected: 48
-  - actual: undefined
 - voices[2].entities[3].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9650,10 +9443,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## Twostaff
 
-- Issues: 125
-- voices[0].entities[0].prevPitch (missing)
-  - expected: 60
-  - actual: undefined
+- Issues: 117
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9684,17 +9474,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[4].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[0].entities[5].nextPitch (missing)
-  - expected: 71
-  - actual: undefined
 - voices[0].entities[5].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[0].entities[5].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[1].entities[0].prevPitch (missing)
-  - expected: 60
   - actual: undefined
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
@@ -9726,17 +9510,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[4].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[1].entities[5].nextPitch (missing)
-  - expected: 71
-  - actual: undefined
 - voices[1].entities[5].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[1].entities[5].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[2].entities[0].prevPitch (missing)
-  - expected: 48
   - actual: undefined
 - voices[2].entities[0].tupletStart (missing)
   - expected: null
@@ -9780,17 +9558,11 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[2].entities[6].tupletEnd (missing)
   - expected: null
   - actual: undefined
-- voices[2].entities[7].nextPitch (missing)
-  - expected: 60
-  - actual: undefined
 - voices[2].entities[7].tupletStart (missing)
   - expected: null
   - actual: undefined
 - voices[2].entities[7].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[3].entities[0].prevPitch (missing)
-  - expected: 60
   - actual: undefined
 - voices[3].entities[0].tupletStart (missing)
   - expected: null
@@ -9893,9 +9665,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[3].entities[16].tupletEnd (missing)
   - expected: null
-  - actual: undefined
-- voices[4].entities[0].prevPitch (missing)
-  - expected: 36
   - actual: undefined
 - voices[4].entities[0].tupletStart (missing)
   - expected: null

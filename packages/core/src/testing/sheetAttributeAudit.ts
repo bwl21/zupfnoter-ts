@@ -1,4 +1,4 @@
-import type { DrawableFixture, SheetFixture } from './semanticMatch.js'
+import { normalizeCreatedFooterText, type DrawableFixture, type SheetFixture } from './semanticMatch.js'
 
 export type AttributeIssueKind = 'missing' | 'mismatch' | 'extra'
 
@@ -26,6 +26,15 @@ function compareKnownField(
   }
   if (expectedValue !== undefined && actualValue === undefined) {
     issues.push({ path, field: String(field), kind: 'missing', expected: expectedValue, actual: undefined })
+    return
+  }
+
+  if (field === 'text' && typeof expectedValue === 'string' && typeof actualValue === 'string') {
+    const normalizedExpected = normalizeCreatedFooterText(expectedValue)
+    const normalizedActual = normalizeCreatedFooterText(actualValue)
+    if (normalizedActual !== normalizedExpected) {
+      issues.push({ path, field: String(field), kind: 'mismatch', expected: expectedValue, actual: actualValue })
+    }
     return
   }
 
