@@ -777,24 +777,70 @@ function normalizeGotoInfo(event: Record<string, unknown>): NormalizedGotoInfo |
   const gotoInfo: NormalizedGotoInfo = {}
   let hasValue = false
 
-  const fromBeat = readNumber(event.fromBeat)
+  const fromBeat = readNumber(event.fromBeat) ?? readNumber(event.from)
   if (fromBeat !== undefined) {
     gotoInfo.fromBeat = fromBeat
     hasValue = true
   }
-  const toBeat = readNumber(event.toBeat)
+  const toBeat = readNumber(event.toBeat) ?? readNumber(event.to)
   if (toBeat !== undefined) {
     gotoInfo.toBeat = toBeat
     hasValue = true
   }
   const policy = event.policy
   if (isRecord(policy)) {
-    gotoInfo.policy = cloneRecord(policy)
+    gotoInfo.policy = normalizeGotoPolicy(policy)
     hasValue = true
   }
 
   if (!hasValue) return undefined
   return gotoInfo
+}
+
+function normalizeGotoPolicy(policy: Record<string, unknown>): Record<string, unknown> {
+  const normalized: Record<string, unknown> = {}
+  const confKey = readString(policy.confKey) ?? readString(policy.conf_key)
+  if (confKey !== undefined) normalized.confKey = confKey
+
+  const distance = readNumber(policy.distance)
+  if (distance !== undefined) normalized.distance = distance
+
+  const isRepeat = readBoolean(policy.isRepeat) ?? readBoolean(policy.is_repeat)
+  if (isRepeat !== undefined) normalized.isRepeat = isRepeat
+
+  const level = readNumber(policy.level)
+  if (level !== undefined) normalized.level = level
+
+  const fromAnchor = readString(policy.fromAnchor) ?? readString(policy.from_anchor)
+  if (fromAnchor !== undefined) normalized.fromAnchor = fromAnchor
+
+  const toAnchor = readString(policy.toAnchor) ?? readString(policy.to_anchor)
+  if (toAnchor !== undefined) normalized.toAnchor = toAnchor
+
+  const verticalAnchor = readString(policy.verticalAnchor) ?? readString(policy.vertical_anchor)
+  if (verticalAnchor !== undefined) normalized.verticalAnchor = verticalAnchor
+
+  const handledKeys = new Set([
+    'confKey',
+    'conf_key',
+    'distance',
+    'isRepeat',
+    'is_repeat',
+    'level',
+    'fromAnchor',
+    'from_anchor',
+    'toAnchor',
+    'to_anchor',
+    'verticalAnchor',
+    'vertical_anchor',
+  ])
+  const extraKeys = Object.keys(policy)
+    .filter((key) => !handledKeys.has(key))
+    .sort()
+  for (const key of extraKeys) {
+    normalized[key] = policy[key]
+  }
+  return normalized
 }
 
 function baseEvent(
@@ -985,7 +1031,7 @@ function normalizeLegacyEvent(
       const toBeat = readNumber(to['@beat']) ?? readNumber(to.beat)
       if (toBeat !== undefined) gotoInfo.toBeat = toBeat
     }
-    if (isRecord(policy)) gotoInfo.policy = cloneRecord(policy)
+    if (isRecord(policy)) gotoInfo.policy = normalizeGotoPolicy(policy)
     if (gotoInfo.fromBeat !== undefined || gotoInfo.toBeat !== undefined || gotoInfo.policy !== undefined) {
       event.gotoInfo = gotoInfo
     }
@@ -1099,12 +1145,18 @@ function normalizeTsEvent(
     if (isRecord(entity.from)) {
       const fromBeat = readNumber(entity.from.beat)
       if (fromBeat !== undefined) gotoInfo.fromBeat = fromBeat
+    } else {
+      const fromBeat = readNumber(entity.from)
+      if (fromBeat !== undefined) gotoInfo.fromBeat = fromBeat
     }
     if (isRecord(entity.to)) {
       const toBeat = readNumber(entity.to.beat)
       if (toBeat !== undefined) gotoInfo.toBeat = toBeat
+    } else {
+      const toBeat = readNumber(entity.to)
+      if (toBeat !== undefined) gotoInfo.toBeat = toBeat
     }
-    if (isRecord(entity.policy)) gotoInfo.policy = cloneRecord(entity.policy)
+    if (isRecord(entity.policy)) gotoInfo.policy = normalizeGotoPolicy(entity.policy)
     if (gotoInfo.fromBeat !== undefined || gotoInfo.toBeat !== undefined || gotoInfo.policy !== undefined) {
       event.gotoInfo = gotoInfo
     }
@@ -1403,6 +1455,33 @@ function exactSourceKey(event: NormalizedEvent): string | null {
 function exactPositionKey(event: NormalizedEvent): string | null {
   if (event.measure === undefined || event.beat === undefined || event.duration === undefined) return null
   return [event.voiceIndex, event.kind, event.measure, event.beat, event.duration].join('|')
+}
+
+function gotoMatchKey(event: NormalizedEvent): string | null {
+  if (event.kind !== 'Goto' || event.gotoInfo === undefined) return null
+
+  const fromBeat = event.gotoInfo.fromBeat
+  const toBeat = event.gotoInfo.toBeat
+  if (fromBeat === undefined || toBeat === undefined) return null
+
+  const policy = event.gotoInfo.policy
+  const confKey = isRecord(policy)
+    ? readString(policy.confKey) ?? readString(policy.conf_key)
+    : undefined
+  const distance = isRecord(policy) ? readNumber(policy.distance) : undefined
+  const isRepeat = isRecord(policy)
+    ? readBoolean(policy.isRepeat) ?? readBoolean(policy.is_repeat)
+    : undefined
+
+  return [
+    event.voiceIndex,
+    event.kind,
+    fromBeat,
+    toBeat,
+    confKey ?? '-',
+    distance ?? '-',
+    isRepeat ?? '-',
+  ].join('|')
 }
 
 function pitchRestKey(event: NormalizedEvent): string | null {
@@ -2178,6 +2257,7 @@ export function compareNormalizedSongs(
 
   const matches: Array<{ legacyIndex: number; tsIndex: number; quality: MatchQuality; reason: string }> = []
   matches.push(...alignByKey(legacyEvents, tsEvents, legacyUsed, tsUsed, exactSourceKey, 'exact-source', traceMap))
+  matches.push(...alignByKey(legacyEvents, tsEvents, legacyUsed, tsUsed, gotoMatchKey, 'exact-position', traceMap))
   matches.push(...alignByKey(legacyEvents, tsEvents, legacyUsed, tsUsed, exactPositionKey, 'exact-position', traceMap))
   matches.push(...alignByNearPosition(legacyEvents, tsEvents, legacyUsed, tsUsed, traceMap))
   matches.push(...buildSequenceMatches(legacyEvents, tsEvents, legacyUsed, tsUsed, traceMap))

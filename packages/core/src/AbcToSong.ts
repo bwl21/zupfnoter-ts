@@ -264,10 +264,14 @@ export class AbcToSong {
       if (prev) {
         p.prevPitch = prev.pitch
         p.prevPlayable = prev
+      } else {
+        p.prevPitch = p.pitch
       }
       if (next) {
         p.nextPitch = next.pitch
         p.nextPlayable = next
+      } else {
+        p.nextPitch = p.pitch
       }
     }
   }
@@ -507,7 +511,9 @@ export class AbcToSong {
     }
     if (state.nextRepeatStart) {
       entity.firstInPart = true
-      state.repetitionStack.push(entity)
+      if (state.repetitionStack[state.repetitionStack.length - 1] !== entity) {
+        state.repetitionStack.push(entity)
+      }
       state.nextRepeatStart = false
     }
     if (state.nextFirstInPart) {
@@ -584,7 +590,9 @@ export class AbcToSong {
     state.previousNote = pause
     if (state.nextRepeatStart) {
       pause.firstInPart = true
-      state.repetitionStack.push(pause)
+      if (state.repetitionStack[state.repetitionStack.length - 1] !== pause) {
+        state.repetitionStack.push(pause)
+      }
       state.nextRepeatStart = false
     }
     if (state.nextFirstInPart) {
@@ -684,8 +692,8 @@ export class AbcToSong {
         const repeatTime = previousNote.time
         const repeatDistance = this._extractGotoDistancesFromSymbol(sym)?.[0] ?? state.pendingGotoDistances?.[0] ?? 2
         const repeatLevel = state.repetitionStack.length + 1
-      const goto: Goto = {
-        type: 'Goto' as const,
+        const goto: Goto = {
+          type: 'Goto' as const,
           beat: this._timeToBeat(repeatTime),
           time: repeatTime,
           startPos: previousNote.startPos,
@@ -704,8 +712,8 @@ export class AbcToSong {
             isRepeat: true,
             level: repeatLevel,
           } as GotoPolicy,
-      }
-      result.push(goto)
+        }
+        result.push(goto)
       }
       state.pendingGotoDistances = null
       state.nextFirstInPart = true

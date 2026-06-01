@@ -558,8 +558,9 @@ V:V1 clef=treble-8
 
   it('produces Goto entities for repeat', () => {
     const song = transform(ABC)
-    const gotos = song.voices[0]!.entities.filter((e) => e.type === 'Goto')
+    const gotos = song.voices[0]!.entities.filter((e): e is Goto => e.type === 'Goto')
     expect(gotos.length).toBeGreaterThanOrEqual(1)
+    expect(gotos[0]?.policy.level).toBe(2)
   })
 
   it('sets verticalAnchor=to for variant-ending exit gotos', () => {

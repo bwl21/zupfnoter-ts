@@ -409,17 +409,17 @@ describe('prevPitch/nextPitch auf Playables', () => {
       (e): e is PlayableEntity => 'pitch' in e && 'duration' in e,
     )
 
-    // Erste Note hat kein prevPitch, aber nextPitch
-    expect(playables[0]!.prevPitch).toBeUndefined()
+    // Erste Note übernimmt legacy-kompatibel ihren eigenen Pitch als prevPitch.
+    expect(playables[0]!.prevPitch).toBe(playables[0]!.pitch)
     expect(playables[0]!.nextPitch).toBeDefined()
 
     // Mittlere Note hat beide
     expect(playables[1]!.prevPitch).toBeDefined()
     expect(playables[1]!.nextPitch).toBeDefined()
 
-    // Letzte Note hat prevPitch, aber kein nextPitch
+    // Letzte Note übernimmt legacy-kompatibel ihren eigenen Pitch als nextPitch.
     const last = playables[playables.length - 1]!
     expect(last.prevPitch).toBeDefined()
-    expect(last.nextPitch).toBeUndefined()
+    expect(last.nextPitch).toBe(last.pitch)
   })
 })
