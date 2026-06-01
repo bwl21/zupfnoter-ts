@@ -41,11 +41,10 @@ Nach Änderungen möglichst ausführen:
 
 | Größe | Branch? | PR? | Merge |
 |-------|---------|-----|-------|
-| Fix < 5 Dateien | direkt auf `main` | – | – |
-| Feature > 5 Dateien | `feat/<name>` | PR → Copilot Review | Squash |
+| Beliebig | `feat/<name>` | optional → Copilot Review | Squash |
 | Experimentell | `wip/<name>` | – | Wegwerfen |
 
-- Kein `dev`-Branch — bei Solo-Entwicklung reichen Feature-Branches für PRs
+- Bei Solo-Entwicklung jeder Stand auf einem Branch → `git stash` oder Branch-Wechsel möglich falls KI abdriftet
 - PR nur erstellen wenn Copilot Review gewünscht ist
 - Nach Merge: Feature-Branch löschen
 
