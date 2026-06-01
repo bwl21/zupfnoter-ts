@@ -37,6 +37,18 @@ Nach Änderungen möglichst ausführen:
     pnpm test
     pnpm type-check
 
+### Git-Workflow (Solo + Copilot Review)
+
+| Größe | Branch? | PR? | Merge |
+|-------|---------|-----|-------|
+| Fix < 5 Dateien | direkt auf `main` | – | – |
+| Feature > 5 Dateien | `feat/<name>` | PR → Copilot Review | Squash |
+| Experimentell | `wip/<name>` | – | Wegwerfen |
+
+- Kein `dev`-Branch — bei Solo-Entwicklung reichen Feature-Branches für PRs
+- PR nur erstellen wenn Copilot Review gewünscht ist
+- Nach Merge: Feature-Branch löschen
+
 # AGENTS.md – Implementierungsplan Zupfnoter-TS
 
 Dieses Dokument beschreibt den Implementierungsplan für den TypeScript-Rewrite von
