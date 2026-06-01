@@ -41,7 +41,8 @@ export function computeBeatCompression(
   layoutLines: number[],
   conf: Confstack,
 ): BeatCompressionMap {
-  const packMethod = (conf.get('layout.packer.pack_method') as number) ?? 0
+  const packerConf = conf.getSubtree('layout.packer') as { pack_method?: number } | undefined
+  const packMethod = packerConf?.pack_method ?? 0
 
   switch (packMethod) {
     case 1:  return _packMethod1(song, layoutLines, conf)
@@ -128,8 +129,8 @@ function getMincFactor(
 
 function getLayoutMinc(conf: Confstack): Record<string, { minc_f?: number }> {
   return (
-    (conf.get('extract.notebound.minc') as Record<string, { minc_f?: number }> | undefined) ??
-    (conf.get('notebound.minc') as Record<string, { minc_f?: number }> | undefined) ??
+    (conf.getSubtree('extract.notebound.minc') as Record<string, { minc_f?: number }> | undefined) ??
+    (conf.getSubtree('notebound.minc') as Record<string, { minc_f?: number }> | undefined) ??
     {}
   )
 }
