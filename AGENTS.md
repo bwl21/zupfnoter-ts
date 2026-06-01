@@ -45,6 +45,7 @@ Nach Änderungen möglichst ausführen:
 | Experimentell | `wip/<name>` | – | Wegwerfen |
 
 - Bei Solo-Entwicklung jeder Stand auf einem Branch → `git stash` oder Branch-Wechsel möglich falls KI abdriftet
+- Bei Feature-Wechsel: alter Branch lokal committen (kein Push), neuen Branch von `main` aus starten
 - PR nur erstellen wenn Copilot Review gewünscht ist
 - Nach Merge: Feature-Branch löschen
 
