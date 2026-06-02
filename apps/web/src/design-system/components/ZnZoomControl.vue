@@ -5,8 +5,8 @@ const props = withDefaults(defineProps<{
   max?: number
   step?: number
 }>(), {
-  min: 50,
-  max: 200,
+  min: 100,
+  max: 400,
   step: 10,
 })
 

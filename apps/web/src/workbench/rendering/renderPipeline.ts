@@ -47,7 +47,7 @@ function parserIssueToRenderIssue(error: AbcParseError): RenderIssue {
 
 function scaleSvgForPreview(svg: string): string {
   return svg.replace(
-    /(<svg[^>]*)\s+width="[^"]*"\s+height="[^"]*"/,
+    /(<svg[^>]*)\s+width="[^"]*"\s+height="[^"]*"/g,
     '$1 width="100%" height="auto"',
   )
 }
