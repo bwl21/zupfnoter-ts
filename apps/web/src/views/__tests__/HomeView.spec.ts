@@ -17,7 +17,7 @@ describe('HomeView', () => {
     expect(wrapper.text()).toContain('Pdf-Vorschau')
     expect(wrapper.text()).not.toContain('Console')
     expect(wrapper.text()).toContain('Extract 0')
-    expect(wrapper.findAll('.zn-zoom-control')).toHaveLength(2)
+    expect(wrapper.findAll('.zn-zoom-control')).toHaveLength(1)
 
     const editor = wrapper.find('textarea[aria-label="ABC notation editor"]')
     const element = editor.element

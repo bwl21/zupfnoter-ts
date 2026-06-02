@@ -27,6 +27,12 @@ interface PanState {
   startScrollTop: number
 }
 
+export function computeWheelZoomDelta(deltaY: number): number {
+  const magnitude = Math.abs(deltaY)
+  const curved = Math.pow(magnitude / 120, 0.7) * 5
+  return Math.min(12, Math.max(1, Math.round(curved)))
+}
+
 export function useZoomableSvgPreview(svgSource: Ref<string>, zoom: Ref<number>) {
   const frameRef = ref<HTMLElement | null>(null)
   const canvasRef = ref<HTMLElement | null>(null)
@@ -107,11 +113,11 @@ export function useZoomableSvgPreview(svgSource: Ref<string>, zoom: Ref<number>)
   const fitScale = computed(() => {
     const metrics = frameMetrics.value
     const content = contentSize.value
-    if (metrics === null || content === null || metrics.viewportWidth <= 0 || metrics.viewportHeight <= 0 || content.width <= 0 || content.height <= 0) {
+    if (metrics === null || content === null || metrics.viewportWidth <= 0 || content.width <= 0) {
       return 1
     }
 
-    return Math.min(metrics.viewportWidth / content.width, metrics.viewportHeight / content.height)
+    return metrics.viewportWidth / content.width
   })
 
   const displayScale = computed(() => fitScale.value * (zoom.value / 100))
@@ -150,7 +156,7 @@ export function useZoomableSvgPreview(svgSource: Ref<string>, zoom: Ref<number>)
     const frame = frameRef.value
     const previousZoom = zoom.value
 
-    zoom.value = Math.min(400, Math.max(100, nextZoom))
+    zoom.value = Math.min(400, Math.max(25, nextZoom))
 
     await nextTick()
 
@@ -255,8 +261,8 @@ export function useZoomableSvgPreview(svgSource: Ref<string>, zoom: Ref<number>)
 
     event.preventDefault()
 
-    const delta = Math.max(8, Math.round(Math.abs(event.deltaY) / 4))
     const direction = event.deltaY < 0 ? 1 : -1
+    const delta = computeWheelZoomDelta(event.deltaY)
     const frame = frameRef.value
     const metrics = frameMetrics.value
     if (frame === null) {

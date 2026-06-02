@@ -24,7 +24,6 @@ import WorkbenchLayout from './WorkbenchLayout.vue'
 const editorTab = ref('abc')
 const editorPaneSize = ref(54)
 const previewPaneSize = ref(62)
-const scoreZoom = ref(100)
 const harpZoom = ref(100)
 const abcText = ref(DEFAULT_ABC)
 const scoreSvg = ref('')
@@ -151,7 +150,6 @@ onBeforeUnmount(() => {
             >
               <template #primary>
                 <ScorePreviewPanel
-                  v-model:zoom="scoreZoom"
                   :error-message="previewErrorMessage"
                   :svg="scoreSvg"
                 />
