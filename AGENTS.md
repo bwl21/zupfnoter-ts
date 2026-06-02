@@ -37,6 +37,22 @@ Nach Änderungen möglichst ausführen:
     pnpm test
     pnpm type-check
 
+### Browser Validation
+
+For UI-related work:
+
+- Use Browser MCP when available.
+- Validate the affected user workflow.
+- Report the result in the final summary.
+
+If Browser MCP is unavailable:
+
+- Skip browser validation.
+- Do not explain, apologize, or discuss MCP availability.
+- Report only:
+
+  Browser validation: not performed (Browser MCP unavailable)
+
 ### Git-Workflow (Solo + Copilot Review)
 
 | Größe | Branch? | PR? | Merge |

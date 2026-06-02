@@ -101,6 +101,7 @@ withDefaults(defineProps<{
   flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 .zn-panel__footer {

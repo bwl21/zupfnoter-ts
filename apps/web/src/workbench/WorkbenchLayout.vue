@@ -19,7 +19,9 @@
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   gap: var(--zn-space-2);
-  min-height: 100vh;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
   padding: 0.5rem;
   overflow: hidden;
 }
@@ -30,28 +32,12 @@
   min-width: 0;
 }
 
-.workbench-layout__header {
-  animation: workbench-enter 420ms ease both;
-}
-
 .workbench-layout__workspace {
   min-height: 0;
-  animation: workbench-enter 520ms ease both;
+  overflow: hidden;
 }
 
 .workbench-layout__footer {
   margin-top: auto;
-  animation: workbench-enter 620ms ease both;
-}
-
-@keyframes workbench-enter {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 </style>

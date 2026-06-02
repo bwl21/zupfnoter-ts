@@ -188,4 +188,14 @@ describe('AbcParser', () => {
       expect(parser.errors.length).toBe(firstErrors.length)
     })
   })
+
+  describe('renderSvg()', () => {
+    it('returns classical abc2svg output for valid ABC', () => {
+      const parser = new AbcParser()
+      const svg = parser.renderSvg(SINGLE_NOTE_ABC)
+
+      expect(svg).toContain('<svg')
+      expect(svg).toContain('</svg>')
+    })
+  })
 })

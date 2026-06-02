@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
+
+defineProps<{
+  svg: string
+  errorMessage?: string
+}>()
 </script>
 
 <template>
@@ -10,12 +15,10 @@ import ZnPanel from '../../design-system/components/ZnPanel.vue'
         <input aria-label="enter notes" class="preview-stage__input preview-stage__input--wide" placeholder="enter notes" type="text">
       </div>
       <div class="preview-stage__frame">
-        <div class="preview-stage__staff preview-stage__staff--top" />
-        <div class="preview-stage__staff preview-stage__staff--mid" />
-        <div class="preview-stage__staff preview-stage__staff--bottom" />
-        <div class="preview-stage__note" />
-        <div class="preview-stage__note preview-stage__note--second" />
-        <div class="preview-stage__bridge" />
+        <div v-if="errorMessage" class="preview-stage__error">
+          {{ errorMessage }}
+        </div>
+        <div v-else class="preview-stage__svg" v-html="svg" />
       </div>
     </div>
   </ZnPanel>
@@ -34,6 +37,7 @@ import ZnPanel from '../../design-system/components/ZnPanel.vue'
   display: flex;
   align-items: center;
   gap: var(--zn-space-3);
+  flex: 0 0 auto;
 }
 
 .preview-stage__input {
@@ -55,61 +59,27 @@ import ZnPanel from '../../design-system/components/ZnPanel.vue'
   position: relative;
   min-height: 0;
   height: 100%;
-  padding: var(--zn-space-4);
+  padding: var(--zn-space-2);
   border: 1px solid var(--zn-border);
   border-radius: var(--zn-radius-sm);
   background: var(--zn-bg-surface);
-  overflow: hidden;
+  overflow: auto;
 }
 
-.preview-stage__staff {
-  position: absolute;
-  left: 6%;
-  right: 6%;
-  height: 1px;
-  background: color-mix(in srgb, var(--zn-text) 52%, transparent);
+.preview-stage__svg {
+  width: max-content;
+  max-width: 100%;
 }
 
-.preview-stage__staff--top {
-  top: 30%;
+.preview-stage__svg :deep(svg) {
+  display: block;
+  max-width: none;
 }
 
-.preview-stage__staff--mid {
-  top: 46%;
-}
-
-.preview-stage__staff--bottom {
-  top: 62%;
-}
-
-.preview-stage__note,
-.preview-stage__note--second {
-  position: absolute;
-  top: 46%;
-  width: 1rem;
-  height: 1rem;
-  border: 1px solid var(--zn-heading);
-  border-radius: 50%;
-  background: var(--zn-heading);
-  box-shadow: none;
-}
-
-.preview-stage__note {
-  left: 24%;
-}
-
-.preview-stage__note--second {
-  left: 58%;
-}
-
-.preview-stage__bridge {
-  position: absolute;
-  top: 44%;
-  left: 24%;
-  width: 35%;
-  height: 0.3rem;
-  border-top: 2px solid var(--zn-text);
-  border-radius: 999px;
-  transform: skewX(-12deg);
+.preview-stage__error {
+  color: var(--zn-danger);
+  font-family: var(--zn-font-mono);
+  font-size: 0.78rem;
+  white-space: pre-wrap;
 }
 </style>

@@ -397,6 +397,50 @@ export class AbcParser {
     return this._model
   }
 
+  /**
+   * Render ABC text with abc2svg and return the emitted classical score SVG.
+   *
+   * This keeps direct abc2svg access inside AbcParser while allowing the UI to
+   * show the conventional notation preview.
+   */
+  renderSvg(abcText: string): string {
+    this._errors = []
+    this._model = null
+
+    const chunks: string[] = []
+    const user: Abc2svgUser = {
+      keep_remark: true,
+      img_out: (svg: string) => {
+        chunks.push(svg)
+      },
+
+      errbld: (severity, msg, _fname, line, col) => {
+        const err: AbcParseError = {
+          severity: (severity > 1 ? 2 : severity) as 0 | 1 | 2,
+          message: msg,
+          line: line,
+          column: col,
+        }
+        this._errors.push(err)
+      },
+
+      read_file: (_name: string) => null,
+    }
+
+    const abc = new _abc2svgModule.Abc(user)
+    abc.tosvg('zupfnoter', abcText)
+
+    if (chunks.length === 0) {
+      const fatalErrors = this._errors.filter((e) => e.severity >= 1)
+      if (fatalErrors.length > 0) {
+        throw new Error(`abc2svg render error: ${fatalErrors.map((e) => e.message).join('; ')}`)
+      }
+      throw new Error('abc2svg produced no SVG — check ABC syntax')
+    }
+
+    return chunks.join('\n')
+  }
+
   // ---------------------------------------------------------------------------
   // Private: build AbcModel from abc2svg callback arguments
   // ---------------------------------------------------------------------------

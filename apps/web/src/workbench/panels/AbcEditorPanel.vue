@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
 
-const lines = [
-  'X:1',
-  'T:Zupfnoter Workbench',
-  'M:4/4',
-  'L:1/4',
-  'Q:1/4=120',
-  'K:C',
-  'V:V1 clef=treble-8',
-  '[V:V1] C D E F | G A B c |]',
-]
+const abcText = defineModel<string>({
+  required: true,
+})
 </script>
 
 <template>
   <ZnPanel tone="accent">
     <div class="panel-shell">
-      <pre class="panel-shell__editor" aria-label="ABC source preview"><code><span v-for="(line, index) in lines" :key="line">{{ `${String(index + 1).padStart(2, '0')}  ${line}` }}<br></span></code></pre>
+      <textarea
+        v-model="abcText"
+        aria-label="ABC notation editor"
+        class="panel-shell__editor"
+        spellcheck="false"
+      />
     </div>
   </ZnPanel>
 </template>
@@ -31,6 +29,8 @@ const lines = [
 .panel-shell__editor {
   margin: 0;
   padding: var(--zn-space-3);
+  width: 100%;
+  box-sizing: border-box;
   border-radius: 0;
   background: transparent;
   border: 0;
@@ -42,5 +42,7 @@ const lines = [
   white-space: pre;
   min-height: 0;
   height: 100%;
+  resize: none;
+  outline: none;
 }
 </style>

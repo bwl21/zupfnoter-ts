@@ -5,6 +5,11 @@ import ZnZoomControl from '../../design-system/components/ZnZoomControl.vue'
 import ZnTabs from '../../design-system/components/ZnTabs.vue'
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
 
+defineProps<{
+  svg: string
+  errorMessage?: string
+}>()
+
 const mode = ref('normal')
 const zoom = defineModel<number>('zoom', {
   default: 100,
@@ -29,11 +34,15 @@ const zoom = defineModel<number>('zoom', {
         <ZnZoomControl v-model="zoom" />
       </div>
       <div class="harp-preview__frame">
-        <span class="harp-preview__string" />
-        <span class="harp-preview__string" />
-        <span class="harp-preview__string" />
-        <span class="harp-preview__string" />
-        <span class="harp-preview__column" />
+        <div v-if="errorMessage" class="harp-preview__error">
+          {{ errorMessage }}
+        </div>
+        <div
+          v-else
+          class="harp-preview__svg"
+          :style="{ transform: `scale(${zoom / 100})` }"
+          v-html="svg"
+        />
       </div>
     </div>
   </ZnPanel>
@@ -51,6 +60,7 @@ const zoom = defineModel<number>('zoom', {
 .harp-preview__controls {
   display: flex;
   justify-content: flex-end;
+  flex: 0 0 auto;
 }
 
 .harp-preview__frame {
@@ -60,26 +70,25 @@ const zoom = defineModel<number>('zoom', {
   border: 1px solid var(--zn-border);
   border-radius: var(--zn-radius-sm);
   background: var(--zn-bg-surface);
-  overflow: hidden;
+  overflow: auto;
 }
 
-.harp-preview__string {
-  position: absolute;
-  top: 10%;
-  bottom: 10%;
-  width: 1px;
-  background: color-mix(in srgb, var(--zn-text) 28%, transparent);
+.harp-preview__svg {
+  width: max-content;
+  max-width: 100%;
+  transform-origin: top left;
 }
 
-.harp-preview__string:nth-child(1) { left: 20%; }
-.harp-preview__string:nth-child(2) { left: 34%; }
-.harp-preview__string:nth-child(3) { left: 48%; }
-.harp-preview__string:nth-child(4) { left: 62%; }
+.harp-preview__svg :deep(svg) {
+  display: block;
+  max-width: none;
+}
 
-.harp-preview__column {
-  position: absolute;
-  inset: 18% 72% 18% 12%;
-  border-radius: 999px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--zn-accent) 18%, transparent), color-mix(in srgb, var(--zn-accent) 5%, transparent));
+.harp-preview__error {
+  padding: var(--zn-space-3);
+  color: var(--zn-danger);
+  font-family: var(--zn-font-mono);
+  font-size: 0.78rem;
+  white-space: pre-wrap;
 }
 </style>

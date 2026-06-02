@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 
 import {
   ZnBadge,
@@ -14,12 +14,68 @@ import FooterBar from './FooterBar.vue'
 import HarpPreviewPanel from './panels/HarpPreviewPanel.vue'
 import LyricsPanel from './panels/LyricsPanel.vue'
 import ScorePreviewPanel from './panels/ScorePreviewPanel.vue'
+import {
+  DEFAULT_ABC,
+  renderWorkbenchPreviews,
+  type RenderIssue,
+} from './rendering/renderPipeline'
 import WorkbenchLayout from './WorkbenchLayout.vue'
 
 const editorTab = ref('abc')
 const editorPaneSize = ref(54)
 const previewPaneSize = ref(62)
 const zoom = ref(100)
+const abcText = ref(DEFAULT_ABC)
+const scoreSvg = ref('')
+const harpSvg = ref('')
+const renderIssues = ref<RenderIssue[]>([])
+const renderError = ref('')
+const renderSummary = ref('not rendered')
+
+const renderIssueLabel = computed(() => {
+  if (renderError.value) return 'Render error'
+  const warnings = renderIssues.value.filter((issue) => issue.severity === 'warning').length
+  if (warnings > 0) return `${warnings} warning(s)`
+  return 'Rendered'
+})
+
+const renderIssueTone = computed(() => renderError.value ? 'danger' : renderIssues.value.length > 0 ? 'warning' : 'success')
+
+const previewErrorMessage = computed(() => {
+  if (renderError.value) return renderError.value
+  const errors = renderIssues.value.filter((issue) => issue.severity === 'error')
+  return errors.map((issue) => issue.message).join('\n')
+})
+
+let renderTimer: ReturnType<typeof setTimeout> | undefined
+
+function renderNow(): void {
+  try {
+    const result = renderWorkbenchPreviews(abcText.value)
+    scoreSvg.value = result.scoreSvg
+    harpSvg.value = result.harpSvg
+    renderIssues.value = result.issues
+    renderSummary.value = result.summary
+    renderError.value = ''
+  } catch (error) {
+    renderError.value = error instanceof Error ? error.message : String(error)
+    renderIssues.value = []
+    renderSummary.value = 'render failed'
+  }
+}
+
+watch(abcText, () => {
+  if (renderTimer !== undefined) {
+    clearTimeout(renderTimer)
+  }
+  renderTimer = setTimeout(renderNow, 250)
+}, { immediate: true })
+
+onBeforeUnmount(() => {
+  if (renderTimer !== undefined) {
+    clearTimeout(renderTimer)
+  }
+})
 </script>
 
 <template>
@@ -44,6 +100,7 @@ const zoom = ref(100)
             <ZnBadge tone="info">Extract 0</ZnBadge>
             <ZnButton variant="ghost">Rendern</ZnButton>
             <ZnButton variant="ghost">Play</ZnButton>
+            <ZnBadge :tone="renderIssueTone">{{ renderIssueLabel }}</ZnBadge>
             <ZnButton variant="ghost">Hilfe</ZnButton>
           </template>
         </ZnToolbar>
@@ -74,7 +131,7 @@ const zoom = ref(100)
               { id: 'config', label: 'Konfiguration' },
             ]">
               <template #default="{ activeId }">
-                <AbcEditorPanel v-if="activeId === 'abc'" />
+                <AbcEditorPanel v-if="activeId === 'abc'" v-model="abcText" />
                 <LyricsPanel v-else-if="activeId === 'lyrics'" />
                 <ConfigEditorPanel v-else />
               </template>
@@ -92,10 +149,17 @@ const zoom = ref(100)
               :handle-size="14"
             >
               <template #primary>
-                <ScorePreviewPanel />
+                <ScorePreviewPanel
+                  :error-message="previewErrorMessage"
+                  :svg="scoreSvg"
+                />
               </template>
               <template #secondary>
-                <HarpPreviewPanel v-model:zoom="zoom" />
+                <HarpPreviewPanel
+                  v-model:zoom="zoom"
+                  :error-message="previewErrorMessage"
+                  :svg="harpSvg"
+                />
               </template>
             </ZnSplitPane>
           </div>
@@ -106,7 +170,7 @@ const zoom = ref(100)
     <template #footer>
       <FooterBar
         extract-label="Extract 0"
-        storage-path="local / demo"
+        :storage-path="renderSummary"
         :dirty="true"
         save-format="SVG + PDF"
         speed="1.0x"
@@ -117,7 +181,7 @@ const zoom = ref(100)
 
 <style scoped>
 .workbench-chrome {
-  padding: 0anrem;
+  padding: 0;
   border: 1px solid var(--zn-border);
   border-radius: var(--zn-radius-sm);
   background: var(--zn-bg-elevated);
@@ -130,6 +194,7 @@ const zoom = ref(100)
   gap: 0.25rem;
   min-height: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 .preview-pane {
@@ -138,10 +203,20 @@ const zoom = ref(100)
   gap: 0.25rem;
   min-height: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 .preview-pane > :deep(.zn-split-pane) {
   flex: 1 1 auto;
   min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.editor-pane > :deep(.zn-tabs),
+.editor-pane > :deep(.zn-tabs .zn-tabs__panel) {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
 }
 </style>

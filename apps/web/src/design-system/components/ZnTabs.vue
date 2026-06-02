@@ -111,5 +111,6 @@ const emit = defineEmits<{
 .zn-tabs__panel {
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
 }
 </style>

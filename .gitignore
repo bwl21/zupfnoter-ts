@@ -16,7 +16,6 @@ coverage
 *.local
 
 # pnpm
-pnpm-lock.yaml
 
 # Editor directories and files
 .vscode/*
@@ -35,6 +34,10 @@ pnpm-lock.yaml
 # Cypress
 /cypress/videos/
 /cypress/screenshots/
+
+# Playwright
+playwright-report/
+test-results/
 
 # Vitest
 __screenshots__/
