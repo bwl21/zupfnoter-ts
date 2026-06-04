@@ -9,7 +9,7 @@ describe('HomeView', () => {
     vi.useRealTimers()
   })
 
-  it('renders the Zupfnoter demonstrator panes', async () => {
+  it('renders the reference sheet panes', async () => {
     vi.useFakeTimers()
     const wrapper = mount(HomeView)
 
@@ -23,7 +23,7 @@ describe('HomeView', () => {
     const element = editor.element
     expect(element).toBeInstanceOf(HTMLTextAreaElement)
     if (element instanceof HTMLTextAreaElement) {
-      expect(element.value).toContain('T:Zupfnoter Demonstrator')
+      expect(element.value).toContain('F:3015_reference_sheet')
     }
 
     await vi.advanceTimersByTimeAsync(300)

@@ -7,6 +7,7 @@
     "commit:gap": "node tools/commit-gap.mjs",
     "dev": "pnpm --filter @zupfnoter/demo dev",
     "dev:web": "pnpm --filter @zupfnoter/web dev",
+    "serve:web": "pnpm --filter @zupfnoter/web run servedeploy",
     "dev:demo": "pnpm --filter @zupfnoter/demo dev",
     "dev:all": "pnpm -r --parallel --filter @zupfnoter/web --filter @zupfnoter/demo dev",
     "build": "pnpm -r run build",

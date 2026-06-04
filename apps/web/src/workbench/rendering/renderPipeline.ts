@@ -11,6 +11,7 @@ import {
 } from '@zupfnoter/core'
 import type { AbcParseError } from '@zupfnoter/core'
 import type { Voice, VoiceEntity } from '@zupfnoter/types'
+import referenceSheetAbc from '../../../../../fixtures/cases/3015_reference_sheet/input.abc?raw'
 
 export interface RenderIssue {
   severity: 'warning' | 'error'
@@ -24,17 +25,7 @@ export interface WorkbenchRenderResult {
   summary: string
 }
 
-export const DEFAULT_ABC = `X:1
-T:Zupfnoter Demonstrator
-C:Zupfnoter TS
-M:4/4
-L:1/4
-Q:1/4=120
-K:C
-%%score (V1)
-V:V1 clef=treble-8
-[V:V1] C D E F | G A B c |]
-`
+export const DEFAULT_ABC = referenceSheetAbc
 
 function parserIssueToRenderIssue(error: AbcParseError): RenderIssue {
   const severity = error.severity >= 1 ? 'error' : 'warning'

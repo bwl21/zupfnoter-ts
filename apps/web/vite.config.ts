@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
+import { resolve } from 'node:path'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -23,5 +24,10 @@ export default defineConfig({
   },
   server: {
     allowedHosts: true,
+    fs: {
+      allow: [
+        resolve(fileURLToPath(new URL('.', import.meta.url)), '../../..'),
+      ],
+    },
   },
 })
