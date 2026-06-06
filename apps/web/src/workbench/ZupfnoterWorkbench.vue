@@ -60,11 +60,9 @@ function renderNow(): void {
     renderIssues.value = result.issues
     editorDiagnostics.value = result.editorDiagnostics
     renderSummary.value = result.summary
-    renderError.value = ''
+    renderError.value = result.renderError ?? ''
   } catch (error) {
     renderError.value = error instanceof Error ? error.message : String(error)
-    renderIssues.value = []
-    editorDiagnostics.value = []
     renderSummary.value = 'render failed'
   }
 }

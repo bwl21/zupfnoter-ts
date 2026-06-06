@@ -10,13 +10,19 @@ import {
 import {
   Decoration,
   EditorView,
+  GutterMarker,
+  ViewPlugin,
+  type ViewUpdate,
   type DecorationSet,
   drawSelection,
   highlightActiveLine,
   highlightActiveLineGutter,
+  gutter,
   keymap,
   lineNumbers,
 } from '@codemirror/view'
+import tippy, { type Instance as TippyInstance } from 'tippy.js'
+import 'tippy.js/dist/tippy.css'
 
 export interface EditorDiagnostic {
   severity: 'warning' | 'error'
@@ -40,6 +46,52 @@ const diagnosticsField = StateField.define<EditorDiagnostic[]>({
     return value
   },
 })
+
+class DiagnosticMarker extends GutterMarker {
+  constructor(
+    private readonly severity: 'warning' | 'error',
+    private readonly tooltipLine: number,
+  ) {
+    super()
+  }
+
+  toDOM(): HTMLElement {
+    const marker = document.createElement('span')
+    marker.className = `cm-abc-gutter-marker cm-abc-gutter-marker--${this.severity}`
+    marker.textContent = this.severity === 'error' ? '‼️' : '!'
+    marker.dataset.tooltipLine = String(this.tooltipLine)
+    marker.setAttribute('aria-hidden', 'true')
+    return marker
+  }
+}
+
+function formatDiagnosticTitle(diagnostic: EditorDiagnostic): string {
+  const column = diagnostic.column === undefined ? '' : `:${diagnostic.column}`
+  return `${diagnostic.line}${column} ${diagnostic.message}`
+}
+
+function createDiagnosticTooltipContent(diagnostics: EditorDiagnostic[]): HTMLElement {
+  const container = document.createElement('div')
+  container.className = 'cm-abc-diagnostic-tooltip'
+
+  for (const diagnostic of diagnostics) {
+    const row = document.createElement('div')
+    row.className = `cm-abc-diagnostic-tooltip__row cm-abc-diagnostic-tooltip__row--${diagnostic.severity}`
+
+    const badge = document.createElement('span')
+    badge.className = 'cm-abc-diagnostic-tooltip__badge'
+    badge.textContent = diagnostic.severity === 'error' ? 'Fehler ' : 'Warnung '
+
+    const text = document.createElement('span')
+    text.className = 'cm-abc-diagnostic-tooltip__text'
+    text.textContent = formatDiagnosticTitle(diagnostic)
+
+    row.append(badge, text)
+    container.append(row)
+  }
+
+  return container
+}
 
 function createMark(className: string): Decoration {
   return Decoration.mark({ class: className, inclusive: true })
@@ -162,19 +214,47 @@ function buildDiagnosticDecorations(state: EditorState): DecorationSet {
     }
 
     const line = state.doc.line(lineNo)
-    const severity = diagnostics.some((diagnostic) => diagnostic.severity === 'error') ? 'error' : 'warning'
-    const title = diagnostics.map((diagnostic) => {
-      const column = diagnostic.column === undefined ? '' : `:${diagnostic.column}`
-      return `${diagnostic.line}${column} ${diagnostic.message}`
-    }).join('\n')
+    const diagnostic = diagnostics.find((entry) => entry.severity === 'error') ?? diagnostics[0]
+    if (diagnostic === undefined) continue
+
+    const column = Math.max(1, diagnostic.column ?? 1)
+    const start = line.from + column - 1
+    const end = Math.min(line.to, line.from + findDiagnosticTokenEnd(line.text, column - 1))
+    const severity = diagnostic.severity === 'error' ? 'error' : 'warning'
+
     builder.add(
-      line.from,
-      line.from,
-      Decoration.line({
-        class: `cm-abc-diagnostic-line cm-abc-diagnostic-line--${severity}`,
-        attributes: { title },
+      start,
+      Math.max(start + 1, end),
+      Decoration.mark({
+        class: `cm-abc-diagnostic-underline cm-abc-diagnostic-underline--${severity}`,
       }),
     )
+  }
+
+  return builder.finish()
+}
+
+function buildDiagnosticGutterMarkers(state: EditorState): import('@codemirror/state').RangeSet<GutterMarker> {
+  const builder = new RangeSetBuilder<GutterMarker>()
+  const linesWithDiagnostics = new Map<number, EditorDiagnostic[]>()
+
+  for (const diagnostic of state.field(diagnosticsField)) {
+    const existing = linesWithDiagnostics.get(diagnostic.line)
+    if (existing === undefined) {
+      linesWithDiagnostics.set(diagnostic.line, [diagnostic])
+    } else {
+      existing.push(diagnostic)
+    }
+  }
+
+  for (const [lineNo, diagnostics] of linesWithDiagnostics) {
+    if (lineNo < 1 || lineNo > state.doc.lines) {
+      continue
+    }
+
+    const severity = diagnostics.some((diagnostic) => diagnostic.severity === 'error') ? 'error' : 'warning'
+    const line = state.doc.line(lineNo)
+    builder.add(line.from, line.from, new DiagnosticMarker(severity, lineNo))
   }
 
   return builder.finish()
@@ -184,6 +264,18 @@ function tokenClassForConfigValue(value: string): string {
   if (value.startsWith('"')) return 'cm-abc-config-string'
   if (value === 'true' || value === 'false' || value === 'null') return 'cm-abc-config-keyword'
   return 'cm-abc-config-number'
+}
+
+function findDiagnosticTokenEnd(text: string, startIndex: number): number {
+  let index = Math.max(0, startIndex)
+  while (index < text.length) {
+    const char = text[index]
+    if (char === undefined || /\s/.test(char) || char === '|' || char === ',' || char === ';') {
+      break
+    }
+    index += 1
+  }
+  return index
 }
 
 const syntaxField = StateField.define<DecorationSet>({
@@ -210,8 +302,84 @@ const diagnosticField = StateField.define<DecorationSet>({
   provide: (field) => EditorView.decorations.from(field),
 })
 
+const diagnosticGutterField = StateField.define<import('@codemirror/state').RangeSet<GutterMarker>>({
+  create(state: EditorState) {
+    return buildDiagnosticGutterMarkers(state)
+  },
+  update(markers, tr: Transaction) {
+    if (!tr.docChanged && !tr.effects.some((effect) => effect.is(setEditorDiagnostics))) {
+      return markers
+    }
+    return buildDiagnosticGutterMarkers(tr.state)
+  },
+  provide: (field) =>
+    gutter({
+      class: 'cm-abc-diagnostic-gutter',
+      markers: (view) => view.state.field(field),
+    }),
+})
+
+const diagnosticTooltipPlugin = ViewPlugin.fromClass(class {
+  private readonly tooltips = new Map<HTMLElement, TippyInstance>()
+
+  constructor(view: EditorView) {
+    this.sync(view)
+  }
+
+  update(update: ViewUpdate): void {
+    if (update.docChanged || update.viewportChanged || update.transactions.some((transaction) => transaction.effects.length > 0)) {
+      this.sync(update.view)
+    }
+  }
+
+  destroy(): void {
+    for (const instance of this.tooltips.values()) {
+      instance.destroy()
+    }
+    this.tooltips.clear()
+  }
+
+  private sync(view: EditorView): void {
+    const markerElements = new Set<HTMLElement>()
+
+    for (const element of view.dom.querySelectorAll<HTMLElement>('.cm-abc-gutter-marker')) {
+      markerElements.add(element)
+      if (this.tooltips.has(element)) continue
+
+      const tooltipLine = Number(element.dataset.tooltipLine)
+      if (Number.isNaN(tooltipLine) || tooltipLine <= 0) continue
+
+      const diagnostics = view.state.field(diagnosticsField).filter((diagnostic) => diagnostic.line === tooltipLine)
+      if (diagnostics.length === 0) continue
+
+      const instance = tippy(element, {
+        content: createDiagnosticTooltipContent(diagnostics),
+        allowHTML: false,
+        animation: 'shift-away',
+        arrow: true,
+        delay: [0, 0],
+        duration: [90, 60],
+        interactive: true,
+        placement: 'right-start',
+        theme: 'zn-diagnostic',
+        appendTo: () => document.body,
+      }) as TippyInstance
+
+      this.tooltips.set(element, instance)
+    }
+
+    for (const [element, instance] of this.tooltips) {
+      if (markerElements.has(element)) continue
+      instance.destroy()
+      this.tooltips.delete(element)
+    }
+  }
+})
+
 export function createAbcEditorExtensions(): Extension[] {
   return [
+    diagnosticGutterField,
+    diagnosticTooltipPlugin,
     lineNumbers(),
     highlightActiveLineGutter(),
     drawSelection(),
@@ -241,6 +409,85 @@ export function createAbcEditorExtensions(): Extension[] {
       '.cm-gutters': {
         backgroundColor: 'var(--zn-bg-surface)',
         borderRight: '1px solid var(--zn-border)',
+      },
+      '.cm-abc-diagnostic-gutter': {
+        width: '1.35em',
+      },
+      '.cm-abc-gutter-marker': {
+        display: 'grid',
+        placeItems: 'center',
+        width: '0.95em',
+        height: '0.95em',
+        margin: '0.18em auto 0',
+        borderRadius: '0.14rem',
+        fontSize: '0.88em',
+        lineHeight: '1',
+        fontWeight: '800',
+        color: '#fff',
+        overflow: 'hidden',
+        boxShadow: '0 0 0 1px color-mix(in srgb, currentColor 22%, transparent)',
+      },
+      '.cm-abc-gutter-marker--error': {
+        backgroundColor: 'var(--zn-danger)',
+      },
+      '.cm-abc-gutter-marker--warning': {
+        backgroundColor: 'var(--zn-danger)',
+      },
+      '.cm-abc-diagnostic-underline--error': {
+        textDecorationLine: 'underline',
+        textDecorationStyle: 'wavy',
+        textDecorationColor: 'var(--zn-danger)',
+        textDecorationThickness: '1.5px',
+      },
+      '.cm-abc-diagnostic-underline--warning': {
+        textDecorationLine: 'underline',
+        textDecorationStyle: 'wavy',
+        textDecorationColor: 'var(--zn-danger)',
+        textDecorationThickness: '1.5px',
+      },
+      '.tippy-box[data-theme~="zn-diagnostic"]': {
+        backgroundColor: 'var(--zn-bg-elevated)',
+        color: 'var(--zn-text-default)',
+        border: '1px solid var(--zn-border)',
+        boxShadow: '0 12px 30px color-mix(in srgb, black 16%, transparent)',
+        fontFamily: 'var(--zn-font-sans)',
+        fontSize: '0.78rem',
+      },
+      '.tippy-box[data-theme~="zn-diagnostic"] > .tippy-arrow': {
+        color: 'var(--zn-bg-elevated)',
+      },
+      '.cm-abc-diagnostic-tooltip': {
+        display: 'grid',
+        gap: '0.25rem',
+        padding: '0.1rem 0',
+      },
+      '.cm-abc-diagnostic-tooltip__row': {
+        display: 'grid',
+        gridTemplateColumns: 'auto 1fr',
+        gap: '0.45rem',
+        alignItems: 'start',
+      },
+      '.cm-abc-diagnostic-tooltip__badge': {
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: '4.2em',
+        padding: '0.1rem 0.35rem',
+        borderRadius: '999px',
+        fontSize: '0.68rem',
+        fontWeight: '700',
+        lineHeight: '1.2',
+      },
+      '.cm-abc-diagnostic-tooltip__row--error .cm-abc-diagnostic-tooltip__badge': {
+        backgroundColor: 'color-mix(in srgb, var(--zn-danger) 18%, white 82%)',
+        color: 'var(--zn-danger)',
+      },
+      '.cm-abc-diagnostic-tooltip__row--warning .cm-abc-diagnostic-tooltip__badge': {
+        backgroundColor: 'color-mix(in srgb, var(--zn-danger) 18%, white 82%)',
+        color: 'var(--zn-danger)',
+      },
+      '.cm-abc-diagnostic-tooltip__text': {
+        lineHeight: '1.35',
       },
       '.cm-content': {
         padding: 'var(--zn-space-3) 0',
@@ -354,35 +601,6 @@ export function createAbcEditorExtensions(): Extension[] {
       },
       '.cm-abc-config-keyword': {
         color: 'var(--zn-danger)',
-      },
-      '.cm-abc-diagnostic-line': {
-        position: 'relative',
-        paddingLeft: '0.35rem',
-      },
-      '.cm-abc-diagnostic-line::before': {
-        content: '""',
-        position: 'absolute',
-        inset: '0 auto 0 0',
-        width: '0.24rem',
-        borderRadius: '0.24rem',
-      },
-      '.cm-abc-diagnostic-line--warning::before, .cm-abc-diagnostic-line--error::before': {
-        content: '"!"',
-        display: 'grid',
-        placeItems: 'center',
-        width: '0.9rem',
-        height: '0.9rem',
-        top: '0.28rem',
-        color: 'var(--zn-background)',
-        fontSize: '0.56rem',
-        fontWeight: '800',
-        lineHeight: '1',
-      },
-      '.cm-abc-diagnostic-line--warning::before': {
-        backgroundColor: 'var(--zn-warning)',
-      },
-      '.cm-abc-diagnostic-line--error::before': {
-        backgroundColor: 'var(--zn-danger)',
       },
     }),
     syntaxField,

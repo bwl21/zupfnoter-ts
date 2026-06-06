@@ -27,6 +27,7 @@ export interface WorkbenchRenderResult {
   issues: RenderIssue[]
   editorDiagnostics: EditorDiagnostic[]
   summary: string
+  renderError?: string
 }
 
 export const DEFAULT_ABC = referenceSheetAbc
@@ -70,34 +71,50 @@ function buildConfig(abcText: string) {
 export function renderWorkbenchPreviews(abcText: string): WorkbenchRenderResult {
   const config = buildConfig(abcText)
   const scoreParser = new AbcParser()
-  const scoreSvg = scaleSvgForPreview(scoreParser.renderSvg(abcText))
+  let scoreSvg = ''
+  let scoreError: string | undefined
+  try {
+    scoreSvg = scaleSvgForPreview(scoreParser.renderSvg(abcText))
+  } catch (error) {
+    scoreError = error instanceof Error ? error.message : String(error)
+  }
 
   const modelParser = new AbcParser()
-  const model = modelParser.parse(abcText)
-  const song = new AbcToSong().transform(model, config)
-  const sheet = new HarpnotesLayout(config, {
-    annotationTextMetrics: createDefaultAnnotationTextMetrics(),
-  }).layout(song, 0, 'A3')
-  const harpSvg = scaleSvgForPreview(new SvgEngine().draw(sheet))
+  let harpSvg = ''
+  let song: ReturnType<AbcToSong['transform']> | null = null
+  let sheetChildCount = 0
+  let modelError: string | undefined
+  try {
+    const parsedModel = modelParser.parse(abcText)
+    song = new AbcToSong().transform(parsedModel, config)
+    const sheet = new HarpnotesLayout(config, {
+      annotationTextMetrics: createDefaultAnnotationTextMetrics(),
+    }).layout(song, 0, 'A3')
+    sheetChildCount = sheet.children.length
+    harpSvg = scaleSvgForPreview(new SvgEngine().draw(sheet))
+  } catch (error) {
+    modelError = error instanceof Error ? error.message : String(error)
+  }
 
-  const issues = [
-    ...scoreParser.errors,
-    ...modelParser.errors,
-  ].map(parserIssueToRenderIssue)
-  const editorDiagnostics = scoreParser.errors
+  const issues = modelParser.errors.map(parserIssueToRenderIssue)
+  const editorDiagnostics = modelParser.errors
     .map(parserIssueToEditorDiagnostic)
     .filter((diagnostic): diagnostic is EditorDiagnostic => diagnostic !== null)
 
-  const noteCounts = song.voices.map((voice: Voice, index: number) => {
-    const noteCount = voice.entities.filter((entity: VoiceEntity) => entity.type === 'Note').length
-    return `V${index + 1}: ${noteCount} notes`
-  })
+  const renderError = scoreError ?? modelError
+  const summary = song === null
+    ? 'render failed'
+    : `${song.voices.length} voice(s), ${song.voices.map((voice: Voice, index: number) => {
+      const noteCount = voice.entities.filter((entity: VoiceEntity) => entity.type === 'Note').length
+      return `V${index + 1}: ${noteCount} notes`
+    }).join(', ')}, ${sheetChildCount} drawables`
 
   return {
     scoreSvg,
     harpSvg,
     issues,
     editorDiagnostics,
-    summary: `${song.voices.length} voice(s), ${noteCounts.join(', ')}, ${sheet.children.length} drawables`,
+    summary,
+    renderError,
   }
 }

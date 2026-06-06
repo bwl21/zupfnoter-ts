@@ -35,9 +35,11 @@ describe('AbcEditorPanel', () => {
       line: 1,
       column: 1,
     })
-    const diagnosticLine = wrapper.find('.cm-abc-diagnostic-line')
-    expect(diagnosticLine.exists()).toBe(true)
-    expect(diagnosticLine.attributes('title')).toContain('Missing note duration')
-    expect(wrapper.find('.cm-abc-diagnostic-line--error').exists()).toBe(true)
+    const diagnosticUnderline = wrapper.find('.cm-abc-diagnostic-underline')
+    expect(diagnosticUnderline.exists()).toBe(true)
+    expect(wrapper.find('.cm-abc-diagnostic-underline--error').exists()).toBe(true)
+    const gutterMarker = wrapper.find('.cm-abc-gutter-marker')
+    expect(gutterMarker.exists()).toBe(true)
+    expect(wrapper.find('.cm-abc-gutter-marker--error').exists()).toBe(true)
   })
 })

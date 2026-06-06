@@ -58,6 +58,12 @@ K:C
 [B,G,]2 |]
 `
 
+const BAD_TIE_ABC = `X:1
+T:Bad Tie
+K:C
+g-d
+`
+
 function expectedLegacyChecksum(abcText: string): string {
   let checksum = 0x12345678
   const stripped = abcText.trim()
@@ -178,6 +184,21 @@ describe('AbcParser', () => {
       }
       // errors array is accessible regardless
       expect(Array.isArray(parser.errors)).toBe(true)
+    })
+
+    it('maps abc2svg tie errors to source line and column', () => {
+      const parser = new AbcParser()
+
+      try {
+        parser.parse(BAD_TIE_ABC)
+      } catch {
+        // abc2svg may throw for a bad tie, but the error details must still be captured
+      }
+
+      const tieError = parser.errors.find((error) => error.message.includes('Bad tie'))
+      expect(tieError).toBeDefined()
+      expect(tieError?.line).toBe(4)
+      expect(tieError?.column).toBeGreaterThan(0)
     })
 
     it('errors array is reset on each parse() call', () => {
