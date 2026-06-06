@@ -12,16 +12,20 @@ import {
 import type { AbcParseError } from '@zupfnoter/core'
 import type { Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/3015_reference_sheet/input.abc?raw'
+import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 
 export interface RenderIssue {
   severity: 'warning' | 'error'
   message: string
+  line?: number
+  column?: number
 }
 
 export interface WorkbenchRenderResult {
   scoreSvg: string
   harpSvg: string
   issues: RenderIssue[]
+  editorDiagnostics: EditorDiagnostic[]
   summary: string
 }
 
@@ -33,6 +37,20 @@ function parserIssueToRenderIssue(error: AbcParseError): RenderIssue {
   return {
     severity,
     message: `${location}${error.message}`,
+    line: error.line,
+    column: error.column,
+  }
+}
+
+function parserIssueToEditorDiagnostic(error: AbcParseError): EditorDiagnostic | null {
+  if (error.line === undefined) return null
+
+  return {
+    severity: error.severity >= 1 ? 'error' : 'warning',
+    message: error.message,
+    line: error.line,
+    column: error.column,
+    source: 'abc-parser',
   }
 }
 
@@ -66,6 +84,9 @@ export function renderWorkbenchPreviews(abcText: string): WorkbenchRenderResult 
     ...scoreParser.errors,
     ...modelParser.errors,
   ].map(parserIssueToRenderIssue)
+  const editorDiagnostics = scoreParser.errors
+    .map(parserIssueToEditorDiagnostic)
+    .filter((diagnostic): diagnostic is EditorDiagnostic => diagnostic !== null)
 
   const noteCounts = song.voices.map((voice: Voice, index: number) => {
     const noteCount = voice.entities.filter((entity: VoiceEntity) => entity.type === 'Note').length
@@ -76,6 +97,7 @@ export function renderWorkbenchPreviews(abcText: string): WorkbenchRenderResult 
     scoreSvg,
     harpSvg,
     issues,
+    editorDiagnostics,
     summary: `${song.voices.length} voice(s), ${noteCounts.join(', ')}, ${sheet.children.length} drawables`,
   }
 }

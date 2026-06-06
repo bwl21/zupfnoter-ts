@@ -19,6 +19,7 @@ import {
   renderWorkbenchPreviews,
   type RenderIssue,
 } from './rendering/renderPipeline'
+import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
 import WorkbenchLayout from './WorkbenchLayout.vue'
 
 const editorTab = ref('abc')
@@ -29,6 +30,8 @@ const abcText = ref(DEFAULT_ABC)
 const scoreSvg = ref('')
 const harpSvg = ref('')
 const renderIssues = ref<RenderIssue[]>([])
+const editorDiagnostics = ref<EditorDiagnostic[]>([])
+const editorCursor = ref('01:01')
 const renderError = ref('')
 const renderSummary = ref('not rendered')
 
@@ -55,13 +58,21 @@ function renderNow(): void {
     scoreSvg.value = result.scoreSvg
     harpSvg.value = result.harpSvg
     renderIssues.value = result.issues
+    editorDiagnostics.value = result.editorDiagnostics
     renderSummary.value = result.summary
     renderError.value = ''
   } catch (error) {
     renderError.value = error instanceof Error ? error.message : String(error)
     renderIssues.value = []
+    editorDiagnostics.value = []
     renderSummary.value = 'render failed'
   }
+}
+
+function handleEditorCursorChange(position: { line: number, column: number }): void {
+  const line = String(position.line).padStart(2, '0')
+  const column = String(position.column).padStart(2, '0')
+  editorCursor.value = `${line}:${column}`
 }
 
 watch(abcText, () => {
@@ -131,7 +142,12 @@ onBeforeUnmount(() => {
               { id: 'config', label: 'Konfiguration' },
             ]">
               <template #default="{ activeId }">
-                <AbcEditorPanel v-if="activeId === 'abc'" v-model="abcText" />
+                <AbcEditorPanel
+                  v-if="activeId === 'abc'"
+                  v-model="abcText"
+                  :diagnostics="editorDiagnostics"
+                  @cursor-change="handleEditorCursorChange"
+                />
                 <LyricsPanel v-else-if="activeId === 'lyrics'" />
                 <ConfigEditorPanel v-else />
               </template>
@@ -173,6 +189,7 @@ onBeforeUnmount(() => {
         :storage-path="renderSummary"
         :dirty="true"
         save-format="SVG + PDF"
+        :cursor-position="editorCursor"
         speed="1.0x"
       />
     </template>

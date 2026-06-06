@@ -17,13 +17,16 @@ describe('HomeView', () => {
     expect(wrapper.text()).toContain('Pdf-Vorschau')
     expect(wrapper.text()).not.toContain('Console')
     expect(wrapper.text()).toContain('Extract 0')
+    expect(wrapper.text()).toContain('01:01')
     expect(wrapper.findAll('.zn-zoom-control')).toHaveLength(1)
 
-    const editor = wrapper.find('textarea[aria-label="ABC notation editor"]')
+    expect(wrapper.find('.cm-editor').exists()).toBe(true)
+
+    const editor = wrapper.find('[aria-label="ABC notation editor"]')
     const element = editor.element
-    expect(element).toBeInstanceOf(HTMLTextAreaElement)
-    if (element instanceof HTMLTextAreaElement) {
-      expect(element.value).toContain('F:3015_reference_sheet')
+    expect(element).toBeInstanceOf(HTMLElement)
+    if (element instanceof HTMLElement) {
+      expect(element.textContent ?? '').toContain('F:3015_reference_sheet')
     }
 
     await vi.advanceTimersByTimeAsync(300)

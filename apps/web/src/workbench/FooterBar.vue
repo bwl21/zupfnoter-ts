@@ -8,11 +8,13 @@ withDefaults(defineProps<{
   dirty: boolean
   saveFormat: string
   speed: string
+  cursorPosition: string
 }>(), {})
 </script>
 
 <template>
   <ZnStatusBar>
+    <span class="footer-bar__meta footer-bar__cursor">{{ cursorPosition }}</span>
     <ZnBadge tone="accent">
       {{ extractLabel }}
     </ZnBadge>
@@ -34,5 +36,10 @@ withDefaults(defineProps<{
   color: var(--zn-text-muted);
   font-size: 0.82rem;
 }
-</style>
 
+.footer-bar__cursor {
+  min-width: 5ch;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+</style>
