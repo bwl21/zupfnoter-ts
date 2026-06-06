@@ -49,6 +49,10 @@
   --zn-line-height-default: 1.45;
 }
 
+
+.zn-button {
+   background: hotpink  ;
+}
 *,
 *::before,
 *::after {

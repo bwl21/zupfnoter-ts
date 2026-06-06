@@ -49,3 +49,10 @@ __screenshots__/
 fixtures/cases/*/_ts_output/
 fixtures/cases/*/_parity/
 /docs/phase-5/000_raw/
+fixtures/openImplementations.js
+fixtures/openImplementations.d.ts
+fixtures/openImplementations.js.map
+fixtures/openImplementations.d.ts.map
+
+# Local browser cache
+.playwright-mcp/
