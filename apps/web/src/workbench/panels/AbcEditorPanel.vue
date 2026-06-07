@@ -7,8 +7,10 @@ import ZnPanel from '../../design-system/components/ZnPanel.vue'
 import {
   createAbcEditorExtensions,
   syncEditorDiagnostics,
+  syncEditorPlaybackHighlight,
   type EditorDiagnostic,
 } from './abcEditorCodeMirror'
+import type { PlaybackHighlight } from '@zupfnoter/types'
 
 interface CursorPosition {
   line: number
@@ -21,6 +23,7 @@ const abcText = defineModel<string>({
 
 const props = withDefaults(defineProps<{
   diagnostics?: EditorDiagnostic[]
+  playbackHighlight?: PlaybackHighlight
 }>(), {
   diagnostics: () => [],
 })
@@ -81,6 +84,7 @@ onMounted(() => {
   })
 
   syncEditorDiagnostics(editorView, props.diagnostics)
+  syncEditorPlaybackHighlight(editorView, props.playbackHighlight)
   emitCursorPosition(editorView)
 })
 
@@ -93,6 +97,15 @@ watch(
   (diagnostics) => {
     if (editorView === null) return
     syncEditorDiagnostics(editorView, diagnostics)
+  },
+  { immediate: true, deep: true },
+)
+
+watch(
+  () => props.playbackHighlight,
+  (highlight) => {
+    if (editorView === null) return
+    syncEditorPlaybackHighlight(editorView, highlight)
   },
   { immediate: true, deep: true },
 )

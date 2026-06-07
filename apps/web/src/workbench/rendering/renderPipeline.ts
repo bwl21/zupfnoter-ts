@@ -11,9 +11,10 @@ import {
 } from '@zupfnoter/core'
 import type { AbcParseError } from '@zupfnoter/core'
 import type { SongDiagnostic } from '@zupfnoter/types'
-import type { Voice, VoiceEntity } from '@zupfnoter/types'
+import type { Song, Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
+import { buildPlaybackTimeline, resolveBaseTempoFromSong, type PlaybackStep } from '../playback'
 import {
   parserErrorToWorkbenchDiagnostic,
   songDiagnosticToWorkbenchDiagnostic,
@@ -35,6 +36,8 @@ export interface WorkbenchRenderResult {
   diagnostics: WorkbenchDiagnostic[]
   toastDiagnostics: WorkbenchDiagnostic[]
   editorDiagnostics: EditorDiagnostic[]
+  playbackTimeline: PlaybackStep[]
+  baseTempoFromQ?: number
   summary: string
   renderError?: string
 }
@@ -54,7 +57,7 @@ function parserIssueToRenderIssue(error: AbcParseError): RenderIssue {
 function scaleSvgForPreview(svg: string): string {
   return svg.replace(
     /(<svg[^>]*)\s+width="[^"]*"\s+height="[^"]*"/,
-    '$1 width="100%" height="auto"',
+    '$1 width="100%"',
   )
 }
 
@@ -107,6 +110,8 @@ export function renderWorkbenchPreviews(abcText: string): WorkbenchRenderResult 
       source: diagnostic.source,
     }))
   const toastDiagnostics = modelDiagnostics.filter((diagnostic) => !workbenchDiagnosticHasPosition(diagnostic))
+  const playbackTimeline = song === null ? [] : buildPlaybackTimeline(song as Song)
+  const baseTempoFromQ = song === null ? undefined : resolveBaseTempoFromSong(song as Song)
 
   const renderError = scoreError ?? modelError
   const summary = song === null
@@ -123,6 +128,8 @@ export function renderWorkbenchPreviews(abcText: string): WorkbenchRenderResult 
     diagnostics: modelDiagnostics,
     toastDiagnostics,
     editorDiagnostics,
+    playbackTimeline,
+    baseTempoFromQ,
     summary,
     renderError,
   }

@@ -1,22 +1,77 @@
 <script setup lang="ts">
 import { ref, toRef } from 'vue'
 
+import type { PlaybackHighlight } from '@zupfnoter/types'
+
 import ZnZoomControl from '../../design-system/components/ZnZoomControl.vue'
 import ZnTabs from '../../design-system/components/ZnTabs.vue'
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
 import { useZoomableSvgPreview } from './useZoomableSvgPreview'
+import { usePlaybackSvgHighlight } from './usePlaybackSvgHighlight'
+import { useSelectionSvgHighlight } from './useSelectionSvgHighlight'
 
 const props = defineProps<{
   svg: string
   errorMessage?: string
+  playbackHighlight?: PlaybackHighlight
+  selectedZnIds?: string[]
+}>()
+
+const emit = defineEmits<{
+  (event: 'select-zn-id', payload: { znId: string; extend: boolean; source: 'harp-preview' }): void
 }>()
 
 const mode = ref('normal')
+const pointerDownPosition = ref<{ x: number; y: number } | null>(null)
+const pointerDownTarget = ref<EventTarget | null>(null)
 const zoom = defineModel<number>('zoom', {
   default: 100,
 })
 
 const { canvasRef, canvasStyle, frameRef, onPointerCancel, onPointerDown, onPointerMove, onPointerUp, onWheel, setZoom } = useZoomableSvgPreview(toRef(props, 'svg'), zoom)
+usePlaybackSvgHighlight(
+  canvasRef,
+  toRef(props, 'svg'),
+  toRef(props, 'playbackHighlight'),
+)
+useSelectionSvgHighlight(
+  canvasRef,
+  toRef(props, 'svg'),
+  toRef(props, 'selectedZnIds'),
+)
+
+function emitSelectionFromEvent(target: EventTarget | null, extend: boolean): void {
+  if (!(target instanceof Element)) return
+  const element = target.closest('[data-zn-id]')
+  const znId = element?.getAttribute('data-zn-id') ?? undefined
+  if (znId === undefined) return
+  emit('select-zn-id', {
+    znId,
+    extend,
+    source: 'harp-preview',
+  })
+}
+
+function handlePointerDown(event: PointerEvent): void {
+  pointerDownPosition.value = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+  pointerDownTarget.value = event.target
+  onPointerDown(event)
+}
+
+function handlePointerUp(event: PointerEvent): void {
+  const start = pointerDownPosition.value
+  const target = pointerDownTarget.value
+  onPointerUp(event)
+  pointerDownPosition.value = null
+  pointerDownTarget.value = null
+  if (start === null) return
+  const distance = Math.hypot(event.clientX - start.x, event.clientY - start.y)
+  if (distance > 4) return
+  emitSelectionFromEvent(target, event.shiftKey)
+}
 </script>
 
 <template>
@@ -42,9 +97,9 @@ const { canvasRef, canvasStyle, frameRef, onPointerCancel, onPointerDown, onPoin
         ref="frameRef"
         class="harp-preview__frame"
         @pointercancel="onPointerCancel"
-        @pointerdown="onPointerDown"
+        @pointerdown="handlePointerDown"
         @pointermove="onPointerMove"
-        @pointerup="onPointerUp"
+        @pointerup="handlePointerUp"
         @wheel="onWheel"
       >
         <div v-if="errorMessage" class="harp-preview__error">
@@ -109,6 +164,18 @@ const { canvasRef, canvasStyle, frameRef, onPointerCancel, onPointerDown, onPoin
 .harp-preview__svg :deep(svg) {
   display: block;
   max-width: none;
+}
+
+.harp-preview__svg :deep(.zn-playback-highlight) {
+  filter:
+    drop-shadow(0 0 1.2px color-mix(in srgb, var(--zn-accent-strong) 80%, white))
+    drop-shadow(0 0 4px color-mix(in srgb, var(--zn-accent) 40%, transparent));
+}
+
+.harp-preview__svg :deep(.zn-selection-highlight) {
+  filter:
+    drop-shadow(0 0 1.2px color-mix(in srgb, var(--zn-warning) 85%, white))
+    drop-shadow(0 0 3px color-mix(in srgb, var(--zn-warning) 48%, transparent));
 }
 
 .harp-preview__error {

@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils'
+import { createPinia } from 'pinia'
 import { nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -11,7 +12,11 @@ describe('HomeView', () => {
 
   it('renders the reference sheet panes', async () => {
     vi.useFakeTimers()
-    const wrapper = mount(HomeView)
+    const wrapper = mount(HomeView, {
+      global: {
+        plugins: [createPinia()],
+      },
+    })
 
     expect(wrapper.text()).toContain('ABC-Notation')
     expect(wrapper.text()).toContain('Pdf-Vorschau')

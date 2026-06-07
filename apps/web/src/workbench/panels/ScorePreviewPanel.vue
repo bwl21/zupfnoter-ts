@@ -1,10 +1,48 @@
 <script setup lang="ts">
-import ZnPanel from '../../design-system/components/ZnPanel.vue'
+import { ref, toRef } from 'vue'
 
-defineProps<{
+import type { PlaybackHighlight } from '@zupfnoter/types'
+
+import ZnPanel from '../../design-system/components/ZnPanel.vue'
+import { usePlaybackSvgHighlight } from './usePlaybackSvgHighlight'
+import { useSelectionSvgHighlight } from './useSelectionSvgHighlight'
+
+const props = defineProps<{
   svg: string
   errorMessage?: string
+  playbackHighlight?: PlaybackHighlight
+  selectedZnIds?: string[]
 }>()
+
+const emit = defineEmits<{
+  (event: 'select-zn-id', payload: { znId: string; extend: boolean; source: 'score-preview' }): void
+}>()
+
+const svgFrame = ref<HTMLElement | null>(null)
+
+usePlaybackSvgHighlight(
+  svgFrame,
+  toRef(props, 'svg'),
+  toRef(props, 'playbackHighlight'),
+)
+useSelectionSvgHighlight(
+  svgFrame,
+  toRef(props, 'svg'),
+  toRef(props, 'selectedZnIds'),
+)
+
+function handleSvgClick(event: MouseEvent): void {
+  const target = event.target
+  if (!(target instanceof Element)) return
+  const element = target.closest('[data-zn-id]')
+  const znId = element?.getAttribute('data-zn-id') ?? undefined
+  if (znId === undefined) return
+  emit('select-zn-id', {
+    znId,
+    extend: event.shiftKey,
+    source: 'score-preview',
+  })
+}
 </script>
 
 <template>
@@ -20,7 +58,13 @@ defineProps<{
         <div v-if="errorMessage" class="preview-stage__error">
           {{ errorMessage }}
         </div>
-        <div v-else class="preview-stage__svg" v-html="svg" />
+        <div
+          v-else
+          ref="svgFrame"
+          class="preview-stage__svg"
+          @click="handleSvgClick"
+          v-html="svg"
+        />
       </div>
     </div>
   </ZnPanel>
@@ -82,6 +126,18 @@ defineProps<{
 .preview-stage__svg :deep(svg) {
   display: block;
   max-width: none;
+}
+
+.preview-stage__svg :deep(.zn-playback-highlight) {
+  filter:
+    drop-shadow(0 0 1.2px color-mix(in srgb, var(--zn-accent-strong) 80%, white))
+    drop-shadow(0 0 4px color-mix(in srgb, var(--zn-accent) 40%, transparent));
+}
+
+.preview-stage__svg :deep(.zn-selection-highlight) {
+  filter:
+    drop-shadow(0 0 1.2px color-mix(in srgb, var(--zn-warning) 85%, white))
+    drop-shadow(0 0 3px color-mix(in srgb, var(--zn-warning) 48%, transparent));
 }
 
 .preview-stage__error {

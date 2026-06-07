@@ -3,7 +3,7 @@
 ## Status
 
 ☑ Architektur besprochen  
-☐ Implementiert
+☑ Implementiert
 
 ## Diskussion
 
@@ -40,6 +40,18 @@ PlaybackHighlight ist ein zweites Highlight in anderer Farbe. Es überschreibt S
 - Highlight in Score/Harp Preview anbinden.
 - Stop bei Dokumentänderung.
 - Speed-Control im Footer anbinden.
+
+## Umsetzungsstand
+
+- `PlaybackState` und `PlaybackHighlight` sind als gemeinsame Typen modelliert.
+- Die Workbench führt einen Playback-Store mit Status, Speed, Extract und Dokumentversion.
+- Die Auswahl wird über einen separaten Selection-Store geführt und in einen Playback-Modus aufgelöst.
+- Score- und Harp-Vorschau markieren aktive `znId`-Elemente beim Playback.
+- Die Harfenvorschau speist Klick-Selektionen in den Selection-Store ein; der Score-Adapter ist dafür vorbereitet.
+- Dokumentänderungen stoppen die Wiedergabe und löschen das Highlight.
+- Die Footer-Bar bietet Speed-Regler für langsamer, Reset und schneller.
+- Der ABC-Editor zeigt ein separates Playback-Highlight, ohne die Text-Selektion zu verändern.
+- Ein echter Audio-Player ist noch nicht angebunden; die Architektur ist dafür vorbereitet.
 
 
 ## Offene Punkte

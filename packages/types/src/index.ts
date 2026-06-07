@@ -36,6 +36,18 @@ export type {
 } from './music.js'
 
 export type {
+  SelectionState,
+} from './selection.js'
+
+export type {
+  PlaybackStatus,
+  PlaybackMode,
+  PlaybackState,
+  PlaybackHighlight,
+  PlaybackPlayerEvent,
+} from './playback.js'
+
+export type {
   FillStyle,
   Drawable,
   Ellipse,

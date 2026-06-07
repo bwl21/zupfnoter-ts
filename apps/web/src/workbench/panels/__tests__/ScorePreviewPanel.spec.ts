@@ -14,4 +14,18 @@ describe('ScorePreviewPanel', () => {
     expect(wrapper.find('.preview-stage__svg svg').exists()).toBe(true)
     expect(wrapper.find('.zn-zoom-control').exists()).toBe(false)
   })
+
+  it('emits selected znId clicks from the injected svg', async () => {
+    const wrapper = mount(ScorePreviewPanel, {
+      props: {
+        svg: '<svg width="40" height="20"><g data-zn-id="note-1"><rect width="10" height="10" /></g></svg>',
+      },
+    })
+
+    await wrapper.find('.preview-stage__svg rect').trigger('click')
+
+    expect(wrapper.emitted('select-zn-id')).toEqual([
+      [{ znId: 'note-1', extend: false, source: 'score-preview' }],
+    ])
+  })
 })

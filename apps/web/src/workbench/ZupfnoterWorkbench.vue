@@ -24,6 +24,10 @@ import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
 import WorkbenchToastStack from './toasts/WorkbenchToastStack.vue'
 import { useWorkbenchToasts } from './toasts/useWorkbenchToasts'
 import WorkbenchLayout from './WorkbenchLayout.vue'
+import { usePlaybackStore } from '../stores/playback'
+import { useSelectionStore } from '../stores/selection'
+import { usePlaybackDriver } from './usePlaybackDriver'
+import type { PlaybackStep } from './playback'
 
 const editorTab = ref('abc')
 const editorPaneSize = ref(54)
@@ -38,7 +42,20 @@ const editorDiagnostics = ref<EditorDiagnostic[]>([])
 const editorCursor = ref('01:01')
 const renderError = ref('')
 const renderSummary = ref('not rendered')
+const playbackTimeline = ref<PlaybackStep[]>([])
+const baseTempoFromQ = ref<number | undefined>(undefined)
 const { toasts, syncDiagnostics, dismissToast } = useWorkbenchToasts()
+const playbackStore = usePlaybackStore()
+const selectionStore = useSelectionStore()
+const selectedZnIds = computed(() => selectionStore.selection.znIds)
+const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
+  playbackStore,
+  computed(() => selectionStore.selection),
+  computed(() => ({
+    timeline: playbackTimeline.value,
+    baseTempoFromQ: baseTempoFromQ.value,
+  })),
+)
 
 const renderIssueLabel = computed(() => {
   if (renderError.value) return 'Render error'
@@ -77,6 +94,8 @@ function renderNow(): void {
     renderIssues.value = result.issues
     workbenchDiagnostics.value = result.diagnostics
     editorDiagnostics.value = result.editorDiagnostics
+    playbackTimeline.value = result.playbackTimeline
+    baseTempoFromQ.value = result.baseTempoFromQ
     syncDiagnostics(result.toastDiagnostics)
     renderSummary.value = result.summary
     renderError.value = result.renderError ?? ''
@@ -93,11 +112,26 @@ function handleEditorCursorChange(position: { line: number, column: number }): v
 }
 
 watch(abcText, () => {
+  playbackStore.markDocumentChanged()
+  stopPlayback()
   if (renderTimer !== undefined) {
     clearTimeout(renderTimer)
   }
   renderTimer = setTimeout(renderNow, 250)
 }, { immediate: true })
+
+function handlePreviewSelection(payload: { znId: string; extend: boolean; source: 'score-preview' | 'harp-preview' }): void {
+  const currentZnIds = selectedZnIds.value
+  if (payload.extend && currentZnIds.length > 0) {
+    const nextZnIds = currentZnIds.includes(payload.znId)
+      ? currentZnIds
+      : [...currentZnIds, payload.znId]
+    selectionStore.selectMusicRange(nextZnIds, payload.source)
+    return
+  }
+
+  selectionStore.selectZnId(payload.znId, payload.source)
+}
 
 onBeforeUnmount(() => {
   if (renderTimer !== undefined) {
@@ -127,7 +161,12 @@ onBeforeUnmount(() => {
             <ZnButton variant="ghost">Ansicht</ZnButton>
             <ZnBadge tone="info">Extract 0</ZnBadge>
             <ZnButton variant="ghost">Rendern</ZnButton>
-            <ZnButton variant="ghost">Play</ZnButton>
+            <ZnButton
+              :variant="playbackStore.state.status === 'playing' ? 'primary' : 'ghost'"
+              @click="togglePlayback"
+            >
+              Play
+            </ZnButton>
             <ZnBadge :tone="renderIssueTone">{{ renderIssueLabel }}</ZnBadge>
             <ZnButton variant="ghost">Hilfe</ZnButton>
           </template>
@@ -163,6 +202,7 @@ onBeforeUnmount(() => {
                   v-if="activeId === 'abc'"
                   v-model="abcText"
                   :diagnostics="editorDiagnostics"
+                  :playback-highlight="playbackStore.highlight"
                   @cursor-change="handleEditorCursorChange"
                 />
                 <LyricsPanel v-else-if="activeId === 'lyrics'" />
@@ -184,14 +224,20 @@ onBeforeUnmount(() => {
               <template #primary>
                 <ScorePreviewPanel
                   :error-message="previewErrorMessage"
+                  :playback-highlight="playbackStore.highlight"
+                  :selected-zn-ids="selectedZnIds"
                   :svg="scoreSvg"
+                  @select-zn-id="handlePreviewSelection"
                 />
               </template>
               <template #secondary>
                 <HarpPreviewPanel
                   v-model:zoom="harpZoom"
                   :error-message="previewErrorMessage"
+                  :playback-highlight="playbackStore.highlight"
+                  :selected-zn-ids="selectedZnIds"
                   :svg="harpSvg"
+                  @select-zn-id="handlePreviewSelection"
                 />
               </template>
             </ZnSplitPane>
@@ -207,7 +253,10 @@ onBeforeUnmount(() => {
         :dirty="true"
         save-format="SVG + PDF"
         :cursor-position="editorCursor"
-        speed="1.0x"
+        :speed-factor="playbackStore.state.speedFactor"
+        @speed-down="playbackStore.decreaseSpeed"
+        @speed-reset="playbackStore.resetSpeed"
+        @speed-up="playbackStore.increaseSpeed"
       />
     </template>
   </WorkbenchLayout>

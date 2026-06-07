@@ -23,6 +23,7 @@ import {
 } from '@codemirror/view'
 import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
+import type { PlaybackHighlight } from '@zupfnoter/types'
 
 export interface EditorDiagnostic {
   severity: 'warning' | 'error'
@@ -34,12 +35,25 @@ export interface EditorDiagnostic {
 }
 
 export const setEditorDiagnostics = StateEffect.define<EditorDiagnostic[]>()
+export const setPlaybackHighlight = StateEffect.define<PlaybackHighlight | undefined>()
 
 const diagnosticsField = StateField.define<EditorDiagnostic[]>({
   create: (): EditorDiagnostic[] => [],
   update(value: EditorDiagnostic[], tr: Transaction): EditorDiagnostic[] {
     for (const effect of tr.effects) {
       if (effect.is(setEditorDiagnostics)) {
+        return effect.value
+      }
+    }
+    return value
+  },
+})
+
+const playbackHighlightField = StateField.define<PlaybackHighlight | undefined>({
+  create: (): PlaybackHighlight | undefined => undefined,
+  update(value: PlaybackHighlight | undefined, tr: Transaction): PlaybackHighlight | undefined {
+    for (const effect of tr.effects) {
+      if (effect.is(setPlaybackHighlight)) {
         return effect.value
       }
     }
@@ -241,6 +255,29 @@ function buildDiagnosticDecorations(state: EditorState): DecorationSet {
   return builder.finish()
 }
 
+function buildPlaybackDecorations(state: EditorState): DecorationSet {
+  const highlight = state.field(playbackHighlightField)
+  if (highlight === undefined || highlight.activeStartChar === undefined) {
+    return Decoration.none
+  }
+
+  const start = Math.max(0, Math.min(state.doc.length, highlight.activeStartChar))
+  const line = state.doc.lineAt(start)
+  const tokenEnd = line.from + findDiagnosticTokenEnd(line.text, start - line.from)
+  const end = Math.max(start + 1, Math.min(line.to, tokenEnd))
+  const builder = new RangeSetBuilder<Decoration>()
+
+  builder.add(
+    start,
+    end,
+    Decoration.mark({
+      class: 'cm-abc-playback-highlight',
+    }),
+  )
+
+  return builder.finish()
+}
+
 function buildDiagnosticGutterMarkers(state: EditorState): import('@codemirror/state').RangeSet<GutterMarker> {
   const builder = new RangeSetBuilder<GutterMarker>()
   const linesWithDiagnostics = new Map<number, EditorDiagnostic[]>()
@@ -305,6 +342,19 @@ const diagnosticField = StateField.define<DecorationSet>({
       return decorations
     }
     return buildDiagnosticDecorations(tr.state)
+  },
+  provide: (field) => EditorView.decorations.from(field),
+})
+
+const playbackDecorationField = StateField.define<DecorationSet>({
+  create(state: EditorState): DecorationSet {
+    return buildPlaybackDecorations(state)
+  },
+  update(decorations: DecorationSet, tr: Transaction): DecorationSet {
+    if (!tr.docChanged && !tr.effects.some((effect) => effect.is(setPlaybackHighlight))) {
+      return decorations
+    }
+    return buildPlaybackDecorations(tr.state)
   },
   provide: (field) => EditorView.decorations.from(field),
 })
@@ -476,6 +526,11 @@ export function createAbcEditorExtensions(): Extension[] {
         textDecorationColor: 'var(--zn-danger)',
         textDecorationThickness: '1.5px',
       },
+      '.cm-abc-playback-highlight': {
+        backgroundColor: 'color-mix(in srgb, var(--zn-accent) 16%, transparent)',
+        boxShadow: 'inset 0 -2px 0 color-mix(in srgb, var(--zn-accent-strong) 55%, transparent)',
+        borderRadius: '0.14rem',
+      },
       '.tippy-box[data-theme~="zn-diagnostic"]': {
         backgroundColor: 'var(--zn-bg-elevated)',
         color: 'var(--zn-text-default)',
@@ -633,11 +688,19 @@ export function createAbcEditorExtensions(): Extension[] {
     syntaxField,
     diagnosticsField,
     diagnosticField,
+    playbackHighlightField,
+    playbackDecorationField,
   ]
 }
 
 export function syncEditorDiagnostics(view: EditorView, diagnostics: EditorDiagnostic[]): void {
   view.dispatch({
     effects: setEditorDiagnostics.of(diagnostics),
+  })
+}
+
+export function syncEditorPlaybackHighlight(view: EditorView, highlight: PlaybackHighlight | undefined): void {
+  view.dispatch({
+    effects: setPlaybackHighlight.of(highlight),
   })
 }
