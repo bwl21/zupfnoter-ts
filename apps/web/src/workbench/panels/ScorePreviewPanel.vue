@@ -1,44 +1,47 @@
 <script setup lang="ts">
 import { ref, toRef } from 'vue'
 
-import type { PlaybackHighlight } from '@zupfnoter/types'
+import type { SelectionTextRange } from '@zupfnoter/types'
 
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
-import { usePlaybackSvgHighlight } from './usePlaybackSvgHighlight'
-import { useSelectionSvgHighlight } from './useSelectionSvgHighlight'
+import { useTextRangeSvgHighlight } from './useTextRangeSvgHighlight'
 
 const props = defineProps<{
   svg: string
   errorMessage?: string
-  playbackHighlight?: PlaybackHighlight
-  selectedZnIds?: string[]
+  selectedTextRange?: SelectionTextRange
+  playbackTextRange?: SelectionTextRange
 }>()
 
 const emit = defineEmits<{
-  (event: 'select-zn-id', payload: { znId: string; extend: boolean; source: 'score-preview' }): void
+  (event: 'select-text-range', payload: { startpos: number; endpos: number; extend: boolean; source: 'score-preview' }): void
 }>()
 
 const svgFrame = ref<HTMLElement | null>(null)
 
-usePlaybackSvgHighlight(
+useTextRangeSvgHighlight(
   svgFrame,
   toRef(props, 'svg'),
-  toRef(props, 'playbackHighlight'),
+  toRef(props, 'selectedTextRange'),
+  'zn-selection-highlight',
 )
-useSelectionSvgHighlight(
+useTextRangeSvgHighlight(
   svgFrame,
   toRef(props, 'svg'),
-  toRef(props, 'selectedZnIds'),
+  toRef(props, 'playbackTextRange'),
+  'zn-playback-highlight',
 )
 
 function handleSvgClick(event: MouseEvent): void {
   const target = event.target
   if (!(target instanceof Element)) return
-  const element = target.closest('[data-zn-id]')
-  const znId = element?.getAttribute('data-zn-id') ?? undefined
-  if (znId === undefined) return
-  emit('select-zn-id', {
-    znId,
+  const element = target.closest('[data-start-char][data-end-char]')
+  const startpos = Number(element?.getAttribute('data-start-char'))
+  const endpos = Number(element?.getAttribute('data-end-char'))
+  if (Number.isNaN(startpos) || Number.isNaN(endpos)) return
+  emit('select-text-range', {
+    startpos,
+    endpos,
     extend: event.shiftKey,
     source: 'score-preview',
   })
@@ -126,6 +129,10 @@ function handleSvgClick(event: MouseEvent): void {
 .preview-stage__svg :deep(svg) {
   display: block;
   max-width: none;
+}
+
+.preview-stage__svg :deep(.zn-score-hitbox) {
+  cursor: pointer;
 }
 
 .preview-stage__svg :deep(.zn-playback-highlight) {

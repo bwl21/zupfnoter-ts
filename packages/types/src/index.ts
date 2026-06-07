@@ -36,6 +36,10 @@ export type {
 } from './music.js'
 
 export type {
+  SelectionTextRange,
+  SelectionLineColumn,
+  SelectionIndexEntry,
+  SelectionIndex,
   SelectionState,
 } from './selection.js'
 

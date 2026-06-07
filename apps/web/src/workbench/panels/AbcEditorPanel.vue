@@ -17,6 +17,13 @@ interface CursorPosition {
   column: number
 }
 
+interface EditorSelectionRange {
+  startpos: number
+  endpos: number
+  start: CursorPosition
+  end: CursorPosition
+}
+
 const abcText = defineModel<string>({
   required: true,
 })
@@ -30,6 +37,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   (event: 'cursor-change', position: CursorPosition): void
+  (event: 'selection-change', selection: EditorSelectionRange): void
 }>()
 
 const editorHost = ref<HTMLDivElement | null>(null)
@@ -65,6 +73,24 @@ function emitCursorPosition(view: EditorView): void {
   })
 }
 
+function emitSelectionRange(view: EditorView): void {
+  const selection = view.state.selection.main
+  const startLine = view.state.doc.lineAt(selection.from)
+  const endLine = view.state.doc.lineAt(selection.to)
+  emit('selection-change', {
+    startpos: selection.from,
+    endpos: selection.to,
+    start: {
+      line: startLine.number,
+      column: selection.from - startLine.from + 1,
+    },
+    end: {
+      line: endLine.number,
+      column: selection.to - endLine.from + 1,
+    },
+  })
+}
+
 onMounted(() => {
   if (editorHost.value === null) return
 
@@ -77,6 +103,7 @@ onMounted(() => {
         EditorView.updateListener.of((update) => {
           if (!update.selectionSet && !update.docChanged) return
           emitCursorPosition(update.view)
+          emitSelectionRange(update.view)
         }),
       ],
     }),
@@ -86,6 +113,7 @@ onMounted(() => {
   syncEditorDiagnostics(editorView, props.diagnostics)
   syncEditorPlaybackHighlight(editorView, props.playbackHighlight)
   emitCursorPosition(editorView)
+  emitSelectionRange(editorView)
 })
 
 watch(abcText, (nextValue) => {

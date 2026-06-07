@@ -35,6 +35,18 @@ describe('AbcEditorPanel', () => {
       line: 1,
       column: 1,
     })
+    expect(wrapper.emitted('selection-change')?.[0]?.[0]).toEqual({
+      startpos: 0,
+      endpos: 0,
+      start: {
+        line: 1,
+        column: 1,
+      },
+      end: {
+        line: 1,
+        column: 1,
+      },
+    })
     const diagnosticUnderline = wrapper.find('.cm-abc-diagnostic-underline')
     expect(diagnosticUnderline.exists()).toBe(true)
     expect(wrapper.find('.cm-abc-diagnostic-underline--error').exists()).toBe(true)

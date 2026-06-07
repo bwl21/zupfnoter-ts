@@ -28,6 +28,10 @@ import { usePlaybackStore } from '../stores/playback'
 import { useSelectionStore } from '../stores/selection'
 import { usePlaybackDriver } from './usePlaybackDriver'
 import type { PlaybackStep } from './playback'
+import {
+  projectPlaybackHighlight,
+  projectZnIdsToTextRange,
+} from './selectionIndex'
 
 const editorTab = ref('abc')
 const editorPaneSize = ref(54)
@@ -48,6 +52,15 @@ const { toasts, syncDiagnostics, dismissToast } = useWorkbenchToasts()
 const playbackStore = usePlaybackStore()
 const selectionStore = useSelectionStore()
 const selectedZnIds = computed(() => selectionStore.selection.znIds)
+const selectedTextRange = computed(() => selectionStore.selection.textRange)
+const projectedPlaybackHighlight = computed(() => projectPlaybackHighlight(
+  selectionStore.selectionIndex,
+  playbackStore.highlight,
+))
+const projectedPlaybackTextRange = computed(() => projectZnIdsToTextRange(
+  selectionStore.selectionIndex,
+  playbackStore.highlight.activeZnIds,
+))
 const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
   playbackStore,
   computed(() => selectionStore.selection),
@@ -91,6 +104,7 @@ function renderNow(): void {
     const result = renderWorkbenchPreviews(abcText.value)
     scoreSvg.value = result.scoreSvg
     harpSvg.value = result.harpSvg
+    selectionStore.setSelectionIndex(result.selectionIndex)
     renderIssues.value = result.issues
     workbenchDiagnostics.value = result.diagnostics
     editorDiagnostics.value = result.editorDiagnostics
@@ -109,6 +123,27 @@ function handleEditorCursorChange(position: { line: number, column: number }): v
   const line = String(position.line).padStart(2, '0')
   const column = String(position.column).padStart(2, '0')
   editorCursor.value = `${line}:${column}`
+}
+
+function handleEditorSelectionChange(payload: {
+  startpos: number
+  endpos: number
+  start: { line: number; column: number }
+  end: { line: number; column: number }
+}): void {
+  selectionStore.setSelection({
+    kind: 'abc-range',
+    znIds: [],
+    textRange: {
+      startpos: payload.startpos,
+      endpos: payload.endpos,
+    },
+    lineColumnRange: {
+      start: payload.start,
+      end: payload.end,
+    },
+    source: 'abc-editor',
+  })
 }
 
 watch(abcText, () => {
@@ -131,6 +166,25 @@ function handlePreviewSelection(payload: { znId: string; extend: boolean; source
   }
 
   selectionStore.selectZnId(payload.znId, payload.source)
+}
+
+function handleScorePreviewSelection(payload: {
+  startpos: number
+  endpos: number
+  extend: boolean
+  source: 'score-preview'
+}): void {
+  const currentRange = selectionStore.selection.textRange
+  if (payload.extend && currentRange !== undefined) {
+    selectionStore.selectTextRange(
+      Math.min(currentRange.startpos, payload.startpos),
+      Math.max(currentRange.endpos, payload.endpos),
+      payload.source,
+    )
+    return
+  }
+
+  selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
 }
 
 onBeforeUnmount(() => {
@@ -202,8 +256,9 @@ onBeforeUnmount(() => {
                   v-if="activeId === 'abc'"
                   v-model="abcText"
                   :diagnostics="editorDiagnostics"
-                  :playback-highlight="playbackStore.highlight"
+                  :playback-highlight="projectedPlaybackHighlight"
                   @cursor-change="handleEditorCursorChange"
+                  @selection-change="handleEditorSelectionChange"
                 />
                 <LyricsPanel v-else-if="activeId === 'lyrics'" />
                 <ConfigEditorPanel v-else />
@@ -224,17 +279,17 @@ onBeforeUnmount(() => {
               <template #primary>
                 <ScorePreviewPanel
                   :error-message="previewErrorMessage"
-                  :playback-highlight="playbackStore.highlight"
-                  :selected-zn-ids="selectedZnIds"
+                  :playback-text-range="projectedPlaybackTextRange"
+                  :selected-text-range="selectedTextRange"
                   :svg="scoreSvg"
-                  @select-zn-id="handlePreviewSelection"
+                  @select-text-range="handleScorePreviewSelection"
                 />
               </template>
               <template #secondary>
                 <HarpPreviewPanel
                   v-model:zoom="harpZoom"
                   :error-message="previewErrorMessage"
-                  :playback-highlight="playbackStore.highlight"
+                  :playback-highlight="projectedPlaybackHighlight"
                   :selected-zn-ids="selectedZnIds"
                   :svg="harpSvg"
                   @select-zn-id="handlePreviewSelection"

@@ -27,6 +27,8 @@ interface Abc2svgUser {
   img_out?: (svg: string) => void
   errbld?: (severity: number, msg: string, fname: string | undefined, line: number | undefined, col: number | undefined) => void
   errmsg?: (msg: string, line?: number, column?: number) => void
+  anno_start?: (type: string, start: number, stop: number, x: number, y: number, w: number, h: number) => void
+  anno_stop?: (type: string, start: number, stop: number, x: number, y: number, w: number, h: number) => void
   textrans?: Record<string, string>
   read_file: (name: string) => string | null
   get_abcmodel?: (
@@ -39,7 +41,11 @@ interface Abc2svgUser {
 
 interface Abc2svgExports {
   abc2svg: { C: Record<string, number>; sym_name: string[]; version: string }
-  Abc: new (user: Abc2svgUser) => { tosvg: (fname: string, source: string) => void }
+  Abc: new (user: Abc2svgUser) => {
+    tosvg: (fname: string, source: string) => void
+    out_svg: (fragment: string) => void
+    out_sxsy: (x: number, infix: string, y: number) => void
+  }
 }
 
 interface Abc2svgVoice {
@@ -351,6 +357,10 @@ function normalizeAbc2svgErrmsg(message: string): { severity: 0 | 1 | 2, message
   }
 }
 
+function createScoreAnnotationId(type: string, startOffset: number, endOffset: number): string {
+  return `zn-score-${type}-${startOffset}-${endOffset}`
+}
+
 // ---------------------------------------------------------------------------
 // AbcParser
 // ---------------------------------------------------------------------------
@@ -449,6 +459,20 @@ export class AbcParser {
         if (line !== undefined) err.line = line + 1
         if (column !== undefined) err.column = column + 1
         this._errors.push(err)
+      },
+      anno_start: (type, start, stop) => {
+        const id = createScoreAnnotationId(type, start, stop)
+        abc.out_svg(
+          `<g id="${id}" class="zn-score-annotation" data-start-char="${start}" data-end-char="${stop}">\n`,
+        )
+      },
+      anno_stop: (_type, start, stop, x, y, w, h) => {
+        abc.out_svg('<rect class="zn-score-hitbox"')
+        abc.out_sxsy(x, '" y="', y)
+        abc.out_svg(
+          `" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="#fff" fill-opacity="0.001" stroke="none" pointer-events="all"/>\n`,
+        )
+        abc.out_svg('</g>\n')
       },
 
       read_file: (_name: string) => null,
