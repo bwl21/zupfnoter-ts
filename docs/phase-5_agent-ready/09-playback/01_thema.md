@@ -59,6 +59,7 @@ PlaybackHighlight ist ein zweites Highlight in anderer Farbe. Es überschreibt S
 - Prüfen, welche bestehenden Dateien/Komponenten im Repository bereits in diese Richtung gehen.
 - Umsetzung in kleinen, testbaren Schritten.
 - Nach jedem Agentenlauf den Status dieses Dokuments aktualisieren.
+- Die konkrete Ablaufregel fuer Wiederholungen und Volten ist in [03_ablaufstrategie.md](./03_ablaufstrategie.md) beschrieben.
 
 
 ## Hinweise zu möglichen Dateien
