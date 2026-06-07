@@ -793,6 +793,7 @@ export class AbcToSong {
       this._diagnostics.push({
         severity: 'error',
         message: INVALID_REMARK_ZNID_MESSAGE,
+        source: 'abc-to-song',
         startPos: this._symbolPosition(sym, 'start_pos', sym.istart),
         endPos: this._symbolPosition(sym, 'end_pos', sym.iend),
       })

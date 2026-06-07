@@ -364,6 +364,7 @@ r:bad-id
       {
         severity: 'error',
         message: 'illegal character in [r:] (must be of [a-z][a-z0.9_])',
+        source: 'abc-to-song',
         startPos: [8, 1],
         endPos: [8, 8],
       },

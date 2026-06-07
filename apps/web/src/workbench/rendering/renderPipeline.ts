@@ -10,9 +10,16 @@ import {
   mergeSongConfig,
 } from '@zupfnoter/core'
 import type { AbcParseError } from '@zupfnoter/core'
+import type { SongDiagnostic } from '@zupfnoter/types'
 import type { Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
+import {
+  parserErrorToWorkbenchDiagnostic,
+  songDiagnosticToWorkbenchDiagnostic,
+  workbenchDiagnosticHasPosition,
+  type WorkbenchDiagnostic,
+} from '../diagnostics'
 
 export interface RenderIssue {
   severity: 'warning' | 'error'
@@ -25,6 +32,8 @@ export interface WorkbenchRenderResult {
   scoreSvg: string
   harpSvg: string
   issues: RenderIssue[]
+  diagnostics: WorkbenchDiagnostic[]
+  toastDiagnostics: WorkbenchDiagnostic[]
   editorDiagnostics: EditorDiagnostic[]
   summary: string
   renderError?: string
@@ -33,25 +42,12 @@ export interface WorkbenchRenderResult {
 export const DEFAULT_ABC = referenceSheetAbc
 
 function parserIssueToRenderIssue(error: AbcParseError): RenderIssue {
-  const severity = error.severity >= 1 ? 'error' : 'warning'
   const location = error.line === undefined ? '' : `line ${error.line}: `
   return {
-    severity,
+    severity: 'error',
     message: `${location}${error.message}`,
     line: error.line,
     column: error.column,
-  }
-}
-
-function parserIssueToEditorDiagnostic(error: AbcParseError): EditorDiagnostic | null {
-  if (error.line === undefined) return null
-
-  return {
-    severity: error.severity >= 1 ? 'error' : 'warning',
-    message: error.message,
-    line: error.line,
-    column: error.column,
-    source: 'abc-parser',
   }
 }
 
@@ -96,10 +92,21 @@ export function renderWorkbenchPreviews(abcText: string): WorkbenchRenderResult 
     modelError = error instanceof Error ? error.message : String(error)
   }
 
-  const issues = modelParser.errors.map(parserIssueToRenderIssue)
-  const editorDiagnostics = modelParser.errors
-    .map(parserIssueToEditorDiagnostic)
-    .filter((diagnostic): diagnostic is EditorDiagnostic => diagnostic !== null)
+  const modelDiagnostics: WorkbenchDiagnostic[] = [
+    ...modelParser.errors.map(parserErrorToWorkbenchDiagnostic),
+    ...((song?.metaData.diagnostics ?? []) as SongDiagnostic[]).map(songDiagnosticToWorkbenchDiagnostic),
+  ]
+  const issues = scoreParser.errors.map(parserIssueToRenderIssue)
+  const editorDiagnostics = modelDiagnostics
+    .filter(workbenchDiagnosticHasPosition)
+    .map((diagnostic): EditorDiagnostic => ({
+      severity: diagnostic.severity,
+      message: diagnostic.message,
+      line: diagnostic.startPos[0],
+      column: diagnostic.startPos[1],
+      source: diagnostic.source,
+    }))
+  const toastDiagnostics = modelDiagnostics.filter((diagnostic) => !workbenchDiagnosticHasPosition(diagnostic))
 
   const renderError = scoreError ?? modelError
   const summary = song === null
@@ -113,6 +120,8 @@ export function renderWorkbenchPreviews(abcText: string): WorkbenchRenderResult 
     scoreSvg,
     harpSvg,
     issues,
+    diagnostics: modelDiagnostics,
+    toastDiagnostics,
     editorDiagnostics,
     summary,
     renderError,

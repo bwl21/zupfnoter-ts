@@ -19,7 +19,10 @@ import {
   renderWorkbenchPreviews,
   type RenderIssue,
 } from './rendering/renderPipeline'
+import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
+import WorkbenchToastStack from './toasts/WorkbenchToastStack.vue'
+import { useWorkbenchToasts } from './toasts/useWorkbenchToasts'
 import WorkbenchLayout from './WorkbenchLayout.vue'
 
 const editorTab = ref('abc')
@@ -30,24 +33,38 @@ const abcText = ref(DEFAULT_ABC)
 const scoreSvg = ref('')
 const harpSvg = ref('')
 const renderIssues = ref<RenderIssue[]>([])
+const workbenchDiagnostics = ref<WorkbenchDiagnostic[]>([])
 const editorDiagnostics = ref<EditorDiagnostic[]>([])
 const editorCursor = ref('01:01')
 const renderError = ref('')
 const renderSummary = ref('not rendered')
+const { toasts, syncDiagnostics, dismissToast } = useWorkbenchToasts()
 
 const renderIssueLabel = computed(() => {
   if (renderError.value) return 'Render error'
-  const warnings = renderIssues.value.filter((issue) => issue.severity === 'warning').length
+  const warnings = [
+    ...renderIssues.value,
+    ...workbenchDiagnostics.value,
+  ].filter((issue) => issue.severity === 'warning').length
+  const errors = [
+    ...renderIssues.value,
+    ...workbenchDiagnostics.value,
+  ].filter((issue) => issue.severity === 'error').length
+  if (errors > 0) return `${errors} error(s)`
   if (warnings > 0) return `${warnings} warning(s)`
   return 'Rendered'
 })
 
-const renderIssueTone = computed(() => renderError.value ? 'danger' : renderIssues.value.length > 0 ? 'warning' : 'success')
+const renderIssueTone = computed(() => {
+  if (renderError.value) return 'danger'
+  const issues = [...renderIssues.value, ...workbenchDiagnostics.value]
+  if (issues.some((issue) => issue.severity === 'error')) return 'danger'
+  if (issues.some((issue) => issue.severity === 'warning')) return 'warning'
+  return 'success'
+})
 
 const previewErrorMessage = computed(() => {
-  if (renderError.value) return renderError.value
-  const errors = renderIssues.value.filter((issue) => issue.severity === 'error')
-  return errors.map((issue) => issue.message).join('\n')
+  return renderError.value
 })
 
 let renderTimer: ReturnType<typeof setTimeout> | undefined
@@ -58,7 +75,9 @@ function renderNow(): void {
     scoreSvg.value = result.scoreSvg
     harpSvg.value = result.harpSvg
     renderIssues.value = result.issues
+    workbenchDiagnostics.value = result.diagnostics
     editorDiagnostics.value = result.editorDiagnostics
+    syncDiagnostics(result.toastDiagnostics)
     renderSummary.value = result.summary
     renderError.value = result.renderError ?? ''
   } catch (error) {
@@ -192,6 +211,11 @@ onBeforeUnmount(() => {
       />
     </template>
   </WorkbenchLayout>
+
+  <WorkbenchToastStack
+    :toasts="toasts"
+    @dismiss="dismissToast"
+  />
 </template>
 
 <style scoped>

@@ -58,7 +58,10 @@ class DiagnosticMarker extends GutterMarker {
   toDOM(): HTMLElement {
     const marker = document.createElement('span')
     marker.className = `cm-abc-gutter-marker cm-abc-gutter-marker--${this.severity}`
-    marker.textContent = this.severity === 'error' ? '‼️' : '!'
+    const icon = document.createElement('span')
+    icon.className = 'cm-abc-gutter-marker__icon'
+    icon.textContent = this.severity === 'error' ? '×' : '!'
+    marker.append(icon)
     marker.dataset.tooltipLine = String(this.tooltipLine)
     marker.setAttribute('aria-hidden', 'true')
     return marker
@@ -196,6 +199,10 @@ function classifyHeaderKind(
 }
 
 function buildDiagnosticDecorations(state: EditorState): DecorationSet {
+  if (typeof document.createRange().getClientRects !== 'function') {
+    return Decoration.none
+  }
+
   const builder = new RangeSetBuilder<Decoration>()
   const linesWithDiagnostics = new Map<number, EditorDiagnostic[]>()
 
@@ -416,22 +423,31 @@ export function createAbcEditorExtensions(): Extension[] {
       '.cm-abc-gutter-marker': {
         display: 'grid',
         placeItems: 'center',
-        width: '0.95em',
-        height: '0.95em',
-        margin: '0.18em auto 0',
-        borderRadius: '0.14rem',
-        fontSize: '0.88em',
+        width: '1em',
+        height: '1em',
+        margin: '0.16em auto 0',
+        borderRadius: '0.18rem',
+        fontSize: '0.82em',
         lineHeight: '1',
         fontWeight: '800',
         color: '#fff',
         overflow: 'hidden',
         boxShadow: '0 0 0 1px color-mix(in srgb, currentColor 22%, transparent)',
       },
+      '.cm-abc-gutter-marker__icon': {
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
+        transform: 'translateY(-0.02em)',
+      },
       '.cm-abc-gutter-marker--error': {
         backgroundColor: 'var(--zn-danger)',
       },
       '.cm-abc-gutter-marker--warning': {
-        backgroundColor: 'var(--zn-danger)',
+        backgroundColor: 'var(--zn-warning)',
+        color: 'var(--zn-heading)',
       },
       '.cm-abc-diagnostic-underline--error': {
         textDecorationLine: 'underline',
