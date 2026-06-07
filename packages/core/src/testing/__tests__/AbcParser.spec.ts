@@ -195,10 +195,13 @@ describe('AbcParser', () => {
         // abc2svg may throw for a bad tie, but the error details must still be captured
       }
 
-      const tieError = parser.errors.find((error) => error.message.includes('Bad tie'))
+      const tieError = parser.errors.find((error) => error.message.includes('fehlerhafter Haltebogen'))
       expect(tieError).toBeDefined()
       expect(tieError?.line).toBe(4)
       expect(tieError?.column).toBeGreaterThan(0)
+      expect(tieError?.message.startsWith('Warning: ')).toBe(false)
+      expect(tieError?.message.startsWith('Error: ')).toBe(false)
+      expect(tieError?.message.startsWith('Internal bug: ')).toBe(false)
     })
 
     it('errors array is reset on each parse() call', () => {

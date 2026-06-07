@@ -8,6 +8,7 @@
 
 import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
 import { ABC_TYPE } from './AbcModel.js'
+import { abc2svgTextrans } from './localization/de-de.js'
 
 // ---------------------------------------------------------------------------
 // Load abc2svg via browser-compatible ESM wrapper (vendored)
@@ -25,6 +26,8 @@ interface Abc2svgUser {
   keep_remark?: boolean
   img_out?: (svg: string) => void
   errbld?: (severity: number, msg: string, fname: string | undefined, line: number | undefined, col: number | undefined) => void
+  errmsg?: (msg: string, line?: number, column?: number) => void
+  textrans?: Record<string, string>
   read_file: (name: string) => string | null
   get_abcmodel?: (
     tsfirst: Abc2svgSymbol | null,
@@ -82,6 +85,12 @@ export interface AbcParseError {
   line?: number
   column?: number
 }
+
+const ABC2SVG_MESSAGE_PREFIXES = [
+  { prefix: 'Warning: ', severity: 0 as const },
+  { prefix: 'Error: ', severity: 1 as const },
+  { prefix: 'Internal bug: ', severity: 2 as const },
+] as const
 
 function countSlurStartsFromSource(source: string, startOffset: number): number[] {
   if (startOffset <= 0) return []
@@ -308,29 +317,6 @@ function buildLineStarts(source: string): number[] {
   return lineStarts
 }
 
-function offsetToLineColumn(lineStarts: number[], offset: number | undefined): { line?: number; column?: number } {
-  if (offset === undefined || Number.isNaN(offset) || offset < 0) {
-    return {}
-  }
-
-  let lineIndex = 0
-  for (let index = 0; index < lineStarts.length; index += 1) {
-    if (lineStarts[index] <= offset) {
-      lineIndex = index
-    } else {
-      break
-    }
-  }
-
-  const lineStart = lineStarts[lineIndex]
-  if (lineStart === undefined) return {}
-
-  return {
-    line: lineIndex + 1,
-    column: offset - lineStart + 1,
-  }
-}
-
 function loadAbc2svg(): Abc2svgExports {
   const mod = { exports: {} as Record<string, unknown> }
   const fn = new Function('module', 'exports', abc2svgSource)
@@ -348,6 +334,22 @@ function loadAbc2svg(): Abc2svgExports {
 }
 
 const _abc2svgModule = loadAbc2svg()
+
+function normalizeAbc2svgErrmsg(message: string): { severity: 0 | 1 | 2, message: string } {
+  for (const entry of ABC2SVG_MESSAGE_PREFIXES) {
+    const index = message.indexOf(entry.prefix)
+    if (index < 0) continue
+    return {
+      severity: entry.severity,
+      message: message.slice(index + entry.prefix.length),
+    }
+  }
+
+  return {
+    severity: 1,
+    message,
+  }
+}
 
 // ---------------------------------------------------------------------------
 // AbcParser
@@ -375,21 +377,20 @@ export class AbcParser {
   parse(abcText: string): AbcModel {
     this._errors = []
     this._model = null
-    const lineStarts = buildLineStarts(abcText)
 
     const user: Abc2svgUser = {
       keep_remark: true,
+      textrans: abc2svgTextrans,
       // Suppress SVG output — we only need the model
       img_out: (_svg: string) => { /* no-op */ },
-
-      errbld: (severity, msg, _fname, offset) => {
-        const position = offsetToLineColumn(lineStarts, offset)
+      errmsg: (msg, line, column) => {
+        const normalized = normalizeAbc2svgErrmsg(msg)
         const err: AbcParseError = {
-          severity: (severity > 1 ? 2 : severity) as 0 | 1 | 2,
-          message: msg,
-          line: position.line,
-          column: position.column,
+          severity: normalized.severity,
+          message: normalized.message,
         }
+        if (line !== undefined) err.line = line + 1
+        if (column !== undefined) err.column = column + 1
         this._errors.push(err)
       },
 
@@ -431,23 +432,22 @@ export class AbcParser {
   renderSvg(abcText: string): string {
     this._errors = []
     this._model = null
-    const lineStarts = buildLineStarts(abcText)
 
     const chunks: string[] = []
     const user: Abc2svgUser = {
       keep_remark: true,
+      textrans: abc2svgTextrans,
       img_out: (svg: string) => {
         chunks.push(svg)
       },
-
-      errbld: (severity, msg, _fname, offset) => {
-        const position = offsetToLineColumn(lineStarts, offset)
+      errmsg: (msg, line, column) => {
+        const normalized = normalizeAbc2svgErrmsg(msg)
         const err: AbcParseError = {
-          severity: (severity > 1 ? 2 : severity) as 0 | 1 | 2,
-          message: msg,
-          line: position.line,
-          column: position.column,
+          severity: normalized.severity,
+          message: normalized.message,
         }
+        if (line !== undefined) err.line = line + 1
+        if (column !== undefined) err.column = column + 1
         this._errors.push(err)
       },
 
