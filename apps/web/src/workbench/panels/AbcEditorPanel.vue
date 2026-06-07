@@ -115,6 +115,7 @@ onBeforeUnmount(() => {
 .panel-shell {
   display: grid;
   min-height: 0;
+  min-width: 0;
   height: 100%;
   border: 1px solid var(--zn-border);
   border-radius: var(--zn-radius-sm);
@@ -123,6 +124,7 @@ onBeforeUnmount(() => {
 
 .panel-shell__editor {
   min-height: 0;
+  min-width: 0;
   height: 100%;
 }
 </style>

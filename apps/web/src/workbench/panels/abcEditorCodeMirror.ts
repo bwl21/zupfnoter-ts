@@ -402,16 +402,31 @@ export function createAbcEditorExtensions(): Extension[] {
       '&': {
         height: '100%',
         minHeight: '0',
+        minWidth: '0',
+        maxWidth: '100%',
         backgroundColor: 'var(--zn-bg-surface)',
         color: 'var(--zn-text-soft)',
         fontFamily: 'var(--zn-font-mono)',
         fontSize: '0.82rem',
         lineHeight: '1.55',
       },
+      '.cm-editor': {
+        width: '100%',
+        minWidth: '0',
+        height: '100%',
+      },
       '.cm-scroller': {
         fontFamily: 'inherit',
-        overflow: 'auto',
+        minWidth: '0',
+        overflowX: 'auto',
+        overflowY: 'auto',
         backgroundColor: 'var(--zn-bg-surface)',
+      },
+      '.cm-content': {
+        minWidth: 'max-content',
+        width: '100%',
+        padding: 'var(--zn-space-3) 0',
+        caretColor: 'var(--zn-accent)',
       },
       '.cm-gutters': {
         backgroundColor: 'var(--zn-bg-surface)',
@@ -504,10 +519,6 @@ export function createAbcEditorExtensions(): Extension[] {
       },
       '.cm-abc-diagnostic-tooltip__text': {
         lineHeight: '1.35',
-      },
-      '.cm-content': {
-        padding: 'var(--zn-space-3) 0',
-        caretColor: 'var(--zn-accent)',
       },
       '.cm-focused': {
         outline: 'none',
