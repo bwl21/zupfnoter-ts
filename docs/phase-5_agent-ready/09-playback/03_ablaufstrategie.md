@@ -7,10 +7,35 @@ Dieses Dokument beschreibt die fachliche Ablaufstrategie fuer Playback in Phase 
 Die Kernidee ist:
 
 - Die Selection bezieht sich immer auf den **notierten Score**.
-- Der musikalische Ablauf wird anschliessend als **expandierter Ablauf** mit Wiederholungen, Volten und Spruengen berechnet.
+- Der musikalische Ablauf wird anschliessend als **expandierter Ablauf** mit Wiederholungen, Volten, Spruengen und optionaler Part-Reihenfolge berechnet.
 - Playback filtert oder startet danach auf diesem expandierten Ablauf.
 
 Damit wird vermieden, dass Selection und Ablauf-Logik in zwei getrennten Playern auseinanderlaufen.
+
+## Architekturentscheidung
+
+Der Rewrite zielt **nicht** auf den eingebauten `abc2svg`-Player als Zielsystem.
+
+`abc2svg` kann dabei hilfreich sein als:
+
+- Referenz fuer Legacy-Verhalten
+- temporaere Uebergangsloesung
+- Debug- und Vergleichswerkzeug
+
+Die Zielarchitektur fuer Phase 5 ist jedoch:
+
+- eigener `PlaybackFlowBuilder`
+- eigener Scope-Resolver fuer `none` / `point` / `range`
+- eigener Audio-Adapter
+
+Grund dafuer ist:
+
+- Selection soll auf notiertem Material definiert bleiben
+- Wiederholungen, Volten und Spruenge sollen zentral expandiert werden
+- Extracts und Part-Reihenfolgen sollen in denselben Ablauf eingehen
+- spaetere Durchlauf-Policies brauchen explizite Ablaufmetadaten
+
+Der `abc2svg`-Player ist dafuer zu eng auf Standard-Score-Playback zugeschnitten und bietet nicht die benoetigte fachliche Steuerbarkeit.
 
 ## Grundregel
 
@@ -71,6 +96,14 @@ switch (selection.kind) {
 }
 ```
 
+Schritt 2 ist dabei bewusst weiter gefasst als reine Wiederholungsexpansion. Der Ablauf kann aus mehreren fachlichen Quellen aufgebaut werden:
+
+- Standard-Scorelogik
+- Wiederholungen
+- Volten
+- Spruenge
+- explizite Part-Reihenfolge
+
 Dabei gilt:
 
 - `originZnId` bleibt die Referenz auf die notierte Ursprungsnote
@@ -89,6 +122,8 @@ interface PlaybackEvent {
   time: number
   flowIndex: number
   passIndex: number
+  partName?: string
+  partIteration?: number
   repeatCycle?: number
   voltaNumber?: number
 }
@@ -102,6 +137,10 @@ Bedeutung:
   - laufender Index im expandierten Ablauf
 - `passIndex`
   - in welchem Durchlauf das Event liegt
+- `partName`
+  - aus welchem Part des Stuecks das Event stammt
+- `partIteration`
+  - der wievielte Durchlauf dieses Parts im erzeugten Ablauf ist
 - `repeatCycle`
   - optionale Kennzeichnung der uebergeordneten Wiederholungsschleife
 - `voltaNumber`
@@ -110,6 +149,7 @@ Bedeutung:
 Warum das sinnvoll ist:
 
 - dieselbe notierte Note kann mehrfach im Ablauf vorkommen
+- Events koennen eindeutig einem Part-Durchlauf zugeordnet werden
 - die Wiedergabe kann spaeter gezielt auf den ersten oder zweiten Durchlauf eingeschraenkt werden
 - Wiederholungs- und Voltenverhalten wird debugbar
 - Selection bleibt trotzdem auf dem notierten Score definiert
@@ -311,6 +351,56 @@ Beispiel:
 
 Damit bleibt die Ablauf-Logik einmalig, auch wenn sich der Scope aendert.
 
+## Part-Reihenfolge als Ablaufquelle
+
+Manche Stuecke markieren Parts im notierten Material und definieren zusaetzlich eine explizite Reihenfolge, in der diese Parts gespielt werden sollen.
+
+Diese Information sollte in derselben Ablaufarchitektur genutzt werden wie Wiederholungen und Volten.
+
+Das bedeutet:
+
+- Part-Markierungen sind nicht nur Anzeigeinformation
+- Part-Reihenfolgen koennen echte Eingaben fuer die Ablaufgenerierung sein
+- die Ablaufgenerierung baut daraus einen konkreten `PlaybackFlow`
+
+Empfohlenes Zielbild:
+
+```ts
+interface PlaybackPlan {
+  parts?: string[]
+}
+```
+
+Beispiel:
+
+- notierte Parts: `A`, `B`, `C`
+- explizite Abfolge: `A A B C`
+
+Dann wird der expandierte Ablauf nicht nur aus Repeat-Logik gebildet, sondern aus:
+
+- notierter Grundstruktur
+- Wiederholungen/Volten
+- zusaetzlicher Part-Abfolge
+
+Ein Event im Ablauf koennte dadurch zum Beispiel tragen:
+
+```ts
+{
+  originZnId: 'note-4711',
+  flowIndex: 38,
+  passIndex: 2,
+  partName: 'A',
+  partIteration: 2,
+}
+```
+
+Das schafft spaeter weitere Steuerungsmoeglichkeiten:
+
+- nur einen bestimmten Part abspielen
+- nur den zweiten Durchlauf eines Parts abspielen
+- Selection auf einen Part-Durchlauf eingrenzen
+- Debug-Ausgaben fuer den gesamten erzeugten Ablauf verbessern
+
 ## Audio / Instrument
 
 Die Umschaltung des Instruments ist nur eine Indikation fuer den Modus:
@@ -323,6 +413,7 @@ Das Instrument darf aber **nicht** ueber die Ablaufstrategie entscheiden.
 ## Konsequenzen fuer die Implementierung
 
 - Wiederholungen und Volten muessen zentral in einem gemeinsamen Playback-Flow aufgeloest werden
+- Part-Reihenfolgen muessen in dieselbe Ablaufgenerierung einfliessen
 - Selection wird danach auf diesen Flow projiziert
 - Selection-Playback darf keine zweite, vereinfachte Ablauflogik bekommen
 - Ein spezieller Harfenklang ist optional und nur Audio-Output, nicht fachlicher Player
@@ -331,4 +422,5 @@ Das Instrument darf aber **nicht** ueber die Ablaufstrategie entscheiden.
 
 - Welche Quelle expandiert den Ablauf spaeter: abc2svg direkt oder ein eigenes TS-Flow-Modell?
 - Wie werden Spruenge wie Da Capo, Segno, Fine in Phase 5 priorisiert?
+- Wie wird eine explizite Part-Reihenfolge im Datenmodell des Rewrites repraesentiert?
 - Ob `active-extract` ohne Selection als eigener Scope zusaetzlich angeboten wird, ist noch zu entscheiden
