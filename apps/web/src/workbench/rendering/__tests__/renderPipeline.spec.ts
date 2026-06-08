@@ -14,13 +14,13 @@ describe('renderWorkbenchPreviews', () => {
     expect(result.editorDiagnostics.some((diagnostic) => diagnostic.line === 4)).toBe(true)
   })
 
-  it('builds a selection index from the rendered song model', () => {
+  it('builds a sheet object index from the rendered score and song model', () => {
     const result = renderWorkbenchPreviews('X:1\nT:Demo\nK:C\nC D')
 
-    expect(result.selectionIndex).toBeDefined()
-    expect(result.selectionIndex?.entries.length).toBeGreaterThan(0)
-    expect(Object.keys(result.selectionIndex?.byZnId ?? {})).not.toHaveLength(0)
+    expect(result.sheetObjectIndex).toBeDefined()
+    expect(result.sheetObjectIndex?.entries.length).toBeGreaterThan(0)
+    expect(Object.keys(result.sheetObjectIndex?.byZnId ?? {})).not.toHaveLength(0)
     expect(result.scoreSvg).toContain('data-start-char=')
-    expect(result.scoreSvg).toContain('class="zn-score-annotation"')
+    expect(result.scoreSvg).toContain('class="zn-score-annotation zn-score-hitbox"')
   })
 })

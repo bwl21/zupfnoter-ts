@@ -9,8 +9,8 @@ import { useTextRangeSvgHighlight } from './useTextRangeSvgHighlight'
 const props = defineProps<{
   svg: string
   errorMessage?: string
-  selectedTextRange?: SelectionTextRange
-  playbackTextRange?: SelectionTextRange
+  selectedTextRanges?: SelectionTextRange[]
+  playbackTextRanges?: SelectionTextRange[]
 }>()
 
 const emit = defineEmits<{
@@ -22,20 +22,20 @@ const svgFrame = ref<HTMLElement | null>(null)
 useTextRangeSvgHighlight(
   svgFrame,
   toRef(props, 'svg'),
-  toRef(props, 'selectedTextRange'),
-  'zn-selection-highlight',
+  toRef(props, 'selectedTextRanges'),
+  'zn-selection-highlight-range',
 )
 useTextRangeSvgHighlight(
   svgFrame,
   toRef(props, 'svg'),
-  toRef(props, 'playbackTextRange'),
+  toRef(props, 'playbackTextRanges'),
   'zn-playback-highlight',
 )
 
 function handleSvgClick(event: MouseEvent): void {
   const target = event.target
   if (!(target instanceof Element)) return
-  const element = target.closest('[data-start-char][data-end-char]')
+  const element = target.closest('.zn-score-hitbox[data-start-char][data-end-char]')
   const startpos = Number(element?.getAttribute('data-start-char'))
   const endpos = Number(element?.getAttribute('data-end-char'))
   if (Number.isNaN(startpos) || Number.isNaN(endpos)) return
@@ -135,16 +135,25 @@ function handleSvgClick(event: MouseEvent): void {
   cursor: pointer;
 }
 
-.preview-stage__svg :deep(.zn-playback-highlight) {
-  filter:
-    drop-shadow(0 0 1.2px color-mix(in srgb, var(--zn-accent-strong) 80%, white))
-    drop-shadow(0 0 4px color-mix(in srgb, var(--zn-accent) 40%, transparent));
+.preview-stage__svg :deep(.zn-score-hitbox.zn-playback-highlight) {
+  fill: color-mix(in srgb, var(--zn-accent) 22%, transparent);
+  fill-opacity: 1;
+  stroke: color-mix(in srgb, var(--zn-accent-strong) 78%, white);
+  stroke-width: 1.1;
 }
 
-.preview-stage__svg :deep(.zn-selection-highlight) {
-  filter:
-    drop-shadow(0 0 1.2px color-mix(in srgb, var(--zn-warning) 85%, white))
-    drop-shadow(0 0 3px color-mix(in srgb, var(--zn-warning) 48%, transparent));
+.preview-stage__svg :deep(.zn-score-hitbox.zn-selection-highlight-range) {
+  fill: color-mix(in srgb, var(--zn-danger) 12%, transparent);
+  fill-opacity: 1;
+  stroke: color-mix(in srgb, var(--zn-danger) 88%, white);
+  stroke-width: 1.5;
+}
+
+.preview-stage__svg :deep(.zn-score-hitbox.zn-selection-highlight-range.zn-playback-highlight) {
+  fill: color-mix(in srgb, var(--zn-accent) 22%, transparent);
+  fill-opacity: 1;
+  stroke: color-mix(in srgb, var(--zn-danger) 88%, white);
+  stroke-width: 1.5;
 }
 
 .preview-stage__error {

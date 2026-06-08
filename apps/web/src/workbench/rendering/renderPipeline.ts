@@ -10,8 +10,8 @@ import {
   mergeSongConfig,
 } from '@zupfnoter/core'
 import type { AbcParseError } from '@zupfnoter/core'
-import type { SelectionIndex, SongDiagnostic } from '@zupfnoter/types'
-import type { Song, Voice, VoiceEntity } from '@zupfnoter/types'
+import type { SheetObjectIndex, SongDiagnostic } from '@zupfnoter/types'
+import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, type PlaybackStep } from '../playback'
@@ -21,7 +21,7 @@ import {
   workbenchDiagnosticHasPosition,
   type WorkbenchDiagnostic,
 } from '../diagnostics'
-import { buildSelectionIndexFromSong } from '../selectionIndex'
+import { buildSheetObjectIndex } from '../selectionIndex'
 
 export interface RenderIssue {
   severity: 'warning' | 'error'
@@ -33,7 +33,7 @@ export interface RenderIssue {
 export interface WorkbenchRenderResult {
   scoreSvg: string
   harpSvg: string
-  selectionIndex?: SelectionIndex
+  sheetObjectIndex?: SheetObjectIndex
   issues: RenderIssue[]
   diagnostics: WorkbenchDiagnostic[]
   toastDiagnostics: WorkbenchDiagnostic[]
@@ -85,14 +85,14 @@ export function renderWorkbenchPreviews(abcText: string): WorkbenchRenderResult 
   let song: ReturnType<AbcToSong['transform']> | null = null
   let sheetChildCount = 0
   let modelError: string | undefined
-  let selectionIndex: SelectionIndex | undefined
+  let sheetObjectIndex: SheetObjectIndex | undefined
   try {
     const parsedModel = modelParser.parse(abcText)
     song = new AbcToSong().transform(parsedModel, config)
-    selectionIndex = buildSelectionIndexFromSong(song, abcText)
     const sheet = new HarpnotesLayout(config, {
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
     }).layout(song, 0, 'A3')
+    sheetObjectIndex = buildSheetObjectIndex(song, sheet as Sheet, abcText, scoreSvg)
     sheetChildCount = sheet.children.length
     harpSvg = scaleSvgForPreview(new SvgEngine().draw(sheet))
   } catch (error) {
@@ -128,7 +128,7 @@ export function renderWorkbenchPreviews(abcText: string): WorkbenchRenderResult 
   return {
     scoreSvg,
     harpSvg,
-    selectionIndex,
+    sheetObjectIndex,
     issues,
     diagnostics: modelDiagnostics,
     toastDiagnostics,

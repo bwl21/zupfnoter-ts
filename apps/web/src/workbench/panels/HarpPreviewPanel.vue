@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, toRef } from 'vue'
 
-import type { PlaybackHighlight } from '@zupfnoter/types'
+import type { PlaybackHighlight, SelectionTextRange } from '@zupfnoter/types'
 
 import ZnZoomControl from '../../design-system/components/ZnZoomControl.vue'
 import ZnTabs from '../../design-system/components/ZnTabs.vue'
@@ -14,7 +14,11 @@ const props = defineProps<{
   svg: string
   errorMessage?: string
   playbackHighlight?: PlaybackHighlight
-  selectedZnIds?: string[]
+  selection?: {
+    znIds: string[]
+    confKeys: string[]
+    textRanges: SelectionTextRange[]
+  }
 }>()
 
 const emit = defineEmits<{
@@ -37,7 +41,7 @@ usePlaybackSvgHighlight(
 useSelectionSvgHighlight(
   canvasRef,
   toRef(props, 'svg'),
-  toRef(props, 'selectedZnIds'),
+  toRef(props, 'selection'),
 )
 
 function emitSelectionFromEvent(target: EventTarget | null, extend: boolean): void {
@@ -166,16 +170,26 @@ function handlePointerUp(event: PointerEvent): void {
   max-width: none;
 }
 
-.harp-preview__svg :deep(.zn-playback-highlight) {
-  filter:
-    drop-shadow(0 0 1.2px color-mix(in srgb, var(--zn-accent-strong) 80%, white))
-    drop-shadow(0 0 4px color-mix(in srgb, var(--zn-accent) 40%, transparent));
+.harp-preview__svg :deep(.zupfnoter-hitbox.zn-playback-highlight) {
+  fill: color-mix(in srgb, var(--zn-accent) 22%, transparent);
+  fill-opacity: 1;
+  stroke: color-mix(in srgb, var(--zn-accent-strong) 78%, white);
+  stroke-width: 1.1;
+  opacity: 1;
+  vector-effect: non-scaling-stroke;
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: miter;
 }
 
-.harp-preview__svg :deep(.zn-selection-highlight) {
-  filter:
-    drop-shadow(0 0 1.2px color-mix(in srgb, var(--zn-warning) 85%, white))
-    drop-shadow(0 0 3px color-mix(in srgb, var(--zn-warning) 48%, transparent));
+.harp-preview__svg :deep(.zupfnoter-hitbox.zn-selection-highlight) {
+  fill: color-mix(in srgb, var(--zn-danger) 12%, transparent);
+  fill-opacity: 1;
+  stroke: color-mix(in srgb, var(--zn-danger) 88%, white);
+  stroke-width: 1.5;
+  opacity: 1;
+  vector-effect: non-scaling-stroke;
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: miter;
 }
 
 .harp-preview__error {

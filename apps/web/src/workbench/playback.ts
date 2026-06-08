@@ -3,10 +3,12 @@ import type {
   PlaybackPlayerEvent,
   PlaybackHighlight,
   SelectionState,
+  SheetObjectIndex,
   PlayableEntity,
   Song,
   VoiceEntity,
 } from '@zupfnoter/types'
+import { resolveSelectedZnIds } from './selectionIndex'
 
 export interface PlaybackStep {
   activeZnIds: string[]
@@ -21,10 +23,11 @@ export interface PlaybackStep {
  * This keeps the decision logic outside of the view layer so the player,
  * future worker bridge and any command handlers use the same rule set.
  */
-export function resolvePlaybackMode(selection: SelectionState, activeExtract: number): PlaybackMode {
+export function resolvePlaybackMode(selection: SelectionState, index: SheetObjectIndex | undefined, activeExtract: number): PlaybackMode {
   void activeExtract
-  if (selection.kind !== 'music-range') return 'all-score'
-  if (selection.znIds.length <= 1) return 'from-note-harp'
+  const selectedZnIds = resolveSelectedZnIds(index, selection)
+  if (selection.source !== 'harp-preview' || selectedZnIds.length === 0) return 'all-score'
+  if (selectedZnIds.length <= 1) return 'from-note-harp'
   return 'range-harp'
 }
 
@@ -116,15 +119,17 @@ export function buildPlaybackTimeline(song: Song): PlaybackStep[] {
 
 export function resolvePlaybackSteps(
   selection: SelectionState,
+  index: SheetObjectIndex | undefined,
   timeline: PlaybackStep[],
   mode: PlaybackMode,
 ): PlaybackStep[] {
-  if (mode === 'all-score' || selection.znIds.length === 0) {
+  const selectedZnIds = resolveSelectedZnIds(index, selection)
+  if (mode === 'all-score' || selectedZnIds.length === 0) {
     return timeline
   }
 
   const selectedIndices = timeline
-    .map((step, index) => ({ index, matches: step.activeZnIds.some((znId) => selection.znIds.includes(znId)) }))
+    .map((step, index) => ({ index, matches: step.activeZnIds.some((znId) => selectedZnIds.includes(znId)) }))
     .filter((entry) => entry.matches)
     .map((entry) => entry.index)
 

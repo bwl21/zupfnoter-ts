@@ -461,18 +461,19 @@ export class AbcParser {
         this._errors.push(err)
       },
       anno_start: (type, start, stop) => {
+        void type
+        void start
+        void stop
+      },
+      anno_stop: (type, start, stop, x, y, w, h) => {
         const id = createScoreAnnotationId(type, start, stop)
         abc.out_svg(
-          `<g id="${id}" class="zn-score-annotation" data-start-char="${start}" data-end-char="${stop}">\n`,
+          `<rect id="${id}" class="zn-score-annotation zn-score-hitbox" data-start-char="${start}" data-end-char="${stop}" x="`,
         )
-      },
-      anno_stop: (_type, start, stop, x, y, w, h) => {
-        abc.out_svg('<rect class="zn-score-hitbox"')
         abc.out_sxsy(x, '" y="', y)
         abc.out_svg(
           `" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="#fff" fill-opacity="0.001" stroke="none" pointer-events="all"/>\n`,
         )
-        abc.out_svg('</g>\n')
       },
 
       read_file: (_name: string) => null,

@@ -21,48 +21,60 @@ export interface SelectionLineColumn {
   column: number
 }
 
-/** Mapping entry between text, music and config identities. */
-export interface SelectionIndexEntry {
+/** Addressable pane targets for a sheet object entry. */
+export interface SheetObjectAddressability {
+  /** Can be highlighted in the ABC editor. */
+  editor: boolean
+  /** Can be highlighted in the classical score preview. */
+  score: boolean
+  /** Can be highlighted in the harp/SVG preview. */
+  svg: boolean
+}
+
+/** Mapping entry between text, music, score, and config identities. */
+export interface SheetObjectIndexEntry {
+  /** Origin domain of the addressable object. */
+  kind: 'score-object' | 'music-entity' | 'sheet-object'
   /** Stable Zupfnoter identifier when the entry belongs to a music entity. */
   znId?: string
-  /** ABC text range for the mapped entity. */
-  textRange: SelectionTextRange
-  /** 1-based start position in line/column form. */
-  startPos: SelectionLineColumn
-  /** 1-based end position in line/column form. */
-  endPos: SelectionLineColumn
+  /** ABC text range for the mapped entity, if available. */
+  textRange?: SelectionTextRange
+  /** 1-based start position in line/column form, if available. */
+  startPos?: SelectionLineColumn
+  /** 1-based end position in line/column form, if available. */
+  endPos?: SelectionLineColumn
   /** Config reference when the mapped entity is config-backed. */
   confKey?: string
+  /** Pane-specific addressability for the current render generation. */
+  addressableIn: SheetObjectAddressability
 }
 
 /** Cross-view mapping index used to translate between selection identities. */
-export interface SelectionIndex {
+export interface SheetObjectIndex {
+  /** Render-generation-local version of the current index. */
+  version: number
   /** ABC source line starts as zero-based character offsets. */
   lineStarts: number[]
+  /** Active ABC voice id per 1-based source line, when derivable from `V:` directives. */
+  voiceByLine: Record<number, string | undefined>
   /** Entry lookup by Zupfnoter id. */
-  byZnId: Record<string, SelectionIndexEntry>
+  byZnId: Record<string, number[]>
+  /** Entry lookup by config key. */
+  byConfKey: Record<string, number[]>
+  /** Exact text range lookup (`start:end`). */
+  byTextRange: Record<string, number[]>
   /** Ordered entries for range-based lookups. */
-  entries: SelectionIndexEntry[]
+  entries: SheetObjectIndexEntry[]
 }
 
+/** Selection origin within the workbench. */
+export type SelectionSource = 'abc-editor' | 'score-preview' | 'harp-preview' | 'player' | 'command'
+
 export interface SelectionState {
-  /** What kind of object is currently selected. */
-  kind: 'none' | 'music-range' | 'abc-range' | 'abc-element' | 'config-object'
-  /** Selected Zupfnoter IDs, if the selection is tied to music entities. */
-  znIds: string[]
-  /** Selected ABC text range [startpos, endpos], if applicable. */
-  textRange?: SelectionTextRange
-  /** Selected line/column range, if applicable. */
-  lineColumnRange?: {
-    start: SelectionLineColumn
-    end: SelectionLineColumn
-  }
-  /** Start char for selections that are best addressed by a single position. */
-  startChar?: number
-  /** Selected config key, if the selection points at a config object. */
-  confKey?: string
-  /** ABC element kind, if the selection is tied to a specific parser node. */
-  abcElementKind?: string
+  /** Selected index entries within the current render-generation-local sheet object index. */
+  selectedIndexes: number[]
+  /** Anchor index for range extension, if applicable. */
+  anchorIndex?: number
   /** Where the selection originated from. */
-  source: 'abc-editor' | 'score-preview' | 'harp-preview' | 'player' | 'command'
+  source: SelectionSource
 }

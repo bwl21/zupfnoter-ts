@@ -38,8 +38,10 @@ export type {
 export type {
   SelectionTextRange,
   SelectionLineColumn,
-  SelectionIndexEntry,
-  SelectionIndex,
+  SheetObjectAddressability,
+  SheetObjectIndexEntry,
+  SheetObjectIndex,
+  SelectionSource,
   SelectionState,
 } from './selection.js'
 

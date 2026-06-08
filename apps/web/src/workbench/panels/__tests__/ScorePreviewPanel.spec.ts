@@ -18,7 +18,7 @@ describe('ScorePreviewPanel', () => {
   it('emits selected znId clicks from the injected svg', async () => {
     const wrapper = mount(ScorePreviewPanel, {
       props: {
-        svg: '<svg width="40" height="20"><g data-start-char="12" data-end-char="18"><rect width="10" height="10" /></g></svg>',
+        svg: '<svg width="40" height="20"><rect class="zn-score-hitbox" data-start-char="12" data-end-char="18" width="10" height="10" /></svg>',
       },
     })
 

@@ -1,200 +1,236 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import type {
-  SelectionIndex,
   SelectionLineColumn,
+  SelectionSource,
   SelectionState,
-  SelectionTextRange,
+  SheetObjectIndex,
 } from '@zupfnoter/types'
 
 import {
   normalizeLineColumnRange,
   projectLineColumnRangeToTextRange,
-  projectTextRangeToLineColumnRange,
-  projectTextRangeToZnIds,
-  projectZnIdsToTextRange,
+  resolveIndexesByConfKey,
+  resolveIndexesByTextRangeAndKind,
+  resolveIndexesByTextRange,
+  resolveIndexesByZnId,
 } from '../workbench/selectionIndex'
 
 function createSelectionState(): SelectionState {
   return {
-    kind: 'none',
-    znIds: [],
+    selectedIndexes: [],
     source: 'command',
   }
-}
-
-function cloneLineColumn(position: SelectionLineColumn): SelectionLineColumn {
-  return {
-    line: position.line,
-    column: position.column,
-  }
-}
-
-function cloneTextRange(range: SelectionTextRange | undefined): SelectionTextRange | undefined {
-  if (range === undefined) return undefined
-  return { ...range }
 }
 
 function cloneSelection(selection: SelectionState): SelectionState {
   return {
     ...selection,
-    znIds: [...selection.znIds],
-    textRange: cloneTextRange(selection.textRange),
-    lineColumnRange: selection.lineColumnRange === undefined
-      ? undefined
-      : {
-        start: cloneLineColumn(selection.lineColumnRange.start),
-        end: cloneLineColumn(selection.lineColumnRange.end),
-      },
+    selectedIndexes: [...selection.selectedIndexes],
   }
 }
 
-function normalizeTextRange(startpos: number, endpos: number): SelectionTextRange {
-  return startpos <= endpos
-    ? { startpos, endpos }
-    : { startpos: endpos, endpos: startpos }
+function isSelectionDebugEnabled(): boolean {
+  return import.meta.env.DEV && import.meta.env.MODE !== 'test'
 }
 
-function enrichSelection(selectionIndex: SelectionIndex | undefined, selection: SelectionState): SelectionState {
-  if (selection.kind === 'none') {
-    return {
-      kind: 'none',
-      znIds: [],
-      source: selection.source,
-    }
-  }
+function logSelectionDebug(
+  event: string,
+  selection: SelectionState,
+  sheetObjectIndex: SheetObjectIndex | undefined,
+): void {
+  if (!isSelectionDebugEnabled()) return
 
-  const nextSelection = cloneSelection(selection)
+  console.debug('[selection-store]', {
+    event,
+    source: selection.source,
+    selectedIndexes: [...selection.selectedIndexes],
+    selectedIndexCount: selection.selectedIndexes.length,
+    anchorIndex: selection.anchorIndex ?? '-',
+    hasSheetObjectIndex: sheetObjectIndex !== undefined,
+    sheetObjectIndexEntries: sheetObjectIndex?.entries.length ?? 0,
+    sheetObjectIndexVersion: sheetObjectIndex?.version ?? '-',
+  })
+}
 
-  if (selection.kind === 'music-range') {
-    nextSelection.textRange = projectZnIdsToTextRange(selectionIndex, selection.znIds)
-    nextSelection.lineColumnRange = nextSelection.textRange === undefined
-      ? undefined
-      : projectTextRangeToLineColumnRange(selectionIndex, nextSelection.textRange)
-    nextSelection.startChar = nextSelection.textRange?.startpos
-    return nextSelection
-  }
+function logSelectionResolutionDebug(
+  event: string,
+  payload: {
+    source: SelectionSource
+    startpos: number
+    endpos: number
+    resolvedIndexes: number[]
+  },
+  sheetObjectIndex: SheetObjectIndex | undefined,
+): void {
+  if (!isSelectionDebugEnabled()) return
 
-  if (selection.kind === 'abc-range') {
-    const textRange = selection.textRange ?? (
-      selection.lineColumnRange === undefined
-        ? undefined
-        : projectLineColumnRangeToTextRange(selectionIndex, selection.lineColumnRange)
-    )
-    nextSelection.textRange = textRange
-    nextSelection.lineColumnRange = selection.lineColumnRange === undefined
-      ? textRange === undefined
-        ? undefined
-        : projectTextRangeToLineColumnRange(selectionIndex, textRange)
-      : normalizeLineColumnRange(selection.lineColumnRange.start, selection.lineColumnRange.end)
-    nextSelection.znIds = textRange === undefined ? [] : projectTextRangeToZnIds(selectionIndex, textRange)
-    nextSelection.startChar = textRange?.startpos
-    return nextSelection
-  }
+  console.debug('[selection-resolution]', {
+    event,
+    source: payload.source,
+    requestedTextRange: `${payload.startpos}..${payload.endpos}`,
+    resolvedIndexes: [...payload.resolvedIndexes],
+    resolvedEntries: payload.resolvedIndexes.map((entryIndex) => {
+      const entry = sheetObjectIndex?.entries[entryIndex]
+      return entry === undefined
+        ? { entryIndex, missing: true }
+        : {
+          entryIndex,
+          kind: entry.kind,
+          textRange: entry.textRange === undefined ? '-' : `${entry.textRange.startpos}..${entry.textRange.endpos}`,
+          znId: entry.znId ?? '-',
+          confKey: entry.confKey ?? '-',
+          addressableIn: entry.addressableIn,
+        }
+    }),
+  })
+}
 
-  if (selection.kind === 'config-object') {
-    nextSelection.textRange = undefined
-    nextSelection.lineColumnRange = undefined
-    nextSelection.startChar = undefined
-    nextSelection.znIds = []
-    return nextSelection
-  }
-
-  nextSelection.textRange = undefined
-  nextSelection.lineColumnRange = undefined
-  nextSelection.startChar = undefined
-  nextSelection.znIds = []
-  return nextSelection
+function normalizeIndexes(indexes: number[]): number[] {
+  return [...new Set(indexes)].sort((left, right) => left - right)
 }
 
 export const useSelectionStore = defineStore('selection', () => {
   const selection = ref<SelectionState>(createSelectionState())
-  const selectionIndex = ref<SelectionIndex | undefined>(undefined)
+  const sheetObjectIndex = ref<SheetObjectIndex | undefined>(undefined)
 
   function setSelection(nextSelection: SelectionState): void {
-    selection.value = enrichSelection(selectionIndex.value, nextSelection)
-  }
-
-  function setSelectionIndex(nextSelectionIndex: SelectionIndex | undefined): void {
-    selectionIndex.value = nextSelectionIndex
-    selection.value = enrichSelection(nextSelectionIndex, selection.value)
-  }
-
-  function clearSelection(source: SelectionState['source'] = 'command'): void {
     selection.value = {
-      kind: 'none',
-      znIds: [],
+      ...nextSelection,
+      selectedIndexes: normalizeIndexes(nextSelection.selectedIndexes),
+      anchorIndex: nextSelection.anchorIndex ?? nextSelection.selectedIndexes[0],
+    }
+  }
+
+  function clearSelection(source: SelectionSource = 'command'): void {
+    selection.value = {
+      selectedIndexes: [],
       source,
     }
   }
 
-  function selectMusicRange(znIds: string[], source: SelectionState['source'] = 'command'): void {
-    setSelection({
-      kind: 'music-range',
-      znIds: [...znIds],
-      source,
-    })
+  function setSheetObjectIndex(nextSheetObjectIndex: SheetObjectIndex | undefined): void {
+    sheetObjectIndex.value = nextSheetObjectIndex
+    clearSelection(selection.value.source)
+    logSelectionDebug('sheet-object-index-updated', selection.value, sheetObjectIndex.value)
   }
 
-  function selectZnId(znId: string, source: SelectionState['source'] = 'command'): void {
-    selectMusicRange([znId], source)
+  function selectIndexes(selectedIndexes: number[], source: SelectionSource = 'command'): void {
+    const normalized = normalizeIndexes(selectedIndexes)
+    selection.value = {
+      selectedIndexes: normalized,
+      anchorIndex: normalized[0],
+      source,
+    }
   }
 
-  function selectTextRange(startpos: number, endpos: number, source: SelectionState['source'] = 'abc-editor'): void {
-    setSelection({
-      kind: 'abc-range',
-      znIds: [],
-      textRange: normalizeTextRange(startpos, endpos),
+  function selectZnId(znId: string, source: SelectionSource = 'command'): void {
+    selectIndexes(resolveIndexesByZnId(sheetObjectIndex.value, znId), source)
+  }
+
+  function selectMusicRange(znIds: string[], source: SelectionSource = 'command'): void {
+    selectIndexes(znIds.flatMap((znId) => resolveIndexesByZnId(sheetObjectIndex.value, znId)), source)
+  }
+
+  function selectTextRange(
+    startpos: number,
+    endpos: number,
+    source: SelectionSource = 'abc-editor',
+  ): void {
+    const exactOrOverlapIndexes = source === 'score-preview'
+      ? (() => {
+        const exactScoreObjectIndexes = resolveIndexesByTextRangeAndKind(
+          sheetObjectIndex.value,
+          { startpos, endpos },
+          'score-object',
+          'score',
+          'exact',
+        )
+        if (exactScoreObjectIndexes.length > 0) return exactScoreObjectIndexes
+
+        const overlapScoreObjectIndexes = resolveIndexesByTextRangeAndKind(
+          sheetObjectIndex.value,
+          { startpos, endpos },
+          'score-object',
+          'score',
+          'overlap',
+        )
+        if (overlapScoreObjectIndexes.length > 0) return overlapScoreObjectIndexes
+
+        const exactIndexes = resolveIndexesByTextRange(sheetObjectIndex.value, { startpos, endpos }, undefined, 'exact')
+        return exactIndexes.length > 0
+          ? exactIndexes
+          : resolveIndexesByTextRange(sheetObjectIndex.value, { startpos, endpos }, undefined, 'overlap')
+      })()
+      : source === 'abc-editor'
+        ? (() => {
+          const overlapScoreObjectIndexes = resolveIndexesByTextRangeAndKind(
+            sheetObjectIndex.value,
+            { startpos, endpos },
+            'score-object',
+            'editor',
+            'overlap',
+          )
+          return overlapScoreObjectIndexes.length > 0
+            ? overlapScoreObjectIndexes
+            : resolveIndexesByTextRange(sheetObjectIndex.value, { startpos, endpos }, undefined, 'overlap')
+        })()
+        : resolveIndexesByTextRange(sheetObjectIndex.value, { startpos, endpos }, undefined, 'overlap')
+
+    logSelectionResolutionDebug('select-text-range', {
       source,
-    })
+      startpos,
+      endpos,
+      resolvedIndexes: exactOrOverlapIndexes,
+    }, sheetObjectIndex.value)
+
+    selectIndexes(exactOrOverlapIndexes, source)
   }
 
   function selectLineColumnRange(
     start: SelectionLineColumn,
     end: SelectionLineColumn,
-    source: SelectionState['source'] = 'abc-editor',
+    source: SelectionSource = 'abc-editor',
   ): void {
-    setSelection({
-      kind: 'abc-range',
-      znIds: [],
-      lineColumnRange: normalizeLineColumnRange(start, end),
-      source,
-    })
+    const textRange = projectLineColumnRangeToTextRange(
+      sheetObjectIndex.value,
+      normalizeLineColumnRange(start, end),
+    )
+    if (textRange === undefined) {
+      clearSelection(source)
+      return
+    }
+
+    selectTextRange(textRange.startpos, textRange.endpos, source)
   }
 
-  function selectConfigKey(confKey: string, source: SelectionState['source'] = 'command'): void {
-    setSelection({
-      kind: 'config-object',
-      znIds: [],
-      confKey,
-      source,
-    })
+  function selectConfigKey(confKey: string, source: SelectionSource = 'command'): void {
+    selectIndexes(resolveIndexesByConfKey(sheetObjectIndex.value, confKey), source)
   }
 
-  function selectAbcElement(abcElementKind: string, source: SelectionState['source'] = 'abc-editor'): void {
-    setSelection({
-      kind: 'abc-element',
-      znIds: [],
-      abcElementKind,
-      source,
-    })
-  }
+  const hasSelection = computed(() => selection.value.selectedIndexes.length > 0)
 
-  const hasSelection = computed(() => selection.value.kind !== 'none')
+  watch(
+    selection,
+    (nextSelection) => {
+      logSelectionDebug('selection-changed', cloneSelection(nextSelection), sheetObjectIndex.value)
+    },
+    { deep: true },
+  )
 
   return {
     selection,
-    selectionIndex,
+    sheetObjectIndex,
     hasSelection,
     setSelection,
-    setSelectionIndex,
+    setSheetObjectIndex,
     clearSelection,
+    selectIndexes,
     selectMusicRange,
     selectZnId,
     selectTextRange,
     selectLineColumnRange,
     selectConfigKey,
-    selectAbcElement,
   }
 })

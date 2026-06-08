@@ -3,6 +3,8 @@ import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
+import type { SelectionTextRange } from '@zupfnoter/types'
+
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
 import {
   createAbcEditorExtensions,
@@ -31,6 +33,7 @@ const abcText = defineModel<string>({
 const props = withDefaults(defineProps<{
   diagnostics?: EditorDiagnostic[]
   playbackHighlight?: PlaybackHighlight
+  selectedTextRange?: SelectionTextRange
 }>(), {
   diagnostics: () => [],
 })
@@ -42,6 +45,7 @@ const emit = defineEmits<{
 
 const editorHost = ref<HTMLDivElement | null>(null)
 let editorView: EditorView | null = null
+let isApplyingExternalSelection = false
 const editorUpdateListener = EditorView.updateListener.of((update) => {
   if (!update.docChanged) return
   const nextValue = update.state.doc.toString()
@@ -62,6 +66,26 @@ function syncDocument(nextValue: string): void {
       insert: nextValue,
     },
   })
+}
+
+function syncExternalSelection(nextSelection: SelectionTextRange | undefined): void {
+  if (editorView === null) return
+  if (nextSelection === undefined) return
+
+  const normalizedFrom = Math.max(0, Math.min(nextSelection.startpos, editorView.state.doc.length))
+  const normalizedTo = Math.max(0, Math.min(nextSelection.endpos, editorView.state.doc.length))
+  const currentSelection = editorView.state.selection.main
+  if (currentSelection.from === normalizedFrom && currentSelection.to === normalizedTo) return
+
+  isApplyingExternalSelection = true
+  editorView.dispatch({
+    selection: {
+      anchor: normalizedFrom,
+      head: normalizedTo,
+    },
+    scrollIntoView: true,
+  })
+  isApplyingExternalSelection = false
 }
 
 function emitCursorPosition(view: EditorView): void {
@@ -101,6 +125,7 @@ onMounted(() => {
         ...createAbcEditorExtensions(),
         editorUpdateListener,
         EditorView.updateListener.of((update) => {
+          if (isApplyingExternalSelection) return
           if (!update.selectionSet && !update.docChanged) return
           emitCursorPosition(update.view)
           emitSelectionRange(update.view)
@@ -132,8 +157,16 @@ watch(
 watch(
   () => props.playbackHighlight,
   (highlight) => {
-    if (editorView === null) return
-    syncEditorPlaybackHighlight(editorView, highlight)
+  if (editorView === null) return
+  syncEditorPlaybackHighlight(editorView, highlight)
+  },
+  { immediate: true, deep: true },
+)
+
+watch(
+  () => props.selectedTextRange,
+  (selectedTextRange) => {
+    syncExternalSelection(selectedTextRange)
   },
   { immediate: true, deep: true },
 )

@@ -31,7 +31,11 @@ export const usePlaybackStore = defineStore('playback', () => {
   const state = ref<PlaybackState>(createPlaybackState())
   const highlight = ref<PlaybackHighlight>(createEmptyPlaybackHighlight())
 
-  const mode = computed<PlaybackMode>(() => resolvePlaybackMode(selectionStore.selection, state.value.activeExtract))
+  const mode = computed<PlaybackMode>(() => resolvePlaybackMode(
+    selectionStore.selection,
+    selectionStore.sheetObjectIndex,
+    state.value.activeExtract,
+  ))
 
   function syncMode(): void {
     state.value = {

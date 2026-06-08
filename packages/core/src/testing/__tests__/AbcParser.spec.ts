@@ -220,6 +220,9 @@ describe('AbcParser', () => {
 
       expect(svg).toContain('<svg')
       expect(svg).toContain('</svg>')
+      expect(svg).toContain('class="zn-score-annotation zn-score-hitbox"')
+      expect(svg).toContain('data-start-char=')
+      expect(svg).not.toContain('<g id="zn-score-')
     })
   })
 })

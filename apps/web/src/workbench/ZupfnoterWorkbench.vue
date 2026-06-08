@@ -29,8 +29,13 @@ import { useSelectionStore } from '../stores/selection'
 import { usePlaybackDriver } from './usePlaybackDriver'
 import type { PlaybackStep } from './playback'
 import {
+  projectIndexesToEntries,
   projectPlaybackHighlight,
-  projectZnIdsToTextRange,
+  resolveEditorSelectionRange,
+  resolveScoreRangesForZnIds,
+  resolveScoreSelectionRanges,
+  resolveSelectedZnIds,
+  resolveSvgSelection,
 } from './selectionIndex'
 
 const editorTab = ref('abc')
@@ -51,19 +56,30 @@ const baseTempoFromQ = ref<number | undefined>(undefined)
 const { toasts, syncDiagnostics, dismissToast } = useWorkbenchToasts()
 const playbackStore = usePlaybackStore()
 const selectionStore = useSelectionStore()
-const selectedZnIds = computed(() => selectionStore.selection.znIds)
-const selectedTextRange = computed(() => selectionStore.selection.textRange)
+const selectedSvgSelection = computed(() => resolveSvgSelection(
+  selectionStore.sheetObjectIndex,
+  selectionStore.selection,
+))
+const selectedZnIds = computed(() => selectedSvgSelection.value.znIds)
 const projectedPlaybackHighlight = computed(() => projectPlaybackHighlight(
-  selectionStore.selectionIndex,
+  selectionStore.sheetObjectIndex,
   playbackStore.highlight,
 ))
-const projectedPlaybackTextRange = computed(() => projectZnIdsToTextRange(
-  selectionStore.selectionIndex,
+const selectedScoreTextRanges = computed(() => resolveScoreSelectionRanges(
+  selectionStore.sheetObjectIndex,
+  selectionStore.selection,
+))
+const selectedEditorTextRange = computed(() => selectionStore.selection.source === 'abc-editor'
+  ? undefined
+  : resolveEditorSelectionRange(selectionStore.sheetObjectIndex, selectionStore.selection))
+const playbackScoreTextRanges = computed(() => resolveScoreRangesForZnIds(
+  selectionStore.sheetObjectIndex,
   playbackStore.highlight.activeZnIds,
 ))
 const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
   playbackStore,
   computed(() => selectionStore.selection),
+  computed(() => selectionStore.sheetObjectIndex),
   computed(() => ({
     timeline: playbackTimeline.value,
     baseTempoFromQ: baseTempoFromQ.value,
@@ -104,7 +120,7 @@ function renderNow(): void {
     const result = renderWorkbenchPreviews(abcText.value)
     scoreSvg.value = result.scoreSvg
     harpSvg.value = result.harpSvg
-    selectionStore.setSelectionIndex(result.selectionIndex)
+    selectionStore.setSheetObjectIndex(result.sheetObjectIndex)
     renderIssues.value = result.issues
     workbenchDiagnostics.value = result.diagnostics
     editorDiagnostics.value = result.editorDiagnostics
@@ -131,19 +147,12 @@ function handleEditorSelectionChange(payload: {
   start: { line: number; column: number }
   end: { line: number; column: number }
 }): void {
-  selectionStore.setSelection({
-    kind: 'abc-range',
-    znIds: [],
-    textRange: {
-      startpos: payload.startpos,
-      endpos: payload.endpos,
-    },
-    lineColumnRange: {
-      start: payload.start,
-      end: payload.end,
-    },
-    source: 'abc-editor',
-  })
+  if (payload.startpos === payload.endpos) {
+    selectionStore.clearSelection('abc-editor')
+    return
+  }
+
+  selectionStore.selectTextRange(payload.startpos, payload.endpos, 'abc-editor')
 }
 
 watch(abcText, () => {
@@ -174,17 +183,55 @@ function handleScorePreviewSelection(payload: {
   extend: boolean
   source: 'score-preview'
 }): void {
-  const currentRange = selectionStore.selection.textRange
-  if (payload.extend && currentRange !== undefined) {
-    selectionStore.selectTextRange(
-      Math.min(currentRange.startpos, payload.startpos),
-      Math.max(currentRange.endpos, payload.endpos),
-      payload.source,
-    )
+  if (payload.extend) {
+    selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
     return
   }
 
   selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
+}
+
+if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
+  watch(
+    selectedSvgSelection,
+    (selection) => {
+      console.debug('[harp-selection-projection:json]', JSON.stringify({
+        source: selectionStore.selection.source,
+        selectedIndexes: [...selectionStore.selection.selectedIndexes],
+        znIds: selection.znIds,
+        confKeys: selection.confKeys,
+        textRanges: selection.textRanges.map((textRange) => `${textRange.startpos}..${textRange.endpos}`),
+      }))
+    },
+    { deep: true },
+  )
+
+  watch(
+    [() => selectionStore.selection, () => selectionStore.sheetObjectIndex],
+    ([selectionState, sheetObjectIndex]) => {
+      const projectedEntries = projectIndexesToEntries(sheetObjectIndex, selectionState.selectedIndexes).map((entry) => ({
+        znId: entry.znId ?? '-',
+        textRange: entry.textRange === undefined ? '-' : `${entry.textRange.startpos}..${entry.textRange.endpos}`,
+        startPos: entry.startPos === undefined ? '-' : `${entry.startPos.line}:${entry.startPos.column}`,
+        endPos: entry.endPos === undefined ? '-' : `${entry.endPos.line}:${entry.endPos.column}`,
+        confKey: entry.confKey ?? '-',
+        kind: entry.kind,
+      }))
+      const uniqueProjectedRanges = [...new Set(projectedEntries.map((entry) => entry.textRange).filter((textRange) => textRange !== '-'))]
+      const debugPayload = {
+        source: selectionState.source,
+        selectedIndexes: [...selectionState.selectedIndexes],
+        projectedEntryCount: projectedEntries.length,
+        uniqueProjectedRanges,
+        uniqueProjectedRangeCount: uniqueProjectedRanges.length,
+        projectedEntries,
+      }
+
+      console.debug('[score-selection-projection]', debugPayload)
+      console.debug('[score-selection-projection:json]', JSON.stringify(debugPayload))
+    },
+    { deep: true },
+  )
 }
 
 onBeforeUnmount(() => {
@@ -257,6 +304,7 @@ onBeforeUnmount(() => {
                   v-model="abcText"
                   :diagnostics="editorDiagnostics"
                   :playback-highlight="projectedPlaybackHighlight"
+                  :selected-text-range="selectedEditorTextRange"
                   @cursor-change="handleEditorCursorChange"
                   @selection-change="handleEditorSelectionChange"
                 />
@@ -279,8 +327,8 @@ onBeforeUnmount(() => {
               <template #primary>
                 <ScorePreviewPanel
                   :error-message="previewErrorMessage"
-                  :playback-text-range="projectedPlaybackTextRange"
-                  :selected-text-range="selectedTextRange"
+                  :playback-text-ranges="playbackScoreTextRanges"
+                  :selected-text-ranges="selectedScoreTextRanges"
                   :svg="scoreSvg"
                   @select-text-range="handleScorePreviewSelection"
                 />
@@ -290,7 +338,7 @@ onBeforeUnmount(() => {
                   v-model:zoom="harpZoom"
                   :error-message="previewErrorMessage"
                   :playback-highlight="projectedPlaybackHighlight"
-                  :selected-zn-ids="selectedZnIds"
+                  :selection="selectedSvgSelection"
                   :svg="harpSvg"
                   @select-zn-id="handlePreviewSelection"
                 />

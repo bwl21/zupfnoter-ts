@@ -8,11 +8,13 @@ describe('ScorePreviewPanel playback highlighting', () => {
   it('marks highlighted SVG nodes from playback events', async () => {
     const wrapper = mount(ScorePreviewPanel, {
       props: {
-        svg: '<svg width="120" height="60"><g data-start-char="7" data-end-char="11"><rect width="10" height="10" /></g></svg>',
-        playbackTextRange: {
-          startpos: 7,
-          endpos: 11,
-        },
+        svg: '<svg width="120" height="60"><rect class="zn-score-hitbox" data-start-char="7" data-end-char="11" width="10" height="10" /></svg>',
+        playbackTextRanges: [
+          {
+            startpos: 7,
+            endpos: 11,
+          },
+        ],
       },
     })
 
@@ -25,17 +27,14 @@ describe('ScorePreviewPanel playback highlighting', () => {
   it('marks selected SVG nodes separately from playback', async () => {
     const wrapper = mount(ScorePreviewPanel, {
       props: {
-        svg: '<svg width="120" height="60"><g data-start-char="7" data-end-char="11"><rect width="10" height="10" /></g></svg>',
-        selectedTextRange: {
-          startpos: 7,
-          endpos: 11,
-        },
+        svg: '<svg width="120" height="60"><rect class="zn-score-hitbox" data-start-char="7" data-end-char="11" width="10" height="10" /></svg>',
+        selectedTextRanges: [{ startpos: 7, endpos: 11 }],
       },
     })
 
     await nextTick()
     await nextTick()
 
-    expect(wrapper.find('[data-start-char="7"]').classes()).toContain('zn-selection-highlight')
+    expect(wrapper.find('[data-start-char="7"]').classes()).toContain('zn-selection-highlight-range')
   })
 })

@@ -200,6 +200,10 @@ function formatNumber(value: number): string {
   return Number.isInteger(value) ? `${value}` : `${value}`
 }
 
+function snapToHalfPixel(value: number): number {
+  return Math.round(value * 2) / 2
+}
+
 // ---------------------------------------------------------------------------
 // SvgEngine
 // ---------------------------------------------------------------------------
@@ -377,11 +381,15 @@ export class SvgEngine {
     meta: ElementMeta,
     padding = 0,
   ): string {
+    const snappedX = snapToHalfPixel(x - padding)
+    const snappedY = snapToHalfPixel(y - padding)
+    const snappedWidth = Math.max(0, snapToHalfPixel(width + padding * 2))
+    const snappedHeight = Math.max(0, snapToHalfPixel(height + padding * 2))
     return `<rect ${attrs({
-      x: x - padding,
-      y: y - padding,
-      width: width + padding * 2,
-      height: height + padding * 2,
+      x: snappedX,
+      y: snappedY,
+      width: snappedWidth,
+      height: snappedHeight,
       fill: 'none',
       stroke: 'none',
       opacity: 0,
@@ -453,8 +461,16 @@ export class SvgEngine {
       parts.push(this._drawBarover(cx, cy, rx, ry, color, el.lineWidth))
     }
 
-    const hitboxPad = Math.max(0.5, el.lineWidth + (el.dotted ? 0.5 : 0.25) + (el.hasbarover ? 0.5 : 0))
-    return this._wrapElement(meta, parts.join('\n'), this._hitboxRect(cx - rx, cy - ry, 2 * rx, 2 * ry, meta, hitboxPad))
+    const hitboxRx = rx * 0.75
+    const hitboxRy = ry * 0.75
+    return this._wrapElement(meta, parts.join('\n'), this._hitboxRect(
+      cx - hitboxRx,
+      cy - hitboxRy,
+      hitboxRx * 2,
+      hitboxRy * 2,
+      meta,
+      1,
+    ))
   }
 
   // ---------------------------------------------------------------------------
@@ -503,7 +519,16 @@ export class SvgEngine {
       parts.push(this._drawDot(cx + el.size[0] + DOTTED_SIZE + el.lineWidth, cy, color, el.lineWidth))
     }
 
-    return this._wrapElement(meta, parts.join('\n'), this._hitboxRect(cx - el.size[0], cy - el.size[1], el.size[0] * 2, el.size[1] * 2, meta, 0.5))
+    const hitboxRx = el.size[0] * 0.6
+    const hitboxRy = el.size[1] * 0.6
+    return this._wrapElement(meta, parts.join('\n'), this._hitboxRect(
+      cx - hitboxRx,
+      cy - hitboxRy,
+      hitboxRx * 2,
+      hitboxRy * 2,
+      meta,
+      1,
+    ))
   }
 
   // ---------------------------------------------------------------------------

@@ -1,58 +1,62 @@
 import { onBeforeUnmount, watch, type Ref } from 'vue'
 
-import type { SelectionTextRange } from '@zupfnoter/types'
+import type { SheetObjectIndexEntry } from '@zupfnoter/types'
 
-function clearTextRangeHighlight(root: HTMLElement, highlightClass: string): void {
+function clearHighlight(root: HTMLElement, highlightClass: string): void {
   root.querySelectorAll(`.${highlightClass}`).forEach((element) => {
     element.classList.remove(highlightClass)
   })
 }
 
-function applyTextRangeHighlight(
+function applyHighlight(
   root: HTMLElement,
-  textRanges: SelectionTextRange[],
+  entries: SheetObjectIndexEntry[],
   highlightClass: string,
 ): void {
-  clearTextRangeHighlight(root, highlightClass)
+  clearHighlight(root, highlightClass)
+  if (entries.length === 0) return
 
-  const requestedRanges = textRanges.map((textRange) => `${textRange.startpos}..${textRange.endpos}`)
-  const matchedRanges: string[] = []
-  root.querySelectorAll<HTMLElement>('.zn-score-hitbox[data-start-char][data-end-char]').forEach((element) => {
+  const keys = new Set(
+    entries
+      .filter((entry) => entry.textRange !== undefined)
+      .map((entry) => `${entry.textRange?.startpos}:${entry.textRange?.endpos}`),
+  )
+  const matched: string[] = []
+  root.querySelectorAll<HTMLElement>('[data-start-char][data-end-char]').forEach((element) => {
     const startChar = Number(element.dataset.startChar)
     const endChar = Number(element.dataset.endChar)
     if (Number.isNaN(startChar) || Number.isNaN(endChar)) return
-    const overlaps = textRanges.some((textRange) => endChar > textRange.startpos && startChar < textRange.endpos)
-    if (!overlaps) return
+    if (!keys.has(`${startChar}:${endChar}`)) return
     element.classList.add(highlightClass)
-    matchedRanges.push(`${startChar}..${endChar}`)
+    matched.push(`${startChar}..${endChar}`)
   })
 
   if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
-    console.debug('[score-text-highlight:json]', JSON.stringify({
+    console.debug('[score-svg-highlight:json]', JSON.stringify({
       highlightClass,
-      requestedRanges,
-      matchedNodeCount: matchedRanges.length,
-      matchedRanges,
+      requestedRanges: [...keys].map((key) => key.replace(':', '..')),
+      matchedNodeCount: matched.length,
+      matchedRanges: matched,
     }))
   }
 }
 
-export function useTextRangeSvgHighlight(
+export function useSelectionEntriesSvgHighlight(
   rootRef: Ref<HTMLElement | null>,
   svgSource: Ref<string>,
-  textRanges: Ref<SelectionTextRange[] | undefined>,
-  highlightClass: string,
+  entries: Ref<SheetObjectIndexEntry[] | undefined>,
+  highlightClass: 'zn-selection-highlight-entry' | 'zn-playback-highlight',
 ): void {
   let observer: MutationObserver | undefined
 
   const sync = (): void => {
     const root = rootRef.value
     if (root === null) return
-    if (textRanges.value === undefined || textRanges.value.length === 0) {
-      clearTextRangeHighlight(root, highlightClass)
+    if (entries.value === undefined) {
+      clearHighlight(root, highlightClass)
       return
     }
-    applyTextRangeHighlight(root, textRanges.value, highlightClass)
+    applyHighlight(root, entries.value, highlightClass)
   }
 
   watch(
@@ -70,7 +74,7 @@ export function useTextRangeSvgHighlight(
   )
 
   watch(
-    [rootRef, svgSource, textRanges],
+    [rootRef, svgSource, entries],
     sync,
     { immediate: true, deep: true, flush: 'post' },
   )
@@ -80,6 +84,6 @@ export function useTextRangeSvgHighlight(
     observer = undefined
     const root = rootRef.value
     if (root === null) return
-    clearTextRangeHighlight(root, highlightClass)
+    clearHighlight(root, highlightClass)
   })
 }

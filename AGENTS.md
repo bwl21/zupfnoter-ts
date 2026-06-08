@@ -47,8 +47,9 @@ For UI-related work:
 
 If Browser MCP is unavailable:
 
-- Skip browser validation.
-- Do not explain, apologize, or discuss MCP availability.
+- In `codex-cli` or similar non-App environments, use local Playwright validation if Playwright is available and the workflow can be exercised locally.
+- If neither Browser MCP nor local Playwright validation is available, skip browser validation.
+- Do not explain, apologize, or discuss MCP availability when validation is skipped.
 - Report only:
 
   Browser validation: not performed (Browser MCP unavailable)

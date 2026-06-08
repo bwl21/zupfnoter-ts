@@ -1,6 +1,6 @@
 import { onBeforeUnmount, type Ref } from 'vue'
 
-import type { SelectionState } from '@zupfnoter/types'
+import type { SelectionState, SheetObjectIndex } from '@zupfnoter/types'
 
 import { usePlaybackStore } from '../stores/playback'
 import {
@@ -17,6 +17,7 @@ interface PlaybackDriverSource {
 export function usePlaybackDriver(
   playbackStore: ReturnType<typeof usePlaybackStore>,
   selection: Ref<SelectionState>,
+  sheetObjectIndex: Ref<SheetObjectIndex | undefined>,
   timelineSource: Ref<PlaybackDriverSource>,
 ) {
   let timer: ReturnType<typeof setTimeout> | undefined
@@ -64,6 +65,7 @@ export function usePlaybackDriver(
     const source = timelineSource.value
     const steps = resolvePlaybackSteps(
       selection.value,
+      sheetObjectIndex.value,
       source.timeline,
       playbackStore.mode,
     )
