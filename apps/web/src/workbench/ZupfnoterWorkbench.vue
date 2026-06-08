@@ -29,7 +29,6 @@ import { useSelectionStore } from '../stores/selection'
 import { usePlaybackDriver } from './usePlaybackDriver'
 import type { PlaybackStep } from './playback'
 import {
-  projectIndexesToEntries,
   projectPlaybackHighlight,
   resolveEditorSelectionRange,
   resolveScoreRangesForZnIds,
@@ -189,49 +188,6 @@ function handleScorePreviewSelection(payload: {
   }
 
   selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
-}
-
-if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
-  watch(
-    selectedSvgSelection,
-    (selection) => {
-      console.debug('[harp-selection-projection:json]', JSON.stringify({
-        source: selectionStore.selection.source,
-        selectedIndexes: [...selectionStore.selection.selectedIndexes],
-        znIds: selection.znIds,
-        confKeys: selection.confKeys,
-        textRanges: selection.textRanges.map((textRange) => `${textRange.startpos}..${textRange.endpos}`),
-      }))
-    },
-    { deep: true },
-  )
-
-  watch(
-    [() => selectionStore.selection, () => selectionStore.sheetObjectIndex],
-    ([selectionState, sheetObjectIndex]) => {
-      const projectedEntries = projectIndexesToEntries(sheetObjectIndex, selectionState.selectedIndexes).map((entry) => ({
-        znId: entry.znId ?? '-',
-        textRange: entry.textRange === undefined ? '-' : `${entry.textRange.startpos}..${entry.textRange.endpos}`,
-        startPos: entry.startPos === undefined ? '-' : `${entry.startPos.line}:${entry.startPos.column}`,
-        endPos: entry.endPos === undefined ? '-' : `${entry.endPos.line}:${entry.endPos.column}`,
-        confKey: entry.confKey ?? '-',
-        kind: entry.kind,
-      }))
-      const uniqueProjectedRanges = [...new Set(projectedEntries.map((entry) => entry.textRange).filter((textRange) => textRange !== '-'))]
-      const debugPayload = {
-        source: selectionState.source,
-        selectedIndexes: [...selectionState.selectedIndexes],
-        projectedEntryCount: projectedEntries.length,
-        uniqueProjectedRanges,
-        uniqueProjectedRangeCount: uniqueProjectedRanges.length,
-        projectedEntries,
-      }
-
-      console.debug('[score-selection-projection]', debugPayload)
-      console.debug('[score-selection-projection:json]', JSON.stringify(debugPayload))
-    },
-    { deep: true },
-  )
 }
 
 onBeforeUnmount(() => {

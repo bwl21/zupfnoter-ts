@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
 import type {
   SelectionLineColumn,
@@ -22,69 +22,6 @@ function createSelectionState(): SelectionState {
     selectedIndexes: [],
     source: 'command',
   }
-}
-
-function cloneSelection(selection: SelectionState): SelectionState {
-  return {
-    ...selection,
-    selectedIndexes: [...selection.selectedIndexes],
-  }
-}
-
-function isSelectionDebugEnabled(): boolean {
-  return import.meta.env.DEV && import.meta.env.MODE !== 'test'
-}
-
-function logSelectionDebug(
-  event: string,
-  selection: SelectionState,
-  sheetObjectIndex: SheetObjectIndex | undefined,
-): void {
-  if (!isSelectionDebugEnabled()) return
-
-  console.debug('[selection-store]', {
-    event,
-    source: selection.source,
-    selectedIndexes: [...selection.selectedIndexes],
-    selectedIndexCount: selection.selectedIndexes.length,
-    anchorIndex: selection.anchorIndex ?? '-',
-    hasSheetObjectIndex: sheetObjectIndex !== undefined,
-    sheetObjectIndexEntries: sheetObjectIndex?.entries.length ?? 0,
-    sheetObjectIndexVersion: sheetObjectIndex?.version ?? '-',
-  })
-}
-
-function logSelectionResolutionDebug(
-  event: string,
-  payload: {
-    source: SelectionSource
-    startpos: number
-    endpos: number
-    resolvedIndexes: number[]
-  },
-  sheetObjectIndex: SheetObjectIndex | undefined,
-): void {
-  if (!isSelectionDebugEnabled()) return
-
-  console.debug('[selection-resolution]', {
-    event,
-    source: payload.source,
-    requestedTextRange: `${payload.startpos}..${payload.endpos}`,
-    resolvedIndexes: [...payload.resolvedIndexes],
-    resolvedEntries: payload.resolvedIndexes.map((entryIndex) => {
-      const entry = sheetObjectIndex?.entries[entryIndex]
-      return entry === undefined
-        ? { entryIndex, missing: true }
-        : {
-          entryIndex,
-          kind: entry.kind,
-          textRange: entry.textRange === undefined ? '-' : `${entry.textRange.startpos}..${entry.textRange.endpos}`,
-          znId: entry.znId ?? '-',
-          confKey: entry.confKey ?? '-',
-          addressableIn: entry.addressableIn,
-        }
-    }),
-  })
 }
 
 function normalizeIndexes(indexes: number[]): number[] {
@@ -113,7 +50,6 @@ export const useSelectionStore = defineStore('selection', () => {
   function setSheetObjectIndex(nextSheetObjectIndex: SheetObjectIndex | undefined): void {
     sheetObjectIndex.value = nextSheetObjectIndex
     clearSelection(selection.value.source)
-    logSelectionDebug('sheet-object-index-updated', selection.value, sheetObjectIndex.value)
   }
 
   function selectIndexes(selectedIndexes: number[], source: SelectionSource = 'command'): void {
@@ -178,13 +114,6 @@ export const useSelectionStore = defineStore('selection', () => {
         })()
         : resolveIndexesByTextRange(sheetObjectIndex.value, { startpos, endpos }, undefined, 'overlap')
 
-    logSelectionResolutionDebug('select-text-range', {
-      source,
-      startpos,
-      endpos,
-      resolvedIndexes: exactOrOverlapIndexes,
-    }, sheetObjectIndex.value)
-
     selectIndexes(exactOrOverlapIndexes, source)
   }
 
@@ -210,14 +139,6 @@ export const useSelectionStore = defineStore('selection', () => {
   }
 
   const hasSelection = computed(() => selection.value.selectedIndexes.length > 0)
-
-  watch(
-    selection,
-    (nextSelection) => {
-      logSelectionDebug('selection-changed', cloneSelection(nextSelection), sheetObjectIndex.value)
-    },
-    { deep: true },
-  )
 
   return {
     selection,

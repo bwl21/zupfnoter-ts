@@ -15,8 +15,6 @@ function applyTextRangeHighlight(
 ): void {
   clearTextRangeHighlight(root, highlightClass)
 
-  const requestedRanges = textRanges.map((textRange) => `${textRange.startpos}..${textRange.endpos}`)
-  const matchedRanges: string[] = []
   root.querySelectorAll<HTMLElement>('.zn-score-hitbox[data-start-char][data-end-char]').forEach((element) => {
     const startChar = Number(element.dataset.startChar)
     const endChar = Number(element.dataset.endChar)
@@ -24,17 +22,7 @@ function applyTextRangeHighlight(
     const overlaps = textRanges.some((textRange) => endChar > textRange.startpos && startChar < textRange.endpos)
     if (!overlaps) return
     element.classList.add(highlightClass)
-    matchedRanges.push(`${startChar}..${endChar}`)
   })
-
-  if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
-    console.debug('[score-text-highlight:json]', JSON.stringify({
-      highlightClass,
-      requestedRanges,
-      matchedNodeCount: matchedRanges.length,
-      matchedRanges,
-    }))
-  }
 }
 
 export function useTextRangeSvgHighlight(

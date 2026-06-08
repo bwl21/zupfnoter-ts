@@ -36,20 +36,16 @@ function applySelectionHighlight(
   clearSelectionHighlight(root)
   const selectedIds = new Set(selection.znIds)
   const selectedConfKeys = new Set(selection.confKeys)
-  const matchedZnIds: string[] = []
-  const matchedConfKeys: string[] = []
 
   root.querySelectorAll<HTMLElement>('[data-zn-id], [data-conf-key]').forEach((element) => {
     const znId = element.dataset.znId
     const confKey = element.dataset.confKey
     if (znId !== undefined && selectedIds.has(znId)) {
       applyHighlightClass(element)
-      matchedZnIds.push(znId)
       return
     }
     if (confKey !== undefined && selectedConfKeys.has(confKey)) {
       applyHighlightClass(element)
-      matchedConfKeys.push(confKey)
       return
     }
     if (selection.textRanges.length === 0) return
@@ -59,21 +55,7 @@ function applySelectionHighlight(
     const overlaps = selection.textRanges.some((textRange) => !(endChar < textRange.startpos || startChar > textRange.endpos))
     if (!overlaps) return
     applyHighlightClass(element)
-    if (znId !== undefined) matchedZnIds.push(znId)
-    if (confKey !== undefined) matchedConfKeys.push(confKey)
   })
-
-  if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
-    console.debug('[harp-selection-highlight:json]', JSON.stringify({
-      requestedZnIds: selection.znIds,
-      requestedConfKeys: selection.confKeys,
-      requestedTextRanges: selection.textRanges.map((textRange) => `${textRange.startpos}..${textRange.endpos}`),
-      matchedZnIds,
-      matchedConfKeys,
-      matchedZnIdCount: matchedZnIds.length,
-      matchedConfKeyCount: matchedConfKeys.length,
-    }))
-  }
 }
 
 export function useSelectionSvgHighlight(

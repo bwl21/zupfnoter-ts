@@ -21,24 +21,13 @@ function applyHighlight(
       .filter((entry) => entry.textRange !== undefined)
       .map((entry) => `${entry.textRange?.startpos}:${entry.textRange?.endpos}`),
   )
-  const matched: string[] = []
   root.querySelectorAll<HTMLElement>('[data-start-char][data-end-char]').forEach((element) => {
     const startChar = Number(element.dataset.startChar)
     const endChar = Number(element.dataset.endChar)
     if (Number.isNaN(startChar) || Number.isNaN(endChar)) return
     if (!keys.has(`${startChar}:${endChar}`)) return
     element.classList.add(highlightClass)
-    matched.push(`${startChar}..${endChar}`)
   })
-
-  if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
-    console.debug('[score-svg-highlight:json]', JSON.stringify({
-      highlightClass,
-      requestedRanges: [...keys].map((key) => key.replace(':', '..')),
-      matchedNodeCount: matched.length,
-      matchedRanges: matched,
-    }))
-  }
 }
 
 export function useSelectionEntriesSvgHighlight(

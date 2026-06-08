@@ -42,7 +42,7 @@ test.describe('Zupfnoter workbench', () => {
     expect(documentScrolls).toBe(false)
   })
 
-  test('keeps editor text selection out of the harp preview object highlight', async ({ page }) => {
+  test('projects editor text selection into the harp preview highlight', async ({ page }) => {
     await page.goto('/')
     await page.waitForSelector('.cm-content')
     await page.waitForTimeout(1000)
@@ -53,6 +53,8 @@ test.describe('Zupfnoter workbench', () => {
       page.locator('.preview-stage__svg .zn-selection-highlight-range').count()
     )).toBeGreaterThan(0)
 
-    await expect(page.locator('.harp-preview__svg .zn-selection-highlight')).toHaveCount(0)
+    await expect.poll(async () => (
+      page.locator('.harp-preview__svg .zn-selection-highlight').count()
+    )).toBeGreaterThan(0)
   })
 })
