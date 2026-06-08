@@ -27,6 +27,7 @@ import WorkbenchLayout from './WorkbenchLayout.vue'
 import { usePlaybackStore } from '../stores/playback'
 import { useSelectionStore } from '../stores/selection'
 import { usePlaybackDriver } from './usePlaybackDriver'
+import { useAudioPlayer } from './useAudioPlayer'
 import type { PlaybackStep } from './playback'
 import {
   canTargetCreateSelection,
@@ -76,6 +77,7 @@ const playbackScoreTextRanges = computed(() => resolvePlaybackScoreRanges(
   selectionStore.sheetObjectIndex,
   playbackStore.highlight,
 ))
+const audioPlayer = useAudioPlayer()
 const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
   playbackStore,
   computed(() => selectionStore.selection),
@@ -84,6 +86,7 @@ const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
     timeline: playbackTimeline.value,
     baseTempoFromQ: baseTempoFromQ.value,
   })),
+  audioPlayer,
 )
 
 const renderIssueLabel = computed(() => {

@@ -8,6 +8,7 @@ import {
   resolveBaseTempoFromSong,
   type PlaybackStep,
 } from './playback'
+import type { AudioPlayer } from './useAudioPlayer'
 
 interface PlaybackDriverSource {
   timeline: PlaybackStep[]
@@ -19,6 +20,7 @@ export function usePlaybackDriver(
   selection: Ref<SelectionState>,
   sheetObjectIndex: Ref<SheetObjectIndex | undefined>,
   timelineSource: Ref<PlaybackDriverSource>,
+  audioPlayer?: AudioPlayer,
 ) {
   let timer: ReturnType<typeof setTimeout> | undefined
   let stepIndex = 0
@@ -32,6 +34,7 @@ export function usePlaybackDriver(
   function stop(): void {
     clearTimer()
     stepIndex = 0
+    audioPlayer?.stop()
     playbackStore.stopPlayback()
   }
 
@@ -76,6 +79,7 @@ export function usePlaybackDriver(
 
     clearTimer()
     stepIndex = 0
+    audioPlayer?.schedule(steps, playbackStore.state.speedFactor)
     playbackStore.startPlayback(source.baseTempoFromQ)
     scheduleNextStep(steps)
   }
