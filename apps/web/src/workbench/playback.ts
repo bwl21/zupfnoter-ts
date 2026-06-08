@@ -3,15 +3,17 @@ import type {
   PlaybackPlayerEvent,
   PlaybackHighlight,
   SelectionState,
+  SelectionTextRange,
   SheetObjectIndex,
   PlayableEntity,
   Song,
   VoiceEntity,
 } from '@zupfnoter/types'
 import { resolveSelectionZnIds } from './selectionManager'
+import { textRangeKey } from './selectionIndex'
 
 export interface PlaybackStep {
-  activeZnIds: string[]
+  activeTextRanges: SelectionTextRange[]
   activeStartChar?: number
   activeTime: string
   durationMs: number
@@ -33,14 +35,14 @@ export function resolvePlaybackMode(selection: SelectionState, index: SheetObjec
 
 export function createEmptyPlaybackHighlight(): PlaybackHighlight {
   return {
-    activeZnIds: [],
+    activeTextRanges: [],
   }
 }
 
 export function createPlaybackHighlightFromEvent(event: PlaybackPlayerEvent): PlaybackHighlight {
   if (event.kind !== 'current-notes') return createEmptyPlaybackHighlight()
   return {
-    activeZnIds: event.activeZnIds,
+    activeTextRanges: event.activeTextRanges,
     activeStartChar: event.activeStartChar,
     activeTime: event.activeTime,
   }
@@ -89,9 +91,12 @@ export function buildPlaybackTimeline(song: Song): PlaybackStep[] {
       const existing = grouped.get(entity.time)
       const startChar = entity.sourceOffsets?.[0]
       const durationMs = computeStepDurationMs(song, entity.duration)
+      const textRange = entity.sourceOffsets
+        ? { startpos: entity.sourceOffsets[0], endpos: entity.sourceOffsets[1] }
+        : undefined
       if (existing === undefined) {
         grouped.set(entity.time, {
-          activeZnIds: [entity.znId],
+          activeTextRanges: textRange !== undefined ? [textRange] : [],
           activeStartChar: startChar,
           activeTime: `${entity.time}`,
           durationMs,
@@ -99,7 +104,9 @@ export function buildPlaybackTimeline(song: Song): PlaybackStep[] {
         continue
       }
 
-      existing.activeZnIds.push(entity.znId)
+      if (textRange !== undefined) {
+        existing.activeTextRanges.push(textRange)
+      }
       existing.activeStartChar = existing.activeStartChar === undefined
         ? startChar
         : startChar === undefined
@@ -113,7 +120,9 @@ export function buildPlaybackTimeline(song: Song): PlaybackStep[] {
     .sort((left, right) => left[0] - right[0])
     .map(([, step]) => ({
       ...step,
-      activeZnIds: [...new Set(step.activeZnIds)],
+      activeTextRanges: [...new Map(
+        step.activeTextRanges.map((tr) => [textRangeKey(tr), tr]),
+      ).values()],
     }))
 }
 
@@ -128,8 +137,32 @@ export function resolvePlaybackSteps(
     return timeline
   }
 
+  function stepOverlapsSelection(step: PlaybackStep): boolean {
+    if (step.activeTextRanges.length === 0) return false
+    const selectedEntries = index !== undefined
+      ? selectedZnIds
+          .flatMap((znId) => index.byZnId[znId] ?? [])
+          .map((entryIndex) => index.entries[entryIndex])
+          .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
+      : []
+    const selectedTextRanges = [...new Map(
+      selectedEntries
+        .filter((entry) => entry.textRange !== undefined)
+        .map((entry) => {
+          const tr = entry.textRange!
+          return [textRangeKey(tr), tr]
+        }),
+    ).values()]
+    if (selectedTextRanges.length === 0) return true
+    return step.activeTextRanges.some((stepRange) =>
+      selectedTextRanges.some((selRange) =>
+        stepRange.endpos > selRange.startpos && stepRange.startpos < selRange.endpos,
+      ),
+    )
+  }
+
   const selectedIndices = timeline
-    .map((step, index) => ({ index, matches: step.activeZnIds.some((znId) => selectedZnIds.includes(znId)) }))
+    .map((step, index) => ({ index, matches: stepOverlapsSelection(step) }))
     .filter((entry) => entry.matches)
     .map((entry) => entry.index)
 

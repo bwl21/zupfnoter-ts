@@ -49,7 +49,7 @@ export function usePlaybackDriver(
 
     playbackStore.handlePlayerEvent({
       kind: 'current-notes',
-      activeZnIds: step.activeZnIds,
+      activeTextRanges: step.activeTextRanges,
       activeStartChar: step.activeStartChar,
       activeTime: step.activeTime,
     })

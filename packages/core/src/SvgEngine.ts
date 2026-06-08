@@ -227,6 +227,10 @@ interface ElementMeta {
   dataIndex: number
   znId?: string
   confKey?: string
+  /** ABC-Quelltext-Offset (startChar) für Rückverweis auf Editor-Position */
+  startChar?: number
+  /** ABC-Quelltext-Offset (endChar) für Rückverweis auf Editor-Position */
+  endChar?: number
 }
 
 export class SvgEngine {
@@ -329,6 +333,7 @@ export class SvgEngine {
     anchorKey: string,
     confKey?: string,
     znId?: string,
+    sourceOffsets?: [number, number],
   ): ElementMeta {
     const normalizedAnchorKey = anchorKey.trim().length > 0 ? anchorKey : `${kind}:${index}`
     const normalizedZnId = znId?.trim()
@@ -354,6 +359,8 @@ export class SvgEngine {
       dataIndex: index,
       znId: normalizedZnId && normalizedZnId.length > 0 ? normalizedZnId : undefined,
       confKey,
+      startChar: sourceOffsets?.[0],
+      endChar: sourceOffsets?.[1],
     }
   }
 
@@ -399,6 +406,8 @@ export class SvgEngine {
         'data-hitbox-for': meta.dataAnchor,
         'data-hitbox-target': meta.dataAnchor,
         'data-zn-id': meta.znId,
+        ...(meta.startChar !== undefined ? { 'data-start-char': meta.startChar } : {}),
+        ...(meta.endChar !== undefined ? { 'data-end-char': meta.endChar } : {}),
         'pointer-events': 'all',
         'aria-hidden': 'true',
       })} />`
@@ -421,6 +430,7 @@ export class SvgEngine {
       el.confKey ?? `ellipse:${formatNumber(cx)}:${formatNumber(cy)}:${formatNumber(rx)}:${formatNumber(ry)}:${el.fill}:${el.dotted ? 'dotted' : 'plain'}:${el.hasbarover ? 'bar' : 'nobar'}`,
       el.confKey,
       el.znId,
+      el.origin?.sourceOffsets,
     )
 
     const parts: string[] = []
@@ -491,6 +501,7 @@ export class SvgEngine {
       el.confKey ?? `glyph:${el.glyphName}:${formatNumber(cx)}:${formatNumber(cy)}:${formatNumber(el.size[0])}:${formatNumber(el.size[1])}:${el.dotted ? 'dotted' : 'plain'}`,
       el.confKey,
       el.znId,
+      el.origin?.sourceOffsets,
     )
 
     const scaleFactor = (sh * 2) / glyphDef.h

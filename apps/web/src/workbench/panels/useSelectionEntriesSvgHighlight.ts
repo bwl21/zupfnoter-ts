@@ -1,6 +1,7 @@
 import { onBeforeUnmount, watch, type Ref } from 'vue'
 
 import type { SheetObjectIndexEntry } from '@zupfnoter/types'
+import { textRangeKey } from '../selectionIndex'
 
 function clearHighlight(root: HTMLElement, highlightClass: string): void {
   root.querySelectorAll(`.${highlightClass}`).forEach((element) => {
@@ -16,16 +17,17 @@ function applyHighlight(
   clearHighlight(root, highlightClass)
   if (entries.length === 0) return
 
-  const keys = new Set(
-    entries
-      .filter((entry) => entry.textRange !== undefined)
-      .map((entry) => `${entry.textRange?.startpos}:${entry.textRange?.endpos}`),
-  )
+  const keys = new Set<string>()
+  for (const entry of entries) {
+    if (entry.textRange !== undefined) {
+      keys.add(textRangeKey(entry.textRange))
+    }
+  }
   root.querySelectorAll<HTMLElement>('[data-start-char][data-end-char]').forEach((element) => {
     const startChar = Number(element.dataset.startChar)
     const endChar = Number(element.dataset.endChar)
     if (Number.isNaN(startChar) || Number.isNaN(endChar)) return
-    if (!keys.has(`${startChar}:${endChar}`)) return
+    if (!keys.has(textRangeKey({ startpos: startChar, endpos: endChar }))) return
     element.classList.add(highlightClass)
   })
 }

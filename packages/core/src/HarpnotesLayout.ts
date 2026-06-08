@@ -1081,6 +1081,7 @@ export class HarpnotesLayout {
         )
         : [],
       znId: pause.znId,
+      origin: pause,
     }
   }
 

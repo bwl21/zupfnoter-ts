@@ -34,16 +34,10 @@ function applySelectionHighlight(
   },
 ): void {
   clearSelectionHighlight(root)
-  const selectedIds = new Set(selection.znIds)
   const selectedConfKeys = new Set(selection.confKeys)
 
   root.querySelectorAll<HTMLElement>('[data-zn-id], [data-conf-key]').forEach((element) => {
-    const znId = element.dataset.znId
     const confKey = element.dataset.confKey
-    if (znId !== undefined && selectedIds.has(znId)) {
-      applyHighlightClass(element)
-      return
-    }
     if (confKey !== undefined && selectedConfKeys.has(confKey)) {
       applyHighlightClass(element)
       return

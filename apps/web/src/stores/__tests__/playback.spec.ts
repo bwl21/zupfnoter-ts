@@ -58,12 +58,12 @@ describe('playback store', () => {
 
     playbackStore.handlePlayerEvent({
       kind: 'current-notes',
-      activeZnIds: ['zn-1', 'zn-2'],
+      activeTextRanges: [{ startpos: 41, endpos: 46 }],
       activeStartChar: 41,
       activeTime: '1:2',
     })
 
-    expect(playbackStore.highlight.activeZnIds).toEqual(['zn-1', 'zn-2'])
+    expect(playbackStore.highlight.activeTextRanges).toEqual([{ startpos: 41, endpos: 46 }])
     expect(playbackStore.highlight.activeStartChar).toBe(41)
     expect(playbackStore.highlight.activeTime).toBe('1:2')
 
@@ -71,6 +71,6 @@ describe('playback store', () => {
 
     expect(playbackStore.state.status).toBe('stopped')
     expect(playbackStore.state.documentVersion).toBe(1)
-    expect(playbackStore.highlight.activeZnIds).toEqual([])
+    expect(playbackStore.highlight.activeTextRanges).toEqual([])
   })
 })

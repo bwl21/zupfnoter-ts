@@ -126,7 +126,7 @@ describe('selection store', () => {
     expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({
         znIds: [],
-        confKeys: ['extract.0.note-1'],
+        confKeys: [],
         textRanges: [{ startpos: 4, endpos: 6 }],
       })
   })
@@ -187,7 +187,7 @@ describe('selection store', () => {
     expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({
         znIds: [],
-        confKeys: ['extract.0.note-1'],
+        confKeys: [],
         textRanges: [{ startpos: 4, endpos: 6 }],
       })
   })
@@ -202,7 +202,7 @@ describe('selection store', () => {
     expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({
         znIds: [],
-        confKeys: ['extract.0.note-3'],
+        confKeys: [],
         textRanges: [{ startpos: 10, endpos: 12 }],
       })
   })
@@ -243,7 +243,7 @@ describe('selection store', () => {
     expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({
         znIds: [],
-        confKeys: ['extract.0.note-3', 'extract.0.notebound.nconf.v_1.t_384.n_0.***'],
+        confKeys: [],
         textRanges: [{ startpos: 10, endpos: 12 }],
       })
   })

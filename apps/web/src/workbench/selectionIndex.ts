@@ -79,7 +79,7 @@ function canAddress(entry: SheetObjectIndexEntry, pane: AddressablePane): boolea
 }
 
 function createEntryDedupKey(entry: SheetObjectIndexEntry): string {
-  const textRange = entry.textRange === undefined ? '-' : `${entry.textRange.startpos}:${entry.textRange.endpos}`
+  const textRange = entry.textRange === undefined ? '-' : textRangeKey(entry.textRange)
   const startPos = entry.startPos === undefined ? '-' : `${entry.startPos.line}:${entry.startPos.column}`
   const endPos = entry.endPos === undefined ? '-' : `${entry.endPos.line}:${entry.endPos.column}`
 
@@ -114,7 +114,7 @@ function dedupeIndexes(indexes: number[]): number[] {
   return [...new Set(indexes)].sort((left, right) => left - right)
 }
 
-function textRangeKey(textRange: SelectionTextRange): string {
+export function textRangeKey(textRange: SelectionTextRange): string {
   return `${textRange.startpos}:${textRange.endpos}`
 }
 
@@ -469,15 +469,8 @@ export function resolveSvgSelection(
     return lineRangeOverlapsEntry(entry, editorSelectionLineWindow.startLine, editorSelectionLineWindow.endLine)
   })
 
-  const znIdResolvedEntries = dedupeEntries(
-    [...selectedEntries, ...textResolvedEntries]
-      .map((entry) => entry.znId)
-      .filter((znId): znId is string => znId !== undefined)
-      .flatMap((znId) => projectIndexesToEntries(index, resolveIndexesByZnId(index, znId, 'svg'))),
-  )
-
   const entries = dedupeEntries(
-    [...selectedEntries, ...textResolvedEntries, ...znIdResolvedEntries]
+    [...selectedEntries, ...textResolvedEntries]
       .filter((entry) => entry.addressableIn.svg),
   )
   const editorOrScoreDriven = selection.source === 'abc-editor' || selection.source === 'score-preview'
@@ -533,37 +526,21 @@ export function projectLineColumnRangeToTextRange(
   return normalizeTextRange(startOffset, endOffset)
 }
 
-export function resolveScoreRangesForZnIds(
-  index: SheetObjectIndex | undefined,
-  znIds: string[],
-): SelectionTextRange[] {
-  if (index === undefined || znIds.length === 0) return []
-
-  const selectedIndexes = dedupeIndexes(
-    znIds.flatMap((znId) => resolveIndexesByZnId(index, znId, 'score')),
-  )
-
-  return resolveScoreSelectionRanges(index, {
-    selectedIndexes,
-    source: 'player',
-  })
-}
-
 export function projectPlaybackHighlight(
   index: SheetObjectIndex | undefined,
   highlight: PlaybackHighlight | undefined,
 ): PlaybackHighlight {
+  void index
   if (highlight === undefined) {
     return {
-      activeZnIds: [],
+      activeTextRanges: [],
     }
   }
 
-  const scoreRanges = resolveScoreRangesForZnIds(index, highlight.activeZnIds)
-
   return {
     ...highlight,
-    activeZnIds: [...new Set(highlight.activeZnIds)],
-    activeStartChar: scoreRanges[0]?.startpos ?? highlight.activeStartChar,
+    activeTextRanges: [...new Map(
+      highlight.activeTextRanges.map((tr) => [textRangeKey(tr), { ...tr }]),
+    ).values()],
   }
 }

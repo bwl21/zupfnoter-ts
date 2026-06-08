@@ -12,6 +12,8 @@ import type {
   SheetObjectIndex,
 } from '@zupfnoter/types'
 
+import { textRangeKey } from './selectionIndex'
+
 import {
   projectPlaybackHighlight,
   normalizeLineColumnRange,
@@ -21,7 +23,6 @@ import {
   resolveIndexesByTextRange,
   resolveIndexesByTextRangeAndKind,
   resolveIndexesByZnId,
-  resolveScoreRangesForZnIds,
   resolveScoreSelectionRanges,
   resolveSelectedZnIds,
   resolveSvgSelection,
@@ -38,7 +39,7 @@ const DEFAULT_SELECTION_TARGET_CAPABILITIES: Record<SelectionTarget, SelectionTa
   },
   'harp-preview': {
     reads: ['textRange', 'znId', 'confKey'],
-    writes: ['znId', 'confKey'],
+    writes: ['textRange', 'znId', 'confKey'],
   },
   player: {
     reads: ['textRange', 'znId'],
@@ -62,7 +63,7 @@ function uniqueTextRanges(textRanges: SelectionTextRange[]): SelectionTextRange[
   const result: SelectionTextRange[] = []
 
   for (const textRange of textRanges) {
-    const key = `${textRange.startpos}:${textRange.endpos}`
+    const key = textRangeKey(textRange)
     if (seen.has(key)) continue
     seen.add(key)
     result.push({
@@ -267,10 +268,10 @@ export function resolvePlaybackProjection(
 ): PlaybackHighlight {
   const projectedHighlight = projectPlaybackHighlight(index, highlight)
   const capability = getSelectionTargetCapabilities(target)
-  if (!capability.reads.includes('znId')) {
+  if (!capability.reads.includes('textRange')) {
     return {
       ...projectedHighlight,
-      activeZnIds: [],
+      activeTextRanges: [],
     }
   }
 
@@ -281,6 +282,7 @@ export function resolvePlaybackScoreRanges(
   index: SheetObjectIndex | undefined,
   highlight: PlaybackHighlight | undefined,
 ): SelectionTextRange[] {
+  void index
   if (highlight === undefined) return []
-  return resolveScoreRangesForZnIds(index, highlight.activeZnIds)
+  return highlight.activeTextRanges
 }

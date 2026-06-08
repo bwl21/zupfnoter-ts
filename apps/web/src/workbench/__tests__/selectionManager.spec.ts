@@ -104,7 +104,7 @@ describe('selectionManager', () => {
         selectedIndexes: [1],
         textRanges: [{ startpos: 4, endpos: 6 }],
         znIds: [],
-        confKeys: ['extract.0.note-1'],
+        confKeys: [],
       })
   })
 
@@ -119,7 +119,7 @@ describe('selectionManager', () => {
         selectedIndexes: [3],
         textRanges: [{ startpos: 10, endpos: 12 }],
         znIds: [],
-        confKeys: ['extract.0.notebound.nconf.v_1.t_384.n_0.***'],
+        confKeys: [],
       })
   })
 
@@ -144,19 +144,26 @@ describe('selectionManager', () => {
 
   it('resolves playback projections separately from selection projections', () => {
     const highlight: PlaybackHighlight = {
-      activeZnIds: ['note-1', 'note-3'],
+      activeTextRanges: [
+        { startpos: 4, endpos: 6 },
+        { startpos: 10, endpos: 12 },
+      ],
     }
 
     expect(resolvePlaybackProjection(sheetObjectIndex, highlight, 'harp-preview'))
       .toEqual({
-        activeZnIds: ['note-1', 'note-3'],
-        activeStartChar: 4,
+        activeTextRanges: [
+          { startpos: 4, endpos: 6 },
+          { startpos: 10, endpos: 12 },
+        ],
       })
 
     expect(resolvePlaybackProjection(sheetObjectIndex, highlight, 'abc-editor'))
       .toEqual({
-        activeZnIds: [],
-        activeStartChar: 4,
+        activeTextRanges: [
+          { startpos: 4, endpos: 6 },
+          { startpos: 10, endpos: 12 },
+        ],
       })
 
     expect(resolvePlaybackScoreRanges(sheetObjectIndex, highlight))
@@ -176,10 +183,9 @@ describe('selectionManager', () => {
     try {
       expect(canTargetCreateSelection('player', 'znId')).toBe(false)
       expect(resolvePlaybackProjection(sheetObjectIndex, {
-        activeZnIds: ['note-1'],
+        activeTextRanges: [{ startpos: 4, endpos: 6 }],
       }, 'player')).toEqual({
-        activeZnIds: [],
-        activeStartChar: 4,
+        activeTextRanges: [{ startpos: 4, endpos: 6 }],
       })
     } finally {
       registerSelectionTargetCapabilities('player', originalCapabilities)

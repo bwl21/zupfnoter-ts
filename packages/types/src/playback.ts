@@ -2,6 +2,8 @@
  * Playback model shared by the workbench and later worker/player layers.
  */
 
+import type { SelectionTextRange } from './selection.js'
+
 /**
  * Runtime status of playback.
  */
@@ -28,7 +30,7 @@ export interface PlaybackState {
  * Highlight information emitted by the player.
  */
 export interface PlaybackHighlight {
-  activeZnIds: string[]
+  activeTextRanges: SelectionTextRange[]
   activeStartChar?: number
   activeTime?: string
 }
@@ -39,7 +41,7 @@ export interface PlaybackHighlight {
 export type PlaybackPlayerEvent =
   | {
       kind: 'current-notes'
-      activeZnIds: string[]
+      activeTextRanges: SelectionTextRange[]
       activeStartChar?: number
       activeTime?: string
     }

@@ -30,11 +30,14 @@ function clearPlaybackHighlight(root: HTMLElement): void {
 
 function applyPlaybackHighlight(root: HTMLElement, highlight: PlaybackHighlight): void {
   clearPlaybackHighlight(root)
-  if (highlight.activeZnIds.length === 0) return
-  const activeIds = new Set(highlight.activeZnIds)
-  root.querySelectorAll<HTMLElement>('[data-zn-id]').forEach((element) => {
-    const znId = element.dataset.znId
-    if (znId === undefined || !activeIds.has(znId)) return
+  if (highlight.activeTextRanges.length === 0) return
+  const textRanges = highlight.activeTextRanges
+  root.querySelectorAll<HTMLElement>('.zupfnoter-hitbox[data-start-char][data-end-char]').forEach((element) => {
+    const startChar = Number(element.dataset.startChar)
+    const endChar = Number(element.dataset.endChar)
+    if (Number.isNaN(startChar) || Number.isNaN(endChar)) return
+    const overlaps = textRanges.some((tr) => endChar > tr.startpos && startChar < tr.endpos)
+    if (!overlaps) return
     applyHighlightClass(element)
     element.dataset.playbackActive = 'true'
   })

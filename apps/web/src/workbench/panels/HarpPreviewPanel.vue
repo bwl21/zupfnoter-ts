@@ -22,7 +22,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (event: 'select-zn-id', payload: { znId: string; extend: boolean; source: 'harp-preview' }): void
+  (event: 'select-text-range', payload: { startpos: number; endpos: number; extend: boolean; source: 'harp-preview' }): void
 }>()
 
 const mode = ref('normal')
@@ -46,11 +46,16 @@ useSelectionSvgHighlight(
 
 function emitSelectionFromEvent(target: EventTarget | null, extend: boolean): void {
   if (!(target instanceof Element)) return
-  const element = target.closest('[data-zn-id]')
-  const znId = element?.getAttribute('data-zn-id') ?? undefined
-  if (znId === undefined) return
-  emit('select-zn-id', {
-    znId,
+  const element = target.closest('.zupfnoter-hitbox[data-start-char][data-end-char]')
+  const startChar = element?.getAttribute('data-start-char')
+  const endChar = element?.getAttribute('data-end-char')
+  if (startChar === null || endChar === null) return
+  const startpos = Number(startChar)
+  const endpos = Number(endChar)
+  if (Number.isNaN(startpos) || Number.isNaN(endpos)) return
+  emit('select-text-range', {
+    startpos,
+    endpos,
     extend,
     source: 'harp-preview',
   })

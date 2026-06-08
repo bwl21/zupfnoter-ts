@@ -23,7 +23,7 @@ Aktuell umgesetzt:
 - `SelectionManager` stellt systemweite Projektionen fuer Selection und Playback bereit
 - `SelectionTargetCapabilities` typisieren, welche Identitaeten ein Target lesen und schreiben kann
 - Editor und Score arbeiten ueber Textspannen (`startpos` / `endpos`)
-- Harfenvorschau arbeitet ueber `znId`, `confKey` und fuer Editor-Quellen standardmaessig ueber die passende Stimme
+- Harfenvorschau arbeitet ueber `textRange` und `confKey`; fuer Editor-Quellen standardmaessig ueber die passende Stimme
 - Playback bleibt als eigener Zustand getrennt
 
 Wichtig:
@@ -42,10 +42,10 @@ In Phase 5 existieren bereits mehrere Identitaetsraeume:
 - Klaviernoten
   - `startChar` / `endChar` aus `abc2svg`-Annotationen
 - Harfennoten
-  - `znId`
-  - indirekt auch `origin.startChar` / `origin.endChar`
+  - `confKey`
+  - `textRange` via `data-start-char` / `data-end-char` auf SVG-Hitboxen
 - Playback
-  - aktive `znId`
+  - aktive `textRange`
   - spaeter eventuell `time`, `flowIndex`, `passIndex`
 
 Die Legacy-Klaviernoten kennen dabei keine `znId`. Dort wird Selection ueber `abc2svg`-Annotationen und deren `startChar` / `endChar` aufgeloest.
@@ -53,7 +53,7 @@ Die Legacy-Klaviernoten kennen dabei keine `znId`. Dort wird Selection ueber `ab
 Die aktuelle TS-Implementierung folgt dieser Trennung bereits teilweise:
 
 - Score-Preview reagiert auf `textRange`
-- Harfenvorschau reagiert auf `znId` und `confKey`
+- Harfenvorschau reagiert auf `textRange` und `confKey`
 - Editor-Selektion wird ueber `textRange` auf den aktuellen Index aufgeloest
 - `SelectionStore` verwaltet dabei keine pane-spezifische DOM-Logik
 
@@ -117,15 +117,13 @@ Er enthaelt keine View-Logik und keine DOM-Referenzen, sondern nur Beziehungen z
 
 Beispiele:
 
-- `znId -> char range`
-- `char range -> znIds`
-- `char range -> line:column`
-- `abc2svg annotation id -> char range`
+- `textRange -> confKeys`
+- `textRange -> line:column`
+- `abc2svg annotation id -> textRange`
 
 Spaeter moeglich:
 
-- `znId -> playback events`
-- `playback event -> char range`
+- `playback event -> textRange`
 - `playback event -> flow metadata`
 
 ## 2. SelectionStore
@@ -147,7 +145,7 @@ interface SelectionState {
 Wichtig:
 
 - die Auswahl bleibt absichtlich schmal
-- die Aufloesung in `znId`, `confKey` oder `textRange` passiert ueber den `SelectionIndex`
+- die Aufloesung in `confKey` oder `textRange` passiert ueber den `SelectionIndex`
 - wenn ein neuer `SheetObjectIndex` gerendert wird, wird die alte Selection verworfen
 
 ## 3. PlaybackStore
@@ -163,8 +161,7 @@ Beispiel:
 
 ```ts
 interface PlaybackHighlight {
-  activeZnIds: string[]
-  activeStartChar?: number
+  activeTextRanges: Array<{ startpos: number; endpos: number }>
   activeTime?: string
 }
 ```
@@ -175,18 +172,16 @@ interface PlaybackHighlight {
 
 Typische Eingaben:
 
-- `selectByZnId(...)`
-- `selectByZnIds(...)`
 - `selectByCharRange(...)`
 - `selectByLineColumnRange(...)`
 - spaeter `selectByPlaybackEvent(...)`
 
 Der Manager kann ausserdem abgeleitete Sichten bereitstellen:
 
-- Editor-Projektion als `charRange`
-- Klaviernoten-Projektion als `charRange`
-- Harfennoten-Projektion als `znIds` und `confKeys`
-- Playback-Projektion als `znIds`
+- Editor-Projektion als `textRange`
+- Klaviernoten-Projektion als `textRange`
+- Harfennoten-Projektion als `textRanges` und `confKeys`
+- Playback-Projektion als `textRanges`
 
 In der aktuellen Implementierung sind diese Projektionen als `SelectionManager`-APIs benannt und werden von Workbench und Playback genutzt.
 
@@ -209,7 +204,7 @@ Die View kann beide gleichzeitig anwenden, muss aber die Stilregeln getrennt hal
 
 Jedes Panel meldet dem Manager ein Capability-Profil, zum Beispiel:
 
-- `reads: ['textRange', 'znId', 'confKey']`
+- `reads: ['textRange', 'confKey']`
 - `writes: ['textRange']`
 
 Der Manager nutzt dieses Profil, um nur die Projektionen anzubieten, die das Panel auch darstellen oder erzeugen kann.
@@ -218,8 +213,8 @@ Beispiele:
 
 - Editor: `reads` und `writes` fuer `textRange`
 - Score: `reads` und `writes` fuer `textRange`
-- Harfenvorschau: `reads` und `writes` fuer `znId` und `confKey`, `reads` optional fuer `textRange`
-- Playback: `reads` fuer `znId`, kein `writes` fuer Benutzer-Selection
+- Harfenvorschau: `reads` und `writes` fuer `textRange` und `confKey`
+- Playback: `reads` fuer `textRange`, kein `writes` fuer Benutzer-Selection
 
 ## Beispiel: Klaviernote anklicken
 
@@ -232,35 +227,34 @@ Mit `SelectionManager` wird daraus:
 
 1. Klaviernoten liefern `startChar` / `endChar`
 2. `SelectionManager.selectByCharRange(...)` wird aufgerufen
-3. der Manager bestimmt passende `znIds`
-4. Editor bekommt die Text-Selection
-5. Harfennoten bekommen die passende `znId`-Selection
+3. Der Manager legt die Selection als `textRange` an
+4. Editor, Harfennoten und Klaviernoten highlighten ueber dieselbe `textRange`
 
 Damit muss `anno_stop` weiterhin keine `znId` kennen.
 
 ## Beispiel: Harfennote anklicken
 
-1. Harfenvorschau liefert `znId`
-2. `SelectionManager.selectByZnId(...)` wird aufgerufen
-3. der Manager bestimmt die passende `charRange`
+1. Harfenvorschau liefert `textRange` aus `data-start-char` / `data-end-char` der Hitbox
+2. `SelectionManager.selectTextRange(...)` wird aufgerufen
+3. der Manager bestimmt die passende `textRange` und `confKeys`
 4. Editor und Klaviernoten highlighten ueber dieselbe Textspanne
 
 ## Beispiel: Editor-Selektion
 
 1. Editor liefert `startChar` / `endChar` oder `line:column`
 2. `SelectionManager.selectByCharRange(...)` oder `selectByLineColumnRange(...)`
-3. der Manager bestimmt passende `znIds`
+3. der Manager bestimmt passende `confKeys`
 4. Harfenvorschau und Klaviernoten spiegeln dieselbe Selection
 
 ## Beispiel: Playback-Highlight
 
-Playback arbeitet ueberwiegend mit `znId`.
+Playback arbeitet ueberwiegend mit `textRange`.
 
 Der `SelectionManager` oder ein eng benachbarter Projektor kann daraus ableiten:
 
-- Harfennoten-Highlight ueber `activeZnIds`
-- Editor-Highlight ueber `charRange`
-- Klaviernoten-Highlight ueber `charRange`
+- Harfennoten-Highlight ueber `activeTextRanges`
+- Editor-Highlight ueber `textRange`
+- Klaviernoten-Highlight ueber `textRange`
 
 Wichtig bleibt:
 
@@ -307,7 +301,7 @@ Der naechste sinnvolle Ausbauschritt ist:
 
 ## Offene Punkte
 
-- Ob die Eingabeseite des Managers (`selectByZnId`, `selectByCharRange`, ...) explizit eingefuehrt wird
+- Ob die Eingabeseite des Managers (`selectByCharRange`, ...) explizit eingefuehrt wird
 - Wie Mehrstimmen-Selection im Editor an die UI oder an Commands angebunden wird
 - Wie spaetere Identitaeten wie `time` oder `flowIndex` in das Capability-Modell aufgenommen werden
 - Ob `SheetObjectIndex` langfristig als eigener Typname bestehen bleibt oder sprachlich wieder auf `SelectionIndex` gezogen wird
@@ -318,7 +312,7 @@ Diese Punkte sind fachlich vorbereitet, aber noch nicht bis zur letzten Komforts
 
 - explizite Command-/API-Eingangspunkte `selectBy...` im Manager statt nur Store-Methoden
 - UI-seitige Aktivierung einer Mehrstimmen-Selection ueber `editorVoiceScope`
-- Einbindung weiterer Identitaetsraeume jenseits von `textRange`, `znId` und `confKey`
+- Einbindung weiterer Identitaetsraeume jenseits von `textRange` und `confKey`
 - getrennte Public-APIs fuer `resolveSelectionProjection(...)` und `resolvePlaybackProjection(...)` bereitstellen
 - pane-nahe Hilfslogik aus den Views in den Manager oder in klar benannte Adapter verschieben
 - Mehrstimmen-Selection im Editor als bewusstes Feature modellieren, nicht als Nebeneffekt

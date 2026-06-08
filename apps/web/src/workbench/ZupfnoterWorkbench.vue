@@ -59,7 +59,6 @@ const selectedHarpProjection = computed(() => resolveSelectionProjection(
   selectionStore.selection,
   'harp-preview',
 ))
-const selectedZnIds = computed(() => selectedHarpProjection.value.znIds)
 const projectedPlaybackHighlight = computed(() => resolvePlaybackProjection(
   selectionStore.sheetObjectIndex,
   playbackStore.highlight,
@@ -165,18 +164,14 @@ watch(abcText, () => {
   renderTimer = setTimeout(renderNow, 250)
 }, { immediate: true })
 
-function handlePreviewSelection(payload: { znId: string; extend: boolean; source: 'score-preview' | 'harp-preview' }): void {
-  if (!canTargetCreateSelection(payload.source, 'znId')) return
-  const currentZnIds = selectedZnIds.value
-  if (payload.extend && currentZnIds.length > 0) {
-    const nextZnIds = currentZnIds.includes(payload.znId)
-      ? currentZnIds
-      : [...currentZnIds, payload.znId]
-    selectionStore.selectMusicRange(nextZnIds, payload.source)
-    return
-  }
-
-  selectionStore.selectZnId(payload.znId, payload.source)
+function handleHarpPreviewSelection(payload: {
+  startpos: number
+  endpos: number
+  extend: boolean
+  source: 'harp-preview'
+}): void {
+  if (!canTargetCreateSelection(payload.source, 'textRange')) return
+  selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
 }
 
 function handleScorePreviewSelection(payload: {
@@ -300,7 +295,7 @@ onBeforeUnmount(() => {
                   :playback-highlight="projectedPlaybackHighlight"
                   :selection="selectedHarpProjection"
                   :svg="harpSvg"
-                  @select-zn-id="handlePreviewSelection"
+                  @select-text-range="handleHarpPreviewSelection"
                 />
               </template>
             </ZnSplitPane>
