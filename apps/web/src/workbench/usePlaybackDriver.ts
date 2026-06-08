@@ -24,6 +24,13 @@ export function usePlaybackDriver(
 ) {
   let timer: ReturnType<typeof setTimeout> | undefined
   let stepIndex = 0
+  let audioStopTimer: ReturnType<typeof setTimeout> | undefined
+
+  function clearAudioStopTimer(): void {
+    if (audioStopTimer === undefined) return
+    clearTimeout(audioStopTimer)
+    audioStopTimer = undefined
+  }
 
   function clearTimer(): void {
     if (timer === undefined) return
@@ -31,22 +38,30 @@ export function usePlaybackDriver(
     timer = undefined
   }
 
-  function stop(): void {
+  function stop(immediateAudioStop = true): void {
     clearTimer()
+    clearAudioStopTimer()
     stepIndex = 0
-    audioPlayer?.stop()
+    if (immediateAudioStop) {
+      audioPlayer?.stop()
+    } else {
+      audioStopTimer = setTimeout(() => {
+        audioPlayer?.stop()
+        audioStopTimer = undefined
+      }, 160)
+    }
     playbackStore.stopPlayback()
   }
 
   function scheduleNextStep(steps: PlaybackStep[]): void {
     if (stepIndex >= steps.length) {
-      stop()
+      stop(false)
       return
     }
 
     const step = steps[stepIndex]
     if (step === undefined) {
-      stop()
+      stop(false)
       return
     }
 
@@ -55,6 +70,8 @@ export function usePlaybackDriver(
       activeTextRanges: step.activeTextRanges,
       activeStartChar: step.activeStartChar,
       activeTime: step.activeTime,
+      passIndex: step.passIndex,
+      voltaNumber: step.voltaNumber,
     })
 
     stepIndex += 1
@@ -77,10 +94,15 @@ export function usePlaybackDriver(
       return
     }
 
+    clearAudioStopTimer()
+    const totalPassCount = steps.reduce((maxPassCount: number, step: PlaybackStep) => (
+      Math.max(maxPassCount, step.passIndex)
+    ), 0)
+
     clearTimer()
     stepIndex = 0
     audioPlayer?.schedule(steps, playbackStore.state.speedFactor)
-    playbackStore.startPlayback(source.baseTempoFromQ)
+    playbackStore.startPlayback(source.baseTempoFromQ, totalPassCount > 0 ? totalPassCount : undefined)
     scheduleNextStep(steps)
   }
 
@@ -94,6 +116,7 @@ export function usePlaybackDriver(
 
   onBeforeUnmount(() => {
     clearTimer()
+    clearAudioStopTimer()
   })
 
   return {

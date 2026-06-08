@@ -2,6 +2,7 @@ import type {
   PlaybackMode,
   PlaybackPlayerEvent,
   PlaybackHighlight,
+  PlaybackFlowStep,
   SelectionState,
   SelectionTextRange,
   SheetObjectIndex,
@@ -10,6 +11,7 @@ import type {
   VoiceEntity,
   Note,
 } from '@zupfnoter/types'
+import { expandPlaybackFlow } from '@zupfnoter/core'
 import { resolveSelectionZnIds } from './selectionManager'
 import { textRangeKey } from './selectionIndex'
 
@@ -20,11 +22,17 @@ export interface PlaybackNote {
 }
 
 export interface PlaybackStep {
+  originZnIds: string[]
   activeTextRanges: SelectionTextRange[]
   activeNotes: PlaybackNote[]
   activeStartChar?: number
   activeTime: string
+  playbackStartMs: number
   durationMs: number
+  sourceTime: number
+  flowIndex: number
+  passIndex: number
+  voltaNumber?: number
 }
 
 /**
@@ -53,6 +61,8 @@ export function createPlaybackHighlightFromEvent(event: PlaybackPlayerEvent): Pl
     activeTextRanges: event.activeTextRanges,
     activeStartChar: event.activeStartChar,
     activeTime: event.activeTime,
+    passIndex: event.passIndex,
+    voltaNumber: event.voltaNumber,
   }
 }
 
@@ -109,8 +119,16 @@ function collectActiveNotes(entity: PlayableEntity, song: Song): PlaybackNote[] 
   }
 }
 
-export function buildPlaybackTimeline(song: Song): PlaybackStep[] {
-  const grouped = new Map<number, { step: PlaybackStep; maxEntityTimeDuration: number }>()
+interface PlaybackStepGroup {
+  originZnIds: string[]
+  activeTextRanges: SelectionTextRange[]
+  activeNotes: PlaybackNote[]
+  activeStartChar?: number
+  maxEntityTimeDuration: number
+}
+
+function collectPlaybackStepGroups(song: Song): Map<number, PlaybackStepGroup> {
+  const grouped = new Map<number, PlaybackStepGroup>()
 
   for (const voice of song.voices) {
     for (const entity of voice.entities) {
@@ -124,35 +142,54 @@ export function buildPlaybackTimeline(song: Song): PlaybackStep[] {
       const notes = collectActiveNotes(entity, song)
       if (existing === undefined) {
         grouped.set(entity.time, {
-          step: {
-            activeTextRanges: textRange !== undefined ? [textRange] : [],
-            activeNotes: notes,
-            activeStartChar: startChar,
-            activeTime: `${entity.time}`,
-            durationMs: 0,
-          },
+          originZnIds: [entity.znId],
+          activeTextRanges: textRange !== undefined ? [textRange] : [],
+          activeNotes: notes,
+          activeStartChar: startChar,
           maxEntityTimeDuration: entity.duration,
         })
         continue
       }
 
+      existing.originZnIds.push(entity.znId)
       if (textRange !== undefined) {
-        existing.step.activeTextRanges.push(textRange)
+        existing.activeTextRanges.push(textRange)
       }
       if (notes.length > 0) {
-        existing.step.activeNotes.push(...notes)
+        existing.activeNotes.push(...notes)
       }
-      existing.step.activeStartChar = existing.step.activeStartChar === undefined
+      existing.activeStartChar = existing.activeStartChar === undefined
         ? startChar
         : startChar === undefined
-          ? existing.step.activeStartChar
-          : Math.min(existing.step.activeStartChar, startChar)
+          ? existing.activeStartChar
+          : Math.min(existing.activeStartChar, startChar)
       existing.maxEntityTimeDuration = Math.max(existing.maxEntityTimeDuration, entity.duration)
     }
   }
 
-  const sorted = [...grouped.entries()]
-    .sort((left, right) => left[0] - right[0])
+  for (const group of grouped.values()) {
+    group.originZnIds = [...new Set(group.originZnIds)]
+    group.activeTextRanges = [...new Map(
+      group.activeTextRanges.map((tr) => [textRangeKey(tr), tr]),
+    ).values()]
+  }
+
+  return grouped
+}
+
+export function buildPlaybackTimeline(song: Song): PlaybackStep[] {
+  const grouped = collectPlaybackStepGroups(song)
+  const flow = expandPlaybackFlow(song)
+  const sourceTimes = [...grouped.keys()].sort((left, right) => left - right)
+  const nextSourceTimeByTime = new Map<number, number>()
+
+  for (let index = 0; index < sourceTimes.length; index += 1) {
+    const sourceTime = sourceTimes[index]
+    const nextSourceTime = sourceTimes[index + 1]
+    if (sourceTime !== undefined && nextSourceTime !== undefined) {
+      nextSourceTimeByTime.set(sourceTime, nextSourceTime)
+    }
+  }
 
   const bpm = resolveTempoBpm(song)
   const unit = resolveTempoUnit(song)
@@ -164,20 +201,54 @@ export function buildPlaybackTimeline(song: Song): PlaybackStep[] {
     return Math.max(120, (wholeNoteFraction / unit) * (60000 / bpm))
   }
 
-  return sorted.map(([time, { step, maxEntityTimeDuration }], index) => {
-    const nextTime = sorted[index + 1]?.[0]
-    const gapDuration = nextTime !== undefined ? nextTime - time : 0
-    const stepDurationMs = gapDuration > 0
-      ? timeToMs(gapDuration)
-      : timeToMs(maxEntityTimeDuration * ABC2SVG_DURATION_FACTOR / SHORTEST_NOTE)
+  let playbackCursorMs = 0
 
-    return {
-      ...step,
-      durationMs: stepDurationMs,
-      activeTextRanges: [...new Map(
-        step.activeTextRanges.map((tr) => [textRangeKey(tr), tr]),
-      ).values()],
+  return flow.map((flowStep: PlaybackFlowStep, index: number) => {
+    const group = grouped.get(flowStep.sourceTime)
+    if (group === undefined) {
+      const fallbackStep: PlaybackStep = {
+        originZnIds: [...flowStep.originZnIds],
+        activeTextRanges: flowStep.activeTextRanges.map((range) => ({ ...range })),
+        activeNotes: [],
+        activeStartChar: flowStep.activeStartChar,
+        activeTime: `${flowStep.sourceTime}`,
+        playbackStartMs: playbackCursorMs,
+        durationMs: 120,
+        sourceTime: flowStep.sourceTime,
+        flowIndex: flowStep.flowIndex,
+        passIndex: flowStep.passIndex,
+        voltaNumber: flowStep.voltaNumber,
+      }
+      playbackCursorMs += fallbackStep.durationMs
+      return fallbackStep
     }
+
+    const ownDurationUnits = group.maxEntityTimeDuration * ABC2SVG_DURATION_FACTOR / SHORTEST_NOTE
+    const nextFlowStep = flow[index + 1]
+    const nextSourceTime = nextSourceTimeByTime.get(flowStep.sourceTime)
+    const followsSourceSequence = nextFlowStep?.sourceTime === nextSourceTime
+    const traversalDurationUnits = followsSourceSequence && nextSourceTime !== undefined && nextSourceTime > flowStep.sourceTime
+      ? nextSourceTime - flowStep.sourceTime
+      : ownDurationUnits
+    const stepDurationMs = timeToMs(traversalDurationUnits)
+
+    const playbackStep: PlaybackStep = {
+      originZnIds: [...group.originZnIds],
+      activeTextRanges: group.activeTextRanges.map((range) => ({ ...range })),
+      activeNotes: [...group.activeNotes],
+      activeStartChar: group.activeStartChar,
+      activeTime: `${flowStep.sourceTime}`,
+      playbackStartMs: playbackCursorMs,
+      durationMs: stepDurationMs,
+      sourceTime: flowStep.sourceTime,
+      flowIndex: flowStep.flowIndex,
+      passIndex: flowStep.passIndex,
+      voltaNumber: flowStep.voltaNumber,
+    }
+
+    playbackCursorMs += playbackStep.durationMs
+
+    return playbackStep
   })
 }
 
@@ -192,22 +263,25 @@ export function resolvePlaybackSteps(
     return timeline
   }
 
+  const selectedEntries = index !== undefined
+    ? selectedZnIds
+        .flatMap((znId) => index.byZnId[znId] ?? [])
+        .map((entryIndex) => index.entries[entryIndex])
+        .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
+    : []
+  const selectedTextRanges = [...new Map(
+    selectedEntries
+      .filter((entry) => entry.textRange !== undefined)
+      .map((entry) => {
+        const range = entry.textRange
+        return range === undefined ? undefined : [textRangeKey(range), range] as const
+      })
+      .filter((entry): entry is readonly [string, SelectionTextRange] => entry !== undefined),
+  ).values()]
+
   function stepOverlapsSelection(step: PlaybackStep): boolean {
+    if (step.originZnIds.some((znId) => selectedZnIds.includes(znId))) return true
     if (step.activeTextRanges.length === 0) return false
-    const selectedEntries = index !== undefined
-      ? selectedZnIds
-          .flatMap((znId) => index.byZnId[znId] ?? [])
-          .map((entryIndex) => index.entries[entryIndex])
-          .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
-      : []
-    const selectedTextRanges = [...new Map(
-      selectedEntries
-        .filter((entry) => entry.textRange !== undefined)
-        .map((entry) => {
-          const tr = entry.textRange!
-          return [textRangeKey(tr), tr]
-        }),
-    ).values()]
     if (selectedTextRanges.length === 0) return true
     return step.activeTextRanges.some((stepRange) =>
       selectedTextRanges.some((selRange) =>
@@ -228,7 +302,6 @@ export function resolvePlaybackSteps(
     return timeline.slice(startIndex)
   }
 
-  const startIndex = selectedIndices[0] ?? 0
-  const endIndex = selectedIndices[selectedIndices.length - 1] ?? startIndex
-  return timeline.slice(startIndex, endIndex + 1)
+  const selectedStepIndexes = new Set(selectedIndices)
+  return timeline.filter((_, timelineIndex) => selectedStepIndexes.has(timelineIndex))
 }

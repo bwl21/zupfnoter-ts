@@ -19,6 +19,7 @@ function createPlaybackState(): PlaybackState {
     speedFactor: 1,
     activeExtract: 0,
     documentVersion: 0,
+    totalPassCount: undefined,
   }
 }
 
@@ -71,11 +72,12 @@ export const usePlaybackStore = defineStore('playback', () => {
     setSpeedFactor(1)
   }
 
-  function startPlayback(baseTempoFromQ?: number): void {
+  function startPlayback(baseTempoFromQ?: number, totalPassCount?: number): void {
     state.value = {
       ...state.value,
       status: 'playing',
       baseTempoFromQ,
+      totalPassCount,
       mode: mode.value,
     }
   }
@@ -91,6 +93,7 @@ export const usePlaybackStore = defineStore('playback', () => {
     state.value = {
       ...state.value,
       status: 'stopped',
+      totalPassCount: undefined,
     }
     highlight.value = createEmptyPlaybackHighlight()
   }

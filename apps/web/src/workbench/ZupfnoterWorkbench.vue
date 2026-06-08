@@ -112,6 +112,23 @@ const renderIssueTone = computed(() => {
   return 'success'
 })
 
+const playbackStatusOverlay = computed(() => {
+  if (playbackStore.state.status !== 'playing') return undefined
+  const passIndex = playbackStore.highlight.passIndex
+  if (passIndex === undefined) return undefined
+
+  const passParts = [`Durchlauf ${passIndex}`]
+  if (playbackStore.state.totalPassCount !== undefined && playbackStore.state.totalPassCount > 1) {
+    passParts[0] = `Durchlauf ${passIndex}/${playbackStore.state.totalPassCount}`
+  }
+
+  if (playbackStore.highlight.voltaNumber !== undefined) {
+    passParts.push(`Volte ${playbackStore.highlight.voltaNumber}`)
+  }
+
+  return passParts.join(' · ')
+})
+
 const previewErrorMessage = computed(() => {
   return renderError.value
 })
@@ -308,17 +325,26 @@ onBeforeUnmount(() => {
     </template>
 
     <template #footer>
-      <FooterBar
-        extract-label="Extract 0"
-        :storage-path="renderSummary"
-        :dirty="true"
-        save-format="SVG + PDF"
-        :cursor-position="editorCursor"
-        :speed-factor="playbackStore.state.speedFactor"
-        @speed-down="playbackStore.decreaseSpeed"
-        @speed-reset="playbackStore.resetSpeed"
-        @speed-up="playbackStore.increaseSpeed"
-      />
+      <div class="workbench-footer">
+        <FooterBar
+          extract-label="Extract 0"
+          :storage-path="renderSummary"
+          :dirty="true"
+          save-format="SVG + PDF"
+          :cursor-position="editorCursor"
+          :speed-factor="playbackStore.state.speedFactor"
+          @speed-down="playbackStore.decreaseSpeed"
+          @speed-reset="playbackStore.resetSpeed"
+          @speed-up="playbackStore.increaseSpeed"
+        />
+        <div
+          v-if="playbackStatusOverlay !== undefined"
+          class="workbench-footer__playback-overlay"
+          aria-live="polite"
+        >
+          {{ playbackStatusOverlay }}
+        </div>
+      </div>
     </template>
   </WorkbenchLayout>
 
@@ -360,6 +386,33 @@ onBeforeUnmount(() => {
   min-height: 0;
   height: 100%;
   overflow: hidden;
+}
+
+.workbench-footer {
+  position: relative;
+}
+
+.workbench-footer__playback-overlay {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - 0.5rem);
+  transform: translateX(-50%);
+  z-index: 2;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--zn-accent) 26%, var(--zn-border));
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--zn-accent) 14%, var(--zn-bg-elevated)) 0%, var(--zn-bg-elevated) 100%);
+  box-shadow:
+    0 10px 22px color-mix(in srgb, var(--zn-accent) 18%, transparent),
+    0 2px 6px rgb(15 23 42 / 0.16);
+  color: var(--zn-text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+  white-space: nowrap;
 }
 
 .editor-pane > :deep(.zn-tabs),

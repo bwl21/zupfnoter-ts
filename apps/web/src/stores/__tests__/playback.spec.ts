@@ -52,25 +52,31 @@ describe('playback store', () => {
 
     const playbackStore = usePlaybackStore()
 
-    playbackStore.startPlayback(120)
+    playbackStore.startPlayback(120, 2)
     expect(playbackStore.state.status).toBe('playing')
     expect(playbackStore.state.baseTempoFromQ).toBe(120)
+    expect(playbackStore.state.totalPassCount).toBe(2)
 
     playbackStore.handlePlayerEvent({
       kind: 'current-notes',
       activeTextRanges: [{ startpos: 41, endpos: 46 }],
       activeStartChar: 41,
       activeTime: '1:2',
+      passIndex: 2,
+      voltaNumber: 2,
     })
 
     expect(playbackStore.highlight.activeTextRanges).toEqual([{ startpos: 41, endpos: 46 }])
     expect(playbackStore.highlight.activeStartChar).toBe(41)
     expect(playbackStore.highlight.activeTime).toBe('1:2')
+    expect(playbackStore.highlight.passIndex).toBe(2)
+    expect(playbackStore.highlight.voltaNumber).toBe(2)
 
     playbackStore.markDocumentChanged()
 
     expect(playbackStore.state.status).toBe('stopped')
     expect(playbackStore.state.documentVersion).toBe(1)
+    expect(playbackStore.state.totalPassCount).toBeUndefined()
     expect(playbackStore.highlight.activeTextRanges).toEqual([])
   })
 })

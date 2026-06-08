@@ -31,6 +31,8 @@ export type { HarpnotesLayoutOptions, AnnotationTextMetrics, JsPdfConstructor } 
 export { SvgEngine } from './SvgEngine.js'
 export type { SvgEngineOptions } from './SvgEngine.js'
 
+export { expandPlaybackFlow } from './PlaybackFlow.js'
+
 export { GLYPHS } from './glyphs.js'
 export type { GlyphDef } from './glyphs.js'
 

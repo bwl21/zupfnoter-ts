@@ -58,11 +58,9 @@ export function useAudioPlayer(instrument?: Instrument) {
     }
 
     const inst = instrument ?? new HarpInstrument()
-    let timeOffsetMs = 0
 
     for (const step of steps) {
-      const adjustedStepDuration = step.durationMs / speedFactor
-      const stepStartSec = context.currentTime + timeOffsetMs / 1000
+      const stepStartSec = context.currentTime + (step.playbackStartMs / speedFactor) / 1000
 
       for (const note of step.activeNotes) {
         if (!note.attack) continue
@@ -73,8 +71,6 @@ export function useAudioPlayer(instrument?: Instrument) {
           context,
         )
       }
-
-      timeOffsetMs += adjustedStepDuration
     }
   }
 
