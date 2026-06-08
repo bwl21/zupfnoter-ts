@@ -41,6 +41,12 @@ export type {
   SheetObjectAddressability,
   SheetObjectIndexEntry,
   SheetObjectIndex,
+  SelectionProjectionKind,
+  SelectionTarget,
+  SelectionVoiceScope,
+  SelectionTargetCapabilities,
+  SelectionProjection,
+  SelectionProjectionOptions,
   SelectionSource,
   SelectionState,
 } from './selection.js'

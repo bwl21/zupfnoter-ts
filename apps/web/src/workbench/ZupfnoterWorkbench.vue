@@ -29,13 +29,12 @@ import { useSelectionStore } from '../stores/selection'
 import { usePlaybackDriver } from './usePlaybackDriver'
 import type { PlaybackStep } from './playback'
 import {
-  projectPlaybackHighlight,
-  resolveEditorSelectionRange,
-  resolveScoreRangesForZnIds,
-  resolveScoreSelectionRanges,
-  resolveSelectedZnIds,
-  resolveSvgSelection,
-} from './selectionIndex'
+  canTargetCreateSelection,
+  resolvePlaybackProjection,
+  resolvePlaybackScoreRanges,
+  resolveSelectionEditorRange,
+  resolveSelectionProjection,
+} from './selectionManager'
 
 const editorTab = ref('abc')
 const editorPaneSize = ref(54)
@@ -55,25 +54,28 @@ const baseTempoFromQ = ref<number | undefined>(undefined)
 const { toasts, syncDiagnostics, dismissToast } = useWorkbenchToasts()
 const playbackStore = usePlaybackStore()
 const selectionStore = useSelectionStore()
-const selectedSvgSelection = computed(() => resolveSvgSelection(
+const selectedHarpProjection = computed(() => resolveSelectionProjection(
   selectionStore.sheetObjectIndex,
   selectionStore.selection,
+  'harp-preview',
 ))
-const selectedZnIds = computed(() => selectedSvgSelection.value.znIds)
-const projectedPlaybackHighlight = computed(() => projectPlaybackHighlight(
+const selectedZnIds = computed(() => selectedHarpProjection.value.znIds)
+const projectedPlaybackHighlight = computed(() => resolvePlaybackProjection(
   selectionStore.sheetObjectIndex,
   playbackStore.highlight,
+  'harp-preview',
 ))
-const selectedScoreTextRanges = computed(() => resolveScoreSelectionRanges(
+const selectedScoreTextRanges = computed(() => resolveSelectionProjection(
   selectionStore.sheetObjectIndex,
   selectionStore.selection,
-))
+  'score-preview',
+).textRanges)
 const selectedEditorTextRange = computed(() => selectionStore.selection.source === 'abc-editor'
   ? undefined
-  : resolveEditorSelectionRange(selectionStore.sheetObjectIndex, selectionStore.selection))
-const playbackScoreTextRanges = computed(() => resolveScoreRangesForZnIds(
+  : resolveSelectionEditorRange(selectionStore.sheetObjectIndex, selectionStore.selection))
+const playbackScoreTextRanges = computed(() => resolvePlaybackScoreRanges(
   selectionStore.sheetObjectIndex,
-  playbackStore.highlight.activeZnIds,
+  playbackStore.highlight,
 ))
 const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
   playbackStore,
@@ -164,6 +166,7 @@ watch(abcText, () => {
 }, { immediate: true })
 
 function handlePreviewSelection(payload: { znId: string; extend: boolean; source: 'score-preview' | 'harp-preview' }): void {
+  if (!canTargetCreateSelection(payload.source, 'znId')) return
   const currentZnIds = selectedZnIds.value
   if (payload.extend && currentZnIds.length > 0) {
     const nextZnIds = currentZnIds.includes(payload.znId)
@@ -182,6 +185,7 @@ function handleScorePreviewSelection(payload: {
   extend: boolean
   source: 'score-preview'
 }): void {
+  if (!canTargetCreateSelection(payload.source, 'textRange')) return
   if (payload.extend) {
     selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
     return
@@ -294,7 +298,7 @@ onBeforeUnmount(() => {
                   v-model:zoom="harpZoom"
                   :error-message="previewErrorMessage"
                   :playback-highlight="projectedPlaybackHighlight"
-                  :selection="selectedSvgSelection"
+                  :selection="selectedHarpProjection"
                   :svg="harpSvg"
                   @select-zn-id="handlePreviewSelection"
                 />

@@ -8,7 +8,7 @@ import type {
   Song,
   VoiceEntity,
 } from '@zupfnoter/types'
-import { resolveSelectedZnIds } from './selectionIndex'
+import { resolveSelectionZnIds } from './selectionManager'
 
 export interface PlaybackStep {
   activeZnIds: string[]
@@ -25,7 +25,7 @@ export interface PlaybackStep {
  */
 export function resolvePlaybackMode(selection: SelectionState, index: SheetObjectIndex | undefined, activeExtract: number): PlaybackMode {
   void activeExtract
-  const selectedZnIds = resolveSelectedZnIds(index, selection)
+  const selectedZnIds = resolveSelectionZnIds(index, selection)
   if (selection.source !== 'harp-preview' || selectedZnIds.length === 0) return 'all-score'
   if (selectedZnIds.length <= 1) return 'from-note-harp'
   return 'range-harp'
@@ -123,7 +123,7 @@ export function resolvePlaybackSteps(
   timeline: PlaybackStep[],
   mode: PlaybackMode,
 ): PlaybackStep[] {
-  const selectedZnIds = resolveSelectedZnIds(index, selection)
+  const selectedZnIds = resolveSelectionZnIds(index, selection)
   if (mode === 'all-score' || selectedZnIds.length === 0) {
     return timeline
   }

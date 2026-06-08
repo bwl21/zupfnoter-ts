@@ -2,6 +2,7 @@ import type {
   DrawableElement,
   PlaybackHighlight,
   SelectionLineColumn,
+  SelectionProjectionOptions,
   SelectionState,
   SelectionTextRange,
   Sheet,
@@ -411,6 +412,7 @@ export function resolveScoreSelectionRanges(
 export function resolveSvgSelection(
   index: SheetObjectIndex | undefined,
   selection: SelectionState,
+  options?: SelectionProjectionOptions,
 ): {
   znIds: string[]
   confKeys: string[]
@@ -431,7 +433,9 @@ export function resolveSvgSelection(
   const selectedEndLine = selectedEntries
     .map((entry) => entry.endPos?.line)
     .filter((line): line is number => line !== undefined)
+  const editorVoiceScope = options?.editorVoiceScope ?? 'single-voice'
   const editorSelectionLineWindow = selection.source === 'abc-editor'
+    && editorVoiceScope === 'single-voice'
     && selectedStartLine.length > 0
     && selectedEndLine.length > 0
     ? {

@@ -9,13 +9,13 @@ import type {
 } from '@zupfnoter/types'
 
 import {
-  normalizeLineColumnRange,
-  projectLineColumnRangeToTextRange,
-  resolveIndexesByConfKey,
-  resolveIndexesByTextRangeAndKind,
-  resolveIndexesByTextRange,
-  resolveIndexesByZnId,
-} from '../workbench/selectionIndex'
+  resolveSelectionByConfKey,
+  resolveSelectionByIndexes,
+  resolveSelectionByLineColumnRange,
+  resolveSelectionByMusicRange,
+  resolveSelectionByTextRange,
+  resolveSelectionByZnId,
+} from '../workbench/selectionManager'
 
 function createSelectionState(): SelectionState {
   return {
@@ -53,20 +53,15 @@ export const useSelectionStore = defineStore('selection', () => {
   }
 
   function selectIndexes(selectedIndexes: number[], source: SelectionSource = 'command'): void {
-    const normalized = normalizeIndexes(selectedIndexes)
-    selection.value = {
-      selectedIndexes: normalized,
-      anchorIndex: normalized[0],
-      source,
-    }
+    selection.value = resolveSelectionByIndexes(selectedIndexes, source)
   }
 
   function selectZnId(znId: string, source: SelectionSource = 'command'): void {
-    selectIndexes(resolveIndexesByZnId(sheetObjectIndex.value, znId), source)
+    selection.value = resolveSelectionByZnId(sheetObjectIndex.value, znId, source)
   }
 
   function selectMusicRange(znIds: string[], source: SelectionSource = 'command'): void {
-    selectIndexes(znIds.flatMap((znId) => resolveIndexesByZnId(sheetObjectIndex.value, znId)), source)
+    selection.value = resolveSelectionByMusicRange(sheetObjectIndex.value, znIds, source)
   }
 
   function selectTextRange(
@@ -74,47 +69,12 @@ export const useSelectionStore = defineStore('selection', () => {
     endpos: number,
     source: SelectionSource = 'abc-editor',
   ): void {
-    const exactOrOverlapIndexes = source === 'score-preview'
-      ? (() => {
-        const exactScoreObjectIndexes = resolveIndexesByTextRangeAndKind(
-          sheetObjectIndex.value,
-          { startpos, endpos },
-          'score-object',
-          'score',
-          'exact',
-        )
-        if (exactScoreObjectIndexes.length > 0) return exactScoreObjectIndexes
-
-        const overlapScoreObjectIndexes = resolveIndexesByTextRangeAndKind(
-          sheetObjectIndex.value,
-          { startpos, endpos },
-          'score-object',
-          'score',
-          'overlap',
-        )
-        if (overlapScoreObjectIndexes.length > 0) return overlapScoreObjectIndexes
-
-        const exactIndexes = resolveIndexesByTextRange(sheetObjectIndex.value, { startpos, endpos }, undefined, 'exact')
-        return exactIndexes.length > 0
-          ? exactIndexes
-          : resolveIndexesByTextRange(sheetObjectIndex.value, { startpos, endpos }, undefined, 'overlap')
-      })()
-      : source === 'abc-editor'
-        ? (() => {
-          const overlapScoreObjectIndexes = resolveIndexesByTextRangeAndKind(
-            sheetObjectIndex.value,
-            { startpos, endpos },
-            'score-object',
-            'editor',
-            'overlap',
-          )
-          return overlapScoreObjectIndexes.length > 0
-            ? overlapScoreObjectIndexes
-            : resolveIndexesByTextRange(sheetObjectIndex.value, { startpos, endpos }, undefined, 'overlap')
-        })()
-        : resolveIndexesByTextRange(sheetObjectIndex.value, { startpos, endpos }, undefined, 'overlap')
-
-    selectIndexes(exactOrOverlapIndexes, source)
+    selection.value = resolveSelectionByTextRange(
+      sheetObjectIndex.value,
+      startpos,
+      endpos,
+      source,
+    )
   }
 
   function selectLineColumnRange(
@@ -122,20 +82,16 @@ export const useSelectionStore = defineStore('selection', () => {
     end: SelectionLineColumn,
     source: SelectionSource = 'abc-editor',
   ): void {
-    const textRange = projectLineColumnRangeToTextRange(
+    selection.value = resolveSelectionByLineColumnRange(
       sheetObjectIndex.value,
-      normalizeLineColumnRange(start, end),
+      start,
+      end,
+      source,
     )
-    if (textRange === undefined) {
-      clearSelection(source)
-      return
-    }
-
-    selectTextRange(textRange.startpos, textRange.endpos, source)
   }
 
   function selectConfigKey(confKey: string, source: SelectionSource = 'command'): void {
-    selectIndexes(resolveIndexesByConfKey(sheetObjectIndex.value, confKey), source)
+    selection.value = resolveSelectionByConfKey(sheetObjectIndex.value, confKey, source)
   }
 
   const hasSelection = computed(() => selection.value.selectedIndexes.length > 0)

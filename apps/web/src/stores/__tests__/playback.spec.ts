@@ -1,8 +1,34 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { describe, expect, it } from 'vitest'
 
+import type { SheetObjectIndex } from '@zupfnoter/types'
+
 import { usePlaybackStore } from '../playback'
 import { useSelectionStore } from '../selection'
+
+const sheetObjectIndex: SheetObjectIndex = {
+  version: 1,
+  lineStarts: [0],
+  voiceByLine: {},
+  byZnId: {
+    'note-1': [0],
+    'note-2': [1],
+  },
+  byConfKey: {},
+  byTextRange: {},
+  entries: [
+    {
+      kind: 'music-entity',
+      znId: 'note-1',
+      addressableIn: { editor: false, score: false, svg: true },
+    },
+    {
+      kind: 'music-entity',
+      znId: 'note-2',
+      addressableIn: { editor: false, score: false, svg: true },
+    },
+  ],
+}
 
 describe('playback store', () => {
   it('resolves playback mode from the shared selection state', () => {
@@ -10,13 +36,14 @@ describe('playback store', () => {
 
     const selectionStore = useSelectionStore()
     const playbackStore = usePlaybackStore()
+    selectionStore.setSheetObjectIndex(sheetObjectIndex)
 
     expect(playbackStore.mode).toBe('all-score')
 
-    selectionStore.selectZnId('note-1')
+    selectionStore.selectZnId('note-1', 'harp-preview')
     expect(playbackStore.mode).toBe('from-note-harp')
 
-    selectionStore.selectMusicRange(['note-1', 'note-2'])
+    selectionStore.selectMusicRange(['note-1', 'note-2'], 'harp-preview')
     expect(playbackStore.mode).toBe('range-harp')
   })
 

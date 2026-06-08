@@ -70,6 +70,23 @@ export interface SheetObjectIndex {
 /** Selection origin within the workbench. */
 export type SelectionSource = 'abc-editor' | 'score-preview' | 'harp-preview' | 'player' | 'command'
 
+/** Shared projection identities understood by the workbench selection manager. */
+export type SelectionProjectionKind = 'textRange' | 'znId' | 'confKey'
+
+/** Logical workbench target that can consume or create selection projections. */
+export type SelectionTarget = 'abc-editor' | 'score-preview' | 'harp-preview' | 'player'
+
+/** Voice-scoping strategy for editor-driven selection projections. */
+export type SelectionVoiceScope = 'single-voice' | 'all-matching-voices'
+
+/** Capability profile declared by a workbench target. */
+export interface SelectionTargetCapabilities {
+  /** Projection kinds the target can read for highlighting. */
+  reads: SelectionProjectionKind[]
+  /** Projection kinds the target can create from direct interaction. */
+  writes: SelectionProjectionKind[]
+}
+
 export interface SelectionState {
   /** Selected index entries within the current render-generation-local sheet object index. */
   selectedIndexes: number[]
@@ -77,4 +94,22 @@ export interface SelectionState {
   anchorIndex?: number
   /** Where the selection originated from. */
   source: SelectionSource
+}
+
+/** Projection resolved from the current selection state. */
+export interface SelectionProjection {
+  /** Selected index entries within the current render-generation-local sheet object index. */
+  selectedIndexes: number[]
+  /** Addressable text ranges that the target may render. */
+  textRanges: SelectionTextRange[]
+  /** Addressable Zupfnoter ids that the target may render. */
+  znIds: string[]
+  /** Addressable configuration keys that the target may render. */
+  confKeys: string[]
+}
+
+/** Optional projection controls resolved by the selection manager. */
+export interface SelectionProjectionOptions {
+  /** How editor-driven projections should treat equally matching objects across voices. */
+  editorVoiceScope?: SelectionVoiceScope
 }

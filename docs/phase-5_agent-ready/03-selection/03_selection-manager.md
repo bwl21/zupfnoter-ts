@@ -20,15 +20,17 @@ Aktuell umgesetzt:
 
 - `SelectionStore` haelt `selectedIndexes`
 - `SheetObjectIndex` beschreibt den aktuellen Renderzustand
+- `SelectionManager` stellt systemweite Projektionen fuer Selection und Playback bereit
+- `SelectionTargetCapabilities` typisieren, welche Identitaeten ein Target lesen und schreiben kann
 - Editor und Score arbeiten ueber Textspannen (`startpos` / `endpos`)
-- Harfenvorschau arbeitet ueber `znId`, `confKey` und fuer Editor-Quellen zusaetzlich ueber die passende Stimme
+- Harfenvorschau arbeitet ueber `znId`, `confKey` und fuer Editor-Quellen standardmaessig ueber die passende Stimme
 - Playback bleibt als eigener Zustand getrennt
 
 Wichtig:
 
 - Die Selection ist an den aktuellen `SheetObjectIndex` gebunden.
 - Bei neuem Render kann die Selection bewusst verloren gehen.
-- Die Mehrstimmen-Selection aus dem Editor ist nicht mehr implizit, sondern soll spaeter als eigenes Verhalten im Selection-Manager/Editor-Flow abgebildet werden.
+- Die Mehrstimmen-Selection aus dem Editor ist nicht mehr implizit, sondern als explizite Voice-Scope-Option modelliert.
 
 ## Ausgangslage
 
@@ -186,7 +188,7 @@ Der Manager kann ausserdem abgeleitete Sichten bereitstellen:
 - Harfennoten-Projektion als `znIds` und `confKeys`
 - Playback-Projektion als `znIds`
 
-In der aktuellen Implementierung sind diese Projektionen bereits teilweise direkt in `SelectionStore` und den pane-nahen Hilfsfunktionen verdrahtet. Der naechste saubere Schritt bleibt, diese Projektionen als klar benannte Schicht zu konsolidieren.
+In der aktuellen Implementierung sind diese Projektionen als `SelectionManager`-APIs benannt und werden von Workbench und Playback genutzt.
 
 ### Separate Projektionen
 
@@ -294,30 +296,29 @@ Die Schicht loest mehrere Probleme gleichzeitig:
 
 ## Konsequenz fuer die Umsetzung
 
-Die aktuelle `SelectionStore`-Implementierung ist ein sinnvoller Startpunkt und bildet die Phase-5-Zwischenloesung bereits ab. Fuer die dauerhafte Zielarchitektur fehlt noch die sauber getrennte Orchestrierungsschicht.
+Die aktuelle `SelectionStore`-Implementierung bleibt der transiente Zustandstraeger. Die Orchestrierungsschicht liegt jetzt im `SelectionManager`, waehrend Views nur noch Projektionen konsumieren oder Selection-Ereignisse einspeisen.
 
-Der naechste Ausbauschritt sollte sein:
+Der naechste sinnvolle Ausbauschritt ist:
 
-1. `SelectionIndex` explizit modellieren
-2. `SelectionManager` als Mapping-Schicht einfuehren
-3. Editor, Klaviernoten und Harfennoten auf dessen Projektionen umstellen
-4. PlaybackHighlight ueber dieselbe Index-Schicht projizieren
+1. weitere Views oder Commands direkt auf die Manager-APIs umstellen
+2. die Eingabeseite (`selectBy...`) ebenfalls unter dem Manager zusammenziehen
+3. Mehrstimmen-Selection im Editor per UI oder Command explizit nutzbar machen
+4. spaetere Identitaeten wie `time` oder `flowIndex` in dieselbe Projektionsebene aufnehmen
 
 ## Offene Punkte
 
-- Exaktes Datenmodell fuer `SelectionIndex` und `SelectionManager` dokumentieren
-- Umgang mit mehrdeutigen Editor-Selektionen ueber mehrere Stimmen
-- Ob die pane-nahen Projektionen langfristig in einen eigenen Service oder in Store-Helper wandern
-- Wie das Capability-Profil der Panels konkret typisiert wird
-- Wie `PlaybackHighlight` und Selection weiter sauber getrennt bleiben, wenn weitere Identitaetsraeume dazukommen
+- Ob die Eingabeseite des Managers (`selectByZnId`, `selectByCharRange`, ...) explizit eingefuehrt wird
+- Wie Mehrstimmen-Selection im Editor an die UI oder an Commands angebunden wird
+- Wie spaetere Identitaeten wie `time` oder `flowIndex` in das Capability-Modell aufgenommen werden
+- Ob `SheetObjectIndex` langfristig als eigener Typname bestehen bleibt oder sprachlich wieder auf `SelectionIndex` gezogen wird
 
 ## Noch umzusetzen
 
-Diese Punkte sind im aktuellen Code noch nicht als eigene, explizite Schicht umgesetzt und sollten entweder
-in einer naechsten Iteration implementiert oder als bewusste Zwischenloesung dokumentiert werden:
+Diese Punkte sind fachlich vorbereitet, aber noch nicht bis zur letzten Komfortstufe ausgebaut:
 
-- `SelectionManager` als eigenstaendige Orchestrierungsschicht einfuehren
-- Capability-Registrierung der Panels formal typisieren
+- explizite Command-/API-Eingangspunkte `selectBy...` im Manager statt nur Store-Methoden
+- UI-seitige Aktivierung einer Mehrstimmen-Selection ueber `editorVoiceScope`
+- Einbindung weiterer Identitaetsraeume jenseits von `textRange`, `znId` und `confKey`
 - getrennte Public-APIs fuer `resolveSelectionProjection(...)` und `resolvePlaybackProjection(...)` bereitstellen
 - pane-nahe Hilfslogik aus den Views in den Manager oder in klar benannte Adapter verschieben
 - Mehrstimmen-Selection im Editor als bewusstes Feature modellieren, nicht als Nebeneffekt
