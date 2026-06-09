@@ -55,7 +55,9 @@ interface VoiceState {
   nextMeasure: boolean
   nextRepeatStart: boolean
   nextFirstInPart: boolean
-  repetitionStack: PlayableEntity[]
+  repeatBaseAnchor: PlayableEntity | null
+  activeRepeatStarts: PlayableEntity[]
+  repeatStartHistory: PlayableEntity[]
   variantEndings: Array<Array<{ rbstop?: PlayableEntity; rbstart?: PlayableEntity; distance?: number[]; repeatEnd?: boolean }>>
   pushedVariantEndingRepeat: boolean
   previousNote: PlayableEntity | null
@@ -104,7 +106,9 @@ function createVoiceState(wmeasure: number, countBy: number | null): VoiceState 
     nextMeasure: false,
     nextRepeatStart: false,
     nextFirstInPart: false,
-    repetitionStack: [],
+    repeatBaseAnchor: null,
+    activeRepeatStarts: [],
+    repeatStartHistory: [],
     variantEndings: [[]],
     pushedVariantEndingRepeat: false,
     previousNote: null,
@@ -495,6 +499,10 @@ export class AbcToSong {
 
     const entity = requireDefined(result[0], 'AbcToSong._transformNote(): expected transformed entity')
 
+    if (state.repeatBaseAnchor === null) {
+      state.repeatBaseAnchor = entity
+    }
+
     // Handle ties
     entity.tieEnd = state.tieStarted
     state.tieStarted = sym.ti1 != null
@@ -506,18 +514,17 @@ export class AbcToSong {
     entity.slurEnds = Array.from({ length: slurEndCount }, () => this._popSlur(state))
 
     // Repetition stack
-    if (state.repetitionStack.length === 0) {
-      state.repetitionStack.push(entity)
-    }
     if (state.nextRepeatStart) {
       entity.firstInPart = true
-      if (state.repetitionStack[state.repetitionStack.length - 1] !== entity) {
-        state.repetitionStack.push(entity)
+      if (state.activeRepeatStarts[state.activeRepeatStarts.length - 1] !== entity) {
+        state.activeRepeatStarts.push(entity)
       }
+      state.repeatStartHistory.push(entity)
       state.nextRepeatStart = false
     }
     if (state.nextFirstInPart) {
       entity.firstInPart = true
+      state.repeatBaseAnchor = entity
       state.nextFirstInPart = false
     }
 
@@ -588,15 +595,20 @@ export class AbcToSong {
     }
 
     state.previousNote = pause
+    if (state.repeatBaseAnchor === null) {
+      state.repeatBaseAnchor = pause
+    }
     if (state.nextRepeatStart) {
       pause.firstInPart = true
-      if (state.repetitionStack[state.repetitionStack.length - 1] !== pause) {
-        state.repetitionStack.push(pause)
+      if (state.activeRepeatStarts[state.activeRepeatStarts.length - 1] !== pause) {
+        state.activeRepeatStarts.push(pause)
       }
+      state.repeatStartHistory.push(pause)
       state.nextRepeatStart = false
     }
     if (state.nextFirstInPart) {
       pause.firstInPart = true
+      state.repeatBaseAnchor = pause
       state.nextFirstInPart = false
     }
     const inlineEntities: VoiceEntity[] = []
@@ -683,15 +695,19 @@ export class AbcToSong {
       typeof sym.rbstart === 'number' &&
       sym.rbstart > 0 &&
       sym.text?.trim() !== '1' &&
-      state.repetitionStack.length > 1
+      state.repeatStartHistory.length > 0
     const previousNote = state.previousNote
     const isRepeatEnd = (isRepeatEndByBarType || isRepeatEndByFallback) && previousNote
     if (isRepeatEnd) {
-      const repeatStart = state.repetitionStack[state.repetitionStack.length - 1]
+      const activeRepeatStart = state.activeRepeatStarts[state.activeRepeatStarts.length - 1]
+      const repeatStart = activeRepeatStart
+        ?? state.repeatStartHistory[state.repeatStartHistory.length - 1]
       if (repeatStart && previousNote) {
         const repeatTime = previousNote.time
         const repeatDistance = this._extractGotoDistancesFromSymbol(sym)?.[0] ?? state.pendingGotoDistances?.[0] ?? 2
-        const repeatLevel = state.repetitionStack.length + 1
+        const repeatLevel = activeRepeatStart === undefined
+          ? 1
+          : state.activeRepeatStarts.length + (state.repeatBaseAnchor === repeatStart ? 1 : 2)
         const goto: Goto = {
           type: 'Goto' as const,
           beat: this._timeToBeat(repeatTime),
@@ -714,6 +730,9 @@ export class AbcToSong {
           } as GotoPolicy,
         }
         result.push(goto)
+      }
+      if (state.activeRepeatStarts.length > 0) {
+        state.activeRepeatStarts.pop()
       }
       state.pendingGotoDistances = null
       state.nextFirstInPart = true

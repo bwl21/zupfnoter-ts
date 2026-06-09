@@ -111,6 +111,7 @@ interface RepeatDecision {
   key: string
   fromTime: number
   toTime: number
+  level: number
 }
 
 interface VariantBeginDecision {
@@ -135,6 +136,7 @@ function collectRepeatDecisions(song: Song): Map<number, RepeatDecision> {
         key,
         fromTime: entity.from.time,
         toTime: entity.to.time,
+        level,
       })
     }
   }
@@ -196,6 +198,9 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
   if (times.length === 0) return []
 
   const repeatDecisions = collectRepeatDecisions(song)
+  const repeatDecisionByKey = new Map(
+    [...repeatDecisions.values()].map((decision) => [decision.key, decision]),
+  )
   const variantBeginDecisions = collectVariantBeginDecisions(song)
   const variantFollowDecisions = collectVariantFollowDecisions(song)
   const timeIndexByTime = new Map(times.map((time, index) => [time, index]))
@@ -254,6 +259,20 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
       const repeatUsage = repeatUsageByKey.get(repeatDecision.key) ?? 0
       if (repeatUsage === 0) {
         repeatUsageByKey.set(repeatDecision.key, 1)
+        if (repeatDecision.level > 1) {
+          for (const [key, usage] of repeatUsageByKey.entries()) {
+            const nestedDecision = repeatDecisionByKey.get(key)
+            if (
+              usage > 0 &&
+              nestedDecision !== undefined &&
+              nestedDecision.fromTime > repeatDecision.toTime &&
+              nestedDecision.fromTime < repeatDecision.fromTime
+            ) {
+              repeatUsageByKey.delete(key)
+            }
+          }
+
+        }
         passIndex += 1
         const jumpIndex = timeIndexByTime.get(repeatDecision.toTime)
         if (jumpIndex === undefined) {
