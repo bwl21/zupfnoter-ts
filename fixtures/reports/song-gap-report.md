@@ -5,23 +5,30 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
 
 ## Summary
 
-- Cases with reports: 15
-- Required gaps: 277
-- Warnings: 21
+- Cases with reports: 16
+- Required gaps: 327
+- Warnings: 24
 
 ## Gap Type Overview
 
 | Gap category | Count |
 | --- | ---: |
-| different-length | 2 |
-| different-value | 9 |
-| extra-event | 74 |
-| extra-field | 110 |
-| ignored-by-contract | 1700 |
-| missing-event | 82 |
-| normalization-warning | 21 |
+| different-length | 5 |
+| different-value | 36 |
+| extra-event | 76 |
+| extra-field | 123 |
+| ignored-by-contract | 1970 |
+| missing-event | 87 |
+| normalization-warning | 24 |
 
 ## Case Reports
+
+- [02_twoStaff](fixtures/cases/02_twoStaff/_parity/song/reports/song-gap-report.md)
+  - Required gaps: 22
+  - Warnings: 0
+  - Matched events: 202
+  - Unmatched legacy events: 2
+  - Unmatched TS events: 0
 
 - [246_Horch-was-kommt-von-draussen-rein](fixtures/cases/246_Horch-was-kommt-von-draussen-rein/_parity/song/reports/song-gap-report.md)
   - Required gaps: 55
@@ -45,7 +52,7 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
   - Unmatched TS events: 4
 
 - [757_Andante-grazioso-Mozart](fixtures/cases/757_Andante-grazioso-Mozart/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 51
+  - Required gaps: 46
   - Warnings: 10
   - Matched events: 354
   - Unmatched legacy events: 0
@@ -87,11 +94,11 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
   - Unmatched TS events: 0
 
 - [repeat](fixtures/cases/repeat/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 9
-  - Warnings: 2
-  - Matched events: 10
-  - Unmatched legacy events: 0
-  - Unmatched TS events: 0
+  - Required gaps: 35
+  - Warnings: 6
+  - Matched events: 78
+  - Unmatched legacy events: 2
+  - Unmatched TS events: 2
 
 - [single_note](fixtures/cases/single_note/_parity/song/reports/song-gap-report.md)
   - Required gaps: 1
@@ -122,10 +129,10 @@ The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.
   - Unmatched TS events: 0
 
 - [Twostaff](fixtures/cases/Twostaff/_parity/song/reports/song-gap-report.md)
-  - Required gaps: 8
-  - Warnings: 1
-  - Matched events: 59
-  - Unmatched legacy events: 0
+  - Required gaps: 15
+  - Warnings: 0
+  - Matched events: 58
+  - Unmatched legacy events: 1
   - Unmatched TS events: 0
 
 ## Manual Registry
