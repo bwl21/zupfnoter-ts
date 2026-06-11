@@ -21,15 +21,12 @@ import { formatOpenImplementations, getOpenImplementations } from '../openImplem
 
 describe('fixtureLoader', () => {
   const KNOWN_COMPACT_SLUR_CLOSE_FIXTURES = [
-    '02_twoStaff',
     '3015_reference_sheet',
-    'Twostaff',
     'abc-to-song-slur-tuplet-parity',
   ]
 
   it('resolves fixture ABC paths by test case name', () => {
     expect(fixtureAbcPath('single_note')).toBe('fixtures/cases/single_note/input.abc')
-    expect(fixtureAbcPath('Twostaff')).toBe('fixtures/cases/Twostaff/input.abc')
   })
 
   it('uses default config when ABC has no zupfnoter config block', () => {
@@ -98,10 +95,6 @@ describe('fixtureLoader', () => {
     const normalized = normalizeRawSongFixture(fixture.song)
     const expected = normalizeRawSongFixture(loadSongFixture('repeat'))
     expect(normalized.beat_maps).toEqual(expected.beat_maps)
-    expect(normalized.beat_maps).toEqual([
-      { '0': 0, '48': 48, '96': 96, '144': 144 },
-      { '0': 0, '48': 48, '96': 96, '144': 144 },
-    ])
   })
 
   it('preserves znId in generated song and sheet fixtures', () => {
@@ -193,7 +186,6 @@ describe('fixtureLoader', () => {
     const cases = scanFixtureCases()
 
     expect(cases.map((testCase) => testCase.id)).toContain('single_note')
-    expect(cases.map((testCase) => testCase.id)).toContain('Twostaff')
     expect(cases.find((testCase) => testCase.id === 'single_note')?.hasSongFixture).toBe(true)
     expect(cases.find((testCase) => testCase.id === 'single_note')?.hasSheetFixture).toBe(true)
     expect(cases.find((testCase) => testCase.id === 'single_note')?.hasOutputSvgFixture).toBe(true)

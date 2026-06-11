@@ -578,7 +578,7 @@ V:V1 clef=treble-8
 
     const repeatGoto = gotos.find((goto) => goto.confKey === 'notebound.c_jumplines.v_1.29184.p_repeat')
     expect(repeatGoto?.policy.distance).toBe(-6)
-    expect(repeatGoto?.policy.level).toBe(3)
+    expect(repeatGoto?.policy.level).toBe(4)
 
     const beginGoto = gotos.find((goto) => goto.confKey === 'notebound.c_jumplines.v_1.26880.0.p_begin')
     expect(beginGoto?.policy.distance).toBe(3)

@@ -522,6 +522,10 @@ export class AbcToSong {
       state.repeatStartHistory.push(entity)
       state.nextRepeatStart = false
     }
+    // Deep anchor: Ruby keeps at least one entity on the repetition stack
+    if (state.activeRepeatStarts.length === 0) {
+      state.activeRepeatStarts.push(entity)
+    }
     if (state.nextFirstInPart) {
       entity.firstInPart = true
       state.repeatBaseAnchor = entity
@@ -606,6 +610,10 @@ export class AbcToSong {
       state.repeatStartHistory.push(pause)
       state.nextRepeatStart = false
     }
+    // Deep anchor: Ruby keeps at least one entity on the repetition stack
+    if (state.activeRepeatStarts.length === 0) {
+      state.activeRepeatStarts.push(pause)
+    }
     if (state.nextFirstInPart) {
       pause.firstInPart = true
       state.repeatBaseAnchor = pause
@@ -686,10 +694,21 @@ export class AbcToSong {
       state.nextFirstInPart = true
     }
 
+    // Repeat start → mark the next playable as repetition anchor.
+    // Must be checked BEFORE repeat end to prevent a start bar from
+    // also being detected as a repeat end via the fallback path.
+    const isBarRepeatStart =
+      (sym.bar_type && sym.bar_type.endsWith(':')) ||
+      this._sourceHasRepeatStartMarker(sym)
+    if (isBarRepeatStart) {
+      state.nextRepeatStart = true
+    }
+
     // Repeat end → Goto.
     const isRepeatEndByBarType = sym.bar_type?.startsWith(':') ?? false
     const isRepeatEndByFallback =
       !isRepeatEndByBarType &&
+      !isBarRepeatStart &&
       typeof sym.rbstop === 'number' &&
       sym.rbstop > 0 &&
       typeof sym.rbstart === 'number' &&
@@ -731,16 +750,13 @@ export class AbcToSong {
         }
         result.push(goto)
       }
-      if (state.activeRepeatStarts.length > 0) {
+      // Ruby: only pop when nested (level > 1). Level 1 keeps the outer
+      // repeat on the stack so subsequent repeat ends can still match it.
+      if (state.activeRepeatStarts.length > 1) {
         state.activeRepeatStarts.pop()
       }
       state.pendingGotoDistances = null
       state.nextFirstInPart = true
-    }
-
-    // Repeat start → mark the next playable as repetition anchor.
-    if (sym.bar_type && sym.bar_type.endsWith(':')) {
-      state.nextRepeatStart = true
     }
 
     if (state.previousNote) {
@@ -1615,5 +1631,17 @@ export class AbcToSong {
         state.nextMeasure = true
       }
     }
+  }
+
+  /**
+   * output_music() normalisiert |: zu | oder ||. Ob das Original ein
+   * Wiederholungsstart war, lässt sich nur noch am Quelltext erkennen.
+   */
+  private _sourceHasRepeatStartMarker(sym: AbcSymbol): boolean {
+    if (this._source === null || sym.istart === undefined) return false
+    const windowStart = Math.max(0, sym.istart - 3)
+    const windowEnd = Math.min(this._source.length, sym.istart + 5)
+    const ctx = this._source.slice(windowStart, windowEnd)
+    return /[|][:]/.test(ctx)
   }
 }
