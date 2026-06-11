@@ -451,19 +451,52 @@ export class AbcParser {
       read_file: (_name: string) => null,
     }
 
-    const abc = new _abc2svgModule.Abc(user)
+    const abc = new _abc2svgModule.Abc(user) as InstanceType<Abc2svgExports['Abc']> & {
+      output_music?: () => void
+      get_voice_tb?: () => Abc2svgVoice[]
+    }
+    let earlyModel: AbcModel | null = null
+    const originalOutputMusic = abc.output_music
+    if (typeof originalOutputMusic === 'function') {
+      abc.output_music = () => {
+        if (earlyModel === null && typeof abc.get_voice_tb === 'function') {
+          const voice_tb = abc.get_voice_tb()
+          if (Array.isArray(voice_tb)) {
+            earlyModel = AbcParser._buildModel(
+              voice_tb,
+              _abc2svgModule.abc2svg.sym_name,
+              {},
+              computeLegacyChecksum(abcText),
+              abcText,
+            )
+          }
+        }
+        originalOutputMusic.call(abc)
+      }
+    }
+
     abc.tosvg('zupfnoter', abcText)
 
-    const primaryTune = readPrimaryTune(abc)
-    if (primaryTune !== null) {
-      const [_tsfirst, voice_tb, info] = primaryTune
-      this._model = AbcParser._buildModel(
-        voice_tb,
-        _abc2svgModule.abc2svg.sym_name,
-        info,
-        computeLegacyChecksum(abcText),
-        abcText,
-      )
+    if (earlyModel !== null) {
+      const capturedModel: AbcModel = earlyModel
+      const primaryTune = readPrimaryTune(abc)
+      if (primaryTune !== null) {
+        const [_tsfirst, _voice_tb, info] = primaryTune
+        capturedModel.info = info
+      }
+      this._model = capturedModel
+    } else {
+      const primaryTune = readPrimaryTune(abc)
+      if (primaryTune !== null) {
+        const [_tsfirst, voice_tb, info] = primaryTune
+        this._model = AbcParser._buildModel(
+          voice_tb,
+          _abc2svgModule.abc2svg.sym_name,
+          info,
+          computeLegacyChecksum(abcText),
+          abcText,
+        )
+      }
     }
 
     if (this._model === null) {
