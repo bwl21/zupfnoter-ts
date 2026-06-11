@@ -15,6 +15,7 @@
     "test:dump:song": "pnpm --filter @zupfnoter/core run test:dump:song",
     "test:dump:sheet": "pnpm --filter @zupfnoter/core run test:dump:sheet",
     "test:dump:svg": "pnpm --filter @zupfnoter/core run test:dump:svg",
+    "test:ui": "pnpm --filter @zupfnoter/core run test:ui",
     "test:full": "pnpm test && pnpm test:gaps",
     "test:gaps": "pnpm --filter @zupfnoter/core run test:gaps",
     "test:parity:song": "pnpm parity:song",
