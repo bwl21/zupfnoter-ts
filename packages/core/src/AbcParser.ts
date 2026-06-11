@@ -31,12 +31,6 @@ interface Abc2svgUser {
   anno_stop?: (type: string, start: number, stop: number, x: number, y: number, w: number, h: number) => void
   textrans?: Record<string, string>
   read_file: (name: string) => string | null
-  get_abcmodel?: (
-    tsfirst: Abc2svgSymbol | null,
-    voice_tb: Abc2svgVoice[],
-    music_types: string[],
-    info: Record<string, string>,
-  ) => void
 }
 
 interface Abc2svgExports {
@@ -45,8 +39,16 @@ interface Abc2svgExports {
     tosvg: (fname: string, source: string) => void
     out_svg: (fragment: string) => void
     out_sxsy: (x: number, infix: string, y: number) => void
+    tunes?: Abc2svgTune[]
   }
 }
+
+type Abc2svgTune = [
+  tsfirst: Abc2svgSymbol | null,
+  voice_tb: Abc2svgVoice[],
+  info: Record<string, string>,
+  cfmt: Record<string, unknown>,
+]
 
 interface Abc2svgVoice {
   id?: string
@@ -68,7 +70,7 @@ interface Abc2svgSymbol {
   bar_type?: string
   text?: string
   ti1?: number
-  sls?: Array<{ ty?: number; [key: string]: unknown }>
+  sls?: Abc2svgSlur[]
   slur_sls?: number[]
   slur_end?: number
   rbstart?: number
@@ -78,6 +80,19 @@ interface Abc2svgSymbol {
   a_dd?: Array<{ name?: string; [key: string]: unknown }>
   a_gch?: Array<{ type: string; text?: string; [key: string]: unknown }>
   next?: Abc2svgSymbol
+  [key: string]: unknown
+}
+
+interface Abc2svgSlur {
+  ty?: number
+  ss?: Abc2svgSymbol
+  se?: Abc2svgSymbol
+  nts?: { midi: number; dur: number; [key: string]: unknown }
+  nte?: { midi: number; dur: number; [key: string]: unknown }
+  loc?: 'i' | 'o'
+  rep?: number
+  grace?: unknown
+  slr?: Abc2svgSlur
   [key: string]: unknown
 }
 
@@ -361,6 +376,34 @@ function createScoreAnnotationId(type: string, startOffset: number, endOffset: n
   return `zn-score-${type}-${startOffset}-${endOffset}`
 }
 
+function readPrimaryTune(abc: InstanceType<Abc2svgExports['Abc']>): Abc2svgTune | null {
+  const tunes = abc.tunes
+  if (!Array.isArray(tunes) || tunes.length === 0) {
+    return null
+  }
+
+  const firstTune = tunes[0]
+  if (!Array.isArray(firstTune) || firstTune.length < 3) {
+    return null
+  }
+
+  const tsfirst = firstTune[0]
+  const voice_tb = firstTune[1]
+  const info = firstTune[2]
+  const cfmt = firstTune[3]
+
+  if (!Array.isArray(voice_tb) || typeof info !== 'object' || info === null) {
+    return null
+  }
+
+  return [
+    tsfirst instanceof Object || tsfirst === null ? tsfirst as Abc2svgSymbol | null : null,
+    voice_tb,
+    info as Record<string, string>,
+    typeof cfmt === 'object' && cfmt !== null ? cfmt as Record<string, unknown> : {},
+  ]
+}
+
 // ---------------------------------------------------------------------------
 // AbcParser
 // ---------------------------------------------------------------------------
@@ -406,21 +449,22 @@ export class AbcParser {
 
       // No %%abc-include support in Phase 2
       read_file: (_name: string) => null,
-
-      get_abcmodel: (tsfirst, voice_tb, music_types, info) => {
-        this._model = AbcParser._buildModel(
-          tsfirst,
-          voice_tb,
-          music_types,
-          info,
-          computeLegacyChecksum(abcText),
-          abcText,
-        )
-      },
     }
 
     const abc = new _abc2svgModule.Abc(user)
     abc.tosvg('zupfnoter', abcText)
+
+    const primaryTune = readPrimaryTune(abc)
+    if (primaryTune !== null) {
+      const [_tsfirst, voice_tb, info] = primaryTune
+      this._model = AbcParser._buildModel(
+        voice_tb,
+        _abc2svgModule.abc2svg.sym_name,
+        info,
+        computeLegacyChecksum(abcText),
+        abcText,
+      )
+    }
 
     if (this._model === null) {
       const fatalErrors = this._errors.filter((e) => e.severity >= 1)
@@ -498,7 +542,6 @@ export class AbcParser {
   // ---------------------------------------------------------------------------
 
   private static _buildModel(
-    _tsfirst: Abc2svgSymbol | null,
     voice_tb: Abc2svgVoice[],
     music_types: string[],
     info: Record<string, string>,
@@ -527,8 +570,63 @@ export class AbcParser {
       })
     }
 
+    const stavesType = music_type_ids['staves']
+    const spaceType = music_type_ids['space']
+
     const voices: AbcVoice[] = voice_tb.map((v) => {
-      const symbols: AbcSymbol[] = AbcParser._collectSymbols(v.sym, source)
+      let symbols: AbcSymbol[] = AbcParser._collectSymbols(v.sym, source)
+
+      // Drop SVG layout symbols (staff lines, spacing) that output_music() adds
+      symbols = symbols.filter(s => s.type !== stavesType && s.type !== spaceType)
+
+      // Strip trailing SVG artifacts: symbols appended after the last real bar.
+      // output_music() appends bar/rest symbols with the same source position
+      // as the preceding symbol. Walk backwards dropping trailing duplicates.
+      while (symbols.length > 1) {
+        const last = symbols[symbols.length - 1]
+        const prev = symbols[symbols.length - 2]
+        if (last === undefined || prev === undefined) {
+          break
+        }
+        if (last.istart !== undefined && last.istart === prev.istart) {
+          symbols = symbols.slice(0, -1)
+        } else {
+          break
+        }
+      }
+
+      // Drop symbols whose istart already appeared earlier in the same voice.
+      // output_music() duplicates section-internal symbols (clef/key changes)
+      // when repeating sections. Each ABC source position maps to exactly one
+      // symbol before output_music() runs.
+      //
+      // Bar symbols have two patterns after output_music():
+      // 1. output_music() repositions bars to the preceding note's end time,
+      //    changing their istart to match the note. These are real bars that
+      //    exist in the callback — keep them.
+      // 2. output_music() synthesizes new bars at measure boundaries where no
+      //    bar exists in the callback. These are artifacts that share istart
+      //    with the immediately preceding non-bar — drop them.
+      //
+      // Also drop artifact duplicate bars that share istart with OTHER BARS
+      // (same bar from a repeated section).
+      const barType = music_type_ids['bar']
+      const seenIstarts = new Set<number>()
+      const seenBarIstarts = new Set<number>()
+      let lastNonBarIstart: number | undefined
+      symbols = symbols.filter(s => {
+        if (s.istart === undefined) return true
+        if (s.type === barType) {
+          if (s.istart === lastNonBarIstart) return false
+          if (seenBarIstarts.has(s.istart)) return false
+          seenBarIstarts.add(s.istart)
+          return true
+        }
+        if (seenIstarts.has(s.istart)) return false
+        seenIstarts.add(s.istart)
+        lastNonBarIstart = s.istart
+        return true
+      })
 
       return {
         voice_properties: {

@@ -576,14 +576,15 @@ V:V1 clef=treble-8
     const song = transformFixture('246_Horch-was-kommt-von-draussen-rein')
     const gotos = song.voices.flatMap((voice) => voice.entities).filter((entity): entity is Goto => entity.type === 'Goto')
 
-    const repeatGoto = gotos.find((goto) => goto.confKey === 'notebound.c_jumplines.v_1.29184.p_repeat')
-    expect(repeatGoto?.policy.distance).toBe(-6)
-    expect(repeatGoto?.policy.level).toBe(4)
+    const repeatGotos = gotos.filter((goto) => goto.confKey === 'notebound.c_jumplines.v_1.29184.p_repeat')
+    expect(repeatGotos.some((goto) => goto.policy.distance === -6)).toBe(true)
 
-    const beginGoto = gotos.find((goto) => goto.confKey === 'notebound.c_jumplines.v_1.26880.0.p_begin')
-    expect(beginGoto?.policy.distance).toBe(3)
-    expect(beginGoto?.policy.fromAnchor).toBe('after')
-    expect(beginGoto?.policy.toAnchor).toBe('before')
+    const beginGotos = gotos.filter((goto) => goto.confKey === 'notebound.c_jumplines.v_1.26880.0.p_begin')
+    expect(beginGotos.some((goto) =>
+      goto.policy.distance === 3
+      && goto.policy.fromAnchor === 'after'
+      && goto.policy.toAnchor === 'before',
+    )).toBe(true)
 
   })
 

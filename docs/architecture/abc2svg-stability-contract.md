@@ -4,6 +4,9 @@
 
 This document describes the **actual abc2svg surface that `zupfnoter-ts` depends on today**.
 
+Update: the parse path now reads the primary tune from `Abc.tunes` after `tosvg()`
+instead of relying on the `get_abcmodel(...)` callback.
+
 The goal is to send this to the abc2svg author and ask:
 
 > Can these methods, callbacks, exported names, and model fields be considered
@@ -91,7 +94,7 @@ We currently pass these `user` properties to `new Abc(user)`:
 - `img_out(svg: string)`
 - `errmsg(msg: string, line?: number, column?: number)`
 - `read_file(name: string): string | null`
-- `get_abcmodel(tsfirst, voice_tb, music_types, info)` for parse mode
+- `Abc.tunes` for parse mode
 - `anno_start(type, start, stop, x, y, w, h)` for render mode
 - `anno_stop(type, start, stop, x, y, w, h)` for render mode
 
