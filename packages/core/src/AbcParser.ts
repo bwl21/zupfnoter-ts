@@ -107,6 +107,25 @@ export interface AbcParseError {
   column?: number
 }
 
+/**
+ * Binds a hook function following the abc2svg plugin pattern:
+ *
+ *   fn = bindHook(target, original, function(of) {
+ *     // 'this' === target
+ *     // of   === original
+ *     of()
+ *   })
+ *
+ * The returned function has the same signature as `original`.
+ */
+function bindHook<TThis, TArgs extends unknown[], TReturn>(
+  target: TThis,
+  original: (this: TThis, ...args: TArgs) => TReturn,
+  hook: (this: TThis, of: (...args: TArgs) => TReturn) => TReturn,
+): (...args: TArgs) => TReturn {
+  return hook.bind(target, original) as (...args: TArgs) => TReturn
+}
+
 const ABC2SVG_MESSAGE_PREFIXES = [
   { prefix: 'Warning: ', severity: 0 as const },
   { prefix: 'Error: ', severity: 1 as const },
@@ -455,15 +474,16 @@ export class AbcParser {
       output_music?: () => void
       get_voice_tb?: () => Abc2svgVoice[]
     }
-    let earlyModel: AbcModel | null = null
+    let capturedModel: AbcModel | null = null
     const originalOutputMusic = abc.output_music
     if (typeof originalOutputMusic === 'function') {
-      abc.output_music = () => {
-        if (earlyModel === null && typeof abc.get_voice_tb === 'function') {
-          const voice_tb = abc.get_voice_tb()
-          if (Array.isArray(voice_tb)) {
-            earlyModel = AbcParser._buildModel(
-              voice_tb,
+      // Captures voice_tb BEFORE output_music adds SVG layout artifacts.
+      abc.output_music = bindHook(abc, originalOutputMusic, function (this: typeof abc, of) {
+        if (capturedModel === null && typeof this.get_voice_tb === 'function') {
+          const voiceTb = this.get_voice_tb()
+          if (Array.isArray(voiceTb)) {
+            capturedModel = AbcParser._buildModel(
+              voiceTb,
               _abc2svgModule.abc2svg.sym_name,
               {},
               computeLegacyChecksum(abcText),
@@ -471,32 +491,19 @@ export class AbcParser {
             )
           }
         }
-        originalOutputMusic.call(abc)
-      }
+        of()
+      })
     }
 
     abc.tosvg('zupfnoter', abcText)
 
-    if (earlyModel !== null) {
-      const capturedModel: AbcModel = earlyModel
+    if (capturedModel !== null) {
+      const model: AbcModel = capturedModel
       const primaryTune = readPrimaryTune(abc)
       if (primaryTune !== null) {
-        const [_tsfirst, _voice_tb, info] = primaryTune
-        capturedModel.info = info
+        model.info = primaryTune[2]
       }
-      this._model = capturedModel
-    } else {
-      const primaryTune = readPrimaryTune(abc)
-      if (primaryTune !== null) {
-        const [_tsfirst, voice_tb, info] = primaryTune
-        this._model = AbcParser._buildModel(
-          voice_tb,
-          _abc2svgModule.abc2svg.sym_name,
-          info,
-          computeLegacyChecksum(abcText),
-          abcText,
-        )
-      }
+      this._model = model
     }
 
     if (this._model === null) {
