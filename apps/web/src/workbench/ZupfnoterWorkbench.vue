@@ -17,8 +17,9 @@ import LyricsPanel from './panels/LyricsPanel.vue'
 import ScorePreviewPanel from './panels/ScorePreviewPanel.vue'
 import {
   DEFAULT_ABC,
-  renderWorkbenchPreviews,
   type RenderIssue,
+  renderWorkbenchPreviews,
+  type WorkbenchRenderResult,
 } from './rendering/renderPipeline'
 import { extractSongConfig } from '@zupfnoter/core'
 import type { WorkbenchDiagnostic } from './diagnostics'
@@ -40,6 +41,7 @@ import {
   resolveSelectionEditorRange,
   resolveSelectionProjection,
 } from './selectionManager'
+import { workbenchDiagnosticKey, type WorkbenchDiagnostic as WebWorkbenchDiagnostic } from './diagnostics'
 
 const editorTab = ref('abc')
 const editorPaneSize = ref(54)
@@ -199,8 +201,11 @@ const produceExtracts = computed(() => {
     : new Set<number>()
 })
 
-let renderTimer: ReturnType<typeof setTimeout> | undefined
 let commandStack: CommandStack
+let renderWorker: Worker | undefined
+let nextRenderRequestId = 0
+let pendingRenderRequestId: number | undefined
+let renderTimer: ReturnType<typeof setTimeout> | undefined
 
 function appendConsoleLine(message: string, kind: ConsoleLogKind = 'output'): void {
   nextConsoleEntryId += 1
@@ -226,32 +231,97 @@ function appendDiagnosticLine(message: string, severity: 'warning' | 'error', so
   appendConsoleLine(`${timestampLabel()}  ${prefix}${message}`, severity === 'error' ? 'error' : 'info')
 }
 
+function appendUniqueDiagnosticLine(
+  seenKeys: Set<string>,
+  diagnostic: WebWorkbenchDiagnostic,
+  fallbackSource?: string,
+): void {
+  const key = workbenchDiagnosticKey(diagnostic)
+  if (seenKeys.has(key)) return
+  seenKeys.add(key)
+  appendDiagnosticLine(diagnostic.message, diagnostic.severity, diagnostic.source ?? fallbackSource)
+}
+
+function handleRenderWorkerMessage(event: MessageEvent): void {
+  const data: unknown = event.data
+  if (typeof data !== 'object' || data === null) return
+  const record = data as { id?: number, kind?: string, message?: string, totalMs?: number, result?: WorkbenchRenderResult, error?: string }
+  if (record.kind === 'progress' && typeof record.message === 'string') {
+    appendPipelineLine(record.message)
+    return
+  }
+  if (record.kind === 'perf' && typeof record.totalMs === 'number') {
+    appendPipelineLine(`worker: perf total ${record.totalMs.toFixed(3)} ms`)
+    return
+  }
+  if (record.kind === 'result') {
+    if (pendingRenderRequestId !== record.id) return
+    pendingRenderRequestId = undefined
+    if (record.result !== undefined) {
+      applyRenderResult(record.result)
+    }
+    if (record.error !== undefined) {
+      appendPipelineLine(`worker: render failed: ${record.error}`)
+      renderError.value = record.error
+      renderSummary.value = 'render failed'
+    }
+  }
+}
+
+function applyRenderResult(result: WorkbenchRenderResult): void {
+  const loggedDiagnostics = new Set<string>()
+  scoreSvg.value = result.scoreSvg
+  harpSvg.value = result.harpSvg
+  selectionStore.setSheetObjectIndex(result.sheetObjectIndex)
+  renderIssues.value = result.issues
+  workbenchDiagnostics.value = result.diagnostics
+  editorDiagnostics.value = result.editorDiagnostics
+  playbackTimeline.value = result.playbackTimeline
+  baseTempoFromQ.value = result.baseTempoFromQ
+  syncDiagnostics(result.toastDiagnostics)
+  for (const issue of result.issues) {
+    const column = issue.column ?? 1
+    const diagnostic: WebWorkbenchDiagnostic = {
+      severity: issue.severity,
+      message: issue.message,
+      source: 'abc2svg',
+      startPos: issue.line === undefined ? undefined : [issue.line, column],
+      endPos: issue.line === undefined ? undefined : [issue.line, column],
+    }
+    appendUniqueDiagnosticLine(loggedDiagnostics, diagnostic, 'abc2svg')
+  }
+  for (const diagnostic of result.toastDiagnostics) {
+    appendUniqueDiagnosticLine(loggedDiagnostics, diagnostic)
+  }
+  for (const diagnostic of result.editorDiagnostics) {
+    appendUniqueDiagnosticLine(loggedDiagnostics, {
+      severity: diagnostic.severity,
+      message: `line ${diagnostic.line}: ${diagnostic.message}`,
+      source: diagnostic.source,
+      startPos: [diagnostic.line, diagnostic.column ?? 1],
+      endPos: [diagnostic.line, diagnostic.column ?? 1],
+    })
+  }
+  renderSummary.value = result.summary
+  renderError.value = result.renderError ?? ''
+}
+
 function renderNow(): void {
+  const requestId = ++nextRenderRequestId
   try {
-    const startedAt = performance.now()
+    if (renderWorker !== undefined) {
+      pendingRenderRequestId = requestId
+      renderWorker.postMessage({
+        id: requestId,
+        abcText: abcText.value,
+        extractNr: currentExtract.value,
+      })
+      return
+    }
     appendPipelineLine(`worker: render extract ${currentExtract.value}`)
     const result = renderWorkbenchPreviews(abcText.value, currentExtract.value)
-    scoreSvg.value = result.scoreSvg
-    harpSvg.value = result.harpSvg
-    selectionStore.setSheetObjectIndex(result.sheetObjectIndex)
-    renderIssues.value = result.issues
-    workbenchDiagnostics.value = result.diagnostics
-    editorDiagnostics.value = result.editorDiagnostics
-    playbackTimeline.value = result.playbackTimeline
-    baseTempoFromQ.value = result.baseTempoFromQ
-    syncDiagnostics(result.toastDiagnostics)
-    for (const issue of result.issues) {
-      appendDiagnosticLine(issue.message, issue.severity, 'abc-parser')
-    }
-    for (const diagnostic of result.toastDiagnostics) {
-      appendDiagnosticLine(diagnostic.message, diagnostic.severity, diagnostic.source)
-    }
-    for (const diagnostic of result.editorDiagnostics) {
-      appendDiagnosticLine(`line ${diagnostic.line}: ${diagnostic.message}`, diagnostic.severity, diagnostic.source)
-    }
-    renderSummary.value = result.summary
-    renderError.value = result.renderError ?? ''
-    appendPipelineLine(`worker: render complete in ${(performance.now() - startedAt).toFixed(3)} sec`)
+    applyRenderResult(result)
+    appendPipelineLine(`worker: render complete in 0.000 sec`)
   } catch (error) {
     appendPipelineLine(`worker: render failed: ${error instanceof Error ? error.message : String(error)}`)
     renderError.value = error instanceof Error ? error.message : String(error)
@@ -398,7 +468,7 @@ watch(abcText, () => {
   if (renderTimer !== undefined) {
     clearTimeout(renderTimer)
   }
-  renderTimer = setTimeout(renderNow, 250)
+  renderTimer = setTimeout(renderNow, 100)
 }, { immediate: true })
 
 function handleHarpPreviewSelection(payload: {
@@ -466,10 +536,19 @@ function isExtractProduced(extractNumber: number): boolean {
 
 onMounted(() => {
   window.addEventListener('keydown', handleGlobalKeydown)
+  try {
+    renderWorker = new Worker(new URL('./rendering/renderWorker.ts', import.meta.url), { type: 'module' })
+    renderWorker.onmessage = handleRenderWorkerMessage
+  } catch (error) {
+    appendPipelineLine(`worker: unavailable: ${error instanceof Error ? error.message : String(error)}`)
+    renderWorker = undefined
+  }
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleGlobalKeydown)
+  renderWorker?.terminate()
+  renderWorker = undefined
   if (renderTimer !== undefined) {
     clearTimeout(renderTimer)
   }

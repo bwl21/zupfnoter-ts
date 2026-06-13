@@ -103,7 +103,7 @@ watch(
 
     <div class="console-panel">
       <div ref="logElement" class="console-panel__log" role="log" aria-live="polite">
-        <div class="console-panel__terminal" @click="focusInput">
+        <div class="console-panel__terminal">
           <div
             v-for="line in lines"
             :key="line.id"
@@ -164,6 +164,19 @@ watch(
   gap: 0.45rem;
   white-space: pre-wrap;
   word-break: break-word;
+  user-select: text;
+}
+
+.console-panel__line::selection,
+.console-panel__line *::selection {
+  background: rgb(70 102 145 / 0.72);
+  color: rgb(245 248 252);
+}
+
+.console-panel__line::-moz-selection,
+.console-panel__line *::-moz-selection {
+  background: rgb(70 102 145 / 0.72);
+  color: rgb(245 248 252);
 }
 
 .console-panel__prefix {
@@ -202,6 +215,11 @@ watch(
   font-size: inherit;
   line-height: inherit;
   caret-color: rgb(154 214 177);
+}
+
+.console-panel__terminal,
+.console-panel__log {
+  user-select: text;
 }
 
 .console-panel__input:focus {

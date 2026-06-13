@@ -69,7 +69,10 @@ function buildConfig(abcText: string) {
   return mergeSongConfig(defaults, extractSongConfig(abcText))
 }
 
-export function renderWorkbenchPreviews(abcText: string, extractNr: number = 0): WorkbenchRenderResult {
+export function renderWorkbenchPreviews(
+  abcText: string,
+  extractNr: number = 0,
+): WorkbenchRenderResult {
   const config = buildConfig(abcText)
   const scoreParser = new AbcParser()
   let scoreSvg = ''
@@ -88,11 +91,13 @@ export function renderWorkbenchPreviews(abcText: string, extractNr: number = 0):
   let sheetObjectIndex: SheetObjectIndex | undefined
   try {
     const parsedModel = modelParser.parse(abcText)
-    song = new AbcToSong().transform(parsedModel, config)
-    const sheet = new HarpnotesLayout(config, {
+    const transformedSong = new AbcToSong().transform(parsedModel, config)
+    song = transformedSong
+    const layoutOptions: ConstructorParameters<typeof HarpnotesLayout>[1] = {
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
-    }).layout(song, extractNr, 'A3')
-    sheetObjectIndex = buildSheetObjectIndex(song, sheet as Sheet, abcText, scoreSvg)
+    }
+    const sheet = new HarpnotesLayout(config, layoutOptions).layout(transformedSong, extractNr, 'A3')
+    sheetObjectIndex = buildSheetObjectIndex(transformedSong, sheet as Sheet, abcText, scoreSvg)
     sheetChildCount = sheet.children.length
     harpSvg = scaleSvgForPreview(new SvgEngine().draw(sheet))
   } catch (error) {
