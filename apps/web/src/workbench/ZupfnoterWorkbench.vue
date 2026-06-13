@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import {
   ZnBadge,
@@ -10,6 +10,7 @@ import {
 } from '../design-system/index'
 import AbcEditorPanel from './panels/AbcEditorPanel.vue'
 import ConfigEditorPanel from './panels/ConfigEditorPanel.vue'
+import ConsolePanel from './panels/ConsolePanel.vue'
 import FooterBar from './FooterBar.vue'
 import HarpPreviewPanel from './panels/HarpPreviewPanel.vue'
 import LyricsPanel from './panels/LyricsPanel.vue'
@@ -29,6 +30,9 @@ import { useSelectionStore } from '../stores/selection'
 import { usePlaybackDriver } from './usePlaybackDriver'
 import { useAudioPlayer } from './useAudioPlayer'
 import type { PlaybackStep } from './playback'
+import { CommandError, CommandStack } from './commands'
+import { registerLegacyCommands } from './legacyCommands'
+import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
 import {
   canTargetCreateSelection,
   resolvePlaybackProjection,
@@ -42,6 +46,22 @@ const editorPaneSize = ref(54)
 const previewPaneSize = ref(62)
 const harpZoom = ref(100)
 const abcText = ref(DEFAULT_ABC)
+const currentExtract = ref(0)
+const saveFormat = ref('A3-A4')
+const logLevel = ref('warning')
+const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
+const runtimeSettings = ref<Record<string, string>>({
+  autoscroll: 'true',
+  flowconf: 'false',
+  follow: 'true',
+  validate: 'true',
+})
+let nextConsoleEntryId = 1
+const consoleLines = ref<ConsoleLogEntry[]>([{
+  id: nextConsoleEntryId,
+  kind: 'info',
+  message: 'command stack ready',
+}])
 const scoreSvg = ref('')
 const harpSvg = ref('')
 const renderIssues = ref<RenderIssue[]>([])
@@ -134,6 +154,16 @@ const previewErrorMessage = computed(() => {
 })
 
 let renderTimer: ReturnType<typeof setTimeout> | undefined
+let commandStack: CommandStack
+
+function appendConsoleLine(message: string, kind: ConsoleLogKind = 'output'): void {
+  nextConsoleEntryId += 1
+  consoleLines.value = [...consoleLines.value.slice(-199), {
+    id: nextConsoleEntryId,
+    kind,
+    message,
+  }]
+}
 
 function renderNow(): void {
   try {
@@ -154,6 +184,116 @@ function renderNow(): void {
     renderSummary.value = 'render failed'
   }
 }
+
+function executeCommand(command: string): void {
+  appendConsoleLine(command, 'command')
+  try {
+    commandStack.runString(command)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    appendConsoleLine(message, 'error')
+  }
+}
+
+function executeToolbarCommand(command: string): void {
+  try {
+    commandStack.runString(command)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    appendConsoleLine(message, 'error')
+  }
+}
+
+function setAbcFromCommand(value: string): void {
+  abcText.value = value
+}
+
+function playFromCommand(range: string): void {
+  if (!['auto', 'sel', 'ff', 'all'].includes(range)) {
+    throw new CommandError(`Unsupported playback range: ${range}`)
+  }
+  togglePlayback()
+}
+
+function setCurrentExtractFromCommand(extract: number): void {
+  currentExtract.value = Math.trunc(extract)
+  playbackStore.setActiveExtract(currentExtract.value)
+}
+
+function downloadAbc(): void {
+  const blob = new Blob([abcText.value], { type: 'text/vnd.abc;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'zupfnoter.abc'
+  link.click()
+  URL.revokeObjectURL(url)
+}
+
+function localStoreKey(id: string): string {
+  return `zupfnoter.song.${id}`
+}
+
+function saveToLocalStore(): void {
+  const id = extractAbcId(abcText.value)
+  localStorage.setItem(localStoreKey(id), abcText.value)
+  appendConsoleLine(`saved ${id} to local storage`, 'info')
+}
+
+function listLocalStore(): string[] {
+  const entries: string[] = []
+  for (let index = 0; index < localStorage.length; index += 1) {
+    const key = localStorage.key(index)
+    if (key === null || !key.startsWith('zupfnoter.song.')) continue
+    entries.push(key.replace('zupfnoter.song.', ''))
+  }
+  return entries.sort()
+}
+
+function openFromLocalStore(id: string): string | undefined {
+  return localStorage.getItem(localStoreKey(id)) ?? undefined
+}
+
+function extractAbcId(value: string): string {
+  const idLine = value.split('\n').find((line) => line.startsWith('X:'))
+  const id = idLine?.slice(2).trim()
+  return id === undefined || id === '' ? 'untitled' : id
+}
+
+commandStack = new CommandStack({
+  log: appendConsoleLine,
+})
+
+registerLegacyCommands(commandStack, {
+  getAbcText: () => abcText.value,
+  setAbcText: setAbcFromCommand,
+  render: renderNow,
+  play: playFromCommand,
+  stop: stopPlayback,
+  setSpeed: playbackStore.setSpeedFactor,
+  setEditorTab: (tab) => {
+    editorTab.value = tab
+  },
+  setCurrentExtract: setCurrentExtractFromCommand,
+  setSaveFormat: (value) => {
+    saveFormat.value = value
+  },
+  setLogLevel: (value) => {
+    logLevel.value = value
+  },
+  setAutoRefresh: (value) => {
+    autoRefresh.value = value
+  },
+  setSetting: (key, value) => {
+    runtimeSettings.value = { ...runtimeSettings.value, [key]: value }
+  },
+  getSetting: (key) => runtimeSettings.value[key],
+  listSettings: () => ({ ...runtimeSettings.value }),
+  downloadAbc,
+  listLocalStore,
+  saveLocalStore: saveToLocalStore,
+  openLocalStore: openFromLocalStore,
+})
 
 function handleEditorCursorChange(position: { line: number, column: number }): void {
   const line = String(position.line).padStart(2, '0')
@@ -178,6 +318,7 @@ function handleEditorSelectionChange(payload: {
 watch(abcText, () => {
   playbackStore.markDocumentChanged()
   stopPlayback()
+  if (autoRefresh.value === 'off') return
   if (renderTimer !== undefined) {
     clearTimeout(renderTimer)
   }
@@ -209,7 +350,35 @@ function handleScorePreviewSelection(payload: {
   selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
 }
 
+function handleGlobalKeydown(event: KeyboardEvent): void {
+  if (!event.ctrlKey && !event.metaKey) return
+  if (event.key === 'r' || event.key === 'R' || event.key === 'Enter') {
+    event.preventDefault()
+    executeToolbarCommand('render')
+    return
+  }
+  if (event.key === 'p' || event.key === 'P') {
+    event.preventDefault()
+    executeToolbarCommand('p auto')
+    return
+  }
+  if (event.key === 'k' || event.key === 'K') {
+    event.preventDefault()
+    editorTab.value = editorTab.value === 'console' ? 'abc' : 'console'
+    return
+  }
+  if (/^\d$/.test(event.key)) {
+    event.preventDefault()
+    executeToolbarCommand(`view ${event.key}`)
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleGlobalKeydown)
+})
+
 onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown)
   if (renderTimer !== undefined) {
     clearTimeout(renderTimer)
   }
@@ -222,29 +391,29 @@ onBeforeUnmount(() => {
       <section class="workbench-chrome">
         <ZnToolbar>
           <template #leading>
-            <ZnButton variant="ghost">Datei</ZnButton>
-            <ZnButton variant="ghost">Neu</ZnButton>
+            <ZnButton variant="ghost" @click="executeToolbarCommand('help')">Datei</ZnButton>
+            <ZnButton variant="ghost" @click="executeToolbarCommand('c 1 untitled')">Neu</ZnButton>
             <ZnButton variant="ghost">DI abc</ZnButton>
             <ZnButton variant="ghost">Dropbox</ZnButton>
-            <ZnButton variant="ghost">Einloggen</ZnButton>
-            <ZnButton variant="ghost">Öffnen</ZnButton>
-            <ZnButton variant="primary">Speichern</ZnButton>
-            <ZnButton variant="ghost">Extras</ZnButton>
+            <ZnButton variant="ghost" @click="executeToolbarCommand('dlogin')">Einloggen</ZnButton>
+            <ZnButton variant="ghost" @click="executeToolbarCommand('dchoose')">Öffnen</ZnButton>
+            <ZnButton variant="primary" @click="executeToolbarCommand('lsave')">Speichern</ZnButton>
+            <ZnButton variant="ghost" @click="executeToolbarCommand('togglesetting flowconf')">Extras</ZnButton>
           </template>
           <template #default />
           <template #trailing>
             <ZnButton variant="ghost">Drucken</ZnButton>
             <ZnButton variant="ghost">Ansicht</ZnButton>
-            <ZnBadge tone="info">Extract 0</ZnBadge>
-            <ZnButton variant="ghost">Rendern</ZnButton>
+            <ZnBadge tone="info">Extract {{ currentExtract }}</ZnBadge>
+            <ZnButton variant="ghost" @click="executeToolbarCommand('render')">Rendern</ZnButton>
             <ZnButton
               :variant="playbackStore.state.status === 'playing' ? 'primary' : 'ghost'"
-              @click="togglePlayback"
+              @click="executeToolbarCommand('p auto')"
             >
               Play
             </ZnButton>
             <ZnBadge :tone="renderIssueTone">{{ renderIssueLabel }}</ZnBadge>
-            <ZnButton variant="ghost">Hilfe</ZnButton>
+            <ZnButton variant="ghost" @click="executeToolbarCommand('help')">Hilfe</ZnButton>
           </template>
         </ZnToolbar>
       </section>
@@ -261,10 +430,10 @@ onBeforeUnmount(() => {
             <ZnToolbar>
               <template #leading>
                 <ZnButton variant="ghost">Bearbeiten</ZnButton>
-                <ZnButton variant="ghost">Dekoration einfügen</ZnButton>
-                <ZnButton variant="ghost">Zusatz einfügen</ZnButton>
-                <ZnButton variant="ghost">Zusatz bearbeiten</ZnButton>
-                <ZnButton variant="ghost">Konfig. bearb.</ZnButton>
+                <ZnButton variant="ghost" @click="executeToolbarCommand('adddecoration !fermata!')">Dekoration einfügen</ZnButton>
+                <ZnButton variant="ghost" @click="executeToolbarCommand('addsnippet note')">Zusatz einfügen</ZnButton>
+                <ZnButton variant="ghost" @click="executeToolbarCommand('editsnippet')">Zusatz bearbeiten</ZnButton>
+                <ZnButton variant="ghost" @click="executeToolbarCommand('editconf basic_settings')">Konfig. bearb.</ZnButton>
               </template>
             </ZnToolbar>
 
@@ -272,6 +441,7 @@ onBeforeUnmount(() => {
               { id: 'abc', label: 'ABC-Notation' },
               { id: 'lyrics', label: 'Liedtexte' },
               { id: 'config', label: 'Konfiguration' },
+              { id: 'console', label: 'Konsole' },
             ]">
               <template #default="{ activeId }">
                 <AbcEditorPanel
@@ -284,7 +454,12 @@ onBeforeUnmount(() => {
                   @selection-change="handleEditorSelectionChange"
                 />
                 <LyricsPanel v-else-if="activeId === 'lyrics'" />
-                <ConfigEditorPanel v-else />
+                <ConfigEditorPanel v-else-if="activeId === 'config'" />
+                <ConsolePanel
+                  v-else
+                  :lines="consoleLines"
+                  @execute="executeCommand"
+                />
               </template>
             </ZnTabs>
           </div>
@@ -327,10 +502,10 @@ onBeforeUnmount(() => {
     <template #footer>
       <div class="workbench-footer">
         <FooterBar
-          extract-label="Extract 0"
+          :extract-label="`Extract ${currentExtract}`"
           :storage-path="renderSummary"
           :dirty="true"
-          save-format="SVG + PDF"
+          :save-format="saveFormat"
           :cursor-position="editorCursor"
           :speed-factor="playbackStore.state.speedFactor"
           @speed-down="playbackStore.decreaseSpeed"
