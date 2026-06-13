@@ -211,8 +211,25 @@ function appendConsoleLine(message: string, kind: ConsoleLogKind = 'output'): vo
   }]
 }
 
+function timestampLabel(): string {
+  return new Date().toLocaleTimeString('de-DE', { hour12: false })
+}
+
+function appendPipelineLine(message: string): void {
+  appendConsoleLine(`${timestampLabel()}  ${message}`, 'info')
+}
+
+function appendDiagnosticLine(message: string, severity: 'warning' | 'error', source?: string): void {
+  const prefix = source === undefined || source === ''
+    ? ''
+    : `${source}: `
+  appendConsoleLine(`${timestampLabel()}  ${prefix}${message}`, severity === 'error' ? 'error' : 'info')
+}
+
 function renderNow(): void {
   try {
+    const startedAt = performance.now()
+    appendPipelineLine(`worker: render extract ${currentExtract.value}`)
     const result = renderWorkbenchPreviews(abcText.value, currentExtract.value)
     scoreSvg.value = result.scoreSvg
     harpSvg.value = result.harpSvg
@@ -223,9 +240,20 @@ function renderNow(): void {
     playbackTimeline.value = result.playbackTimeline
     baseTempoFromQ.value = result.baseTempoFromQ
     syncDiagnostics(result.toastDiagnostics)
+    for (const issue of result.issues) {
+      appendDiagnosticLine(issue.message, issue.severity, 'abc-parser')
+    }
+    for (const diagnostic of result.toastDiagnostics) {
+      appendDiagnosticLine(diagnostic.message, diagnostic.severity, diagnostic.source)
+    }
+    for (const diagnostic of result.editorDiagnostics) {
+      appendDiagnosticLine(`line ${diagnostic.line}: ${diagnostic.message}`, diagnostic.severity, diagnostic.source)
+    }
     renderSummary.value = result.summary
     renderError.value = result.renderError ?? ''
+    appendPipelineLine(`worker: render complete in ${(performance.now() - startedAt).toFixed(3)} sec`)
   } catch (error) {
+    appendPipelineLine(`worker: render failed: ${error instanceof Error ? error.message : String(error)}`)
     renderError.value = error instanceof Error ? error.message : String(error)
     renderSummary.value = 'render failed'
   }
