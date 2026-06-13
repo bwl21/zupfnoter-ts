@@ -67074,133 +67074,931 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## repeat [extract 0]
 
-- Issues: 42
+- Issues: 308
 - children[0].from (extra)
   - expected: undefined
-  - actual: [60.3,22.5]
+  - actual: [221.3,18.698060941828256]
 - children[0].to (extra)
   - expected: undefined
-  - actual: [83.3,28.5]
+  - actual: [221.3,24.614958448753463]
 - children[0].znId (extra)
   - expected: undefined
   - actual: "384"
 - children[1].from (extra)
   - expected: undefined
-  - actual: [83.3,28.5]
+  - actual: [221.3,24.614958448753463]
 - children[1].to (extra)
   - expected: undefined
-  - actual: [106.3,34.5]
+  - actual: [221.3,30.531855955678672]
 - children[1].znId (extra)
   - expected: undefined
   - actual: "768"
 - children[2].from (extra)
   - expected: undefined
-  - actual: [106.3,34.5]
+  - actual: [221.3,30.531855955678672]
 - children[2].to (extra)
   - expected: undefined
-  - actual: [117.8,40.5]
+  - actual: [221.3,36.448753462603875]
 - children[2].znId (extra)
   - expected: undefined
   - actual: "1152"
+- children[3].from (extra)
+  - expected: undefined
+  - actual: [244.3,51.2409972299169]
+- children[3].to (extra)
+  - expected: undefined
+  - actual: [244.3,57.15789473684211]
 - children[3].znId (extra)
   - expected: undefined
-  - actual: "0"
-- children[3].confKey (extra)
+  - actual: "1920"
+- children[4].from (extra)
   - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
+  - actual: [244.3,57.15789473684211]
+- children[4].to (extra)
+  - expected: undefined
+  - actual: [244.3,63.07479224376732]
 - children[4].znId (extra)
   - expected: undefined
-  - actual: "0"
+  - actual: "2304"
+- children[5].from (extra)
+  - expected: undefined
+  - actual: [244.3,63.07479224376732]
+- children[5].to (extra)
+  - expected: undefined
+  - actual: [244.3,68.99168975069253]
 - children[5].znId (extra)
   - expected: undefined
-  - actual: "384"
-- children[5].confKey (extra)
+  - actual: "2688"
+- children[6].from (extra)
   - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
+  - actual: [255.8,83.78393351800554]
+- children[6].to (extra)
+  - expected: undefined
+  - actual: [255.8,89.70083102493075]
 - children[6].znId (extra)
   - expected: undefined
-  - actual: "768"
-- children[6].confKey (extra)
+  - actual: "3456"
+- children[7].from (extra)
   - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
+  - actual: [255.8,89.70083102493075]
+- children[7].to (extra)
+  - expected: undefined
+  - actual: [255.8,95.61772853185596]
 - children[7].znId (extra)
   - expected: undefined
-  - actual: "1152"
-- children[7].confKey (extra)
+  - actual: "3840"
+- children[8].from (extra)
   - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_1.t_1152.n_0.***"
-- children[8].fill (extra)
+  - actual: [255.8,95.61772853185596]
+- children[8].to (extra)
   - expected: undefined
-  - actual: false
-- children[8].color (extra)
-  - expected: undefined
-  - actual: "black"
+  - actual: [255.8,101.53462603878117]
 - children[8].znId (extra)
   - expected: undefined
-  - actual: "goto-0-0"
-- children[8].path (mismatch)
-  - expected: [["M",123.425,42.775],["l",11.625000000000014,0],["l",0,-21.549999999999997],["M",135.05,42.775],["L",135.05,20.225],["L",67.925,20.225]]
-  - actual: [[123.425,42.775],[135.05,42.775],[135.05,21.225],[135.05,42.775],[135.05,20.225],[67.925,20.225]]
-- children[9].fill (extra)
+  - actual: "4224"
+- children[9].from (extra)
   - expected: undefined
-  - actual: true
-- children[9].color (extra)
+  - actual: [255.8,101.53462603878117]
+- children[9].to (extra)
   - expected: undefined
-  - actual: "black"
+  - actual: [278.8,108.93074792243767]
 - children[9].znId (extra)
   - expected: undefined
-  - actual: "goto-0-0"
-- children[9].path (mismatch)
-  - expected: [["M",65.925,20.225],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
-  - actual: [[65.925,20.225],[68.425,21.225],[68.425,19.225]]
-- children[10].fill (extra)
+  - actual: "4608"
+- children[10].from (extra)
   - expected: undefined
-  - actual: true
-- children[10].color (extra)
+  - actual: [278.8,108.93074792243767]
+- children[10].to (extra)
   - expected: undefined
-  - actual: "black"
+  - actual: [278.8,114.8476454293629]
 - children[10].znId (extra)
   - expected: undefined
+  - actual: "4992"
+- children[11].from (extra)
+  - expected: undefined
+  - actual: [278.8,114.8476454293629]
+- children[11].to (extra)
+  - expected: undefined
+  - actual: [278.8,120.7645429362881]
+- children[11].znId (extra)
+  - expected: undefined
+  - actual: "5376"
+- children[12].from (extra)
+  - expected: undefined
+  - actual: [278.8,120.7645429362881]
+- children[12].to (extra)
+  - expected: undefined
+  - actual: [278.8,126.68144044321332]
+- children[12].znId (extra)
+  - expected: undefined
+  - actual: "5760"
+- children[13].from (extra)
+  - expected: undefined
+  - actual: [301.8,141.47368421052633]
+- children[13].to (extra)
+  - expected: undefined
+  - actual: [301.8,147.39058171745154]
+- children[13].znId (extra)
+  - expected: undefined
+  - actual: "6528"
+- children[14].from (extra)
+  - expected: undefined
+  - actual: [301.8,147.39058171745154]
+- children[14].to (extra)
+  - expected: undefined
+  - actual: [301.8,153.30747922437675]
+- children[14].znId (extra)
+  - expected: undefined
+  - actual: "6912"
+- children[15].from (extra)
+  - expected: undefined
+  - actual: [301.8,153.30747922437675]
+- children[15].to (extra)
+  - expected: undefined
+  - actual: [301.8,159.22437673130196]
+- children[15].znId (extra)
+  - expected: undefined
+  - actual: "7296"
+- children[16].from (extra)
+  - expected: undefined
+  - actual: [313.3,174.01662049861497]
+- children[16].to (extra)
+  - expected: undefined
+  - actual: [313.3,179.93351800554018]
+- children[16].znId (extra)
+  - expected: undefined
+  - actual: "8064"
+- children[17].from (extra)
+  - expected: undefined
+  - actual: [313.3,179.93351800554018]
+- children[17].to (extra)
+  - expected: undefined
+  - actual: [313.3,185.8504155124654]
+- children[17].znId (extra)
+  - expected: undefined
+  - actual: "8448"
+- children[18].from (extra)
+  - expected: undefined
+  - actual: [313.3,185.8504155124654]
+- children[18].to (extra)
+  - expected: undefined
+  - actual: [313.3,191.7673130193906]
+- children[18].znId (extra)
+  - expected: undefined
+  - actual: "8832"
+- children[19].from (extra)
+  - expected: undefined
+  - actual: [336.3,206.55955678670364]
+- children[19].to (extra)
+  - expected: undefined
+  - actual: [336.3,212.47645429362882]
+- children[19].znId (extra)
+  - expected: undefined
+  - actual: "9600"
+- children[20].from (extra)
+  - expected: undefined
+  - actual: [336.3,212.47645429362882]
+- children[20].to (extra)
+  - expected: undefined
+  - actual: [336.3,218.39335180055403]
+- children[20].znId (extra)
+  - expected: undefined
+  - actual: "9984"
+- children[21].from (extra)
+  - expected: undefined
+  - actual: [336.3,218.39335180055403]
+- children[21].to (extra)
+  - expected: undefined
+  - actual: [336.3,224.31024930747924]
+- children[21].znId (extra)
+  - expected: undefined
+  - actual: "10368"
+- children[22].from (extra)
+  - expected: undefined
+  - actual: [336.3,224.31024930747924]
+- children[22].to (extra)
+  - expected: undefined
+  - actual: [359.3,231.70637119113576]
+- children[22].znId (extra)
+  - expected: undefined
+  - actual: "10752"
+- children[23].from (extra)
+  - expected: undefined
+  - actual: [359.3,231.70637119113576]
+- children[23].to (extra)
+  - expected: undefined
+  - actual: [359.3,237.62326869806094]
+- children[23].znId (extra)
+  - expected: undefined
+  - actual: "11136"
+- children[24].from (extra)
+  - expected: undefined
+  - actual: [359.3,237.62326869806094]
+- children[24].to (extra)
+  - expected: undefined
+  - actual: [359.3,243.54016620498618]
+- children[24].znId (extra)
+  - expected: undefined
+  - actual: "11520"
+- children[25].from (extra)
+  - expected: undefined
+  - actual: [359.3,243.54016620498618]
+- children[25].to (extra)
+  - expected: undefined
+  - actual: [359.3,249.4570637119114]
+- children[25].znId (extra)
+  - expected: undefined
+  - actual: "11904"
+- children[26].from (extra)
+  - expected: undefined
+  - actual: [382.3,264.2493074792244]
+- children[26].to (extra)
+  - expected: undefined
+  - actual: [382.3,270.16620498614964]
+- children[26].znId (extra)
+  - expected: undefined
+  - actual: "12672"
+- children[27].from (extra)
+  - expected: undefined
+  - actual: [382.3,270.16620498614964]
+- children[27].to (extra)
+  - expected: undefined
+  - actual: [382.3,276.0831024930748]
+- children[27].znId (extra)
+  - expected: undefined
+  - actual: "13056"
+- children[28].from (extra)
+  - expected: undefined
+  - actual: [382.3,276.0831024930748]
+- children[28].to (extra)
+  - expected: undefined
+  - actual: [382.3,282]
+- children[28].znId (extra)
+  - expected: undefined
+  - actual: "13440"
+- children[29].center (mismatch)
+  - expected: [221.3,18.6981]
+  - actual: [221.3,18.698060941828256]
+- children[29].znId (extra)
+  - expected: undefined
+  - actual: "0"
+- children[29].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
+- children[30].center (mismatch)
+  - expected: [221.3,16.9231]
+  - actual: [221.3,16.923060941828258]
+- children[30].znId (extra)
+  - expected: undefined
+  - actual: "0"
+- children[31].center (mismatch)
+  - expected: [221.3,24.615]
+  - actual: [221.3,24.614958448753463]
+- children[31].znId (extra)
+  - expected: undefined
+  - actual: "384"
+- children[31].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
+- children[32].center (mismatch)
+  - expected: [221.3,30.5319]
+  - actual: [221.3,30.531855955678672]
+- children[32].znId (extra)
+  - expected: undefined
+  - actual: "768"
+- children[32].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
+- children[33].center (mismatch)
+  - expected: [221.3,36.4488]
+  - actual: [221.3,36.448753462603875]
+- children[33].znId (extra)
+  - expected: undefined
+  - actual: "1152"
+- children[33].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1152.n_0.***"
+- children[34].center (mismatch)
+  - expected: [244.3,51.241]
+  - actual: [244.3,51.2409972299169]
+- children[34].znId (extra)
+  - expected: undefined
+  - actual: "1536"
+- children[34].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1536.n_0.***"
+- children[35].center (mismatch)
+  - expected: [244.3,49.466]
+  - actual: [244.3,49.4659972299169]
+- children[35].znId (extra)
+  - expected: undefined
+  - actual: "1536"
+- children[36].center (mismatch)
+  - expected: [244.3,57.1579]
+  - actual: [244.3,57.15789473684211]
+- children[36].znId (extra)
+  - expected: undefined
+  - actual: "1920"
+- children[36].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1920.n_0.***"
+- children[37].center (mismatch)
+  - expected: [244.3,63.0748]
+  - actual: [244.3,63.07479224376732]
+- children[37].znId (extra)
+  - expected: undefined
+  - actual: "2304"
+- children[37].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_2304.n_0.***"
+- children[38].center (mismatch)
+  - expected: [244.3,68.9917]
+  - actual: [244.3,68.99168975069253]
+- children[38].znId (extra)
+  - expected: undefined
+  - actual: "2688"
+- children[38].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_2688.n_0.***"
+- children[39].center (mismatch)
+  - expected: [255.8,83.7839]
+  - actual: [255.8,83.78393351800554]
+- children[39].znId (extra)
+  - expected: undefined
+  - actual: "3072"
+- children[39].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_3072.n_0.***"
+- children[40].center (mismatch)
+  - expected: [255.8,82.0089]
+  - actual: [255.8,82.00893351800553]
+- children[40].znId (extra)
+  - expected: undefined
+  - actual: "3072"
+- children[41].center (mismatch)
+  - expected: [255.8,89.7008]
+  - actual: [255.8,89.70083102493075]
+- children[41].znId (extra)
+  - expected: undefined
+  - actual: "3456"
+- children[41].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_3456.n_0.***"
+- children[42].center (mismatch)
+  - expected: [255.8,95.6177]
+  - actual: [255.8,95.61772853185596]
+- children[42].znId (extra)
+  - expected: undefined
+  - actual: "3840"
+- children[42].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_3840.n_0.***"
+- children[43].center (mismatch)
+  - expected: [255.8,101.5346]
+  - actual: [255.8,101.53462603878117]
+- children[43].znId (extra)
+  - expected: undefined
+  - actual: "4224"
+- children[43].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4224.n_0.***"
+- children[44].center (mismatch)
+  - expected: [278.8,108.9307]
+  - actual: [278.8,108.93074792243767]
+- children[44].znId (extra)
+  - expected: undefined
+  - actual: "4608"
+- children[44].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4608.n_0.***"
+- children[45].center (mismatch)
+  - expected: [278.8,107.1557]
+  - actual: [278.8,107.15574792243767]
+- children[45].znId (extra)
+  - expected: undefined
+  - actual: "4608"
+- children[46].center (mismatch)
+  - expected: [278.8,114.8476]
+  - actual: [278.8,114.8476454293629]
+- children[46].znId (extra)
+  - expected: undefined
+  - actual: "4992"
+- children[46].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_4992.n_0.***"
+- children[47].center (mismatch)
+  - expected: [278.8,120.7645]
+  - actual: [278.8,120.7645429362881]
+- children[47].znId (extra)
+  - expected: undefined
+  - actual: "5376"
+- children[47].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_5376.n_0.***"
+- children[48].center (mismatch)
+  - expected: [278.8,126.6814]
+  - actual: [278.8,126.68144044321332]
+- children[48].znId (extra)
+  - expected: undefined
+  - actual: "5760"
+- children[48].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_5760.n_0.***"
+- children[49].center (mismatch)
+  - expected: [301.8,141.4737]
+  - actual: [301.8,141.47368421052633]
+- children[49].znId (extra)
+  - expected: undefined
+  - actual: "6144"
+- children[49].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_6144.n_0.***"
+- children[50].center (mismatch)
+  - expected: [301.8,139.6987]
+  - actual: [301.8,139.69868421052632]
+- children[50].znId (extra)
+  - expected: undefined
+  - actual: "6144"
+- children[51].center (mismatch)
+  - expected: [301.8,147.3906]
+  - actual: [301.8,147.39058171745154]
+- children[51].znId (extra)
+  - expected: undefined
+  - actual: "6528"
+- children[51].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_6528.n_0.***"
+- children[52].center (mismatch)
+  - expected: [301.8,153.3075]
+  - actual: [301.8,153.30747922437675]
+- children[52].znId (extra)
+  - expected: undefined
+  - actual: "6912"
+- children[52].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_6912.n_0.***"
+- children[53].center (mismatch)
+  - expected: [301.8,159.2244]
+  - actual: [301.8,159.22437673130196]
+- children[53].znId (extra)
+  - expected: undefined
+  - actual: "7296"
+- children[53].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_7296.n_0.***"
+- children[54].center (mismatch)
+  - expected: [313.3,174.0166]
+  - actual: [313.3,174.01662049861497]
+- children[54].znId (extra)
+  - expected: undefined
+  - actual: "7680"
+- children[54].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_7680.n_0.***"
+- children[55].center (mismatch)
+  - expected: [313.3,172.2416]
+  - actual: [313.3,172.24162049861496]
+- children[55].znId (extra)
+  - expected: undefined
+  - actual: "7680"
+- children[56].center (mismatch)
+  - expected: [313.3,179.9335]
+  - actual: [313.3,179.93351800554018]
+- children[56].znId (extra)
+  - expected: undefined
+  - actual: "8064"
+- children[56].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8064.n_0.***"
+- children[57].center (mismatch)
+  - expected: [313.3,185.8504]
+  - actual: [313.3,185.8504155124654]
+- children[57].znId (extra)
+  - expected: undefined
+  - actual: "8448"
+- children[57].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8448.n_0.***"
+- children[58].center (mismatch)
+  - expected: [313.3,191.7673]
+  - actual: [313.3,191.7673130193906]
+- children[58].znId (extra)
+  - expected: undefined
+  - actual: "8832"
+- children[58].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_8832.n_0.***"
+- children[59].center (mismatch)
+  - expected: [336.3,206.5596]
+  - actual: [336.3,206.55955678670364]
+- children[59].znId (extra)
+  - expected: undefined
+  - actual: "9216"
+- children[59].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_9216.n_0.***"
+- children[60].center (mismatch)
+  - expected: [336.3,204.7846]
+  - actual: [336.3,204.78455678670363]
+- children[60].znId (extra)
+  - expected: undefined
+  - actual: "9216"
+- children[61].center (mismatch)
+  - expected: [336.3,212.4765]
+  - actual: [336.3,212.47645429362882]
+- children[61].znId (extra)
+  - expected: undefined
+  - actual: "9600"
+- children[61].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_9600.n_0.***"
+- children[62].center (mismatch)
+  - expected: [336.3,218.3934]
+  - actual: [336.3,218.39335180055403]
+- children[62].znId (extra)
+  - expected: undefined
+  - actual: "9984"
+- children[62].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_9984.n_0.***"
+- children[63].center (mismatch)
+  - expected: [336.3,224.3102]
+  - actual: [336.3,224.31024930747924]
+- children[63].znId (extra)
+  - expected: undefined
+  - actual: "10368"
+- children[63].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_10368.n_0.***"
+- children[64].center (mismatch)
+  - expected: [359.3,231.7064]
+  - actual: [359.3,231.70637119113576]
+- children[64].znId (extra)
+  - expected: undefined
+  - actual: "10752"
+- children[64].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_10752.n_0.***"
+- children[65].center (mismatch)
+  - expected: [359.3,229.9314]
+  - actual: [359.3,229.93137119113575]
+- children[65].znId (extra)
+  - expected: undefined
+  - actual: "10752"
+- children[66].center (mismatch)
+  - expected: [359.3,237.6233]
+  - actual: [359.3,237.62326869806094]
+- children[66].znId (extra)
+  - expected: undefined
+  - actual: "11136"
+- children[66].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_11136.n_0.***"
+- children[67].center (mismatch)
+  - expected: [359.3,243.5402]
+  - actual: [359.3,243.54016620498618]
+- children[67].znId (extra)
+  - expected: undefined
+  - actual: "11520"
+- children[67].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_11520.n_0.***"
+- children[68].center (mismatch)
+  - expected: [359.3,249.4571]
+  - actual: [359.3,249.4570637119114]
+- children[68].znId (extra)
+  - expected: undefined
+  - actual: "11904"
+- children[68].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_11904.n_0.***"
+- children[69].center (mismatch)
+  - expected: [382.3,264.2493]
+  - actual: [382.3,264.2493074792244]
+- children[69].znId (extra)
+  - expected: undefined
+  - actual: "12288"
+- children[69].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_12288.n_0.***"
+- children[70].center (mismatch)
+  - expected: [382.3,262.4743]
+  - actual: [382.3,262.4743074792244]
+- children[70].znId (extra)
+  - expected: undefined
+  - actual: "12288"
+- children[71].center (mismatch)
+  - expected: [382.3,270.1662]
+  - actual: [382.3,270.16620498614964]
+- children[71].znId (extra)
+  - expected: undefined
+  - actual: "12672"
+- children[71].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_12672.n_0.***"
+- children[72].center (mismatch)
+  - expected: [382.3,276.0831]
+  - actual: [382.3,276.0831024930748]
+- children[72].znId (extra)
+  - expected: undefined
+  - actual: "13056"
+- children[72].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_13056.n_0.***"
+- children[73].znId (extra)
+  - expected: undefined
+  - actual: "13440"
+- children[73].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_13440.n_0.***"
+- children[74].fill (extra)
+  - expected: undefined
+  - actual: false
+- children[74].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[74].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-3072"
+- children[74].draginfo (mismatch)
+  - expected: {"handler":"jumpline","jumpline":{"from":{"center":[278.8,126.6814404432133],"size":[2.625,1.275],"anchor":"after"},"to":{"center":[255.8,83.78393351800554],"size":[2.625,1.275],"anchor":"before"},"vertical":17.25,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+  - actual: {"handler":"jumpline","jumpline":{"from":{"center":[278.8,126.68144044321332],"size":[2.625,1.275],"anchor":"after"},"to":{"center":[255.8,83.78393351800554],"size":[2.625,1.275],"anchor":"before"},"vertical":17.25,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+- children[74].path (mismatch)
+  - expected: [["M",284.425,128.9564404432133],["l",11.625,0],["l",0,-46.44750692520776],["M",296.05,128.9564404432133],["L",296.05,81.50893351800553],["L",263.425,81.50893351800553]]
+  - actual: [[284.425,128.95644044321332],[296.05,128.95644044321332],[296.05,82.50893351800553],[296.05,128.95644044321332],[296.05,81.50893351800553],[263.425,81.50893351800553]]
+- children[75].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[75].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[75].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-3072"
+- children[75].path (mismatch)
+  - expected: [["M",261.425,81.50893351800553],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
+  - actual: [[261.425,81.50893351800553],[263.925,82.50893351800553],[263.925,80.50893351800553]]
+- children[76].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[76].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[76].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-3072"
+- children[77].fill (extra)
+  - expected: undefined
+  - actual: false
+- children[77].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[77].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-1536"
+- children[77].path (mismatch)
+  - expected: [["M",307.425,161.49937673130196],["l",11.625,0],["l",0,-111.53337950138507],["M",319.05,161.49937673130196],["L",319.05,48.9659972299169],["L",251.925,48.9659972299169]]
+  - actual: [[307.425,161.49937673130196],[319.05,161.49937673130196],[319.05,49.965997229916894],[319.05,161.49937673130196],[319.05,48.9659972299169],[251.925,48.9659972299169]]
+- children[78].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[78].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[78].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-1536"
+- children[78].path (mismatch)
+  - expected: [["M",249.925,48.9659972299169],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
+  - actual: [[249.925,48.9659972299169],[252.425,49.9659972299169],[252.425,47.9659972299169]]
+- children[79].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[79].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[79].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-1536"
+- children[80].fill (extra)
+  - expected: undefined
+  - actual: false
+- children[80].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[80].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-9216"
+- children[80].draginfo (mismatch)
+  - expected: {"handler":"jumpline","jumpline":{"from":{"center":[359.3,249.4570637119114],"size":[2.625,1.275],"anchor":"after"},"to":{"center":[336.3,206.5595567867036],"size":[2.625,1.275],"anchor":"before"},"vertical":17.25,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+  - actual: {"handler":"jumpline","jumpline":{"from":{"center":[359.3,249.4570637119114],"size":[2.625,1.275],"anchor":"after"},"to":{"center":[336.3,206.55955678670364],"size":[2.625,1.275],"anchor":"before"},"vertical":17.25,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
+- children[80].path (mismatch)
+  - expected: [["M",364.925,251.7320637119114],["l",11.625,0],["l",0,-46.44750692520779],["M",376.55,251.7320637119114],["L",376.55,204.2845567867036],["L",343.925,204.2845567867036]]
+  - actual: [[364.925,251.7320637119114],[376.55,251.7320637119114],[376.55,205.28455678670363],[376.55,251.7320637119114],[376.55,204.28455678670363],[343.925,204.28455678670363]]
+- children[81].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[81].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[81].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-9216"
+- children[81].path (mismatch)
+  - expected: [["M",341.925,204.2845567867036],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
+  - actual: [[341.925,204.28455678670363],[344.425,205.28455678670363],[344.425,203.28455678670363]]
+- children[82].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[82].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[82].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-9216"
+- children[83].fill (extra)
+  - expected: undefined
+  - actual: false
+- children[83].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[83].znId (extra)
+  - expected: undefined
   - actual: "goto-0-0"
-- children[11].confKey (extra)
+- children[83].path (mismatch)
+  - expected: [["M",387.925,284.275],["l",11.625,0],["l",0,-266.8519390581717],["M",399.55,284.275],["L",399.55,16.423060941828258],["L",228.925,16.423060941828258]]
+  - actual: [[387.925,284.275],[399.55,284.275],[399.55,17.423060941828282],[399.55,284.275],[399.55,16.423060941828258],[228.925,16.423060941828258]]
+- children[84].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[84].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[84].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-0"
+- children[84].path (mismatch)
+  - expected: [["M",226.925,16.423060941828258],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
+  - actual: [[226.925,16.423060941828258],[229.425,17.423060941828258],[229.425,15.423060941828258]]
+- children[85].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[85].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[85].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-0"
+- children[86].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
-- children[12].confKey (extra)
+- children[87].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
-- children[13].draginfo (extra)
+- children[88].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
-- children[14].draginfo (extra)
+- children[89].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
-- children[16].fill (extra)
+- children[91].fill (extra)
   - expected: undefined
   - actual: true
-- children[16].color (extra)
+- children[91].color (extra)
   - expected: undefined
   - actual: "black"
-- children[16].path (mismatch)
+- children[91].path (mismatch)
   - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
-- children[17].fill (extra)
+- children[92].fill (extra)
   - expected: undefined
   - actual: true
-- children[17].color (extra)
+- children[92].color (extra)
   - expected: undefined
   - actual: "black"
-- children[17].path (mismatch)
+- children[92].path (mismatch)
   - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
-- children[18].fill (extra)
+- children[93].fill (extra)
   - expected: undefined
   - actual: true
-- children[18].color (extra)
+- children[93].color (extra)
   - expected: undefined
   - actual: "black"
-- children[18].path (mismatch)
+- children[93].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
+- children[94].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[95].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[96].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[97].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[98].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[99].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[100].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[101].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[102].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[103].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[104].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[105].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[106].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[107].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[108].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[109].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[110].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[111].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[112].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[113].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[114].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[115].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[116].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[117].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[118].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[119].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[120].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[121].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[122].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[123].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[124].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[125].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[126].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[127].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[128].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[129].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[130].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
 
 ## single_note [extract 0]
 
@@ -67634,4255 +68432,4 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[24].path (mismatch)
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
-
-## Twostaff [extract 0]
-
-- Issues: 664
-- children[0].from (extra)
-  - expected: undefined
-  - actual: [198.3,17]
-- children[0].to (extra)
-  - expected: undefined
-  - actual: [60.3,17]
-- children[1].from (extra)
-  - expected: undefined
-  - actual: [221.3,20.2]
-- children[1].to (extra)
-  - expected: undefined
-  - actual: [83.3,20.2]
-- children[2].from (extra)
-  - expected: undefined
-  - actual: [244.3,23.4]
-- children[2].to (extra)
-  - expected: undefined
-  - actual: [106.3,23.4]
-- children[3].from (extra)
-  - expected: undefined
-  - actual: [278.8,30.599999999999998]
-- children[3].to (extra)
-  - expected: undefined
-  - actual: [140.8,30.599999999999998]
-- children[4].from (extra)
-  - expected: undefined
-  - actual: [301.8,33.8]
-- children[4].to (extra)
-  - expected: undefined
-  - actual: [163.8,33.8]
-- children[5].from (extra)
-  - expected: undefined
-  - actual: [324.8,37]
-- children[5].to (extra)
-  - expected: undefined
-  - actual: [186.8,37]
-- children[6].from (extra)
-  - expected: undefined
-  - actual: [198.3,17]
-- children[6].to (extra)
-  - expected: undefined
-  - actual: [-76.65,17]
-- children[7].from (extra)
-  - expected: undefined
-  - actual: [106.3,23.4]
-- children[7].to (extra)
-  - expected: undefined
-  - actual: [-30.65,23.4]
-- children[8].from (extra)
-  - expected: undefined
-  - actual: [129.3,26.599999999999998]
-- children[8].to (extra)
-  - expected: undefined
-  - actual: [-7.6499999999999995,26.599999999999998]
-- children[9].from (extra)
-  - expected: undefined
-  - actual: [140.8,30.599999999999998]
-- children[9].to (extra)
-  - expected: undefined
-  - actual: [3.8499999999999996,30.599999999999998]
-- children[10].from (extra)
-  - expected: undefined
-  - actual: [186.8,37]
-- children[10].to (extra)
-  - expected: undefined
-  - actual: [48.8,37]
-- children[11].from (extra)
-  - expected: undefined
-  - actual: [198.3,40.199999999999996]
-- children[11].to (extra)
-  - expected: undefined
-  - actual: [60.3,40.199999999999996]
-- children[12].from (extra)
-  - expected: undefined
-  - actual: [140.8,45.449999999999996]
-- children[12].to (extra)
-  - expected: undefined
-  - actual: [267.3,45.449999999999996]
-- children[13].from (extra)
-  - expected: undefined
-  - actual: [140.8,55.449999999999996]
-- children[13].to (extra)
-  - expected: undefined
-  - actual: [267.3,55.449999999999996]
-- children[14].from (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[14].to (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[15].from (extra)
-  - expected: undefined
-  - actual: [186.8,82.94999999999999]
-- children[15].to (extra)
-  - expected: undefined
-  - actual: [198.3,82.94999999999999]
-- children[16].from (extra)
-  - expected: undefined
-  - actual: [198.3,90.44999999999999]
-- children[16].to (extra)
-  - expected: undefined
-  - actual: [186.8,90.44999999999999]
-- children[17].from (extra)
-  - expected: undefined
-  - actual: [244.3,96.44999999999999]
-- children[17].to (extra)
-  - expected: undefined
-  - actual: [186.8,96.44999999999999]
-- children[18].from (extra)
-  - expected: undefined
-  - actual: [198.3,103.95]
-- children[18].to (extra)
-  - expected: undefined
-  - actual: [140.8,103.95]
-- children[19].from (extra)
-  - expected: undefined
-  - actual: [221.3,109.95]
-- children[19].to (extra)
-  - expected: undefined
-  - actual: [267.3,109.95]
-- children[20].from (extra)
-  - expected: undefined
-  - actual: [198.3,117.45]
-- children[20].to (extra)
-  - expected: undefined
-  - actual: [324.8,117.45]
-- children[21].from (extra)
-  - expected: undefined
-  - actual: [198.3,17]
-- children[21].to (extra)
-  - expected: undefined
-  - actual: [221.3,20.2]
-- children[21].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[22].from (extra)
-  - expected: undefined
-  - actual: [221.3,20.2]
-- children[22].to (extra)
-  - expected: undefined
-  - actual: [244.3,23.4]
-- children[22].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[23].from (extra)
-  - expected: undefined
-  - actual: [244.3,23.4]
-- children[23].to (extra)
-  - expected: undefined
-  - actual: [278.8,30.599999999999998]
-- children[23].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[24].from (extra)
-  - expected: undefined
-  - actual: [278.8,30.599999999999998]
-- children[24].to (extra)
-  - expected: undefined
-  - actual: [301.8,33.8]
-- children[24].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[25].from (extra)
-  - expected: undefined
-  - actual: [301.8,33.8]
-- children[25].to (extra)
-  - expected: undefined
-  - actual: [324.8,37]
-- children[25].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[26].znId (extra)
-  - expected: undefined
-  - actual: "0"
-- children[26].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
-- children[27].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[27].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_1.t_96.n_0.***"
-- children[28].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[28].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_1.t_192.n_0.***"
-- children[29].center (mismatch)
-  - expected: [278.8,30.6]
-  - actual: [278.8,30.599999999999998]
-- children[29].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[29].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
-- children[30].center (mismatch)
-  - expected: [278.8,29.91]
-  - actual: [278.8,29.909999999999997]
-- children[30].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[31].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[31].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_1.t_480.n_0.***"
-- children[32].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[32].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_1.t_576.n_0.***"
-- children[33].center (mismatch)
-  - expected: [195.6679,18.0833]
-  - actual: [195.66791666666666,18.083333333333332]
-- children[33].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[34].center (mismatch)
-  - expected: [218.6679,20.8433]
-  - actual: [218.66791666666666,20.843333333333334]
-- children[34].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[35].center (mismatch)
-  - expected: [240.9679,24.4833]
-  - actual: [240.96791666666667,24.48333333333333]
-- children[35].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[36].center (mismatch)
-  - expected: [276.1679,31.6833]
-  - actual: [276.16791666666666,31.68333333333333]
-- children[36].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[37].center (mismatch)
-  - expected: [299.1679,34.4433]
-  - actual: [299.16791666666666,34.44333333333333]
-- children[37].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[38].center (mismatch)
-  - expected: [321.4679,38.0833]
-  - actual: [321.46791666666667,38.083333333333336]
-- children[38].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[42].center (mismatch)
-  - expected: [276.75,30.6]
-  - actual: [276.75,30.599999999999998]
-- children[43].center (mismatch)
-  - expected: [299.75,33.35]
-  - actual: [299.75,33.349999999999994]
-- children[45].center (mismatch)
-  - expected: [281.7231,29.3875]
-  - actual: [281.72312500000004,29.3875]
-- children[45].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[47].from (extra)
-  - expected: undefined
-  - actual: [60.3,17]
-- children[47].to (extra)
-  - expected: undefined
-  - actual: [83.3,20.2]
-- children[47].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[48].from (extra)
-  - expected: undefined
-  - actual: [83.3,20.2]
-- children[48].to (extra)
-  - expected: undefined
-  - actual: [106.3,23.4]
-- children[48].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[49].from (extra)
-  - expected: undefined
-  - actual: [106.3,23.4]
-- children[49].to (extra)
-  - expected: undefined
-  - actual: [129.3,26.599999999999998]
-- children[49].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[50].from (extra)
-  - expected: undefined
-  - actual: [129.3,26.599999999999998]
-- children[50].to (extra)
-  - expected: undefined
-  - actual: [140.8,30.599999999999998]
-- children[50].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[51].from (extra)
-  - expected: undefined
-  - actual: [140.8,30.599999999999998]
-- children[51].to (extra)
-  - expected: undefined
-  - actual: [163.8,33.8]
-- children[51].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[52].from (extra)
-  - expected: undefined
-  - actual: [163.8,33.8]
-- children[52].to (extra)
-  - expected: undefined
-  - actual: [186.8,37]
-- children[52].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[53].from (extra)
-  - expected: undefined
-  - actual: [186.8,37]
-- children[53].to (extra)
-  - expected: undefined
-  - actual: [198.3,40.199999999999996]
-- children[53].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[54].znId (extra)
-  - expected: undefined
-  - actual: "0"
-- children[54].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_2.t_0.n_0.***"
-- children[55].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[55].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_2.t_96.n_0.***"
-- children[56].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[56].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_2.t_192.n_0.***"
-- children[57].center (mismatch)
-  - expected: [129.3,26.6]
-  - actual: [129.3,26.599999999999998]
-- children[57].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[57].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_2.t_288.n_0.***"
-- children[58].center (mismatch)
-  - expected: [140.8,30.6]
-  - actual: [140.8,30.599999999999998]
-- children[58].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[58].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_2.t_384.n_0.***"
-- children[59].center (mismatch)
-  - expected: [140.8,29.91]
-  - actual: [140.8,29.909999999999997]
-- children[59].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[60].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[60].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_2.t_480.n_0.***"
-- children[61].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[61].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_2.t_576.n_0.***"
-- children[62].center (mismatch)
-  - expected: [198.3,40.2]
-  - actual: [198.3,40.199999999999996]
-- children[62].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[62].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_2.t_672.n_0.***"
-- children[63].center (mismatch)
-  - expected: [57.6679,18.0833]
-  - actual: [57.66791666666667,18.083333333333332]
-- children[63].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[64].center (mismatch)
-  - expected: [80.6679,20.8433]
-  - actual: [80.66791666666667,20.843333333333334]
-- children[64].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[65].center (mismatch)
-  - expected: [103.6679,24.4833]
-  - actual: [103.66791666666667,24.48333333333333]
-- children[65].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[66].center (mismatch)
-  - expected: [126.6679,27.2433]
-  - actual: [126.66791666666668,27.243333333333332]
-- children[66].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[67].center (mismatch)
-  - expected: [138.1679,31.6833]
-  - actual: [138.16791666666666,31.68333333333333]
-- children[67].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[68].center (mismatch)
-  - expected: [161.1679,34.4433]
-  - actual: [161.16791666666666,34.44333333333333]
-- children[68].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[69].center (mismatch)
-  - expected: [184.1679,38.0833]
-  - actual: [184.16791666666666,38.083333333333336]
-- children[69].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[70].center (mismatch)
-  - expected: [195.6679,40.8433]
-  - actual: [195.66791666666666,40.84333333333333]
-- children[70].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[74].center (mismatch)
-  - expected: [127.25,26.15]
-  - actual: [127.25000000000001,26.15]
-- children[75].center (mismatch)
-  - expected: [138.75,30.6]
-  - actual: [138.75,30.599999999999998]
-- children[76].center (mismatch)
-  - expected: [161.75,33.35]
-  - actual: [161.75,33.349999999999994]
-- children[78].center (mismatch)
-  - expected: [196.25,39.75]
-  - actual: [196.25,39.74999999999999]
-- children[79].center (mismatch)
-  - expected: [143.7231,29.3875]
-  - actual: [143.723125,29.3875]
-- children[79].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[80].center (mismatch)
-  - expected: [142.85,27.9]
-  - actual: [142.85000000000002,27.9]
-- children[81].from (extra)
-  - expected: undefined
-  - actual: [198.3,17]
-- children[81].to (extra)
-  - expected: undefined
-  - actual: [106.3,23.4]
-- children[81].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[82].from (extra)
-  - expected: undefined
-  - actual: [106.3,23.4]
-- children[82].to (extra)
-  - expected: undefined
-  - actual: [129.3,26.599999999999998]
-- children[82].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[83].from (extra)
-  - expected: undefined
-  - actual: [129.3,26.599999999999998]
-- children[83].to (extra)
-  - expected: undefined
-  - actual: [140.8,30.599999999999998]
-- children[83].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[84].from (extra)
-  - expected: undefined
-  - actual: [140.8,30.599999999999998]
-- children[84].to (extra)
-  - expected: undefined
-  - actual: [186.8,37]
-- children[84].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[85].from (extra)
-  - expected: undefined
-  - actual: [186.8,37]
-- children[85].to (extra)
-  - expected: undefined
-  - actual: [198.3,40.199999999999996]
-- children[85].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[86].from (extra)
-  - expected: undefined
-  - actual: [198.3,40.199999999999996]
-- children[86].to (extra)
-  - expected: undefined
-  - actual: [140.8,45.449999999999996]
-- children[86].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[87].from (extra)
-  - expected: undefined
-  - actual: [140.8,45.449999999999996]
-- children[87].to (extra)
-  - expected: undefined
-  - actual: [140.8,50.449999999999996]
-- children[87].znId (extra)
-  - expected: undefined
-  - actual: "960"
-- children[88].from (extra)
-  - expected: undefined
-  - actual: [140.8,50.449999999999996]
-- children[88].to (extra)
-  - expected: undefined
-  - actual: [140.8,55.449999999999996]
-- children[88].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[89].from (extra)
-  - expected: undefined
-  - actual: [140.8,55.449999999999996]
-- children[89].to (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[89].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[90].from (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[90].to (extra)
-  - expected: undefined
-  - actual: [186.8,77.94999999999999]
-- children[90].znId (extra)
-  - expected: undefined
-  - actual: "1728"
-- children[91].from (extra)
-  - expected: undefined
-  - actual: [186.8,77.94999999999999]
-- children[91].to (extra)
-  - expected: undefined
-  - actual: [186.8,82.94999999999999]
-- children[91].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[92].from (extra)
-  - expected: undefined
-  - actual: [186.8,82.94999999999999]
-- children[92].to (extra)
-  - expected: undefined
-  - actual: [198.3,90.44999999999999]
-- children[92].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[93].from (extra)
-  - expected: undefined
-  - actual: [198.3,90.44999999999999]
-- children[93].to (extra)
-  - expected: undefined
-  - actual: [244.3,96.44999999999999]
-- children[93].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[94].from (extra)
-  - expected: undefined
-  - actual: [244.3,96.44999999999999]
-- children[94].to (extra)
-  - expected: undefined
-  - actual: [198.3,103.95]
-- children[94].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[95].from (extra)
-  - expected: undefined
-  - actual: [198.3,103.95]
-- children[95].to (extra)
-  - expected: undefined
-  - actual: [221.3,109.95]
-- children[95].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[96].from (extra)
-  - expected: undefined
-  - actual: [221.3,109.95]
-- children[96].to (extra)
-  - expected: undefined
-  - actual: [198.3,117.45]
-- children[96].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[97].znId (extra)
-  - expected: undefined
-  - actual: "0"
-- children[97].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_0.n_0.***"
-- children[98].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[98].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_192.n_0.***"
-- children[99].center (mismatch)
-  - expected: [129.3,26.6]
-  - actual: [129.3,26.599999999999998]
-- children[99].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[99].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_288.n_0.***"
-- children[100].center (mismatch)
-  - expected: [140.8,30.6]
-  - actual: [140.8,30.599999999999998]
-- children[100].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[100].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_384.n_0.***"
-- children[101].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[102].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[102].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_576.n_0.***"
-- children[103].center (mismatch)
-  - expected: [198.3,40.2]
-  - actual: [198.3,40.199999999999996]
-- children[103].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[103].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_672.n_0.***"
-- children[104].from (extra)
-  - expected: undefined
-  - actual: [140.8,45.449999999999996]
-- children[104].to (extra)
-  - expected: undefined
-  - actual: [186.8,45.449999999999996]
-- children[104].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[105].center (mismatch)
-  - expected: [186.8,45.45]
-  - actual: [186.8,45.449999999999996]
-- children[105].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[106].center (mismatch)
-  - expected: [186.8,44.5]
-  - actual: [186.8,44.49999999999999]
-- children[106].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[107].center (mismatch)
-  - expected: [140.8,45.45]
-  - actual: [140.8,45.449999999999996]
-- children[107].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[107].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_768.n_0.***"
-- children[108].center (mismatch)
-  - expected: [140.8,44.5]
-  - actual: [140.8,44.49999999999999]
-- children[108].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[109].from (extra)
-  - expected: undefined
-  - actual: [140.8,50.449999999999996]
-- children[109].to (extra)
-  - expected: undefined
-  - actual: [186.8,50.449999999999996]
-- children[109].znId (extra)
-  - expected: undefined
-  - actual: "960"
-- children[110].center (mismatch)
-  - expected: [186.8,50.45]
-  - actual: [186.8,50.449999999999996]
-- children[110].znId (extra)
-  - expected: undefined
-  - actual: "960"
-- children[111].center (mismatch)
-  - expected: [140.8,50.45]
-  - actual: [140.8,50.449999999999996]
-- children[111].znId (extra)
-  - expected: undefined
-  - actual: "960"
-- children[111].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_960.n_0.***"
-- children[112].from (extra)
-  - expected: undefined
-  - actual: [140.8,55.449999999999996]
-- children[112].to (extra)
-  - expected: undefined
-  - actual: [186.8,55.449999999999996]
-- children[112].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[113].center (mismatch)
-  - expected: [186.8,55.45]
-  - actual: [186.8,55.449999999999996]
-- children[113].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[113].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[114].center (mismatch)
-  - expected: [140.8,55.45]
-  - actual: [140.8,55.449999999999996]
-- children[114].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[114].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[114].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_1152.n_0.***"
-- children[115].from (extra)
-  - expected: undefined
-  - actual: [140.8,72.94999999999999]
-- children[115].to (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[115].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[116].center (mismatch)
-  - expected: [140.8,72.95]
-  - actual: [140.8,72.94999999999999]
-- children[116].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[117].center (mismatch)
-  - expected: [140.8,72]
-  - actual: [140.8,71.99999999999999]
-- children[117].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[118].center (mismatch)
-  - expected: [186.8,72.95]
-  - actual: [186.8,72.94999999999999]
-- children[118].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[118].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_1536.n_0.***"
-- children[119].center (mismatch)
-  - expected: [186.8,72]
-  - actual: [186.8,71.99999999999999]
-- children[119].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[120].from (extra)
-  - expected: undefined
-  - actual: [140.8,77.94999999999999]
-- children[120].to (extra)
-  - expected: undefined
-  - actual: [186.8,77.94999999999999]
-- children[120].znId (extra)
-  - expected: undefined
-  - actual: "1728"
-- children[121].center (mismatch)
-  - expected: [140.8,77.95]
-  - actual: [140.8,77.94999999999999]
-- children[121].znId (extra)
-  - expected: undefined
-  - actual: "1728"
-- children[122].center (mismatch)
-  - expected: [186.8,77.95]
-  - actual: [186.8,77.94999999999999]
-- children[122].znId (extra)
-  - expected: undefined
-  - actual: "1728"
-- children[122].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_1728.n_0.***"
-- children[123].from (extra)
-  - expected: undefined
-  - actual: [106.3,82.94999999999999]
-- children[123].to (extra)
-  - expected: undefined
-  - actual: [186.8,82.94999999999999]
-- children[123].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[124].center (mismatch)
-  - expected: [106.3,82.95]
-  - actual: [106.3,82.94999999999999]
-- children[124].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[124].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[125].center (mismatch)
-  - expected: [186.8,82.95]
-  - actual: [186.8,82.94999999999999]
-- children[125].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[125].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[125].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_1920.n_0.***"
-- children[126].from (extra)
-  - expected: undefined
-  - actual: [140.8,90.44999999999999]
-- children[126].to (extra)
-  - expected: undefined
-  - actual: [198.3,90.44999999999999]
-- children[126].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[127].center (mismatch)
-  - expected: [140.8,90.45]
-  - actual: [140.8,90.44999999999999]
-- children[127].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[127].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[128].center (mismatch)
-  - expected: [140.8,89.175]
-  - actual: [140.8,89.17499999999998]
-- children[128].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[129].center (mismatch)
-  - expected: [198.3,90.45]
-  - actual: [198.3,90.44999999999999]
-- children[129].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[129].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[129].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_2304.n_0.***"
-- children[130].center (mismatch)
-  - expected: [198.3,89.175]
-  - actual: [198.3,89.17499999999998]
-- children[130].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[131].from (extra)
-  - expected: undefined
-  - actual: [140.8,96.44999999999999]
-- children[131].to (extra)
-  - expected: undefined
-  - actual: [244.3,96.44999999999999]
-- children[131].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[132].center (mismatch)
-  - expected: [140.8,96.45]
-  - actual: [140.8,96.44999999999999]
-- children[132].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[132].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[133].center (mismatch)
-  - expected: [244.3,96.45]
-  - actual: [244.3,96.44999999999999]
-- children[133].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[133].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[133].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_2688.n_0.***"
-- children[134].from (extra)
-  - expected: undefined
-  - actual: [163.8,103.95]
-- children[134].to (extra)
-  - expected: undefined
-  - actual: [198.3,103.95]
-- children[134].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[135].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[135].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[136].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[137].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[137].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[137].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_3072.n_0.***"
-- children[138].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[139].from (extra)
-  - expected: undefined
-  - actual: [129.3,109.95]
-- children[139].to (extra)
-  - expected: undefined
-  - actual: [221.3,109.95]
-- children[139].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[140].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[140].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[141].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[141].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[141].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_3456.n_0.***"
-- children[142].from (extra)
-  - expected: undefined
-  - actual: [163.8,117.45]
-- children[142].to (extra)
-  - expected: undefined
-  - actual: [198.3,117.45]
-- children[142].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[143].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[143].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[144].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[145].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[145].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[145].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_3.t_3840.n_0.***"
-- children[146].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[147].center (mismatch)
-  - expected: [201.6321,18.0833]
-  - actual: [201.63208333333336,18.083333333333332]
-- children[147].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[148].center (mismatch)
-  - expected: [103.6679,24.4833]
-  - actual: [103.66791666666667,24.48333333333333]
-- children[148].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[149].center (mismatch)
-  - expected: [126.6679,27.2433]
-  - actual: [126.66791666666668,27.243333333333332]
-- children[149].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[150].center (mismatch)
-  - expected: [137.4679,31.6833]
-  - actual: [137.46791666666667,31.68333333333333]
-- children[150].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[151].center (mismatch)
-  - expected: [184.1679,38.0833]
-  - actual: [184.16791666666666,38.083333333333336]
-- children[151].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[152].center (mismatch)
-  - expected: [200.9321,40.8433]
-  - actual: [200.93208333333337,40.84333333333333]
-- children[152].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[153].center (mismatch)
-  - expected: [144.1321,46.5333]
-  - actual: [144.13208333333336,46.53333333333333]
-- children[153].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[154].center (mismatch)
-  - expected: [137.4679,51.5333]
-  - actual: [137.46791666666667,51.53333333333333]
-- children[154].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[155].center (mismatch)
-  - expected: [135.6616,56.5333]
-  - actual: [135.66158333333334,56.53333333333333]
-- children[155].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[156].center (mismatch)
-  - expected: [183.4679,74.0333]
-  - actual: [183.46791666666667,74.03333333333332]
-- children[156].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[157].center (mismatch)
-  - expected: [183.4679,79.0333]
-  - actual: [183.46791666666667,79.03333333333332]
-- children[157].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[158].center (mismatch)
-  - expected: [181.6616,84.0333]
-  - actual: [181.66158333333334,84.03333333333332]
-- children[158].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[159].center (mismatch)
-  - expected: [193.1616,91.5333]
-  - actual: [193.16158333333334,91.53333333333332]
-- children[159].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[160].center (mismatch)
-  - expected: [249.4384,97.5333]
-  - actual: [249.43841666666668,97.53333333333332]
-- children[160].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[161].center (mismatch)
-  - expected: [193.1616,105.0333]
-  - actual: [193.16158333333334,105.03333333333333]
-- children[161].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[162].center (mismatch)
-  - expected: [226.4384,111.0333]
-  - actual: [226.43841666666668,111.03333333333333]
-- children[162].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[163].center (mismatch)
-  - expected: [203.4384,118.5333]
-  - actual: [203.43841666666668,118.53333333333333]
-- children[163].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[166].center (mismatch)
-  - expected: [127.25,26.15]
-  - actual: [127.25000000000001,26.15]
-- children[167].center (mismatch)
-  - expected: [138.05,30.6]
-  - actual: [138.05,30.599999999999998]
-- children[169].center (mismatch)
-  - expected: [200.35,39.75]
-  - actual: [200.35000000000002,39.74999999999999]
-- children[170].center (mismatch)
-  - expected: [143.55,45.45]
-  - actual: [143.55,45.449999999999996]
-- children[171].center (mismatch)
-  - expected: [138.05,50.45]
-  - actual: [138.05,50.449999999999996]
-- children[172].center (mismatch)
-  - expected: [137.175,55.45]
-  - actual: [137.175,55.449999999999996]
-- children[173].center (mismatch)
-  - expected: [184.05,72.95]
-  - actual: [184.05,72.94999999999999]
-- children[174].center (mismatch)
-  - expected: [184.05,77.95]
-  - actual: [184.05,77.94999999999999]
-- children[175].center (mismatch)
-  - expected: [183.175,82.95]
-  - actual: [183.175,82.94999999999999]
-- children[176].center (mismatch)
-  - expected: [194.675,90.45]
-  - actual: [194.675,90.44999999999999]
-- children[177].center (mismatch)
-  - expected: [247.925,96.45]
-  - actual: [247.925,96.44999999999999]
-- children[181].center (mismatch)
-  - expected: [144.4231,29.3875]
-  - actual: [144.423125,29.3875]
-- children[181].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[182].center (mismatch)
-  - expected: [137.1769,44.2375]
-  - actual: [137.17687500000002,44.23749999999999]
-- children[182].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[183].center (mismatch)
-  - expected: [190.4231,71.7375]
-  - actual: [190.423125,71.73749999999998]
-- children[183].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[184].center (mismatch)
-  - expected: [202.7981,89.2375]
-  - actual: [202.798125,89.23749999999998]
-- children[184].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[185].center (mismatch)
-  - expected: [193.8019,102.7375]
-  - actual: [193.80187500000002,102.7375]
-- children[185].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[186].center (mismatch)
-  - expected: [193.8019,116.2375]
-  - actual: [193.80187500000002,116.2375]
-- children[186].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[188].center (mismatch)
-  - expected: [138.05,42.75]
-  - actual: [138.05,42.74999999999999]
-- children[189].center (mismatch)
-  - expected: [189.55,70.25]
-  - actual: [189.55,70.24999999999999]
-- children[190].center (mismatch)
-  - expected: [201.925,87.75]
-  - actual: [201.925,87.74999999999999]
-- children[193].from (extra)
-  - expected: undefined
-  - actual: [-76.65,17]
-- children[193].to (extra)
-  - expected: undefined
-  - actual: [-53.650000000000006,20.2]
-- children[193].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[194].from (extra)
-  - expected: undefined
-  - actual: [-53.650000000000006,20.2]
-- children[194].to (extra)
-  - expected: undefined
-  - actual: [-30.65,23.4]
-- children[194].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[195].from (extra)
-  - expected: undefined
-  - actual: [-30.65,23.4]
-- children[195].to (extra)
-  - expected: undefined
-  - actual: [-7.6499999999999995,26.599999999999998]
-- children[195].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[196].from (extra)
-  - expected: undefined
-  - actual: [-7.6499999999999995,26.599999999999998]
-- children[196].to (extra)
-  - expected: undefined
-  - actual: [3.8499999999999996,30.599999999999998]
-- children[196].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[197].from (extra)
-  - expected: undefined
-  - actual: [3.8499999999999996,30.599999999999998]
-- children[197].to (extra)
-  - expected: undefined
-  - actual: [25.8,33.8]
-- children[197].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[198].from (extra)
-  - expected: undefined
-  - actual: [25.8,33.8]
-- children[198].to (extra)
-  - expected: undefined
-  - actual: [48.8,37]
-- children[198].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[199].from (extra)
-  - expected: undefined
-  - actual: [48.8,37]
-- children[199].to (extra)
-  - expected: undefined
-  - actual: [60.3,40.199999999999996]
-- children[199].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[200].from (extra)
-  - expected: undefined
-  - actual: [60.3,40.199999999999996]
-- children[200].to (extra)
-  - expected: undefined
-  - actual: [267.3,45.449999999999996]
-- children[200].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[201].from (extra)
-  - expected: undefined
-  - actual: [267.3,45.449999999999996]
-- children[201].to (extra)
-  - expected: undefined
-  - actual: [267.3,55.449999999999996]
-- children[201].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[202].from (extra)
-  - expected: undefined
-  - actual: [267.3,55.449999999999996]
-- children[202].to (extra)
-  - expected: undefined
-  - actual: [267.3,60.449999999999996]
-- children[202].znId (extra)
-  - expected: undefined
-  - actual: "1344"
-- children[203].from (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[203].to (extra)
-  - expected: undefined
-  - actual: [198.3,82.94999999999999]
-- children[203].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[204].from (extra)
-  - expected: undefined
-  - actual: [198.3,82.94999999999999]
-- children[204].to (extra)
-  - expected: undefined
-  - actual: [186.8,90.44999999999999]
-- children[204].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[205].from (extra)
-  - expected: undefined
-  - actual: [186.8,90.44999999999999]
-- children[205].to (extra)
-  - expected: undefined
-  - actual: [186.8,96.44999999999999]
-- children[205].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[206].from (extra)
-  - expected: undefined
-  - actual: [186.8,96.44999999999999]
-- children[206].to (extra)
-  - expected: undefined
-  - actual: [140.8,103.95]
-- children[206].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[207].from (extra)
-  - expected: undefined
-  - actual: [140.8,103.95]
-- children[207].to (extra)
-  - expected: undefined
-  - actual: [267.3,109.95]
-- children[207].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[208].from (extra)
-  - expected: undefined
-  - actual: [267.3,109.95]
-- children[208].to (extra)
-  - expected: undefined
-  - actual: [324.8,117.45]
-- children[208].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[209].from (extra)
-  - expected: undefined
-  - actual: [324.8,117.45]
-- children[209].to (extra)
-  - expected: undefined
-  - actual: [324.8,122.45]
-- children[209].znId (extra)
-  - expected: undefined
-  - actual: "4032"
-- children[210].from (extra)
-  - expected: undefined
-  - actual: [324.8,122.45]
-- children[210].to (extra)
-  - expected: undefined
-  - actual: [324.8,126.45]
-- children[210].znId (extra)
-  - expected: undefined
-  - actual: "4224"
-- children[211].from (extra)
-  - expected: undefined
-  - actual: [324.8,126.45]
-- children[211].to (extra)
-  - expected: undefined
-  - actual: [324.8,130.45]
-- children[211].znId (extra)
-  - expected: undefined
-  - actual: "4416"
-- children[212].znId (extra)
-  - expected: undefined
-  - actual: "0"
-- children[212].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_0.n_0.***"
-- children[213].center (mismatch)
-  - expected: [-53.65,20.2]
-  - actual: [-53.650000000000006,20.2]
-- children[213].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[213].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_96.n_0.***"
-- children[214].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[214].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_192.n_0.***"
-- children[215].center (mismatch)
-  - expected: [-7.65,26.6]
-  - actual: [-7.6499999999999995,26.599999999999998]
-- children[215].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[215].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_288.n_0.***"
-- children[216].center (mismatch)
-  - expected: [3.85,30.6]
-  - actual: [3.8499999999999996,30.599999999999998]
-- children[216].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[216].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_384.n_0.***"
-- children[217].center (mismatch)
-  - expected: [3.85,29.91]
-  - actual: [3.8499999999999996,29.909999999999997]
-- children[217].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[218].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[218].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_480.n_0.***"
-- children[219].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[219].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_576.n_0.***"
-- children[220].center (mismatch)
-  - expected: [60.3,40.2]
-  - actual: [60.3,40.199999999999996]
-- children[220].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[220].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_672.n_0.***"
-- children[221].center (mismatch)
-  - expected: [267.3,45.45]
-  - actual: [267.3,45.449999999999996]
-- children[221].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[221].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[221].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_768.n_0.***"
-- children[222].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[223].center (mismatch)
-  - expected: [267.3,55.45]
-  - actual: [267.3,55.449999999999996]
-- children[223].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[223].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_1152.n_0.***"
-- children[224].center (mismatch)
-  - expected: [267.3,60.45]
-  - actual: [267.3,60.449999999999996]
-- children[224].znId (extra)
-  - expected: undefined
-  - actual: "1344"
-- children[224].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_1344.n_0.***"
-- children[225].center (mismatch)
-  - expected: [186.8,72.95]
-  - actual: [186.8,72.94999999999999]
-- children[225].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[225].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[225].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_1536.n_0.***"
-- children[226].center (mismatch)
-  - expected: [186.8,71.675]
-  - actual: [186.8,71.67499999999998]
-- children[226].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[227].center (mismatch)
-  - expected: [198.3,82.95]
-  - actual: [198.3,82.94999999999999]
-- children[227].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[227].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[227].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_1920.n_0.***"
-- children[228].center (mismatch)
-  - expected: [186.8,90.45]
-  - actual: [186.8,90.44999999999999]
-- children[228].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[228].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[228].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_2304.n_0.***"
-- children[229].center (mismatch)
-  - expected: [186.8,89.175]
-  - actual: [186.8,89.17499999999998]
-- children[229].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[230].center (mismatch)
-  - expected: [186.8,96.45]
-  - actual: [186.8,96.44999999999999]
-- children[230].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[230].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[230].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_2688.n_0.***"
-- children[231].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[231].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[231].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_3072.n_0.***"
-- children[232].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[233].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[233].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[233].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_3456.n_0.***"
-- children[234].from (extra)
-  - expected: undefined
-  - actual: [244.3,117.45]
-- children[234].to (extra)
-  - expected: undefined
-  - actual: [324.8,117.45]
-- children[234].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[235].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[236].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[237].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[237].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_3840.n_0.***"
-- children[238].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[239].from (extra)
-  - expected: undefined
-  - actual: [244.3,122.45]
-- children[239].to (extra)
-  - expected: undefined
-  - actual: [324.8,122.45]
-- children[239].znId (extra)
-  - expected: undefined
-  - actual: "4032"
-- children[240].znId (extra)
-  - expected: undefined
-  - actual: "4032"
-- children[241].znId (extra)
-  - expected: undefined
-  - actual: "4032"
-- children[241].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_4032.n_0.***"
-- children[242].from (extra)
-  - expected: undefined
-  - actual: [244.3,126.45]
-- children[242].to (extra)
-  - expected: undefined
-  - actual: [324.8,126.45]
-- children[242].znId (extra)
-  - expected: undefined
-  - actual: "4224"
-- children[243].znId (extra)
-  - expected: undefined
-  - actual: "4224"
-- children[244].znId (extra)
-  - expected: undefined
-  - actual: "4224"
-- children[244].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_4224.n_0.***"
-- children[245].from (extra)
-  - expected: undefined
-  - actual: [244.3,130.45]
-- children[245].to (extra)
-  - expected: undefined
-  - actual: [324.8,130.45]
-- children[245].znId (extra)
-  - expected: undefined
-  - actual: "4416"
-- children[246].znId (extra)
-  - expected: undefined
-  - actual: "4416"
-- children[247].znId (extra)
-  - expected: undefined
-  - actual: "4416"
-- children[247].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.notebound.nconf.v_4.t_4416.n_0.***"
-- children[248].center (mismatch)
-  - expected: [-74.0179,18.0833]
-  - actual: [-74.01791666666668,18.083333333333332]
-- children[248].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[249].center (mismatch)
-  - expected: [-51.0179,20.8433]
-  - actual: [-51.01791666666668,20.843333333333334]
-- children[249].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[250].center (mismatch)
-  - expected: [-28.0179,24.4833]
-  - actual: [-28.017916666666665,24.48333333333333]
-- children[250].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[251].center (mismatch)
-  - expected: [-5.0179,27.2433]
-  - actual: [-5.017916666666666,27.243333333333332]
-- children[251].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[252].center (mismatch)
-  - expected: [6.4821,31.6833]
-  - actual: [6.482083333333333,31.68333333333333]
-- children[252].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[253].center (mismatch)
-  - expected: [23.1679,34.4433]
-  - actual: [23.167916666666667,34.44333333333333]
-- children[253].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[254].center (mismatch)
-  - expected: [46.1679,38.0833]
-  - actual: [46.16791666666667,38.083333333333336]
-- children[254].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[255].center (mismatch)
-  - expected: [57.6679,40.8433]
-  - actual: [57.66791666666667,40.84333333333333]
-- children[255].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[256].center (mismatch)
-  - expected: [262.1616,46.5333]
-  - actual: [262.16158333333334,46.53333333333333]
-- children[256].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[257].center (mismatch)
-  - expected: [263.9679,56.5333]
-  - actual: [263.96791666666667,56.53333333333333]
-- children[257].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[258].center (mismatch)
-  - expected: [270.6321,61.5333]
-  - actual: [270.63208333333336,61.53333333333333]
-- children[258].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[259].center (mismatch)
-  - expected: [181.6616,74.0333]
-  - actual: [181.66158333333334,74.03333333333332]
-- children[259].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[260].center (mismatch)
-  - expected: [203.4384,84.0333]
-  - actual: [203.43841666666668,84.03333333333332]
-- children[260].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[261].center (mismatch)
-  - expected: [191.9384,91.5333]
-  - actual: [191.93841666666668,91.53333333333332]
-- children[261].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[262].center (mismatch)
-  - expected: [191.9384,97.5333]
-  - actual: [191.93841666666668,97.53333333333332]
-- children[262].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[263].center (mismatch)
-  - expected: [135.6616,105.0333]
-  - actual: [135.66158333333334,105.03333333333333]
-- children[263].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[264].center (mismatch)
-  - expected: [262.1616,111.0333]
-  - actual: [262.16158333333334,111.03333333333333]
-- children[264].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[265].center (mismatch)
-  - expected: [321.4679,118.5333]
-  - actual: [321.46791666666667,118.53333333333333]
-- children[265].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[266].center (mismatch)
-  - expected: [321.4679,123.5333]
-  - actual: [321.46791666666667,123.53333333333333]
-- children[266].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[267].center (mismatch)
-  - expected: [321.4679,127.5333]
-  - actual: [321.46791666666667,127.53333333333333]
-- children[267].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[268].center (mismatch)
-  - expected: [321.4679,131.5333]
-  - actual: [321.46791666666667,131.53333333333333]
-- children[268].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[269].center (mismatch)
-  - expected: [-74.6,17]
-  - actual: [-74.60000000000001,17]
-- children[270].center (mismatch)
-  - expected: [-51.6,19.75]
-  - actual: [-51.60000000000001,19.75]
-- children[271].center (mismatch)
-  - expected: [-28.6,23.4]
-  - actual: [-28.599999999999998,23.4]
-- children[273].center (mismatch)
-  - expected: [5.9,30.6]
-  - actual: [5.8999999999999995,30.599999999999998]
-- children[274].center (mismatch)
-  - expected: [23.75,33.35]
-  - actual: [23.75,33.349999999999994]
-- children[276].center (mismatch)
-  - expected: [58.25,39.75]
-  - actual: [58.25,39.74999999999999]
-- children[277].center (mismatch)
-  - expected: [263.675,45.45]
-  - actual: [263.675,45.449999999999996]
-- children[278].center (mismatch)
-  - expected: [264.55,55.45]
-  - actual: [264.55,55.449999999999996]
-- children[279].center (mismatch)
-  - expected: [270.05,60.45]
-  - actual: [270.05,60.449999999999996]
-- children[280].center (mismatch)
-  - expected: [183.175,72.95]
-  - actual: [183.175,72.94999999999999]
-- children[281].center (mismatch)
-  - expected: [201.925,82.95]
-  - actual: [201.925,82.94999999999999]
-- children[282].center (mismatch)
-  - expected: [190.425,90.45]
-  - actual: [190.425,90.44999999999999]
-- children[283].center (mismatch)
-  - expected: [190.425,96.45]
-  - actual: [190.425,96.44999999999999]
-- children[290].center (mismatch)
-  - expected: [6.7731,29.3875]
-  - actual: [6.773124999999999,29.3875]
-- children[290].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[291].center (mismatch)
-  - expected: [271.7981,44.2375]
-  - actual: [271.798125,44.23749999999999]
-- children[291].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[292].center (mismatch)
-  - expected: [182.3019,71.7375]
-  - actual: [182.30187500000002,71.73749999999998]
-- children[292].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[293].center (mismatch)
-  - expected: [182.3019,89.2375]
-  - actual: [182.30187500000002,89.23749999999998]
-- children[293].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[294].center (mismatch)
-  - expected: [136.3019,102.7375]
-  - actual: [136.30187500000002,102.7375]
-- children[294].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[295].center (mismatch)
-  - expected: [328.4231,116.2375]
-  - actual: [328.423125,116.2375]
-- children[295].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[296].center (mismatch)
-  - expected: [5.9,27.9]
-  - actual: [5.8999999999999995,27.9]
-- children[297].center (mismatch)
-  - expected: [270.925,42.75]
-  - actual: [270.925,42.74999999999999]
-- children[298].center (mismatch)
-  - expected: [183.175,70.25]
-  - actual: [183.175,70.24999999999999]
-- children[299].center (mismatch)
-  - expected: [183.175,87.75]
-  - actual: [183.175,87.74999999999999]
-- children[302].fill (extra)
-  - expected: undefined
-  - actual: false
-- children[302].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[302].znId (extra)
-  - expected: undefined
-  - actual: "goto-3-0"
-- children[302].path (mismatch)
-  - expected: [["M",272.05,62.099999999999994],["l",12.5,0],["l",0,-4],["M",284.55,20.61],["L",284.55,15.61],["L",-70.60000000000001,15.61]]
-  - actual: [[272.05,62.099999999999994],[284.55,62.099999999999994],[284.55,58.099999999999994],[284.55,20.61],[284.55,15.61],[-70.60000000000001,15.61]]
-- children[303].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[303].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[303].znId (extra)
-  - expected: undefined
-  - actual: "goto-3-0"
-- children[303].path (mismatch)
-  - expected: [["M",-72.60000000000001,15.61],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
-  - actual: [[-72.60000000000001,15.61],[-70.10000000000001,16.61],[-70.10000000000001,14.61]]
-- children[304].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[304].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[304].znId (extra)
-  - expected: undefined
-  - actual: "goto-3-0"
-- children[304].path (mismatch)
-  - expected: [["M",284.55,57.099999999999994],["l",0.5,1.5],["l",-1,0],["l",0.5,-1.5],["z"]]
-  - actual: [[284.55,57.099999999999994],[285.05,58.599999999999994],[284.05,58.599999999999994]]
-- children[305].confKey (extra)
-  - expected: undefined
-  - actual: "extract.0.legend.pos"
-- children[314].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[315].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[317].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[317].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[317].path (mismatch)
-  - expected: [["M",2.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.3,287.5],[2.8,286.5],[3.3,287.5],[3.3,292.5],[2.8,293.5],[2.3,292.5],[2.3,287.5]]
-- children[318].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[318].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[318].path (mismatch)
-  - expected: [["M",140.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.3,287.5],[140.8,286.5],[141.3,287.5],[141.3,292.5],[140.8,293.5],[140.3,292.5],[140.3,287.5]]
-- children[319].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[319].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[319].path (mismatch)
-  - expected: [["M",416.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.3,287.5],[416.8,286.5],[417.3,287.5],[417.3,292.5],[416.8,293.5],[416.3,292.5],[416.3,287.5]]
-- children[320].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[321].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[322].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[323].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[324].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[325].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[326].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[327].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[328].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[329].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[330].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[331].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[332].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[333].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[334].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[335].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[336].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[337].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[338].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[339].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[340].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[341].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[342].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[343].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[344].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[345].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[346].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[347].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[348].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[349].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[350].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[351].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[352].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[353].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[354].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[355].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[356].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-
-## Twostaff [extract 1]
-
-- Issues: 165
-- children[0].from (extra)
-  - expected: undefined
-  - actual: [198.3,16.2]
-- children[0].to (extra)
-  - expected: undefined
-  - actual: [60.3,16.2]
-- children[1].from (extra)
-  - expected: undefined
-  - actual: [221.3,18.6]
-- children[1].to (extra)
-  - expected: undefined
-  - actual: [83.3,18.6]
-- children[2].from (extra)
-  - expected: undefined
-  - actual: [244.3,21.799999999999997]
-- children[2].to (extra)
-  - expected: undefined
-  - actual: [106.3,21.799999999999997]
-- children[3].from (extra)
-  - expected: undefined
-  - actual: [278.8,28]
-- children[3].to (extra)
-  - expected: undefined
-  - actual: [140.8,28]
-- children[4].from (extra)
-  - expected: undefined
-  - actual: [301.8,30.4]
-- children[4].to (extra)
-  - expected: undefined
-  - actual: [163.8,30.4]
-- children[5].from (extra)
-  - expected: undefined
-  - actual: [324.8,33.6]
-- children[5].to (extra)
-  - expected: undefined
-  - actual: [186.8,33.6]
-- children[6].from (extra)
-  - expected: undefined
-  - actual: [198.3,16.2]
-- children[6].to (extra)
-  - expected: undefined
-  - actual: [221.3,18.6]
-- children[6].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[7].from (extra)
-  - expected: undefined
-  - actual: [221.3,18.6]
-- children[7].to (extra)
-  - expected: undefined
-  - actual: [244.3,21.799999999999997]
-- children[7].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[8].from (extra)
-  - expected: undefined
-  - actual: [244.3,21.799999999999997]
-- children[8].to (extra)
-  - expected: undefined
-  - actual: [278.8,28]
-- children[8].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[9].from (extra)
-  - expected: undefined
-  - actual: [278.8,28]
-- children[9].to (extra)
-  - expected: undefined
-  - actual: [301.8,30.4]
-- children[9].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[10].from (extra)
-  - expected: undefined
-  - actual: [301.8,30.4]
-- children[10].to (extra)
-  - expected: undefined
-  - actual: [324.8,33.6]
-- children[10].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[11].znId (extra)
-  - expected: undefined
-  - actual: "0"
-- children[11].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_1.t_0.n_0.***"
-- children[12].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[12].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_1.t_96.n_0.***"
-- children[13].center (mismatch)
-  - expected: [244.3,21.8]
-  - actual: [244.3,21.799999999999997]
-- children[13].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[13].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_1.t_192.n_0.***"
-- children[14].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[14].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_1.t_384.n_0.***"
-- children[15].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[16].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[16].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_1.t_480.n_0.***"
-- children[17].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[17].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_1.t_576.n_0.***"
-- children[18].center (mismatch)
-  - expected: [195.6679,17.2833]
-  - actual: [195.66791666666666,17.28333333333333]
-- children[18].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[19].center (mismatch)
-  - expected: [218.6679,19.2433]
-  - actual: [218.66791666666666,19.243333333333336]
-- children[19].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[20].center (mismatch)
-  - expected: [240.9679,22.8833]
-  - actual: [240.96791666666667,22.88333333333333]
-- children[20].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[21].center (mismatch)
-  - expected: [276.1679,29.0833]
-  - actual: [276.16791666666666,29.083333333333332]
-- children[21].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[22].center (mismatch)
-  - expected: [299.1679,31.0433]
-  - actual: [299.16791666666666,31.043333333333333]
-- children[22].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[23].center (mismatch)
-  - expected: [321.4679,34.6833]
-  - actual: [321.46791666666667,34.68333333333334]
-- children[23].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[25].center (mismatch)
-  - expected: [219.25,18.15]
-  - actual: [219.25,18.150000000000002]
-- children[26].center (mismatch)
-  - expected: [241.55,21.8]
-  - actual: [241.55,21.799999999999997]
-- children[30].center (mismatch)
-  - expected: [281.7231,26.7875]
-  - actual: [281.72312500000004,26.7875]
-- children[30].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[32].from (extra)
-  - expected: undefined
-  - actual: [60.3,16.2]
-- children[32].to (extra)
-  - expected: undefined
-  - actual: [83.3,18.6]
-- children[32].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[33].from (extra)
-  - expected: undefined
-  - actual: [83.3,18.6]
-- children[33].to (extra)
-  - expected: undefined
-  - actual: [106.3,21.799999999999997]
-- children[33].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[34].from (extra)
-  - expected: undefined
-  - actual: [106.3,21.799999999999997]
-- children[34].to (extra)
-  - expected: undefined
-  - actual: [129.3,25]
-- children[34].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[35].from (extra)
-  - expected: undefined
-  - actual: [129.3,25]
-- children[35].to (extra)
-  - expected: undefined
-  - actual: [140.8,28]
-- children[35].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[36].from (extra)
-  - expected: undefined
-  - actual: [140.8,28]
-- children[36].to (extra)
-  - expected: undefined
-  - actual: [163.8,30.4]
-- children[36].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[37].from (extra)
-  - expected: undefined
-  - actual: [163.8,30.4]
-- children[37].to (extra)
-  - expected: undefined
-  - actual: [186.8,33.6]
-- children[37].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[38].from (extra)
-  - expected: undefined
-  - actual: [186.8,33.6]
-- children[38].to (extra)
-  - expected: undefined
-  - actual: [198.3,36.8]
-- children[38].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[39].znId (extra)
-  - expected: undefined
-  - actual: "0"
-- children[39].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_2.t_0.n_0.***"
-- children[40].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[40].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_2.t_96.n_0.***"
-- children[41].center (mismatch)
-  - expected: [106.3,21.8]
-  - actual: [106.3,21.799999999999997]
-- children[41].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[41].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_2.t_192.n_0.***"
-- children[42].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[42].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_2.t_288.n_0.***"
-- children[43].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[43].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_2.t_384.n_0.***"
-- children[44].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[45].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[45].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_2.t_480.n_0.***"
-- children[46].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[46].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_2.t_576.n_0.***"
-- children[47].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[47].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.notebound.nconf.v_2.t_672.n_0.***"
-- children[48].center (mismatch)
-  - expected: [57.6679,17.2833]
-  - actual: [57.66791666666667,17.28333333333333]
-- children[48].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[49].center (mismatch)
-  - expected: [80.6679,19.2433]
-  - actual: [80.66791666666667,19.243333333333336]
-- children[49].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[50].center (mismatch)
-  - expected: [103.6679,22.8833]
-  - actual: [103.66791666666667,22.88333333333333]
-- children[50].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[51].center (mismatch)
-  - expected: [126.6679,25.6433]
-  - actual: [126.66791666666668,25.643333333333334]
-- children[51].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[52].center (mismatch)
-  - expected: [138.1679,29.0833]
-  - actual: [138.16791666666666,29.083333333333332]
-- children[52].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[53].center (mismatch)
-  - expected: [161.1679,31.0433]
-  - actual: [161.16791666666666,31.043333333333333]
-- children[53].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[54].center (mismatch)
-  - expected: [184.1679,34.6833]
-  - actual: [184.16791666666666,34.68333333333334]
-- children[54].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[55].center (mismatch)
-  - expected: [195.6679,37.4433]
-  - actual: [195.66791666666666,37.44333333333333]
-- children[55].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[57].center (mismatch)
-  - expected: [81.25,18.15]
-  - actual: [81.25,18.150000000000002]
-- children[58].center (mismatch)
-  - expected: [104.25,21.8]
-  - actual: [104.25,21.799999999999997]
-- children[59].center (mismatch)
-  - expected: [127.25,24.55]
-  - actual: [127.25000000000001,24.55]
-- children[63].center (mismatch)
-  - expected: [196.25,36.35]
-  - actual: [196.25,36.349999999999994]
-- children[64].center (mismatch)
-  - expected: [143.7231,26.7875]
-  - actual: [143.723125,26.7875]
-- children[64].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[65].center (mismatch)
-  - expected: [142.85,25.3]
-  - actual: [142.85000000000002,25.3]
-- children[66].confKey (extra)
-  - expected: undefined
-  - actual: "extract.1.legend.pos"
-- children[75].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[76].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[78].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[78].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[78].path (mismatch)
-  - expected: [["M",140.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[140.3,287.5],[140.8,286.5],[141.3,287.5],[141.3,292.5],[140.8,293.5],[140.3,292.5],[140.3,287.5]]
-- children[79].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[79].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[79].path (mismatch)
-  - expected: [["M",416.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.3,287.5],[416.8,286.5],[417.3,287.5],[417.3,292.5],[416.8,293.5],[416.3,292.5],[416.3,287.5]]
-- children[80].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[81].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[82].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[83].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[84].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[85].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[86].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[87].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[88].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[89].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[90].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[91].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[92].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[93].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[94].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[95].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[96].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[97].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[98].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[99].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[100].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[101].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[102].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[103].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[104].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[105].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[106].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[107].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[108].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[109].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[110].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[111].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[112].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[113].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[114].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[115].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[116].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-
-## Twostaff [extract 2]
-
-- Issues: 584
-- children[0].from (extra)
-  - expected: undefined
-  - actual: [198.3,17]
-- children[0].to (extra)
-  - expected: undefined
-  - actual: [-76.65,17]
-- children[1].from (extra)
-  - expected: undefined
-  - actual: [106.3,23.4]
-- children[1].to (extra)
-  - expected: undefined
-  - actual: [-30.65,23.4]
-- children[2].from (extra)
-  - expected: undefined
-  - actual: [129.3,26.599999999999998]
-- children[2].to (extra)
-  - expected: undefined
-  - actual: [-7.6499999999999995,26.599999999999998]
-- children[3].from (extra)
-  - expected: undefined
-  - actual: [140.8,30.599999999999998]
-- children[3].to (extra)
-  - expected: undefined
-  - actual: [3.8499999999999996,30.599999999999998]
-- children[4].from (extra)
-  - expected: undefined
-  - actual: [186.8,37]
-- children[4].to (extra)
-  - expected: undefined
-  - actual: [48.8,37]
-- children[5].from (extra)
-  - expected: undefined
-  - actual: [198.3,40.199999999999996]
-- children[5].to (extra)
-  - expected: undefined
-  - actual: [60.3,40.199999999999996]
-- children[6].from (extra)
-  - expected: undefined
-  - actual: [140.8,45.449999999999996]
-- children[6].to (extra)
-  - expected: undefined
-  - actual: [267.3,45.449999999999996]
-- children[7].from (extra)
-  - expected: undefined
-  - actual: [140.8,55.449999999999996]
-- children[7].to (extra)
-  - expected: undefined
-  - actual: [267.3,55.449999999999996]
-- children[8].from (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[8].to (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[9].from (extra)
-  - expected: undefined
-  - actual: [186.8,82.94999999999999]
-- children[9].to (extra)
-  - expected: undefined
-  - actual: [198.3,82.94999999999999]
-- children[10].from (extra)
-  - expected: undefined
-  - actual: [198.3,90.44999999999999]
-- children[10].to (extra)
-  - expected: undefined
-  - actual: [186.8,90.44999999999999]
-- children[11].from (extra)
-  - expected: undefined
-  - actual: [244.3,96.44999999999999]
-- children[11].to (extra)
-  - expected: undefined
-  - actual: [186.8,96.44999999999999]
-- children[12].from (extra)
-  - expected: undefined
-  - actual: [198.3,103.95]
-- children[12].to (extra)
-  - expected: undefined
-  - actual: [140.8,103.95]
-- children[13].from (extra)
-  - expected: undefined
-  - actual: [221.3,109.95]
-- children[13].to (extra)
-  - expected: undefined
-  - actual: [267.3,109.95]
-- children[14].from (extra)
-  - expected: undefined
-  - actual: [198.3,117.45]
-- children[14].to (extra)
-  - expected: undefined
-  - actual: [324.8,117.45]
-- children[15].from (extra)
-  - expected: undefined
-  - actual: [198.3,17]
-- children[15].to (extra)
-  - expected: undefined
-  - actual: [221.3,20.2]
-- children[15].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[16].from (extra)
-  - expected: undefined
-  - actual: [221.3,20.2]
-- children[16].to (extra)
-  - expected: undefined
-  - actual: [244.3,23.4]
-- children[16].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[17].from (extra)
-  - expected: undefined
-  - actual: [244.3,23.4]
-- children[17].to (extra)
-  - expected: undefined
-  - actual: [278.8,30.599999999999998]
-- children[17].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[18].from (extra)
-  - expected: undefined
-  - actual: [278.8,30.599999999999998]
-- children[18].to (extra)
-  - expected: undefined
-  - actual: [301.8,33.8]
-- children[18].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[19].from (extra)
-  - expected: undefined
-  - actual: [301.8,33.8]
-- children[19].to (extra)
-  - expected: undefined
-  - actual: [324.8,37]
-- children[19].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[20].znId (extra)
-  - expected: undefined
-  - actual: "0"
-- children[20].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_1.t_0.n_0.***"
-- children[21].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[21].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_1.t_96.n_0.***"
-- children[22].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[22].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_1.t_192.n_0.***"
-- children[23].center (mismatch)
-  - expected: [278.8,30.6]
-  - actual: [278.8,30.599999999999998]
-- children[23].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[23].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_1.t_384.n_0.***"
-- children[24].center (mismatch)
-  - expected: [278.8,29.91]
-  - actual: [278.8,29.909999999999997]
-- children[24].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[25].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[25].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_1.t_480.n_0.***"
-- children[26].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[26].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_1.t_576.n_0.***"
-- children[27].center (mismatch)
-  - expected: [195.6679,18.0833]
-  - actual: [195.66791666666666,18.083333333333332]
-- children[27].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[28].center (mismatch)
-  - expected: [218.6679,20.8433]
-  - actual: [218.66791666666666,20.843333333333334]
-- children[28].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[29].center (mismatch)
-  - expected: [240.9679,24.4833]
-  - actual: [240.96791666666667,24.48333333333333]
-- children[29].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[30].center (mismatch)
-  - expected: [276.1679,31.6833]
-  - actual: [276.16791666666666,31.68333333333333]
-- children[30].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[31].center (mismatch)
-  - expected: [299.1679,34.4433]
-  - actual: [299.16791666666666,34.44333333333333]
-- children[31].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[32].center (mismatch)
-  - expected: [321.4679,38.0833]
-  - actual: [321.46791666666667,38.083333333333336]
-- children[32].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[36].center (mismatch)
-  - expected: [276.75,30.6]
-  - actual: [276.75,30.599999999999998]
-- children[37].center (mismatch)
-  - expected: [299.75,33.35]
-  - actual: [299.75,33.349999999999994]
-- children[39].center (mismatch)
-  - expected: [281.7231,29.3875]
-  - actual: [281.72312500000004,29.3875]
-- children[39].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[41].from (extra)
-  - expected: undefined
-  - actual: [198.3,17]
-- children[41].to (extra)
-  - expected: undefined
-  - actual: [106.3,23.4]
-- children[41].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[42].from (extra)
-  - expected: undefined
-  - actual: [106.3,23.4]
-- children[42].to (extra)
-  - expected: undefined
-  - actual: [129.3,26.599999999999998]
-- children[42].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[43].from (extra)
-  - expected: undefined
-  - actual: [129.3,26.599999999999998]
-- children[43].to (extra)
-  - expected: undefined
-  - actual: [140.8,30.599999999999998]
-- children[43].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[44].from (extra)
-  - expected: undefined
-  - actual: [140.8,30.599999999999998]
-- children[44].to (extra)
-  - expected: undefined
-  - actual: [186.8,37]
-- children[44].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[45].from (extra)
-  - expected: undefined
-  - actual: [186.8,37]
-- children[45].to (extra)
-  - expected: undefined
-  - actual: [198.3,40.199999999999996]
-- children[45].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[46].from (extra)
-  - expected: undefined
-  - actual: [198.3,40.199999999999996]
-- children[46].to (extra)
-  - expected: undefined
-  - actual: [140.8,45.449999999999996]
-- children[46].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[47].from (extra)
-  - expected: undefined
-  - actual: [140.8,45.449999999999996]
-- children[47].to (extra)
-  - expected: undefined
-  - actual: [140.8,50.449999999999996]
-- children[47].znId (extra)
-  - expected: undefined
-  - actual: "960"
-- children[48].from (extra)
-  - expected: undefined
-  - actual: [140.8,50.449999999999996]
-- children[48].to (extra)
-  - expected: undefined
-  - actual: [140.8,55.449999999999996]
-- children[48].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[49].from (extra)
-  - expected: undefined
-  - actual: [140.8,55.449999999999996]
-- children[49].to (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[49].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[50].from (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[50].to (extra)
-  - expected: undefined
-  - actual: [186.8,77.94999999999999]
-- children[50].znId (extra)
-  - expected: undefined
-  - actual: "1728"
-- children[51].from (extra)
-  - expected: undefined
-  - actual: [186.8,77.94999999999999]
-- children[51].to (extra)
-  - expected: undefined
-  - actual: [186.8,82.94999999999999]
-- children[51].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[52].from (extra)
-  - expected: undefined
-  - actual: [186.8,82.94999999999999]
-- children[52].to (extra)
-  - expected: undefined
-  - actual: [198.3,90.44999999999999]
-- children[52].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[53].from (extra)
-  - expected: undefined
-  - actual: [198.3,90.44999999999999]
-- children[53].to (extra)
-  - expected: undefined
-  - actual: [244.3,96.44999999999999]
-- children[53].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[54].from (extra)
-  - expected: undefined
-  - actual: [244.3,96.44999999999999]
-- children[54].to (extra)
-  - expected: undefined
-  - actual: [198.3,103.95]
-- children[54].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[55].from (extra)
-  - expected: undefined
-  - actual: [198.3,103.95]
-- children[55].to (extra)
-  - expected: undefined
-  - actual: [221.3,109.95]
-- children[55].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[56].from (extra)
-  - expected: undefined
-  - actual: [221.3,109.95]
-- children[56].to (extra)
-  - expected: undefined
-  - actual: [198.3,117.45]
-- children[56].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[57].znId (extra)
-  - expected: undefined
-  - actual: "0"
-- children[57].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_0.n_0.***"
-- children[58].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[58].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_192.n_0.***"
-- children[59].center (mismatch)
-  - expected: [129.3,26.6]
-  - actual: [129.3,26.599999999999998]
-- children[59].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[59].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_288.n_0.***"
-- children[60].center (mismatch)
-  - expected: [140.8,30.6]
-  - actual: [140.8,30.599999999999998]
-- children[60].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[60].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_384.n_0.***"
-- children[61].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[62].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[62].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_576.n_0.***"
-- children[63].center (mismatch)
-  - expected: [198.3,40.2]
-  - actual: [198.3,40.199999999999996]
-- children[63].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[63].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_672.n_0.***"
-- children[64].from (extra)
-  - expected: undefined
-  - actual: [140.8,45.449999999999996]
-- children[64].to (extra)
-  - expected: undefined
-  - actual: [186.8,45.449999999999996]
-- children[64].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[65].center (mismatch)
-  - expected: [186.8,45.45]
-  - actual: [186.8,45.449999999999996]
-- children[65].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[66].center (mismatch)
-  - expected: [186.8,44.5]
-  - actual: [186.8,44.49999999999999]
-- children[66].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[67].center (mismatch)
-  - expected: [140.8,45.45]
-  - actual: [140.8,45.449999999999996]
-- children[67].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[67].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_768.n_0.***"
-- children[68].center (mismatch)
-  - expected: [140.8,44.5]
-  - actual: [140.8,44.49999999999999]
-- children[68].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[69].from (extra)
-  - expected: undefined
-  - actual: [140.8,50.449999999999996]
-- children[69].to (extra)
-  - expected: undefined
-  - actual: [186.8,50.449999999999996]
-- children[69].znId (extra)
-  - expected: undefined
-  - actual: "960"
-- children[70].center (mismatch)
-  - expected: [186.8,50.45]
-  - actual: [186.8,50.449999999999996]
-- children[70].znId (extra)
-  - expected: undefined
-  - actual: "960"
-- children[71].center (mismatch)
-  - expected: [140.8,50.45]
-  - actual: [140.8,50.449999999999996]
-- children[71].znId (extra)
-  - expected: undefined
-  - actual: "960"
-- children[71].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_960.n_0.***"
-- children[72].from (extra)
-  - expected: undefined
-  - actual: [140.8,55.449999999999996]
-- children[72].to (extra)
-  - expected: undefined
-  - actual: [186.8,55.449999999999996]
-- children[72].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[73].center (mismatch)
-  - expected: [186.8,55.45]
-  - actual: [186.8,55.449999999999996]
-- children[73].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[73].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[74].center (mismatch)
-  - expected: [140.8,55.45]
-  - actual: [140.8,55.449999999999996]
-- children[74].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[74].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[74].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_1152.n_0.***"
-- children[75].from (extra)
-  - expected: undefined
-  - actual: [140.8,72.94999999999999]
-- children[75].to (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[75].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[76].center (mismatch)
-  - expected: [140.8,72.95]
-  - actual: [140.8,72.94999999999999]
-- children[76].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[77].center (mismatch)
-  - expected: [140.8,72]
-  - actual: [140.8,71.99999999999999]
-- children[77].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[78].center (mismatch)
-  - expected: [186.8,72.95]
-  - actual: [186.8,72.94999999999999]
-- children[78].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[78].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_1536.n_0.***"
-- children[79].center (mismatch)
-  - expected: [186.8,72]
-  - actual: [186.8,71.99999999999999]
-- children[79].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[80].from (extra)
-  - expected: undefined
-  - actual: [140.8,77.94999999999999]
-- children[80].to (extra)
-  - expected: undefined
-  - actual: [186.8,77.94999999999999]
-- children[80].znId (extra)
-  - expected: undefined
-  - actual: "1728"
-- children[81].center (mismatch)
-  - expected: [140.8,77.95]
-  - actual: [140.8,77.94999999999999]
-- children[81].znId (extra)
-  - expected: undefined
-  - actual: "1728"
-- children[82].center (mismatch)
-  - expected: [186.8,77.95]
-  - actual: [186.8,77.94999999999999]
-- children[82].znId (extra)
-  - expected: undefined
-  - actual: "1728"
-- children[82].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_1728.n_0.***"
-- children[83].from (extra)
-  - expected: undefined
-  - actual: [106.3,82.94999999999999]
-- children[83].to (extra)
-  - expected: undefined
-  - actual: [186.8,82.94999999999999]
-- children[83].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[84].center (mismatch)
-  - expected: [106.3,82.95]
-  - actual: [106.3,82.94999999999999]
-- children[84].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[84].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[85].center (mismatch)
-  - expected: [186.8,82.95]
-  - actual: [186.8,82.94999999999999]
-- children[85].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[85].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[85].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_1920.n_0.***"
-- children[86].from (extra)
-  - expected: undefined
-  - actual: [140.8,90.44999999999999]
-- children[86].to (extra)
-  - expected: undefined
-  - actual: [198.3,90.44999999999999]
-- children[86].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[87].center (mismatch)
-  - expected: [140.8,90.45]
-  - actual: [140.8,90.44999999999999]
-- children[87].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[87].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[88].center (mismatch)
-  - expected: [140.8,89.175]
-  - actual: [140.8,89.17499999999998]
-- children[88].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[89].center (mismatch)
-  - expected: [198.3,90.45]
-  - actual: [198.3,90.44999999999999]
-- children[89].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[89].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[89].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_2304.n_0.***"
-- children[90].center (mismatch)
-  - expected: [198.3,89.175]
-  - actual: [198.3,89.17499999999998]
-- children[90].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[91].from (extra)
-  - expected: undefined
-  - actual: [140.8,96.44999999999999]
-- children[91].to (extra)
-  - expected: undefined
-  - actual: [244.3,96.44999999999999]
-- children[91].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[92].center (mismatch)
-  - expected: [140.8,96.45]
-  - actual: [140.8,96.44999999999999]
-- children[92].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[92].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[93].center (mismatch)
-  - expected: [244.3,96.45]
-  - actual: [244.3,96.44999999999999]
-- children[93].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[93].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[93].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_2688.n_0.***"
-- children[94].from (extra)
-  - expected: undefined
-  - actual: [163.8,103.95]
-- children[94].to (extra)
-  - expected: undefined
-  - actual: [198.3,103.95]
-- children[94].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[95].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[95].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[96].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[97].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[97].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[97].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_3072.n_0.***"
-- children[98].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[99].from (extra)
-  - expected: undefined
-  - actual: [129.3,109.95]
-- children[99].to (extra)
-  - expected: undefined
-  - actual: [221.3,109.95]
-- children[99].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[100].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[100].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[101].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[101].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[101].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_3456.n_0.***"
-- children[102].from (extra)
-  - expected: undefined
-  - actual: [163.8,117.45]
-- children[102].to (extra)
-  - expected: undefined
-  - actual: [198.3,117.45]
-- children[102].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[103].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[103].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[104].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[105].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[105].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[105].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_3.t_3840.n_0.***"
-- children[106].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[107].center (mismatch)
-  - expected: [201.6321,18.0833]
-  - actual: [201.63208333333336,18.083333333333332]
-- children[107].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[108].center (mismatch)
-  - expected: [103.6679,24.4833]
-  - actual: [103.66791666666667,24.48333333333333]
-- children[108].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[109].center (mismatch)
-  - expected: [126.6679,27.2433]
-  - actual: [126.66791666666668,27.243333333333332]
-- children[109].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[110].center (mismatch)
-  - expected: [137.4679,31.6833]
-  - actual: [137.46791666666667,31.68333333333333]
-- children[110].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[111].center (mismatch)
-  - expected: [184.1679,38.0833]
-  - actual: [184.16791666666666,38.083333333333336]
-- children[111].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[112].center (mismatch)
-  - expected: [200.9321,40.8433]
-  - actual: [200.93208333333337,40.84333333333333]
-- children[112].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[113].center (mismatch)
-  - expected: [144.1321,46.5333]
-  - actual: [144.13208333333336,46.53333333333333]
-- children[113].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[114].center (mismatch)
-  - expected: [137.4679,51.5333]
-  - actual: [137.46791666666667,51.53333333333333]
-- children[114].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[115].center (mismatch)
-  - expected: [135.6616,56.5333]
-  - actual: [135.66158333333334,56.53333333333333]
-- children[115].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[116].center (mismatch)
-  - expected: [183.4679,74.0333]
-  - actual: [183.46791666666667,74.03333333333332]
-- children[116].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[117].center (mismatch)
-  - expected: [183.4679,79.0333]
-  - actual: [183.46791666666667,79.03333333333332]
-- children[117].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[118].center (mismatch)
-  - expected: [181.6616,84.0333]
-  - actual: [181.66158333333334,84.03333333333332]
-- children[118].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[119].center (mismatch)
-  - expected: [193.1616,91.5333]
-  - actual: [193.16158333333334,91.53333333333332]
-- children[119].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[120].center (mismatch)
-  - expected: [249.4384,97.5333]
-  - actual: [249.43841666666668,97.53333333333332]
-- children[120].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[121].center (mismatch)
-  - expected: [193.1616,105.0333]
-  - actual: [193.16158333333334,105.03333333333333]
-- children[121].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[122].center (mismatch)
-  - expected: [226.4384,111.0333]
-  - actual: [226.43841666666668,111.03333333333333]
-- children[122].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[123].center (mismatch)
-  - expected: [203.4384,118.5333]
-  - actual: [203.43841666666668,118.53333333333333]
-- children[123].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[126].center (mismatch)
-  - expected: [127.25,26.15]
-  - actual: [127.25000000000001,26.15]
-- children[127].center (mismatch)
-  - expected: [138.05,30.6]
-  - actual: [138.05,30.599999999999998]
-- children[129].center (mismatch)
-  - expected: [200.35,39.75]
-  - actual: [200.35000000000002,39.74999999999999]
-- children[130].center (mismatch)
-  - expected: [143.55,45.45]
-  - actual: [143.55,45.449999999999996]
-- children[131].center (mismatch)
-  - expected: [138.05,50.45]
-  - actual: [138.05,50.449999999999996]
-- children[132].center (mismatch)
-  - expected: [137.175,55.45]
-  - actual: [137.175,55.449999999999996]
-- children[133].center (mismatch)
-  - expected: [184.05,72.95]
-  - actual: [184.05,72.94999999999999]
-- children[134].center (mismatch)
-  - expected: [184.05,77.95]
-  - actual: [184.05,77.94999999999999]
-- children[135].center (mismatch)
-  - expected: [183.175,82.95]
-  - actual: [183.175,82.94999999999999]
-- children[136].center (mismatch)
-  - expected: [194.675,90.45]
-  - actual: [194.675,90.44999999999999]
-- children[137].center (mismatch)
-  - expected: [247.925,96.45]
-  - actual: [247.925,96.44999999999999]
-- children[141].center (mismatch)
-  - expected: [144.4231,29.3875]
-  - actual: [144.423125,29.3875]
-- children[141].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[142].center (mismatch)
-  - expected: [137.1769,44.2375]
-  - actual: [137.17687500000002,44.23749999999999]
-- children[142].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[143].center (mismatch)
-  - expected: [190.4231,71.7375]
-  - actual: [190.423125,71.73749999999998]
-- children[143].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[144].center (mismatch)
-  - expected: [202.7981,89.2375]
-  - actual: [202.798125,89.23749999999998]
-- children[144].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[145].center (mismatch)
-  - expected: [193.8019,102.7375]
-  - actual: [193.80187500000002,102.7375]
-- children[145].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[146].center (mismatch)
-  - expected: [193.8019,116.2375]
-  - actual: [193.80187500000002,116.2375]
-- children[146].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[148].center (mismatch)
-  - expected: [138.05,42.75]
-  - actual: [138.05,42.74999999999999]
-- children[149].center (mismatch)
-  - expected: [189.55,70.25]
-  - actual: [189.55,70.24999999999999]
-- children[150].center (mismatch)
-  - expected: [201.925,87.75]
-  - actual: [201.925,87.74999999999999]
-- children[153].from (extra)
-  - expected: undefined
-  - actual: [-76.65,17]
-- children[153].to (extra)
-  - expected: undefined
-  - actual: [-53.650000000000006,20.2]
-- children[153].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[154].from (extra)
-  - expected: undefined
-  - actual: [-53.650000000000006,20.2]
-- children[154].to (extra)
-  - expected: undefined
-  - actual: [-30.65,23.4]
-- children[154].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[155].from (extra)
-  - expected: undefined
-  - actual: [-30.65,23.4]
-- children[155].to (extra)
-  - expected: undefined
-  - actual: [-7.6499999999999995,26.599999999999998]
-- children[155].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[156].from (extra)
-  - expected: undefined
-  - actual: [-7.6499999999999995,26.599999999999998]
-- children[156].to (extra)
-  - expected: undefined
-  - actual: [3.8499999999999996,30.599999999999998]
-- children[156].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[157].from (extra)
-  - expected: undefined
-  - actual: [3.8499999999999996,30.599999999999998]
-- children[157].to (extra)
-  - expected: undefined
-  - actual: [25.8,33.8]
-- children[157].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[158].from (extra)
-  - expected: undefined
-  - actual: [25.8,33.8]
-- children[158].to (extra)
-  - expected: undefined
-  - actual: [48.8,37]
-- children[158].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[159].from (extra)
-  - expected: undefined
-  - actual: [48.8,37]
-- children[159].to (extra)
-  - expected: undefined
-  - actual: [60.3,40.199999999999996]
-- children[159].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[160].from (extra)
-  - expected: undefined
-  - actual: [60.3,40.199999999999996]
-- children[160].to (extra)
-  - expected: undefined
-  - actual: [267.3,45.449999999999996]
-- children[160].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[161].from (extra)
-  - expected: undefined
-  - actual: [267.3,45.449999999999996]
-- children[161].to (extra)
-  - expected: undefined
-  - actual: [267.3,55.449999999999996]
-- children[161].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[162].from (extra)
-  - expected: undefined
-  - actual: [267.3,55.449999999999996]
-- children[162].to (extra)
-  - expected: undefined
-  - actual: [267.3,60.449999999999996]
-- children[162].znId (extra)
-  - expected: undefined
-  - actual: "1344"
-- children[163].from (extra)
-  - expected: undefined
-  - actual: [186.8,72.94999999999999]
-- children[163].to (extra)
-  - expected: undefined
-  - actual: [198.3,82.94999999999999]
-- children[163].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[164].from (extra)
-  - expected: undefined
-  - actual: [198.3,82.94999999999999]
-- children[164].to (extra)
-  - expected: undefined
-  - actual: [186.8,90.44999999999999]
-- children[164].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[165].from (extra)
-  - expected: undefined
-  - actual: [186.8,90.44999999999999]
-- children[165].to (extra)
-  - expected: undefined
-  - actual: [186.8,96.44999999999999]
-- children[165].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[166].from (extra)
-  - expected: undefined
-  - actual: [186.8,96.44999999999999]
-- children[166].to (extra)
-  - expected: undefined
-  - actual: [140.8,103.95]
-- children[166].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[167].from (extra)
-  - expected: undefined
-  - actual: [140.8,103.95]
-- children[167].to (extra)
-  - expected: undefined
-  - actual: [267.3,109.95]
-- children[167].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[168].from (extra)
-  - expected: undefined
-  - actual: [267.3,109.95]
-- children[168].to (extra)
-  - expected: undefined
-  - actual: [324.8,117.45]
-- children[168].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[169].from (extra)
-  - expected: undefined
-  - actual: [324.8,117.45]
-- children[169].to (extra)
-  - expected: undefined
-  - actual: [324.8,122.45]
-- children[169].znId (extra)
-  - expected: undefined
-  - actual: "4032"
-- children[170].from (extra)
-  - expected: undefined
-  - actual: [324.8,122.45]
-- children[170].to (extra)
-  - expected: undefined
-  - actual: [324.8,126.45]
-- children[170].znId (extra)
-  - expected: undefined
-  - actual: "4224"
-- children[171].from (extra)
-  - expected: undefined
-  - actual: [324.8,126.45]
-- children[171].to (extra)
-  - expected: undefined
-  - actual: [324.8,130.45]
-- children[171].znId (extra)
-  - expected: undefined
-  - actual: "4416"
-- children[172].znId (extra)
-  - expected: undefined
-  - actual: "0"
-- children[172].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_0.n_0.***"
-- children[173].center (mismatch)
-  - expected: [-53.65,20.2]
-  - actual: [-53.650000000000006,20.2]
-- children[173].znId (extra)
-  - expected: undefined
-  - actual: "96"
-- children[173].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_96.n_0.***"
-- children[174].znId (extra)
-  - expected: undefined
-  - actual: "192"
-- children[174].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_192.n_0.***"
-- children[175].center (mismatch)
-  - expected: [-7.65,26.6]
-  - actual: [-7.6499999999999995,26.599999999999998]
-- children[175].znId (extra)
-  - expected: undefined
-  - actual: "288"
-- children[175].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_288.n_0.***"
-- children[176].center (mismatch)
-  - expected: [3.85,30.6]
-  - actual: [3.8499999999999996,30.599999999999998]
-- children[176].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[176].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_384.n_0.***"
-- children[177].center (mismatch)
-  - expected: [3.85,29.91]
-  - actual: [3.8499999999999996,29.909999999999997]
-- children[177].znId (extra)
-  - expected: undefined
-  - actual: "384"
-- children[178].znId (extra)
-  - expected: undefined
-  - actual: "480"
-- children[178].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_480.n_0.***"
-- children[179].znId (extra)
-  - expected: undefined
-  - actual: "576"
-- children[179].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_576.n_0.***"
-- children[180].center (mismatch)
-  - expected: [60.3,40.2]
-  - actual: [60.3,40.199999999999996]
-- children[180].znId (extra)
-  - expected: undefined
-  - actual: "672"
-- children[180].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_672.n_0.***"
-- children[181].center (mismatch)
-  - expected: [267.3,45.45]
-  - actual: [267.3,45.449999999999996]
-- children[181].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[181].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[181].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_768.n_0.***"
-- children[182].znId (extra)
-  - expected: undefined
-  - actual: "768"
-- children[183].center (mismatch)
-  - expected: [267.3,55.45]
-  - actual: [267.3,55.449999999999996]
-- children[183].znId (extra)
-  - expected: undefined
-  - actual: "1152"
-- children[183].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_1152.n_0.***"
-- children[184].center (mismatch)
-  - expected: [267.3,60.45]
-  - actual: [267.3,60.449999999999996]
-- children[184].znId (extra)
-  - expected: undefined
-  - actual: "1344"
-- children[184].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_1344.n_0.***"
-- children[185].center (mismatch)
-  - expected: [186.8,72.95]
-  - actual: [186.8,72.94999999999999]
-- children[185].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[185].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[185].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_1536.n_0.***"
-- children[186].center (mismatch)
-  - expected: [186.8,71.675]
-  - actual: [186.8,71.67499999999998]
-- children[186].znId (extra)
-  - expected: undefined
-  - actual: "1536"
-- children[187].center (mismatch)
-  - expected: [198.3,82.95]
-  - actual: [198.3,82.94999999999999]
-- children[187].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[187].znId (extra)
-  - expected: undefined
-  - actual: "1920"
-- children[187].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_1920.n_0.***"
-- children[188].center (mismatch)
-  - expected: [186.8,90.45]
-  - actual: [186.8,90.44999999999999]
-- children[188].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[188].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[188].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_2304.n_0.***"
-- children[189].center (mismatch)
-  - expected: [186.8,89.175]
-  - actual: [186.8,89.17499999999998]
-- children[189].znId (extra)
-  - expected: undefined
-  - actual: "2304"
-- children[190].center (mismatch)
-  - expected: [186.8,96.45]
-  - actual: [186.8,96.44999999999999]
-- children[190].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[190].znId (extra)
-  - expected: undefined
-  - actual: "2688"
-- children[190].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_2688.n_0.***"
-- children[191].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[191].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[191].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_3072.n_0.***"
-- children[192].znId (extra)
-  - expected: undefined
-  - actual: "3072"
-- children[193].size (mismatch)
-  - expected: [2.625,0.975]
-  - actual: [2.625,0.9750000000000001]
-- children[193].znId (extra)
-  - expected: undefined
-  - actual: "3456"
-- children[193].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_3456.n_0.***"
-- children[194].from (extra)
-  - expected: undefined
-  - actual: [244.3,117.45]
-- children[194].to (extra)
-  - expected: undefined
-  - actual: [324.8,117.45]
-- children[194].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[195].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[196].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[197].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[197].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_3840.n_0.***"
-- children[198].znId (extra)
-  - expected: undefined
-  - actual: "3840"
-- children[199].from (extra)
-  - expected: undefined
-  - actual: [244.3,122.45]
-- children[199].to (extra)
-  - expected: undefined
-  - actual: [324.8,122.45]
-- children[199].znId (extra)
-  - expected: undefined
-  - actual: "4032"
-- children[200].znId (extra)
-  - expected: undefined
-  - actual: "4032"
-- children[201].znId (extra)
-  - expected: undefined
-  - actual: "4032"
-- children[201].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_4032.n_0.***"
-- children[202].from (extra)
-  - expected: undefined
-  - actual: [244.3,126.45]
-- children[202].to (extra)
-  - expected: undefined
-  - actual: [324.8,126.45]
-- children[202].znId (extra)
-  - expected: undefined
-  - actual: "4224"
-- children[203].znId (extra)
-  - expected: undefined
-  - actual: "4224"
-- children[204].znId (extra)
-  - expected: undefined
-  - actual: "4224"
-- children[204].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_4224.n_0.***"
-- children[205].from (extra)
-  - expected: undefined
-  - actual: [244.3,130.45]
-- children[205].to (extra)
-  - expected: undefined
-  - actual: [324.8,130.45]
-- children[205].znId (extra)
-  - expected: undefined
-  - actual: "4416"
-- children[206].znId (extra)
-  - expected: undefined
-  - actual: "4416"
-- children[207].znId (extra)
-  - expected: undefined
-  - actual: "4416"
-- children[207].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.notebound.nconf.v_4.t_4416.n_0.***"
-- children[208].center (mismatch)
-  - expected: [-74.0179,18.0833]
-  - actual: [-74.01791666666668,18.083333333333332]
-- children[208].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[209].center (mismatch)
-  - expected: [-51.0179,20.8433]
-  - actual: [-51.01791666666668,20.843333333333334]
-- children[209].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[210].center (mismatch)
-  - expected: [-28.0179,24.4833]
-  - actual: [-28.017916666666665,24.48333333333333]
-- children[210].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[211].center (mismatch)
-  - expected: [-5.0179,27.2433]
-  - actual: [-5.017916666666666,27.243333333333332]
-- children[211].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[212].center (mismatch)
-  - expected: [6.4821,31.6833]
-  - actual: [6.482083333333333,31.68333333333333]
-- children[212].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[213].center (mismatch)
-  - expected: [23.1679,34.4433]
-  - actual: [23.167916666666667,34.44333333333333]
-- children[213].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[214].center (mismatch)
-  - expected: [46.1679,38.0833]
-  - actual: [46.16791666666667,38.083333333333336]
-- children[214].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[215].center (mismatch)
-  - expected: [57.6679,40.8433]
-  - actual: [57.66791666666667,40.84333333333333]
-- children[215].size (mismatch)
-  - expected: [0.5321,0.5042]
-  - actual: [0.5320833333333332,0.5041666666666665]
-- children[216].center (mismatch)
-  - expected: [262.1616,46.5333]
-  - actual: [262.16158333333334,46.53333333333333]
-- children[216].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[217].center (mismatch)
-  - expected: [263.9679,56.5333]
-  - actual: [263.96791666666667,56.53333333333333]
-- children[217].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[218].center (mismatch)
-  - expected: [270.6321,61.5333]
-  - actual: [270.63208333333336,61.53333333333333]
-- children[218].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[219].center (mismatch)
-  - expected: [181.6616,74.0333]
-  - actual: [181.66158333333334,74.03333333333332]
-- children[219].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[220].center (mismatch)
-  - expected: [203.4384,84.0333]
-  - actual: [203.43841666666668,84.03333333333332]
-- children[220].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[221].center (mismatch)
-  - expected: [191.9384,91.5333]
-  - actual: [191.93841666666668,91.53333333333332]
-- children[221].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[222].center (mismatch)
-  - expected: [191.9384,97.5333]
-  - actual: [191.93841666666668,97.53333333333332]
-- children[222].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[223].center (mismatch)
-  - expected: [135.6616,105.0333]
-  - actual: [135.66158333333334,105.03333333333333]
-- children[223].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[224].center (mismatch)
-  - expected: [262.1616,111.0333]
-  - actual: [262.16158333333334,111.03333333333333]
-- children[224].size (mismatch)
-  - expected: [1.4634,0.7058]
-  - actual: [1.4634166666666666,0.7058333333333331]
-- children[225].center (mismatch)
-  - expected: [321.4679,118.5333]
-  - actual: [321.46791666666667,118.53333333333333]
-- children[225].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[226].center (mismatch)
-  - expected: [321.4679,123.5333]
-  - actual: [321.46791666666667,123.53333333333333]
-- children[226].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[227].center (mismatch)
-  - expected: [321.4679,127.5333]
-  - actual: [321.46791666666667,127.53333333333333]
-- children[227].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[228].center (mismatch)
-  - expected: [321.4679,131.5333]
-  - actual: [321.46791666666667,131.53333333333333]
-- children[228].size (mismatch)
-  - expected: [0.5321,0.7058]
-  - actual: [0.5320833333333332,0.7058333333333331]
-- children[229].center (mismatch)
-  - expected: [-74.6,17]
-  - actual: [-74.60000000000001,17]
-- children[230].center (mismatch)
-  - expected: [-51.6,19.75]
-  - actual: [-51.60000000000001,19.75]
-- children[231].center (mismatch)
-  - expected: [-28.6,23.4]
-  - actual: [-28.599999999999998,23.4]
-- children[233].center (mismatch)
-  - expected: [5.9,30.6]
-  - actual: [5.8999999999999995,30.599999999999998]
-- children[234].center (mismatch)
-  - expected: [23.75,33.35]
-  - actual: [23.75,33.349999999999994]
-- children[236].center (mismatch)
-  - expected: [58.25,39.75]
-  - actual: [58.25,39.74999999999999]
-- children[237].center (mismatch)
-  - expected: [263.675,45.45]
-  - actual: [263.675,45.449999999999996]
-- children[238].center (mismatch)
-  - expected: [264.55,55.45]
-  - actual: [264.55,55.449999999999996]
-- children[239].center (mismatch)
-  - expected: [270.05,60.45]
-  - actual: [270.05,60.449999999999996]
-- children[240].center (mismatch)
-  - expected: [183.175,72.95]
-  - actual: [183.175,72.94999999999999]
-- children[241].center (mismatch)
-  - expected: [201.925,82.95]
-  - actual: [201.925,82.94999999999999]
-- children[242].center (mismatch)
-  - expected: [190.425,90.45]
-  - actual: [190.425,90.44999999999999]
-- children[243].center (mismatch)
-  - expected: [190.425,96.45]
-  - actual: [190.425,96.44999999999999]
-- children[250].center (mismatch)
-  - expected: [6.7731,29.3875]
-  - actual: [6.773124999999999,29.3875]
-- children[250].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[251].center (mismatch)
-  - expected: [271.7981,44.2375]
-  - actual: [271.798125,44.23749999999999]
-- children[251].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[252].center (mismatch)
-  - expected: [182.3019,71.7375]
-  - actual: [182.30187500000002,71.73749999999998]
-- children[252].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[253].center (mismatch)
-  - expected: [182.3019,89.2375]
-  - actual: [182.30187500000002,89.23749999999998]
-- children[253].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[254].center (mismatch)
-  - expected: [136.3019,102.7375]
-  - actual: [136.30187500000002,102.7375]
-- children[254].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[255].center (mismatch)
-  - expected: [328.4231,116.2375]
-  - actual: [328.423125,116.2375]
-- children[255].size (mismatch)
-  - expected: [1.0731,1.2512]
-  - actual: [1.073125,1.2512499999999998]
-- children[256].center (mismatch)
-  - expected: [5.9,27.9]
-  - actual: [5.8999999999999995,27.9]
-- children[257].center (mismatch)
-  - expected: [270.925,42.75]
-  - actual: [270.925,42.74999999999999]
-- children[258].center (mismatch)
-  - expected: [183.175,70.25]
-  - actual: [183.175,70.24999999999999]
-- children[259].center (mismatch)
-  - expected: [183.175,87.75]
-  - actual: [183.175,87.74999999999999]
-- children[262].fill (extra)
-  - expected: undefined
-  - actual: false
-- children[262].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[262].znId (extra)
-  - expected: undefined
-  - actual: "goto-3-0"
-- children[262].path (mismatch)
-  - expected: [["M",272.05,62.099999999999994],["l",12.5,0],["l",0,-4],["M",284.55,20.61],["L",284.55,15.61],["L",-70.60000000000001,15.61]]
-  - actual: [[272.05,62.099999999999994],[284.55,62.099999999999994],[284.55,58.099999999999994],[284.55,20.61],[284.55,15.61],[-70.60000000000001,15.61]]
-- children[263].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[263].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[263].znId (extra)
-  - expected: undefined
-  - actual: "goto-3-0"
-- children[263].path (mismatch)
-  - expected: [["M",-72.60000000000001,15.61],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
-  - actual: [[-72.60000000000001,15.61],[-70.10000000000001,16.61],[-70.10000000000001,14.61]]
-- children[264].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[264].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[264].znId (extra)
-  - expected: undefined
-  - actual: "goto-3-0"
-- children[264].path (mismatch)
-  - expected: [["M",284.55,57.099999999999994],["l",0.5,1.5],["l",-1,0],["l",0.5,-1.5],["z"]]
-  - actual: [[284.55,57.099999999999994],[285.05,58.599999999999994],[284.05,58.599999999999994]]
-- children[265].confKey (extra)
-  - expected: undefined
-  - actual: "extract.2.legend.pos"
-- children[274].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[275].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[277].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[277].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[277].path (mismatch)
-  - expected: [["M",2.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[2.3,287.5],[2.8,286.5],[3.3,287.5],[3.3,292.5],[2.8,293.5],[2.3,292.5],[2.3,287.5]]
-- children[278].fill (extra)
-  - expected: undefined
-  - actual: true
-- children[278].color (extra)
-  - expected: undefined
-  - actual: "black"
-- children[278].path (mismatch)
-  - expected: [["M",416.3,287.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
-  - actual: [[416.3,287.5],[416.8,286.5],[417.3,287.5],[417.3,292.5],[416.8,293.5],[416.3,292.5],[416.3,287.5]]
-- children[279].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[280].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[281].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[282].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[283].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[284].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[285].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[286].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[287].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[288].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[289].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[290].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[291].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[292].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[293].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[294].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[295].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[296].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[297].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[298].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[299].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[300].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[301].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[302].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[303].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[304].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[305].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[306].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[307].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[308].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[309].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[310].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[311].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[312].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[313].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[314].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
-- children[315].draginfo (extra)
-  - expected: undefined
-  - actual: {"handler":"annotation"}
 

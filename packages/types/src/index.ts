@@ -36,6 +36,31 @@ export type {
 } from './music.js'
 
 export type {
+  SelectionTextRange,
+  SelectionLineColumn,
+  SheetObjectAddressability,
+  SheetObjectIndexEntry,
+  SheetObjectIndex,
+  SelectionProjectionKind,
+  SelectionTarget,
+  SelectionVoiceScope,
+  SelectionTargetCapabilities,
+  SelectionProjection,
+  SelectionProjectionOptions,
+  SelectionSource,
+  SelectionState,
+} from './selection.js'
+
+export type {
+  PlaybackStatus,
+  PlaybackMode,
+  PlaybackState,
+  PlaybackHighlight,
+  PlaybackFlowStep,
+  PlaybackPlayerEvent,
+} from './playback.js'
+
+export type {
   FillStyle,
   Drawable,
   Ellipse,

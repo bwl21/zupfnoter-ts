@@ -37,6 +37,23 @@ Nach Änderungen möglichst ausführen:
     pnpm test
     pnpm type-check
 
+### Browser Validation
+
+For UI-related work:
+
+- Use Browser MCP when available.
+- Validate the affected user workflow.
+- Report the result in the final summary.
+
+If Browser MCP is unavailable:
+
+- In `codex-cli` or similar non-App environments, use local Playwright validation if Playwright is available and the workflow can be exercised locally.
+- If neither Browser MCP nor local Playwright validation is available, skip browser validation.
+- Do not explain, apologize, or discuss MCP availability when validation is skipped.
+- Report only:
+
+  Browser validation: not performed (Browser MCP unavailable)
+
 ### Git-Workflow (Solo + Copilot Review)
 
 | Größe | Branch? | PR? | Merge |

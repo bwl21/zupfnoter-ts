@@ -1,0 +1,89 @@
+:root {
+  color-scheme: light;
+
+  --zn-bg: #dde3ea;
+  --zn-bg-elevated: #f8fafc;
+  --zn-bg-surface: #ffffff;
+  --zn-bg-surface-soft: #eef2f7;
+  --zn-bg-surface-strong: #e1e7ef;
+  --zn-border: #b7c4d1;
+  --zn-border-strong: #8ca0b5;
+  --zn-text: #23364a;
+  --zn-text-muted: #5e748c;
+  --zn-text-soft: #40566f;
+  --zn-heading: #15293d;
+  --zn-accent: #4078b8;
+  --zn-accent-strong: #244f84;
+  --zn-accent-soft: rgba(64, 120, 184, 0.14);
+  --zn-success: #3e8f65;
+  --zn-warning: #b37b17;
+  --zn-danger: #ab4e4e;
+  --zn-info: #3c78c2;
+  --zn-shadow: 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 18px rgba(34, 54, 74, 0.08);
+  --zn-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.7), 0 3px 10px rgba(34, 54, 74, 0.06);
+  --zn-radius-pill: 999px;
+  --zn-radius-xs: 2px;
+  --zn-radius-sm: 3px;
+  --zn-radius-md: 4px;
+  --zn-radius-lg: 5px;
+  --zn-space-1: 0.25rem;
+  --zn-space-2: 0.5rem;
+  --zn-space-3: 0.6875rem;
+  --zn-space-4: 0.875rem;
+  --zn-space-5: 1rem;
+  --zn-space-6: 1.25rem;
+  --zn-space-8: 1.5rem;
+  --zn-space-10: 2rem;
+  --zn-space-12: 2.5rem;
+  --zn-font-sans:
+    'Segoe UI',
+    'Helvetica Neue',
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  --zn-font-mono:
+    Consolas,
+    'Liberation Mono',
+    monospace;
+  --zn-line-height-tight: 1.15;
+  --zn-line-height-default: 1.45;
+}
+
+
+.zn-button {
+   background: hotpink  ;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, var(--zn-bg-surface-strong), var(--zn-bg));
+  color: var(--zn-text);
+  font-family: var(--zn-font-sans);
+  line-height: var(--zn-line-height-default);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--zn-accent) 24%, transparent);
+  color: var(--zn-heading);
+}

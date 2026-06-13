@@ -106,6 +106,8 @@ export interface Glyph extends Drawable {
   glyphName: string
   dotted: boolean
   fill: FillStyle
+  /** Rückverweis auf die zugehörige Pause */
+  origin?: Pause
 }
 
 /**

@@ -8,6 +8,7 @@
 
 import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
 import { ABC_TYPE } from './AbcModel.js'
+import { abc2svgTextrans } from './localization/de-de.js'
 
 // ---------------------------------------------------------------------------
 // Load abc2svg via browser-compatible ESM wrapper (vendored)
@@ -25,19 +26,29 @@ interface Abc2svgUser {
   keep_remark?: boolean
   img_out?: (svg: string) => void
   errbld?: (severity: number, msg: string, fname: string | undefined, line: number | undefined, col: number | undefined) => void
+  errmsg?: (msg: string, line?: number, column?: number) => void
+  anno_start?: (type: string, start: number, stop: number, x: number, y: number, w: number, h: number) => void
+  anno_stop?: (type: string, start: number, stop: number, x: number, y: number, w: number, h: number) => void
+  textrans?: Record<string, string>
   read_file: (name: string) => string | null
-  get_abcmodel?: (
-    tsfirst: Abc2svgSymbol | null,
-    voice_tb: Abc2svgVoice[],
-    music_types: string[],
-    info: Record<string, string>,
-  ) => void
 }
 
 interface Abc2svgExports {
   abc2svg: { C: Record<string, number>; sym_name: string[]; version: string }
-  Abc: new (user: Abc2svgUser) => { tosvg: (fname: string, source: string) => void }
+  Abc: new (user: Abc2svgUser) => {
+    tosvg: (fname: string, source: string) => void
+    out_svg: (fragment: string) => void
+    out_sxsy: (x: number, infix: string, y: number) => void
+    tunes?: Abc2svgTune[]
+  }
 }
+
+type Abc2svgTune = [
+  tsfirst: Abc2svgSymbol | null,
+  voice_tb: Abc2svgVoice[],
+  info: Record<string, string>,
+  cfmt: Record<string, unknown>,
+]
 
 interface Abc2svgVoice {
   id?: string
@@ -59,7 +70,7 @@ interface Abc2svgSymbol {
   bar_type?: string
   text?: string
   ti1?: number
-  sls?: Array<{ ty?: number; [key: string]: unknown }>
+  sls?: Abc2svgSlur[]
   slur_sls?: number[]
   slur_end?: number
   rbstart?: number
@@ -69,6 +80,19 @@ interface Abc2svgSymbol {
   a_dd?: Array<{ name?: string; [key: string]: unknown }>
   a_gch?: Array<{ type: string; text?: string; [key: string]: unknown }>
   next?: Abc2svgSymbol
+  [key: string]: unknown
+}
+
+interface Abc2svgSlur {
+  ty?: number
+  ss?: Abc2svgSymbol
+  se?: Abc2svgSymbol
+  nts?: { midi: number; dur: number; [key: string]: unknown }
+  nte?: { midi: number; dur: number; [key: string]: unknown }
+  loc?: 'i' | 'o'
+  rep?: number
+  grace?: unknown
+  slr?: Abc2svgSlur
   [key: string]: unknown
 }
 
@@ -82,6 +106,31 @@ export interface AbcParseError {
   line?: number
   column?: number
 }
+
+/**
+ * Binds a hook function following the abc2svg plugin pattern:
+ *
+ *   fn = bindHook(target, original, function(of) {
+ *     // 'this' === target
+ *     // of   === original
+ *     of()
+ *   })
+ *
+ * The returned function has the same signature as `original`.
+ */
+function bindHook<TThis, TArgs extends unknown[], TReturn>(
+  target: TThis,
+  original: (this: TThis, ...args: TArgs) => TReturn,
+  hook: (this: TThis, of: (...args: TArgs) => TReturn) => TReturn,
+): (...args: TArgs) => TReturn {
+  return hook.bind(target, original) as (...args: TArgs) => TReturn
+}
+
+const ABC2SVG_MESSAGE_PREFIXES = [
+  { prefix: 'Warning: ', severity: 0 as const },
+  { prefix: 'Error: ', severity: 1 as const },
+  { prefix: 'Internal bug: ', severity: 2 as const },
+] as const
 
 function countSlurStartsFromSource(source: string, startOffset: number): number[] {
   if (startOffset <= 0) return []
@@ -326,6 +375,54 @@ function loadAbc2svg(): Abc2svgExports {
 
 const _abc2svgModule = loadAbc2svg()
 
+function normalizeAbc2svgErrmsg(message: string): { severity: 0 | 1 | 2, message: string } {
+  for (const entry of ABC2SVG_MESSAGE_PREFIXES) {
+    const index = message.indexOf(entry.prefix)
+    if (index < 0) continue
+    return {
+      severity: entry.severity,
+      message: message.slice(index + entry.prefix.length),
+    }
+  }
+
+  return {
+    severity: 1,
+    message,
+  }
+}
+
+function createScoreAnnotationId(type: string, startOffset: number, endOffset: number): string {
+  return `zn-score-${type}-${startOffset}-${endOffset}`
+}
+
+function readPrimaryTune(abc: InstanceType<Abc2svgExports['Abc']>): Abc2svgTune | null {
+  const tunes = abc.tunes
+  if (!Array.isArray(tunes) || tunes.length === 0) {
+    return null
+  }
+
+  const firstTune = tunes[0]
+  if (!Array.isArray(firstTune) || firstTune.length < 3) {
+    return null
+  }
+
+  const tsfirst = firstTune[0]
+  const voice_tb = firstTune[1]
+  const info = firstTune[2]
+  const cfmt = firstTune[3]
+
+  if (!Array.isArray(voice_tb) || typeof info !== 'object' || info === null) {
+    return null
+  }
+
+  return [
+    tsfirst instanceof Object || tsfirst === null ? tsfirst as Abc2svgSymbol | null : null,
+    voice_tb,
+    info as Record<string, string>,
+    typeof cfmt === 'object' && cfmt !== null ? cfmt as Record<string, unknown> : {},
+  ]
+}
+
 // ---------------------------------------------------------------------------
 // AbcParser
 // ---------------------------------------------------------------------------
@@ -355,36 +452,59 @@ export class AbcParser {
 
     const user: Abc2svgUser = {
       keep_remark: true,
+      textrans: abc2svgTextrans,
       // Suppress SVG output — we only need the model
       img_out: (_svg: string) => { /* no-op */ },
-
-      errbld: (severity, msg, _fname, line, col) => {
+      errmsg: (msg, line, column) => {
+        const normalized = normalizeAbc2svgErrmsg(msg)
         const err: AbcParseError = {
-          severity: (severity > 1 ? 2 : severity) as 0 | 1 | 2,
-          message: msg,
-          line: line,
-          column: col,
+          severity: normalized.severity,
+          message: normalized.message,
         }
+        if (line !== undefined) err.line = line + 1
+        if (column !== undefined) err.column = column + 1
         this._errors.push(err)
       },
 
       // No %%abc-include support in Phase 2
       read_file: (_name: string) => null,
-
-      get_abcmodel: (tsfirst, voice_tb, music_types, info) => {
-        this._model = AbcParser._buildModel(
-          tsfirst,
-          voice_tb,
-          music_types,
-          info,
-          computeLegacyChecksum(abcText),
-          abcText,
-        )
-      },
     }
 
-    const abc = new _abc2svgModule.Abc(user)
+    const abc = new _abc2svgModule.Abc(user) as InstanceType<Abc2svgExports['Abc']> & {
+      output_music?: () => void
+      get_voice_tb?: () => Abc2svgVoice[]
+    }
+    let capturedModel: AbcModel | null = null
+    const originalOutputMusic = abc.output_music
+    if (typeof originalOutputMusic === 'function') {
+      // Captures voice_tb BEFORE output_music adds SVG layout artifacts.
+      abc.output_music = bindHook(abc, originalOutputMusic, function (this: typeof abc, of) {
+        if (capturedModel === null && typeof this.get_voice_tb === 'function') {
+          const voiceTb = this.get_voice_tb()
+          if (Array.isArray(voiceTb)) {
+            capturedModel = AbcParser._buildModel(
+              voiceTb,
+              _abc2svgModule.abc2svg.sym_name,
+              {},
+              computeLegacyChecksum(abcText),
+              abcText,
+            )
+          }
+        }
+        of()
+      })
+    }
+
     abc.tosvg('zupfnoter', abcText)
+
+    if (capturedModel !== null) {
+      const model: AbcModel = capturedModel
+      const primaryTune = readPrimaryTune(abc)
+      if (primaryTune !== null) {
+        model.info = primaryTune[2]
+      }
+      this._model = model
+    }
 
     if (this._model === null) {
       const fatalErrors = this._errors.filter((e) => e.severity >= 1)
@@ -397,12 +517,71 @@ export class AbcParser {
     return this._model
   }
 
+  /**
+   * Render ABC text with abc2svg and return the emitted classical score SVG.
+   *
+   * This keeps direct abc2svg access inside AbcParser while allowing the UI to
+   * show the conventional notation preview.
+   */
+  renderSvg(abcText: string): string {
+    this._errors = []
+    this._model = null
+
+    const chunks: string[] = []
+    const user: Abc2svgUser = {
+      keep_remark: true,
+      textrans: abc2svgTextrans,
+      img_out: (svg: string) => {
+        chunks.push(svg)
+      },
+      errmsg: (msg, line, column) => {
+        const normalized = normalizeAbc2svgErrmsg(msg)
+        const err: AbcParseError = {
+          severity: normalized.severity,
+          message: normalized.message,
+        }
+        if (line !== undefined) err.line = line + 1
+        if (column !== undefined) err.column = column + 1
+        this._errors.push(err)
+      },
+      anno_start: (type, start, stop) => {
+        void type
+        void start
+        void stop
+      },
+      anno_stop: (type, start, stop, x, y, w, h) => {
+        const id = createScoreAnnotationId(type, start, stop)
+        abc.out_svg(
+          `<rect id="${id}" class="zn-score-annotation zn-score-hitbox" data-start-char="${start}" data-end-char="${stop}" x="`,
+        )
+        abc.out_sxsy(x, '" y="', y)
+        abc.out_svg(
+          `" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="#fff" fill-opacity="0.001" stroke="none" pointer-events="all"/>\n`,
+        )
+      },
+
+      read_file: (_name: string) => null,
+    }
+
+    const abc = new _abc2svgModule.Abc(user)
+    abc.tosvg('zupfnoter', abcText)
+
+    if (chunks.length === 0) {
+      const fatalErrors = this._errors.filter((e) => e.severity >= 1)
+      if (fatalErrors.length > 0) {
+        throw new Error(`abc2svg render error: ${fatalErrors.map((e) => e.message).join('; ')}`)
+      }
+      throw new Error('abc2svg produced no SVG — check ABC syntax')
+    }
+
+    return chunks.join('\n')
+  }
+
   // ---------------------------------------------------------------------------
   // Private: build AbcModel from abc2svg callback arguments
   // ---------------------------------------------------------------------------
 
   private static _buildModel(
-    _tsfirst: Abc2svgSymbol | null,
     voice_tb: Abc2svgVoice[],
     music_types: string[],
     info: Record<string, string>,
@@ -431,8 +610,63 @@ export class AbcParser {
       })
     }
 
+    const stavesType = music_type_ids['staves']
+    const spaceType = music_type_ids['space']
+
     const voices: AbcVoice[] = voice_tb.map((v) => {
-      const symbols: AbcSymbol[] = AbcParser._collectSymbols(v.sym, source)
+      let symbols: AbcSymbol[] = AbcParser._collectSymbols(v.sym, source)
+
+      // Drop SVG layout symbols (staff lines, spacing) that output_music() adds
+      symbols = symbols.filter(s => s.type !== stavesType && s.type !== spaceType)
+
+      // Strip trailing SVG artifacts: symbols appended after the last real bar.
+      // output_music() appends bar/rest symbols with the same source position
+      // as the preceding symbol. Walk backwards dropping trailing duplicates.
+      while (symbols.length > 1) {
+        const last = symbols[symbols.length - 1]
+        const prev = symbols[symbols.length - 2]
+        if (last === undefined || prev === undefined) {
+          break
+        }
+        if (last.istart !== undefined && last.istart === prev.istart) {
+          symbols = symbols.slice(0, -1)
+        } else {
+          break
+        }
+      }
+
+      // Drop symbols whose istart already appeared earlier in the same voice.
+      // output_music() duplicates section-internal symbols (clef/key changes)
+      // when repeating sections. Each ABC source position maps to exactly one
+      // symbol before output_music() runs.
+      //
+      // Bar symbols have two patterns after output_music():
+      // 1. output_music() repositions bars to the preceding note's end time,
+      //    changing their istart to match the note. These are real bars that
+      //    exist in the callback — keep them.
+      // 2. output_music() synthesizes new bars at measure boundaries where no
+      //    bar exists in the callback. These are artifacts that share istart
+      //    with the immediately preceding non-bar — drop them.
+      //
+      // Also drop artifact duplicate bars that share istart with OTHER BARS
+      // (same bar from a repeated section).
+      const barType = music_type_ids['bar']
+      const seenIstarts = new Set<number>()
+      const seenBarIstarts = new Set<number>()
+      let lastNonBarIstart: number | undefined
+      symbols = symbols.filter(s => {
+        if (s.istart === undefined) return true
+        if (s.type === barType) {
+          if (s.istart === lastNonBarIstart) return false
+          if (seenBarIstarts.has(s.istart)) return false
+          seenBarIstarts.add(s.istart)
+          return true
+        }
+        if (seenIstarts.has(s.istart)) return false
+        seenIstarts.add(s.istart)
+        lastNonBarIstart = s.istart
+        return true
+      })
 
       return {
         voice_properties: {

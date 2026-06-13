@@ -1,9 +1,9 @@
 /**
  * Internal types for the abc2svg data model.
  *
- * These types describe the structure delivered by abc2svg's `get_abcmodel`
- * callback. They are NOT part of the public API of @zupfnoter/core — only
- * AbcParser.ts may import this file.
+ * These types describe the internal tune structures that abc2svg exposes after
+ * `tosvg()` via `Abc.tunes`. They are NOT part of the public API of
+ * @zupfnoter/core — only AbcParser.ts may import this file.
  *
  * Reference: abc2svg-1.js, abc2svg.C constants and voice/symbol structure
  * from abc2svg_to_harpnotes.rb (legacy).
@@ -89,18 +89,27 @@ export interface AbcSymbol {
   text?: string
   /** Tie start flag */
   ti1?: number
-  /** abc2svg slur descriptors attached to this symbol */
-  sls?: Array<{ ty?: number; [key: string]: unknown }>
-  /** Slur start IDs */
+  /** Official abc2svg slur descriptors attached to this symbol */
+  sls?: Array<{
+    ty?: number
+    ss?: AbcSymbol
+    se?: AbcSymbol
+    nts?: AbcNote
+    nte?: AbcNote
+    loc?: 'i' | 'o'
+    [key: string]: unknown
+  }>
+  /** Normalized slur start IDs derived from source / abc2svg symbol data */
   slur_sls?: number[]
-  /** Number of slurs ending here */
+  /** Normalized count of slurs ending here */
   slur_end?: number
   /** Volta bracket start (2 = new volta group) */
   rbstart?: number
   /** Volta bracket end (2 = end of volta) */
   rbstop?: number
-  /** Symbol is invisible */
+  /** Legacy compatibility flag kept in our normalized model */
   invisible?: boolean
+  /** abc2svg hidden-symbol flag */
   invis?: boolean
   /** Decorations attached to this symbol (abc2svg: a_dd[]) */
   a_dd?: Array<{ name?: string; [key: string]: unknown }>
@@ -144,8 +153,7 @@ export interface AbcVoice {
 // ---------------------------------------------------------------------------
 
 /**
- * The complete abc2svg internal model, as delivered by the get_abcmodel callback.
- * tsfirst / voice_tb arguments are mapped into this structure by AbcParser.
+ * The complete abc2svg internal model, normalized from `Abc.tunes[n]`.
  */
 export interface AbcModel {
   voices: AbcVoice[]

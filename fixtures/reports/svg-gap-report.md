@@ -6,9 +6,9 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 
 ## Summary
 
-- Fixtures with SVG reference: 15
+- Fixtures with SVG reference: 16
 - Matching:                    0
-- Diverging:                   15
+- Diverging:                   16
 
 ## Fixtures
 
@@ -17,8 +17,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 887, ts 1041 (Δ 154)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 4763
-- Diff ratio: 0.155%
+- Differing pixels: 4802
+- Diff ratio: 0.156%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/3015_reference_sheet/diff.png
 
 - Group count: legacy 221, ts 326
@@ -66,13 +66,68 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Transparent hitboxes: legacy 0, ts 131
 - Black hitboxes: legacy 0, ts 0
 
+### ❌ 02_twoStaff [extract 0]
+
+- Total opening tags: legacy 590, ts 711 (Δ 121)
+
+- Pixel diff compared at 2200x1400px
+- Differing pixels: 72323
+- Diff ratio: 2.348%
+- Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/02_twoStaff/diff.png
+
+- Group count: legacy 113, ts 236
+- id count: legacy 352, ts 459
+- class count: legacy 101, ts 497
+- data-* count: legacy 0, ts 271
+- explicit fill count: legacy 228, ts 361
+- explicit stroke count: legacy 188, ts 361
+
+  Tag count deltas:
+  - g: 113 -> 236 (+123)
+  - rect: 126 -> 149 (+23)
+  - tspan: 34 -> 12 (-22)
+  - path: 104 -> 101 (-3)
+
+  First positional mismatches:
+  - index 0
+    legacy: <svg height="1400" viewBox="0, 0, 420, 297" width="2200" xmlns="http://www.w3.org/2000/svg">
+    ts:     <svg class="zupfnoter-svg" height="1400" viewBox="0, 0, 420, 297" width="2200" xmlns="http://www.w3.org/2000/svg">
+  - index 1
+    legacy: <rect fill="none" height="295" id="ZN_1" rx="0" ry="0" stroke="black" stroke-width="0.2" width="418" x="1" y="1" />
+    ts:     <g class="zupfnoter-layer zupfnoter-layer--border">
+  - index 2
+    legacy: <rect fill="none" height="297" id="ZN_2" rx="0" ry="0" stroke="black" stroke-width="0.2" width="420" x="0" y="0" />
+    ts:     <rect class="zupfnoter-border" fill="none" height="295" stroke="black" stroke-width="0.2" width="418" x="1" y="1" />
+  - index 3
+    legacy: <g fill="" id="ZN_3" stroke="black">
+    ts:     <rect class="zupfnoter-border" fill="none" height="297" stroke="black" stroke-width="0.2" width="420" x="0" y="0" />
+  - index 4
+    legacy: <path d="M71.8,16.138L106.3,17.958" id="ZN_3" stroke-width="0.3" />
+    ts:     </g>
+  - index 5
+    legacy: </g>
+    ts:     <g class="zupfnoter-layer zupfnoter-layer--content">
+  - index 6
+    legacy: <g fill="" id="ZN_4" stroke="black">
+    ts:     <g fill="" id="ZN_3" stroke="black">
+  - index 7
+    legacy: <path d="M106.3,17.958L129.3,20.944" id="ZN_4" stroke-width="0.3" />
+    ts:     <path d="M71.8,16.138L106.3,17.958" id="ZN_3" stroke-width="0.3" />
+
+- Anchors: legacy 352, ts 459
+- data-conf-key: legacy 0, ts 103
+- data-zn-id: legacy 0, ts 248
+- Hitboxes: legacy 101, ts 124
+- Transparent hitboxes: legacy 0, ts 124
+- Black hitboxes: legacy 0, ts 0
+
 ### ❌ 246_Horch-was-kommt-von-draussen-rein [extract 0]
 
 - Total opening tags: legacy 2700, ts 3549 (Δ 849)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 12699
-- Diff ratio: 0.412%
+- Differing pixels: 12721
+- Diff ratio: 0.413%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/246_Horch-was-kommt-von-draussen-rein/diff.png
 
 - Group count: legacy 743, ts 1284
@@ -125,7 +180,7 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 3544, ts 4963 (Δ 1419)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 3159
+- Differing pixels: 3181
 - Diff ratio: 0.103%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/694_Sheep-may-safely-graze/diff.png
 
@@ -179,8 +234,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 2449, ts 3353 (Δ 904)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 2303
-- Diff ratio: 0.075%
+- Differing pixels: 2341
+- Diff ratio: 0.076%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/757_Andante-grazioso-Mozart/diff.png
 
 - Group count: legacy 619, ts 1190
@@ -233,8 +288,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 1200, ts 1571 (Δ 371)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 2170
-- Diff ratio: 0.070%
+- Differing pixels: 2205
+- Diff ratio: 0.072%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/783_einsiedler-kreuzweg/diff.png
 
 - Group count: legacy 297, ts 525
@@ -287,8 +342,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 69, ts 74 (Δ 5)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 1827
-- Diff ratio: 0.059%
+- Differing pixels: 1848
+- Diff ratio: 0.060%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/abc-to-song-slur-tuplet-parity/diff.png
 
 - Group count: legacy 21, ts 27
@@ -341,8 +396,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 65, ts 78 (Δ 13)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 1812
-- Diff ratio: 0.059%
+- Differing pixels: 1833
+- Diff ratio: 0.060%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/decoration/diff.png
 
 - Group count: legacy 18, ts 27
@@ -394,7 +449,7 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 54, ts 62 (Δ 8)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 1593
+- Differing pixels: 1614
 - Diff ratio: 0.052%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/lyrics/diff.png
 
@@ -447,8 +502,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 70, ts 72 (Δ 2)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 1818
-- Diff ratio: 0.059%
+- Differing pixels: 1839
+- Diff ratio: 0.060%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/pause/diff.png
 
 - Group count: legacy 20, ts 25
@@ -497,24 +552,24 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 
 ### ❌ repeat [extract 0]
 
-- Total opening tags: legacy 60, ts 66 (Δ 6)
+- Total opening tags: legacy 313, ts 361 (Δ 48)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 1582
-- Diff ratio: 0.051%
+- Differing pixels: 7524
+- Diff ratio: 0.244%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/repeat/diff.png
 
-- Group count: legacy 18, ts 24
-- id count: legacy 43, ts 35
-- class count: legacy 4, ts 38
-- data-* count: legacy 0, ts 33
-- explicit fill count: legacy 7, ts 21
-- explicit stroke count: legacy 7, ts 21
+- Group count: legacy 90, ts 133
+- id count: legacy 227, ts 216
+- class count: legacy 36, ts 232
+- data-* count: legacy 0, ts 187
+- explicit fill count: legacy 47, ts 138
+- explicit stroke count: legacy 47, ts 138
 
   Tag count deltas:
-  - g: 18 -> 24 (+6)
-  - path: 9 -> 8 (-1)
-  - rect: 7 -> 8 (+1)
+  - g: 90 -> 133 (+43)
+  - rect: 47 -> 56 (+9)
+  - path: 44 -> 40 (-4)
 
   First positional mismatches:
   - index 0
@@ -530,7 +585,7 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     legacy: <g fill="" id="ZN_3" stroke="black">
     ts:     <rect class="zupfnoter-border" fill="none" height="297" stroke="black" stroke-width="0.2" width="420" x="0" y="0" />
   - index 4
-    legacy: <path d="M60.3,22.5L83.3,28.5" id="ZN_3" stroke-width="0.3" />
+    legacy: <path d="M221.3,18.698L221.3,24.615" id="ZN_3" stroke-width="0.3" />
     ts:     </g>
   - index 5
     legacy: </g>
@@ -539,14 +594,14 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     legacy: <g fill="" id="ZN_4" stroke="black">
     ts:     <g fill="" id="ZN_3" stroke="black">
   - index 7
-    legacy: <path d="M83.3,28.5L106.3,34.5" id="ZN_4" stroke-width="0.3" />
-    ts:     <path d="M60.3,22.5L83.3,28.5" id="ZN_3" stroke-width="0.3" />
+    legacy: <path d="M221.3,24.615L221.3,30.532" id="ZN_4" stroke-width="0.3" />
+    ts:     <path d="M221.3,18.698L221.3,24.615" id="ZN_3" stroke-width="0.3" />
 
-- Anchors: legacy 43, ts 35
-- data-conf-key: legacy 0, ts 6
-- data-zn-id: legacy 0, ts 10
-- Hitboxes: legacy 4, ts 5
-- Transparent hitboxes: legacy 0, ts 5
+- Anchors: legacy 227, ts 216
+- data-conf-key: legacy 0, ts 38
+- data-zn-id: legacy 0, ts 90
+- Hitboxes: legacy 36, ts 45
+- Transparent hitboxes: legacy 0, ts 45
 - Black hitboxes: legacy 0, ts 0
 
 ### ❌ single_note [extract 0]
@@ -554,8 +609,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 41, ts 44 (Δ 3)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 1582
-- Diff ratio: 0.051%
+- Differing pixels: 1603
+- Diff ratio: 0.052%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/single_note/diff.png
 
 - Group count: legacy 12, ts 15
@@ -606,8 +661,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 56, ts 64 (Δ 8)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 1582
-- Diff ratio: 0.051%
+- Differing pixels: 1617
+- Diff ratio: 0.052%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/tie/diff.png
 
 - Group count: legacy 16, ts 23
@@ -659,8 +714,8 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 66, ts 69 (Δ 3)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 1859
-- Diff ratio: 0.060%
+- Differing pixels: 1880
+- Diff ratio: 0.061%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/tuplet/diff.png
 
 - Group count: legacy 20, ts 25
@@ -712,7 +767,7 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 - Total opening tags: legacy 71, ts 85 (Δ 14)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 1596
+- Differing pixels: 1617
 - Diff ratio: 0.052%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/two_voices/diff.png
 
@@ -762,23 +817,24 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
 
 ### ❌ Twostaff [extract 0]
 
-- Total opening tags: legacy 760, ts 1003 (Δ 243)
+- Total opening tags: legacy 760, ts 997 (Δ 237)
 
 - Pixel diff compared at 2200x1400px
-- Differing pixels: 3088
-- Diff ratio: 0.100%
+- Differing pixels: 7736
+- Diff ratio: 0.251%
 - Diff image: /private/tmp/zupfnoter-svg-artifacts/output_svg/Twostaff/diff.png
 
-- Group count: legacy 208, ts 363
-- id count: legacy 571, ts 603
+- Group count: legacy 208, ts 360
+- id count: legacy 571, ts 597
 - class count: legacy 67, ts 702
 - data-* count: legacy 0, ts 549
 - explicit fill count: legacy 155, ts 427
 - explicit stroke count: legacy 155, ts 427
 
   Tag count deltas:
-  - g: 208 -> 363 (+155)
+  - g: 208 -> 360 (+152)
   - rect: 155 -> 241 (+86)
+  - path: 89 -> 86 (-3)
   - tspan: 121 -> 123 (+2)
 
   First positional mismatches:
@@ -807,7 +863,7 @@ Compares the focused `output.extract-0.svg` fixtures against the SVG produced by
     legacy: <path d="M221.3,20.2L83.3,20.2" id="ZN_4" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
     ts:     <path d="M198.3,17L60.3,17" id="ZN_3" stroke-dasharray="1.056 1.056" stroke-width="0.1" />
 
-- Anchors: legacy 571, ts 603
+- Anchors: legacy 571, ts 597
 - data-conf-key: legacy 0, ts 53
 - data-zn-id: legacy 0, ts 174
 - Hitboxes: legacy 67, ts 153

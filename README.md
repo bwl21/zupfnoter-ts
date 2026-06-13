@@ -23,7 +23,7 @@ packages/
 apps/
   demo/   Laufende Demo-App für ABC-Editor + SVG-Vorschau
   viewsvg/ Vergleichs-Viewer für Legacy-/TS-SVGs
-  web/    Geplante Vue-Web-App (Phase 5)
+  web/    Vue-Web-App für Editor und Vorschau
   cli/    Geplante CLI für SVG/PDF-Export
 ```
 
@@ -55,6 +55,9 @@ Nützliche Kommandos:
 ```sh
 pnpm install
 pnpm dev
+pnpm dev:web
+pnpm dev:demo
+pnpm dev:all
 pnpm build
 pnpm test
 pnpm test:unit
@@ -64,6 +67,8 @@ pnpm lint
 ```
 
 `pnpm dev` startet aktuell `@zupfnoter/demo`.
+`pnpm dev:web` startet `@zupfnoter/web`.
+`pnpm dev:all` startet beide Apps parallel.
 
 Für Fixture- und Legacy-Vergleichsarbeit:
 
@@ -87,7 +92,7 @@ Bereits weitgehend umgesetzt:
 Noch offen oder unvollständig:
 
 - PDF-Engine
-- produktive Web-App in `apps/web`
+- Web-UI-Funktionen in `apps/web` weiter ausbauen
 - CLI-Renderpfad
 - Editor/SVG-Interaktivität
 - Worker-Architektur

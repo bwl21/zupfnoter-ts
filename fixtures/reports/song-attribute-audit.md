@@ -6,7 +6,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## 246_Horch-was-kommt-von-draussen-rein
 
-- Issues: 682
+- Issues: 685
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -547,6 +547,9 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[90].tupletEnd (missing)
   - expected: null
   - actual: undefined
+- voices[0].entities[91].policy.level (mismatch)
+  - expected: 3
+  - actual: 4
 - voices[0].entities[92].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -1231,6 +1234,9 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[90].tupletEnd (missing)
   - expected: null
   - actual: undefined
+- voices[1].entities[91].policy.level (mismatch)
+  - expected: 3
+  - actual: 4
 - voices[1].entities[92].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -1945,6 +1951,9 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[2].entities[95].tupletEnd (missing)
   - expected: null
   - actual: undefined
+- voices[2].entities[96].policy.level (mismatch)
+  - expected: 3
+  - actual: 4
 - voices[2].entities[97].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -2107,7 +2116,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[0].entities[8].policy.level (mismatch)
   - expected: 2
-  - actual: 3
+  - actual: 4
 - voices[0].entities[9].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -2230,7 +2239,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[1].entities[8].policy.level (mismatch)
   - expected: 2
-  - actual: 3
+  - actual: 4
 - voices[1].entities[9].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -2347,7 +2356,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - actual: undefined
 - voices[2].entities[9].policy.level (mismatch)
   - expected: 2
-  - actual: 3
+  - actual: 4
 - voices[2].entities[10].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9207,7 +9216,7 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 
 ## repeat
 
-- Issues: 16
+- Issues: 152
 - voices[0].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9232,6 +9241,210 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[0].entities[3].tupletEnd (missing)
   - expected: null
   - actual: undefined
+- voices[0].entities[4].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[4].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[5].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[5].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[6].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[6].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[7].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[7].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[8].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[8].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[9].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[9].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[10].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[10].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[11].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[11].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[12].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[12].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[13].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[13].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[14].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[14].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[15].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[15].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[16].policy.level (mismatch)
+  - expected: 3
+  - actual: 5
+- voices[0].entities[17].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[17].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[18].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[18].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[19].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[19].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[20].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[20].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[21].policy.level (mismatch)
+  - expected: 2
+  - actual: 4
+- voices[0].entities[22].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[22].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[23].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[23].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[24].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[24].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[25].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[25].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[26].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[26].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[27].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[27].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[28].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[28].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[29].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[29].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[30].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[30].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[31].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[31].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[32].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[32].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[33].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[33].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[34].policy.level (mismatch)
+  - expected: 2
+  - actual: 4
+- voices[0].entities[35].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[35].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[36].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[36].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[37].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[37].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[38].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[38].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[39].policy.level (mismatch)
+  - expected: 1
+  - actual: 3
 - voices[1].entities[0].tupletStart (missing)
   - expected: null
   - actual: undefined
@@ -9256,6 +9469,210 @@ This report lists legacy fields that are missing or value-mismatched in the curr
 - voices[1].entities[3].tupletEnd (missing)
   - expected: null
   - actual: undefined
+- voices[1].entities[4].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[4].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[5].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[5].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[6].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[6].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[7].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[7].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[8].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[8].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[9].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[9].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[10].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[10].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[11].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[11].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[12].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[12].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[13].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[13].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[14].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[14].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[15].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[15].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[16].policy.level (mismatch)
+  - expected: 3
+  - actual: 5
+- voices[1].entities[17].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[17].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[18].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[18].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[19].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[19].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[20].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[20].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[21].policy.level (mismatch)
+  - expected: 2
+  - actual: 4
+- voices[1].entities[22].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[22].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[23].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[23].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[24].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[24].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[25].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[25].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[26].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[26].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[27].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[27].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[28].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[28].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[29].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[29].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[30].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[30].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[31].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[31].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[32].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[32].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[33].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[33].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[34].policy.level (mismatch)
+  - expected: 2
+  - actual: 4
+- voices[1].entities[35].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[35].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[36].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[36].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[37].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[37].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[38].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[38].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[39].policy.level (mismatch)
+  - expected: 1
+  - actual: 3
 
 ## single_note
 
@@ -9438,361 +9855,6 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - expected: null
   - actual: undefined
 - voices[2].entities[3].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-
-## Twostaff
-
-- Issues: 117
-- voices[0].entities[0].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[0].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[1].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[1].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[2].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[2].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[3].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[3].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[4].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[4].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[5].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[0].entities[5].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[0].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[0].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[1].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[1].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[2].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[2].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[3].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[3].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[4].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[4].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[5].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[1].entities[5].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[0].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[0].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[1].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[1].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[2].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[2].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[3].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[3].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[4].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[4].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[5].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[5].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[6].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[6].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[7].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[2].entities[7].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[0].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[0].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[1].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[1].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[2].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[2].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[3].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[3].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[4].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[4].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[5].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[5].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[6].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[6].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[7].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[7].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[8].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[8].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[9].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[9].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[10].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[10].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[11].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[11].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[12].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[12].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[13].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[13].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[14].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[14].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[15].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[15].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[16].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[3].entities[16].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[0].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[0].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[1].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[1].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[2].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[2].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[3].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[3].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[4].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[4].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[5].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[5].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[6].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[6].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[7].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[7].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[8].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[8].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[9].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[9].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[10].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[10].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[11].policy.level (mismatch)
-  - expected: 1
-  - actual: 2
-- voices[4].entities[12].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[12].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[13].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[13].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[14].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[14].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[15].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[15].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[16].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[16].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[17].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[17].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[18].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[18].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[19].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[19].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[20].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[20].tupletEnd (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[21].tupletStart (missing)
-  - expected: null
-  - actual: undefined
-- voices[4].entities[21].tupletEnd (missing)
   - expected: null
   - actual: undefined
 

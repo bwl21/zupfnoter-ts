@@ -58,6 +58,12 @@ K:C
 [B,G,]2 |]
 `
 
+const BAD_TIE_ABC = `X:1
+T:Bad Tie
+K:C
+g-d
+`
+
 function expectedLegacyChecksum(abcText: string): string {
   let checksum = 0x12345678
   const stripped = abcText.trim()
@@ -180,12 +186,43 @@ describe('AbcParser', () => {
       expect(Array.isArray(parser.errors)).toBe(true)
     })
 
+    it('maps abc2svg tie errors to source line and column', () => {
+      const parser = new AbcParser()
+
+      try {
+        parser.parse(BAD_TIE_ABC)
+      } catch {
+        // abc2svg may throw for a bad tie, but the error details must still be captured
+      }
+
+      const tieError = parser.errors.find((error) => error.message.includes('fehlerhafter Haltebogen'))
+      expect(tieError).toBeDefined()
+      expect(tieError?.line).toBe(4)
+      expect(tieError?.column).toBeGreaterThan(0)
+      expect(tieError?.message.startsWith('Warning: ')).toBe(false)
+      expect(tieError?.message.startsWith('Error: ')).toBe(false)
+      expect(tieError?.message.startsWith('Internal bug: ')).toBe(false)
+    })
+
     it('errors array is reset on each parse() call', () => {
       const parser = new AbcParser()
       parser.parse(SINGLE_NOTE_ABC)
       const firstErrors = [...parser.errors]
       parser.parse(SINGLE_NOTE_ABC)
       expect(parser.errors.length).toBe(firstErrors.length)
+    })
+  })
+
+  describe('renderSvg()', () => {
+    it('returns classical abc2svg output for valid ABC', () => {
+      const parser = new AbcParser()
+      const svg = parser.renderSvg(SINGLE_NOTE_ABC)
+
+      expect(svg).toContain('<svg')
+      expect(svg).toContain('</svg>')
+      expect(svg).toContain('class="zn-score-annotation zn-score-hitbox"')
+      expect(svg).toContain('data-start-char=')
+      expect(svg).not.toContain('<g id="zn-score-')
     })
   })
 })

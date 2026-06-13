@@ -252,13 +252,15 @@ export interface SongMetaData {
 
 export interface SongDiagnostic {
   /** Schweregrad der Diagnose */
-  severity: 'error'
+  severity: 'warning' | 'error'
   /** Diagnose-Text */
   message: string
+  /** Herkunft der Diagnose in der Transformationskette */
+  source?: string
   /** Start-Position im ABC-Quelltext [Zeile, Spalte] */
-  startPos: [number, number]
+  startPos?: [number, number]
   /** End-Position im ABC-Quelltext [Zeile, Spalte] */
-  endPos: [number, number]
+  endPos?: [number, number]
 }
 
 /**
