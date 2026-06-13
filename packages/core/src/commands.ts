@@ -58,9 +58,17 @@ export class CommandStack {
     this.commands.set(command.name, command)
   }
 
+  hasCommand(commandName: string): boolean {
+    return this.commands.has(commandName)
+  }
+
   runString(commandString: string): void {
     const parsedCommand = parseCommandString(commandString)
     this.runParsedCommand(parsedCommand.name, parsedCommand.values)
+  }
+
+  handleCommand(commandString: string): void {
+    this.runString(commandString)
   }
 
   runParsedCommand(commandName: string, values: CommandArgumentValue[] | CommandArguments = []): void {
@@ -85,6 +93,10 @@ export class CommandStack {
       this.undoStack.push({ commandName, args: { ...undoArguments } })
       this.redoStack.length = 0
     }
+  }
+
+  handleParsedCommand(commandName: string, values: CommandArgumentValue[] | CommandArguments = []): void {
+    this.runParsedCommand(commandName, values)
   }
 
   undo(): void {

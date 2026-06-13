@@ -20,6 +20,7 @@ import {
   renderWorkbenchPreviews,
   type RenderIssue,
 } from './rendering/renderPipeline'
+import { extractSongConfig } from '@zupfnoter/core'
 import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
 import WorkbenchToastStack from './toasts/WorkbenchToastStack.vue'
@@ -30,8 +31,7 @@ import { useSelectionStore } from '../stores/selection'
 import { usePlaybackDriver } from './usePlaybackDriver'
 import { useAudioPlayer } from './useAudioPlayer'
 import type { PlaybackStep } from './playback'
-import { CommandError, CommandStack } from './commands'
-import { registerLegacyCommands } from './legacyCommands'
+import { CommandError, CommandStack, registerLegacyCommands } from '@zupfnoter/core'
 import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
 import {
   canTargetCreateSelection,
@@ -56,6 +56,7 @@ const runtimeSettings = ref<Record<string, string>>({
   follow: 'true',
   validate: 'true',
 })
+const extractPickerOpen = ref(false)
 let nextConsoleEntryId = 1
 const consoleLines = ref<ConsoleLogEntry[]>([{
   id: nextConsoleEntryId,
@@ -153,6 +154,51 @@ const previewErrorMessage = computed(() => {
   return renderError.value
 })
 
+const extractMenuItems = computed(() => {
+  const extractConfig = extractSongConfig(abcText.value).extract ?? {}
+  const extractNumbers = new Set<number>([currentExtract.value])
+  Object.keys(extractConfig).forEach((key) => {
+    const extractNumber = Number.parseInt(key, 10)
+    if (Number.isFinite(extractNumber)) extractNumbers.add(extractNumber)
+  })
+  return [...extractNumbers]
+    .sort((left, right) => left - right)
+    .map((extractNumber) => {
+      const extract = extractConfig[String(extractNumber)]
+      const title = extract?.title?.trim() || ''
+      const hasPrinter = extract?.printer !== undefined
+      const label = title === '' ? `${extractNumber}` : `${extractNumber} ${title}`
+      return {
+        extractNumber,
+        title,
+        hasPrinter,
+        label,
+        tooltip: title === ''
+          ? `${extractNumber}${hasPrinter ? ' · printer' : ''}`
+          : `${extractNumber} · ${title}${hasPrinter ? ' · printer' : ''}`,
+      }
+    })
+})
+
+const currentExtractLabel = computed(() => {
+  const currentItem = extractMenuItems.value.find((item) => item.extractNumber === currentExtract.value)
+  return currentItem?.label ?? `${currentExtract.value}`
+})
+
+const currentExtractTooltip = computed(() => {
+  const currentItem = extractMenuItems.value.find((item) => item.extractNumber === currentExtract.value)
+  if (currentItem === undefined) return `${currentExtract.value}`
+  return currentItem.tooltip
+})
+
+const produceExtracts = computed(() => {
+  const config = extractSongConfig(abcText.value)
+  const produce = config.produce
+  return Array.isArray(produce)
+    ? new Set(produce.filter((value): value is number => typeof value === 'number'))
+    : new Set<number>()
+})
+
 let renderTimer: ReturnType<typeof setTimeout> | undefined
 let commandStack: CommandStack
 
@@ -167,7 +213,7 @@ function appendConsoleLine(message: string, kind: ConsoleLogKind = 'output'): vo
 
 function renderNow(): void {
   try {
-    const result = renderWorkbenchPreviews(abcText.value)
+    const result = renderWorkbenchPreviews(abcText.value, currentExtract.value)
     scoreSvg.value = result.scoreSvg
     harpSvg.value = result.harpSvg
     selectionStore.setSheetObjectIndex(result.sheetObjectIndex)
@@ -196,6 +242,7 @@ function executeCommand(command: string): void {
 }
 
 function executeToolbarCommand(command: string): void {
+  appendConsoleLine(command, 'command')
   try {
     commandStack.runString(command)
   } catch (error) {
@@ -218,6 +265,7 @@ function playFromCommand(range: string): void {
 function setCurrentExtractFromCommand(extract: number): void {
   currentExtract.value = Math.trunc(extract)
   playbackStore.setActiveExtract(currentExtract.value)
+  extractPickerOpen.value = false
 }
 
 function downloadAbc(): void {
@@ -373,6 +421,21 @@ function handleGlobalKeydown(event: KeyboardEvent): void {
   }
 }
 
+function chooseExtract(extractNumber: number): void {
+  executeToolbarCommand(`view ${extractNumber}`)
+  extractPickerOpen.value = false
+}
+
+function handleExtractPickerToggle(event: Event): void {
+  const target = event.currentTarget
+  if (!(target instanceof HTMLDetailsElement)) return
+  extractPickerOpen.value = target.open
+}
+
+function isExtractProduced(extractNumber: number): boolean {
+  return produceExtracts.value.has(extractNumber)
+}
+
 onMounted(() => {
   window.addEventListener('keydown', handleGlobalKeydown)
 })
@@ -404,13 +467,47 @@ onBeforeUnmount(() => {
           <template #trailing>
             <ZnButton variant="ghost">Drucken</ZnButton>
             <ZnButton variant="ghost">Ansicht</ZnButton>
-            <ZnBadge tone="info">Extract {{ currentExtract }}</ZnBadge>
+            <details class="extract-picker" :open="extractPickerOpen" @toggle="handleExtractPickerToggle">
+              <summary
+                class="extract-picker__summary"
+                :class="{ 'extract-picker__summary--active': isExtractProduced(currentExtract) }"
+                :title="currentExtractTooltip"
+                aria-label="Select extract"
+              >
+                <span class="extract-picker__icon" :class="{ 'extract-picker__icon--produced': isExtractProduced(currentExtract) }" aria-hidden="true">
+                  {{ currentExtract }}
+                </span>
+                <span class="extract-picker__text">
+                  <span class="extract-picker__title">{{ currentExtractLabel.replace(/^\d+\s*/, '') }}</span>
+                </span>
+              </summary>
+              <div class="extract-picker__menu" role="menu" :aria-label="currentExtractTooltip">
+                <button
+                  v-for="item in extractMenuItems"
+                  :key="item.extractNumber"
+                  type="button"
+                  class="extract-picker__item"
+                  :class="{
+                    'extract-picker__item--active': item.extractNumber === currentExtract,
+                    'extract-picker__item--produced': isExtractProduced(item.extractNumber),
+                  }"
+                  :title="item.tooltip"
+                  @click="chooseExtract(item.extractNumber)"
+                >
+                  <span class="extract-picker__item-icon" :class="{ 'extract-picker__item-icon--produced': isExtractProduced(item.extractNumber) }" aria-hidden="true">
+                    {{ item.extractNumber }}
+                  </span>
+                  <span class="extract-picker__item-text">{{ item.label }}</span>
+                </button>
+              </div>
+            </details>
             <ZnButton variant="ghost" @click="executeToolbarCommand('render')">Rendern</ZnButton>
             <ZnButton
               :variant="playbackStore.state.status === 'playing' ? 'primary' : 'ghost'"
+              :aria-pressed="playbackStore.state.status === 'playing'"
               @click="executeToolbarCommand('p auto')"
             >
-              Play
+              {{ playbackStore.state.status === 'playing' ? 'Stop' : 'Play' }}
             </ZnButton>
             <ZnBadge :tone="renderIssueTone">{{ renderIssueLabel }}</ZnBadge>
             <ZnButton variant="ghost" @click="executeToolbarCommand('help')">Hilfe</ZnButton>
@@ -502,7 +599,7 @@ onBeforeUnmount(() => {
     <template #footer>
       <div class="workbench-footer">
         <FooterBar
-          :extract-label="`Extract ${currentExtract}`"
+          :extract-label="`Extract ${currentExtractLabel}`"
           :storage-path="renderSummary"
           :dirty="true"
           :save-format="saveFormat"
@@ -536,6 +633,102 @@ onBeforeUnmount(() => {
   border-radius: var(--zn-radius-sm);
   background: var(--zn-bg-elevated);
   box-shadow: none;
+}
+
+.extract-picker {
+  position: relative;
+}
+
+.extract-picker__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 14rem;
+  min-height: 2.1rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--zn-border);
+  border-radius: 999px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--zn-accent) 8%, var(--zn-bg-surface)), var(--zn-bg-surface));
+  color: var(--zn-text);
+  box-shadow: var(--zn-shadow-soft);
+  cursor: pointer;
+  list-style: none;
+}
+
+.extract-picker__summary--active {
+  border-color: color-mix(in srgb, #3cb371 55%, var(--zn-border));
+}
+
+.extract-picker__summary::-webkit-details-marker {
+  display: none;
+}
+
+.extract-picker__icon,
+.extract-picker__item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--zn-border-strong) 60%, transparent);
+  border-radius: 50%;
+  font-size: 0.72rem;
+  color: var(--zn-accent-strong);
+  background: color-mix(in srgb, white 88%, var(--zn-bg-surface));
+  flex: 0 0 auto;
+}
+
+.extract-picker__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.extract-picker__icon--produced,
+.extract-picker__item-icon--produced {
+  background: color-mix(in srgb, #3cb371 24%, white);
+  border-color: color-mix(in srgb, #3cb371 70%, var(--zn-border));
+  color: #1e5f37;
+}
+
+.extract-picker__menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  z-index: 30;
+  min-width: 16rem;
+  padding: 0.35rem;
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-md);
+  background: var(--zn-bg-surface);
+  box-shadow: var(--zn-shadow-soft);
+}
+
+.extract-picker__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 0;
+  border-radius: var(--zn-radius-sm);
+  background: transparent;
+  color: var(--zn-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.extract-picker__item:hover,
+.extract-picker__item--active {
+  background: var(--zn-bg-surface-soft);
+}
+
+.extract-picker__item-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .editor-pane {

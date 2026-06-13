@@ -1,10 +1,25 @@
 import { describe, expect, it } from 'vitest'
 
-import { CommandStack, parseCommandString } from '../commands'
-import { registerLegacyCommands, type WorkbenchCommandRuntime } from '../legacyCommands'
+import {
+  CommandStack,
+  parseCommandString,
+  registerLegacyCommands,
+  type WorkbenchCommandRuntime,
+} from '@zupfnoter/core'
 
 function createRuntime(log: string[]): WorkbenchCommandRuntime {
-  let abcText = 'X:1\nT:Old\nK:C\nC |]\n'
+  let abcText = [
+    'X:1',
+    'F:old_file',
+    'T:Old',
+    'K:C',
+    'C |]',
+    '',
+    '%%%%zupfnoter.config',
+    '',
+    '{"extract":{"0":{"title":"Old","voices":[1]},"1":{"title":"Second"}}}',
+    '',
+  ].join('\n')
   const localStore = new Map<string, string>()
   return {
     getAbcText: () => abcText,
@@ -90,5 +105,62 @@ describe('legacy command registration', () => {
 
     stack.runString('undo')
     expect(runtime.getAbcText()).toContain('T:Old')
+  })
+
+  it('patches and reverts embedded config values', () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    stack.runString('cconf extract.0.title NeuerTitel')
+    expect(runtime.getAbcText()).toContain('"title": "NeuerTitel"')
+
+    stack.runString('delconfig extract.0.title')
+    expect(runtime.getAbcText()).not.toContain('"title": "NeuerTitel"')
+
+    stack.runString('undoconfig')
+    expect(runtime.getAbcText()).toContain('"title": "NeuerTitel"')
+
+    stack.runString('redoconfig')
+    expect(runtime.getAbcText()).not.toContain('"title": "NeuerTitel"')
+  })
+
+  it('copies config values between extracts', () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    stack.runString('cpconfig extract.0.voices 2')
+
+    expect(runtime.getAbcText()).toContain('"2": {')
+    expect(runtime.getAbcText()).toContain('"voices": [')
+  })
+
+  it('stores standard config snippets and applies them through legacy commands', () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    stack.runString('setstdnotes')
+    stack.runString('cconf extract.0.title Changed')
+    stack.runString('stdnotes')
+
+    expect(runtime.getAbcText()).toContain('"title": "Old"')
+  })
+
+  it('creates and edits templates', () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    stack.runString('maketemplate')
+
+    expect(runtime.getAbcText()).toContain('X:{{song_id}}')
+    expect(runtime.getAbcText()).toContain('F:{{song_id}}_{{filename}}')
+    expect(runtime.getAbcText()).toContain('T:{{song_title}}')
   })
 })

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { nextTick, ref, watch } from 'vue'
 
-import ZnButton from '../../design-system/components/ZnButton.vue'
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
 import ZnPanelHeader from '../../design-system/components/ZnPanelHeader.vue'
 import type { ConsoleLogEntry } from '../consoleLog'
@@ -18,6 +17,7 @@ const commandText = ref('')
 const commandHistory = ref<string[]>([])
 const historyCursor = ref<number | undefined>(undefined)
 const logElement = ref<HTMLElement | null>(null)
+const inputElement = ref<HTMLInputElement | null>(null)
 
 function submitCommand(): void {
   const command = commandText.value.trim()
@@ -52,6 +52,11 @@ function navigateHistory(direction: 'previous' | 'next'): void {
 }
 
 function handleInputKeydown(event: KeyboardEvent): void {
+  if (event.key === 'Enter') {
+    event.preventDefault()
+    submitCommand()
+    return
+  }
   if (event.key === 'ArrowUp') {
     event.preventDefault()
     navigateHistory('previous')
@@ -61,6 +66,10 @@ function handleInputKeydown(event: KeyboardEvent): void {
     event.preventDefault()
     navigateHistory('next')
   }
+}
+
+function focusInput(): void {
+  inputElement.value?.focus()
 }
 
 function entryPrefix(entry: ConsoleLogEntry): string {
@@ -94,42 +103,43 @@ watch(
 
     <div class="console-panel">
       <div ref="logElement" class="console-panel__log" role="log" aria-live="polite">
-        <div
-          v-for="line in lines"
-          :key="line.id"
-          class="console-panel__line"
-          :class="`console-panel__line--${line.kind}`"
-        >
-          <span class="console-panel__prefix">{{ entryPrefix(line) }}</span>
-          <span class="console-panel__message">{{ line.message }}</span>
+        <div class="console-panel__terminal" @click="focusInput">
+          <div
+            v-for="line in lines"
+            :key="line.id"
+            class="console-panel__line"
+            :class="`console-panel__line--${line.kind}`"
+          >
+            <span class="console-panel__prefix">{{ entryPrefix(line) }}</span>
+            <span class="console-panel__message">{{ line.message }}</span>
+          </div>
+          <label class="console-panel__line console-panel__line--active">
+            <span class="console-panel__prefix">&gt;</span>
+            <input
+              ref="inputElement"
+              v-model="commandText"
+              class="console-panel__input"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Command"
+              @keydown="handleInputKeydown"
+            >
+          </label>
         </div>
       </div>
-      <form class="console-panel__command" @submit.prevent="submitCommand">
-        <span class="console-panel__prompt">&gt;</span>
-        <input
-          v-model="commandText"
-          class="console-panel__input"
-          type="text"
-          autocomplete="off"
-          spellcheck="false"
-          @keydown="handleInputKeydown"
-        >
-        <ZnButton type="submit" variant="primary">Run</ZnButton>
-      </form>
     </div>
   </ZnPanel>
 </template>
 
 <style scoped>
 .console-panel {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: var(--zn-space-2);
   min-height: 0;
   height: 100%;
 }
 
 .console-panel__log {
+  height: 100%;
   min-height: 0;
   padding: 0.85rem 0.95rem;
   border-radius: var(--zn-radius-sm);
@@ -142,6 +152,10 @@ watch(
   line-height: 1.55;
   overflow: auto;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05);
+}
+
+.console-panel__terminal {
+  min-height: 100%;
 }
 
 .console-panel__line {
@@ -173,32 +187,21 @@ watch(
   color: rgb(222 228 221);
 }
 
-.console-panel__command {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.55rem;
-  border: 1px solid var(--zn-border);
-  border-radius: var(--zn-radius-sm);
-  background: var(--zn-bg-surface);
-}
-
-.console-panel__prompt {
-  color: var(--zn-accent-strong);
-  font-family: var(--zn-font-mono);
-  font-weight: 700;
-  user-select: none;
+.console-panel__line--active {
+  color: rgb(154 214 177);
 }
 
 .console-panel__input {
+  width: 100%;
   min-width: 0;
-  min-height: 2.1rem;
-  padding: 0.2rem 0;
+  padding: 0;
   border: 0;
   background: transparent;
-  color: var(--zn-text);
+  color: inherit;
   font-family: var(--zn-font-mono);
+  font-size: inherit;
+  line-height: inherit;
+  caret-color: rgb(154 214 177);
 }
 
 .console-panel__input:focus {

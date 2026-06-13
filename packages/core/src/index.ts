@@ -39,3 +39,24 @@ export type { GlyphDef } from './glyphs.js'
 export { initConf } from './initConf.js'
 
 export { extractSongConfig, mergeSongConfig, CONFIG_SEPARATOR } from './extractSongConfig.js'
+
+export {
+  CommandError,
+  CommandStack,
+  parseCommandString,
+} from './commands.js'
+export type {
+  CommandArgumentValue,
+  CommandArguments,
+  CommandContext,
+  CommandDefinition,
+  CommandHistoryEntry,
+  CommandParameter,
+  CommandResult,
+} from './commands.js'
+
+export {
+  createLegacyCommandStack,
+  registerLegacyCommands,
+} from './legacyCommands.js'
+export type { WorkbenchCommandRuntime } from './legacyCommands.js'

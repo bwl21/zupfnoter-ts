@@ -10,6 +10,16 @@
       "source": "./src/index.ts",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./commands": {
+      "source": "./src/commands.ts",
+      "import": "./dist/commands.js",
+      "types": "./dist/commands.d.ts"
+    },
+    "./legacyCommands": {
+      "source": "./src/legacyCommands.ts",
+      "import": "./dist/legacyCommands.js",
+      "types": "./dist/legacyCommands.d.ts"
     }
   },
   "scripts": {
