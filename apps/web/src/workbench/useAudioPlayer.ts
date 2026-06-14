@@ -1,48 +1,17 @@
 import type { PlaybackStep } from './playback'
 
-export interface Instrument {
-  playNote(
-    pitch: number,
-    startTime: number,
-    durationMs: number,
-    ctx: AudioContext,
-  ): void
+export interface PlaybackScheduleCallbacks {
+  onStepStart?: (step: PlaybackStep) => void
+  onStepEnd?: (step: PlaybackStep) => void
 }
 
-export class HarpInstrument implements Instrument {
-  playNote(
-    pitch: number,
-    startTime: number,
-    durationMs: number,
-    ctx: AudioContext,
-  ): void {
-    const freq = 440 * Math.pow(2, (pitch - 69) / 12)
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
+export function useAudioPlayer() {
+  type SoundfontModule = typeof import('soundfont-player')
+  type SoundfontPlayer = Awaited<ReturnType<SoundfontModule['instrument']>>
 
-    osc.type = 'triangle'
-    osc.frequency.value = freq
-
-    const attackSec = 0.008
-    const noteDurationSec = Math.max(durationMs / 1000, 0.05)
-    const releaseSec = noteDurationSec * 0.9
-    const endTime = startTime + noteDurationSec
-
-    gain.gain.setValueAtTime(0, startTime)
-    gain.gain.linearRampToValueAtTime(0.25, startTime + attackSec)
-    gain.gain.setValueAtTime(0.25, startTime + releaseSec)
-    gain.gain.exponentialRampToValueAtTime(0.001, endTime)
-
-    osc.connect(gain)
-    gain.connect(ctx.destination)
-
-    osc.start(startTime)
-    osc.stop(endTime + 0.02)
-  }
-}
-
-export function useAudioPlayer(instrument?: Instrument) {
   let ctx: AudioContext | null = null
+  let playerPromise: Promise<SoundfontPlayer> | null = null
+  let timers: ReturnType<typeof setTimeout>[] = []
 
   function getContext(): AudioContext {
     if (ctx === null || ctx.state === 'closed') {
@@ -51,34 +20,73 @@ export function useAudioPlayer(instrument?: Instrument) {
     return ctx
   }
 
-  function schedule(steps: PlaybackStep[], speedFactor: number): void {
-    const context = getContext()
-    if (context.state === 'suspended') {
-      context.resume()
+  function loadPlayer(): Promise<SoundfontPlayer> {
+    if (playerPromise !== null) return playerPromise
+    playerPromise = import('soundfont-player').then(async (Soundfont) => {
+      const context = getContext()
+      if (context.state === 'suspended') {
+        await context.resume()
+      }
+      return Soundfont.instrument(context, 'orchestral_harp', {
+        soundfont: 'FluidR3_GM',
+        gain: 2.0,
+      })
+    })
+    return playerPromise
+  }
+
+  function clearTimers(): void {
+    for (const timer of timers) {
+      clearTimeout(timer)
     }
+    timers = []
+  }
 
-    const inst = instrument ?? new HarpInstrument()
+  async function schedule(
+    steps: PlaybackStep[],
+    speedFactor: number,
+    callbacks: PlaybackScheduleCallbacks = {},
+  ): Promise<void> {
+    const player = await loadPlayer()
+    const context = getContext()
+    const events: Array<{ time: number; note: number; duration: number }> = []
+    const scheduledAtMs = performance.now()
 
+    clearTimers()
     for (const step of steps) {
-      const stepStartSec = context.currentTime + (step.playbackStartMs / speedFactor) / 1000
-
+      const stepOffsetMs = step.playbackStartMs / speedFactor
+      const stepStartSec = context.currentTime + stepOffsetMs / 1000
+      if (callbacks.onStepStart !== undefined) {
+        timers.push(setTimeout(() => {
+          callbacks.onStepStart?.(step)
+        }, stepOffsetMs))
+      }
+      if (callbacks.onStepEnd !== undefined) {
+        timers.push(setTimeout(() => {
+          callbacks.onStepEnd?.(step)
+        }, stepOffsetMs + (step.durationMs / speedFactor)))
+      }
       for (const note of step.activeNotes) {
         if (!note.attack) continue
-        inst.playNote(
-          note.pitch,
-          stepStartSec,
-          note.durationMs / speedFactor,
-          context,
-        )
+        events.push({
+          time: stepStartSec,
+          note: note.pitch,
+          duration: note.durationMs / speedFactor / 1000,
+        })
       }
     }
+    void scheduledAtMs
+    if (events.length === 0) return
+    player.schedule(context.currentTime, events)
   }
 
   function stop(): void {
+    clearTimers()
     if (ctx !== null && ctx.state !== 'closed') {
       ctx.close()
       ctx = null
     }
+    playerPromise = null
   }
 
   function suspend(): void {
