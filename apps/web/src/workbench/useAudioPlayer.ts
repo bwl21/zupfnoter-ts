@@ -5,12 +5,21 @@ export interface PlaybackScheduleCallbacks {
   onStepEnd?: (step: PlaybackStep) => void
 }
 
-export function useAudioPlayer() {
+export type PlaybackInstrument = 'harp' | 'piano' | 'western-guitar'
+
+const INSTRUMENT_CONFIG: Record<PlaybackInstrument, { instrument: string, soundfont: string }> = {
+  harp: { instrument: 'orchestral_harp', soundfont: 'FluidR3_GM' },
+  piano: { instrument: 'acoustic_grand_piano', soundfont: 'FluidR3_GM' },
+  'western-guitar': { instrument: 'acoustic_guitar_steel', soundfont: 'FluidR3_GM' },
+}
+
+export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   type SoundfontModule = typeof import('soundfont-player')
   type SoundfontPlayer = Awaited<ReturnType<SoundfontModule['instrument']>>
 
   let ctx: AudioContext | null = null
   let playerPromise: Promise<SoundfontPlayer> | null = null
+  let loadedInstrument: PlaybackInstrument | null = null
   let timers: ReturnType<typeof setTimeout>[] = []
 
   function getContext(): AudioContext {
@@ -21,14 +30,19 @@ export function useAudioPlayer() {
   }
 
   function loadPlayer(): Promise<SoundfontPlayer> {
+    if (loadedInstrument !== instrument.value) {
+      playerPromise = null
+    }
     if (playerPromise !== null) return playerPromise
+    loadedInstrument = instrument.value
     playerPromise = import('soundfont-player').then(async (Soundfont) => {
       const context = getContext()
       if (context.state === 'suspended') {
         await context.resume()
       }
-      return Soundfont.instrument(context, 'orchestral_harp', {
-        soundfont: 'FluidR3_GM',
+      const config = INSTRUMENT_CONFIG[instrument.value]
+      return Soundfont.instrument(context, config.instrument as Parameters<SoundfontModule['instrument']>[1], {
+        soundfont: config.soundfont,
         gain: 2.0,
       })
     })
@@ -87,6 +101,7 @@ export function useAudioPlayer() {
       ctx = null
     }
     playerPromise = null
+    loadedInstrument = null
   }
 
   function suspend(): void {

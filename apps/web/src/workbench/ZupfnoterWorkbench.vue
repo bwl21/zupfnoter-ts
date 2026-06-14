@@ -30,7 +30,7 @@ import WorkbenchLayout from './WorkbenchLayout.vue'
 import { usePlaybackStore } from '../stores/playback'
 import { useSelectionStore } from '../stores/selection'
 import { usePlaybackDriver } from './usePlaybackDriver'
-import { useAudioPlayer } from './useAudioPlayer'
+import { useAudioPlayer, type PlaybackInstrument } from './useAudioPlayer'
 import type { PlaybackStep } from './playback'
 import { CommandError, CommandStack, registerLegacyCommands } from '@zupfnoter/core'
 import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
@@ -53,6 +53,7 @@ const harpScrollTop = ref(0)
 const abcText = ref(DEFAULT_ABC)
 const currentExtract = ref(0)
 const saveFormat = ref('A3-A4')
+const playbackInstrument = ref<PlaybackInstrument>('harp')
 const logLevel = ref('warning')
 const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
 const runtimeSettings = ref<Record<string, string>>({
@@ -103,7 +104,7 @@ const playbackScoreTextRanges = computed(() => resolvePlaybackScoreRanges(
   selectionStore.sheetObjectIndex,
   playbackStore.highlight,
 ))
-const audioPlayer = useAudioPlayer()
+const audioPlayer = useAudioPlayer(playbackInstrument)
 const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
   playbackStore,
   computed(() => selectionStore.selection),
@@ -454,6 +455,35 @@ function setCurrentExtractFromCommand(extract: number): void {
   extractPickerOpen.value = false
 }
 
+function setPlaybackInstrumentFromCommand(value: string): void {
+  const normalized = value.trim().toLowerCase()
+  if (normalized === 'harfe' || normalized === 'harp') {
+    playbackInstrument.value = 'harp'
+    stopPlayback()
+    appendConsoleLine('sound set to harp', 'info')
+    return
+  }
+  if (normalized === 'klavier' || normalized === 'piano') {
+    playbackInstrument.value = 'piano'
+    stopPlayback()
+    appendConsoleLine('sound set to piano', 'info')
+    return
+  }
+  if (normalized === 'grandpiano' || normalized === 'grand-piano' || normalized === 'grand piano') {
+    playbackInstrument.value = 'piano'
+    stopPlayback()
+    appendConsoleLine('sound set to grand piano', 'info')
+    return
+  }
+  if (normalized === 'western-gitarre' || normalized === 'western-guitar' || normalized === 'gitarre' || normalized === 'guitar') {
+    playbackInstrument.value = 'western-guitar'
+    stopPlayback()
+    appendConsoleLine('sound set to western-guitar', 'info')
+    return
+  }
+  throw new CommandError(`Unsupported sound: ${value}`)
+}
+
 function downloadAbc(): void {
   const blob = new Blob([abcText.value], { type: 'text/vnd.abc;charset=utf-8' })
   const url = URL.createObjectURL(blob)
@@ -519,6 +549,7 @@ registerLegacyCommands(commandStack, {
     editorTab.value = tab
   },
   setCurrentExtract: setCurrentExtractFromCommand,
+  setSound: setPlaybackInstrumentFromCommand,
   setSaveFormat: (value) => {
     saveFormat.value = value
   },

@@ -69,6 +69,7 @@ const runtime: WorkbenchCommandRuntime = {
     state.currentExtract = Math.trunc(extract)
     log(`extract=${state.currentExtract}`)
   },
+  setSound: (sound) => log(`sound=${sound}`),
   setSaveFormat: (saveFormat) => {
     state.saveFormat = saveFormat
     log(`saveformat=${state.saveFormat}`)

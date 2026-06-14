@@ -34,6 +34,7 @@ function createRuntime(log: string[]): WorkbenchCommandRuntime {
     setCurrentExtract: (extract) => log.push(`view:${extract}`),
     openHarpDuplicate: () => log.push('duplicate:harp'),
     openPanelDuplicate: (target: string) => log.push(`duplicate:${target}`),
+    setSound: (sound) => log.push(`sound:${sound}`),
     setSaveFormat: (saveFormat) => log.push(`saveformat:${saveFormat}`),
     setLogLevel: (level) => log.push(`loglevel:${level}`),
     setAutoRefresh: (value) => log.push(`autorefresh:${value}`),
@@ -83,6 +84,7 @@ describe('legacy command registration', () => {
     stack.runString('view 2')
     stack.runString('panel duplicate harp')
     stack.runString('panel duplicate notes')
+    stack.runString('sound piano')
     stack.runString('p auto')
     stack.runString('speed 0.5')
     stack.runString('saveformat A4')
@@ -93,6 +95,7 @@ describe('legacy command registration', () => {
       'render',
       'duplicate:harp',
       'duplicate:notes',
+      'sound:piano',
       'play:auto',
       'speed:0.5',
       'saveformat:A4',
@@ -110,6 +113,22 @@ describe('legacy command registration', () => {
     expect(log).toContain('panel <action> <target> - duplicate a panel into a second window (harp | notes)')
     expect(log).toContain('panel duplicate harp - duplicate the harp panel into a second window')
     expect(log).toContain('panel duplicate notes - duplicate the notes panel into a second window')
+  })
+
+  it('switches playback sound through the legacy command', () => {
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, createRuntime(log))
+
+    stack.runString('sound harfe')
+    stack.runString('sound klavier')
+    stack.runString('sound grandPiano')
+    stack.runString('sound western-gitarre')
+
+    expect(log).toContain('sound:harfe')
+    expect(log).toContain('sound:klavier')
+    expect(log).toContain('sound:grandPiano')
+    expect(log).toContain('sound:western-gitarre')
   })
 
   it('supports undo for create and local open commands', () => {

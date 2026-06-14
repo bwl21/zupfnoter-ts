@@ -17,6 +17,7 @@ export interface WorkbenchCommandRuntime {
   setSpeed(speed: number): void
   setEditorTab(tab: 'abc' | 'lyrics' | 'config'): void
   setCurrentExtract(extract: number): void
+  setSound(sound: string): void
   setSaveFormat(saveFormat: string): void
   setLogLevel(level: string): void
   setAutoRefresh(value: 'on' | 'off' | 'remote'): void
@@ -116,6 +117,14 @@ function registerInternalCommands(stack: CommandStack, runtime: WorkbenchCommand
       }
       runtime.openPanelDuplicate(target)
     },
+  })
+
+  stack.addCommand({
+    name: 'sound',
+    help: 'set playback sound',
+    undoable: false,
+    parameters: [{ name: 'sound', type: 'string', help: 'harp | piano | western-guitar', defaultValue: 'harp' }],
+    perform: (args) => runtime.setSound(readString(args, 'sound')),
   })
 
   stack.addCommand({
