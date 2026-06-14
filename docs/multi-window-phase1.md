@@ -4,8 +4,36 @@
 
 Die erste Ausbaustufe nutzt ein gemeinsames BroadcastChannel-basiertes
 Synchronisationsmodell. Das Hauptfenster bleibt führend und veröffentlicht einen
-kompakten Harp-Snapshot. Das Zweitfenster rendert dieselbe Harfennotenansicht
-als eigenständige Vue-Route und konsumiert nur diese Snapshots.
+kompakten Snapshot für Dokument, Extract und Render-Ausgabe. Das Zweitfenster
+rendert dieselbe Fachansicht als eigenständige Vue-Route und konsumiert diese
+Snapshots für den Startzustand.
+
+## Ereignisdiagramm
+
+```mermaid
+sequenceDiagram
+  participant U as Benutzer
+  participant C as Commander
+  participant H as Hauptfenster
+  participant M as Mirror-Fenster
+  participant B as BroadcastChannel
+
+  U->>C: panel duplicate harp | notes
+  C->>H: openPanelDuplicate(target)
+  H->>M: window.open(/mirror/<target>)
+  M->>H: mirror-request(target)
+  M->>H: mirror-ready
+  H->>M: snapshot (initial)
+  H->>B: snapshot (broadcast)
+  B-->>M: snapshot
+
+  Note over H,B: Dokument / Extract / Render-Updates
+  H->>B: snapshot (after render or document change)
+  B-->>M: snapshot
+
+  Note over M: Lokale Interaktion bleibt lokal
+  M->>M: Zoom / Scroll / Selektion
+```
 
 ## Ablauf von `panel duplicate harp`
 
@@ -14,7 +42,7 @@ als eigenständige Vue-Route und konsumiert nur diese Snapshots.
 3. Das Hauptfenster öffnet ein Browserfenster unter `/mirror/harp`.
 4. Das Zweitfenster meldet sich beim Hauptfenster als bereit.
 5. Das Hauptfenster sendet den aktuellen Harp-Snapshot.
-6. Beide Fenster bleiben danach über weitere Snapshots synchron.
+6. Beide Fenster erhalten danach weitere Dokument- und Render-Snapshots.
 
 ## Synchronisationsmodell
 
@@ -29,7 +57,8 @@ Synchronisiert werden in dieser Stufe:
 - Scrollposition
 
 Das Hauptfenster ist die einzige Schreibquelle. Das Zweitfenster verarbeitet nur
-eingehende Snapshots und ignoriert Benutzereingaben.
+eingehende Snapshots für den Ausgangszustand. Danach bleiben Zoom, Scroll und
+Selektion lokal im jeweiligen Fenster.
 
 ## Erweiterung für generische View-Duplizierung
 
@@ -44,8 +73,8 @@ aber bereits eine generische Window- und Snapshot-Schicht:
 ## Bekannte Einschränkungen
 
 - Es gibt in dieser Stufe nur die Harp-Duplikation.
-- Das Zweitfenster ist read-only.
-- Scroll- und Zoom-Zustand werden vom Hauptfenster getrieben.
+- Das Zweitfenster ist kein Bedienersatz für das Hauptfenster, sondern eine
+  eigenständige Anzeige mit lokaler Interaktion.
 - Die Synchronisation ist auf gleiche Origin und Browser-Unterstützung für
   `BroadcastChannel` angewiesen.
 - Bei sehr alten Browsern gibt es keinen Fallback.

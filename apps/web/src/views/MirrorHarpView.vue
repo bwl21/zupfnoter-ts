@@ -15,10 +15,14 @@ const playbackHighlight = computed<PlaybackHighlight | undefined>(() => snapshot
 const selection = computed<SelectionProjection | undefined>(() => snapshot.value?.selection)
 const harpZoom = ref(100)
 let requestTimer: ReturnType<typeof setInterval> | undefined
+let receivedInitialSnapshot = false
 
 function applySnapshot(nextSnapshot: HarpMirrorSnapshot): void {
   snapshot.value = nextSnapshot
-  harpZoom.value = nextSnapshot.harpZoom
+  if (!receivedInitialSnapshot) {
+    harpZoom.value = nextSnapshot.harpZoom
+    receivedInitialSnapshot = true
+  }
   if (requestTimer !== undefined) {
     clearInterval(requestTimer)
     requestTimer = undefined
@@ -51,17 +55,6 @@ onBeforeUnmount(() => {
     requestTimer = undefined
   }
 })
-
-watch(
-  () => snapshot.value,
-  () => {
-    const frame = document.querySelector<HTMLElement>('.harp-mirror__panel .harp-preview__frame')
-    if (frame === null || snapshot.value === undefined) return
-    frame.scrollLeft = snapshot.value.scrollLeft
-    frame.scrollTop = snapshot.value.scrollTop
-  },
-  { flush: 'post' },
-)
 
 </script>
 

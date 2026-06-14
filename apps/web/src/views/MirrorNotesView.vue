@@ -50,17 +50,6 @@ onBeforeUnmount(() => {
     requestTimer = undefined
   }
 })
-
-watch(
-  () => snapshot.value,
-  () => {
-    const frame = document.querySelector<HTMLElement>('.notes-mirror .preview-stage__frame')
-    if (frame === null || snapshot.value === undefined) return
-    frame.scrollLeft = snapshot.value.scrollLeft
-    frame.scrollTop = snapshot.value.scrollTop
-  },
-  { flush: 'post' },
-)
 </script>
 
 <template>
