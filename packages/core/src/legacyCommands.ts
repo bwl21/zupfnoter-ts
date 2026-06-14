@@ -12,6 +12,8 @@ export interface WorkbenchCommandRuntime {
   render(): void
   play(range: string): void
   stop(): void
+  openHarpDuplicate(): void
+  openPanelDuplicate(target: string): void
   setSpeed(speed: number): void
   setEditorTab(tab: 'abc' | 'lyrics' | 'config'): void
   setCurrentExtract(extract: number): void
@@ -77,6 +79,10 @@ function registerInternalCommands(stack: CommandStack, runtime: WorkbenchCommand
     perform: (args, context) => {
       const filter = readString(args, 'what')
       stack.help(filter).forEach((line) => context.log(line))
+      if (filter === 'panel') {
+        context.log('panel duplicate harp - duplicate the harp panel into a second window')
+        context.log('panel duplicate notes - duplicate the notes panel into a second window')
+      }
     },
   })
 
@@ -88,6 +94,27 @@ function registerInternalCommands(stack: CommandStack, runtime: WorkbenchCommand
     perform: (args) => {
       runtime.setCurrentExtract(readNumber(args, 'view'))
       runtime.render()
+    },
+  })
+
+  stack.addCommand({
+    name: 'panel',
+    help: 'duplicate a panel into a second window (harp | notes)',
+    undoable: false,
+    parameters: [
+      { name: 'action', type: 'string', help: 'panel action', defaultValue: 'duplicate' },
+      { name: 'target', type: 'string', help: 'panel target', defaultValue: 'harp' },
+    ],
+    perform: (args) => {
+      const action = readString(args, 'action')
+      const target = readString(args, 'target')
+      if (action !== 'duplicate') {
+        throw new CommandError(`Unsupported panel action: ${action}`)
+      }
+      if (target !== 'harp' && target !== 'notes') {
+        throw new CommandError(`Unsupported panel target: ${target}`)
+      }
+      runtime.openPanelDuplicate(target)
     },
   })
 

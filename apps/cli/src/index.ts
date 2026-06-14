@@ -61,6 +61,8 @@ const runtime: WorkbenchCommandRuntime = {
   render: renderSummary,
   play: (range) => log(`playback is not available in CLI (${range})`),
   stop: () => log('playback stopped'),
+  openHarpDuplicate: () => log('view duplicate harp is not available in CLI'),
+  openPanelDuplicate: (target) => log(`panel duplicate ${target} is not available in CLI`),
   setSpeed: (speed) => log(`speed=${speed}`),
   setEditorTab: (tab) => log(`tab=${tab}`),
   setCurrentExtract: (extract) => {

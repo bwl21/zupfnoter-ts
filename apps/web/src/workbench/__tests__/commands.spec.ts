@@ -32,6 +32,8 @@ function createRuntime(log: string[]): WorkbenchCommandRuntime {
     setSpeed: (speed) => log.push(`speed:${speed}`),
     setEditorTab: (tab) => log.push(`tab:${tab}`),
     setCurrentExtract: (extract) => log.push(`view:${extract}`),
+    openHarpDuplicate: () => log.push('duplicate:harp'),
+    openPanelDuplicate: (target: string) => log.push(`duplicate:${target}`),
     setSaveFormat: (saveFormat) => log.push(`saveformat:${saveFormat}`),
     setLogLevel: (level) => log.push(`loglevel:${level}`),
     setAutoRefresh: (value) => log.push(`autorefresh:${value}`),
@@ -79,6 +81,8 @@ describe('legacy command registration', () => {
     registerLegacyCommands(stack, createRuntime(log))
 
     stack.runString('view 2')
+    stack.runString('panel duplicate harp')
+    stack.runString('panel duplicate notes')
     stack.runString('p auto')
     stack.runString('speed 0.5')
     stack.runString('saveformat A4')
@@ -87,11 +91,25 @@ describe('legacy command registration', () => {
     expect(log).toEqual([
       'view:2',
       'render',
+      'duplicate:harp',
+      'duplicate:notes',
       'play:auto',
       'speed:0.5',
       'saveformat:A4',
       'tab:config',
     ])
+  })
+
+  it('documents panel duplicate targets in help', () => {
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, createRuntime(log))
+
+    stack.runString('help panel')
+
+    expect(log).toContain('panel <action> <target> - duplicate a panel into a second window (harp | notes)')
+    expect(log).toContain('panel duplicate harp - duplicate the harp panel into a second window')
+    expect(log).toContain('panel duplicate notes - duplicate the notes panel into a second window')
   })
 
   it('supports undo for create and local open commands', () => {

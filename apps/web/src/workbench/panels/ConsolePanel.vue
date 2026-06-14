@@ -102,7 +102,13 @@ watch(
     </template>
 
     <div class="console-panel">
-      <div ref="logElement" class="console-panel__log" role="log" aria-live="polite">
+      <div
+        ref="logElement"
+        class="console-panel__log"
+        role="log"
+        aria-live="polite"
+        @mousedown.prevent="focusInput"
+      >
         <div class="console-panel__terminal">
           <div
             v-for="line in lines"

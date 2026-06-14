@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue'
 
 import {
   ZnBadge,
@@ -42,11 +42,14 @@ import {
   resolveSelectionProjection,
 } from './selectionManager'
 import { workbenchDiagnosticKey, type WorkbenchDiagnostic as WebWorkbenchDiagnostic } from './diagnostics'
+import { createHarpMirrorChannel, postHarpMirrorSnapshot, type HarpMirrorSnapshot } from './multiWindow/harpMirrorChannel'
 
 const editorTab = ref('abc')
 const editorPaneSize = ref(54)
 const previewPaneSize = ref(62)
 const harpZoom = ref(100)
+const harpScrollLeft = ref(0)
+const harpScrollTop = ref(0)
 const abcText = ref(DEFAULT_ABC)
 const currentExtract = ref(0)
 const saveFormat = ref('A3-A4')
@@ -203,6 +206,9 @@ const produceExtracts = computed(() => {
 
 let commandStack: CommandStack
 let renderWorker: Worker | undefined
+let harpMirrorWindow: Window | null = null
+const harpMirrorWindowName = 'zupfnoter-harp-duplicate'
+const harpMirrorChannel = createHarpMirrorChannel()
 let nextRenderRequestId = 0
 let pendingRenderRequestId: number | undefined
 let renderTimer: ReturnType<typeof setTimeout> | undefined
@@ -304,6 +310,7 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   }
   renderSummary.value = result.summary
   renderError.value = result.renderError ?? ''
+  publishHarpMirrorSnapshot()
 }
 
 function renderNow(): void {
@@ -327,6 +334,87 @@ function renderNow(): void {
     renderError.value = error instanceof Error ? error.message : String(error)
     renderSummary.value = 'render failed'
   }
+}
+
+function buildHarpMirrorSnapshot(): HarpMirrorSnapshot {
+  const playbackHighlight = playbackStore.highlight
+  const selection = selectedHarpProjection.value
+  return {
+    abcText: abcText.value,
+    currentExtract: currentExtract.value,
+    scoreSvg: scoreSvg.value,
+    harpSvg: harpSvg.value,
+    renderError: renderError.value,
+    playbackHighlight: {
+      activeTextRanges: playbackHighlight.activeTextRanges.map((range) => ({ ...range })),
+      activeStartChar: playbackHighlight.activeStartChar,
+      activeTime: playbackHighlight.activeTime,
+      passIndex: playbackHighlight.passIndex,
+      voltaNumber: playbackHighlight.voltaNumber,
+    },
+    selection: {
+      selectedIndexes: [...selection.selectedIndexes],
+      textRanges: selection.textRanges.map((range) => ({ ...range })),
+      znIds: [...selection.znIds],
+      confKeys: [...selection.confKeys],
+    },
+    selectionState: {
+      selectedIndexes: [...selectionStore.selection.selectedIndexes],
+      anchorIndex: selectionStore.selection.anchorIndex,
+      source: selectionStore.selection.source,
+    },
+    selectedScoreTextRanges: selectedScoreTextRanges.value.map((range) => ({ ...range })),
+    playbackScoreTextRanges: playbackScoreTextRanges.value.map((range) => ({ ...range })),
+    harpZoom: harpZoom.value,
+    scrollLeft: harpScrollLeft.value,
+    scrollTop: harpScrollTop.value,
+  }
+}
+
+function publishHarpMirrorSnapshot(): void {
+  const snapshot = buildHarpMirrorSnapshot()
+  postHarpMirrorSnapshot(harpMirrorChannel, snapshot)
+  if (harpMirrorWindow === null || harpMirrorWindow.closed) return
+  try {
+    harpMirrorWindow.postMessage({ kind: 'snapshot', snapshot }, window.location.origin)
+  } catch {
+    // Ignore cross-window delivery issues; BroadcastChannel is the primary path.
+  }
+}
+
+function sendHarpMirrorSnapshotToWindow(targetWindow: Window): void {
+  try {
+    targetWindow.postMessage({ kind: 'snapshot', snapshot: buildHarpMirrorSnapshot() }, window.location.origin)
+  } catch {
+    // Ignore windows that are already gone or unavailable.
+  }
+}
+
+function openHarpDuplicate(): void {
+  const url = new URL('/mirror/harp', window.location.origin)
+  const nextWindow = window.open(url.toString(), harpMirrorWindowName)
+  if (nextWindow === null) return
+  harpMirrorWindow = nextWindow
+  try {
+    nextWindow.focus()
+  } catch {
+    // Focus can fail in some browsers or tests; opening is the important part.
+  }
+  sendHarpMirrorSnapshotToWindow(nextWindow)
+  publishHarpMirrorSnapshot()
+}
+
+function openNotesDuplicate(): void {
+  const url = new URL('/mirror/notes', window.location.origin)
+  const nextWindow = window.open(url.toString(), `${harpMirrorWindowName}-notes`)
+  if (nextWindow === null) return
+  try {
+    nextWindow.focus()
+  } catch {
+    // Focus can fail in some browsers or tests; opening is the important part.
+  }
+  sendHarpMirrorSnapshotToWindow(nextWindow)
+  publishHarpMirrorSnapshot()
 }
 
 function executeCommand(command: string): void {
@@ -416,6 +504,16 @@ registerLegacyCommands(commandStack, {
   render: renderNow,
   play: playFromCommand,
   stop: stopPlayback,
+  openHarpDuplicate,
+  openPanelDuplicate: (target: string) => {
+    if (target === 'harp') {
+      openHarpDuplicate()
+      return
+    }
+    if (target === 'notes') {
+      openNotesDuplicate()
+    }
+  },
   setSpeed: playbackStore.setSpeedFactor,
   setEditorTab: (tab) => {
     editorTab.value = tab
@@ -481,6 +579,12 @@ function handleHarpPreviewSelection(payload: {
   selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
 }
 
+function handleHarpPreviewScroll(payload: { scrollLeft: number; scrollTop: number }): void {
+  harpScrollLeft.value = payload.scrollLeft
+  harpScrollTop.value = payload.scrollTop
+  publishHarpMirrorSnapshot()
+}
+
 function handleScorePreviewSelection(payload: {
   startpos: number
   endpos: number
@@ -519,6 +623,12 @@ function handleGlobalKeydown(event: KeyboardEvent): void {
   }
 }
 
+watch(
+  [abcText, currentExtract, harpSvg, renderError, harpZoom, harpScrollLeft, harpScrollTop, () => playbackStore.highlight, () => selectionStore.selection],
+  publishHarpMirrorSnapshot,
+  { deep: true },
+)
+
 function chooseExtract(extractNumber: number): void {
   executeToolbarCommand(`view ${extractNumber}`)
   extractPickerOpen.value = false
@@ -536,6 +646,7 @@ function isExtractProduced(extractNumber: number): boolean {
 
 onMounted(() => {
   window.addEventListener('keydown', handleGlobalKeydown)
+  window.addEventListener('message', handleMirrorMessage)
   try {
     renderWorker = new Worker(new URL('./rendering/renderWorker.ts', import.meta.url), { type: 'module' })
     renderWorker.onmessage = handleRenderWorkerMessage
@@ -547,12 +658,36 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleGlobalKeydown)
+  window.removeEventListener('message', handleMirrorMessage)
   renderWorker?.terminate()
   renderWorker = undefined
   if (renderTimer !== undefined) {
     clearTimeout(renderTimer)
   }
+  harpMirrorChannel?.close()
 })
+
+onUnmounted(() => {
+  if (harpMirrorWindow !== null && !harpMirrorWindow.closed) {
+    harpMirrorWindow.close()
+  }
+})
+
+function handleMirrorMessage(event: MessageEvent): void {
+  if (event.origin !== window.location.origin) return
+  const data: unknown = event.data
+  if (typeof data !== 'object' || data === null) return
+  const record = data as { kind?: string, target?: string, zoom?: number }
+  const source = event.source
+  if (!(source instanceof Window)) return
+  if (record.kind === 'mirror-request') {
+    if (record.target !== 'harp' && record.target !== 'notes') return
+    sendHarpMirrorSnapshotToWindow(source)
+    return
+  }
+  if (record.kind !== 'mirror-ready') return
+  sendHarpMirrorSnapshotToWindow(source)
+}
 </script>
 
 <template>

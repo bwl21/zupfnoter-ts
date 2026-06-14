@@ -9,6 +9,16 @@ const router = createRouter({
       component: () => import('../views/HomeView.vue'),
     },
     {
+      path: '/mirror/harp',
+      name: 'mirror-harp',
+      component: () => import('../views/MirrorHarpView.vue'),
+    },
+    {
+      path: '/mirror/notes',
+      name: 'mirror-notes',
+      component: () => import('../views/MirrorNotesView.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),

@@ -33,7 +33,11 @@ export function computeWheelZoomDelta(deltaY: number): number {
   return Math.min(16, Math.max(1, Math.round(curved)))
 }
 
-export function useZoomableSvgPreview(svgSource: Ref<string>, zoom: Ref<number>) {
+export function useZoomableSvgPreview(
+  svgSource: Ref<string>,
+  zoom: Ref<number>,
+  allowWheelZoomWithoutModifier = false,
+) {
   const frameRef = ref<HTMLElement | null>(null)
   const canvasRef = ref<HTMLElement | null>(null)
   const frameMetrics = ref<FrameMetrics | null>(null)
@@ -280,7 +284,7 @@ export function useZoomableSvgPreview(svgSource: Ref<string>, zoom: Ref<number>)
   }
 
   function onWheel(event: WheelEvent): void {
-    if (!event.ctrlKey && !event.metaKey) {
+    if (!allowWheelZoomWithoutModifier && !event.ctrlKey && !event.metaKey) {
       return
     }
 

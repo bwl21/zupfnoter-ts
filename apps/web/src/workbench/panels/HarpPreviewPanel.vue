@@ -19,10 +19,12 @@ const props = defineProps<{
     confKeys: string[]
     textRanges: SelectionTextRange[]
   }
+  allowWheelZoomWithoutModifier?: boolean
 }>()
 
 const emit = defineEmits<{
   (event: 'select-text-range', payload: { startpos: number; endpos: number; extend: boolean; source: 'harp-preview' }): void
+  (event: 'scroll', payload: { scrollLeft: number; scrollTop: number }): void
 }>()
 
 const mode = ref('normal')
@@ -32,7 +34,11 @@ const zoom = defineModel<number>('zoom', {
   default: 100,
 })
 
-const { canvasRef, canvasStyle, frameRef, onPointerCancel, onPointerDown, onPointerMove, onPointerUp, onWheel, setZoom } = useZoomableSvgPreview(toRef(props, 'svg'), zoom)
+const { canvasRef, canvasStyle, frameRef, onPointerCancel, onPointerDown, onPointerMove, onPointerUp, onWheel, setZoom } = useZoomableSvgPreview(
+  toRef(props, 'svg'),
+  zoom,
+  props.allowWheelZoomWithoutModifier === true,
+)
 usePlaybackSvgHighlight(
   canvasRef,
   toRef(props, 'svg'),
@@ -81,6 +87,12 @@ function handlePointerUp(event: PointerEvent): void {
   if (distance > 4) return
   emitSelectionFromEvent(target, event.shiftKey)
 }
+
+function handleScroll(): void {
+  const frame = frameRef.value
+  if (frame === null) return
+  emit('scroll', { scrollLeft: frame.scrollLeft, scrollTop: frame.scrollTop })
+}
 </script>
 
 <template>
@@ -105,6 +117,7 @@ function handlePointerUp(event: PointerEvent): void {
       <div
         ref="frameRef"
         class="harp-preview__frame"
+        @scroll="handleScroll"
         @pointercancel="onPointerCancel"
         @pointerdown="handlePointerDown"
         @pointermove="onPointerMove"
