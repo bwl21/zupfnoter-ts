@@ -13,6 +13,17 @@ export interface CommandContext {
   log(message: string): void
 }
 
+export interface CommandSuggestion {
+  completed: string
+  didYouMean: string[]
+}
+
+export interface CommandLookupResult {
+  command: CommandDefinition | undefined
+  exactMatch: boolean
+  prefixMatches: string[]
+}
+
 export interface CommandResult {
   undoArguments?: CommandArguments
 }
@@ -60,6 +71,65 @@ export class CommandStack {
 
   hasCommand(commandName: string): boolean {
     return this.commands.has(commandName)
+  }
+
+  getCommand(commandName: string): CommandDefinition | undefined {
+    return this.commands.get(commandName)
+  }
+
+  lookup(commandInput: string): CommandLookupResult {
+    const trimmed = commandInput.trim()
+    if (trimmed === '') return { command: undefined, exactMatch: false, prefixMatches: [] }
+    const [rawName] = trimmed.split(/\s+/, 1)
+    if (rawName === undefined || rawName === '') return { command: undefined, exactMatch: false, prefixMatches: [] }
+    const commandNames = [...this.commands.keys()].filter((name) => !name.startsWith('_')).sort()
+    const prefixMatches = commandNames.filter((name) => name.startsWith(rawName))
+    return {
+      command: this.commands.get(rawName),
+      exactMatch: this.commands.has(rawName),
+      prefixMatches,
+    }
+  }
+
+  suggest(commandInput: string): CommandSuggestion | undefined {
+    const trimmed = commandInput.trim()
+    if (trimmed === '') return undefined
+
+    const [rawName, ...rest] = trimmed.split(/\s+/)
+    if (rawName === undefined || rawName === '') return undefined
+
+    const exactCommand = this.commands.get(rawName)
+    if (exactCommand !== undefined) {
+      return { completed: [exactCommand.name, ...rest].join(' '), didYouMean: [] }
+    }
+
+    const commandNames = [...this.commands.keys()]
+      .filter((name) => !name.startsWith('_'))
+      .sort()
+
+    const prefixMatches = commandNames.filter((name) => name.startsWith(rawName))
+    if (prefixMatches.length === 1) {
+      return { completed: [prefixMatches[0], ...rest].join(' '), didYouMean: [] }
+    }
+
+    if (prefixMatches.length > 1) {
+      const sharedPrefix = longestCommonPrefix(prefixMatches)
+      const completed = sharedPrefix.length > rawName.length
+        ? [sharedPrefix, ...rest].join(' ')
+        : commandInput
+      return { completed, didYouMean: prefixMatches.slice(0, 5) }
+    }
+
+    const didYouMean = commandNames
+      .map((name) => ({ name, distance: levenshteinDistance(rawName, name) }))
+      .filter((entry) => entry.distance <= 3)
+      .sort((left, right) => left.distance - right.distance || left.name.localeCompare(right.name))
+      .slice(0, 5)
+      .map((entry) => entry.name)
+
+    return didYouMean.length > 0
+      ? { completed: commandInput, didYouMean }
+      : undefined
   }
 
   runString(commandString: string): void {
@@ -295,4 +365,69 @@ function coerceJsonValue(value: unknown): CommandArgumentValue {
     return value as CommandArgumentValue
   }
   throw new CommandError('Unsupported JSON command argument')
+}
+
+function longestCommonPrefix(values: string[]): string {
+  if (values.length === 0) return ''
+  let prefix = values[0] ?? ''
+  for (const value of values.slice(1)) {
+    while (prefix !== '' && !value.startsWith(prefix)) {
+      prefix = prefix.slice(0, -1)
+    }
+  }
+  return prefix
+}
+
+function levenshteinDistance(left: string, right: string): number {
+  const rows = left.length + 1
+  const cols = right.length + 1
+  const matrix: number[][] = Array.from({ length: rows }, () => Array.from({ length: cols }, () => 0))
+
+  for (let i = 0; i < rows; i += 1) {
+    const row = matrix[i]
+    if (row === undefined) {
+      throw new CommandError('Failed to initialize command suggestion matrix')
+    }
+    row[0] = i
+  }
+  for (let j = 0; j < cols; j += 1) {
+    const firstRow = matrix[0]
+    if (firstRow === undefined) {
+      throw new CommandError('Failed to initialize command suggestion matrix')
+    }
+    firstRow[j] = j
+  }
+
+  for (let i = 1; i < rows; i += 1) {
+    const currentRow = matrix[i]
+    const previousRow = matrix[i - 1]
+    const firstRow = matrix[0]
+    if (currentRow === undefined || previousRow === undefined || firstRow === undefined) {
+      throw new CommandError('Failed to initialize command suggestion matrix')
+    }
+    for (let j = 1; j < cols; j += 1) {
+      const cost = left[i - 1] === right[j - 1] ? 0 : 1
+      const deletion = previousRow[j]
+      const insertion = currentRow[j - 1]
+      const substitution = previousRow[j - 1]
+      if (deletion === undefined || insertion === undefined || substitution === undefined) {
+        throw new CommandError('Failed to compute command suggestion distance')
+      }
+      currentRow[j] = Math.min(
+        deletion + 1,
+        insertion + 1,
+        substitution + cost,
+      )
+    }
+  }
+
+  const lastRow = matrix[rows - 1]
+  if (lastRow === undefined) {
+    throw new CommandError('Failed to initialize command suggestion matrix')
+  }
+  const distance = lastRow[cols - 1]
+  if (distance === undefined) {
+    throw new CommandError('Failed to compute command suggestion distance')
+  }
+  return distance
 }

@@ -37,6 +37,7 @@ Dokumenten unverändert:
 - `Sheet`
 - `Song`
 - `SvgEngine`
+- `Storage-Kontext`
 - `Voice`
 - `Voice Style`
 - `ZupfnoterConfig`
@@ -58,6 +59,7 @@ Dokumenten unverändert:
 | Laufzeitvalidierung | Validierung externer JSON-Konfiguration zur Laufzeit |
 | Vergleichstest | Test gegen Legacy-Fixtures oder Referenzausgabe |
 | Snapshot-Test | Test gegen gespeicherte Ausgabe-Snapshots |
+| Storage-Kontext | Aktiver Storage-Provider inklusive Session-/UI-Zustand |
 
 ## Bevorzugte englische Begriffe
 

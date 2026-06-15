@@ -424,7 +424,7 @@ function executeCommand(command: string): void {
     commandStack.runString(command)
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    appendConsoleLine(message, 'error')
+    appendConsoleLine(enrichCommandError(command, message), 'error')
   }
 }
 
@@ -434,8 +434,23 @@ function executeToolbarCommand(command: string): void {
     commandStack.runString(command)
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    appendConsoleLine(message, 'error')
+    appendConsoleLine(enrichCommandError(command, message), 'error')
   }
+}
+
+function enrichCommandError(command: string, message: string): string {
+  if (!message.startsWith('Unknown command: ')) {
+    return message
+  }
+  const suggestion = commandStack.suggest(command)
+  if (suggestion === undefined || suggestion.didYouMean.length === 0) {
+    return message
+  }
+  return `${message}. Did you mean: ${suggestion.didYouMean.join(', ')}?`
+}
+
+function resolveCommandSuggestion(command: string): { completed: string; didYouMean: string[] } | undefined {
+  return commandStack.suggest(command)
 }
 
 function setAbcFromCommand(value: string): void {
@@ -828,7 +843,10 @@ function handleMirrorMessage(event: MessageEvent): void {
                 <ConsolePanel
                   v-else
                   :lines="consoleLines"
+                  :resolve-command="resolveCommandSuggestion"
+                  :get-command="(commandName) => commandStack.getCommand(commandName)"
                   @execute="executeCommand"
+                  @info="appendConsoleLine($event, 'info')"
                 />
               </template>
             </ZnTabs>

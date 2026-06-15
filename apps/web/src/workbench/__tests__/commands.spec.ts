@@ -115,6 +115,27 @@ describe('legacy command registration', () => {
     expect(log).toContain('panel duplicate notes - duplicate the notes panel into a second window')
   })
 
+  it('suggests unique command completions and typo candidates', () => {
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, createRuntime(log))
+
+    expect(stack.suggest('p')).toEqual({
+      completed: 'p',
+      didYouMean: [],
+    })
+
+    expect(stack.suggest('dlogi')).toEqual({
+      completed: 'dlogin',
+      didYouMean: [],
+    })
+
+    expect(stack.suggest('dlofin')).toEqual({
+      completed: 'dlofin',
+      didYouMean: expect.arrayContaining(['dlogin']),
+    })
+  })
+
   it('switches playback sound through the legacy command', () => {
     const log: string[] = []
     const stack = new CommandStack({ log: (message) => log.push(message) })

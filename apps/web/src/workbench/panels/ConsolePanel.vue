@@ -3,14 +3,18 @@ import { nextTick, ref, watch } from 'vue'
 
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
 import ZnPanelHeader from '../../design-system/components/ZnPanelHeader.vue'
+import type { CommandDefinition } from '@zupfnoter/core'
 import type { ConsoleLogEntry } from '../consoleLog'
 
 const props = defineProps<{
   lines: ConsoleLogEntry[]
+  resolveCommand: (command: string) => { completed: string; didYouMean: string[] } | undefined
+  getCommand: (commandName: string) => CommandDefinition | undefined
 }>()
 
 const emit = defineEmits<{
   (event: 'execute', command: string): void
+  (event: 'info', message: string): void
 }>()
 
 const commandText = ref('')
@@ -22,10 +26,56 @@ const inputElement = ref<HTMLInputElement | null>(null)
 function submitCommand(): void {
   const command = commandText.value.trim()
   if (command === '') return
-  emit('execute', command)
-  commandHistory.value = [...commandHistory.value.filter((entry) => entry !== command), command].slice(-100)
+  const [commandName, ...args] = command.split(/\s+/)
+  if (commandName === undefined || commandName === '') return
+  const suggestion = props.resolveCommand(command)
+  const resolvedCommand = suggestion?.completed ?? command
+  const resolvedName = resolvedCommand.split(/\s+/, 1)[0]
+  const exactCommand = props.getCommand(resolvedName ?? commandName)
+  if (exactCommand === undefined) {
+    const hint = suggestion?.didYouMean.length ? suggestion.didYouMean.join(', ') : suggestion?.completed
+    emit('info', `did you mean: ${hint ?? commandName}?`)
+    return
+  }
+  if (suggestion !== undefined && suggestion.didYouMean.length > 0 && suggestion.completed === command) {
+    emit('info', `did you mean: ${suggestion.didYouMean.join(', ')}?`)
+    return
+  }
+  const requiredParameters = exactCommand.parameters?.filter((parameter) => parameter.defaultValue === undefined) ?? []
+  if (args.length < requiredParameters.length) {
+    const missingParameter = requiredParameters[args.length]
+    if (missingParameter !== undefined) {
+      const usage = buildUsage(exactCommand.name, exactCommand.parameters ?? [])
+      emit('info', `missing <${missingParameter.name}> for ${exactCommand.name} (${missingParameter.help}). usage: ${usage}`)
+    }
+    return
+  }
+  emit('execute', resolvedCommand)
+  commandHistory.value = [...commandHistory.value.filter((entry) => entry !== resolvedCommand), resolvedCommand].slice(-100)
   historyCursor.value = undefined
   commandText.value = ''
+}
+
+function applyCompletion(): void {
+  const suggestion = props.resolveCommand(commandText.value)
+  if (suggestion === undefined) return
+  if (suggestion.completed.length > commandText.value.length) {
+    commandText.value = suggestion.completed
+    return
+  }
+  if (suggestion.didYouMean.length > 0) {
+    emit('info', `did you mean: ${suggestion.didYouMean.join(', ')}?`)
+  }
+}
+
+function buildUsage(commandName: string, parameters: CommandDefinition['parameters']): string {
+  if (parameters === undefined || parameters.length === 0) {
+    return commandName
+  }
+  const parts = parameters.map((parameter) => parameter.defaultValue === undefined
+    ? `<${parameter.name}>`
+    : `[<${parameter.name}>]`)
+  return [commandName, ...parts].join(' ')
 }
 
 function navigateHistory(direction: 'previous' | 'next'): void {
@@ -55,6 +105,11 @@ function handleInputKeydown(event: KeyboardEvent): void {
   if (event.key === 'Enter') {
     event.preventDefault()
     submitCommand()
+    return
+  }
+  if (event.key === 'Tab') {
+    event.preventDefault()
+    applyCompletion()
     return
   }
   if (event.key === 'ArrowUp') {
