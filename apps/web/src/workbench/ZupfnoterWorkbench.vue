@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 
 import {
   ZnBadge,
@@ -32,7 +32,7 @@ import { useSelectionStore } from '../stores/selection'
 import { usePlaybackDriver } from './usePlaybackDriver'
 import { useAudioPlayer, type PlaybackInstrument } from './useAudioPlayer'
 import type { PlaybackStep } from './playback'
-import { CommandError, CommandStack, registerLegacyCommands } from '@zupfnoter/core'
+import { CommandError, CommandStack, registerLegacyCommands, registerStorageCommands } from '@zupfnoter/core'
 import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
 import {
   canTargetCreateSelection,
@@ -43,6 +43,7 @@ import {
 } from './selectionManager'
 import { workbenchDiagnosticKey, type WorkbenchDiagnostic as WebWorkbenchDiagnostic } from './diagnostics'
 import { createHarpMirrorChannel, postHarpMirrorSnapshot, type HarpMirrorSnapshot } from './multiWindow/harpMirrorChannel'
+import { createDropboxProvider, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
 
 const editorTab = ref('abc')
 const editorPaneSize = ref(54)
@@ -53,6 +54,13 @@ const harpScrollTop = ref(0)
 const abcText = ref(DEFAULT_ABC)
 const currentExtract = ref(0)
 const saveFormat = ref('A3-A4')
+const storageState = reactive({
+  system: 'dropbox',
+  path: '',
+  loggedIn: false,
+  pendingCandidates: [] as string[],
+})
+const dropboxProvider = createDropboxProvider()
 const playbackInstrument = ref<PlaybackInstrument>('harp')
 const logLevel = ref('warning')
 const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
@@ -62,6 +70,7 @@ const runtimeSettings = ref<Record<string, string>>({
   follow: 'true',
   validate: 'true',
 })
+const storageStateKey = 'zupfnoter.storage.context'
 const extractPickerOpen = ref(false)
 let nextConsoleEntryId = 1
 const consoleLines = ref<ConsoleLogEntry[]>([{
@@ -79,6 +88,7 @@ const renderError = ref('')
 const renderSummary = ref('not rendered')
 const playbackTimeline = ref<PlaybackStep[]>([])
 const baseTempoFromQ = ref<number | undefined>(undefined)
+const commandBusy = ref(false)
 const { toasts, syncDiagnostics, dismissToast } = useWorkbenchToasts()
 const playbackStore = usePlaybackStore()
 const selectionStore = useSelectionStore()
@@ -237,6 +247,29 @@ function appendDiagnosticLine(message: string, severity: 'warning' | 'error', so
     : `${source}: `
   appendConsoleLine(`${timestampLabel()}  ${prefix}${message}`, severity === 'error' ? 'error' : 'info')
 }
+
+function restoreStorageContext(): void {
+  const raw = localStorage.getItem(storageStateKey)
+  if (raw === null) return
+  try {
+    const parsed = JSON.parse(raw) as { system?: string; path?: string; loggedIn?: boolean }
+    if (typeof parsed.system !== 'string' || typeof parsed.path !== 'string' || typeof parsed.loggedIn !== 'boolean') return
+    storageState.system = parsed.system
+    storageState.path = parsed.path
+    storageState.loggedIn = parsed.loggedIn
+    storageState.pendingCandidates = []
+  } catch {
+    // ignore malformed storage state
+  }
+}
+
+watch(storageState, () => {
+  localStorage.setItem(storageStateKey, JSON.stringify({
+    system: storageState.system,
+    path: storageState.path,
+    loggedIn: storageState.loggedIn,
+  }))
+}, { deep: true })
 
 function appendUniqueDiagnosticLine(
   seenKeys: Set<string>,
@@ -418,23 +451,29 @@ function openNotesDuplicate(): void {
   publishHarpMirrorSnapshot()
 }
 
-function executeCommand(command: string): void {
+async function executeCommand(command: string): Promise<void> {
+  commandBusy.value = true
   appendConsoleLine(command, 'command')
   try {
-    commandStack.runString(command)
+    await commandStack.runString(command)
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     appendConsoleLine(enrichCommandError(command, message), 'error')
+  } finally {
+    commandBusy.value = false
   }
 }
 
-function executeToolbarCommand(command: string): void {
+async function executeToolbarCommand(command: string): Promise<void> {
+  commandBusy.value = true
   appendConsoleLine(command, 'command')
   try {
-    commandStack.runString(command)
+    await commandStack.runString(command)
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     appendConsoleLine(enrichCommandError(command, message), 'error')
+  } finally {
+    commandBusy.value = false
   }
 }
 
@@ -543,6 +582,43 @@ commandStack = new CommandStack({
   log: appendConsoleLine,
 })
 
+void (async () => {
+  if (resumeDropboxLoginFromRedirect()) {
+    storageState.loggedIn = true
+  }
+})()
+
+registerStorageCommands(commandStack, storageState, {
+  providers: [dropboxProvider.system, 'nextcloud'],
+  list: async (path, recursive) => {
+    const results = await dropboxProvider.list(path, recursive)
+    return results
+  },
+  search: async (path, query) => {
+    const results = await dropboxProvider.search(path, query)
+    return results
+  },
+  open: async (path, filename) => {
+    const loaded = await dropboxProvider.open(path, filename)
+    if (loaded === undefined) return undefined
+    abcText.value = loaded
+    renderNow()
+    return loaded
+  },
+  save: async (path, filename, content) => {
+    await dropboxProvider.save(path, filename, content)
+  },
+  login: async (path) => {
+    await dropboxProvider.login()
+  },
+  logout: async (path) => {
+    await dropboxProvider.logout()
+  },
+  cleanup: async (path) => {
+    await dropboxProvider.cleanup()
+  },
+})
+
 registerLegacyCommands(commandStack, {
   getAbcText: () => abcText.value,
   setAbcText: setAbcFromCommand,
@@ -584,6 +660,7 @@ registerLegacyCommands(commandStack, {
   saveLocalStore: saveToLocalStore,
   openLocalStore: openFromLocalStore,
 })
+
 
 function handleEditorCursorChange(position: { line: number, column: number }): void {
   const line = String(position.line).padStart(2, '0')
@@ -691,6 +768,7 @@ function isExtractProduced(extractNumber: number): boolean {
 }
 
 onMounted(() => {
+  restoreStorageContext()
   window.addEventListener('keydown', handleGlobalKeydown)
   window.addEventListener('message', handleMirrorMessage)
   try {
@@ -843,6 +921,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                 <ConsolePanel
                   v-else
                   :lines="consoleLines"
+                  :busy="commandBusy"
                   :resolve-command="resolveCommandSuggestion"
                   :get-command="(commandName) => commandStack.getCommand(commandName)"
                   @execute="executeCommand"
@@ -891,7 +970,7 @@ function handleMirrorMessage(event: MessageEvent): void {
       <div class="workbench-footer">
         <FooterBar
           :extract-label="`Extract ${currentExtractLabel}`"
-          :storage-path="renderSummary"
+        :storage-path="storageState.path"
           :dirty="true"
           :save-format="saveFormat"
           :cursor-position="editorCursor"

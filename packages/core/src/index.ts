@@ -60,3 +60,11 @@ export {
   registerLegacyCommands,
 } from './legacyCommands.js'
 export type { WorkbenchCommandRuntime } from './legacyCommands.js'
+
+export {
+  registerStorageCommands,
+} from './storageCommands.js'
+export type {
+  StorageCommandRuntime,
+  StorageCommandState,
+} from './storageCommands.js'

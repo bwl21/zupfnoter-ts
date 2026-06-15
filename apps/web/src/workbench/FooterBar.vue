@@ -36,6 +36,7 @@ const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
       {{ saveFormat }}
     </ZnBadge>
     <span class="footer-bar__meta">Storage: {{ storagePath }}</span>
+    <span class="footer-bar__meta">{{ saveFormat }}</span>
     <template #aside>
       <div class="footer-bar__playback">
         <span class="footer-bar__meta">Playback:</span>

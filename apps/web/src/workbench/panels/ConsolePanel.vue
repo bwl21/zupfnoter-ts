@@ -10,6 +10,7 @@ const props = defineProps<{
   lines: ConsoleLogEntry[]
   resolveCommand: (command: string) => { completed: string; didYouMean: string[] } | undefined
   getCommand: (commandName: string) => CommandDefinition | undefined
+  busy?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -24,6 +25,7 @@ const logElement = ref<HTMLElement | null>(null)
 const inputElement = ref<HTMLInputElement | null>(null)
 
 function submitCommand(): void {
+  if (props.busy === true) return
   const command = commandText.value.trim()
   if (command === '') return
   const [commandName, ...args] = command.split(/\s+/)
@@ -57,6 +59,7 @@ function submitCommand(): void {
 }
 
 function applyCompletion(): void {
+  if (props.busy === true) return
   const suggestion = props.resolveCommand(commandText.value)
   if (suggestion === undefined) return
   if (suggestion.completed.length > commandText.value.length) {
@@ -79,6 +82,7 @@ function buildUsage(commandName: string, parameters: CommandDefinition['paramete
 }
 
 function navigateHistory(direction: 'previous' | 'next'): void {
+  if (props.busy === true) return
   const history = commandHistory.value
   if (history.length === 0) return
 
@@ -102,6 +106,10 @@ function navigateHistory(direction: 'previous' | 'next'): void {
 }
 
 function handleInputKeydown(event: KeyboardEvent): void {
+  if (props.busy === true) {
+    event.preventDefault()
+    return
+  }
   if (event.key === 'Enter') {
     event.preventDefault()
     submitCommand()
@@ -162,7 +170,6 @@ watch(
         class="console-panel__log"
         role="log"
         aria-live="polite"
-        @mousedown.prevent="focusInput"
       >
         <div class="console-panel__terminal">
           <div
@@ -184,6 +191,7 @@ watch(
               autocomplete="off"
               spellcheck="false"
               aria-label="Command"
+              :disabled="busy === true"
               @keydown="handleInputKeydown"
             >
           </label>

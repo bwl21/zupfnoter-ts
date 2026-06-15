@@ -1,0 +1,317 @@
+import type { StorageCommandState } from '@zupfnoter/core'
+
+interface DropboxTokenResponse {
+  access_token: string
+  refresh_token?: string
+  expires_in?: number
+  token_type?: string
+  scope?: string
+}
+
+interface DropboxEntry {
+  '.tag': 'file' | 'folder' | 'deleted'
+  name: string
+  path_display?: string
+}
+
+interface DropboxListFolderResponse {
+  entries: DropboxEntry[]
+  cursor: string
+  has_more: boolean
+}
+
+interface DropboxListFolderContinueResponse {
+  entries: DropboxEntry[]
+  cursor: string
+  has_more: boolean
+}
+
+export interface DropboxProvider {
+  system: string
+  login(): Promise<void>
+  logout(): Promise<void>
+  list(path: StorageCommandState, recursive?: boolean): Promise<string[]>
+  search(path: StorageCommandState, query: string): Promise<string[]>
+  open(path: StorageCommandState, filename: string): Promise<string | undefined>
+  save(path: StorageCommandState, filename: string, content: string): Promise<void>
+  cleanup(): Promise<void>
+}
+
+const TOKEN_KEY = 'zupfnoter.dropbox.token'
+const AUTH_STATE_KEY = 'zupfnoter.dropbox.authstate'
+const REDIRECT_URI = `${window.location.origin}${window.location.pathname}`
+const LEGACY_DROPBOX_APP_KEY = 'zwydv2vbgp30e05'
+
+export function createDropboxProvider(): DropboxProvider {
+  return {
+    system: 'dropbox',
+    async login(): Promise<void> {
+      const appKey = resolveDropboxAppKey()
+      const state = crypto.randomUUID()
+      const verifier = createCodeVerifier()
+      const challenge = await createCodeChallenge(verifier)
+      localStorage.setItem(AUTH_STATE_KEY, JSON.stringify({ state, verifier }))
+      const url = new URL('https://www.dropbox.com/oauth2/authorize')
+      url.searchParams.set('client_id', appKey)
+      url.searchParams.set('response_type', 'code')
+      url.searchParams.set('redirect_uri', REDIRECT_URI)
+      url.searchParams.set('token_access_type', 'offline')
+      url.searchParams.set('state', state)
+      url.searchParams.set('code_challenge', challenge)
+      url.searchParams.set('code_challenge_method', 'S256')
+      window.location.assign(url.toString())
+    },
+    async logout(): Promise<void> {
+      const token = loadToken()
+      if (token !== undefined) {
+        await fetch('https://api.dropboxapi.com/2/auth/token/revoke', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token.access_token}`,
+          },
+        })
+      }
+      localStorage.removeItem(TOKEN_KEY)
+      localStorage.removeItem(AUTH_STATE_KEY)
+    },
+    async list(path: StorageCommandState, recursive = false): Promise<string[]> {
+      const token = requireToken()
+      const folder = normalizeFolderPath(path.path)
+      const entries = await listDropboxEntries(token.access_token, folder, recursive)
+      return entries
+        .filter((entry) => entry['.tag'] !== 'deleted')
+        .filter((entry) => entry['.tag'] === 'file')
+        .map((entry) => entry.path_display ?? entry.name)
+        .filter((name) => name.toLowerCase().endsWith('.abc'))
+        .sort()
+    },
+    async search(path: StorageCommandState, query: string): Promise<string[]> {
+      const token = requireToken()
+      const folder = normalizeFolderPath(path.path)
+      const entries = await listDropboxEntries(token.access_token, folder, true)
+      return entries
+        .filter((entry) => entry['.tag'] !== 'deleted')
+        .filter((entry) => entry['.tag'] === 'file')
+        .map((entry) => entry.path_display ?? entry.name)
+        .filter((name) => name.toLowerCase().endsWith('.abc'))
+        .filter((name) => name.toLowerCase().includes(query.toLowerCase()))
+        .sort()
+    },
+    async open(path: StorageCommandState, filename: string): Promise<string | undefined> {
+      const token = requireToken()
+      const target = resolveDropboxTarget(path.path, filename)
+      const response = await fetch('https://content.dropboxapi.com/2/files/download', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token.access_token}`,
+          'Dropbox-API-Arg': JSON.stringify({ path: `/${target}` }),
+        },
+      })
+      if (!response.ok) {
+        throw new Error(`Dropbox open failed: ${response.status} ${await readDropboxErrorMessage(response)}`)
+      }
+      return await response.text()
+    },
+    async save(path: StorageCommandState, filename: string, content: string): Promise<void> {
+      const token = requireToken()
+      const target = resolveDropboxTarget(path.path, filename)
+      const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token.access_token}`,
+          'Content-Type': 'application/octet-stream',
+          'Dropbox-API-Arg': JSON.stringify({
+            path: `/${target}`,
+            mode: 'overwrite',
+            autorename: false,
+            mute: false,
+            strict_conflict: false,
+          }),
+        },
+        body: content,
+      })
+      if (!response.ok) {
+        throw new Error(`Dropbox save failed: ${response.status} ${await readDropboxErrorMessage(response)}`)
+      }
+    },
+    async cleanup(): Promise<void> {
+      localStorage.removeItem(AUTH_STATE_KEY)
+    },
+  }
+}
+
+export function resumeDropboxLoginFromRedirect(): boolean {
+  const url = new URL(window.location.href)
+  const code = url.searchParams.get('code')
+  const state = url.searchParams.get('state')
+  if (code === null || state === null) return false
+  const authState = loadAuthState()
+  if (authState === undefined || authState.state !== state) return false
+  void exchangeCodeForToken(code, authState.verifier)
+  url.searchParams.delete('code')
+  url.searchParams.delete('state')
+  window.history.replaceState({}, '', url.toString())
+  return true
+}
+
+async function exchangeCodeForToken(code: string, verifier: string): Promise<void> {
+  const appKey = resolveDropboxAppKey()
+  const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      code,
+      grant_type: 'authorization_code',
+      client_id: appKey,
+      redirect_uri: REDIRECT_URI,
+      code_verifier: verifier,
+    }).toString(),
+  })
+  if (!response.ok) {
+    throw new Error(`Dropbox token exchange failed: ${response.status}`)
+  }
+  const token = await response.json() as DropboxTokenResponse
+  localStorage.setItem(TOKEN_KEY, JSON.stringify(token))
+  localStorage.removeItem(AUTH_STATE_KEY)
+}
+
+async function listDropboxEntries(accessToken: string, folder: string, recursive: boolean): Promise<DropboxEntry[]> {
+  const firstResponse = await fetch('https://api.dropboxapi.com/2/files/list_folder', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      path: folder === '' ? '' : `/${folder}`,
+      recursive,
+      include_deleted: false,
+      include_has_explicit_shared_members: false,
+      include_mounted_folders: true,
+      include_non_downloadable_files: true,
+    }),
+  })
+  if (!firstResponse.ok) {
+    throw new Error(`Dropbox list failed: ${firstResponse.status} ${await readDropboxErrorMessage(firstResponse)}`)
+  }
+  const payload = await firstResponse.json() as DropboxListFolderResponse
+  const entries = [...payload.entries]
+  let cursor = payload.cursor
+  let hasMore = payload.has_more
+  while (hasMore) {
+    const continueResponse = await fetch('https://api.dropboxapi.com/2/files/list_folder/continue', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ cursor }),
+    })
+    if (!continueResponse.ok) {
+      throw new Error(`Dropbox list failed: ${continueResponse.status} ${await readDropboxErrorMessage(continueResponse)}`)
+    }
+    const continuePayload = await continueResponse.json() as DropboxListFolderContinueResponse
+    entries.push(...continuePayload.entries)
+    cursor = continuePayload.cursor
+    hasMore = continuePayload.has_more
+  }
+  return entries
+}
+
+function resolveDropboxAppKey(): string {
+  const appKey = import.meta.env.VITE_DROPBOX_APP_KEY as string | undefined
+  if (appKey !== undefined && appKey.trim() !== '') {
+    return appKey.trim()
+  }
+  return LEGACY_DROPBOX_APP_KEY
+}
+
+function loadToken(): DropboxTokenResponse | undefined {
+  const raw = localStorage.getItem(TOKEN_KEY)
+  if (raw === null) return undefined
+  try {
+    return JSON.parse(raw) as DropboxTokenResponse
+  } catch {
+    return undefined
+  }
+}
+
+function requireToken(): DropboxTokenResponse {
+  const token = loadToken()
+  if (token === undefined) {
+    throw new Error('Dropbox not logged in')
+  }
+  return token
+}
+
+function loadAuthState(): { state: string; verifier: string } | undefined {
+  const raw = localStorage.getItem(AUTH_STATE_KEY)
+  if (raw === null) return undefined
+  try {
+    const parsed = JSON.parse(raw) as { state?: unknown; verifier?: unknown }
+    if (typeof parsed.state !== 'string' || typeof parsed.verifier !== 'string') return undefined
+    return { state: parsed.state, verifier: parsed.verifier }
+  } catch {
+    return undefined
+  }
+}
+
+function normalizeFolderPath(path: string): string {
+  return path.replace(/^\/+/, '').replace(/\/+$/, '')
+}
+
+function joinPath(folder: string, filename: string): string {
+  const normalizedFolder = normalizeFolderPath(folder)
+  const normalizedFile = filename.replace(/^\/+/, '')
+  return normalizedFolder === '' ? normalizedFile : `${normalizedFolder}/${normalizedFile}`
+}
+
+function resolveDropboxTarget(folder: string, filename: string): string {
+  const normalizedFilename = filename.replace(/^\/+/, '')
+  if (normalizedFilename.includes('/')) {
+    return normalizedFilename
+  }
+  return joinPath(folder, normalizedFilename)
+}
+
+function createCodeVerifier(): string {
+  return arrayBufferToBase64Url(crypto.getRandomValues(new Uint8Array(32)))
+}
+
+async function createCodeChallenge(verifier: string): Promise<string> {
+  const data = new TextEncoder().encode(verifier)
+  const digest = await crypto.subtle.digest('SHA-256', data)
+  return arrayBufferToBase64Url(new Uint8Array(digest))
+}
+
+async function readDropboxErrorMessage(response: Response): Promise<string> {
+  const contentType = response.headers.get('content-type') ?? ''
+  if (contentType.includes('application/json')) {
+    try {
+      const payload = await response.json() as { error_summary?: string; error?: unknown }
+      if (typeof payload.error_summary === 'string' && payload.error_summary.trim() !== '') {
+        return payload.error_summary
+      }
+      return JSON.stringify(payload)
+    } catch {
+      return response.statusText
+    }
+  }
+  try {
+    const text = await response.text()
+    return text.trim() === '' ? response.statusText : text
+  } catch {
+    return response.statusText
+  }
+}
+
+function arrayBufferToBase64Url(value: ArrayBuffer | Uint8Array): string {
+  const bytes = value instanceof Uint8Array ? value : new Uint8Array(value)
+  let binary = ''
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte)
+  })
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')
+}

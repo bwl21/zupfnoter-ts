@@ -33,8 +33,8 @@ export interface CommandDefinition {
   help: string
   parameters?: CommandParameter[]
   undoable?: boolean
-  perform(args: CommandArguments, context: CommandContext): void | CommandResult
-  invert?: (args: CommandArguments, context: CommandContext) => void
+  perform(args: CommandArguments, context: CommandContext): void | CommandResult | Promise<void | CommandResult>
+  invert?: (args: CommandArguments, context: CommandContext) => void | Promise<void>
 }
 
 export interface CommandHistoryEntry {
@@ -132,22 +132,22 @@ export class CommandStack {
       : undefined
   }
 
-  runString(commandString: string): void {
+  async runString(commandString: string): Promise<void> {
     const parsedCommand = parseCommandString(commandString)
-    this.runParsedCommand(parsedCommand.name, parsedCommand.values)
+    await this.runParsedCommand(parsedCommand.name, parsedCommand.values)
   }
 
-  handleCommand(commandString: string): void {
-    this.runString(commandString)
+  handleCommand(commandString: string): Promise<void> {
+    return this.runString(commandString)
   }
 
-  runParsedCommand(commandName: string, values: CommandArgumentValue[] | CommandArguments = []): void {
+  async runParsedCommand(commandName: string, values: CommandArgumentValue[] | CommandArguments = []): Promise<void> {
     if (commandName === 'undo') {
-      this.undo()
+      await this.undo()
       return
     }
     if (commandName === 'redo') {
-      this.redo()
+      await this.redo()
       return
     }
 
@@ -155,7 +155,7 @@ export class CommandStack {
     const args = Array.isArray(values)
       ? this.resolveArguments(command, values)
       : values
-    const result = command.perform(args, this.context)
+    const result = await command.perform(args, this.context)
     this.historyStack.push({ commandName, args: { ...args } })
 
     if (command.undoable !== false && command.invert !== undefined) {
@@ -165,11 +165,11 @@ export class CommandStack {
     }
   }
 
-  handleParsedCommand(commandName: string, values: CommandArgumentValue[] | CommandArguments = []): void {
-    this.runParsedCommand(commandName, values)
+  handleParsedCommand(commandName: string, values: CommandArgumentValue[] | CommandArguments = []): Promise<void> {
+    return this.runParsedCommand(commandName, values)
   }
 
-  undo(): void {
+  async undo(): Promise<void> {
     const entry = this.undoStack.pop()
     if (entry === undefined) {
       this.context.log('Nothing to undo')
@@ -180,11 +180,11 @@ export class CommandStack {
     if (command.invert === undefined) {
       throw new CommandError(`Command is not undoable: ${entry.commandName}`)
     }
-    command.invert(entry.args, this.context)
+    await command.invert(entry.args, this.context)
     this.redoStack.push(entry)
   }
 
-  redo(): void {
+  async redo(): Promise<void> {
     const entry = this.redoStack.pop()
     if (entry === undefined) {
       this.context.log('Nothing to redo')
@@ -192,7 +192,7 @@ export class CommandStack {
     }
 
     const command = this.requireCommand(entry.commandName)
-    command.perform(entry.args, this.context)
+    await command.perform(entry.args, this.context)
     this.undoStack.push(entry)
   }
 

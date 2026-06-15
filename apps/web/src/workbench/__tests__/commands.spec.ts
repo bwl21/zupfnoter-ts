@@ -66,29 +66,29 @@ describe('parseCommandString', () => {
 })
 
 describe('legacy command registration', () => {
-  it('registers legacy command names in public help', () => {
+  it('registers legacy command names in public help', async () => {
     const log: string[] = []
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerLegacyCommands(stack, createRuntime(log))
 
-    stack.runString('help dlogin')
+    await stack.runString('help dlogin')
 
     expect(log).toContain('dlogin - dlogin (Dropbox integration is not ported yet)')
   })
 
-  it('executes implemented workbench commands through legacy names', () => {
+  it('executes implemented workbench commands through legacy names', async () => {
     const log: string[] = []
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerLegacyCommands(stack, createRuntime(log))
 
-    stack.runString('view 2')
-    stack.runString('panel duplicate harp')
-    stack.runString('panel duplicate notes')
-    stack.runString('sound piano')
-    stack.runString('p auto')
-    stack.runString('speed 0.5')
-    stack.runString('saveformat A4')
-    stack.runString('editconf layout')
+    await stack.runString('view 2')
+    await stack.runString('panel duplicate harp')
+    await stack.runString('panel duplicate notes')
+    await stack.runString('sound piano')
+    await stack.runString('p auto')
+    await stack.runString('speed 0.5')
+    await stack.runString('saveformat A4')
+    await stack.runString('editconf layout')
 
     expect(log).toEqual([
       'view:2',
@@ -103,12 +103,12 @@ describe('legacy command registration', () => {
     ])
   })
 
-  it('documents panel duplicate targets in help', () => {
+  it('documents panel duplicate targets in help', async () => {
     const log: string[] = []
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerLegacyCommands(stack, createRuntime(log))
 
-    stack.runString('help panel')
+    await stack.runString('help panel')
 
     expect(log).toContain('panel <action> <target> - duplicate a panel into a second window (harp | notes)')
     expect(log).toContain('panel duplicate harp - duplicate the harp panel into a second window')
@@ -136,15 +136,15 @@ describe('legacy command registration', () => {
     })
   })
 
-  it('switches playback sound through the legacy command', () => {
+  it('switches playback sound through the legacy command', async () => {
     const log: string[] = []
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerLegacyCommands(stack, createRuntime(log))
 
-    stack.runString('sound harfe')
-    stack.runString('sound klavier')
-    stack.runString('sound grandPiano')
-    stack.runString('sound western-gitarre')
+    await stack.runString('sound harfe')
+    await stack.runString('sound klavier')
+    await stack.runString('sound grandPiano')
+    await stack.runString('sound western-gitarre')
 
     expect(log).toContain('sound:harfe')
     expect(log).toContain('sound:klavier')
@@ -152,70 +152,70 @@ describe('legacy command registration', () => {
     expect(log).toContain('sound:western-gitarre')
   })
 
-  it('supports undo for create and local open commands', () => {
+  it('supports undo for create and local open commands', async () => {
     const log: string[] = []
     const runtime = createRuntime(log)
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerLegacyCommands(stack, runtime)
 
-    stack.runString('c 2 "New Song"')
+    await stack.runString('c 2 "New Song"')
     expect(runtime.getAbcText()).toContain('T:New Song')
 
-    stack.runString('undo')
+    await stack.runString('undo')
     expect(runtime.getAbcText()).toContain('T:Old')
   })
 
-  it('patches and reverts embedded config values', () => {
+  it('patches and reverts embedded config values', async () => {
     const log: string[] = []
     const runtime = createRuntime(log)
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerLegacyCommands(stack, runtime)
 
-    stack.runString('cconf extract.0.title NeuerTitel')
+    await stack.runString('cconf extract.0.title NeuerTitel')
     expect(runtime.getAbcText()).toContain('"title": "NeuerTitel"')
 
-    stack.runString('delconfig extract.0.title')
+    await stack.runString('delconfig extract.0.title')
     expect(runtime.getAbcText()).not.toContain('"title": "NeuerTitel"')
 
-    stack.runString('undoconfig')
+    await stack.runString('undoconfig')
     expect(runtime.getAbcText()).toContain('"title": "NeuerTitel"')
 
-    stack.runString('redoconfig')
+    await stack.runString('redoconfig')
     expect(runtime.getAbcText()).not.toContain('"title": "NeuerTitel"')
   })
 
-  it('copies config values between extracts', () => {
+  it('copies config values between extracts', async () => {
     const log: string[] = []
     const runtime = createRuntime(log)
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerLegacyCommands(stack, runtime)
 
-    stack.runString('cpconfig extract.0.voices 2')
+    await stack.runString('cpconfig extract.0.voices 2')
 
     expect(runtime.getAbcText()).toContain('"2": {')
     expect(runtime.getAbcText()).toContain('"voices": [')
   })
 
-  it('stores standard config snippets and applies them through legacy commands', () => {
+  it('stores standard config snippets and applies them through legacy commands', async () => {
     const log: string[] = []
     const runtime = createRuntime(log)
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerLegacyCommands(stack, runtime)
 
-    stack.runString('setstdnotes')
-    stack.runString('cconf extract.0.title Changed')
-    stack.runString('stdnotes')
+    await stack.runString('setstdnotes')
+    await stack.runString('cconf extract.0.title Changed')
+    await stack.runString('stdnotes')
 
     expect(runtime.getAbcText()).toContain('"title": "Old"')
   })
 
-  it('creates and edits templates', () => {
+  it('creates and edits templates', async () => {
     const log: string[] = []
     const runtime = createRuntime(log)
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerLegacyCommands(stack, runtime)
 
-    stack.runString('maketemplate')
+    await stack.runString('maketemplate')
 
     expect(runtime.getAbcText()).toContain('X:{{song_id}}')
     expect(runtime.getAbcText()).toContain('F:{{song_id}}_{{filename}}')
