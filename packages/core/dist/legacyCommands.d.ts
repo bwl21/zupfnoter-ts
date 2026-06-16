@@ -2,6 +2,8 @@ import { CommandStack } from './commands.js';
 export interface WorkbenchCommandRuntime {
     getAbcText(): string;
     setAbcText(value: string): void;
+    readDocument(): string;
+    writeDocument(value: string): void;
     render(): void;
     play(range: string): void;
     stop(): void;

@@ -12,6 +12,7 @@ import type { AudioPlayer, PlaybackScheduleCallbacks } from './useAudioPlayer'
 interface PlaybackDriverSource {
   timeline: PlaybackStep[]
   baseTempoFromQ?: number
+  mode?: import('@zupfnoter/types').PlaybackMode
 }
 
 export function usePlaybackDriver(
@@ -39,11 +40,12 @@ export function usePlaybackDriver(
 
   async function play(): Promise<void> {
     const source = timelineSource.value
+    const playbackMode = source.mode ?? playbackStore.mode
     const steps = resolvePlaybackSteps(
       selection.value,
       sheetObjectIndex.value,
       source.timeline,
-      playbackStore.mode,
+      playbackMode,
     )
     if (steps.length === 0) {
       stop()
