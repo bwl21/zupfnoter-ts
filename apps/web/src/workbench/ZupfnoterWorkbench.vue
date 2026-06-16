@@ -31,6 +31,7 @@ import { usePlaybackStore } from '../stores/playback'
 import { useSelectionStore } from '../stores/selection'
 import { usePlaybackDriver } from './usePlaybackDriver'
 import { useAudioPlayer, type PlaybackInstrument } from './useAudioPlayer'
+import { resolvePlaybackInstrument } from './sound'
 import type { PlaybackStep } from './playback'
 import { CommandError, CommandStack, registerLegacyCommands, registerStorageCommands } from '@zupfnoter/core'
 import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
@@ -61,7 +62,7 @@ const storageState = reactive({
   pendingCandidates: [] as string[],
 })
 const dropboxProvider = createDropboxProvider()
-const playbackInstrument = ref<PlaybackInstrument>('harp')
+const playbackInstrument = ref<PlaybackInstrument>('piano')
 const logLevel = ref('warning')
 const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
 const runtimeSettings = ref<Record<string, string>>({
@@ -522,29 +523,11 @@ function setCurrentExtractFromCommand(extract: number): void {
 }
 
 function setPlaybackInstrumentFromCommand(value: string): void {
-  const normalized = value.trim().toLowerCase()
-  if (normalized === 'harfe' || normalized === 'harp') {
-    playbackInstrument.value = 'harp'
+  const sound = resolvePlaybackInstrument(value)
+  if (sound !== undefined) {
+    playbackInstrument.value = sound
     stopPlayback()
-    appendConsoleLine('sound set to harp', 'info')
-    return
-  }
-  if (normalized === 'klavier' || normalized === 'piano') {
-    playbackInstrument.value = 'piano'
-    stopPlayback()
-    appendConsoleLine('sound set to piano', 'info')
-    return
-  }
-  if (normalized === 'grandpiano' || normalized === 'grand-piano' || normalized === 'grand piano') {
-    playbackInstrument.value = 'piano'
-    stopPlayback()
-    appendConsoleLine('sound set to grand piano', 'info')
-    return
-  }
-  if (normalized === 'western-gitarre' || normalized === 'western-guitar' || normalized === 'gitarre' || normalized === 'guitar') {
-    playbackInstrument.value = 'western-guitar'
-    stopPlayback()
-    appendConsoleLine('sound set to western-guitar', 'info')
+    appendConsoleLine(`sound set to ${sound}`, 'info')
     return
   }
   throw new CommandError(`Unsupported sound: ${value}`)
@@ -594,7 +577,7 @@ commandStack = new CommandStack({
   log: appendConsoleLine,
 })
 
-playbackInstrument.value = 'harp'
+playbackInstrument.value = 'piano'
 
 void (async () => {
   if (resumeDropboxLoginFromRedirect()) {

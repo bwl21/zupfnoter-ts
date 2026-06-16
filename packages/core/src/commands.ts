@@ -206,7 +206,10 @@ export class CommandStack {
         const signature = parameters.length === 0
           ? command.name
           : `${command.name} ${parameters.map((parameter) => `<${parameter.name}>`).join(' ')}`
-        return `${signature} - ${command.help}`
+        const parameterHelp = parameters.length === 0
+          ? ''
+          : ` (${parameters.map((parameter) => `${parameter.name}: ${parameter.help}`).join(', ')})`
+        return `${signature} - ${command.help}${parameterHelp}`
       })
   }
 

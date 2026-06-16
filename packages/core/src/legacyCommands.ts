@@ -125,7 +125,7 @@ function registerInternalCommands(stack: CommandStack, runtime: WorkbenchCommand
     name: 'sound',
     help: 'set playback sound',
     undoable: false,
-    parameters: [{ name: 'sound', type: 'string', help: 'harp | piano | western-guitar', defaultValue: 'harp' }],
+    parameters: [{ name: 'sound', type: 'string', help: 'harp | piano | western-guitar | oscillator', defaultValue: 'piano' }],
     perform: (args) => runtime.setSound(readString(args, 'sound')),
   })
 
