@@ -38,6 +38,14 @@ export function usePlaybackDriver(
     playbackStore.stopPlayback()
   }
 
+  function syncHighlight(step: PlaybackStep): void {
+    playbackStore.addHighlightRanges(step.activeTextRanges)
+  }
+
+  function releaseHighlight(step: PlaybackStep): void {
+    playbackStore.removeHighlightRanges(step.activeTextRanges)
+  }
+
   async function play(): Promise<void> {
     const source = timelineSource.value
     const playbackMode = source.mode ?? playbackStore.mode
@@ -60,14 +68,10 @@ export function usePlaybackDriver(
     playbackStore.startPlayback(source.baseTempoFromQ, totalPassCount > 0 ? totalPassCount : undefined)
     const callbacks: PlaybackScheduleCallbacks = {
       onStepStart: (step) => {
-        playbackStore.handlePlayerEvent({
-          kind: 'current-notes',
-          activeTextRanges: step.activeTextRanges,
-          activeStartChar: step.activeStartChar,
-          activeTime: step.activeTime,
-          passIndex: step.passIndex,
-          voltaNumber: step.voltaNumber,
-        })
+        syncHighlight(step)
+      },
+      onStepEnd: (step) => {
+        releaseHighlight(step)
       },
     }
     await audioPlayer?.schedule(steps, playbackStore.state.speedFactor, callbacks)
