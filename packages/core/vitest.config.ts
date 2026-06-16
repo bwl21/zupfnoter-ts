@@ -1,6 +1,4 @@
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
+export default {
   test: {
     environment: 'node',
     include: ['src/**/*.{spec,test}.ts'],
@@ -8,4 +6,4 @@ export default defineConfig({
       ? []
       : ['src/testing/__tests__/**/gap_report.spec.ts'],
   },
-})
+}

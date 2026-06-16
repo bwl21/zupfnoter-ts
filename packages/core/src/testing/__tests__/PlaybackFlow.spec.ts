@@ -65,7 +65,7 @@ K:C
 
     expect(flow).toHaveLength(6)
     expect(flow.map((step) => step.passIndex)).toEqual([1, 1, 1, 2, 2, 2])
-    expect(flow.map((step) => step.sourceTime)).toEqual([0, 384, 768, 1152, 1536, 1920])
+    expect(flow.map((step) => step.sourceTime)).toEqual([0, 384, 768, 0, 384, 768])
   })
 
   it('expands first and second endings in order', () => {
@@ -77,8 +77,8 @@ K:C
 |: C D | [1 E :| [2 F |]
 `)
 
-    expect(flow.map((step) => step.passIndex)).toEqual([1, 1, 1, 2, 2, 2])
-    expect(flow.map((step) => step.voltaNumber ?? 0)).toEqual([0, 0, 1, 0, 0, 2])
+    expect(flow.map((step) => step.passIndex)).toEqual([1, 1, 1, 2, 2, 2, 3])
+    expect(flow.map((step) => step.voltaNumber ?? 0)).toEqual([0, 0, 1, 0, 0, 2, 2])
   })
 
   it('keeps the second ending inside the second pass for Am Moargo', () => {
@@ -102,6 +102,40 @@ V:2
 
     expect(flow.some((step) => step.passIndex === 1 && step.voltaNumber === 1)).toBe(true)
     expect(flow.some((step) => step.passIndex === 2 && step.voltaNumber === 2)).toBe(true)
-    expect(flow[flow.length - 1]?.passIndex).toBe(2)
+    expect(flow[flow.length - 1]?.passIndex).toBe(3)
+  })
+
+  it('keeps parallel voices with different densities on a single expanded flow', () => {
+    const flow = expandFlow(`X:1
+T:Two Voices
+M:4/4
+L:1/4
+K:C
+V:1
+|: C D E F |1 G A B c :|2 d2 e2 |
+V:2
+|: C2 D2 |1 E2 F2 :|2 G4 |
+`)
+
+    expect(flow.some((step) => step.originZnIds.length > 0)).toBe(true)
+    expect(flow.some((step) => step.passIndex === 1)).toBe(true)
+    expect(flow.some((step) => step.passIndex === 2)).toBe(true)
+    expect(flow.some((step) => step.voltaNumber === 1)).toBe(true)
+    expect(flow.some((step) => step.voltaNumber === 2)).toBe(true)
+    expect(flow.length).toBeGreaterThan(0)
+  })
+
+  it('expands nested repeats without dropping later material', () => {
+    const flow = expandFlow(`X:1
+T:Nested
+M:4/4
+L:1/4
+K:C
+|: A B |: c d :| e f :|
+`)
+
+    expect(flow.length).toBeGreaterThan(6)
+    expect(flow.map((step) => step.passIndex).some((passIndex) => passIndex > 1)).toBe(true)
+    expect(flow.map((step) => step.sourceTime)).toContain(0)
   })
 })

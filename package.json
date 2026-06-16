@@ -27,6 +27,7 @@
     "parity:song": "node tools/parity-song.mjs",
     "test:recreateLegacy": "npm run test:loadsample",
     "test:unit": "pnpm -r run test:unit",
+    "test:core": "node ./node_modules/.pnpm/node_modules/vitest/vitest.mjs --root packages/core --config vitest.config.ts",
     "type-check": "pnpm -r run type-check",
     "lint": "pnpm -r run lint",
     "ai-task": "tsx tools/ai-task/src/cli.ts",
