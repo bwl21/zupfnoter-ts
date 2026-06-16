@@ -122,6 +122,7 @@ const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
   computed(() => ({
     timeline: playbackTimeline.value,
     baseTempoFromQ: baseTempoFromQ.value,
+    mode: 'all-score',
   })),
   audioPlayer,
 )
@@ -608,6 +609,11 @@ registerStorageCommands(commandStack, storageState, {
   save: async (path, filename, content) => {
     await dropboxProvider.save(path, filename, content)
   },
+  readDocument: () => abcText.value,
+  writeDocument: (content) => {
+    abcText.value = content
+    renderNow()
+  },
   login: async (path) => {
     await dropboxProvider.login()
   },
@@ -622,6 +628,11 @@ registerStorageCommands(commandStack, storageState, {
 registerLegacyCommands(commandStack, {
   getAbcText: () => abcText.value,
   setAbcText: setAbcFromCommand,
+  readDocument: () => abcText.value,
+  writeDocument: (value) => {
+    abcText.value = value
+    renderNow()
+  },
   render: renderNow,
   play: playFromCommand,
   stop: stopPlayback,

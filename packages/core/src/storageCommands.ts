@@ -13,6 +13,8 @@ export interface StorageCommandRuntime {
   search(path: StorageCommandState, query: string): Promise<string[]>
   open(path: StorageCommandState, filename: string): Promise<string | undefined>
   save(path: StorageCommandState, filename: string, content: string): Promise<void>
+  readDocument(): string
+  writeDocument(content: string): void
   login(path: StorageCommandState): Promise<void>
   logout(path: StorageCommandState): Promise<void>
   cleanup(path: StorageCommandState): Promise<void>
@@ -157,10 +159,12 @@ export function registerStorageCommands(
           throw new CommandError(`Candidate not found: ${numericSelection}`)
         }
         const oldState = { ...state }
+        const previousDocument = runtime.readDocument()
         const loaded = await runtime.open(state, selectedName)
         if (loaded === undefined) {
           throw new CommandError(`Unable to open: ${selectedName}`)
         }
+        runtime.writeDocument(loaded)
         context.log(`open ${state.system}//${state.path}/${selectedName}`)
         state.loggedIn = true
         state.pendingCandidates = []
@@ -169,6 +173,7 @@ export function registerStorageCommands(
           path: oldState.path,
           loggedIn: oldState.loggedIn,
           pendingCandidates: [...oldState.pendingCandidates],
+          documentText: previousDocument,
         }
         return { undoArguments } as CommandResult
       }
@@ -187,10 +192,12 @@ export function registerStorageCommands(
       if (selectedName === undefined) {
         throw new CommandError(`No matches for: ${filename}`)
       }
+      const previousDocument = runtime.readDocument()
       const loaded = await runtime.open(state, selectedName)
       if (loaded === undefined) {
         throw new CommandError(`Unable to open: ${selectedName}`)
       }
+      runtime.writeDocument(loaded)
       context.log(`open ${state.system}//${state.path}/${selectedName}`)
       state.loggedIn = true
       state.pendingCandidates = []
@@ -199,6 +206,7 @@ export function registerStorageCommands(
         path: oldState.path,
         loggedIn: oldState.loggedIn,
         pendingCandidates: [...oldState.pendingCandidates],
+        documentText: previousDocument,
       }
       return { undoArguments } as CommandResult
     },
@@ -206,6 +214,10 @@ export function registerStorageCommands(
       state.system = String(args.system ?? state.system)
       state.path = normalizeStoragePath(String(args.path ?? state.path))
       state.loggedIn = Boolean(args.loggedIn ?? state.loggedIn)
+      const documentText = args.documentText
+      if (typeof documentText === 'string') {
+        runtime.writeDocument(documentText)
+      }
     },
   })
 

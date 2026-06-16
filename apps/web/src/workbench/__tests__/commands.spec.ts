@@ -4,6 +4,7 @@ import {
   CommandStack,
   parseCommandString,
   registerLegacyCommands,
+  registerStorageCommands,
   type WorkbenchCommandRuntime,
 } from '@zupfnoter/core'
 
@@ -48,6 +49,10 @@ function createRuntime(log: string[]): WorkbenchCommandRuntime {
       log.push('lsave')
     },
     openLocalStore: (id) => localStore.get(id),
+    readDocument: () => abcText,
+    writeDocument: (value: string) => {
+      abcText = value
+    },
   }
 }
 
@@ -163,6 +168,68 @@ describe('legacy command registration', () => {
 
     await stack.runString('undo')
     expect(runtime.getAbcText()).toContain('T:Old')
+  })
+
+  it('supports undo for storage open commands', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerStorageCommands(stack, {
+      system: 'dropbox',
+      path: '',
+      loggedIn: true,
+      pendingCandidates: [],
+    }, {
+      providers: ['dropbox'],
+      list: async () => ['first.abc', 'second.abc'],
+      search: async (_path, query) => query === 'first' ? ['first.abc'] : ['second.abc'],
+      open: async (_path, filename) => `${filename}\n`,
+      save: async () => undefined,
+      readDocument: () => runtime.getAbcText(),
+      writeDocument: (value) => runtime.setAbcText(value),
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    runtime.setAbcText('original\n')
+    await stack.runString('sopen first')
+    expect(runtime.getAbcText()).toBe('first.abc\n')
+
+    await stack.runString('undo')
+    expect(runtime.getAbcText()).toBe('original\n')
+  })
+
+  it('supports undo for selected storage candidates', async () => {
+    let documentText = 'start\n'
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerStorageCommands(stack, {
+      system: 'dropbox',
+      path: '',
+      loggedIn: true,
+      pendingCandidates: [],
+    }, {
+      providers: ['dropbox'],
+      list: async () => ['alpha.abc', 'beta.abc'],
+      search: async () => ['alpha.abc', 'beta.abc'],
+      open: async (_path, filename) => `${filename}\n`,
+      save: async () => undefined,
+      readDocument: () => documentText,
+      writeDocument: (value: string) => {
+        documentText = value
+      },
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    await stack.runString('sopen a')
+    await stack.runString('sopen 1')
+    expect(documentText).toBe('alpha.abc\n')
+
+    await stack.runString('undo')
+    expect(documentText).toBe('start\n')
   })
 
   it('patches and reverts embedded config values', async () => {
