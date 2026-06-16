@@ -122,18 +122,21 @@ export function registerStorageCommands(
     help: 'list abc files in active storage path',
     undoable: false,
     parameters: [
-      { name: 'query', type: 'string', help: 'optional filter', defaultValue: '*' },
       { name: 'flag', type: 'string', help: 'set to -r for recursive listing', defaultValue: '' },
+      { name: 'query', type: 'string', help: 'optional filter', defaultValue: '*' },
     ],
     perform: async (args, context): Promise<void> => {
-      const query = String(args.query ?? '*').trim()
       const flag = String(args.flag ?? '').trim()
+      const query = String(args.query ?? '*').trim()
       const recursive = flag === '-r' || flag === '--recursive'
-      const results = filterStorageCandidates(await runtime.list(state, recursive), query)
+      const search = recursive && query === '*' ? '' : query
+      const results = recursive
+        ? await runtime.search(state, search)
+        : filterStorageCandidates(await runtime.list(state, false), search, false)
       if (results.length === 0) {
-        context.log(query === '*' || query === ''
+        context.log(search === '*' || search === ''
           ? `no abc files in ${state.system}//${state.path}`
-          : `no abc files for "${query}" in ${state.system}//${state.path}`)
+          : `no abc files for "${search}" in ${state.system}//${state.path}`)
         return
       }
       results.forEach((result) => context.log(result))
@@ -144,9 +147,15 @@ export function registerStorageCommands(
     name: 'sopen',
     help: 'open a file from active storage path',
     undoable: true,
-    parameters: [{ name: 'filename', type: 'string', help: 'filename' }],
+    parameters: [
+      { name: 'flag', type: 'string', help: 'set to -r for recursive listing', defaultValue: '' },
+      { name: 'filename', type: 'string', help: 'filename', defaultValue: '' },
+    ],
     perform: async (args, context): Promise<void | CommandResult> => {
-      const filename = String(args.filename ?? '')
+      const flag = String(args.flag ?? '').trim()
+      const recursive = flag === '-r' || flag === '--recursive'
+      const rawFilename = String(args.filename ?? '').trim()
+      const filename = recursive && rawFilename === '' ? '*' : (recursive && rawFilename !== '' ? rawFilename : (flag === '' ? rawFilename : flag))
       const numericSelection = Number.parseInt(filename, 10)
       if (
         state.pendingCandidates.length > 0
@@ -177,12 +186,15 @@ export function registerStorageCommands(
         }
         return { undoArguments } as CommandResult
       }
-      const candidates = filterStorageCandidates(await runtime.list(state), filename)
+      const query = recursive ? rawFilename : (flag === '' ? rawFilename : flag)
+      const candidates = recursive
+        ? await runtime.search(state, query)
+        : filterStorageCandidates(await runtime.list(state, false), query, false)
       if (candidates.length === 0) {
-        throw new CommandError(`No matches for: ${filename}`)
+        throw new CommandError(`No matches for: ${query}`)
       }
       if (candidates.length > 1) {
-        context.log(`multiple matches for "${filename}" (use sopen <n>):`)
+        context.log(`multiple matches for "${query}" (use sopen <n>):`)
         candidates.forEach((candidate, index) => context.log(`${index + 1}. ${candidate}`))
         state.pendingCandidates = candidates
         return
@@ -190,7 +202,7 @@ export function registerStorageCommands(
       const oldState = { ...state }
       const selectedName = candidates[0]
       if (selectedName === undefined) {
-        throw new CommandError(`No matches for: ${filename}`)
+        throw new CommandError(`No matches for: ${query}`)
       }
       const previousDocument = runtime.readDocument()
       const loaded = await runtime.open(state, selectedName)
@@ -236,10 +248,26 @@ function normalizeStoragePath(path: string): string {
   return path.replace(/^\/+/, '').replace(/\/+$/, '')
 }
 
-function filterStorageCandidates(entries: string[], query: string): string[] {
+function filterStorageCandidates(entries: string[], query: string, recursive: boolean): string[] {
   const normalizedQuery = query.trim().toLowerCase()
-  return entries
+  const filtered = entries
     .filter((name) => name.toLowerCase().endsWith('.abc'))
     .filter((name) => normalizedQuery === '' || normalizedQuery === '*' || name.toLowerCase().includes(normalizedQuery))
-    .sort()
+  return recursive
+    ? filtered.sort(compareStoragePaths)
+    : filtered.sort((left, right) => left.localeCompare(right))
+}
+
+function compareStoragePaths(left: string, right: string): number {
+  const leftParts = left.split('/').filter((part) => part !== '')
+  const rightParts = right.split('/').filter((part) => part !== '')
+  const length = Math.min(leftParts.length, rightParts.length)
+  for (let index = 0; index < length; index += 1) {
+    const leftPart = leftParts[index]
+    const rightPart = rightParts[index]
+    if (leftPart === undefined || rightPart === undefined) break
+    const comparison = leftPart.localeCompare(rightPart, undefined, { numeric: true, sensitivity: 'base' })
+    if (comparison !== 0) return comparison
+  }
+  return leftParts.length - rightParts.length
 }

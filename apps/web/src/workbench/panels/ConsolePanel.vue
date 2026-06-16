@@ -2,6 +2,7 @@
 import { nextTick, onMounted, ref, watch } from 'vue'
 
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
+import ZnBadge from '../../design-system/components/ZnBadge.vue'
 import ZnPanelHeader from '../../design-system/components/ZnPanelHeader.vue'
 import type { CommandDefinition } from '@zupfnoter/core'
 import type { ConsoleLogEntry } from '../consoleLog'
@@ -11,6 +12,7 @@ const props = defineProps<{
   resolveCommand: (command: string) => { completed: string; didYouMean: string[] } | undefined
   getCommand: (commandName: string) => CommandDefinition | undefined
   busy?: boolean
+  activityLabel?: string
 }>()
 
 const emit = defineEmits<{
@@ -174,7 +176,13 @@ onMounted(() => {
 <template>
   <ZnPanel tone="sunken">
     <template #header>
-      <ZnPanelHeader eyebrow="Debug" title="Console" subtitle="Protokoll und Statusmeldungen der Workbench" />
+      <ZnPanelHeader eyebrow="Debug" title="Console" subtitle="Protokoll und Statusmeldungen der Workbench">
+        <template #actions>
+          <ZnBadge :tone="busy === true ? 'warning' : 'success'">
+            {{ activityLabel ?? (busy === true ? 'Aktiv' : 'Bereit') }}
+          </ZnBadge>
+        </template>
+      </ZnPanelHeader>
     </template>
 
     <div class="console-panel" @click="handlePanelClick">

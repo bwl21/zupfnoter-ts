@@ -244,6 +244,145 @@ describe('legacy command registration', () => {
     expect(documentText).toBe('start\n')
   })
 
+  it('keeps recursive storage listings in hierarchical path order', async () => {
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerStorageCommands(stack, {
+      system: 'dropbox',
+      path: '',
+      loggedIn: true,
+      pendingCandidates: [],
+    }, {
+      providers: ['dropbox'],
+      list: async () => ['b/song.abc', 'a/song.abc'],
+      search: async (_path, query) => query === 'abend'
+        ? ['a/song.abc', 'a/sub/song.abc', 'b/song.abc']
+        : ['a/song.abc', 'a/sub/song.abc', 'b/song.abc'],
+      open: async () => undefined,
+      save: async () => undefined,
+      readDocument: () => '',
+      writeDocument: () => undefined,
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    await stack.runString('sls -r abend')
+
+    expect(log).toEqual([
+      'a/song.abc',
+      'a/sub/song.abc',
+      'b/song.abc',
+    ])
+  })
+
+  it('treats the first storage parameter as recursive flag or search string', async () => {
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    const listCalls: boolean[] = []
+    registerStorageCommands(stack, {
+      system: 'dropbox',
+      path: '',
+      loggedIn: true,
+      pendingCandidates: [],
+    }, {
+      providers: ['dropbox'],
+      list: async (_path, recursive) => {
+        listCalls.push(Boolean(recursive))
+        return ['root/a.abc']
+      },
+      search: async (_path, query) => {
+        listCalls.push(query === 'foo')
+        return ['root/a.abc', 'root/sub/b.abc']
+      },
+      open: async (_path, filename) => `${filename}\n`,
+      save: async () => undefined,
+      readDocument: () => '',
+      writeDocument: () => undefined,
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    await stack.runString('sls foo')
+    await stack.runString('sls -r foo')
+
+    expect(listCalls).toEqual([false, true])
+    expect(log).toContain('root/a.abc')
+  })
+
+  it('treats sopen the same way as sls for recursive flag parsing', async () => {
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    const listCalls: boolean[] = []
+    registerStorageCommands(stack, {
+      system: 'dropbox',
+      path: '',
+      loggedIn: true,
+      pendingCandidates: [],
+    }, {
+      providers: ['dropbox'],
+      list: async (_path, recursive) => {
+        listCalls.push(Boolean(recursive))
+        return ['root/a.abc']
+      },
+      search: async (_path, query) => {
+        listCalls.push(query === 'a')
+        return ['root/a.abc', 'root/sub/b.abc']
+      },
+      open: async (_path, filename) => `${filename}\n`,
+      save: async () => undefined,
+      readDocument: () => '',
+      writeDocument: () => undefined,
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    await stack.runString('sopen -r a')
+
+    expect(listCalls).toEqual([true])
+    expect(log).toContain('multiple matches for "a" (use sopen <n>):')
+  })
+
+  it('normalizes scd / to the storage root for recursive listing', async () => {
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    const paths: string[] = []
+    registerStorageCommands(stack, {
+      system: 'dropbox',
+      path: 'nested/path',
+      loggedIn: true,
+      pendingCandidates: [],
+    }, {
+      providers: ['dropbox'],
+      list: async (state, recursive) => {
+        paths.push(`${state.path}:${recursive ? 'r' : 'n'}`)
+        return ['abend/a.abc']
+      },
+      search: async (state, query) => {
+        paths.push(`${state.path}:search:${query}`)
+        return ['abend/a.abc', 'foo/sub/abend-b.abc']
+      },
+      open: async () => undefined,
+      save: async () => undefined,
+      readDocument: () => '',
+      writeDocument: () => undefined,
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    await stack.runString('scd /')
+    await stack.runString('sls -r Abend')
+
+    expect(paths).toContain(':search:Abend')
+    expect(log).toEqual([
+      'abend/a.abc',
+      'foo/sub/abend-b.abc',
+    ])
+  })
+
   it('patches and reverts embedded config values', async () => {
     const log: string[] = []
     const runtime = createRuntime(log)

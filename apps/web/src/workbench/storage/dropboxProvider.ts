@@ -26,6 +26,19 @@ interface DropboxListFolderContinueResponse {
   has_more: boolean
 }
 
+interface DropboxSearchMatchMetadata {
+  metadata?: {
+    path_display?: string
+    name?: string
+  }
+}
+
+interface DropboxSearchV2Response {
+  matches: Array<{
+    metadata?: DropboxSearchMatchMetadata
+  }>
+}
+
 export interface DropboxProvider {
   system: string
   login(): Promise<void>
@@ -88,11 +101,29 @@ export function createDropboxProvider(): DropboxProvider {
     async search(path: StorageCommandState, query: string): Promise<string[]> {
       const token = requireToken()
       const folder = normalizeFolderPath(path.path)
-      const entries = await listDropboxEntries(token.access_token, folder, true)
-      return entries
-        .filter((entry) => entry['.tag'] !== 'deleted')
-        .filter((entry) => entry['.tag'] === 'file')
-        .map((entry) => entry.path_display ?? entry.name)
+      const response = await fetch('https://api.dropboxapi.com/2/files/search_v2', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query,
+          options: {
+            path: folder === '' ? '' : `/${folder}`,
+            filename_only: true,
+            max_results: 100,
+            order_by: 'relevance',
+          },
+        }),
+      })
+      if (!response.ok) {
+        throw new Error(`Dropbox search failed: ${response.status} ${await readDropboxErrorMessage(response)}`)
+      }
+      const payload = await response.json() as DropboxSearchV2Response
+      return payload.matches
+        .map((match) => match.metadata?.metadata?.path_display ?? match.metadata?.metadata?.name)
+        .filter((name): name is string => typeof name === 'string')
         .filter((name) => name.toLowerCase().endsWith('.abc'))
         .filter((name) => name.toLowerCase().includes(query.toLowerCase()))
         .sort()

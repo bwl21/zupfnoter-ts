@@ -941,6 +941,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   v-else
                   :lines="consoleLines"
                   :busy="commandBusy"
+                  :activity-label="commandBusy ? 'Aktivität: läuft' : 'Aktivität: bereit'"
                   :resolve-command="resolveCommandSuggestion"
                   :get-command="(commandName) => commandStack.getCommand(commandName)"
                   @execute="executeCommand"
