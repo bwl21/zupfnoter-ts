@@ -73,6 +73,7 @@ const runtimeSettings = ref<Record<string, string>>({
 })
 const storageStateKey = 'zupfnoter.storage.context'
 const abcTextKey = 'zupfnoter.abc.current'
+const playbackInstrumentKey = 'zupfnoter.playback.instrument'
 const extractPickerOpen = ref(false)
 let nextConsoleEntryId = 1
 const consoleLines = ref<ConsoleLogEntry[]>([{
@@ -272,6 +273,12 @@ function restoreCurrentAbcText(): void {
   abcText.value = raw
 }
 
+function restorePlaybackInstrument(): void {
+  const raw = localStorage.getItem(playbackInstrumentKey)
+  if (raw !== 'harp' && raw !== 'piano' && raw !== 'western-guitar' && raw !== 'oscillator') return
+  playbackInstrument.value = raw
+}
+
 watch(storageState, () => {
   localStorage.setItem(storageStateKey, JSON.stringify({
     system: storageState.system,
@@ -282,6 +289,10 @@ watch(storageState, () => {
 
 watch(abcText, (value) => {
   localStorage.setItem(abcTextKey, value)
+})
+
+watch(playbackInstrument, (value) => {
+  localStorage.setItem(playbackInstrumentKey, value)
 })
 
 function appendUniqueDiagnosticLine(
@@ -577,8 +588,6 @@ commandStack = new CommandStack({
   log: appendConsoleLine,
 })
 
-playbackInstrument.value = 'piano'
-
 void (async () => {
   if (resumeDropboxLoginFromRedirect()) {
     storageState.loggedIn = true
@@ -621,12 +630,13 @@ registerStorageCommands(commandStack, storageState, {
   },
 })
 
-registerLegacyCommands(commandStack, {
-  getAbcText: () => abcText.value,
-  setAbcText: setAbcFromCommand,
-  readDocument: () => abcText.value,
-  writeDocument: (value) => {
-    abcText.value = value
+  registerLegacyCommands(commandStack, {
+    getAbcText: () => abcText.value,
+    setAbcText: setAbcFromCommand,
+    getSound: () => playbackInstrument.value,
+    readDocument: () => abcText.value,
+    writeDocument: (value) => {
+      abcText.value = value
     renderNow()
   },
   render: renderNow,
@@ -776,6 +786,7 @@ function isExtractProduced(extractNumber: number): boolean {
 
 onMounted(() => {
   restoreCurrentAbcText()
+  restorePlaybackInstrument()
   restoreStorageContext()
   window.addEventListener('keydown', handleGlobalKeydown)
   window.addEventListener('message', handleMirrorMessage)

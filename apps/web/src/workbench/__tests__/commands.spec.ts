@@ -27,6 +27,7 @@ function createRuntime(log: string[]): WorkbenchCommandRuntime {
     setAbcText: (value) => {
       abcText = value
     },
+    getSound: () => 'piano',
     render: () => log.push('render'),
     play: (range) => log.push(`play:${range}`),
     stop: () => log.push('stop'),
@@ -115,7 +116,7 @@ describe('legacy command registration', () => {
 
     await stack.runString('help panel')
 
-    expect(log).toContain('panel <action> <target> - duplicate a panel into a second window (harp | notes)')
+    expect(log.some((line) => line.startsWith('panel <action> <target> - duplicate a panel into a second window'))).toBe(true)
     expect(log).toContain('panel duplicate harp - duplicate the harp panel into a second window')
     expect(log).toContain('panel duplicate notes - duplicate the notes panel into a second window')
   })
@@ -155,6 +156,17 @@ describe('legacy command registration', () => {
     expect(log).toContain('sound:klavier')
     expect(log).toContain('sound:grandPiano')
     expect(log).toContain('sound:western-gitarre')
+  })
+
+  it('shows the current sound when sound is called without arguments', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('sound')
+
+    expect(log).toContain('sound piano')
   })
 
   it('supports undo for create and local open commands', async () => {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
 import ZnPanelHeader from '../../design-system/components/ZnPanelHeader.vue'
@@ -56,6 +56,9 @@ function submitCommand(): void {
   commandHistory.value = [...commandHistory.value.filter((entry) => entry !== resolvedCommand), resolvedCommand].slice(-100)
   historyCursor.value = undefined
   commandText.value = ''
+  window.setTimeout(() => {
+    focusInput()
+  }, 0)
 }
 
 function applyCompletion(): void {
@@ -135,6 +138,12 @@ function focusInput(): void {
   inputElement.value?.focus()
 }
 
+function handlePanelClick(event: MouseEvent): void {
+  const target = event.target
+  if (target instanceof HTMLInputElement) return
+  focusInput()
+}
+
 function entryPrefix(entry: ConsoleLogEntry): string {
   if (entry.kind === 'command') return '>'
   if (entry.kind === 'error') return '!'
@@ -156,6 +165,10 @@ watch(
   },
   { immediate: true },
 )
+
+onMounted(() => {
+  focusInput()
+})
 </script>
 
 <template>
@@ -164,7 +177,7 @@ watch(
       <ZnPanelHeader eyebrow="Debug" title="Console" subtitle="Protokoll und Statusmeldungen der Workbench" />
     </template>
 
-    <div class="console-panel">
+    <div class="console-panel" @click="handlePanelClick">
       <div
         ref="logElement"
         class="console-panel__log"

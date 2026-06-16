@@ -11,6 +11,7 @@ export interface WorkbenchCommandRuntime {
   setAbcText(value: string): void
   readDocument(): string
   writeDocument(value: string): void
+  getSound(): string
   render(): void
   play(range: string): void
   stop(): void
@@ -125,8 +126,15 @@ function registerInternalCommands(stack: CommandStack, runtime: WorkbenchCommand
     name: 'sound',
     help: 'set playback sound',
     undoable: false,
-    parameters: [{ name: 'sound', type: 'string', help: 'harp | piano | western-guitar | oscillator', defaultValue: 'piano' }],
-    perform: (args) => runtime.setSound(readString(args, 'sound')),
+    parameters: [{ name: 'sound', type: 'string', help: 'harp | piano | western-guitar | oscillator', defaultValue: '' }],
+    perform: (args, context) => {
+      const value = readString(args, 'sound')
+      if (typeof value !== 'string' || value.trim() === '') {
+        context.log(`sound ${runtime.getSound()}`)
+        return
+      }
+      runtime.setSound(value)
+    },
   })
 
   stack.addCommand({
