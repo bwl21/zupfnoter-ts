@@ -71,6 +71,7 @@ const runtimeSettings = ref<Record<string, string>>({
   validate: 'true',
 })
 const storageStateKey = 'zupfnoter.storage.context'
+const abcTextKey = 'zupfnoter.abc.current'
 const extractPickerOpen = ref(false)
 let nextConsoleEntryId = 1
 const consoleLines = ref<ConsoleLogEntry[]>([{
@@ -264,6 +265,12 @@ function restoreStorageContext(): void {
   }
 }
 
+function restoreCurrentAbcText(): void {
+  const raw = localStorage.getItem(abcTextKey)
+  if (raw === null) return
+  abcText.value = raw
+}
+
 watch(storageState, () => {
   localStorage.setItem(storageStateKey, JSON.stringify({
     system: storageState.system,
@@ -271,6 +278,10 @@ watch(storageState, () => {
     loggedIn: storageState.loggedIn,
   }))
 }, { deep: true })
+
+watch(abcText, (value) => {
+  localStorage.setItem(abcTextKey, value)
+})
 
 function appendUniqueDiagnosticLine(
   seenKeys: Set<string>,
@@ -583,6 +594,8 @@ commandStack = new CommandStack({
   log: appendConsoleLine,
 })
 
+playbackInstrument.value = 'harp'
+
 void (async () => {
   if (resumeDropboxLoginFromRedirect()) {
     storageState.loggedIn = true
@@ -779,6 +792,7 @@ function isExtractProduced(extractNumber: number): boolean {
 }
 
 onMounted(() => {
+  restoreCurrentAbcText()
   restoreStorageContext()
   window.addEventListener('keydown', handleGlobalKeydown)
   window.addEventListener('message', handleMirrorMessage)
