@@ -57,4 +57,17 @@ test.describe('Zupfnoter workbench', () => {
       page.locator('.harp-preview__svg .zn-selection-highlight').count()
     )).toBeGreaterThan(0)
   })
+
+  test('shows the about dialog with build metadata', async ({ page }) => {
+    await page.goto('/')
+
+    await page.getByRole('button', { name: 'About this build' }).click()
+
+    const dialog = page.locator('dialog[open]')
+    await expect(dialog).toBeVisible()
+    await expect(dialog).toContainText('About Zupfnoter')
+    await expect(dialog).toContainText('Web 0.1.0')
+    await expect(dialog).toContainText('abc123def456')
+    await expect(dialog).toContainText('17.06.2026')
+  })
 })

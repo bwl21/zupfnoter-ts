@@ -12,6 +12,7 @@ import AbcEditorPanel from './panels/AbcEditorPanel.vue'
 import ConfigEditorPanel from './panels/ConfigEditorPanel.vue'
 import ConsolePanel from './panels/ConsolePanel.vue'
 import FooterBar from './FooterBar.vue'
+import AboutDialog from './AboutDialog.vue'
 import HarpPreviewPanel from './panels/HarpPreviewPanel.vue'
 import LyricsPanel from './panels/LyricsPanel.vue'
 import ScorePreviewPanel from './panels/ScorePreviewPanel.vue'
@@ -75,6 +76,7 @@ const storageStateKey = 'zupfnoter.storage.context'
 const abcTextKey = 'zupfnoter.abc.current'
 const playbackInstrumentKey = 'zupfnoter.playback.instrument'
 const extractPickerOpen = ref(false)
+const aboutDialogOpen = ref(false)
 let nextConsoleEntryId = 1
 const consoleLines = ref<ConsoleLogEntry[]>([{
   id: nextConsoleEntryId,
@@ -129,6 +131,15 @@ const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
   })),
   audioPlayer,
 )
+const buildInfo = (globalThis as typeof globalThis & { __ZUPFNOTER_BUILD_INFO__?: {
+  appVersion: string
+  commitHash: string
+  buildTime: string
+} }).__ZUPFNOTER_BUILD_INFO__ ?? {
+  appVersion: 'unknown',
+  commitHash: 'unknown',
+  buildTime: new Date(0).toISOString(),
+}
 
 const renderIssueLabel = computed(() => {
   if (renderError.value) return 'Render error'
@@ -780,6 +791,14 @@ function handleExtractPickerToggle(event: Event): void {
   extractPickerOpen.value = target.open
 }
 
+function openAboutDialog(): void {
+  aboutDialogOpen.value = true
+}
+
+function closeAboutDialog(): void {
+  aboutDialogOpen.value = false
+}
+
 function isExtractProduced(extractNumber: number): boolean {
   return produceExtracts.value.has(extractNumber)
 }
@@ -839,6 +858,15 @@ function handleMirrorMessage(event: MessageEvent): void {
       <section class="workbench-chrome">
         <ZnToolbar>
           <template #leading>
+            <ZnButton
+              class="workbench-header__about-button"
+              variant="primary"
+              aria-label="About this build"
+              title="About this build"
+              @click="openAboutDialog"
+            >
+              i
+            </ZnButton>
             <ZnButton variant="ghost" @click="executeToolbarCommand('help')">Datei</ZnButton>
             <ZnButton variant="ghost" @click="executeToolbarCommand('c 1 untitled')">Neu</ZnButton>
             <ZnButton variant="ghost">DI abc</ZnButton>
@@ -1014,6 +1042,14 @@ function handleMirrorMessage(event: MessageEvent): void {
     :toasts="toasts"
     @dismiss="dismissToast"
   />
+
+  <AboutDialog
+    :open="aboutDialogOpen"
+    :app-version="`Web ${buildInfo.appVersion}`"
+    :commit-hash="buildInfo.commitHash"
+    :build-time="buildInfo.buildTime"
+    @close="closeAboutDialog"
+  />
 </template>
 
 <style scoped>
@@ -1023,6 +1059,18 @@ function handleMirrorMessage(event: MessageEvent): void {
   border-radius: var(--zn-radius-sm);
   background: var(--zn-bg-elevated);
   box-shadow: none;
+}
+
+.workbench-header__about-button {
+  min-width: 1.65rem;
+  width: 1.65rem;
+  min-height: 1.65rem;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1;
+  font-weight: 800;
+  text-transform: none;
+  border-radius: 999px;
 }
 
 .extract-picker {
