@@ -58,6 +58,11 @@ const runtime: WorkbenchCommandRuntime = {
   setAbcText: (value) => {
     state.abcText = value
   },
+  readDocument: () => state.abcText,
+  writeDocument: (content) => {
+    state.abcText = content
+  },
+  getSound: () => 'cli-default',
   render: renderSummary,
   play: (range) => log(`playback is not available in CLI (${range})`),
   stop: () => log('playback stopped'),

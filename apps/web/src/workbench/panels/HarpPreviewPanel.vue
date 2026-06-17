@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, toRef } from 'vue'
+import { computed, ref, toRef } from 'vue'
 
 import type { PlaybackHighlight, SelectionTextRange } from '@zupfnoter/types'
 
 import ZnZoomControl from '../../design-system/components/ZnZoomControl.vue'
 import ZnTabs from '../../design-system/components/ZnTabs.vue'
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
+import HarpMagnifierPopover from './HarpMagnifierPopover.vue'
 import { useZoomableSvgPreview } from './useZoomableSvgPreview'
 import { usePlaybackSvgHighlight } from './usePlaybackSvgHighlight'
 import { useSelectionSvgHighlight } from './useSelectionSvgHighlight'
@@ -28,17 +29,37 @@ const emit = defineEmits<{
 }>()
 
 const mode = ref('normal')
+const magnifierOpen = ref(false)
+const magnifierSession = ref(0)
+const magnifierAnchor = ref<{ x: number; y: number } | null>(null)
+const magnifierSourcePoint = ref<{ x: number, y: number } | null>(null)
+const magnifierViewport = ref<{ width: number, height: number } | null>(null)
+const magnifierZoom = 800
 const pointerDownPosition = ref<{ x: number; y: number } | null>(null)
 const pointerDownTarget = ref<EventTarget | null>(null)
 const zoom = defineModel<number>('zoom', {
   default: 100,
 })
 
-const { canvasRef, canvasStyle, frameRef, onPointerCancel, onPointerDown, onPointerMove, onPointerUp, onWheel, setZoom } = useZoomableSvgPreview(
+const preview = useZoomableSvgPreview(
   toRef(props, 'svg'),
   zoom,
   props.allowWheelZoomWithoutModifier === true,
 )
+const {
+  canvasRef,
+  canvasStyle,
+  displayScale,
+  eventToFramePoint,
+  framePointToSourcePoint,
+  frameRef,
+  onPointerCancel,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
+  onWheel,
+  setZoom,
+} = preview
 usePlaybackSvgHighlight(
   canvasRef,
   toRef(props, 'svg'),
@@ -68,6 +89,19 @@ function emitSelectionFromEvent(target: EventTarget | null, extend: boolean): vo
 }
 
 function handlePointerDown(event: PointerEvent): void {
+  if (event.button === 0 && event.shiftKey) {
+    const framePoint = eventToFramePoint(event)
+    const sourcePoint = framePoint === null ? null : framePointToSourcePoint(framePoint)
+    if (sourcePoint !== null) {
+      magnifierAnchor.value = { x: event.clientX, y: event.clientY }
+      magnifierSourcePoint.value = sourcePoint
+      magnifierSession.value += 1
+      magnifierOpen.value = true
+      event.preventDefault()
+      event.stopPropagation()
+      return
+    }
+  }
   pointerDownPosition.value = {
     x: event.clientX,
     y: event.clientY,
@@ -93,6 +127,54 @@ function handleScroll(): void {
   if (frame === null) return
   emit('scroll', { scrollLeft: frame.scrollLeft, scrollTop: frame.scrollTop })
 }
+
+function closeMagnifier(): void {
+  magnifierOpen.value = false
+  magnifierAnchor.value = null
+  magnifierSourcePoint.value = null
+  magnifierViewport.value = null
+}
+
+function onMagnifierViewportResize(size: { width: number, height: number }): void {
+  magnifierViewport.value = size
+}
+
+const magnifierFocusStyle = computed(() => {
+  if (!magnifierOpen.value || magnifierSourcePoint.value === null || magnifierViewport.value === null) {
+    return undefined
+  }
+
+  if (displayScale.value <= 0 || magnifierZoom <= 0) {
+    return undefined
+  }
+
+  const width = magnifierViewport.value.width * displayScale.value / magnifierZoom
+  const height = magnifierViewport.value.height * displayScale.value / magnifierZoom
+
+  return {
+    left: `${magnifierSourcePoint.value.x * displayScale.value - width / 2}px`,
+    top: `${magnifierSourcePoint.value.y * displayScale.value - height / 2}px`,
+    width: `${width}px`,
+    height: `${height}px`,
+  }
+})
+
+const magnifierPopupStyle = computed(() => {
+  const anchor = magnifierAnchor.value
+  if (!magnifierOpen.value || anchor === null) {
+    return undefined
+  }
+
+  const size = 320
+  const margin = 12
+  const centerX = Math.min(Math.max(margin + size / 2, anchor.x), Math.max(margin + size / 2, window.innerWidth - margin - size / 2))
+  const centerY = Math.min(Math.max(margin + size / 2, anchor.y), Math.max(margin + size / 2, window.innerHeight - margin - size / 2))
+
+  return {
+    left: `${centerX}px`,
+    top: `${centerY}px`,
+  }
+})
 </script>
 
 <template>
@@ -134,7 +216,23 @@ function handleScroll(): void {
           :style="canvasStyle"
           v-html="svg"
         />
+        <div
+          v-if="magnifierFocusStyle"
+          class="harp-preview__magnifier-spot"
+          :style="magnifierFocusStyle"
+        />
       </div>
+      <HarpMagnifierPopover
+        :key="magnifierSession"
+        :error-message="errorMessage"
+        :open="magnifierOpen"
+        :position-style="magnifierPopupStyle"
+        :source-point="magnifierSourcePoint"
+        :zoom-level="magnifierZoom"
+        :svg="svg"
+        @viewport-resize="onMagnifierViewportResize"
+        @close="closeMagnifier"
+      />
     </div>
   </ZnPanel>
 </template>
@@ -216,5 +314,14 @@ function handleScroll(): void {
   font-family: var(--zn-font-mono);
   font-size: 0.78rem;
   white-space: pre-wrap;
+}
+
+.harp-preview__magnifier-spot {
+  position: absolute;
+  border: 2px solid var(--zn-accent-strong);
+  border-radius: 0.2rem;
+  background: rgba(74, 97, 132, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45) inset;
+  pointer-events: none;
 }
 </style>
