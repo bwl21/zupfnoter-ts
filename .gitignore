@@ -56,4 +56,4 @@ fixtures/openImplementations.d.ts.map
 
 # Local browser cache
 .playwright-mcp/
-/apps/web/.env
+/.env
