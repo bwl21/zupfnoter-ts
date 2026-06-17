@@ -28,6 +28,7 @@ Merkmale:
 - Konfigurationseditor
 - Interaktive Bedienung
 - Undo/Redo innerhalb einzelner UI-Komponenten
+- Anwenderdoku zu den Commands: [anwenderdoku_commands.md](./anwenderdoku_commands.md)
 
 Relevante Komponenten:
 
