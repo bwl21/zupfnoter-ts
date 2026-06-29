@@ -121,19 +121,19 @@ interface VariantBeginDecision {
 }
 
 function collectRepeatDecisions(song: Song): Map<number, RepeatDecision> {
-  const decisions = new Map<number, RepeatDecision>()
+  const grouped = new Map<string, RepeatDecision>()
 
   for (const voice of song.voices) {
     for (const entity of voice.entities) {
       if (!isGotoEntity(entity) || !isRepeatGoto(entity)) continue
 
-      const existing = decisions.get(entity.from.time)
       const level = entity.policy.level ?? 0
-      const key = `${entity.from.time}:${entity.to.time}:${level}`
-      if (existing !== undefined) continue
+      const groupKey = `${entity.to.time}:${level}`
+      const existing = grouped.get(groupKey)
+      if (existing !== undefined && existing.fromTime >= entity.from.time) continue
 
-      decisions.set(entity.from.time, {
-        key,
+      grouped.set(groupKey, {
+        key: `${entity.from.time}:${entity.to.time}:${level}`,
         fromTime: entity.from.time,
         toTime: entity.to.time,
         level,
@@ -141,28 +141,40 @@ function collectRepeatDecisions(song: Song): Map<number, RepeatDecision> {
     }
   }
 
+  const decisions = new Map<number, RepeatDecision>()
+  for (const decision of grouped.values()) {
+    decisions.set(decision.fromTime, decision)
+  }
+
   return decisions
 }
 
 function collectVariantBeginDecisions(song: Song): Map<number, VariantBeginDecision[]> {
-  const decisions = new Map<number, VariantBeginDecision[]>()
+  const grouped = new Map<string, VariantBeginDecision>()
 
   for (const voice of song.voices) {
     for (const entity of voice.entities) {
       if (!isGotoEntity(entity) || !isVariantBeginGoto(entity)) continue
 
-      const existing = decisions.get(entity.from.time) ?? []
-      if (!decisions.has(entity.from.time)) {
-        decisions.set(entity.from.time, existing)
-      }
-
-      if (existing.some((decision) => decision.toTime === entity.to.time)) continue
-      existing.push({
+      const order = parseVariantBeginOrder(entity)
+      const groupKey = `${order}:${entity.to.time}`
+      const existing = grouped.get(groupKey)
+      if (existing !== undefined && existing.fromTime >= entity.from.time) continue
+      grouped.set(groupKey, {
         fromTime: entity.from.time,
         toTime: entity.to.time,
-        order: parseVariantBeginOrder(entity),
+        order,
       })
     }
+  }
+
+  const decisions = new Map<number, VariantBeginDecision[]>()
+  for (const decision of grouped.values()) {
+    const existing = decisions.get(decision.fromTime) ?? []
+    if (!decisions.has(decision.fromTime)) {
+      decisions.set(decision.fromTime, existing)
+    }
+    existing.push(decision)
   }
 
   for (const decisionList of decisions.values()) {
@@ -173,16 +185,24 @@ function collectVariantBeginDecisions(song: Song): Map<number, VariantBeginDecis
 }
 
 function collectVariantFollowDecisions(song: Song): Map<number, number> {
-  const decisions = new Map<number, number>()
+  const grouped = new Map<string, { fromTime: number; toTime: number }>()
 
   for (const voice of song.voices) {
     for (const entity of voice.entities) {
       if (!isGotoEntity(entity) || !isVariantFollowGoto(entity)) continue
 
-      const existing = decisions.get(entity.from.time)
-      if (existing === undefined || entity.to.time < existing) {
-        decisions.set(entity.from.time, entity.to.time)
-      }
+      const groupKey = `${entity.to.time}`
+      const existing = grouped.get(groupKey)
+      if (existing !== undefined && existing.fromTime >= entity.from.time) continue
+      grouped.set(groupKey, { fromTime: entity.from.time, toTime: entity.to.time })
+    }
+  }
+
+  const decisions = new Map<number, number>()
+  for (const decision of grouped.values()) {
+    const existing = decisions.get(decision.fromTime)
+    if (existing === undefined || decision.toTime < existing) {
+      decisions.set(decision.fromTime, decision.toTime)
     }
   }
 
@@ -242,15 +262,19 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
     const variantBegins = variantBeginDecisions.get(time)
     if (variantBegins !== undefined && variantBegins.length > 0) {
       const variantUsage = variantUsageByFromTime.get(time) ?? 0
+      if (variantUsage === 0) {
+        variantUsageByFromTime.set(time, 1)
+      } else {
       const selectedVariant = variantBegins[variantUsage]
-      if (selectedVariant !== undefined) {
-        variantUsageByFromTime.set(time, variantUsage + 1)
-        const jumpIndex = timeIndexByTime.get(selectedVariant.toTime)
-        if (jumpIndex === undefined) {
-          throw new Error(`expandPlaybackFlow(): missing variant begin target time ${selectedVariant.toTime}`)
+        if (selectedVariant !== undefined) {
+          variantUsageByFromTime.set(time, variantUsage + 1)
+          const jumpIndex = timeIndexByTime.get(selectedVariant.toTime)
+          if (jumpIndex === undefined) {
+            throw new Error(`expandPlaybackFlow(): missing variant begin target time ${selectedVariant.toTime}`)
+          }
+          index = jumpIndex
+          continue
         }
-        index = jumpIndex
-        continue
       }
     }
 

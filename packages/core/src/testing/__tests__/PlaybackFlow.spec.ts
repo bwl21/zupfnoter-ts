@@ -81,6 +81,28 @@ K:C
     expect(flow.map((step) => step.voltaNumber ?? 0)).toEqual([0, 0, 1, 0, 0, 2])
   })
 
+  it('does not jump into the first ending before slower voices finish the pre-volta bar', () => {
+    const flow = expandFlow(`X:1
+T:Multi Voice Volta
+M:4/4
+L:1/8
+K:C
+V:1 treble
+V:2 treble
+V:1
+|: C4 D4 | [1 E4 :| [2 F4 |]
+V:2
+|: C2 D2 E2 F2 | [1 G2 A2 :| [2 B2 c2 |]
+`)
+
+    expect(flow.map((step) => step.sourceTime)).toEqual([
+      0, 384, 768, 1152, 1536, 1920,
+      0, 384, 768, 1152, 2304, 2688,
+    ])
+    expect(flow.map((step) => step.passIndex)).toEqual([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2])
+    expect(flow.map((step) => step.voltaNumber ?? 0)).toEqual([0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 2, 2])
+  })
+
   it('keeps the second ending inside the second pass for Am Moargo', () => {
     const flow = expandFlow(amMoargoAbc)
     const secondPassTimes = flow
