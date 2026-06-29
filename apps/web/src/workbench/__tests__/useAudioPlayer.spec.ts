@@ -120,6 +120,17 @@ describe('useAudioPlayer', () => {
     await player.schedule(steps, 1)
 
     expect(instrumentMock).toHaveBeenCalledTimes(1)
+    expect(instrumentMock).toHaveBeenCalledWith(
+      expect.any(MockAudioContext),
+      'orchestral_harp',
+      expect.objectContaining({
+        destination: expect.objectContaining({
+          connect: gainConnectMock,
+        }),
+        gain: 1,
+        soundfont: 'FluidR3_GM',
+      }),
+    )
     expect(scheduleMock).toHaveBeenCalledTimes(1)
     expect(scheduleMock).toHaveBeenCalledWith(10.05, [
       { time: 0, note: 60, duration: 1, gain: 0.9 },
@@ -137,6 +148,7 @@ describe('useAudioPlayer', () => {
     expect(scheduleMock).not.toHaveBeenCalled()
     expect(oscillatorStartMock).toHaveBeenCalledTimes(3)
     expect(oscillatorStopMock).toHaveBeenCalledTimes(3)
+    expect(gainConnectMock).toHaveBeenCalled()
     expect(oscillatorFrequencySetValueAtTimeMock).toHaveBeenCalledWith(261.6255653005986, 10.05)
   })
 })

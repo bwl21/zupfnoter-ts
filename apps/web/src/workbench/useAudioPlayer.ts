@@ -13,12 +13,13 @@ const INSTRUMENT_CONFIG: Record<PlaybackInstrument, { instrument: string, soundf
   'western-guitar': { instrument: 'acoustic_guitar_steel', soundfont: 'FluidR3_GM' },
 }
 
-const INSTRUMENT_GAIN = 0.7
+const INSTRUMENT_GAIN = 1
 const MAX_CHORD_GAIN = 0.9
-const OSCILLATOR_GAIN = 0.12
+const OSCILLATOR_GAIN = 0.3
 const OSCILLATOR_ATTACK_SEC = 0.01
-const OSCILLATOR_RELEASE_SEC = 0.08
+const OSCILLATOR_RELEASE_SEC = 0.2
 const SCHEDULE_LOOKAHEAD_SEC = 0.05
+const MASTER_OUTPUT_GAIN = 6
 
 function midiToFrequency(pitch: number): number {
   return 440 * 2 ** ((pitch - 69) / 12)
@@ -29,6 +30,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   type SoundfontPlayer = Awaited<ReturnType<SoundfontModule['instrument']>>
 
   let ctx: AudioContext | null = null
+  let masterGainNode: GainNode | null = null
   let playerPromise: Promise<SoundfontPlayer> | null = null
   let loadedInstrument: PlaybackInstrument | null = null
   let timers: ReturnType<typeof setTimeout>[] = []
@@ -36,8 +38,20 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   function getContext(): AudioContext {
     if (ctx === null || ctx.state === 'closed') {
       ctx = new AudioContext()
+      masterGainNode = null
     }
     return ctx
+  }
+
+  function getMasterGainNode(): GainNode {
+    const context = getContext()
+    if (masterGainNode === null) {
+      const gainNode = context.createGain()
+      gainNode.gain.value = MASTER_OUTPUT_GAIN
+      gainNode.connect(context.destination)
+      masterGainNode = gainNode
+    }
+    return masterGainNode
   }
 
   function loadPlayer(): Promise<SoundfontPlayer> {
@@ -53,6 +67,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       }
       const config = INSTRUMENT_CONFIG[instrument.value]
       return Soundfont.instrument(context, config.instrument as Parameters<SoundfontModule['instrument']>[1], {
+        destination: getMasterGainNode(),
         soundfont: config.soundfont,
         gain: INSTRUMENT_GAIN,
       })
@@ -117,6 +132,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     const context = await ensureRunningContext()
     const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC
     if (instrument.value === 'oscillator') {
+      const masterGain = getMasterGainNode()
       for (const event of events) {
         const gainNode = context.createGain()
         const oscillator = context.createOscillator()
@@ -133,7 +149,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         gainNode.gain.setValueAtTime(peakGain, sustainTime)
         gainNode.gain.linearRampToValueAtTime(0.0001, stopTime)
         oscillator.connect(gainNode)
-        gainNode.connect(context.destination)
+        gainNode.connect(masterGain)
         oscillator.start(startTime)
         oscillator.stop(stopTime)
       }
@@ -149,6 +165,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       ctx.close()
       ctx = null
     }
+    masterGainNode = null
     playerPromise = null
     loadedInstrument = null
   }
