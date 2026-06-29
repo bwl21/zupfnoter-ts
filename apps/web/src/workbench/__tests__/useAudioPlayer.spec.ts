@@ -2,10 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { PlaybackStep } from '../playback'
 
-const scheduleMock = vi.fn<(when: number, events: Array<{ time: number; note: number; duration: number; gain: number }>) => void>()
-const instrumentMock = vi.fn(async () => ({
-  schedule: scheduleMock,
-}))
+const leftScheduleMock = vi.fn<(when: number, events: Array<{ time: number; note: number; duration: number; gain: number }>) => void>()
+const rightScheduleMock = vi.fn<(when: number, events: Array<{ time: number; note: number; duration: number; gain: number }>) => void>()
 
 const oscillatorStartMock = vi.fn<(when?: number) => void>()
 const oscillatorStopMock = vi.fn<(when?: number) => void>()
@@ -14,6 +12,18 @@ const oscillatorFrequencySetValueAtTimeMock = vi.fn<(value: number, when: number
 const gainConnectMock = vi.fn<(target: unknown) => void>()
 const gainSetValueAtTimeMock = vi.fn<(value: number, when: number) => void>()
 const gainLinearRampToValueAtTimeMock = vi.fn<(value: number, when: number) => void>()
+const stereoPannerConnectMock = vi.fn<(target: unknown) => void>()
+
+interface MockStereoPannerNode {
+  pan: { value: number }
+  connect: typeof stereoPannerConnectMock
+}
+
+let createdPanners: MockStereoPannerNode[] = []
+
+const instrumentMock = vi.fn(async (_context: unknown, _instrument: string, options?: { destination?: { pan?: { value: number } } }) => ({
+  schedule: options?.destination?.pan?.value === -0.7 ? leftScheduleMock : rightScheduleMock,
+}))
 
 vi.mock('soundfont-player', () => ({
   instrument: instrumentMock,
@@ -41,11 +51,21 @@ class MockAudioContext {
   createGain() {
     return {
       gain: {
+        value: 0,
         setValueAtTime: gainSetValueAtTimeMock,
         linearRampToValueAtTime: gainLinearRampToValueAtTimeMock,
       },
       connect: gainConnectMock,
     }
+  }
+
+  createStereoPanner() {
+    const panner: MockStereoPannerNode = {
+      pan: { value: 0 },
+      connect: stereoPannerConnectMock,
+    }
+    createdPanners.push(panner)
+    return panner
   }
 
   close(): Promise<void> {
@@ -68,7 +88,7 @@ const steps: PlaybackStep[] = [
   {
     originZnIds: ['note-1'],
     activeTextRanges: [],
-    activeNotes: [{ pitch: 60, durationMs: 1000, attack: true }],
+    activeNotes: [{ pitch: 60, durationMs: 1000, attack: true, pan: 'left' }],
     activeTime: '0',
     playbackStartMs: 0,
     durationMs: 1000,
@@ -80,8 +100,8 @@ const steps: PlaybackStep[] = [
     originZnIds: ['note-2'],
     activeTextRanges: [],
     activeNotes: [
-      { pitch: 64, durationMs: 500, attack: true },
-      { pitch: 60, durationMs: 250, attack: true },
+      { pitch: 64, durationMs: 500, attack: true, pan: 'right' },
+      { pitch: 60, durationMs: 250, attack: true, pan: 'left' },
     ],
     activeTime: '1',
     playbackStartMs: 1000,
@@ -95,7 +115,8 @@ const steps: PlaybackStep[] = [
 describe('useAudioPlayer', () => {
   beforeEach(() => {
     vi.useFakeTimers()
-    scheduleMock.mockReset()
+    leftScheduleMock.mockReset()
+    rightScheduleMock.mockReset()
     instrumentMock.mockClear()
     oscillatorStartMock.mockReset()
     oscillatorStopMock.mockReset()
@@ -104,6 +125,8 @@ describe('useAudioPlayer', () => {
     gainConnectMock.mockReset()
     gainSetValueAtTimeMock.mockReset()
     gainLinearRampToValueAtTimeMock.mockReset()
+    stereoPannerConnectMock.mockReset()
+    createdPanners = []
     Object.defineProperty(globalThis, 'AudioContext', {
       value: MockAudioContext,
       configurable: true,
@@ -114,28 +137,44 @@ describe('useAudioPlayer', () => {
     vi.useRealTimers()
   })
 
-  it('schedules relative note times and merges duplicate pitches per step', async () => {
+  it('schedules separate stereo event streams for soundfont playback', async () => {
     const player = useAudioPlayer({ value: 'harp' })
 
     await player.schedule(steps, 1)
 
-    expect(instrumentMock).toHaveBeenCalledTimes(1)
-    expect(instrumentMock).toHaveBeenCalledWith(
+    expect(instrumentMock).toHaveBeenCalledTimes(2)
+    expect(instrumentMock).toHaveBeenNthCalledWith(
+      1,
       expect.any(MockAudioContext),
       'orchestral_harp',
       expect.objectContaining({
         destination: expect.objectContaining({
-          connect: gainConnectMock,
+          pan: expect.objectContaining({ value: -0.7 }),
         }),
         gain: 1,
         soundfont: 'FluidR3_GM',
       }),
     )
-    expect(scheduleMock).toHaveBeenCalledTimes(1)
-    expect(scheduleMock).toHaveBeenCalledWith(10.05, [
+    expect(instrumentMock).toHaveBeenNthCalledWith(
+      2,
+      expect.any(MockAudioContext),
+      'orchestral_harp',
+      expect.objectContaining({
+        destination: expect.objectContaining({
+          pan: expect.objectContaining({ value: 0.7 }),
+        }),
+        gain: 1,
+        soundfont: 'FluidR3_GM',
+      }),
+    )
+    expect(leftScheduleMock).toHaveBeenCalledTimes(1)
+    expect(leftScheduleMock).toHaveBeenCalledWith(10.05, [
       { time: 0, note: 60, duration: 1, gain: 0.9 },
-      { time: 1, note: 64, duration: 0.5, gain: 0.6363961030678927 },
       { time: 1, note: 60, duration: 0.25, gain: 0.6363961030678927 },
+    ])
+    expect(rightScheduleMock).toHaveBeenCalledTimes(1)
+    expect(rightScheduleMock).toHaveBeenCalledWith(10.05, [
+      { time: 1, note: 64, duration: 0.5, gain: 0.6363961030678927 },
     ])
   })
 
@@ -145,10 +184,13 @@ describe('useAudioPlayer', () => {
     await player.schedule(steps, 1)
 
     expect(instrumentMock).not.toHaveBeenCalled()
-    expect(scheduleMock).not.toHaveBeenCalled()
+    expect(leftScheduleMock).not.toHaveBeenCalled()
+    expect(rightScheduleMock).not.toHaveBeenCalled()
     expect(oscillatorStartMock).toHaveBeenCalledTimes(3)
     expect(oscillatorStopMock).toHaveBeenCalledTimes(3)
     expect(gainConnectMock).toHaveBeenCalled()
+    expect(createdPanners.some((panner) => panner.pan.value === -0.7)).toBe(true)
+    expect(createdPanners.some((panner) => panner.pan.value === 0.7)).toBe(true)
     expect(oscillatorFrequencySetValueAtTimeMock).toHaveBeenCalledWith(261.6255653005986, 10.05)
   })
 })

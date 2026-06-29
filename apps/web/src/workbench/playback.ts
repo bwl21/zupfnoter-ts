@@ -19,6 +19,7 @@ export interface PlaybackNote {
   pitch: number
   durationMs: number
   attack: boolean
+  pan: 'left' | 'right'
 }
 
 interface TiedPlaybackNote {
@@ -128,6 +129,7 @@ function appendPlaybackNote(
     pitch,
     durationMs,
     attack: true,
+    pan: voiceIndex < 2 ? 'left' : 'right',
   }
   notes.push(nextNote)
 
@@ -231,7 +233,7 @@ function collectPlaybackStepGroups(song: Song): Map<number, PlaybackStepGroup> {
       group.activeTextRanges.map((tr) => [textRangeKey(tr), tr]),
     ).values()]
     group.activeNotes = [...new Map(
-      group.activeNotes.map((note) => [`${note.pitch}:${note.attack ? 1 : 0}`, note] as const),
+      group.activeNotes.map((note) => [`${note.pitch}:${note.attack ? 1 : 0}:${note.pan}`, note] as const),
     ).values()]
   }
 

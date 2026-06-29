@@ -93,11 +93,11 @@ describe('renderWorkbenchPreviews', () => {
 
     expect(result.playbackTimeline).toHaveLength(3)
     expect(result.playbackTimeline[0]?.activeNotes).toEqual([
-      { pitch: 60, durationMs: 1000, attack: true },
+      { pitch: 60, durationMs: 1000, attack: true, pan: 'left' },
     ])
     expect(result.playbackTimeline[1]?.activeNotes).toEqual([])
     expect(result.playbackTimeline[2]?.activeNotes).toEqual([
-      { pitch: 62, durationMs: 500, attack: true },
+      { pitch: 62, durationMs: 500, attack: true, pan: 'left' },
     ])
   })
 })

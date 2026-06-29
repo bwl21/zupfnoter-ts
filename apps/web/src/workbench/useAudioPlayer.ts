@@ -5,6 +5,8 @@ export interface PlaybackScheduleCallbacks {
   onStepEnd?: (step: PlaybackStep) => void
 }
 
+type StereoSide = 'left' | 'right'
+
 export type PlaybackInstrument = 'harp' | 'piano' | 'western-guitar' | 'oscillator'
 
 const INSTRUMENT_CONFIG: Record<PlaybackInstrument, { instrument: string, soundfont: string }> = {
@@ -20,6 +22,10 @@ const OSCILLATOR_ATTACK_SEC = 0.01
 const OSCILLATOR_RELEASE_SEC = 0.2
 const SCHEDULE_LOOKAHEAD_SEC = 0.05
 const MASTER_OUTPUT_GAIN = 6
+const STEREO_PAN_BY_SIDE: Record<StereoSide, number> = {
+  left: -0.7,
+  right: 0.7,
+}
 
 function midiToFrequency(pitch: number): number {
   return 440 * 2 ** ((pitch - 69) / 12)
@@ -28,10 +34,12 @@ function midiToFrequency(pitch: number): number {
 export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   type SoundfontModule = typeof import('soundfont-player')
   type SoundfontPlayer = Awaited<ReturnType<SoundfontModule['instrument']>>
+  type SoundfontPlayerSet = Record<StereoSide, SoundfontPlayer>
 
   let ctx: AudioContext | null = null
   let masterGainNode: GainNode | null = null
-  let playerPromise: Promise<SoundfontPlayer> | null = null
+  let stereoPannerNodes: Record<StereoSide, StereoPannerNode> | null = null
+  let playerPromise: Promise<SoundfontPlayerSet> | null = null
   let loadedInstrument: PlaybackInstrument | null = null
   let timers: ReturnType<typeof setTimeout>[] = []
 
@@ -39,6 +47,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     if (ctx === null || ctx.state === 'closed') {
       ctx = new AudioContext()
       masterGainNode = null
+      stereoPannerNodes = null
     }
     return ctx
   }
@@ -54,7 +63,24 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     return masterGainNode
   }
 
-  function loadPlayer(): Promise<SoundfontPlayer> {
+  function getStereoPannerNodes(): Record<StereoSide, StereoPannerNode> {
+    const context = getContext()
+    if (stereoPannerNodes === null) {
+      const masterGain = getMasterGainNode()
+      stereoPannerNodes = {
+        left: context.createStereoPanner(),
+        right: context.createStereoPanner(),
+      }
+      for (const side of Object.keys(stereoPannerNodes) as StereoSide[]) {
+        const panner = stereoPannerNodes[side]
+        panner.pan.value = STEREO_PAN_BY_SIDE[side]
+        panner.connect(masterGain)
+      }
+    }
+    return stereoPannerNodes
+  }
+
+  function loadPlayer(): Promise<SoundfontPlayerSet> {
     if (loadedInstrument !== instrument.value) {
       playerPromise = null
     }
@@ -66,11 +92,20 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         await context.resume()
       }
       const config = INSTRUMENT_CONFIG[instrument.value]
-      return Soundfont.instrument(context, config.instrument as Parameters<SoundfontModule['instrument']>[1], {
-        destination: getMasterGainNode(),
-        soundfont: config.soundfont,
-        gain: INSTRUMENT_GAIN,
-      })
+      const panners = getStereoPannerNodes()
+      const playerEntries = await Promise.all((['left', 'right'] as StereoSide[]).map(async (side) => {
+        const player = await Soundfont.instrument(
+          context,
+          config.instrument as Parameters<SoundfontModule['instrument']>[1],
+          {
+            destination: panners[side],
+            soundfont: config.soundfont,
+            gain: INSTRUMENT_GAIN,
+          },
+        )
+        return [side, player] as const
+      }))
+      return Object.fromEntries(playerEntries) as SoundfontPlayerSet
     })
     return playerPromise
   }
@@ -95,7 +130,10 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     speedFactor: number,
     callbacks: PlaybackScheduleCallbacks = {},
   ): Promise<void> {
-    const events: Array<{ time: number; note: number; duration: number; gain: number }> = []
+    const eventsBySide: Record<StereoSide, Array<{ time: number; note: number; duration: number; gain: number }>> = {
+      left: [],
+      right: [],
+    }
 
     clearTimers()
     for (const step of steps) {
@@ -110,17 +148,25 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
           callbacks.onStepEnd?.(step)
         }, stepOffsetMs + (step.durationMs / speedFactor)))
       }
-      const uniqueNotes = new Map<number, number>()
+      const uniqueNotes = new Map<string, { pitch: number; duration: number; side: StereoSide }>()
       for (const note of step.activeNotes) {
         if (!note.attack) continue
-        const existingDuration = uniqueNotes.get(note.pitch) ?? 0
-        uniqueNotes.set(note.pitch, Math.max(existingDuration, note.durationMs / speedFactor / 1000))
+        const noteKey = `${note.pitch}:${note.pan}`
+        const nextDuration = note.durationMs / speedFactor / 1000
+        const existing = uniqueNotes.get(noteKey)
+        if (existing === undefined || nextDuration > existing.duration) {
+          uniqueNotes.set(noteKey, {
+            pitch: note.pitch,
+            duration: nextDuration,
+            side: note.pan,
+          })
+        }
       }
       const chordGain = uniqueNotes.size === 0
         ? MAX_CHORD_GAIN
         : Math.min(MAX_CHORD_GAIN, MAX_CHORD_GAIN / Math.sqrt(uniqueNotes.size))
-      for (const [pitch, duration] of uniqueNotes.entries()) {
-        events.push({
+      for (const { pitch, duration, side } of uniqueNotes.values()) {
+        eventsBySide[side].push({
           time: stepOffsetMs / 1000,
           note: pitch,
           duration,
@@ -128,14 +174,17 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         })
       }
     }
-    if (events.length === 0) return
+    if (eventsBySide.left.length === 0 && eventsBySide.right.length === 0) return
     const context = await ensureRunningContext()
     const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC
     if (instrument.value === 'oscillator') {
       const masterGain = getMasterGainNode()
-      for (const event of events) {
+      for (const side of ['left', 'right'] as StereoSide[]) {
+        const events = eventsBySide[side]
+        for (const event of events) {
         const gainNode = context.createGain()
         const oscillator = context.createOscillator()
+        const panner = context.createStereoPanner()
         const startTime = baseStartTime + event.time
         const releaseSec = Math.min(OSCILLATOR_RELEASE_SEC, event.duration / 2)
         const stopTime = startTime + event.duration + releaseSec
@@ -143,20 +192,27 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         const sustainTime = Math.max(startTime + OSCILLATOR_ATTACK_SEC, startTime + event.duration)
 
         oscillator.type = 'triangle'
+        panner.pan.value = STEREO_PAN_BY_SIDE[side]
         oscillator.frequency.setValueAtTime(midiToFrequency(event.note), startTime)
         gainNode.gain.setValueAtTime(0.0001, startTime)
         gainNode.gain.linearRampToValueAtTime(peakGain, startTime + OSCILLATOR_ATTACK_SEC)
         gainNode.gain.setValueAtTime(peakGain, sustainTime)
         gainNode.gain.linearRampToValueAtTime(0.0001, stopTime)
         oscillator.connect(gainNode)
-        gainNode.connect(masterGain)
+        gainNode.connect(panner)
+        panner.connect(masterGain)
         oscillator.start(startTime)
         oscillator.stop(stopTime)
       }
+      }
       return
     }
-    const player = await loadPlayer()
-    player.schedule(baseStartTime, events)
+    const players = await loadPlayer()
+    for (const side of ['left', 'right'] as StereoSide[]) {
+      const events = eventsBySide[side]
+      if (events.length === 0) continue
+      players[side].schedule(baseStartTime, events)
+    }
   }
 
   function stop(): void {
@@ -166,6 +222,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       ctx = null
     }
     masterGainNode = null
+    stereoPannerNodes = null
     playerPromise = null
     loadedInstrument = null
   }
