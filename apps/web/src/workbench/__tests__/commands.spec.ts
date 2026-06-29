@@ -72,6 +72,16 @@ describe('parseCommandString', () => {
 })
 
 describe('legacy command registration', () => {
+  it('lists public help entries in alphabetical order', async () => {
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, createRuntime(log))
+
+    await stack.runString('help')
+
+    expect(log).toEqual([...log].sort((left, right) => left.localeCompare(right)))
+  })
+
   it('registers legacy command names in public help', async () => {
     const log: string[] = []
     const stack = new CommandStack({ log: (message) => log.push(message) })
