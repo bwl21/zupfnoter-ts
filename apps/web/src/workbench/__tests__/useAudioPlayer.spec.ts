@@ -22,7 +22,7 @@ interface MockStereoPannerNode {
 let createdPanners: MockStereoPannerNode[] = []
 
 const instrumentMock = vi.fn(async (_context: unknown, _instrument: string, options?: { destination?: { pan?: { value: number } } }) => ({
-  schedule: options?.destination?.pan?.value === -0.7 ? leftScheduleMock : rightScheduleMock,
+  schedule: options?.destination?.pan?.value === -0.9 ? leftScheduleMock : rightScheduleMock,
 }))
 
 vi.mock('soundfont-player', () => ({
@@ -149,7 +149,7 @@ describe('useAudioPlayer', () => {
       'orchestral_harp',
       expect.objectContaining({
         destination: expect.objectContaining({
-          pan: expect.objectContaining({ value: -0.7 }),
+          pan: expect.objectContaining({ value: -0.9 }),
         }),
         gain: 1,
         soundfont: 'FluidR3_GM',
@@ -161,7 +161,7 @@ describe('useAudioPlayer', () => {
       'orchestral_harp',
       expect.objectContaining({
         destination: expect.objectContaining({
-          pan: expect.objectContaining({ value: 0.7 }),
+          pan: expect.objectContaining({ value: 0.9 }),
         }),
         gain: 1,
         soundfont: 'FluidR3_GM',
@@ -189,8 +189,8 @@ describe('useAudioPlayer', () => {
     expect(oscillatorStartMock).toHaveBeenCalledTimes(3)
     expect(oscillatorStopMock).toHaveBeenCalledTimes(3)
     expect(gainConnectMock).toHaveBeenCalled()
-    expect(createdPanners.some((panner) => panner.pan.value === -0.7)).toBe(true)
-    expect(createdPanners.some((panner) => panner.pan.value === 0.7)).toBe(true)
+    expect(createdPanners.some((panner) => panner.pan.value === -0.9)).toBe(true)
+    expect(createdPanners.some((panner) => panner.pan.value === 0.9)).toBe(true)
     expect(oscillatorFrequencySetValueAtTimeMock).toHaveBeenCalledWith(261.6255653005986, 10.05)
   })
 })

@@ -23,8 +23,8 @@ const OSCILLATOR_RELEASE_SEC = 0.2
 const SCHEDULE_LOOKAHEAD_SEC = 0.05
 const MASTER_OUTPUT_GAIN = 6
 const STEREO_PAN_BY_SIDE: Record<StereoSide, number> = {
-  left: -0.7,
-  right: 0.7,
+  left: -0.9,
+  right: 0.9,
 }
 
 function midiToFrequency(pitch: number): number {
