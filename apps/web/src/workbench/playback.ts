@@ -21,6 +21,10 @@ export interface PlaybackNote {
   attack: boolean
 }
 
+interface TiedPlaybackNote {
+  durationMs: number
+}
+
 export interface PlaybackStep {
   originZnIds: string[]
   activeTextRanges: SelectionTextRange[]
@@ -100,22 +104,75 @@ export function resolveBaseTempoFromSong(song: Song): number {
   return resolveTempoBpm(song)
 }
 
-function collectActiveNotes(entity: PlayableEntity, song: Song): PlaybackNote[] {
+function appendPlaybackNote(
+  notes: PlaybackNote[],
+  pendingTies: Map<string, TiedPlaybackNote>,
+  voiceIndex: number,
+  pitch: number,
+  durationMs: number,
+  tieStart: boolean,
+  tieEnd: boolean,
+): void {
+  const tieKey = `${voiceIndex}:${pitch}`
+  const pending = pendingTies.get(tieKey)
+
+  if (tieEnd && pending !== undefined) {
+    pending.durationMs += durationMs
+    if (!tieStart) {
+      pendingTies.delete(tieKey)
+    }
+    return
+  }
+
+  const nextNote: PlaybackNote = {
+    pitch,
+    durationMs,
+    attack: true,
+  }
+  notes.push(nextNote)
+
+  if (tieStart) {
+    pendingTies.set(tieKey, nextNote)
+  } else {
+    pendingTies.delete(tieKey)
+  }
+}
+
+function collectActiveNotes(
+  entity: PlayableEntity,
+  song: Song,
+  voiceIndex: number,
+  pendingTies: Map<string, TiedPlaybackNote>,
+): PlaybackNote[] {
+  const notes: PlaybackNote[] = []
+
   switch (entity.type) {
     case 'Pause':
-      return []
+      return notes
     case 'Note':
-      return [{
-        pitch: entity.pitch,
-        durationMs: computeStepDurationMs(song, entity.duration),
-        attack: !entity.tieEnd || entity.tieStart,
-      }]
+      appendPlaybackNote(
+        notes,
+        pendingTies,
+        voiceIndex,
+        entity.pitch,
+        computeStepDurationMs(song, entity.duration),
+        entity.tieStart,
+        entity.tieEnd,
+      )
+      return notes
     case 'SynchPoint':
-      return entity.notes.map((note: Note) => ({
-        pitch: note.pitch,
-        durationMs: computeStepDurationMs(song, note.duration),
-        attack: !note.tieEnd || note.tieStart,
-      }))
+      for (const note of entity.notes) {
+        appendPlaybackNote(
+          notes,
+          pendingTies,
+          voiceIndex,
+          note.pitch,
+          computeStepDurationMs(song, note.duration),
+          note.tieStart,
+          note.tieEnd,
+        )
+      }
+      return notes
   }
 }
 
@@ -130,7 +187,8 @@ interface PlaybackStepGroup {
 function collectPlaybackStepGroups(song: Song): Map<number, PlaybackStepGroup> {
   const grouped = new Map<number, PlaybackStepGroup>()
 
-  for (const voice of song.voices) {
+  for (const [voiceIndex, voice] of song.voices.entries()) {
+    const pendingTies = new Map<string, TiedPlaybackNote>()
     for (const entity of voice.entities) {
       if (!isPlayableEntity(entity)) continue
 
@@ -139,7 +197,7 @@ function collectPlaybackStepGroups(song: Song): Map<number, PlaybackStepGroup> {
       const textRange = entity.sourceOffsets
         ? { startpos: entity.sourceOffsets[0], endpos: entity.sourceOffsets[1] }
         : undefined
-      const notes = collectActiveNotes(entity, song)
+      const notes = collectActiveNotes(entity, song, voiceIndex, pendingTies)
       if (existing === undefined) {
         grouped.set(entity.time, {
           originZnIds: [entity.znId],
@@ -171,6 +229,9 @@ function collectPlaybackStepGroups(song: Song): Map<number, PlaybackStepGroup> {
     group.originZnIds = [...new Set(group.originZnIds)]
     group.activeTextRanges = [...new Map(
       group.activeTextRanges.map((tr) => [textRangeKey(tr), tr]),
+    ).values()]
+    group.activeNotes = [...new Map(
+      group.activeNotes.map((note) => [`${note.pitch}:${note.attack ? 1 : 0}`, note] as const),
     ).values()]
   }
 

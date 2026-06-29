@@ -87,4 +87,17 @@ describe('renderWorkbenchPreviews', () => {
       (finalSharedStep?.playbackStartMs ?? 0) + (finalSharedStep?.durationMs ?? 0),
     )
   })
+
+  it('merges tied note durations into a single playback attack', () => {
+    const result = renderWorkbenchPreviews('X:1\nT:Tie\nL:1/4\nK:C\nC-C D')
+
+    expect(result.playbackTimeline).toHaveLength(3)
+    expect(result.playbackTimeline[0]?.activeNotes).toEqual([
+      { pitch: 60, durationMs: 1000, attack: true },
+    ])
+    expect(result.playbackTimeline[1]?.activeNotes).toEqual([])
+    expect(result.playbackTimeline[2]?.activeNotes).toEqual([
+      { pitch: 62, durationMs: 500, attack: true },
+    ])
+  })
 })
