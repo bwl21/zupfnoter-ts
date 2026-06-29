@@ -63,7 +63,7 @@ const storageState = reactive({
   pendingCandidates: [] as string[],
 })
 const dropboxProvider = createDropboxProvider()
-const playbackInstrument = ref<PlaybackInstrument>('piano')
+const playbackInstrument = ref<PlaybackInstrument>('oscillator')
 const logLevel = ref('warning')
 const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
 const runtimeSettings = ref<Record<string, string>>({

@@ -12,7 +12,6 @@ import type { AudioPlayer, PlaybackScheduleCallbacks } from './useAudioPlayer'
 interface PlaybackDriverSource {
   timeline: PlaybackStep[]
   baseTempoFromQ?: number
-  mode?: import('@zupfnoter/types').PlaybackMode
 }
 
 export function usePlaybackDriver(
@@ -38,22 +37,13 @@ export function usePlaybackDriver(
     playbackStore.stopPlayback()
   }
 
-  function syncHighlight(step: PlaybackStep): void {
-    playbackStore.addHighlightRanges(step.activeTextRanges)
-  }
-
-  function releaseHighlight(step: PlaybackStep): void {
-    playbackStore.removeHighlightRanges(step.activeTextRanges)
-  }
-
   async function play(): Promise<void> {
     const source = timelineSource.value
-    const playbackMode = source.mode ?? playbackStore.mode
     const steps = resolvePlaybackSteps(
       selection.value,
       sheetObjectIndex.value,
       source.timeline,
-      playbackMode,
+      playbackStore.mode,
     )
     if (steps.length === 0) {
       stop()
@@ -68,10 +58,14 @@ export function usePlaybackDriver(
     playbackStore.startPlayback(source.baseTempoFromQ, totalPassCount > 0 ? totalPassCount : undefined)
     const callbacks: PlaybackScheduleCallbacks = {
       onStepStart: (step) => {
-        syncHighlight(step)
-      },
-      onStepEnd: (step) => {
-        releaseHighlight(step)
+        playbackStore.handlePlayerEvent({
+          kind: 'current-notes',
+          activeTextRanges: step.activeTextRanges,
+          activeStartChar: step.activeStartChar,
+          activeTime: step.activeTime,
+          passIndex: step.passIndex,
+          voltaNumber: step.voltaNumber,
+        })
       },
     }
     await audioPlayer?.schedule(steps, playbackStore.state.speedFactor, callbacks)

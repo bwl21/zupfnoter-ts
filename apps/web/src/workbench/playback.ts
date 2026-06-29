@@ -3,15 +3,23 @@ import type {
   PlaybackPlayerEvent,
   PlaybackHighlight,
   PlaybackFlowStep,
-  PlaybackNote,
   SelectionState,
   SelectionTextRange,
   SheetObjectIndex,
+  PlayableEntity,
   Song,
+  VoiceEntity,
+  Note,
 } from '@zupfnoter/types'
 import { expandPlaybackFlow } from '@zupfnoter/core'
 import { resolveSelectionZnIds } from './selectionManager'
 import { textRangeKey } from './selectionIndex'
+
+export interface PlaybackNote {
+  pitch: number
+  durationMs: number
+  attack: boolean
+}
 
 export interface PlaybackStep {
   originZnIds: string[]
@@ -58,28 +66,190 @@ export function createPlaybackHighlightFromEvent(event: PlaybackPlayerEvent): Pl
   }
 }
 
-export function resolveBaseTempoFromSong(song: Song): number {
+function isPlayableEntity(entity: VoiceEntity): entity is PlayableEntity {
+  return entity.type === 'Note' || entity.type === 'Pause' || entity.type === 'SynchPoint'
+}
+
+function resolveTempoBpm(song: Song): number {
   const tempo = song.metaData.tempo
   if (typeof tempo === 'number') return tempo
   if (tempo !== undefined && typeof tempo.bpm === 'number') return tempo.bpm
   return 120
 }
 
+function resolveTempoUnit(song: Song): number {
+  const tempo = song.metaData.tempo
+  if (tempo !== undefined && typeof tempo !== 'number' && tempo.duration.length > 0) {
+    const firstDuration = tempo.duration[0]
+    if (typeof firstDuration === 'number' && firstDuration > 0) {
+      return firstDuration
+    }
+  }
+  return 0.25
+}
+
+function computeStepDurationMs(song: Song, duration: number): number {
+  const bpm = resolveTempoBpm(song)
+  const unit = resolveTempoUnit(song)
+  const SHORTEST_NOTE = 64
+  const wholeNoteFraction = duration / SHORTEST_NOTE
+  return Math.max(120, (wholeNoteFraction / unit) * (60000 / bpm))
+}
+
+export function resolveBaseTempoFromSong(song: Song): number {
+  return resolveTempoBpm(song)
+}
+
+function collectActiveNotes(entity: PlayableEntity, song: Song): PlaybackNote[] {
+  switch (entity.type) {
+    case 'Pause':
+      return []
+    case 'Note':
+      return [{
+        pitch: entity.pitch,
+        durationMs: computeStepDurationMs(song, entity.duration),
+        attack: !entity.tieEnd || entity.tieStart,
+      }]
+    case 'SynchPoint':
+      return entity.notes.map((note: Note) => ({
+        pitch: note.pitch,
+        durationMs: computeStepDurationMs(song, note.duration),
+        attack: !note.tieEnd || note.tieStart,
+      }))
+  }
+}
+
+interface PlaybackStepGroup {
+  originZnIds: string[]
+  activeTextRanges: SelectionTextRange[]
+  activeNotes: PlaybackNote[]
+  activeStartChar?: number
+  maxEntityTimeDuration: number
+}
+
+function collectPlaybackStepGroups(song: Song): Map<number, PlaybackStepGroup> {
+  const grouped = new Map<number, PlaybackStepGroup>()
+
+  for (const voice of song.voices) {
+    for (const entity of voice.entities) {
+      if (!isPlayableEntity(entity)) continue
+
+      const existing = grouped.get(entity.time)
+      const startChar = entity.sourceOffsets?.[0]
+      const textRange = entity.sourceOffsets
+        ? { startpos: entity.sourceOffsets[0], endpos: entity.sourceOffsets[1] }
+        : undefined
+      const notes = collectActiveNotes(entity, song)
+      if (existing === undefined) {
+        grouped.set(entity.time, {
+          originZnIds: [entity.znId],
+          activeTextRanges: textRange !== undefined ? [textRange] : [],
+          activeNotes: notes,
+          activeStartChar: startChar,
+          maxEntityTimeDuration: entity.duration,
+        })
+        continue
+      }
+
+      existing.originZnIds.push(entity.znId)
+      if (textRange !== undefined) {
+        existing.activeTextRanges.push(textRange)
+      }
+      if (notes.length > 0) {
+        existing.activeNotes.push(...notes)
+      }
+      existing.activeStartChar = existing.activeStartChar === undefined
+        ? startChar
+        : startChar === undefined
+          ? existing.activeStartChar
+          : Math.min(existing.activeStartChar, startChar)
+      existing.maxEntityTimeDuration = Math.max(existing.maxEntityTimeDuration, entity.duration)
+    }
+  }
+
+  for (const group of grouped.values()) {
+    group.originZnIds = [...new Set(group.originZnIds)]
+    group.activeTextRanges = [...new Map(
+      group.activeTextRanges.map((tr) => [textRangeKey(tr), tr]),
+    ).values()]
+  }
+
+  return grouped
+}
+
 export function buildPlaybackTimeline(song: Song): PlaybackStep[] {
+  const grouped = collectPlaybackStepGroups(song)
   const flow = expandPlaybackFlow(song)
-  return flow.map((flowStep: PlaybackFlowStep) => ({
-    originZnIds: [...flowStep.originZnIds],
-    activeTextRanges: flowStep.activeTextRanges.map((range) => ({ ...range })),
-    activeNotes: [...flowStep.activeNotes],
-    activeStartChar: flowStep.activeStartChar,
-    activeTime: `${flowStep.sourceTime}`,
-    playbackStartMs: flowStep.playbackStartMs,
-    durationMs: flowStep.activeNotes.reduce((maxDuration: number, note) => Math.max(maxDuration, note.durationMs), 120),
-    sourceTime: flowStep.sourceTime,
-    flowIndex: flowStep.flowIndex,
-    passIndex: flowStep.passIndex,
-    voltaNumber: flowStep.voltaNumber,
-  }))
+  const sourceTimes = [...grouped.keys()].sort((left, right) => left - right)
+  const nextSourceTimeByTime = new Map<number, number>()
+
+  for (let index = 0; index < sourceTimes.length; index += 1) {
+    const sourceTime = sourceTimes[index]
+    const nextSourceTime = sourceTimes[index + 1]
+    if (sourceTime !== undefined && nextSourceTime !== undefined) {
+      nextSourceTimeByTime.set(sourceTime, nextSourceTime)
+    }
+  }
+
+  const bpm = resolveTempoBpm(song)
+  const unit = resolveTempoUnit(song)
+  const ABC2SVG_DURATION_FACTOR = 1536
+  const SHORTEST_NOTE = 64
+
+  function timeToMs(duration: number): number {
+    const wholeNoteFraction = duration / ABC2SVG_DURATION_FACTOR
+    return Math.max(120, (wholeNoteFraction / unit) * (60000 / bpm))
+  }
+
+  let playbackCursorMs = 0
+
+  return flow.map((flowStep: PlaybackFlowStep, index: number) => {
+    const group = grouped.get(flowStep.sourceTime)
+    if (group === undefined) {
+      const fallbackStep: PlaybackStep = {
+        originZnIds: [...flowStep.originZnIds],
+        activeTextRanges: flowStep.activeTextRanges.map((range) => ({ ...range })),
+        activeNotes: [],
+        activeStartChar: flowStep.activeStartChar,
+        activeTime: `${flowStep.sourceTime}`,
+        playbackStartMs: playbackCursorMs,
+        durationMs: 120,
+        sourceTime: flowStep.sourceTime,
+        flowIndex: flowStep.flowIndex,
+        passIndex: flowStep.passIndex,
+        voltaNumber: flowStep.voltaNumber,
+      }
+      playbackCursorMs += fallbackStep.durationMs
+      return fallbackStep
+    }
+
+    const ownDurationUnits = group.maxEntityTimeDuration * ABC2SVG_DURATION_FACTOR / SHORTEST_NOTE
+    const nextFlowStep = flow[index + 1]
+    const nextSourceTime = nextSourceTimeByTime.get(flowStep.sourceTime)
+    const followsSourceSequence = nextFlowStep?.sourceTime === nextSourceTime
+    const traversalDurationUnits = followsSourceSequence && nextSourceTime !== undefined && nextSourceTime > flowStep.sourceTime
+      ? nextSourceTime - flowStep.sourceTime
+      : ownDurationUnits
+    const stepDurationMs = timeToMs(traversalDurationUnits)
+
+    const playbackStep: PlaybackStep = {
+      originZnIds: [...group.originZnIds],
+      activeTextRanges: group.activeTextRanges.map((range) => ({ ...range })),
+      activeNotes: [...group.activeNotes],
+      activeStartChar: group.activeStartChar,
+      activeTime: `${flowStep.sourceTime}`,
+      playbackStartMs: playbackCursorMs,
+      durationMs: stepDurationMs,
+      sourceTime: flowStep.sourceTime,
+      flowIndex: flowStep.flowIndex,
+      passIndex: flowStep.passIndex,
+      voltaNumber: flowStep.voltaNumber,
+    }
+
+    playbackCursorMs += playbackStep.durationMs
+
+    return playbackStep
+  })
 }
 
 export function resolvePlaybackSteps(

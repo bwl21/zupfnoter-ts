@@ -66,10 +66,10 @@ describe('renderWorkbenchPreviews', () => {
   it('builds an expanded playback timeline for repeat endings', () => {
     const result = renderWorkbenchPreviews('X:1\nT:Demo\nM:4/4\nL:1/4\nK:C\n|: C D | [1 E :| [2 F |]')
 
-    expect(result.playbackTimeline).toHaveLength(7)
-    expect(result.playbackTimeline.map((step) => step.passIndex)).toEqual([1, 1, 1, 2, 2, 2, 3])
-    expect(result.playbackTimeline.map((step) => step.voltaNumber ?? 0)).toEqual([0, 0, 1, 0, 0, 2, 2])
-    expect(result.playbackTimeline.map((step) => step.playbackStartMs)).toEqual([0, 500, 1000, 1500, 2000, 2500, 3000])
+    expect(result.playbackTimeline).toHaveLength(6)
+    expect(result.playbackTimeline.map((step) => step.passIndex)).toEqual([1, 1, 1, 2, 2, 2])
+    expect(result.playbackTimeline.map((step) => step.voltaNumber ?? 0)).toEqual([0, 0, 1, 0, 0, 2])
+    expect(result.playbackTimeline.map((step) => step.playbackStartMs)).toEqual([0, 500, 1000, 1500, 2000, 2500])
     expect(result.playbackTimeline[4]?.durationMs).toBe(result.playbackTimeline[1]?.durationMs)
     expect(result.playbackTimeline[4]?.durationMs).toBe(result.playbackTimeline[5]?.durationMs)
   })

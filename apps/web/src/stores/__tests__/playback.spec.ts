@@ -79,37 +79,4 @@ describe('playback store', () => {
     expect(playbackStore.state.totalPassCount).toBeUndefined()
     expect(playbackStore.highlight.activeTextRanges).toEqual([])
   })
-
-  it('adds and removes playback highlight ranges independently', () => {
-    setActivePinia(createPinia())
-
-    const playbackStore = usePlaybackStore()
-
-    playbackStore.addHighlightRanges([
-      { startpos: 10, endpos: 12 },
-      { startpos: 20, endpos: 22 },
-    ])
-    expect(playbackStore.highlight.activeTextRanges).toEqual([
-      { startpos: 10, endpos: 12 },
-      { startpos: 20, endpos: 22 },
-    ])
-
-    playbackStore.addHighlightRanges([
-      { startpos: 20, endpos: 22 },
-      { startpos: 30, endpos: 32 },
-    ])
-    expect(playbackStore.highlight.activeTextRanges).toEqual([
-      { startpos: 10, endpos: 12 },
-      { startpos: 20, endpos: 22 },
-      { startpos: 30, endpos: 32 },
-    ])
-
-    playbackStore.removeHighlightRanges([
-      { startpos: 20, endpos: 22 },
-    ])
-    expect(playbackStore.highlight.activeTextRanges).toEqual([
-      { startpos: 10, endpos: 12 },
-      { startpos: 30, endpos: 32 },
-    ])
-  })
 })
