@@ -186,10 +186,14 @@ interface PlaybackStepGroup {
   maxEntityTimeDuration: number
 }
 
-function collectPlaybackStepGroups(song: Song): Map<number, PlaybackStepGroup> {
+function collectPlaybackStepGroups(song: Song, activeVoices?: number[]): Map<number, PlaybackStepGroup> {
   const grouped = new Map<number, PlaybackStepGroup>()
+  const allowedVoiceIndexes = activeVoices === undefined
+    ? undefined
+    : new Set(activeVoices)
 
   for (const [voiceIndex, voice] of song.voices.entries()) {
+    if (allowedVoiceIndexes !== undefined && !allowedVoiceIndexes.has(voiceIndex)) continue
     const pendingTies = new Map<string, TiedPlaybackNote>()
     for (const entity of voice.entities) {
       if (!isPlayableEntity(entity)) continue
@@ -240,8 +244,8 @@ function collectPlaybackStepGroups(song: Song): Map<number, PlaybackStepGroup> {
   return grouped
 }
 
-export function buildPlaybackTimeline(song: Song): PlaybackStep[] {
-  const grouped = collectPlaybackStepGroups(song)
+export function buildPlaybackTimeline(song: Song, activeVoices?: number[]): PlaybackStep[] {
+  const grouped = collectPlaybackStepGroups(song, activeVoices)
   const flow = expandPlaybackFlow(song)
   const sourceTimes = [...grouped.keys()].sort((left, right) => left - right)
   const nextSourceTimeByTime = new Map<number, number>()

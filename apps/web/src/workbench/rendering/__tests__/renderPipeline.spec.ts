@@ -100,4 +100,65 @@ describe('renderWorkbenchPreviews', () => {
       { pitch: 62, durationMs: 500, attack: true, pan: 'left' },
     ])
   })
+
+  it('limits playback to the active voices of the selected extract', () => {
+    const result = renderWorkbenchPreviews(`X:1
+T:Extract Playback
+L:1/4
+M:4/4
+K:C
+V:1
+C D
+V:2
+G, A,
+
+%%%%zupfnoter.config
+{
+  "extract": {
+    "1": {
+      "voices": [1]
+    }
+  }
+}
+`, 1)
+
+    expect(result.playbackTimeline).toHaveLength(2)
+    expect(result.playbackTimeline[0]?.activeNotes).toEqual([
+      { pitch: 60, durationMs: 500, attack: true, pan: 'left' },
+    ])
+    expect(result.playbackTimeline[1]?.activeNotes).toEqual([
+      { pitch: 62, durationMs: 500, attack: true, pan: 'left' },
+    ])
+  })
+
+  it('keeps higher configured extract voice numbers in playback', () => {
+    const result = renderWorkbenchPreviews(`X:1
+T:Fourth Voice Playback
+L:1/4
+M:4/4
+K:C
+V:1
+C
+V:2
+D
+V:3
+E
+V:4
+F
+
+%%%%zupfnoter.config
+{
+  "extract": {
+    "1": {
+      "voices": [4]
+    }
+  }
+}
+`, 1)
+
+    expect(result.playbackTimeline).toHaveLength(1)
+    expect(result.playbackTimeline[0]?.activeNotes).toEqual([
+      { pitch: 65, durationMs: 500, attack: true, pan: 'right' },
+    ])
+  })
 })
