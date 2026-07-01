@@ -129,6 +129,7 @@ describe('selection store', () => {
         confKeys: [],
         textRanges: [{ startpos: 4, endpos: 6 }],
       })
+    expect(selectionStore.selection.voiceScope).toBe('single-voice')
   })
 
   it('resolves score-only selections back into the editor through score objects', () => {
@@ -262,5 +263,101 @@ describe('selection store', () => {
     })
 
     expect(selectionStore.selection.selectedIndexes).toEqual([])
+  })
+
+  it('projects editor selections across all voices when the scope is switched', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.setSheetObjectIndex({
+      ...sheetObjectIndex,
+      byZnId: {
+        ...sheetObjectIndex.byZnId,
+        'note-3': [6, 7, 10, 11],
+      },
+      byConfKey: {
+        ...sheetObjectIndex.byConfKey,
+        'extract.0.notebound.nconf.v_1.t_384.n_0.***': [10],
+        'extract.0.notebound.nconf.v_2.t_384.n_0.***': [11],
+      },
+      entries: [
+        ...sheetObjectIndex.entries,
+        {
+          kind: 'sheet-object',
+          znId: 'note-3',
+          confKey: 'extract.0.notebound.nconf.v_1.t_384.n_0.***',
+          addressableIn: { editor: false, score: false, svg: true },
+        },
+        {
+          kind: 'sheet-object',
+          znId: 'note-3',
+          confKey: 'extract.0.notebound.nconf.v_2.t_384.n_0.***',
+          addressableIn: { editor: false, score: false, svg: true },
+        },
+      ],
+    })
+    selectionStore.setVoiceScope('all-voices')
+    selectionStore.selectIndexes([5], 'abc-editor')
+
+    expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection, {
+      voiceScope: selectionStore.selection.voiceScope,
+    })).toEqual({
+      znIds: [],
+      confKeys: [
+        'extract.0.note-3',
+        'extract.0.notebound.nconf.v_1.t_384.n_0.***',
+        'extract.0.notebound.nconf.v_2.t_384.n_0.***',
+        'extract.0.note-4',
+      ],
+      textRanges: [{ startpos: 10, endpos: 12 }],
+    })
+  })
+
+  it('limits editor block selection to the active extract voices', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.setSheetObjectIndex({
+      ...sheetObjectIndex,
+      byZnId: {
+        ...sheetObjectIndex.byZnId,
+        'note-3': [6, 7, 10, 11],
+      },
+      byConfKey: {
+        ...sheetObjectIndex.byConfKey,
+        'extract.0.notebound.nconf.v_1.t_384.n_0.***': [10],
+        'extract.0.notebound.nconf.v_2.t_384.n_0.***': [11],
+      },
+      entries: [
+        ...sheetObjectIndex.entries,
+        {
+          kind: 'sheet-object',
+          znId: 'note-3',
+          confKey: 'extract.0.notebound.nconf.v_1.t_384.n_0.***',
+          addressableIn: { editor: false, score: false, svg: true },
+        },
+        {
+          kind: 'sheet-object',
+          znId: 'note-3',
+          confKey: 'extract.0.notebound.nconf.v_2.t_384.n_0.***',
+          addressableIn: { editor: false, score: false, svg: true },
+        },
+      ],
+    })
+    selectionStore.setVoiceScope('extract-voices')
+    selectionStore.selectIndexes([5], 'abc-editor')
+
+    expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection, {
+      voiceScope: selectionStore.selection.voiceScope,
+      activeVoiceIds: ['2'],
+    })).toEqual({
+      znIds: [],
+      confKeys: [
+        'extract.0.note-3',
+        'extract.0.notebound.nconf.v_2.t_384.n_0.***',
+        'extract.0.note-4',
+      ],
+      textRanges: [{ startpos: 10, endpos: 12 }],
+    })
   })
 })

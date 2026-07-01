@@ -124,6 +124,10 @@ function parseVoiceIdFromConfKey(confKey: string | undefined): string | undefine
   return match?.[1]
 }
 
+function resolveEntryVoiceId(entry: SheetObjectIndexEntry): string | undefined {
+  return parseVoiceIdFromConfKey(entry.confKey)
+}
+
 function lineRangeOverlapsEntry(
   entry: SheetObjectIndexEntry,
   startLine: number,
@@ -433,9 +437,9 @@ export function resolveSvgSelection(
   const selectedEndLine = selectedEntries
     .map((entry) => entry.endPos?.line)
     .filter((line): line is number => line !== undefined)
-  const editorVoiceScope = options?.editorVoiceScope ?? 'single-voice'
+  const voiceScope = options?.voiceScope ?? selection.voiceScope
   const editorSelectionLineWindow = selection.source === 'abc-editor'
-    && editorVoiceScope === 'single-voice'
+    && voiceScope === 'single-voice'
     && selectedStartLine.length > 0
     && selectedEndLine.length > 0
     ? {
@@ -446,6 +450,11 @@ export function resolveSvgSelection(
   const selectedVoiceId = editorSelectionLineWindow === undefined
     ? undefined
     : index?.voiceByLine[editorSelectionLineWindow.startLine]
+  const activeVoiceIds = options?.activeVoiceIds ?? []
+  const allowedVoiceIds = voiceScope === 'extract-voices'
+    ? new Set(activeVoiceIds)
+    : undefined
+  const shouldExpandByZnId = voiceScope !== 'single-voice'
 
   const textResolvedEntries = dedupeEntries(
     selectedTextRanges.flatMap((textRange) => {
@@ -468,14 +477,30 @@ export function resolveSvgSelection(
     if (editorSelectionLineWindow === undefined) return true
     return lineRangeOverlapsEntry(entry, editorSelectionLineWindow.startLine, editorSelectionLineWindow.endLine)
   })
+  const znIdExpandedEntries = shouldExpandByZnId
+    ? dedupeEntries(
+        [...selectedEntries, ...textResolvedEntries]
+          .map((entry) => entry.znId)
+          .filter((znId): znId is string => znId !== undefined)
+          .flatMap((znId) => projectIndexesToEntries(index, resolveIndexesByZnId(index, znId, 'svg'))),
+      )
+    : []
 
   const entries = dedupeEntries(
-    [...selectedEntries, ...textResolvedEntries]
+    [...selectedEntries, ...textResolvedEntries, ...znIdExpandedEntries]
       .filter((entry) => entry.addressableIn.svg),
-  )
+  ).filter((entry) => {
+    if (allowedVoiceIds === undefined || allowedVoiceIds.size === 0) return true
+    const entryVoiceId = resolveEntryVoiceId(entry)
+    return entryVoiceId === undefined || allowedVoiceIds.has(entryVoiceId)
+  })
   const editorOrScoreDriven = selection.source === 'abc-editor' || selection.source === 'score-preview'
   const confKeys = [...new Set(entries.map((entry) => entry.confKey).filter((confKey): confKey is string => confKey !== undefined))]
     .filter((confKey) => {
+      if (allowedVoiceIds !== undefined && allowedVoiceIds.size > 0) {
+        const voiceId = parseVoiceIdFromConfKey(confKey)
+        return voiceId === undefined || allowedVoiceIds.has(voiceId)
+      }
       if (!editorOrScoreDriven || selectedVoiceId === undefined) return true
       const voiceId = parseVoiceIdFromConfKey(confKey)
       return voiceId === undefined || voiceId === selectedVoiceId

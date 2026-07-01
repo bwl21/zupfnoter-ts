@@ -89,6 +89,7 @@ describe('selectionManager', () => {
     const selection: SelectionState = {
       selectedIndexes: [1],
       source: 'abc-editor',
+      voiceScope: 'single-voice',
     }
 
     expect(resolveSelectionProjection(sheetObjectIndex, selection, 'score-preview'))
@@ -112,6 +113,7 @@ describe('selectionManager', () => {
     const selection: SelectionState = {
       selectedIndexes: [3],
       source: 'abc-editor',
+      voiceScope: 'single-voice',
     }
 
     expect(resolveSelectionProjection(sheetObjectIndex, selection, 'harp-preview'))
@@ -127,16 +129,37 @@ describe('selectionManager', () => {
     const selection: SelectionState = {
       selectedIndexes: [3],
       source: 'abc-editor',
+      voiceScope: 'all-voices',
     }
 
     expect(resolveSelectionProjection(sheetObjectIndex, selection, 'harp-preview', {
-      editorVoiceScope: 'all-matching-voices',
+      voiceScope: 'all-voices',
     })).toEqual({
       selectedIndexes: [3],
       textRanges: [{ startpos: 10, endpos: 12 }],
       znIds: [],
       confKeys: [
         'extract.0.notebound.nconf.v_1.t_384.n_0.***',
+        'extract.0.notebound.nconf.v_2.t_384.n_0.***',
+      ],
+    })
+  })
+
+  it('can project editor-driven selections only across active extract voices', () => {
+    const selection: SelectionState = {
+      selectedIndexes: [3],
+      source: 'abc-editor',
+      voiceScope: 'extract-voices',
+    }
+
+    expect(resolveSelectionProjection(sheetObjectIndex, selection, 'harp-preview', {
+      voiceScope: 'extract-voices',
+      activeVoiceIds: ['2'],
+    })).toEqual({
+      selectedIndexes: [3],
+      textRanges: [{ startpos: 10, endpos: 12 }],
+      znIds: [],
+      confKeys: [
         'extract.0.notebound.nconf.v_2.t_384.n_0.***',
       ],
     })

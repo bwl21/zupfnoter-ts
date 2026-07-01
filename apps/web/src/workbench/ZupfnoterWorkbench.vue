@@ -93,6 +93,7 @@ const renderError = ref('')
 const renderSummary = ref('not rendered')
 const playbackTimeline = ref<PlaybackStep[]>([])
 const baseTempoFromQ = ref<number | undefined>(undefined)
+const activeVoiceIds = ref<string[]>([])
 const commandBusy = ref(false)
 const { toasts, syncDiagnostics, dismissToast } = useWorkbenchToasts()
 const playbackStore = usePlaybackStore()
@@ -101,6 +102,10 @@ const selectedHarpProjection = computed(() => resolveSelectionProjection(
   selectionStore.sheetObjectIndex,
   selectionStore.selection,
   'harp-preview',
+  {
+    voiceScope: selectionStore.selection.voiceScope,
+    activeVoiceIds: activeVoiceIds.value,
+  },
 ))
 const projectedPlaybackHighlight = computed(() => resolvePlaybackProjection(
   selectionStore.sheetObjectIndex,
@@ -347,6 +352,7 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   const loggedDiagnostics = new Set<string>()
   scoreSvg.value = result.scoreSvg
   harpSvg.value = result.harpSvg
+  activeVoiceIds.value = result.activeVoiceIds
   selectionStore.setSheetObjectIndex(result.sheetObjectIndex)
   renderIssues.value = result.issues
   workbenchDiagnostics.value = result.diagnostics
@@ -431,6 +437,7 @@ function buildHarpMirrorSnapshot(): HarpMirrorSnapshot {
       selectedIndexes: [...selectionStore.selection.selectedIndexes],
       anchorIndex: selectionStore.selection.anchorIndex,
       source: selectionStore.selection.source,
+      voiceScope: selectionStore.selection.voiceScope,
     },
     selectedScoreTextRanges: selectedScoreTextRanges.value.map((range) => ({ ...range })),
     playbackScoreTextRanges: playbackScoreTextRanges.value.map((range) => ({ ...range })),
@@ -708,6 +715,10 @@ function handleEditorSelectionChange(payload: {
   }
 
   selectionStore.selectTextRange(payload.startpos, payload.endpos, 'abc-editor')
+}
+
+function handleSelectionVoiceScopeChange(voiceScope: 'single-voice' | 'extract-voices' | 'all-voices'): void {
+  selectionStore.setVoiceScope(voiceScope)
 }
 
 watch(abcText, () => {
@@ -1018,14 +1029,16 @@ function handleMirrorMessage(event: MessageEvent): void {
       <div class="workbench-footer">
         <FooterBar
           :extract-label="`Extract ${currentExtractLabel}`"
-        :storage-path="storageState.path"
+          :storage-path="storageState.path"
           :dirty="true"
           :save-format="saveFormat"
           :cursor-position="editorCursor"
           :speed-factor="playbackStore.state.speedFactor"
+          :selection-voice-scope="selectionStore.selection.voiceScope"
           @speed-down="playbackStore.decreaseSpeed"
           @speed-reset="playbackStore.resetSpeed"
           @speed-up="playbackStore.increaseSpeed"
+          @selection-voice-scope-change="handleSelectionVoiceScopeChange"
         />
         <div
           v-if="playbackStatusOverlay !== undefined"

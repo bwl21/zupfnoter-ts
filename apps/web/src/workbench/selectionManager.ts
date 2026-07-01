@@ -9,6 +9,7 @@ import type {
   SelectionTarget,
   SelectionTargetCapabilities,
   SelectionTextRange,
+  SelectionVoiceScope,
   SheetObjectIndex,
 } from '@zupfnoter/types'
 
@@ -79,12 +80,17 @@ function normalizeIndexes(indexes: number[]): number[] {
   return [...new Set(indexes)].sort((left, right) => left - right)
 }
 
-function createSelectionState(selectedIndexes: number[], source: SelectionSource): SelectionState {
+function createSelectionState(
+  selectedIndexes: number[],
+  source: SelectionSource,
+  voiceScope: SelectionVoiceScope = 'single-voice',
+): SelectionState {
   const normalized = normalizeIndexes(selectedIndexes)
   return {
     selectedIndexes: normalized,
     anchorIndex: normalized[0],
     source,
+    voiceScope,
   }
 }
 
@@ -126,26 +132,30 @@ export function canTargetCreateSelection(
 export function resolveSelectionByIndexes(
   selectedIndexes: number[],
   source: SelectionSource = 'command',
+  voiceScope: SelectionVoiceScope = 'single-voice',
 ): SelectionState {
-  return createSelectionState(selectedIndexes, source)
+  return createSelectionState(selectedIndexes, source, voiceScope)
 }
 
 export function resolveSelectionByZnId(
   index: SheetObjectIndex | undefined,
   znId: string,
   source: SelectionSource = 'command',
+  voiceScope: SelectionVoiceScope = 'single-voice',
 ): SelectionState {
-  return createSelectionState(resolveIndexesByZnId(index, znId), source)
+  return createSelectionState(resolveIndexesByZnId(index, znId), source, voiceScope)
 }
 
 export function resolveSelectionByMusicRange(
   index: SheetObjectIndex | undefined,
   znIds: string[],
   source: SelectionSource = 'command',
+  voiceScope: SelectionVoiceScope = 'single-voice',
 ): SelectionState {
   return createSelectionState(
     znIds.flatMap((znId) => resolveIndexesByZnId(index, znId)),
     source,
+    voiceScope,
   )
 }
 
@@ -153,8 +163,9 @@ export function resolveSelectionByConfKey(
   index: SheetObjectIndex | undefined,
   confKey: string,
   source: SelectionSource = 'command',
+  voiceScope: SelectionVoiceScope = 'single-voice',
 ): SelectionState {
-  return createSelectionState(resolveIndexesByConfKey(index, confKey), source)
+  return createSelectionState(resolveIndexesByConfKey(index, confKey), source, voiceScope)
 }
 
 export function resolveSelectionByTextRange(
@@ -162,6 +173,7 @@ export function resolveSelectionByTextRange(
   startpos: number,
   endpos: number,
   source: SelectionSource = 'abc-editor',
+  voiceScope: SelectionVoiceScope = 'single-voice',
 ): SelectionState {
   const resolvedIndexes = source === 'score-preview'
     ? (() => {
@@ -203,7 +215,7 @@ export function resolveSelectionByTextRange(
         })()
       : resolveIndexesByTextRange(index, { startpos, endpos }, undefined, 'overlap')
 
-  return createSelectionState(resolvedIndexes, source)
+  return createSelectionState(resolvedIndexes, source, voiceScope)
 }
 
 export function resolveSelectionByLineColumnRange(
@@ -211,16 +223,17 @@ export function resolveSelectionByLineColumnRange(
   start: SelectionLineColumn,
   end: SelectionLineColumn,
   source: SelectionSource = 'abc-editor',
+  voiceScope: SelectionVoiceScope = 'single-voice',
 ): SelectionState {
   const textRange = projectLineColumnRangeToTextRange(
     index,
     normalizeLineColumnRange(start, end),
   )
   if (textRange === undefined) {
-    return createSelectionState([], source)
+    return createSelectionState([], source, voiceScope)
   }
 
-  return resolveSelectionByTextRange(index, textRange.startpos, textRange.endpos, source)
+  return resolveSelectionByTextRange(index, textRange.startpos, textRange.endpos, source, voiceScope)
 }
 
 export function resolveSelectionProjection(

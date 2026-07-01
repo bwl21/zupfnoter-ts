@@ -12,12 +12,14 @@ const props = withDefaults(defineProps<{
   saveFormat: string
   speedFactor: number
   cursorPosition: string
+  selectionVoiceScope: 'single-voice' | 'extract-voices' | 'all-voices'
 }>(), {})
 
 const emit = defineEmits<{
   (event: 'speed-up'): void
   (event: 'speed-down'): void
   (event: 'speed-reset'): void
+  (event: 'selection-voice-scope-change', value: 'single-voice' | 'extract-voices' | 'all-voices'): void
 }>()
 
 const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
@@ -38,6 +40,30 @@ const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
     <span class="footer-bar__meta">Storage: {{ storagePath }}</span>
     <span class="footer-bar__meta">{{ saveFormat }}</span>
     <template #aside>
+      <div class="footer-bar__selection">
+        <span class="footer-bar__meta">Selection:</span>
+        <ZnButton
+          class="footer-bar__scope-button"
+          :variant="selectionVoiceScope === 'single-voice' ? 'primary' : 'ghost'"
+          @click="emit('selection-voice-scope-change', 'single-voice')"
+        >
+          Stimme
+        </ZnButton>
+        <ZnButton
+          class="footer-bar__scope-button"
+          :variant="selectionVoiceScope === 'extract-voices' ? 'primary' : 'ghost'"
+          @click="emit('selection-voice-scope-change', 'extract-voices')"
+        >
+          Auszug
+        </ZnButton>
+        <ZnButton
+          class="footer-bar__scope-button"
+          :variant="selectionVoiceScope === 'all-voices' ? 'primary' : 'ghost'"
+          @click="emit('selection-voice-scope-change', 'all-voices')"
+        >
+          Alle
+        </ZnButton>
+      </div>
       <div class="footer-bar__playback">
         <span class="footer-bar__meta">Playback:</span>
         <ZnButton class="footer-bar__speed-button" variant="ghost" @click="emit('speed-down')">
@@ -70,6 +96,17 @@ const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+.footer-bar__selection {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-inline-end: 0.75rem;
+}
+
+.footer-bar__scope-button {
+  min-width: 3.8rem;
 }
 
 .footer-bar__speed-button,

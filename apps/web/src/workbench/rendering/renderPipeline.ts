@@ -35,6 +35,7 @@ export interface WorkbenchRenderResult {
   scoreSvg: string
   harpSvg: string
   sheetObjectIndex?: SheetObjectIndex
+  activeVoiceIds: string[]
   issues: RenderIssue[]
   diagnostics: WorkbenchDiagnostic[]
   toastDiagnostics: WorkbenchDiagnostic[]
@@ -97,6 +98,7 @@ export function renderWorkbenchPreviews(
   let harpSvg = ''
   let song: ReturnType<AbcToSong['transform']> | null = null
   let sheetChildCount = 0
+  let activeVoiceIds: string[] = []
   let modelError: string | undefined
   let sheetObjectIndex: SheetObjectIndex | undefined
   try {
@@ -107,6 +109,7 @@ export function renderWorkbenchPreviews(
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
     }
     const sheet = new HarpnotesLayout(config, layoutOptions).layout(transformedSong, extractNr, 'A3')
+    activeVoiceIds = sheet.activeVoices.map((voiceNr) => `${voiceNr}`)
     sheetObjectIndex = buildSheetObjectIndex(transformedSong, sheet as Sheet, abcText, scoreSvg)
     sheetChildCount = sheet.children.length
     harpSvg = scaleSvgForPreview(new SvgEngine().draw(sheet))
@@ -144,6 +147,7 @@ export function renderWorkbenchPreviews(
     scoreSvg,
     harpSvg,
     sheetObjectIndex,
+    activeVoiceIds,
     issues,
     diagnostics: modelDiagnostics,
     toastDiagnostics,

@@ -27,6 +27,8 @@ können im jeweiligen Phase-Ordner auch ergänzende Dateien wie `spec-<thema>.md
 | [docs/phase-3/spec-apps-demo.md](docs/phase-3/spec-apps-demo.md) | Phase 3 – `apps/demo`: Pipeline-Demo-App |
 | [docs/phase-4/spec-svg.md](docs/phase-4/spec-svg.md) | Phase 4.1 – SvgEngine |
 | [docs/phase-5/spec-codemirror.md](docs/phase-5/spec-codemirror.md) | Phase 5 – CodeMirror-Integration für den ABC-Editor |
+| [docs/phase-5/spec-selection.md](docs/phase-5/spec-selection.md) | Phase 5 – Selection in Editor, Score und Harfe |
+| [docs/phase-5/spec-playback-selection.md](docs/phase-5/spec-playback-selection.md) | Phase 5.7 – Selection-gesteuertes Playback |
 | [docs/adr/vector-umsetzung.md](docs/adr/vector-umsetzung.md) | ADR: Ruby `Vector` → TypeScript |
 | [docs/phase-5/demo-view-bugfixes.md](docs/phase-5/demo-view-bugfixes.md) | Demo-View: Browser-Kompatibilität, BeatPacker-Bugs, Y_SCALE |
 | [docs/architecture/repo-analysis.md](docs/architecture/repo-analysis.md) | Repo-Analyse und Architekturüberblick |

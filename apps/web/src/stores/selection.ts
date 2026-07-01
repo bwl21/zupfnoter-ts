@@ -5,6 +5,7 @@ import type {
   SelectionLineColumn,
   SelectionSource,
   SelectionState,
+  SelectionVoiceScope,
   SheetObjectIndex,
 } from '@zupfnoter/types'
 
@@ -21,6 +22,7 @@ function createSelectionState(): SelectionState {
   return {
     selectedIndexes: [],
     source: 'command',
+    voiceScope: 'single-voice',
   }
 }
 
@@ -37,6 +39,7 @@ export const useSelectionStore = defineStore('selection', () => {
       ...nextSelection,
       selectedIndexes: normalizeIndexes(nextSelection.selectedIndexes),
       anchorIndex: nextSelection.anchorIndex ?? nextSelection.selectedIndexes[0],
+      voiceScope: nextSelection.voiceScope,
     }
   }
 
@@ -44,6 +47,14 @@ export const useSelectionStore = defineStore('selection', () => {
     selection.value = {
       selectedIndexes: [],
       source,
+      voiceScope: selection.value.voiceScope,
+    }
+  }
+
+  function setVoiceScope(voiceScope: SelectionVoiceScope): void {
+    selection.value = {
+      ...selection.value,
+      voiceScope,
     }
   }
 
@@ -53,15 +64,15 @@ export const useSelectionStore = defineStore('selection', () => {
   }
 
   function selectIndexes(selectedIndexes: number[], source: SelectionSource = 'command'): void {
-    selection.value = resolveSelectionByIndexes(selectedIndexes, source)
+    selection.value = resolveSelectionByIndexes(selectedIndexes, source, selection.value.voiceScope)
   }
 
   function selectZnId(znId: string, source: SelectionSource = 'command'): void {
-    selection.value = resolveSelectionByZnId(sheetObjectIndex.value, znId, source)
+    selection.value = resolveSelectionByZnId(sheetObjectIndex.value, znId, source, selection.value.voiceScope)
   }
 
   function selectMusicRange(znIds: string[], source: SelectionSource = 'command'): void {
-    selection.value = resolveSelectionByMusicRange(sheetObjectIndex.value, znIds, source)
+    selection.value = resolveSelectionByMusicRange(sheetObjectIndex.value, znIds, source, selection.value.voiceScope)
   }
 
   function selectTextRange(
@@ -74,6 +85,7 @@ export const useSelectionStore = defineStore('selection', () => {
       startpos,
       endpos,
       source,
+      selection.value.voiceScope,
     )
   }
 
@@ -87,11 +99,12 @@ export const useSelectionStore = defineStore('selection', () => {
       start,
       end,
       source,
+      selection.value.voiceScope,
     )
   }
 
   function selectConfigKey(confKey: string, source: SelectionSource = 'command'): void {
-    selection.value = resolveSelectionByConfKey(sheetObjectIndex.value, confKey, source)
+    selection.value = resolveSelectionByConfKey(sheetObjectIndex.value, confKey, source, selection.value.voiceScope)
   }
 
   const hasSelection = computed(() => selection.value.selectedIndexes.length > 0)
@@ -102,6 +115,7 @@ export const useSelectionStore = defineStore('selection', () => {
     hasSelection,
     setSelection,
     setSheetObjectIndex,
+    setVoiceScope,
     clearSelection,
     selectIndexes,
     selectMusicRange,

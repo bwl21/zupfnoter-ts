@@ -104,6 +104,7 @@ describe('resolvePlaybackSteps', () => {
     const selection: SelectionState = {
       selectedIndexes: [0, 1, 2, 3],
       source: 'harp-preview',
+      voiceScope: 'single-voice',
     }
 
     const steps = resolvePlaybackSteps(selection, sheetObjectIndex, timeline, 'range-harp')

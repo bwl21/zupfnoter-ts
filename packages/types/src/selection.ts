@@ -76,8 +76,8 @@ export type SelectionProjectionKind = 'textRange' | 'znId' | 'confKey'
 /** Logical workbench target that can consume or create selection projections. */
 export type SelectionTarget = 'abc-editor' | 'score-preview' | 'harp-preview' | 'player'
 
-/** Voice-scoping strategy for editor-driven selection projections. */
-export type SelectionVoiceScope = 'single-voice' | 'all-matching-voices'
+/** Voice-scoping strategy for cross-view selection. */
+export type SelectionVoiceScope = 'single-voice' | 'extract-voices' | 'all-voices'
 
 /** Capability profile declared by a workbench target. */
 export interface SelectionTargetCapabilities {
@@ -94,6 +94,8 @@ export interface SelectionState {
   anchorIndex?: number
   /** Where the selection originated from. */
   source: SelectionSource
+  /** Voice scope used when projecting or expanding the current selection. */
+  voiceScope: SelectionVoiceScope
 }
 
 /** Projection resolved from the current selection state. */
@@ -110,6 +112,8 @@ export interface SelectionProjection {
 
 /** Optional projection controls resolved by the selection manager. */
 export interface SelectionProjectionOptions {
-  /** How editor-driven projections should treat equally matching objects across voices. */
-  editorVoiceScope?: SelectionVoiceScope
+  /** Optional override for the voice scope of the projected selection. */
+  voiceScope?: SelectionVoiceScope
+  /** Active extract voice ids when the selection should follow the current extract. */
+  activeVoiceIds?: string[]
 }

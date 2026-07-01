@@ -56,7 +56,6 @@ export type {
   PlaybackMode,
   PlaybackState,
   PlaybackHighlight,
-  PlaybackNote,
   PlaybackFlowStep,
   PlaybackPlayerEvent,
 } from './playback.js'
