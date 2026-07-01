@@ -145,6 +145,23 @@ describe('selectionManager', () => {
     })
   })
 
+  it('can explicitly project editor-driven score selections across all matching voices', () => {
+    const selection: SelectionState = {
+      selectedIndexes: [3],
+      source: 'abc-editor',
+      voiceScope: 'all-voices',
+    }
+
+    expect(resolveSelectionProjection(sheetObjectIndex, selection, 'score-preview', {
+      voiceScope: 'all-voices',
+    })).toEqual({
+      selectedIndexes: [3],
+      textRanges: [{ startpos: 10, endpos: 12 }],
+      znIds: [],
+      confKeys: [],
+    })
+  })
+
   it('can project editor-driven selections only across active extract voices', () => {
     const selection: SelectionState = {
       selectedIndexes: [3],

@@ -143,17 +143,19 @@ function handleSvgClick(event: MouseEvent): void {
 }
 
 .preview-stage__svg :deep(.zn-score-hitbox.zn-selection-highlight-range) {
-  fill: color-mix(in srgb, var(--zn-danger) 12%, transparent);
+  fill: color-mix(in srgb, var(--zn-danger) 38%, transparent);
   fill-opacity: 1;
   stroke: color-mix(in srgb, var(--zn-danger) 88%, white);
-  stroke-width: 1.5;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--zn-danger) 45%, transparent));
 }
 
 .preview-stage__svg :deep(.zn-score-hitbox.zn-selection-highlight-range.zn-playback-highlight) {
   fill: color-mix(in srgb, var(--zn-accent) 22%, transparent);
   fill-opacity: 1;
   stroke: color-mix(in srgb, var(--zn-danger) 88%, white);
-  stroke-width: 1.5;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--zn-danger) 45%, transparent));
 }
 
 .preview-stage__error {

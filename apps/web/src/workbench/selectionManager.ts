@@ -243,9 +243,12 @@ export function resolveSelectionProjection(
   options?: SelectionProjectionOptions,
 ): SelectionProjection {
   const svgSelection = resolveSvgSelection(index, selection, options)
+  const projectedTextRanges = target === 'harp-preview'
+    ? resolveScoreSelectionRanges(index, selection)
+    : resolveScoreSelectionRanges(index, selection, options)
   const projection: SelectionProjection = {
     selectedIndexes: [...selection.selectedIndexes],
-    textRanges: resolveScoreSelectionRanges(index, selection),
+    textRanges: projectedTextRanges,
     znIds: svgSelection.znIds,
     confKeys: svgSelection.confKeys,
   }
@@ -263,8 +266,9 @@ export function resolveSelectionEditorRange(
 export function resolveSelectionScoreRanges(
   index: SheetObjectIndex | undefined,
   selection: SelectionState,
+  options?: SelectionProjectionOptions,
 ): SelectionTextRange[] {
-  return resolveScoreSelectionRanges(index, selection)
+  return resolveScoreSelectionRanges(index, selection, options)
 }
 
 export function resolveSelectionZnIds(

@@ -117,6 +117,10 @@ const selectedScoreTextRanges = computed(() => resolveSelectionProjection(
   selectionStore.sheetObjectIndex,
   selectionStore.selection,
   'score-preview',
+  {
+    voiceScope: selectionStore.selection.voiceScope,
+    activeVoiceIds: activeVoiceIds.value,
+  },
 ).textRanges)
 const selectedEditorTextRange = computed(() => selectionStore.selection.source === 'abc-editor'
   ? undefined

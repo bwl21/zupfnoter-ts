@@ -128,6 +128,156 @@ function resolveEntryVoiceId(entry: SheetObjectIndexEntry): string | undefined {
   return parseVoiceIdFromConfKey(entry.confKey)
 }
 
+function resolveEntryVoiceIdFromIndex(
+  index: SheetObjectIndex | undefined,
+  entry: SheetObjectIndexEntry,
+): string | undefined {
+  const confVoiceId = resolveEntryVoiceId(entry)
+  if (confVoiceId !== undefined) return confVoiceId
+  const line = entry.startPos?.line
+  if (line === undefined || index === undefined) return undefined
+  return index.voiceByLine[line]
+}
+
+function resolveScopedSelectionContext(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  options?: SelectionProjectionOptions,
+): {
+  selectedEntries: SheetObjectIndexEntry[]
+  selectedTextRanges: SelectionTextRange[]
+  voiceScope: NonNullable<SelectionProjectionOptions['voiceScope']> | SelectionState['voiceScope']
+  allowedVoiceIds?: Set<string>
+  editorSelectionLineWindow?: { startLine: number; endLine: number }
+  selectedVoiceId?: string
+  shouldExpandByZnId: boolean
+} {
+  const selectedEntries = projectIndexesToEntries(index, selection.selectedIndexes)
+  const selectedTextRanges = [...new Map(
+    selectedEntries
+      .filter((entry) => entry.textRange !== undefined)
+      .map((entry) => {
+        const textRange = entry.textRange as SelectionTextRange
+        return [textRangeKey(textRange), { ...textRange }]
+      }),
+  ).values()]
+  const selectedStartLine = selectedEntries
+    .map((entry) => entry.startPos?.line)
+    .filter((line): line is number => line !== undefined)
+  const selectedEndLine = selectedEntries
+    .map((entry) => entry.endPos?.line)
+    .filter((line): line is number => line !== undefined)
+  const voiceScope = options?.voiceScope ?? selection.voiceScope
+  const editorSelectionLineWindow = selection.source === 'abc-editor'
+    && voiceScope === 'single-voice'
+    && selectedStartLine.length > 0
+    && selectedEndLine.length > 0
+    ? {
+      startLine: Math.min(...selectedStartLine),
+      endLine: Math.max(...selectedEndLine),
+    }
+    : undefined
+  const selectedVoiceId = editorSelectionLineWindow === undefined
+    ? undefined
+    : index?.voiceByLine[editorSelectionLineWindow.startLine]
+  const activeVoiceIds = options?.activeVoiceIds ?? []
+  const allowedVoiceIds = voiceScope === 'extract-voices'
+    ? new Set(activeVoiceIds)
+    : undefined
+
+  return {
+    selectedEntries,
+    selectedTextRanges,
+    voiceScope,
+    allowedVoiceIds,
+    editorSelectionLineWindow,
+    selectedVoiceId,
+    shouldExpandByZnId: voiceScope !== 'single-voice',
+  }
+}
+
+function filterEntriesByVoiceScope(
+  index: SheetObjectIndex | undefined,
+  entries: SheetObjectIndexEntry[],
+  allowedVoiceIds?: Set<string>,
+): SheetObjectIndexEntry[] {
+  return entries.filter((entry) => {
+    if (allowedVoiceIds === undefined || allowedVoiceIds.size === 0) return true
+    const voiceId = resolveEntryVoiceIdFromIndex(index, entry)
+    return voiceId === undefined || allowedVoiceIds.has(voiceId)
+  })
+}
+
+function resolvePaneEntriesFromTextRanges(
+  index: SheetObjectIndex | undefined,
+  textRanges: SelectionTextRange[],
+  pane: AddressablePane,
+): SheetObjectIndexEntry[] {
+  return dedupeEntries(
+    textRanges.flatMap((textRange) => {
+      const exactIndexes = resolveIndexesByTextRange(index, textRange, pane, 'exact')
+      if (exactIndexes.length > 0) {
+        return projectIndexesToEntries(index, exactIndexes)
+      }
+
+      const containedIndexes = resolveIndexesByTextRange(index, textRange, pane, 'contained')
+      if (containedIndexes.length > 0) {
+        return projectIndexesToEntries(index, containedIndexes)
+      }
+
+      return projectIndexesToEntries(
+        index,
+        resolveIndexesByTextRange(index, textRange, pane, 'overlap'),
+      )
+    }),
+  )
+}
+
+function resolveScopedPaneEntries(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  pane: AddressablePane,
+  options?: SelectionProjectionOptions,
+): {
+  entries: SheetObjectIndexEntry[]
+  selectedVoiceId?: string
+  allowedVoiceIds?: Set<string>
+} {
+  const context = resolveScopedSelectionContext(index, selection, options)
+  const textResolvedEntries = resolvePaneEntriesFromTextRanges(index, context.selectedTextRanges, pane)
+    .filter((entry) => {
+      if (context.editorSelectionLineWindow === undefined) return true
+      return lineRangeOverlapsEntry(
+        entry,
+        context.editorSelectionLineWindow.startLine,
+        context.editorSelectionLineWindow.endLine,
+      )
+    })
+  const znIdExpandedEntries = context.shouldExpandByZnId
+    ? dedupeEntries(
+        [...context.selectedEntries, ...textResolvedEntries]
+          .map((entry) => entry.znId)
+          .filter((znId): znId is string => znId !== undefined)
+          .flatMap((znId) => projectIndexesToEntries(index, resolveIndexesByZnId(index, znId, pane))),
+      )
+    : []
+
+  const entries = filterEntriesByVoiceScope(
+    index,
+    dedupeEntries(
+      [...context.selectedEntries, ...textResolvedEntries, ...znIdExpandedEntries]
+        .filter((entry) => entry.addressableIn[pane]),
+    ),
+    context.allowedVoiceIds,
+  )
+
+  return {
+    entries,
+    selectedVoiceId: context.selectedVoiceId,
+    allowedVoiceIds: context.allowedVoiceIds,
+  }
+}
+
 function lineRangeOverlapsEntry(
   entry: SheetObjectIndexEntry,
   startLine: number,
@@ -402,10 +552,12 @@ export function resolveEditorSelectionRange(
 export function resolveScoreSelectionRanges(
   index: SheetObjectIndex | undefined,
   selection: SelectionState,
+  options?: SelectionProjectionOptions,
 ): SelectionTextRange[] {
+  const { entries } = resolveScopedPaneEntries(index, selection, 'score', options)
   return [...new Map(
-    projectIndexesToEntries(index, selection.selectedIndexes)
-      .filter((entry) => entry.addressableIn.score && entry.textRange !== undefined)
+    entries
+      .filter((entry) => entry.textRange !== undefined)
       .map((entry) => {
         const textRange = entry.textRange as SelectionTextRange
         return [textRangeKey(textRange), { ...textRange }]
@@ -422,78 +574,7 @@ export function resolveSvgSelection(
   confKeys: string[]
   textRanges: SelectionTextRange[]
 } {
-  const selectedEntries = projectIndexesToEntries(index, selection.selectedIndexes)
-  const selectedTextRanges = [...new Map(
-    selectedEntries
-      .filter((entry) => entry.textRange !== undefined)
-      .map((entry) => {
-        const textRange = entry.textRange as SelectionTextRange
-        return [textRangeKey(textRange), { ...textRange }]
-      }),
-  ).values()]
-  const selectedStartLine = selectedEntries
-    .map((entry) => entry.startPos?.line)
-    .filter((line): line is number => line !== undefined)
-  const selectedEndLine = selectedEntries
-    .map((entry) => entry.endPos?.line)
-    .filter((line): line is number => line !== undefined)
-  const voiceScope = options?.voiceScope ?? selection.voiceScope
-  const editorSelectionLineWindow = selection.source === 'abc-editor'
-    && voiceScope === 'single-voice'
-    && selectedStartLine.length > 0
-    && selectedEndLine.length > 0
-    ? {
-      startLine: Math.min(...selectedStartLine),
-      endLine: Math.max(...selectedEndLine),
-    }
-    : undefined
-  const selectedVoiceId = editorSelectionLineWindow === undefined
-    ? undefined
-    : index?.voiceByLine[editorSelectionLineWindow.startLine]
-  const activeVoiceIds = options?.activeVoiceIds ?? []
-  const allowedVoiceIds = voiceScope === 'extract-voices'
-    ? new Set(activeVoiceIds)
-    : undefined
-  const shouldExpandByZnId = voiceScope !== 'single-voice'
-
-  const textResolvedEntries = dedupeEntries(
-    selectedTextRanges.flatMap((textRange) => {
-      const exactIndexes = resolveIndexesByTextRange(index, textRange, 'svg', 'exact')
-      if (exactIndexes.length > 0) {
-        return projectIndexesToEntries(index, exactIndexes)
-      }
-
-      const containedIndexes = resolveIndexesByTextRange(index, textRange, 'svg', 'contained')
-      if (containedIndexes.length > 0) {
-        return projectIndexesToEntries(index, containedIndexes)
-      }
-
-      return projectIndexesToEntries(
-        index,
-        resolveIndexesByTextRange(index, textRange, 'svg', 'overlap'),
-      )
-    }),
-  ).filter((entry) => {
-    if (editorSelectionLineWindow === undefined) return true
-    return lineRangeOverlapsEntry(entry, editorSelectionLineWindow.startLine, editorSelectionLineWindow.endLine)
-  })
-  const znIdExpandedEntries = shouldExpandByZnId
-    ? dedupeEntries(
-        [...selectedEntries, ...textResolvedEntries]
-          .map((entry) => entry.znId)
-          .filter((znId): znId is string => znId !== undefined)
-          .flatMap((znId) => projectIndexesToEntries(index, resolveIndexesByZnId(index, znId, 'svg'))),
-      )
-    : []
-
-  const entries = dedupeEntries(
-    [...selectedEntries, ...textResolvedEntries, ...znIdExpandedEntries]
-      .filter((entry) => entry.addressableIn.svg),
-  ).filter((entry) => {
-    if (allowedVoiceIds === undefined || allowedVoiceIds.size === 0) return true
-    const entryVoiceId = resolveEntryVoiceId(entry)
-    return entryVoiceId === undefined || allowedVoiceIds.has(entryVoiceId)
-  })
+  const { entries, selectedVoiceId, allowedVoiceIds } = resolveScopedPaneEntries(index, selection, 'svg', options)
   const editorOrScoreDriven = selection.source === 'abc-editor' || selection.source === 'score-preview'
   const confKeys = [...new Set(entries.map((entry) => entry.confKey).filter((confKey): confKey is string => confKey !== undefined))]
     .filter((confKey) => {
