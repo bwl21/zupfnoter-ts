@@ -24,6 +24,23 @@ const emit = defineEmits<{
 }>()
 
 const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
+const selectionScopeLabel = computed(() => {
+  if (props.selectionVoiceScope === 'single-voice') return 'Stimme'
+  if (props.selectionVoiceScope === 'extract-voices') return 'Auszug'
+  return 'Alle'
+})
+
+function cycleSelectionVoiceScope(): void {
+  if (props.selectionVoiceScope === 'single-voice') {
+    emit('selection-voice-scope-change', 'extract-voices')
+    return
+  }
+  if (props.selectionVoiceScope === 'extract-voices') {
+    emit('selection-voice-scope-change', 'all-voices')
+    return
+  }
+  emit('selection-voice-scope-change', 'single-voice')
+}
 </script>
 
 <template>
@@ -44,29 +61,13 @@ const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
       <div class="footer-bar__selection">
         <span class="footer-bar__meta">Selection:</span>
         <ZnButton
-          class="footer-bar__scope-button"
-          :variant="selectionVoiceScope === 'single-voice' ? 'primary' : 'ghost'"
-          @click="emit('selection-voice-scope-change', 'single-voice')"
+          class="footer-bar__scope-chip"
+          variant="ghost"
+          :title="selectionVoiceScopeSummary"
+          @click="cycleSelectionVoiceScope"
         >
-          Stimme
+          {{ selectionScopeLabel }}
         </ZnButton>
-        <ZnButton
-          class="footer-bar__scope-button"
-          :variant="selectionVoiceScope === 'extract-voices' ? 'primary' : 'ghost'"
-          @click="emit('selection-voice-scope-change', 'extract-voices')"
-        >
-          Auszug
-        </ZnButton>
-        <ZnButton
-          class="footer-bar__scope-button"
-          :variant="selectionVoiceScope === 'all-voices' ? 'primary' : 'ghost'"
-          @click="emit('selection-voice-scope-change', 'all-voices')"
-        >
-          Alle
-        </ZnButton>
-        <span class="footer-bar__meta footer-bar__selection-summary">
-          {{ selectionVoiceScopeSummary }}
-        </span>
       </div>
       <div class="footer-bar__playback">
         <span class="footer-bar__meta">Playback:</span>
@@ -109,12 +110,10 @@ const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
   margin-inline-end: 0.75rem;
 }
 
-.footer-bar__scope-button {
-  min-width: 3.8rem;
-}
-
-.footer-bar__selection-summary {
-  max-width: 24rem;
+.footer-bar__scope-chip {
+  min-width: 5.25rem;
+  padding-inline: 0.75rem;
+  border-radius: 999px;
 }
 
 .footer-bar__speed-button,
