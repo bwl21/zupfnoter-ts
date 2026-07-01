@@ -94,6 +94,7 @@ const renderSummary = ref('not rendered')
 const playbackTimeline = ref<PlaybackStep[]>([])
 const baseTempoFromQ = ref<number | undefined>(undefined)
 const activeVoiceIds = ref<string[]>([])
+const allVoiceIds = ref<string[]>([])
 const commandBusy = ref(false)
 const { toasts, syncDiagnostics, dismissToast } = useWorkbenchToasts()
 const playbackStore = usePlaybackStore()
@@ -184,6 +185,24 @@ const playbackStatusOverlay = computed(() => {
   }
 
   return passParts.join(' · ')
+})
+
+const selectionVoiceScopeSummary = computed(() => {
+  const activeLabel = activeVoiceIds.value.length > 0 ? activeVoiceIds.value.join(', ') : '–'
+  const allLabel = allVoiceIds.value.length > 0 ? allVoiceIds.value.join(', ') : '–'
+
+  if (selectionStore.selection.voiceScope === 'single-voice') {
+    return 'wirkt auf die ausgewählte Stimme'
+  }
+
+  if (selectionStore.selection.voiceScope === 'extract-voices') {
+    if (activeVoiceIds.value.length > 0 && activeVoiceIds.value.length === allVoiceIds.value.length) {
+      return `Auszug: Stimmen ${activeLabel} (entspricht hier allen Stimmen)`
+    }
+    return `Auszug: Stimmen ${activeLabel}`
+  }
+
+  return `Alle Stimmen: ${allLabel}`
 })
 
 const previewErrorMessage = computed(() => {
@@ -353,6 +372,7 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   scoreSvg.value = result.scoreSvg
   harpSvg.value = result.harpSvg
   activeVoiceIds.value = result.activeVoiceIds
+  allVoiceIds.value = result.allVoiceIds
   selectionStore.setSheetObjectIndex(result.sheetObjectIndex)
   renderIssues.value = result.issues
   workbenchDiagnostics.value = result.diagnostics
@@ -1035,6 +1055,7 @@ function handleMirrorMessage(event: MessageEvent): void {
           :cursor-position="editorCursor"
           :speed-factor="playbackStore.state.speedFactor"
           :selection-voice-scope="selectionStore.selection.voiceScope"
+          :selection-voice-scope-summary="selectionVoiceScopeSummary"
           @speed-down="playbackStore.decreaseSpeed"
           @speed-reset="playbackStore.resetSpeed"
           @speed-up="playbackStore.increaseSpeed"

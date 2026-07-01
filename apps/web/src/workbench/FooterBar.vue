@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
   speedFactor: number
   cursorPosition: string
   selectionVoiceScope: 'single-voice' | 'extract-voices' | 'all-voices'
+  selectionVoiceScopeSummary: string
 }>(), {})
 
 const emit = defineEmits<{
@@ -63,6 +64,9 @@ const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
         >
           Alle
         </ZnButton>
+        <span class="footer-bar__meta footer-bar__selection-summary">
+          {{ selectionVoiceScopeSummary }}
+        </span>
       </div>
       <div class="footer-bar__playback">
         <span class="footer-bar__meta">Playback:</span>
@@ -107,6 +111,10 @@ const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
 
 .footer-bar__scope-button {
   min-width: 3.8rem;
+}
+
+.footer-bar__selection-summary {
+  max-width: 24rem;
 }
 
 .footer-bar__speed-button,
