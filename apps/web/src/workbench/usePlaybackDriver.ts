@@ -12,6 +12,7 @@ import type { AudioPlayer, PlaybackScheduleCallbacks } from './useAudioPlayer'
 interface PlaybackDriverSource {
   timeline: PlaybackStep[]
   baseTempoFromQ?: number
+  activeVoiceIds?: string[]
 }
 
 export function usePlaybackDriver(
@@ -44,6 +45,9 @@ export function usePlaybackDriver(
       sheetObjectIndex.value,
       source.timeline,
       playbackStore.mode,
+      {
+        activeVoiceIds: source.activeVoiceIds,
+      },
     )
     if (steps.length === 0) {
       stop()

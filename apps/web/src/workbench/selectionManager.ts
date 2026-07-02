@@ -25,6 +25,7 @@ import {
   resolveIndexesByTextRangeAndKind,
   resolveIndexesByZnId,
   resolveScoreSelectionRanges,
+  resolveScopedSelectionIndexes,
   resolveSelectedZnIds,
   resolveSvgSelection,
 } from './selectionIndex'
@@ -84,10 +85,13 @@ function createSelectionState(
   selectedIndexes: number[],
   source: SelectionSource,
   voiceScope: SelectionVoiceScope = 'single-voice',
+  baseSelectedIndexes?: number[],
 ): SelectionState {
   const normalized = normalizeIndexes(selectedIndexes)
+  const normalizedBase = normalizeIndexes(baseSelectedIndexes ?? selectedIndexes)
   return {
     selectedIndexes: normalized,
+    baseSelectedIndexes: normalizedBase,
     anchorIndex: normalized[0],
     source,
     voiceScope,
@@ -135,6 +139,40 @@ export function resolveSelectionByIndexes(
   voiceScope: SelectionVoiceScope = 'single-voice',
 ): SelectionState {
   return createSelectionState(selectedIndexes, source, voiceScope)
+}
+
+export function resolveSelectionWithVoiceScope(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  voiceScope: SelectionVoiceScope,
+  options?: SelectionProjectionOptions,
+): SelectionState {
+  if (voiceScope === 'single-voice') {
+    return createSelectionState(
+      selection.baseSelectedIndexes,
+      selection.source,
+      voiceScope,
+      selection.baseSelectedIndexes,
+    )
+  }
+  const baseSelection = createSelectionState(
+    selection.baseSelectedIndexes,
+    selection.source,
+    selection.voiceScope,
+    selection.baseSelectedIndexes,
+  )
+  return createSelectionState(
+    resolveScopedSelectionIndexes(index, {
+      ...baseSelection,
+      voiceScope,
+    }, {
+      ...options,
+      voiceScope,
+    }),
+    selection.source,
+    voiceScope,
+    selection.baseSelectedIndexes,
+  )
 }
 
 export function resolveSelectionByZnId(

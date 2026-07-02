@@ -182,6 +182,35 @@ describe('useAudioPlayer', () => {
     ])
   })
 
+  it('keeps doubled notes from different voices on the same stereo side', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+
+    await player.schedule([
+      {
+        originVoiceIds: ['1', '2'],
+        originPlaybackIds: ['1::note-a', '2::note-b'],
+        originZnIds: ['note-a', 'note-b'],
+        activeTextRanges: [],
+        activeNotes: [
+          { originVoiceId: '1', originPlaybackId: '1::note-a', originZnId: 'note-a', pitch: 60, durationMs: 1000, attack: true, pan: 'left' },
+          { originVoiceId: '2', originPlaybackId: '2::note-b', originZnId: 'note-b', pitch: 60, durationMs: 1000, attack: true, pan: 'left' },
+        ],
+        activeTime: '0',
+        playbackStartMs: 0,
+        durationMs: 1000,
+        sourceTime: 0,
+        flowIndex: 0,
+        passIndex: 1,
+      },
+    ], 1)
+
+    expect(leftScheduleMock).toHaveBeenCalledTimes(1)
+    expect(leftScheduleMock).toHaveBeenCalledWith(10.05, [
+      { time: 0, note: 60, duration: 1, gain: 0.6363961030678927 },
+      { time: 0, note: 60, duration: 1, gain: 0.6363961030678927 },
+    ])
+  })
+
   it('plays oscillator mode without loading soundfont samples', async () => {
     const player = useAudioPlayer({ value: 'oscillator' })
 

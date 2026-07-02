@@ -151,7 +151,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       const uniqueNotes = new Map<string, { pitch: number; duration: number; side: StereoSide }>()
       for (const note of step.activeNotes) {
         if (!note.attack) continue
-        const noteKey = `${note.pitch}:${note.pan}`
+        const noteKey = `${note.originPlaybackId}:${note.pitch}:${note.pan}`
         const nextDuration = note.durationMs / speedFactor / 1000
         const existing = uniqueNotes.get(noteKey)
         if (existing === undefined || nextDuration > existing.duration) {

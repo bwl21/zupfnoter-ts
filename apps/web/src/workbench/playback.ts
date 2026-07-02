@@ -51,6 +51,10 @@ export interface PlaybackStep {
   voltaNumber?: number
 }
 
+export interface PlaybackResolutionOptions {
+  activeVoiceIds?: string[]
+}
+
 /**
  * Resolve the playback mode from the shared selection state.
  *
@@ -385,7 +389,10 @@ export function resolvePlaybackSteps(
   index: SheetObjectIndex | undefined,
   timeline: PlaybackStep[],
   mode: PlaybackMode,
+  options?: PlaybackResolutionOptions,
 ): PlaybackStep[] {
+  const activeVoiceIds = options?.activeVoiceIds ?? []
+  const activeVoiceIdSet = new Set(activeVoiceIds)
   const selectedPlaybackIds = resolveSelectedPlaybackIds(index, selection)
   const selectedEntries = projectIndexesToEntries(index, selection.selectedIndexes)
   const selectedVoiceIds = [...new Set(
@@ -402,21 +409,67 @@ export function resolvePlaybackSteps(
         return [textRangeKey(range), range] as const
       }),
   ).values()]
-  if (mode === 'all-score' || selectedPlaybackIds.length === 0) {
-    if (selection.source !== 'abc-editor' || selection.voiceScope !== 'single-voice' || selectedVoiceIds.length === 0) {
-      return timeline
-    }
-  }
   const selectedPlaybackIdSet = new Set(selectedPlaybackIds)
   const isEditorSingleVoiceSelection = selection.source === 'abc-editor'
     && selection.voiceScope === 'single-voice'
     && selectedVoiceIds.length > 0
+  const shouldRestrictToExtractVoices = selection.voiceScope === 'extract-voices' && activeVoiceIdSet.size > 0
 
   function overlapsSelectedTextRange(step: PlaybackStep): boolean {
     if (selectedTextRanges.length === 0) return true
     return step.activeTextRanges.some((stepRange) => selectedTextRanges.some((selectedRange) => (
       stepRange.endpos > selectedRange.startpos && stepRange.startpos < selectedRange.endpos
     )))
+  }
+
+  function filterStepToAllowedVoices(step: PlaybackStep, allowedVoiceIds: Set<string>): PlaybackStep | undefined {
+    const matchingOriginPlaybackIds = step.originPlaybackIds.filter((_, index) => {
+      const originVoiceId = step.originVoiceIds[index]
+      return originVoiceId !== undefined && allowedVoiceIds.has(originVoiceId)
+    })
+    const matchingOriginVoiceIds = [...new Set(
+      matchingOriginPlaybackIds
+        .map((playbackId) => playbackId.split('::')[0])
+        .filter((voiceId) => voiceId !== undefined && voiceId !== ''),
+    )]
+    const matchingOriginZnIds = [...new Set(
+      matchingOriginPlaybackIds.map((playbackId) => playbackId.split('::').slice(1).join('::')),
+    )]
+    const matchingActiveNotes = step.activeNotes.filter((note) => allowedVoiceIds.has(note.originVoiceId))
+    const matchingPlaybackTextRanges = (step.activePlaybackTextRanges ?? []).filter((entry) => allowedVoiceIds.has(entry.voiceId))
+    const matchingTextRanges = [...new Map(
+      matchingPlaybackTextRanges.map((entry) => [textRangeKey(entry.textRange), entry.textRange] as const),
+    ).values()]
+
+    if (
+      matchingOriginPlaybackIds.length === 0
+      && matchingActiveNotes.length === 0
+      && matchingTextRanges.length === 0
+    ) {
+      return undefined
+    }
+
+    return {
+      ...step,
+      originVoiceIds: matchingOriginVoiceIds,
+      originPlaybackIds: matchingOriginPlaybackIds,
+      originZnIds: matchingOriginZnIds,
+      activeNotes: matchingActiveNotes,
+      activeTextRanges: matchingTextRanges,
+      activePlaybackTextRanges: matchingPlaybackTextRanges,
+    }
+  }
+
+  if (mode === 'all-score' || selectedPlaybackIds.length === 0) {
+    if (shouldRestrictToExtractVoices) {
+      return timeline
+        .map((step) => filterStepToAllowedVoices(step, activeVoiceIdSet))
+        .filter((step): step is PlaybackStep => step !== undefined)
+    }
+
+    if (selection.source !== 'abc-editor' || selection.voiceScope !== 'single-voice' || selectedVoiceIds.length === 0) {
+      return timeline
+    }
   }
 
   const filteredSteps = timeline.flatMap((step) => {
@@ -435,17 +488,17 @@ export function resolvePlaybackSteps(
         && selectedVoiceIdSet.has(note.originVoiceId)
         && overlapsSelectedTextRange(step)
     })
+    const matchingPlaybackTextRanges = (step.activePlaybackTextRanges ?? [])
+      .filter((entry) => {
+        if (selectedPlaybackIdSet.has(entry.playbackId)) return true
+        return isEditorSingleVoiceSelection
+          && selectedVoiceIdSet.has(entry.voiceId)
+          && selectedTextRanges.some((selectedRange) => (
+            entry.textRange.endpos > selectedRange.startpos && entry.textRange.startpos < selectedRange.endpos
+          ))
+      })
     const matchingTextRanges = [...new Map(
-      (step.activePlaybackTextRanges ?? [])
-        .filter((entry) => {
-          if (selectedPlaybackIdSet.has(entry.playbackId)) return true
-          return isEditorSingleVoiceSelection
-            && selectedVoiceIdSet.has(entry.voiceId)
-            && selectedTextRanges.some((selectedRange) => (
-              entry.textRange.endpos > selectedRange.startpos && entry.textRange.startpos < selectedRange.endpos
-            ))
-        })
-        .map((entry) => [textRangeKey(entry.textRange), entry.textRange] as const),
+      matchingPlaybackTextRanges.map((entry) => [textRangeKey(entry.textRange), entry.textRange] as const),
     ).values()]
 
     if (
@@ -457,7 +510,7 @@ export function resolvePlaybackSteps(
       return []
     }
 
-    return [{
+    const nextStep: PlaybackStep = {
       ...step,
       originVoiceIds: [...new Set(
         matchingOriginPlaybackIds.map((playbackId) => playbackId.split('::')[0]).filter((voiceId) => voiceId !== undefined && voiceId !== ''),
@@ -466,7 +519,15 @@ export function resolvePlaybackSteps(
       originZnIds: matchingOriginZnIds,
       activeNotes: matchingActiveNotes,
       activeTextRanges: matchingTextRanges,
-    }]
+      activePlaybackTextRanges: matchingPlaybackTextRanges,
+    }
+
+    if (shouldRestrictToExtractVoices) {
+      const extractFilteredStep = filterStepToAllowedVoices(nextStep, activeVoiceIdSet)
+      return extractFilteredStep === undefined ? [] : [extractFilteredStep]
+    }
+
+    return [nextStep]
   })
 
   if (filteredSteps.length === 0) {

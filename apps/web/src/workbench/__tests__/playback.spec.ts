@@ -104,13 +104,14 @@ const sheetObjectIndex: SheetObjectIndex = {
   },
   byConfKey: {},
   byTextRange: {},
+  byMusicTime: {},
   entries: [
-    { kind: 'music-entity', znId: 'note-a-1', confKey: 'extract.0.note.v_1.note-a-1', textRange: { startpos: 0, endpos: 1 }, startPos: { line: 1, column: 1 }, endPos: { line: 1, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
-    { kind: 'music-entity', znId: 'note-a-2', confKey: 'extract.0.note.v_1.note-a-2', textRange: { startpos: 0, endpos: 1 }, startPos: { line: 1, column: 1 }, endPos: { line: 1, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
-    { kind: 'music-entity', znId: 'note-b-1', confKey: 'extract.0.note.v_1.note-b-1', textRange: { startpos: 2, endpos: 3 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
-    { kind: 'music-entity', znId: 'note-b-2', confKey: 'extract.0.note.v_1.note-b-2', textRange: { startpos: 2, endpos: 3 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
-    { kind: 'music-entity', znId: 'note-c', confKey: 'extract.0.note.v_1.note-c', textRange: { startpos: 4, endpos: 5 }, startPos: { line: 2, column: 3 }, endPos: { line: 2, column: 4 }, addressableIn: { editor: false, score: false, svg: true } },
-    { kind: 'music-entity', znId: 'note-d', confKey: 'extract.0.note.v_1.note-d', textRange: { startpos: 6, endpos: 7 }, startPos: { line: 2, column: 5 }, endPos: { line: 2, column: 6 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-a-1', voiceId: '1', confKey: 'extract.0.note.v_1.note-a-1', textRange: { startpos: 0, endpos: 1 }, startPos: { line: 1, column: 1 }, endPos: { line: 1, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-a-2', voiceId: '1', confKey: 'extract.0.note.v_1.note-a-2', textRange: { startpos: 0, endpos: 1 }, startPos: { line: 1, column: 1 }, endPos: { line: 1, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-b-1', voiceId: '1', confKey: 'extract.0.note.v_1.note-b-1', textRange: { startpos: 2, endpos: 3 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-b-2', voiceId: '1', confKey: 'extract.0.note.v_1.note-b-2', textRange: { startpos: 2, endpos: 3 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-c', voiceId: '1', confKey: 'extract.0.note.v_1.note-c', textRange: { startpos: 4, endpos: 5 }, startPos: { line: 2, column: 3 }, endPos: { line: 2, column: 4 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-d', voiceId: '1', confKey: 'extract.0.note.v_1.note-d', textRange: { startpos: 6, endpos: 7 }, startPos: { line: 2, column: 5 }, endPos: { line: 2, column: 6 }, addressableIn: { editor: false, score: false, svg: true } },
   ],
 }
 
@@ -203,6 +204,7 @@ describe('resolvePlaybackSteps', () => {
   it('keeps only matching occurrences for range playback inside repeated material', () => {
     const selection: SelectionState = {
       selectedIndexes: [0, 1, 2, 3],
+      baseSelectedIndexes: [0, 1, 2, 3],
       source: 'harp-preview',
       voiceScope: 'single-voice',
     }
@@ -255,13 +257,15 @@ describe('resolvePlaybackSteps', () => {
       },
       byConfKey: {},
       byTextRange: {},
+      byMusicTime: {},
       entries: [
-        { kind: 'music-entity', znId: 'note-a', confKey: 'extract.0.note.v_1.note-a', textRange: { startpos: 0, endpos: 1 }, startPos: { line: 1, column: 1 }, endPos: { line: 1, column: 2 }, addressableIn: { editor: true, score: true, svg: true } },
-        { kind: 'music-entity', znId: 'note-b', confKey: 'extract.0.note.v_2.note-b', textRange: { startpos: 2, endpos: 3 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 2 }, addressableIn: { editor: true, score: true, svg: true } },
+        { kind: 'music-entity', znId: 'note-a', voiceId: '1', confKey: 'extract.0.note.v_1.note-a', textRange: { startpos: 0, endpos: 1 }, startPos: { line: 1, column: 1 }, endPos: { line: 1, column: 2 }, addressableIn: { editor: true, score: true, svg: true } },
+        { kind: 'music-entity', znId: 'note-b', voiceId: '2', confKey: 'extract.0.note.v_2.note-b', textRange: { startpos: 2, endpos: 3 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 2 }, addressableIn: { editor: true, score: true, svg: true } },
       ],
     }
     const selection: SelectionState = {
       selectedIndexes: [0],
+      baseSelectedIndexes: [0],
       source: 'abc-editor',
       voiceScope: 'single-voice',
     }
@@ -279,5 +283,147 @@ describe('resolvePlaybackSteps', () => {
       { originVoiceId: '1', originPlaybackId: '1::note-a', originZnId: 'note-a', pitch: 60, durationMs: 120, attack: true, pan: 'left' },
     ])
     expect(steps[0]?.playbackStartMs).toBe(0)
+  })
+
+  it('keeps extract-scoped editor playback on all selected voices', () => {
+    const extractScopedIndex: SheetObjectIndex = {
+      version: 2,
+      lineStarts: [0, 4, 9],
+      voiceByLine: {
+        1: '1',
+        2: '1',
+        3: '2',
+      },
+      byZnId: {
+        'note-a': [0],
+        'note-b': [1],
+      },
+      byConfKey: {},
+      byTextRange: {
+        '0:1': [0],
+        '2:3': [1],
+      },
+      byMusicTime: {
+        '0': [0, 1],
+      },
+      entries: [
+        { kind: 'music-entity', znId: 'note-a', voiceId: '1', musicTime: 0, confKey: 'extract.0.note.v_1.note-a', textRange: { startpos: 0, endpos: 1 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 2 }, addressableIn: { editor: true, score: true, svg: true } },
+        { kind: 'music-entity', znId: 'note-b', voiceId: '2', musicTime: 0, confKey: 'extract.0.note.v_2.note-b', textRange: { startpos: 2, endpos: 3 }, startPos: { line: 3, column: 1 }, endPos: { line: 3, column: 2 }, addressableIn: { editor: true, score: true, svg: true } },
+      ],
+    }
+    const extractScopedSelection: SelectionState = {
+      selectedIndexes: [0, 1],
+      baseSelectedIndexes: [0, 1],
+      source: 'abc-editor',
+      voiceScope: 'extract-voices',
+    }
+    const extractScopedTimeline: PlaybackStep[] = [
+      {
+        originVoiceIds: ['1', '2'],
+        originPlaybackIds: ['1::note-a', '2::note-b'],
+        originZnIds: ['note-a', 'note-b'],
+        activeTextRanges: [
+          { startpos: 0, endpos: 1 },
+          { startpos: 2, endpos: 3 },
+        ],
+        activePlaybackTextRanges: [
+          { playbackId: '1::note-a', voiceId: '1', textRange: { startpos: 0, endpos: 1 } },
+          { playbackId: '2::note-b', voiceId: '2', textRange: { startpos: 2, endpos: 3 } },
+        ],
+        activeNotes: [
+          { originVoiceId: '1', originPlaybackId: '1::note-a', originZnId: 'note-a', pitch: 60, durationMs: 120, attack: true, pan: 'left' },
+          { originVoiceId: '2', originPlaybackId: '2::note-b', originZnId: 'note-b', pitch: 64, durationMs: 120, attack: true, pan: 'right' },
+        ],
+        activeTime: '0',
+        playbackStartMs: 0,
+        durationMs: 120,
+        sourceTime: 0,
+        flowIndex: 0,
+        passIndex: 1,
+      },
+    ]
+
+    const steps = resolvePlaybackSteps(extractScopedSelection, extractScopedIndex, extractScopedTimeline, 'range-harp')
+
+    expect(steps).toHaveLength(1)
+    expect(steps[0]?.originPlaybackIds).toEqual(['1::note-a', '2::note-b'])
+    expect(steps[0]?.activeNotes).toHaveLength(2)
+  })
+
+  it('keeps all song voices when nothing is selected and the scope is all voices', () => {
+    const selection: SelectionState = {
+      selectedIndexes: [],
+      baseSelectedIndexes: [],
+      source: 'command',
+      voiceScope: 'all-voices',
+    }
+    const steps = resolvePlaybackSteps(selection, undefined, [
+      {
+        originVoiceIds: ['1', '2', '3', '4'],
+        originPlaybackIds: ['1::a', '2::b', '3::c', '4::d'],
+        originZnIds: ['a', 'b', 'c', 'd'],
+        activeTextRanges: [],
+        activePlaybackTextRanges: [],
+        activeNotes: [
+          { originVoiceId: '1', originPlaybackId: '1::a', originZnId: 'a', pitch: 60, durationMs: 120, attack: true, pan: 'left' },
+          { originVoiceId: '2', originPlaybackId: '2::b', originZnId: 'b', pitch: 62, durationMs: 120, attack: true, pan: 'left' },
+          { originVoiceId: '3', originPlaybackId: '3::c', originZnId: 'c', pitch: 64, durationMs: 120, attack: true, pan: 'right' },
+          { originVoiceId: '4', originPlaybackId: '4::d', originZnId: 'd', pitch: 65, durationMs: 120, attack: true, pan: 'right' },
+        ],
+        activeTime: '0',
+        playbackStartMs: 0,
+        durationMs: 120,
+        sourceTime: 0,
+        flowIndex: 0,
+        passIndex: 1,
+      },
+    ], 'all-score', {
+      activeVoiceIds: ['1', '2', '3'],
+    })
+
+    expect(steps).toHaveLength(1)
+    expect(steps[0]?.originVoiceIds).toEqual(['1', '2', '3', '4'])
+    expect(steps[0]?.activeNotes).toHaveLength(4)
+  })
+
+  it('limits no-selection playback to the active extract voices when the scope is extract', () => {
+    const selection: SelectionState = {
+      selectedIndexes: [],
+      baseSelectedIndexes: [],
+      source: 'command',
+      voiceScope: 'extract-voices',
+    }
+    const steps = resolvePlaybackSteps(selection, undefined, [
+      {
+        originVoiceIds: ['1', '2', '3', '4'],
+        originPlaybackIds: ['1::a', '2::b', '3::c', '4::d'],
+        originZnIds: ['a', 'b', 'c', 'd'],
+        activeTextRanges: [],
+        activePlaybackTextRanges: [
+          { playbackId: '1::a', voiceId: '1', textRange: { startpos: 0, endpos: 1 } },
+          { playbackId: '2::b', voiceId: '2', textRange: { startpos: 2, endpos: 3 } },
+          { playbackId: '3::c', voiceId: '3', textRange: { startpos: 4, endpos: 5 } },
+          { playbackId: '4::d', voiceId: '4', textRange: { startpos: 6, endpos: 7 } },
+        ],
+        activeNotes: [
+          { originVoiceId: '1', originPlaybackId: '1::a', originZnId: 'a', pitch: 60, durationMs: 120, attack: true, pan: 'left' },
+          { originVoiceId: '2', originPlaybackId: '2::b', originZnId: 'b', pitch: 62, durationMs: 120, attack: true, pan: 'left' },
+          { originVoiceId: '3', originPlaybackId: '3::c', originZnId: 'c', pitch: 64, durationMs: 120, attack: true, pan: 'right' },
+          { originVoiceId: '4', originPlaybackId: '4::d', originZnId: 'd', pitch: 65, durationMs: 120, attack: true, pan: 'right' },
+        ],
+        activeTime: '0',
+        playbackStartMs: 0,
+        durationMs: 120,
+        sourceTime: 0,
+        flowIndex: 0,
+        passIndex: 1,
+      },
+    ], 'all-score', {
+      activeVoiceIds: ['1', '2', '3'],
+    })
+
+    expect(steps).toHaveLength(1)
+    expect(steps[0]?.originVoiceIds).toEqual(['1', '2', '3'])
+    expect(steps[0]?.activeNotes).toHaveLength(3)
   })
 })

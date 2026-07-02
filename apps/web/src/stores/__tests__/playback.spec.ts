@@ -16,6 +16,7 @@ const sheetObjectIndex: SheetObjectIndex = {
   },
   byConfKey: {},
   byTextRange: {},
+  byMusicTime: {},
   entries: [
     {
       kind: 'music-entity',

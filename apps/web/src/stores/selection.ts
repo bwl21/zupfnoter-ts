@@ -16,12 +16,14 @@ import {
   resolveSelectionByMusicRange,
   resolveSelectionEditorRange,
   resolveSelectionByTextRange,
+  resolveSelectionWithVoiceScope,
   resolveSelectionByZnId,
 } from '../workbench/selectionManager'
 
 function createSelectionState(): SelectionState {
   return {
     selectedIndexes: [],
+    baseSelectedIndexes: [],
     source: 'command',
     voiceScope: 'single-voice',
   }
@@ -34,12 +36,20 @@ function normalizeIndexes(indexes: number[]): number[] {
 export const useSelectionStore = defineStore('selection', () => {
   const selection = ref<SelectionState>(createSelectionState())
   const sheetObjectIndex = ref<SheetObjectIndex | undefined>(undefined)
+  const activeVoiceIds = ref<string[]>([])
 
   function setSelection(nextSelection: SelectionState): void {
+    const normalizedSelectedIndexes = normalizeIndexes(nextSelection.selectedIndexes)
+    const normalizedBaseSelectedIndexes = normalizeIndexes(
+      nextSelection.baseSelectedIndexes.length > 0
+        ? nextSelection.baseSelectedIndexes
+        : nextSelection.selectedIndexes,
+    )
     selection.value = {
       ...nextSelection,
-      selectedIndexes: normalizeIndexes(nextSelection.selectedIndexes),
-      anchorIndex: nextSelection.anchorIndex ?? nextSelection.selectedIndexes[0],
+      selectedIndexes: normalizedSelectedIndexes,
+      baseSelectedIndexes: normalizedBaseSelectedIndexes,
+      anchorIndex: nextSelection.anchorIndex ?? normalizedSelectedIndexes[0],
       voiceScope: nextSelection.voiceScope,
     }
   }
@@ -47,16 +57,35 @@ export const useSelectionStore = defineStore('selection', () => {
   function clearSelection(source: SelectionSource = 'command'): void {
     selection.value = {
       selectedIndexes: [],
+      baseSelectedIndexes: [],
       source,
       voiceScope: selection.value.voiceScope,
     }
   }
 
   function setVoiceScope(voiceScope: SelectionVoiceScope): void {
-    selection.value = {
-      ...selection.value,
+    selection.value = resolveSelectionWithVoiceScope(
+      sheetObjectIndex.value,
+      selection.value,
       voiceScope,
-    }
+      {
+        activeVoiceIds: activeVoiceIds.value,
+      },
+    )
+  }
+
+  function setActiveVoiceIds(nextActiveVoiceIds: string[]): void {
+    activeVoiceIds.value = [...new Set(nextActiveVoiceIds)]
+    if (selection.value.selectedIndexes.length === 0) return
+    if (selection.value.voiceScope !== 'extract-voices') return
+    selection.value = resolveSelectionWithVoiceScope(
+      sheetObjectIndex.value,
+      selection.value,
+      selection.value.voiceScope,
+      {
+        activeVoiceIds: activeVoiceIds.value,
+      },
+    )
   }
 
   function setSheetObjectIndex(nextSheetObjectIndex: SheetObjectIndex | undefined): void {
@@ -127,10 +156,12 @@ export const useSelectionStore = defineStore('selection', () => {
   return {
     selection,
     sheetObjectIndex,
+    activeVoiceIds,
     hasSelection,
     setSelection,
     setSheetObjectIndex,
     setVoiceScope,
+    setActiveVoiceIds,
     clearSelection,
     selectIndexes,
     selectMusicRange,

@@ -39,6 +39,8 @@ export interface SheetObjectIndexEntry {
   znId?: string
   /** 1-based voice id when the mapped entry belongs to a concrete voice. */
   voiceId?: string
+  /** Music-time position used for cross-voice synchronization, if available. */
+  musicTime?: number
   /** ABC text range for the mapped entity, if available. */
   textRange?: SelectionTextRange
   /** 1-based start position in line/column form, if available. */
@@ -65,6 +67,8 @@ export interface SheetObjectIndex {
   byConfKey: Record<string, number[]>
   /** Exact text range lookup (`start:end`). */
   byTextRange: Record<string, number[]>
+  /** Music-time lookup (`time`) for cross-voice selection expansion. */
+  byMusicTime: Record<string, number[]>
   /** Ordered entries for range-based lookups. */
   entries: SheetObjectIndexEntry[]
 }
@@ -92,6 +96,8 @@ export interface SelectionTargetCapabilities {
 export interface SelectionState {
   /** Selected index entries within the current render-generation-local sheet object index. */
   selectedIndexes: number[]
+  /** Stable base selection before voice-scope expansion is applied. */
+  baseSelectedIndexes: number[]
   /** Anchor index for range extension, if applicable. */
   anchorIndex?: number
   /** Where the selection originated from. */

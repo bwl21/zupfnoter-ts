@@ -1,7 +1,6 @@
 import {
   AbcParser,
   AbcToSong,
-  buildConfstack,
   Confstack,
   HarpnotesLayout,
   SvgEngine,
@@ -72,20 +71,11 @@ function buildConfig(abcText: string) {
   return mergeSongConfig(defaults, extractSongConfig(abcText))
 }
 
-function resolvePlaybackVoices(config: ReturnType<typeof buildConfig>, extractNr: number): number[] | undefined {
-  const conf = buildConfstack(config, extractNr)
-  const extractVoices = conf.get('extract.voices')
-  if (!Array.isArray(extractVoices)) return undefined
-  const voices = extractVoices.filter((voiceNr): voiceNr is number => typeof voiceNr === 'number')
-  return voices.length > 0 ? voices : undefined
-}
-
 export function renderWorkbenchPreviews(
   abcText: string,
   extractNr: number = 0,
 ): WorkbenchRenderResult {
   const config = buildConfig(abcText)
-  const playbackVoices = resolvePlaybackVoices(config, extractNr)
   const scoreParser = new AbcParser()
   let scoreSvg = ''
   let scoreError: string | undefined
@@ -135,7 +125,7 @@ export function renderWorkbenchPreviews(
       source: diagnostic.source,
     }))
   const toastDiagnostics = modelDiagnostics.filter((diagnostic) => !workbenchDiagnosticHasPosition(diagnostic))
-  const playbackTimeline = song === null ? [] : buildPlaybackTimeline(song as Song, playbackVoices)
+  const playbackTimeline = song === null ? [] : buildPlaybackTimeline(song as Song)
   const baseTempoFromQ = song === null ? undefined : resolveBaseTempoFromSong(song as Song)
 
   const renderError = scoreError ?? modelError

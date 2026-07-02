@@ -137,6 +137,7 @@ const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
   computed(() => ({
     timeline: playbackTimeline.value,
     baseTempoFromQ: baseTempoFromQ.value,
+    activeVoiceIds: activeVoiceIds.value,
     mode: 'all-score',
   })),
   audioPlayer,
@@ -200,9 +201,6 @@ const selectionVoiceScopeSummary = computed(() => {
   }
 
   if (selectionStore.selection.voiceScope === 'extract-voices') {
-    if (activeVoiceIds.value.length > 0 && activeVoiceIds.value.length === allVoiceIds.value.length) {
-      return `Auszug: Stimmen ${activeLabel} (entspricht hier allen Stimmen)`
-    }
     return `Auszug: Stimmen ${activeLabel}`
   }
 
@@ -376,6 +374,7 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   scoreSvg.value = result.scoreSvg
   harpSvg.value = result.harpSvg
   activeVoiceIds.value = result.activeVoiceIds
+  selectionStore.setActiveVoiceIds(result.activeVoiceIds)
   allVoiceIds.value = result.allVoiceIds
   selectionStore.setSheetObjectIndex(result.sheetObjectIndex)
   renderIssues.value = result.issues
@@ -459,6 +458,7 @@ function buildHarpMirrorSnapshot(): HarpMirrorSnapshot {
     },
     selectionState: {
       selectedIndexes: [...selectionStore.selection.selectedIndexes],
+      baseSelectedIndexes: [...selectionStore.selection.baseSelectedIndexes],
       anchorIndex: selectionStore.selection.anchorIndex,
       source: selectionStore.selection.source,
       voiceScope: selectionStore.selection.voiceScope,

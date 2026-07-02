@@ -109,7 +109,7 @@ describe('renderWorkbenchPreviews', () => {
     }))
   })
 
-  it('limits playback to the active voices of the selected extract', () => {
+  it('keeps all song voices in the playback timeline even when an extract narrows the rendered sheet', () => {
     const result = renderWorkbenchPreviews(`X:1
 T:Extract Playback
 L:1/4
@@ -130,28 +130,17 @@ G, A,
 }
 `, 1)
 
+    expect(result.activeVoiceIds).toEqual(['1'])
     expect(result.playbackTimeline).toHaveLength(2)
-    expect(result.playbackTimeline[0]?.originVoiceIds).toEqual(['1'])
-    expect(result.playbackTimeline[0]?.activeNotes).toHaveLength(1)
-    expect(result.playbackTimeline[0]?.activeNotes[0]).toMatchObject({
-      originVoiceId: '1',
-      pitch: 60,
-      durationMs: 500,
-      attack: true,
-      pan: 'left',
-    })
-    expect(result.playbackTimeline[1]?.originVoiceIds).toEqual(['1'])
-    expect(result.playbackTimeline[1]?.activeNotes).toHaveLength(1)
-    expect(result.playbackTimeline[1]?.activeNotes[0]).toMatchObject({
-      originVoiceId: '1',
-      pitch: 62,
-      durationMs: 500,
-      attack: true,
-      pan: 'left',
-    })
+    expect(result.playbackTimeline[0]?.originVoiceIds).toContain('1')
+    expect(result.playbackTimeline[0]?.originVoiceIds).toContain('2')
+    expect(result.playbackTimeline[0]?.activeNotes.length ?? 0).toBeGreaterThanOrEqual(2)
+    expect(result.playbackTimeline[1]?.originVoiceIds).toContain('1')
+    expect(result.playbackTimeline[1]?.originVoiceIds).toContain('2')
+    expect(result.playbackTimeline[1]?.activeNotes.length ?? 0).toBeGreaterThanOrEqual(2)
   })
 
-  it('keeps higher configured extract voice numbers in playback', () => {
+  it('keeps higher song voice numbers in the playback timeline even when the extract targets one voice', () => {
     const result = renderWorkbenchPreviews(`X:1
 T:Fourth Voice Playback
 L:1/4
@@ -176,14 +165,12 @@ F
 }
 `, 1)
 
+    expect(result.activeVoiceIds).toEqual(['4'])
+    expect(result.allVoiceIds).toContain('4')
+    expect(result.allVoiceIds.length).toBeGreaterThan(1)
     expect(result.playbackTimeline).toHaveLength(1)
-    expect(result.playbackTimeline[0]?.originVoiceIds).toEqual(['4'])
-    expect(result.playbackTimeline[0]?.activeNotes).toHaveLength(1)
-    expect(result.playbackTimeline[0]?.activeNotes[0]).toMatchObject({
-      originVoiceId: '4',
-      durationMs: 500,
-      attack: true,
-      pan: 'right',
-    })
+    expect(result.playbackTimeline[0]?.originVoiceIds).toContain('4')
+    expect(result.playbackTimeline[0]?.originVoiceIds.length).toBeGreaterThan(1)
+    expect(result.playbackTimeline[0]?.activeNotes.length ?? 0).toBeGreaterThanOrEqual(4)
   })
 })

@@ -35,6 +35,7 @@ function cloneEntry(entry: SheetObjectIndexEntry): SheetObjectIndexEntry {
     kind: entry.kind,
     znId: entry.znId,
     voiceId: entry.voiceId,
+    musicTime: entry.musicTime,
     textRange: entry.textRange === undefined ? undefined : { ...entry.textRange },
     startPos: entry.startPos === undefined ? undefined : cloneLineColumn(entry.startPos),
     endPos: entry.endPos === undefined ? undefined : cloneLineColumn(entry.endPos),
@@ -88,6 +89,7 @@ function createEntryDedupKey(entry: SheetObjectIndexEntry): string {
     entry.kind,
     entry.znId ?? '-',
     entry.voiceId ?? '-',
+    entry.musicTime ?? '-',
     entry.confKey ?? '-',
     textRange,
     startPos,
@@ -157,6 +159,8 @@ function resolveScopedSelectionContext(
   allowedVoiceIds?: Set<string>
   editorSelectionLineWindow?: { startLine: number; endLine: number }
   selectedVoiceId?: string
+  selectedMusicTimes: number[]
+  shouldExpandByMusicTime: boolean
   shouldExpandByZnId: boolean
 } {
   const selectedEntries = projectIndexesToEntries(index, selection.selectedIndexes)
@@ -191,6 +195,11 @@ function resolveScopedSelectionContext(
   const allowedVoiceIds = voiceScope === 'extract-voices'
     ? new Set(activeVoiceIds)
     : undefined
+  const selectedMusicTimes = [...new Set(
+    selectedEntries
+      .map((entry) => entry.musicTime)
+      .filter((musicTime): musicTime is number => typeof musicTime === 'number'),
+  )]
 
   return {
     selectedEntries,
@@ -199,6 +208,8 @@ function resolveScopedSelectionContext(
     allowedVoiceIds,
     editorSelectionLineWindow,
     selectedVoiceId,
+    selectedMusicTimes,
+    shouldExpandByMusicTime: voiceScope !== 'single-voice',
     shouldExpandByZnId: voiceScope !== 'single-voice',
   }
 }
@@ -260,9 +271,17 @@ function resolveScopedPaneEntries(
         context.editorSelectionLineWindow.endLine,
       )
     })
-  const znIdExpandedEntries = context.shouldExpandByZnId
+  const musicTimeExpandedEntries = context.shouldExpandByMusicTime
     ? dedupeEntries(
         [...context.selectedEntries, ...textResolvedEntries]
+          .map((entry) => entry.musicTime)
+          .filter((musicTime): musicTime is number => typeof musicTime === 'number')
+          .flatMap((musicTime) => projectIndexesToEntries(index, resolveIndexesByMusicTime(index, musicTime, pane))),
+      )
+    : []
+  const znIdExpandedEntries = context.shouldExpandByZnId
+    ? dedupeEntries(
+        [...context.selectedEntries, ...textResolvedEntries, ...musicTimeExpandedEntries]
           .map((entry) => entry.znId)
           .filter((znId): znId is string => znId !== undefined)
           .flatMap((znId) => projectIndexesToEntries(index, resolveIndexesByZnId(index, znId, pane))),
@@ -271,10 +290,12 @@ function resolveScopedPaneEntries(
 
   const entries = filterEntriesByVoiceScope(
     index,
-    dedupeEntries(
-      [...context.selectedEntries, ...textResolvedEntries, ...znIdExpandedEntries]
-        .filter((entry) => entry.addressableIn[pane]),
-    ),
+    dedupeEntries([
+      ...context.selectedEntries,
+      ...textResolvedEntries,
+      ...musicTimeExpandedEntries,
+      ...znIdExpandedEntries,
+    ].filter((entry) => entry.addressableIn[pane])),
     context.allowedVoiceIds,
   )
 
@@ -283,6 +304,62 @@ function resolveScopedPaneEntries(
     selectedVoiceId: context.selectedVoiceId,
     allowedVoiceIds: context.allowedVoiceIds,
   }
+}
+
+export function resolveScopedSelectionIndexes(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  options?: SelectionProjectionOptions,
+): number[] {
+  const context = resolveScopedSelectionContext(index, selection, options)
+  const textResolvedEntries = resolvePaneEntriesFromTextRanges(index, context.selectedTextRanges, 'editor')
+    .filter((entry) => {
+      if (context.editorSelectionLineWindow === undefined) return true
+      return lineRangeOverlapsEntry(
+        entry,
+        context.editorSelectionLineWindow.startLine,
+        context.editorSelectionLineWindow.endLine,
+      )
+    })
+  const musicTimeExpandedEntries = context.shouldExpandByMusicTime
+    ? dedupeEntries(
+        [...context.selectedEntries, ...textResolvedEntries]
+          .map((entry) => entry.musicTime)
+          .filter((musicTime): musicTime is number => typeof musicTime === 'number')
+          .flatMap((musicTime) => projectIndexesToEntries(index, resolveIndexesByMusicTime(index, musicTime))),
+      )
+    : []
+  const znIdExpandedEntries = context.shouldExpandByZnId
+    ? dedupeEntries(
+        [...context.selectedEntries, ...textResolvedEntries, ...musicTimeExpandedEntries]
+          .map((entry) => entry.znId)
+          .filter((znId): znId is string => znId !== undefined)
+          .flatMap((znId) => projectIndexesToEntries(index, resolveIndexesByZnId(index, znId))),
+      )
+    : []
+
+  const entries = filterEntriesByVoiceScope(
+    index,
+    dedupeEntries([
+      ...context.selectedEntries,
+      ...textResolvedEntries,
+      ...musicTimeExpandedEntries,
+      ...znIdExpandedEntries,
+    ]),
+    context.allowedVoiceIds,
+  )
+
+  return dedupeIndexes(
+    entries.flatMap((entry) => {
+      const exactIndexes = entry.textRange === undefined
+        ? []
+        : resolveIndexesByTextRange(index, entry.textRange, undefined, 'exact')
+      if (exactIndexes.length > 0) return exactIndexes
+      if (entry.znId !== undefined) return resolveIndexesByZnId(index, entry.znId)
+      if (entry.confKey !== undefined) return resolveIndexesByConfKey(index, entry.confKey)
+      return []
+    }),
+  )
 }
 
 function lineRangeOverlapsEntry(
@@ -334,6 +411,7 @@ function createSongEntryFromVoiceEntity(entity: VoiceEntity, voiceId: string): S
     kind: 'music-entity',
     znId: entity.znId,
     voiceId,
+    musicTime: entity.time,
     textRange: normalizeTextRange(sourceOffsets[0], sourceOffsets[1]),
     startPos: {
       line: entity.startPos[0],
@@ -412,6 +490,7 @@ export function buildSheetObjectIndex(
   const byZnId: Record<string, number[]> = {}
   const byConfKey: Record<string, number[]> = {}
   const byTextRange: Record<string, number[]> = {}
+  const byMusicTime: Record<string, number[]> = {}
 
   dedupedEntries.forEach((entry, index) => {
     if (entry.znId !== undefined && entry.znId.length > 0) {
@@ -427,6 +506,11 @@ export function buildSheetObjectIndex(
       byTextRange[key] ??= []
       byTextRange[key]?.push(index)
     }
+    if (typeof entry.musicTime === 'number') {
+      const key = `${entry.musicTime}`
+      byMusicTime[key] ??= []
+      byMusicTime[key]?.push(index)
+    }
   })
 
   return {
@@ -436,6 +520,7 @@ export function buildSheetObjectIndex(
     byZnId,
     byConfKey,
     byTextRange,
+    byMusicTime,
     entries: dedupedEntries,
   }
 }
@@ -512,6 +597,18 @@ export function resolveIndexesByZnId(
 ): number[] {
   if (index === undefined) return []
   return (index.byZnId[znId] ?? []).filter((entryIndex: number) => {
+    const entry = index.entries[entryIndex]
+    return entry !== undefined && (pane === undefined || canAddress(entry, pane))
+  })
+}
+
+export function resolveIndexesByMusicTime(
+  index: SheetObjectIndex | undefined,
+  musicTime: number,
+  pane?: AddressablePane,
+): number[] {
+  if (index === undefined) return []
+  return (index.byMusicTime[`${musicTime}`] ?? []).filter((entryIndex: number) => {
     const entry = index.entries[entryIndex]
     return entry !== undefined && (pane === undefined || canAddress(entry, pane))
   })

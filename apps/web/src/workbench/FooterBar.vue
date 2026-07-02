@@ -24,22 +24,18 @@ const emit = defineEmits<{
 }>()
 
 const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
-const selectionScopeLabel = computed(() => {
-  if (props.selectionVoiceScope === 'single-voice') return 'Stimme'
-  if (props.selectionVoiceScope === 'extract-voices') return 'Auszug'
-  return 'Alle'
-})
 
-function cycleSelectionVoiceScope(): void {
-  if (props.selectionVoiceScope === 'single-voice') {
-    emit('selection-voice-scope-change', 'extract-voices')
+function handleSelectionVoiceScopeChange(event: Event): void {
+  const target = event.target
+  if (!(target instanceof HTMLSelectElement)) return
+  if (
+    target.value !== 'single-voice'
+    && target.value !== 'extract-voices'
+    && target.value !== 'all-voices'
+  ) {
     return
   }
-  if (props.selectionVoiceScope === 'extract-voices') {
-    emit('selection-voice-scope-change', 'all-voices')
-    return
-  }
-  emit('selection-voice-scope-change', 'single-voice')
+  emit('selection-voice-scope-change', target.value)
 }
 </script>
 
@@ -60,14 +56,20 @@ function cycleSelectionVoiceScope(): void {
     <template #aside>
       <div class="footer-bar__selection">
         <span class="footer-bar__meta">Selection:</span>
-        <ZnButton
-          class="footer-bar__scope-chip"
-          variant="ghost"
+        <label
+          class="footer-bar__scope-field"
           :title="selectionVoiceScopeSummary"
-          @click="cycleSelectionVoiceScope"
         >
-          {{ selectionScopeLabel }}
-        </ZnButton>
+          <select
+            class="footer-bar__scope-select"
+            :value="selectionVoiceScope"
+            @change="handleSelectionVoiceScopeChange"
+          >
+            <option value="single-voice">Stimme</option>
+            <option value="extract-voices">Auszug</option>
+            <option value="all-voices">Alle</option>
+          </select>
+        </label>
       </div>
       <div class="footer-bar__playback">
         <span class="footer-bar__meta">Playback:</span>
@@ -110,11 +112,35 @@ function cycleSelectionVoiceScope(): void {
   margin-inline-end: 0.75rem;
 }
 
-.footer-bar__scope-chip {
-  min-width: 5.25rem;
+.footer-bar__scope-field {
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-bar__scope-select {
+  min-width: 5.5rem;
   min-height: 2.1rem;
-  padding: 0.35rem 0.75rem;
+  padding: 0.35rem 1.9rem 0.35rem 0.75rem;
+  border: 1px solid var(--zn-border);
   border-radius: 999px;
+  background: var(--zn-bg-surface);
+  color: var(--zn-text);
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--zn-text-soft) 50%),
+    linear-gradient(135deg, var(--zn-text-soft) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1rem) calc(50% - 0.12rem),
+    calc(100% - 0.72rem) calc(50% - 0.12rem);
+  background-size: 0.4rem 0.4rem, 0.4rem 0.4rem;
+  background-repeat: no-repeat;
+}
+
+.footer-bar__scope-select:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--zn-accent) 65%, white);
+  outline-offset: 2px;
 }
 
 .footer-bar__speed-button,

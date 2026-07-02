@@ -36,10 +36,17 @@ const sheetObjectIndex: SheetObjectIndex = {
     '7:8': [1],
     '10:12': [5, 6, 8],
   },
+  byMusicTime: {
+    '64': [0],
+    '96': [1],
+    '128': [6, 8],
+  },
   entries: [
     {
       kind: 'music-entity',
       znId: 'note-1',
+      voiceId: '1',
+      musicTime: 64,
       textRange: { startpos: 4, endpos: 6 },
       startPos: { line: 2, column: 1 },
       endPos: { line: 2, column: 3 },
@@ -48,6 +55,8 @@ const sheetObjectIndex: SheetObjectIndex = {
     {
       kind: 'music-entity',
       znId: 'note-2',
+      voiceId: '1',
+      musicTime: 96,
       textRange: { startpos: 7, endpos: 8 },
       startPos: { line: 2, column: 4 },
       endPos: { line: 2, column: 5 },
@@ -83,6 +92,8 @@ const sheetObjectIndex: SheetObjectIndex = {
     {
       kind: 'music-entity',
       znId: 'note-3',
+      voiceId: '1',
+      musicTime: 128,
       textRange: { startpos: 10, endpos: 12 },
       startPos: { line: 2, column: 6 },
       endPos: { line: 2, column: 8 },
@@ -97,6 +108,8 @@ const sheetObjectIndex: SheetObjectIndex = {
     {
       kind: 'music-entity',
       znId: 'note-4',
+      voiceId: '2',
+      musicTime: 128,
       textRange: { startpos: 10, endpos: 12 },
       startPos: { line: 3, column: 2 },
       endPos: { line: 3, column: 4 },
@@ -345,6 +358,44 @@ describe('selection store', () => {
       ],
       textRanges: [{ startpos: 10, endpos: 12 }],
     })
+  })
+
+  it('expands the stored selection across the active extract voices when the scope changes', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.setSheetObjectIndex(sheetObjectIndex)
+    selectionStore.setActiveVoiceIds(['1', '2'])
+    selectionStore.selectIndexes([5], 'abc-editor')
+
+    expect(selectionStore.selection.selectedIndexes).toEqual([5])
+
+    selectionStore.setVoiceScope('extract-voices')
+
+    expect(selectionStore.selection.selectedIndexes).toEqual([5, 6, 7, 8, 9])
+    expect(selectionStore.selection.baseSelectedIndexes).toEqual([5])
+    expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection, {
+      voiceScope: selectionStore.selection.voiceScope,
+      activeVoiceIds: selectionStore.activeVoiceIds,
+    })).toEqual([{ startpos: 10, endpos: 12 }])
+  })
+
+  it('collapses an all-voice selection back to the original voice when the scope switches to single voice', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.setSheetObjectIndex(sheetObjectIndex)
+    selectionStore.selectIndexes([5], 'abc-editor')
+
+    selectionStore.setVoiceScope('all-voices')
+
+    expect(selectionStore.selection.selectedIndexes).toEqual([5, 6, 7, 8, 9])
+    expect(selectionStore.selection.baseSelectedIndexes).toEqual([5])
+
+    selectionStore.setVoiceScope('single-voice')
+
+    expect(selectionStore.selection.selectedIndexes).toEqual([5])
+    expect(selectionStore.selection.baseSelectedIndexes).toEqual([5])
   })
 
   it('limits editor block selection to the active extract voices', () => {
