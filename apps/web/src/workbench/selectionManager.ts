@@ -202,6 +202,33 @@ export function resolveSelectionByTextRange(
       })()
     : source === 'abc-editor'
       ? (() => {
+          const exactMusicEntityIndexes = resolveIndexesByTextRangeAndKind(
+            index,
+            { startpos, endpos },
+            'music-entity',
+            'editor',
+            'exact',
+          )
+          if (exactMusicEntityIndexes.length > 0) return exactMusicEntityIndexes
+
+          const containedMusicEntityIndexes = resolveIndexesByTextRangeAndKind(
+            index,
+            { startpos, endpos },
+            'music-entity',
+            'editor',
+            'contained',
+          )
+          if (containedMusicEntityIndexes.length > 0) return containedMusicEntityIndexes
+
+          const overlapMusicEntityIndexes = resolveIndexesByTextRangeAndKind(
+            index,
+            { startpos, endpos },
+            'music-entity',
+            'editor',
+            'overlap',
+          )
+          if (overlapMusicEntityIndexes.length > 0) return overlapMusicEntityIndexes
+
           const overlapScoreObjectIndexes = resolveIndexesByTextRangeAndKind(
             index,
             { startpos, endpos },

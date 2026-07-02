@@ -8,6 +8,7 @@ import {
   projectIndexesToEntries,
   resolveEditorSelectionRange,
   resolveScoreSelectionRanges,
+  resolveSelectedZnIds,
   resolveSvgSelection,
 } from '../../workbench/selectionIndex'
 
@@ -118,7 +119,7 @@ describe('selection store', () => {
     selectionStore.setSheetObjectIndex(sheetObjectIndex)
     selectionStore.selectTextRange(4, 6, 'abc-editor')
 
-    expect(selectionStore.selection.selectedIndexes).toEqual([4])
+    expect(selectionStore.selection.selectedIndexes).toEqual([0])
     expect(resolveEditorSelectionRange(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({ startpos: 4, endpos: 6 })
     expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection))
@@ -178,6 +179,17 @@ describe('selection store', () => {
       })
   })
 
+  it('keeps harp playback znIds on the directly selected note when another voice shares the same text range', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.setSheetObjectIndex(sheetObjectIndex)
+    selectionStore.selectZnId('note-3', 'harp-preview')
+
+    expect(resolveSelectedZnIds(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toEqual(['note-3'])
+  })
+
   it('projects score-addressable text selections into svg-addressable harp entries', () => {
     setActivePinia(createPinia())
 
@@ -198,7 +210,7 @@ describe('selection store', () => {
 
     const selectionStore = useSelectionStore()
     selectionStore.setSheetObjectIndex(sheetObjectIndex)
-    selectionStore.selectIndexes([5], 'abc-editor')
+    selectionStore.selectTextRange(10, 12, 'abc-editor')
 
     expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({
@@ -263,6 +275,28 @@ describe('selection store', () => {
     })
 
     expect(selectionStore.selection.selectedIndexes).toEqual([])
+  })
+
+  it('reprojects an editor selection when a new render index arrives', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.setSheetObjectIndex(sheetObjectIndex)
+    selectionStore.selectTextRange(4, 6, 'abc-editor')
+
+    selectionStore.setSheetObjectIndex({
+      ...sheetObjectIndex,
+      version: 2,
+    })
+
+    expect(selectionStore.selection.source).toBe('abc-editor')
+    expect(selectionStore.selection.selectedIndexes).toEqual([0])
+    expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toEqual({
+        znIds: [],
+        confKeys: [],
+        textRanges: [{ startpos: 4, endpos: 6 }],
+      })
   })
 
   it('projects editor selections across all voices when the scope is switched', () => {

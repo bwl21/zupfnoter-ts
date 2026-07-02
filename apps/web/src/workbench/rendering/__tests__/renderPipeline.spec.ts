@@ -89,16 +89,24 @@ describe('renderWorkbenchPreviews', () => {
   })
 
   it('merges tied note durations into a single playback attack', () => {
-    const result = renderWorkbenchPreviews('X:1\nT:Tie\nL:1/4\nK:C\nC-C D')
+    const result = renderWorkbenchPreviews('X:1\nT:Tie\nL:1/4\nK:C\nV:1\nC-C D')
 
     expect(result.playbackTimeline).toHaveLength(3)
-    expect(result.playbackTimeline[0]?.activeNotes).toEqual([
-      { pitch: 60, durationMs: 1000, attack: true, pan: 'left' },
-    ])
+    expect(result.playbackTimeline[0]?.activeNotes).toContainEqual(expect.objectContaining({
+      originVoiceId: '1',
+      pitch: 60,
+      durationMs: 1000,
+      attack: true,
+      pan: 'left',
+    }))
     expect(result.playbackTimeline[1]?.activeNotes).toEqual([])
-    expect(result.playbackTimeline[2]?.activeNotes).toEqual([
-      { pitch: 62, durationMs: 500, attack: true, pan: 'left' },
-    ])
+    expect(result.playbackTimeline[2]?.activeNotes).toContainEqual(expect.objectContaining({
+      originVoiceId: '1',
+      pitch: 62,
+      durationMs: 500,
+      attack: true,
+      pan: 'left',
+    }))
   })
 
   it('limits playback to the active voices of the selected extract', () => {
@@ -118,17 +126,29 @@ G, A,
     "1": {
       "voices": [1]
     }
-  }
+    }
 }
 `, 1)
 
     expect(result.playbackTimeline).toHaveLength(2)
-    expect(result.playbackTimeline[0]?.activeNotes).toEqual([
-      { pitch: 60, durationMs: 500, attack: true, pan: 'left' },
-    ])
-    expect(result.playbackTimeline[1]?.activeNotes).toEqual([
-      { pitch: 62, durationMs: 500, attack: true, pan: 'left' },
-    ])
+    expect(result.playbackTimeline[0]?.originVoiceIds).toEqual(['1'])
+    expect(result.playbackTimeline[0]?.activeNotes).toHaveLength(1)
+    expect(result.playbackTimeline[0]?.activeNotes[0]).toMatchObject({
+      originVoiceId: '1',
+      pitch: 60,
+      durationMs: 500,
+      attack: true,
+      pan: 'left',
+    })
+    expect(result.playbackTimeline[1]?.originVoiceIds).toEqual(['1'])
+    expect(result.playbackTimeline[1]?.activeNotes).toHaveLength(1)
+    expect(result.playbackTimeline[1]?.activeNotes[0]).toMatchObject({
+      originVoiceId: '1',
+      pitch: 62,
+      durationMs: 500,
+      attack: true,
+      pan: 'left',
+    })
   })
 
   it('keeps higher configured extract voice numbers in playback', () => {
@@ -157,8 +177,13 @@ F
 `, 1)
 
     expect(result.playbackTimeline).toHaveLength(1)
-    expect(result.playbackTimeline[0]?.activeNotes).toEqual([
-      { pitch: 65, durationMs: 500, attack: true, pan: 'right' },
-    ])
+    expect(result.playbackTimeline[0]?.originVoiceIds).toEqual(['4'])
+    expect(result.playbackTimeline[0]?.activeNotes).toHaveLength(1)
+    expect(result.playbackTimeline[0]?.activeNotes[0]).toMatchObject({
+      originVoiceId: '4',
+      durationMs: 500,
+      attack: true,
+      pan: 'right',
+    })
   })
 })

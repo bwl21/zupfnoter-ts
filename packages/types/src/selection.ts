@@ -37,6 +37,8 @@ export interface SheetObjectIndexEntry {
   kind: 'score-object' | 'music-entity' | 'sheet-object'
   /** Stable Zupfnoter identifier when the entry belongs to a music entity. */
   znId?: string
+  /** 1-based voice id when the mapped entry belongs to a concrete voice. */
+  voiceId?: string
   /** ABC text range for the mapped entity, if available. */
   textRange?: SelectionTextRange
   /** 1-based start position in line/column form, if available. */

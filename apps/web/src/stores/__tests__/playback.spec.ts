@@ -41,9 +41,40 @@ describe('playback store', () => {
     expect(playbackStore.mode).toBe('all-score')
 
     selectionStore.selectZnId('note-1', 'harp-preview')
-    expect(playbackStore.mode).toBe('from-note-harp')
+    expect(playbackStore.mode).toBe('range-harp')
 
     selectionStore.selectMusicRange(['note-1', 'note-2'], 'harp-preview')
+    expect(playbackStore.mode).toBe('range-harp')
+  })
+
+  it('resolves editor-driven note selections as selection playback too', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    const playbackStore = usePlaybackStore()
+    selectionStore.setSheetObjectIndex({
+      ...sheetObjectIndex,
+      byTextRange: {
+        '4:6': [0],
+      },
+      entries: [
+        {
+          kind: 'music-entity',
+          znId: 'note-1',
+          textRange: { startpos: 4, endpos: 6 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+        {
+          kind: 'music-entity',
+          znId: 'note-2',
+          textRange: { startpos: 8, endpos: 10 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+      ],
+    })
+
+    selectionStore.selectTextRange(4, 6, 'abc-editor')
+
     expect(playbackStore.mode).toBe('range-harp')
   })
 

@@ -34,6 +34,7 @@ function cloneEntry(entry: SheetObjectIndexEntry): SheetObjectIndexEntry {
   return {
     kind: entry.kind,
     znId: entry.znId,
+    voiceId: entry.voiceId,
     textRange: entry.textRange === undefined ? undefined : { ...entry.textRange },
     startPos: entry.startPos === undefined ? undefined : cloneLineColumn(entry.startPos),
     endPos: entry.endPos === undefined ? undefined : cloneLineColumn(entry.endPos),
@@ -86,6 +87,7 @@ function createEntryDedupKey(entry: SheetObjectIndexEntry): string {
   return [
     entry.kind,
     entry.znId ?? '-',
+    entry.voiceId ?? '-',
     entry.confKey ?? '-',
     textRange,
     startPos,
@@ -124,7 +126,12 @@ function parseVoiceIdFromConfKey(confKey: string | undefined): string | undefine
   return match?.[1]
 }
 
+export function buildPlaybackIdentity(voiceId: string | undefined, znId: string): string {
+  return `${voiceId ?? '?'}::${znId}`
+}
+
 function resolveEntryVoiceId(entry: SheetObjectIndexEntry): string | undefined {
+  if (entry.voiceId !== undefined) return entry.voiceId
   return parseVoiceIdFromConfKey(entry.confKey)
 }
 
@@ -168,7 +175,7 @@ function resolveScopedSelectionContext(
     .map((entry) => entry.endPos?.line)
     .filter((line): line is number => line !== undefined)
   const voiceScope = options?.voiceScope ?? selection.voiceScope
-  const editorSelectionLineWindow = selection.source === 'abc-editor'
+  const editorSelectionLineWindow = (selection.source === 'abc-editor' || selection.source === 'score-preview')
     && voiceScope === 'single-voice'
     && selectedStartLine.length > 0
     && selectedEndLine.length > 0
@@ -319,13 +326,14 @@ export function charOffsetToLineColumn(
   }
 }
 
-function createSongEntryFromVoiceEntity(entity: VoiceEntity): SheetObjectIndexEntry | undefined {
+function createSongEntryFromVoiceEntity(entity: VoiceEntity, voiceId: string): SheetObjectIndexEntry | undefined {
   const sourceOffsets = entity.sourceOffsets
   if (sourceOffsets === undefined) return undefined
 
   return {
     kind: 'music-entity',
     znId: entity.znId,
+    voiceId,
     textRange: normalizeTextRange(sourceOffsets[0], sourceOffsets[1]),
     startPos: {
       line: entity.startPos[0],
@@ -394,7 +402,9 @@ export function buildSheetObjectIndex(
   const voiceByLine = createVoiceByLine(abcText)
   const entries: SheetObjectIndexEntry[] = [
     ...parseScoreEntriesFromSvg(scoreSvg, lineStarts),
-    ...song.voices.flatMap((voice) => voice.entities.map(createSongEntryFromVoiceEntity).filter((entry): entry is SheetObjectIndexEntry => entry !== undefined)),
+    ...song.voices.flatMap((voice, voiceIndex) => voice.entities
+      .map((entity) => createSongEntryFromVoiceEntity(entity, `${voiceIndex + 1}`))
+      .filter((entry): entry is SheetObjectIndexEntry => entry !== undefined)),
     ...sheet.children.map(createSheetEntryFromDrawable).filter((entry): entry is SheetObjectIndexEntry => entry !== undefined),
   ]
 
@@ -607,7 +617,54 @@ export function resolveSelectedZnIds(
   index: SheetObjectIndex | undefined,
   selection: SelectionState,
 ): string[] {
-  return resolveSvgSelection(index, selection).znIds
+  const context = resolveScopedSelectionContext(index, selection)
+  const directZnIds = [...new Set(
+    context.selectedEntries
+      .map((entry) => entry.znId)
+      .filter((znId): znId is string => znId !== undefined),
+  )]
+
+  if (selection.source !== 'abc-editor' && selection.source !== 'score-preview' && directZnIds.length > 0) {
+    return directZnIds
+  }
+
+  const { entries, selectedVoiceId, allowedVoiceIds } = resolveScopedPaneEntries(index, selection, 'svg')
+  return [...new Set(
+    entries
+      .filter((entry) => {
+        if (allowedVoiceIds !== undefined && allowedVoiceIds.size > 0) {
+          const voiceId = resolveEntryVoiceIdFromIndex(index, entry)
+          return voiceId === undefined || allowedVoiceIds.has(voiceId)
+        }
+        if (selectedVoiceId === undefined) return true
+        const voiceId = resolveEntryVoiceIdFromIndex(index, entry)
+        return voiceId === undefined || voiceId === selectedVoiceId
+      })
+      .map((entry) => entry.znId)
+      .filter((znId): znId is string => znId !== undefined),
+  )]
+}
+
+export function resolveSelectedPlaybackIds(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+): string[] {
+  const { entries, selectedVoiceId, allowedVoiceIds } = resolveScopedPaneEntries(index, selection, 'svg')
+  return [...new Set(
+    entries
+      .filter((entry) => entry.znId !== undefined)
+      .filter((entry) => {
+        const voiceId = resolveEntryVoiceIdFromIndex(index, entry)
+        if (allowedVoiceIds !== undefined && allowedVoiceIds.size > 0) {
+          return voiceId === undefined || allowedVoiceIds.has(voiceId)
+        }
+        if (selectedVoiceId !== undefined) {
+          return voiceId === undefined || voiceId === selectedVoiceId
+        }
+        return true
+      })
+      .map((entry) => buildPlaybackIdentity(resolveEntryVoiceIdFromIndex(index, entry), entry.znId as string)),
+  )]
 }
 
 export function projectTextRangeToLineColumnRange(

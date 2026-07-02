@@ -2,10 +2,12 @@ import { describe, expect, it } from 'vitest'
 
 import type { SelectionState, SheetObjectIndex } from '@zupfnoter/types'
 
-import { resolvePlaybackSteps, type PlaybackStep } from '../playback'
+import { buildPlaybackTimeline, resolvePlaybackSteps, type PlaybackStep } from '../playback'
 
 const timeline: PlaybackStep[] = [
   {
+    originVoiceIds: ['1'],
+    originPlaybackIds: ['1::note-a-1'],
     originZnIds: ['note-a-1'],
     activeTextRanges: [{ startpos: 0, endpos: 1 }],
     activeNotes: [],
@@ -17,6 +19,8 @@ const timeline: PlaybackStep[] = [
     passIndex: 1,
   },
   {
+    originVoiceIds: ['1'],
+    originPlaybackIds: ['1::note-b-1'],
     originZnIds: ['note-b-1'],
     activeTextRanges: [{ startpos: 2, endpos: 3 }],
     activeNotes: [],
@@ -28,6 +32,8 @@ const timeline: PlaybackStep[] = [
     passIndex: 1,
   },
   {
+    originVoiceIds: ['1'],
+    originPlaybackIds: ['1::note-c'],
     originZnIds: ['note-c'],
     activeTextRanges: [{ startpos: 4, endpos: 5 }],
     activeNotes: [],
@@ -40,6 +46,8 @@ const timeline: PlaybackStep[] = [
     voltaNumber: 1,
   },
   {
+    originVoiceIds: ['1'],
+    originPlaybackIds: ['1::note-a-2'],
     originZnIds: ['note-a-2'],
     activeTextRanges: [{ startpos: 0, endpos: 1 }],
     activeNotes: [],
@@ -51,6 +59,8 @@ const timeline: PlaybackStep[] = [
     passIndex: 2,
   },
   {
+    originVoiceIds: ['1'],
+    originPlaybackIds: ['1::note-b-2'],
     originZnIds: ['note-b-2'],
     activeTextRanges: [{ startpos: 2, endpos: 3 }],
     activeNotes: [],
@@ -62,6 +72,8 @@ const timeline: PlaybackStep[] = [
     passIndex: 2,
   },
   {
+    originVoiceIds: ['1'],
+    originPlaybackIds: ['1::note-d'],
     originZnIds: ['note-d'],
     activeTextRanges: [{ startpos: 6, endpos: 7 }],
     activeNotes: [],
@@ -77,8 +89,11 @@ const timeline: PlaybackStep[] = [
 
 const sheetObjectIndex: SheetObjectIndex = {
   version: 1,
-  lineStarts: [0],
-  voiceByLine: {},
+  lineStarts: [0, 4],
+  voiceByLine: {
+    1: '1',
+    2: '1',
+  },
   byZnId: {
     'note-a-1': [0],
     'note-a-2': [1],
@@ -90,16 +105,101 @@ const sheetObjectIndex: SheetObjectIndex = {
   byConfKey: {},
   byTextRange: {},
   entries: [
-    { kind: 'music-entity', znId: 'note-a-1', textRange: { startpos: 0, endpos: 1 }, addressableIn: { editor: false, score: false, svg: true } },
-    { kind: 'music-entity', znId: 'note-a-2', textRange: { startpos: 0, endpos: 1 }, addressableIn: { editor: false, score: false, svg: true } },
-    { kind: 'music-entity', znId: 'note-b-1', textRange: { startpos: 2, endpos: 3 }, addressableIn: { editor: false, score: false, svg: true } },
-    { kind: 'music-entity', znId: 'note-b-2', textRange: { startpos: 2, endpos: 3 }, addressableIn: { editor: false, score: false, svg: true } },
-    { kind: 'music-entity', znId: 'note-c', textRange: { startpos: 4, endpos: 5 }, addressableIn: { editor: false, score: false, svg: true } },
-    { kind: 'music-entity', znId: 'note-d', textRange: { startpos: 6, endpos: 7 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-a-1', confKey: 'extract.0.note.v_1.note-a-1', textRange: { startpos: 0, endpos: 1 }, startPos: { line: 1, column: 1 }, endPos: { line: 1, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-a-2', confKey: 'extract.0.note.v_1.note-a-2', textRange: { startpos: 0, endpos: 1 }, startPos: { line: 1, column: 1 }, endPos: { line: 1, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-b-1', confKey: 'extract.0.note.v_1.note-b-1', textRange: { startpos: 2, endpos: 3 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-b-2', confKey: 'extract.0.note.v_1.note-b-2', textRange: { startpos: 2, endpos: 3 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 2 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-c', confKey: 'extract.0.note.v_1.note-c', textRange: { startpos: 4, endpos: 5 }, startPos: { line: 2, column: 3 }, endPos: { line: 2, column: 4 }, addressableIn: { editor: false, score: false, svg: true } },
+    { kind: 'music-entity', znId: 'note-d', confKey: 'extract.0.note.v_1.note-d', textRange: { startpos: 6, endpos: 7 }, startPos: { line: 2, column: 5 }, endPos: { line: 2, column: 6 }, addressableIn: { editor: false, score: false, svg: true } },
   ],
 }
 
 describe('resolvePlaybackSteps', () => {
+  it('limits the playback timeline to the active extract voices', () => {
+    const song = {
+      metaData: {},
+      voices: [
+        {
+          index: 0,
+          showVoice: true,
+          showFlowline: true,
+          showJumpline: true,
+          entities: [{
+            type: 'Note' as const,
+            beat: 0,
+            time: 0,
+            sourceOffsets: [0, 1] as [number, number],
+            startPos: [1, 1] as [number, number],
+            endPos: [1, 2] as [number, number],
+            decorations: [],
+            barDecorations: [],
+            visible: true,
+            variant: 0 as const,
+            znId: 'voice-1-note',
+            duration: 16,
+            pitch: 60,
+            tieStart: false,
+            tieEnd: false,
+            tuplet: 1,
+            tupletStart: false,
+            tupletEnd: false,
+            firstInPart: false,
+            measureStart: false,
+            measureCount: 1,
+            jumpStarts: [],
+            jumpEnds: [],
+            slurStarts: [],
+            slurEnds: [],
+            countNote: null,
+            lyrics: null,
+          }],
+        },
+        {
+          index: 1,
+          showVoice: true,
+          showFlowline: true,
+          showJumpline: true,
+          entities: [{
+            type: 'Note' as const,
+            beat: 0,
+            time: 0,
+            sourceOffsets: [2, 3] as [number, number],
+            startPos: [2, 1] as [number, number],
+            endPos: [2, 2] as [number, number],
+            decorations: [],
+            barDecorations: [],
+            visible: true,
+            variant: 0 as const,
+            znId: 'voice-2-note',
+            duration: 16,
+            pitch: 64,
+            tieStart: false,
+            tieEnd: false,
+            tuplet: 1,
+            tupletStart: false,
+            tupletEnd: false,
+            firstInPart: false,
+            measureStart: false,
+            measureCount: 1,
+            jumpStarts: [],
+            jumpEnds: [],
+            slurStarts: [],
+            slurEnds: [],
+            countNote: null,
+            lyrics: null,
+          }],
+        },
+      ],
+      beatMaps: [],
+    }
+
+    const steps = buildPlaybackTimeline(song, [2])
+
+    expect(steps).toHaveLength(1)
+    expect(steps[0]?.originVoiceIds).toEqual(['2'])
+    expect(steps[0]?.originZnIds).toEqual(['voice-2-note'])
+  })
+
   it('keeps only matching occurrences for range playback inside repeated material', () => {
     const selection: SelectionState = {
       selectedIndexes: [0, 1, 2, 3],
@@ -115,5 +215,69 @@ describe('resolvePlaybackSteps', () => {
       'note-a-2',
       'note-b-2',
     ])
+    expect(steps[0]?.playbackStartMs).toBe(0)
+    expect(steps[1]?.playbackStartMs).toBe(120)
+  })
+
+  it('keeps only the selected notes inside a shared playback step', () => {
+    const sharedStepTimeline: PlaybackStep[] = [
+      {
+        originVoiceIds: ['1', '2'],
+        originPlaybackIds: ['1::note-a', '2::note-b'],
+        originZnIds: ['note-a', 'note-b'],
+        activeTextRanges: [
+          { startpos: 0, endpos: 1 },
+          { startpos: 2, endpos: 3 },
+        ],
+        activePlaybackTextRanges: [
+          { playbackId: '1::note-a', voiceId: '1', textRange: { startpos: 0, endpos: 1 } },
+          { playbackId: '2::note-b', voiceId: '2', textRange: { startpos: 2, endpos: 3 } },
+        ],
+        activeNotes: [
+          { originVoiceId: '1', originPlaybackId: '1::note-a', originZnId: 'note-a', pitch: 60, durationMs: 120, attack: true, pan: 'left' },
+          { originVoiceId: '2', originPlaybackId: '2::note-b', originZnId: 'note-b', pitch: 64, durationMs: 120, attack: true, pan: 'right' },
+        ],
+        activeTime: '0',
+        playbackStartMs: 240,
+        durationMs: 120,
+        sourceTime: 0,
+        flowIndex: 0,
+        passIndex: 1,
+      },
+    ]
+    const sharedStepIndex: SheetObjectIndex = {
+      version: 1,
+      lineStarts: [0],
+      voiceByLine: {},
+      byZnId: {
+        'note-a': [0],
+        'note-b': [1],
+      },
+      byConfKey: {},
+      byTextRange: {},
+      entries: [
+        { kind: 'music-entity', znId: 'note-a', confKey: 'extract.0.note.v_1.note-a', textRange: { startpos: 0, endpos: 1 }, startPos: { line: 1, column: 1 }, endPos: { line: 1, column: 2 }, addressableIn: { editor: true, score: true, svg: true } },
+        { kind: 'music-entity', znId: 'note-b', confKey: 'extract.0.note.v_2.note-b', textRange: { startpos: 2, endpos: 3 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 2 }, addressableIn: { editor: true, score: true, svg: true } },
+      ],
+    }
+    const selection: SelectionState = {
+      selectedIndexes: [0],
+      source: 'abc-editor',
+      voiceScope: 'single-voice',
+    }
+
+    const steps = resolvePlaybackSteps(selection, sharedStepIndex, sharedStepTimeline, 'range-harp')
+
+    expect(steps).toHaveLength(1)
+    expect(steps[0]?.originPlaybackIds).toEqual(['1::note-a'])
+    expect(steps[0]?.originZnIds).toEqual(['note-a'])
+    expect(steps[0]?.originVoiceIds).toEqual(['1'])
+    expect(steps[0]?.activeTextRanges).toEqual([
+      { startpos: 0, endpos: 1 },
+    ])
+    expect(steps[0]?.activeNotes).toEqual([
+      { originVoiceId: '1', originPlaybackId: '1::note-a', originZnId: 'note-a', pitch: 60, durationMs: 120, attack: true, pan: 'left' },
+    ])
+    expect(steps[0]?.playbackStartMs).toBe(0)
   })
 })

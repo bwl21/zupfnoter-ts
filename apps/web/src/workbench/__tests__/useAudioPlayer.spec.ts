@@ -86,9 +86,11 @@ class MockAudioContext {
 
 const steps: PlaybackStep[] = [
   {
+    originVoiceIds: ['1'],
+    originPlaybackIds: ['1::note-1'],
     originZnIds: ['note-1'],
     activeTextRanges: [],
-    activeNotes: [{ pitch: 60, durationMs: 1000, attack: true, pan: 'left' }],
+    activeNotes: [{ originVoiceId: '1', originPlaybackId: '1::note-1', originZnId: 'note-1', pitch: 60, durationMs: 1000, attack: true, pan: 'left' }],
     activeTime: '0',
     playbackStartMs: 0,
     durationMs: 1000,
@@ -97,11 +99,13 @@ const steps: PlaybackStep[] = [
     passIndex: 1,
   },
   {
+    originVoiceIds: ['2'],
+    originPlaybackIds: ['2::note-2'],
     originZnIds: ['note-2'],
     activeTextRanges: [],
     activeNotes: [
-      { pitch: 64, durationMs: 500, attack: true, pan: 'right' },
-      { pitch: 60, durationMs: 250, attack: true, pan: 'left' },
+      { originVoiceId: '2', originPlaybackId: '2::note-2', originZnId: 'note-2', pitch: 64, durationMs: 500, attack: true, pan: 'right' },
+      { originVoiceId: '2', originPlaybackId: '2::note-2', originZnId: 'note-2', pitch: 60, durationMs: 250, attack: true, pan: 'left' },
     ],
     activeTime: '1',
     playbackStartMs: 1000,

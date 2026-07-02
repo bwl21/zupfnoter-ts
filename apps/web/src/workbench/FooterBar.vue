@@ -112,7 +112,8 @@ function cycleSelectionVoiceScope(): void {
 
 .footer-bar__scope-chip {
   min-width: 5.25rem;
-  padding-inline: 0.75rem;
+  min-height: 2.1rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 999px;
 }
 

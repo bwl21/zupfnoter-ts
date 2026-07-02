@@ -14,6 +14,7 @@ import {
   resolveSelectionByIndexes,
   resolveSelectionByLineColumnRange,
   resolveSelectionByMusicRange,
+  resolveSelectionEditorRange,
   resolveSelectionByTextRange,
   resolveSelectionByZnId,
 } from '../workbench/selectionManager'
@@ -59,8 +60,22 @@ export const useSelectionStore = defineStore('selection', () => {
   }
 
   function setSheetObjectIndex(nextSheetObjectIndex: SheetObjectIndex | undefined): void {
+    const previousSelection = selection.value
+    const previousEditorRange = previousSelection.source === 'abc-editor'
+      ? resolveSelectionEditorRange(sheetObjectIndex.value, previousSelection)
+      : undefined
     sheetObjectIndex.value = nextSheetObjectIndex
-    clearSelection(selection.value.source)
+    if (previousEditorRange !== undefined && nextSheetObjectIndex !== undefined) {
+      selection.value = resolveSelectionByTextRange(
+        nextSheetObjectIndex,
+        previousEditorRange.startpos,
+        previousEditorRange.endpos,
+        'abc-editor',
+        previousSelection.voiceScope,
+      )
+      return
+    }
+    clearSelection(previousSelection.source)
   }
 
   function selectIndexes(selectedIndexes: number[], source: SelectionSource = 'command'): void {
