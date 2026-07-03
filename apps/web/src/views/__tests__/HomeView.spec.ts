@@ -5,7 +5,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import HomeView from '../HomeView.vue'
 import AbcEditorPanel from '../../workbench/panels/AbcEditorPanel.vue'
+import ScorePreviewPanel from '../../workbench/panels/ScorePreviewPanel.vue'
 import { useSelectionStore } from '../../stores/selection'
+import { resolveScoreSelectionRanges } from '../../workbench/selectionIndex'
 
 describe('HomeView', () => {
   afterEach(() => {
@@ -109,5 +111,52 @@ describe('HomeView', () => {
 
     expect(selectionStore.selection.source).toBe('score-preview')
     expect(selectionStore.selection.selectedIndexes).toEqual([scoreIndex])
+  })
+
+  it('extends score selections when the score preview emits a shift-extended selection', async () => {
+    vi.useFakeTimers()
+    const pinia = createPinia()
+    const wrapper = mount(HomeView, {
+      global: {
+        plugins: [pinia],
+      },
+    })
+
+    await vi.advanceTimersByTimeAsync(300)
+    await nextTick()
+
+    const selectionStore = useSelectionStore(pinia)
+    const scoreRanges = selectionStore.sheetObjectIndex?.entries
+      .filter((entry) => entry.addressableIn.score && entry.textRange !== undefined)
+      .map((entry) => entry.textRange)
+      .filter((range): range is { startpos: number; endpos: number } => range !== undefined)
+
+    expect(scoreRanges && scoreRanges.length >= 2).toBe(true)
+    if (scoreRanges === undefined || scoreRanges.length < 2) {
+      throw new Error('expected at least two score-addressable ranges')
+    }
+
+    const firstRange = scoreRanges[0]
+    const secondRange = scoreRanges[1]
+    if (firstRange === undefined || secondRange === undefined) {
+      throw new Error('expected two concrete score ranges')
+    }
+
+    wrapper.findComponent(ScorePreviewPanel).vm.$emit('select-text-range', {
+      ...firstRange,
+      extend: false,
+      source: 'score-preview',
+    })
+    await nextTick()
+
+    wrapper.findComponent(ScorePreviewPanel).vm.$emit('select-text-range', {
+      ...secondRange,
+      extend: true,
+      source: 'score-preview',
+    })
+    await nextTick()
+
+    expect(selectionStore.selection.source).toBe('score-preview')
+    expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection).length).toBeGreaterThan(1)
   })
 })

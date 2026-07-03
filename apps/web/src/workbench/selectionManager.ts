@@ -2,6 +2,7 @@ import type {
   PlaybackHighlight,
   SelectionLineColumn,
   SelectionEvent,
+  SelectionOrigin,
   SelectionProjection,
   SelectionProjectionOptions,
   SelectionProjectionKind,
@@ -26,6 +27,7 @@ import {
   resolveIndexesByTextRange,
   resolveIndexesByTextRangeAndKind,
   resolveIndexesByZnId,
+  resolveSelectionOriginByTextRange,
   resolveScoreSelectionEntries as resolveScoreSelectionEntriesFromIndex,
   resolveScoreSelectionRanges,
   resolveScopedSelectionIndexes,
@@ -89,13 +91,14 @@ function createSelectionState(
   source: SelectionSource,
   voiceScope: SelectionVoiceScope = 'single-voice',
   originSelectedIndexes?: number[],
+  anchorIndex?: number,
 ): SelectionState {
   const normalized = normalizeIndexes(selectedIndexes)
   const normalizedOrigin = normalizeIndexes(originSelectedIndexes ?? selectedIndexes)
   return {
     selectedIndexes: normalized,
     originSelectedIndexes: normalizedOrigin,
-    anchorIndex: normalized[0],
+    anchorIndex: anchorIndex ?? normalized[0],
     source,
     voiceScope,
   }
@@ -158,11 +161,15 @@ export function createTextRangeSelectionEvent(
   startpos: number,
   endpos: number,
   source: SelectionSource = 'abc-editor',
+  extend: boolean = false,
+  origin?: SelectionOrigin,
 ): SelectionEvent {
   return {
     type: 'selection.text-range-selected',
     startpos,
     endpos,
+    extend,
+    origin,
     source,
   }
 }
@@ -171,11 +178,15 @@ export function createLineColumnRangeSelectionEvent(
   start: SelectionLineColumn,
   end: SelectionLineColumn,
   source: SelectionSource = 'abc-editor',
+  extend: boolean = false,
+  origin?: SelectionOrigin,
 ): SelectionEvent {
   return {
     type: 'selection.line-column-range-selected',
     start,
     end,
+    extend,
+    origin,
     source,
   }
 }
@@ -408,6 +419,29 @@ export function resolveSelectionByTextRange(
   return createSelectionState(resolvedIndexes, source, voiceScope)
 }
 
+function resolveSelectionByOrigin(
+  index: SheetObjectIndex | undefined,
+  origin: SelectionOrigin,
+  source: SelectionSource,
+  voiceScope: SelectionVoiceScope,
+): SelectionState | undefined {
+  const matchingIndexes = origin.znId === undefined
+    ? []
+    : resolveIndexesByZnId(index, origin.znId).filter((entryIndex) => {
+        const entry = index?.entries[entryIndex]
+        if (entry?.kind !== 'music-entity') return false
+        if (origin.voiceId !== undefined && entry.voiceId !== origin.voiceId) return false
+        if (origin.musicTime !== undefined && entry.musicTime !== origin.musicTime) return false
+        return true
+      })
+
+  if (matchingIndexes.length > 0) {
+    return createSelectionState(matchingIndexes, source, voiceScope)
+  }
+
+  return undefined
+}
+
 export function resolveSelectionByLineColumnRange(
   index: SheetObjectIndex | undefined,
   start: SelectionLineColumn,
@@ -424,6 +458,80 @@ export function resolveSelectionByLineColumnRange(
   }
 
   return resolveSelectionByTextRange(index, textRange.startpos, textRange.endpos, source, voiceScope)
+}
+
+function resolveExtendedSelectionByTextRange(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  startpos: number,
+  endpos: number,
+  source: SelectionSource,
+  voiceScope: SelectionVoiceScope,
+  origin?: SelectionOrigin,
+): SelectionState {
+  const nextSelection = origin === undefined
+    ? resolveSelectionByTextRange(index, startpos, endpos, source, voiceScope)
+    : resolveSelectionByOrigin(index, origin, source, voiceScope)
+      ?? resolveSelectionByTextRange(index, startpos, endpos, source, voiceScope)
+  const anchorIndex = selection.anchorIndex
+  if (anchorIndex === undefined) return nextSelection
+
+  const anchorSelection = createSelectionState(
+    [anchorIndex],
+    selection.source,
+    selection.voiceScope,
+    [anchorIndex],
+    anchorIndex,
+  )
+  const anchorRange = resolveSelectionEditorRange(index, anchorSelection)
+  const nextRange = resolveSelectionEditorRange(index, nextSelection)
+  if (anchorRange === undefined || nextRange === undefined) {
+    return {
+      ...nextSelection,
+      anchorIndex,
+    }
+  }
+
+  const extendedSelection = resolveSelectionByTextRange(
+    index,
+    Math.min(anchorRange.startpos, nextRange.startpos),
+    Math.max(anchorRange.endpos, nextRange.endpos),
+    source,
+    voiceScope,
+  )
+
+  return {
+    ...extendedSelection,
+    anchorIndex,
+  }
+}
+
+function resolveExtendedSelectionByLineColumnRange(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  start: SelectionLineColumn,
+  end: SelectionLineColumn,
+  source: SelectionSource,
+  voiceScope: SelectionVoiceScope,
+  origin?: SelectionOrigin,
+): SelectionState {
+  const textRange = projectLineColumnRangeToTextRange(
+    index,
+    normalizeLineColumnRange(start, end),
+  )
+  if (textRange === undefined) {
+    return createSelectionState([], source, voiceScope)
+  }
+
+  return resolveExtendedSelectionByTextRange(
+    index,
+    selection,
+    textRange.startpos,
+    textRange.endpos,
+    source,
+    voiceScope,
+    origin,
+  )
 }
 
 export function resolveSelectionAfterActiveVoicesChange(
@@ -525,26 +633,69 @@ export function dispatchSelectionEvent(
   }
 
   if (event.type === 'selection.text-range-selected') {
+    const eventOrigin = event.origin ?? (
+      event.source === 'score-preview'
+        ? resolveSelectionOriginByTextRange(
+            context.sheetObjectIndex,
+            { startpos: event.startpos, endpos: event.endpos },
+          )
+        : undefined
+    )
+    const nextSelection = eventOrigin === undefined
+      ? resolveSelectionByTextRange(
+          context.sheetObjectIndex,
+          event.startpos,
+          event.endpos,
+          event.source ?? 'abc-editor',
+          context.selection.voiceScope,
+        )
+      : resolveSelectionByOrigin(
+          context.sheetObjectIndex,
+          eventOrigin,
+          event.source ?? 'abc-editor',
+          context.selection.voiceScope,
+        ) ?? resolveSelectionByTextRange(
+          context.sheetObjectIndex,
+          event.startpos,
+          event.endpos,
+          event.source ?? 'abc-editor',
+          context.selection.voiceScope,
+        )
+
     return projectInputSelectionToCurrentScope(
-      resolveSelectionByTextRange(
-        context.sheetObjectIndex,
-        event.startpos,
-        event.endpos,
-        event.source ?? 'abc-editor',
-        context.selection.voiceScope,
-      ),
+      event.extend === true
+        ? resolveExtendedSelectionByTextRange(
+            context.sheetObjectIndex,
+            context.selection,
+            event.startpos,
+            event.endpos,
+            event.source ?? 'abc-editor',
+            context.selection.voiceScope,
+            eventOrigin,
+          )
+        : nextSelection,
     )
   }
 
   if (event.type === 'selection.line-column-range-selected') {
     return projectInputSelectionToCurrentScope(
-      resolveSelectionByLineColumnRange(
-        context.sheetObjectIndex,
-        event.start,
-        event.end,
-        event.source ?? 'abc-editor',
-        context.selection.voiceScope,
-      ),
+      event.extend === true
+        ? resolveExtendedSelectionByLineColumnRange(
+            context.sheetObjectIndex,
+            context.selection,
+            event.start,
+            event.end,
+            event.source ?? 'abc-editor',
+            context.selection.voiceScope,
+            event.origin,
+          )
+        : resolveSelectionByLineColumnRange(
+            context.sheetObjectIndex,
+            event.start,
+            event.end,
+            event.source ?? 'abc-editor',
+            context.selection.voiceScope,
+          ),
     )
   }
 

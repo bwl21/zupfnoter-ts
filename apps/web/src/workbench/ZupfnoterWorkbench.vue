@@ -34,6 +34,7 @@ import { usePlaybackDriver } from './usePlaybackDriver'
 import { useAudioPlayer, type PlaybackInstrument } from './useAudioPlayer'
 import { resolvePlaybackInstrument } from './sound'
 import type { PlaybackStep } from './playback'
+import type { SelectionOrigin } from '@zupfnoter/types'
 import { CommandError, CommandStack, registerLegacyCommands, registerStorageCommands } from '@zupfnoter/core'
 import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
 import {
@@ -768,11 +769,12 @@ function handleHarpPreviewSelection(payload: {
   startpos: number
   endpos: number
   extend: boolean
+  origin?: SelectionOrigin
   source: 'harp-preview'
 }): void {
   if (!canTargetCreateSelection(payload.source, 'textRange')) return
   selectionStore.dispatchSelectionEvent(
-    createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source),
+    createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source, payload.extend, payload.origin),
   )
 }
 
@@ -786,18 +788,12 @@ function handleScorePreviewSelection(payload: {
   startpos: number
   endpos: number
   extend: boolean
+  origin?: SelectionOrigin
   source: 'score-preview'
 }): void {
   if (!canTargetCreateSelection(payload.source, 'textRange')) return
-  if (payload.extend) {
-    selectionStore.dispatchSelectionEvent(
-      createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source),
-    )
-    return
-  }
-
   selectionStore.dispatchSelectionEvent(
-    createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source),
+    createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source, payload.extend, payload.origin),
   )
 }
 
@@ -1044,6 +1040,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :error-message="previewErrorMessage"
                   :playback-text-ranges="playbackScoreTextRanges"
                   :selected-text-ranges="selectedScoreTextRanges"
+                  :sheet-object-index="selectionStore.sheetObjectIndex"
                   :svg="scoreSvg"
                   @select-text-range="handleScorePreviewSelection"
                 />
@@ -1054,6 +1051,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :error-message="previewErrorMessage"
                   :playback-highlight="projectedPlaybackHighlight"
                   :selection="selectedHarpProjection"
+                  :sheet-object-index="selectionStore.sheetObjectIndex"
                   :svg="harpSvg"
                   @select-text-range="handleHarpPreviewSelection"
                 />

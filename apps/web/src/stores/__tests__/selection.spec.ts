@@ -165,6 +165,139 @@ describe('selection store', () => {
       })
   })
 
+  it('extends score selections with shift-click into a contiguous text range', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: sheetObjectIndex })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.text-range-selected', startpos: 4, endpos: 6, source: 'score-preview' })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.text-range-selected', startpos: 10, endpos: 12, source: 'score-preview', extend: true })
+
+    expect(resolveEditorSelectionRange(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toEqual({ startpos: 4, endpos: 12 })
+    expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toEqual([
+        { startpos: 4, endpos: 6 },
+        { startpos: 10, endpos: 12 },
+      ])
+  })
+
+  it('keeps a score shift-selection on the anchor voice instead of expanding to all voices', () => {
+    setActivePinia(createPinia())
+
+    const scoreAnchorIndex: SheetObjectIndex = {
+      version: 2,
+      lineStarts: [0, 4, 9, 14, 19],
+      voiceByLine: {
+        1: undefined,
+        2: '1',
+        3: '2',
+        4: '3',
+        5: '3',
+      },
+      byZnId: {
+        'v1-a': [0],
+        'v2-a': [2],
+        'v3-a': [4],
+        'v3-b': [6],
+      },
+      byConfKey: {},
+      byTextRange: {
+        '4:6': [0, 1],
+        '10:12': [2, 3],
+        '20:22': [4, 5],
+        '30:32': [6, 7],
+      },
+      byMusicTime: {
+        '64': [0],
+        '96': [2],
+        '128': [4],
+        '160': [6],
+      },
+      entries: [
+        {
+          kind: 'music-entity',
+          znId: 'v1-a',
+          voiceId: '1',
+          musicTime: 64,
+          textRange: { startpos: 4, endpos: 6 },
+          startPos: { line: 2, column: 1 },
+          endPos: { line: 2, column: 3 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+        {
+          kind: 'score-object',
+          textRange: { startpos: 4, endpos: 6 },
+          startPos: { line: 2, column: 1 },
+          endPos: { line: 2, column: 3 },
+          addressableIn: { editor: true, score: true, svg: false },
+        },
+        {
+          kind: 'music-entity',
+          znId: 'v2-a',
+          voiceId: '2',
+          musicTime: 96,
+          textRange: { startpos: 10, endpos: 12 },
+          startPos: { line: 3, column: 1 },
+          endPos: { line: 3, column: 3 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+        {
+          kind: 'score-object',
+          textRange: { startpos: 10, endpos: 12 },
+          startPos: { line: 3, column: 1 },
+          endPos: { line: 3, column: 3 },
+          addressableIn: { editor: true, score: true, svg: false },
+        },
+        {
+          kind: 'music-entity',
+          znId: 'v3-a',
+          voiceId: '3',
+          musicTime: 128,
+          textRange: { startpos: 20, endpos: 22 },
+          startPos: { line: 4, column: 1 },
+          endPos: { line: 4, column: 3 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+        {
+          kind: 'score-object',
+          textRange: { startpos: 20, endpos: 22 },
+          startPos: { line: 4, column: 1 },
+          endPos: { line: 4, column: 3 },
+          addressableIn: { editor: true, score: true, svg: false },
+        },
+        {
+          kind: 'music-entity',
+          znId: 'v3-b',
+          voiceId: '3',
+          musicTime: 160,
+          textRange: { startpos: 30, endpos: 32 },
+          startPos: { line: 5, column: 1 },
+          endPos: { line: 5, column: 3 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+        {
+          kind: 'score-object',
+          textRange: { startpos: 30, endpos: 32 },
+          startPos: { line: 5, column: 1 },
+          endPos: { line: 5, column: 3 },
+          addressableIn: { editor: true, score: true, svg: false },
+        },
+      ],
+    }
+
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: scoreAnchorIndex })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.text-range-selected', startpos: 20, endpos: 22, source: 'score-preview' })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.text-range-selected', startpos: 30, endpos: 32, source: 'score-preview', extend: true })
+
+    expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toEqual([
+        { startpos: 20, endpos: 22 },
+        { startpos: 30, endpos: 32 },
+      ])
+  })
+
   it('resolves config selections into svg-addressable entries', () => {
     setActivePinia(createPinia())
 
@@ -190,6 +323,28 @@ describe('selection store', () => {
         znIds: ['note-1'],
         confKeys: ['extract.0.note-1'],
         textRanges: [{ startpos: 4, endpos: 6 }],
+      })
+  })
+
+  it('extends harp selections with shift-click across the covered source range', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: sheetObjectIndex })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.text-range-selected', startpos: 4, endpos: 6, source: 'harp-preview' })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.text-range-selected', startpos: 10, endpos: 12, source: 'harp-preview', extend: true })
+
+    expect(resolveEditorSelectionRange(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toEqual({ startpos: 4, endpos: 12 })
+    expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toEqual({
+        znIds: ['note-1', 'note-2', 'note-3'],
+        confKeys: ['extract.0.note-1'],
+        textRanges: [
+          { startpos: 4, endpos: 6 },
+          { startpos: 7, endpos: 8 },
+          { startpos: 10, endpos: 12 },
+        ],
       })
   })
 
@@ -781,6 +936,79 @@ F
       endpos: textRange.endpos,
       source: 'abc-editor',
     })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.scope-changed', voiceScope: 'extract-voices' })
+
+    expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection, {
+      voiceScope: selectionStore.selection.voiceScope,
+      activeVoiceIds: selectionStore.activeVoiceIds,
+    })).toEqual(expectedRanges)
+  })
+
+  it('expands score-origin selections to all extract voices when the scope changes', () => {
+    setActivePinia(createPinia())
+
+    const abcText = `X:1
+T:Extract Scope
+%%score 1 2 3 4
+L:1/4
+M:4/4
+K:C
+V:1 treble
+V:2 treble
+V:3 bass
+V:4 bass
+V:1
+C
+V:2
+D
+V:3
+E
+V:4
+F
+
+%%%%zupfnoter.config
+{
+  "extract": {
+    "2": {
+      "voices": [1, 3, 4]
+    }
+  }
+}`
+
+    const result = renderWorkbenchPreviews(abcText, 2)
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: result.sheetObjectIndex })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.extract-changed', activeVoiceIds: result.activeVoiceIds })
+
+    const sopranoEntry = result.sheetObjectIndex?.entries.find((entry) =>
+      entry.kind === 'music-entity'
+      && entry.voiceId === '1'
+      && entry.textRange !== undefined)
+
+    expect(result.activeVoiceIds).toEqual(['1', '3', '4'])
+    expect(sopranoEntry?.textRange).toBeDefined()
+
+    const textRange = sopranoEntry?.textRange
+    if (textRange === undefined) return
+    const expectedRanges = ['1', '3', '4']
+      .map((voiceId) => result.sheetObjectIndex?.entries.find((entry) =>
+        entry.kind === 'music-entity'
+        && entry.voiceId === voiceId
+        && entry.textRange !== undefined)?.textRange)
+      .filter((range): range is { startpos: number, endpos: number } => range !== undefined)
+
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: textRange.startpos,
+      endpos: textRange.endpos,
+      source: 'score-preview',
+    })
+
+    expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection, {
+      voiceScope: selectionStore.selection.voiceScope,
+      activeVoiceIds: selectionStore.activeVoiceIds,
+    })).toEqual([textRange])
+
     selectionStore.dispatchSelectionEvent({ type: 'selection.scope-changed', voiceScope: 'extract-voices' })
 
     expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection, {

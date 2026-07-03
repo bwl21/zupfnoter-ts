@@ -128,6 +128,16 @@ export interface SelectionProjectionOptions {
   activeVoiceIds?: string[]
 }
 
+/** Fachliche Ursprungsidentität einer Selektion aus einer Projektion. */
+export interface SelectionOrigin {
+  /** 1-basierte Stimm-ID der geklickten musikalischen Entity, wenn bekannt. */
+  voiceId?: string
+  /** Musikalische Zeitposition der geklickten Entity, wenn bekannt. */
+  musicTime?: number
+  /** Zupfnoter-ID der geklickten musikalischen Entity, wenn bekannt. */
+  znId?: string
+}
+
 /** Fachliche Zustandsübergänge rund um die zentrale Selection. */
 export type SelectionEvent =
   | {
@@ -146,6 +156,8 @@ export type SelectionEvent =
     type: 'selection.text-range-selected'
     startpos: number
     endpos: number
+    origin?: SelectionOrigin
+    extend?: boolean
     source?: SelectionSource
   }
   | {
@@ -153,6 +165,8 @@ export type SelectionEvent =
     type: 'selection.line-column-range-selected'
     start: SelectionLineColumn
     end: SelectionLineColumn
+    origin?: SelectionOrigin
+    extend?: boolean
     source?: SelectionSource
   }
   | {

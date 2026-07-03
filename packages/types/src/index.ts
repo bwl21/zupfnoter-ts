@@ -36,6 +36,7 @@ export type {
 } from './music.js'
 
 export type {
+  SelectionOrigin,
   SelectionTextRange,
   SelectionLineColumn,
   SheetObjectAddressability,
