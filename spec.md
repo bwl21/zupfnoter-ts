@@ -31,6 +31,7 @@ können im jeweiligen Phase-Ordner auch ergänzende Dateien wie `spec-<thema>.md
 | [docs/phase-5/spec-playback-selection.md](docs/phase-5/spec-playback-selection.md) | Phase 5.7 – Selection-gesteuertes Playback |
 | [docs/phase-5/architektur_selection_perspektiven.md](docs/phase-5/architektur_selection_perspektiven.md) | Phase 5 – Architektur von Selection, Perspektiven und Player |
 | [docs/adr/vector-umsetzung.md](docs/adr/vector-umsetzung.md) | ADR: Ruby `Vector` → TypeScript |
+| [docs/adr/stabile-stimmenidentitaet.md](docs/adr/stabile-stimmenidentitaet.md) | Architektur-Issue: stabile Stimmenidentität über Core, Web und CLI |
 | [docs/phase-5/demo-view-bugfixes.md](docs/phase-5/demo-view-bugfixes.md) | Demo-View: Browser-Kompatibilität, BeatPacker-Bugs, Y_SCALE |
 | [docs/architecture/repo-analysis.md](docs/architecture/repo-analysis.md) | Repo-Analyse und Architekturüberblick |
 | [docs/architecture/current-state.md](docs/architecture/current-state.md) | Aktueller Zustand des Repositories |

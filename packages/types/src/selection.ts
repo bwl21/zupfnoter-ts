@@ -35,6 +35,8 @@ export interface SheetObjectAddressability {
 export interface SheetObjectIndexEntry {
   /** Origin domain of the addressable object. */
   kind: 'score-object' | 'music-entity' | 'sheet-object'
+  /** Stable ordinal among score hitboxes with the same text range, if applicable. */
+  scoreHitboxOrdinal?: number
   /** Stable Zupfnoter identifier when the entry belongs to a music entity. */
   znId?: string
   /** 1-based voice id when the mapped entry belongs to a concrete voice. */
@@ -96,8 +98,8 @@ export interface SelectionTargetCapabilities {
 export interface SelectionState {
   /** Selected index entries within the current render-generation-local sheet object index. */
   selectedIndexes: number[]
-  /** Stable base selection before voice-scope expansion is applied. */
-  baseSelectedIndexes: number[]
+  /** Stable origin selection before voice-scope expansion is applied. */
+  originSelectedIndexes: number[]
   /** Anchor index for range extension, if applicable. */
   anchorIndex?: number
   /** Where the selection originated from. */
@@ -125,3 +127,70 @@ export interface SelectionProjectionOptions {
   /** Active extract voice ids when the selection should follow the current extract. */
   activeVoiceIds?: string[]
 }
+
+/** Fachliche Zustandsübergänge rund um die zentrale Selection. */
+export type SelectionEvent =
+  | {
+    /** Benutzer- oder Systemselektion wurde vollständig ersetzt. */
+    type: 'selection.replaced'
+    selection: SelectionState
+  }
+  | {
+    /** Selektion wurde direkt über Indexeinträge adressiert. */
+    type: 'selection.indexes-selected'
+    selectedIndexes: number[]
+    source?: SelectionSource
+  }
+  | {
+    /** Selektion wurde über einen Textbereich adressiert. */
+    type: 'selection.text-range-selected'
+    startpos: number
+    endpos: number
+    source?: SelectionSource
+  }
+  | {
+    /** Selektion wurde über Zeile und Spalte adressiert. */
+    type: 'selection.line-column-range-selected'
+    start: SelectionLineColumn
+    end: SelectionLineColumn
+    source?: SelectionSource
+  }
+  | {
+    /** Selektion wurde über eine musikalische Kennung adressiert. */
+    type: 'selection.znid-selected'
+    znId: string
+    source?: SelectionSource
+  }
+  | {
+    /** Selektion wurde über eine musikalische Materialmenge adressiert. */
+    type: 'selection.music-range-selected'
+    znIds: string[]
+    source?: SelectionSource
+  }
+  | {
+    /** Selektion wurde über einen Konfigurationsschlüssel adressiert. */
+    type: 'selection.confkey-selected'
+    confKey: string
+    source?: SelectionSource
+  }
+  | {
+    /** Eine neue leere Partitur oder ein neues Stück wurde geladen. */
+    type: 'selection.song-loaded'
+    source?: SelectionSource
+    voiceScope?: SelectionVoiceScope
+  }
+  | {
+    /** Der Stimmumfang der bestehenden Selection wurde geändert. */
+    type: 'selection.scope-changed'
+    voiceScope: SelectionVoiceScope
+  }
+  | {
+    /** Die aktiven Stimmen des aktuellen Auszugs wurden geändert. */
+    type: 'selection.extract-changed'
+    activeVoiceIds: string[]
+  }
+  | {
+    /** Ein neuer renderlokaler Selection-Index wurde erzeugt. */
+    type: 'selection.render-refreshed'
+    nextIndex?: SheetObjectIndex
+  }

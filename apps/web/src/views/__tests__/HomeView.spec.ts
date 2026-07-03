@@ -100,7 +100,11 @@ describe('HomeView', () => {
     const selectionStore = useSelectionStore(pinia)
     const scoreIndex = selectionStore.sheetObjectIndex?.entries.findIndex((entry) => entry.addressableIn.score && entry.textRange !== undefined) ?? -1
     expect(scoreIndex).toBeGreaterThanOrEqual(0)
-    selectionStore.selectIndexes([scoreIndex], 'score-preview')
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.indexes-selected',
+      selectedIndexes: [scoreIndex],
+      source: 'score-preview',
+    })
     await nextTick()
 
     expect(selectionStore.selection.source).toBe('score-preview')

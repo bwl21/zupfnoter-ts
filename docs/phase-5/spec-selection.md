@@ -235,12 +235,30 @@ ist nur:
 - der `SelectionManager` bleibt fuer Aufloesung und Projektionen zustaendig
 - Views liefern Eingaben und konsumieren Projektionen
 - Views definieren nicht selbst die fachliche Bedeutung der Selection
+- der `SelectionStore` darf zwischen Ursprungsauswahl und scope-erweiterter
+  Projektion unterscheiden
 
 ### Trennung
 
 - Selection bleibt getrennt von Playback-Highlight
 - Selection bleibt getrennt von Audio- oder Command-Sonderlogik
 - der Stimmumfang wird zentral aufgeloest und nicht lokal je Panel geraten
+
+### Aktuelle Praezisierung des Ist-Stands
+
+Im aktuellen Stand wird die fachliche Ursprungsauswahl gesondert gehalten und
+anschliessend auf den gewaehlten Scope projiziert.
+
+Das bedeutet:
+
+- `single-voice`
+  - nutzt die Ursprungsauswahl direkt
+- `extract-voices`
+  - erweitert dieselbe Ursprungsauswahl auf die aktiven Extract-Stimmen
+- `all-voices`
+  - erweitert dieselbe Ursprungsauswahl auf alle Stimmen
+
+Damit bleibt die Rueckkehr von Mehrstimmen-Scope auf Einzelstimme stabil.
 
 ## Akzeptanzkriterien
 

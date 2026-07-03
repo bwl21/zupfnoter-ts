@@ -114,6 +114,7 @@ Der `SelectionStore` hält den transienten Auswahlzustand des Workbench-Threads.
 Er speichert insbesondere:
 
 - `selectedIndexes`
+- `originSelectedIndexes`
 - `anchorIndex`
 - `source`
 - `voiceScope`
@@ -218,6 +219,7 @@ startpos / endpos"]
 
     ZnId["znId"]
     VoiceId["voiceId"]
+    MusicTime["musicTime"]
     ConfKey["confKey"]
     PlaybackId["playbackId = voiceId::znId"]
 
@@ -225,10 +227,13 @@ startpos / endpos"]
     Text --> Music
     Music --> ZnId
     Music --> VoiceId
+    Music --> MusicTime
     SheetObj --> ConfKey
     Music --> PlaybackId
     VoiceId --> PlaybackId
     ZnId --> PlaybackId
+    MusicTime --> SheetObj
+    MusicTime --> ScoreObj
 ```
 
 ### 6.2 `SelectionTextRange`
@@ -313,6 +318,7 @@ Relevante Felder:
 - `kind`
 - `znId`
 - `voiceId`
+- `musicTime`
 - `confKey`
 - `textRange`
 - `startPos`
@@ -416,16 +422,38 @@ Unterstützte Werte:
 
 - Auswahl gilt nur für die betroffene Stimme
 - bei Editor-Selektion wird die Stimme aus `music-entity.voiceId` abgeleitet
+- `selectedIndexes` fallen auf `originSelectedIndexes` zurück
 
 ### 9.2 `extract-voices`
 
 - Auswahl gilt für die Stimmen des aktiven Auszugs
 - Auflösung nutzt `activeVoiceIds`
+- die Expansion startet von `originSelectedIndexes`
 
 ### 9.3 `all-voices`
 
 - Auswahl gilt für alle Stimmen
 - die Projektion wird bewusst über mehrere Stimmen erweitert
+- die Expansion startet von `originSelectedIndexes`
+
+### 11.4 Aktuelle Scope-Regel
+
+Der aktuelle `SelectionState` unterscheidet bewusst zwischen:
+
+- `originSelectedIndexes`
+  - die Ursprungsauswahl vor jeder Scope-Erweiterung
+- `selectedIndexes`
+  - die aktuell sichtbare, auf den Scope projizierte Auswahl
+
+Damit gilt fachlich:
+
+- `Stimme` = Ursprungsauswahl
+- `Auszug` = Expansion der Ursprungsauswahl auf `activeVoiceIds`
+- `Alle` = Expansion der Ursprungsauswahl auf alle Stimmen
+
+Diese Trennung ist wichtig, damit ein Wechsel von `Alle` oder `Auszug` zurück auf
+`Stimme` wieder exakt auf die ursprüngliche Einzelstimmen-Selektion zurückfallen
+kann.
 
 ## 12. Projektionen
 
@@ -433,6 +461,10 @@ Unterstützte Werte:
 
 Eine zentrale Selection wird nicht 1:1 an alle Perspektiven weitergereicht,
 sondern projektiert.
+
+Aus Sicht des aktuellen Ist-Stands wird dabei zuerst von
+`originSelectedIndexes` ausgegangen. `selectedIndexes` ist bereits die
+scope-abgeleitete Projektion derselben fachlichen Auswahl.
 
 ### 10.2 Projektion in den Editor
 
@@ -467,13 +499,10 @@ angereicherte Projektion.
 flowchart LR
     Selection["SelectionState"]
     Index["SheetObjectIndex"]
-    PlaybackIds["resolveSelectedPlaybackIds()"]
     Timeline["PlaybackTimeline"]
     Steps["resolvePlaybackSteps()"]
     Highlight["PlaybackHighlight"]
 
-    Selection --> PlaybackIds
-    Index --> PlaybackIds
     Selection --> Steps
     Index --> Steps
     Timeline --> Steps
@@ -484,9 +513,10 @@ flowchart LR
 
 Die Playback-Auflösung filtert in dieser Reihenfolge:
 
-1. `playbackId`
-2. `voiceId`
-3. selektionsrelevante `textRange`
+1. Scope-Regel der zentralen Selection
+2. `playbackId`
+3. `voiceId`
+4. selektionsrelevante `textRange`
 
 Das ist absichtlich redundant.
 
@@ -527,7 +557,7 @@ flowchart LR
     A["Editor-Textselektion"] --> B["resolveSelectionByTextRange()"]
     B --> C["music-entity bevorzugen"]
     C --> D["SheetObjectIndexEntry mit voiceId"]
-    D --> E["resolveSelectedPlaybackIds()"]
+    D --> E["originSelectedIndexes / selectedIndexes"]
     E --> F["resolvePlaybackSteps()"]
     F --> G["Audio + Playback-Highlight"]
 ```
@@ -563,7 +593,9 @@ Die wichtigsten realen Änderungen des aktuellen Stands gegenüber älteren
 Annahmen sind:
 
 - `voiceId` ist jetzt ein expliziter Teil der Übersetzungskette
+- `musicTime` wird fuer Scope-Projektionen zwischen Stimmen mitgenutzt
 - `playbackId = voiceId::znId` ist die relevante Playback-Identität
+- `originSelectedIndexes` hält die Ursprungsauswahl stabil über Scope-Wechsel
 - Editor-Selektion bevorzugt `music-entity`
 - Playback-Highlight wird nicht mehr nur aus groben Step-Bereichen, sondern aus
   enger gefilterten Textbereichen abgeleitet
@@ -577,8 +609,10 @@ Die folgenden Regeln sind für die Phase-5-Architektur verbindlich:
 3. Editor-Selektion wird vorrangig auf `music-entity` aufgelöst.
 4. `znId` allein ist keine robuste Playback-Identität.
 5. Für Playback gilt die stimmsichere Identität `voiceId::znId`.
-6. Playback-Highlight muss dieselbe Filterlogik respektieren wie die Audio-Ausgabe.
-7. Der `player` ist fachlich als Perspektive zu behandeln.
+6. Scope-Wechsel müssen von der Ursprungsauswahl ausgehen, nicht von einer schon
+   expandierten Projektion.
+7. Playback-Highlight muss dieselbe Filterlogik respektieren wie die Audio-Ausgabe.
+8. Der `player` ist fachlich als Perspektive zu behandeln.
 
 ## 18. Bekannte Grenzen
 

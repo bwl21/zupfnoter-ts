@@ -44,6 +44,7 @@ import { buildConfstack } from './buildConfstack.js'
 import { computeBeatCompression, type BeatCompressionMap } from './BeatPacker.js'
 import type { Confstack } from './Confstack.js'
 import { requireDefined } from './requireDefined.js'
+import { resolveSongVoiceByConfigVoiceNumber } from './voiceIdentity.js'
 import {
   createDefaultAnnotationTextMetrics,
   type AnnotationTextMetrics,
@@ -607,10 +608,7 @@ export class HarpnotesLayout {
     const activeVoices: number[] = []
 
     for (const voiceNr of activeVoiceNrs) {
-      // voices are 1-based in config; song.voices[0] is the legacy V1 duplicate,
-      // so song.voices[voiceNr] is the real voice
-      const voiceIdx = voiceNr
-      const voice = song.voices[voiceIdx]
+      const voice = resolveSongVoiceByConfigVoiceNumber(song, voiceNr)
       if (!voice) continue
 
       activeVoices.push(voiceNr)

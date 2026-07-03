@@ -1,6 +1,7 @@
 import type {
   PlaybackHighlight,
   SelectionLineColumn,
+  SelectionEvent,
   SelectionProjection,
   SelectionProjectionOptions,
   SelectionProjectionKind,
@@ -11,6 +12,7 @@ import type {
   SelectionTextRange,
   SelectionVoiceScope,
   SheetObjectIndex,
+  SheetObjectIndexEntry,
 } from '@zupfnoter/types'
 
 import { textRangeKey } from './selectionIndex'
@@ -24,6 +26,7 @@ import {
   resolveIndexesByTextRange,
   resolveIndexesByTextRangeAndKind,
   resolveIndexesByZnId,
+  resolveScoreSelectionEntries as resolveScoreSelectionEntriesFromIndex,
   resolveScoreSelectionRanges,
   resolveScopedSelectionIndexes,
   resolveSelectedZnIds,
@@ -85,13 +88,13 @@ function createSelectionState(
   selectedIndexes: number[],
   source: SelectionSource,
   voiceScope: SelectionVoiceScope = 'single-voice',
-  baseSelectedIndexes?: number[],
+  originSelectedIndexes?: number[],
 ): SelectionState {
   const normalized = normalizeIndexes(selectedIndexes)
-  const normalizedBase = normalizeIndexes(baseSelectedIndexes ?? selectedIndexes)
+  const normalizedOrigin = normalizeIndexes(originSelectedIndexes ?? selectedIndexes)
   return {
     selectedIndexes: normalized,
-    baseSelectedIndexes: normalizedBase,
+    originSelectedIndexes: normalizedOrigin,
     anchorIndex: normalized[0],
     source,
     voiceScope,
@@ -133,12 +136,134 @@ export function canTargetCreateSelection(
   return getSelectionTargetCapabilities(target).writes.includes(kind)
 }
 
+export function createReplacedSelectionEvent(selection: SelectionState): SelectionEvent {
+  return {
+    type: 'selection.replaced',
+    selection,
+  }
+}
+
+export function createIndexesSelectedSelectionEvent(
+  selectedIndexes: number[],
+  source: SelectionSource = 'command',
+): SelectionEvent {
+  return {
+    type: 'selection.indexes-selected',
+    selectedIndexes,
+    source,
+  }
+}
+
+export function createTextRangeSelectionEvent(
+  startpos: number,
+  endpos: number,
+  source: SelectionSource = 'abc-editor',
+): SelectionEvent {
+  return {
+    type: 'selection.text-range-selected',
+    startpos,
+    endpos,
+    source,
+  }
+}
+
+export function createLineColumnRangeSelectionEvent(
+  start: SelectionLineColumn,
+  end: SelectionLineColumn,
+  source: SelectionSource = 'abc-editor',
+): SelectionEvent {
+  return {
+    type: 'selection.line-column-range-selected',
+    start,
+    end,
+    source,
+  }
+}
+
+export function createZnIdSelectedSelectionEvent(
+  znId: string,
+  source: SelectionSource = 'command',
+): SelectionEvent {
+  return {
+    type: 'selection.znid-selected',
+    znId,
+    source,
+  }
+}
+
+export function createMusicRangeSelectedSelectionEvent(
+  znIds: string[],
+  source: SelectionSource = 'command',
+): SelectionEvent {
+  return {
+    type: 'selection.music-range-selected',
+    znIds,
+    source,
+  }
+}
+
+export function createConfKeySelectedSelectionEvent(
+  confKey: string,
+  source: SelectionSource = 'command',
+): SelectionEvent {
+  return {
+    type: 'selection.confkey-selected',
+    confKey,
+    source,
+  }
+}
+
+export function createSongLoadedSelectionEvent(
+  source?: SelectionSource,
+  voiceScope?: SelectionVoiceScope,
+): SelectionEvent {
+  return {
+    type: 'selection.song-loaded',
+    source,
+    voiceScope,
+  }
+}
+
+export function createScopeChangedSelectionEvent(
+  voiceScope: SelectionVoiceScope,
+): SelectionEvent {
+  return {
+    type: 'selection.scope-changed',
+    voiceScope,
+  }
+}
+
+export function createExtractChangedSelectionEvent(
+  activeVoiceIds: string[],
+): SelectionEvent {
+  return {
+    type: 'selection.extract-changed',
+    activeVoiceIds,
+  }
+}
+
+export function createRenderRefreshedSelectionEvent(
+  nextIndex?: SheetObjectIndex,
+): SelectionEvent {
+  return {
+    type: 'selection.render-refreshed',
+    nextIndex,
+  }
+}
+
 export function resolveSelectionByIndexes(
   selectedIndexes: number[],
   source: SelectionSource = 'command',
   voiceScope: SelectionVoiceScope = 'single-voice',
 ): SelectionState {
   return createSelectionState(selectedIndexes, source, voiceScope)
+}
+
+export function createClearedSelectionState(
+  source: SelectionSource = 'command',
+  voiceScope: SelectionVoiceScope = 'single-voice',
+): SelectionState {
+  return createSelectionState([], source, voiceScope)
 }
 
 export function resolveSelectionWithVoiceScope(
@@ -149,21 +274,21 @@ export function resolveSelectionWithVoiceScope(
 ): SelectionState {
   if (voiceScope === 'single-voice') {
     return createSelectionState(
-      selection.baseSelectedIndexes,
+      selection.originSelectedIndexes,
       selection.source,
       voiceScope,
-      selection.baseSelectedIndexes,
+      selection.originSelectedIndexes,
     )
   }
-  const baseSelection = createSelectionState(
-    selection.baseSelectedIndexes,
+  const originSelection = createSelectionState(
+    selection.originSelectedIndexes,
     selection.source,
     selection.voiceScope,
-    selection.baseSelectedIndexes,
+    selection.originSelectedIndexes,
   )
   return createSelectionState(
     resolveScopedSelectionIndexes(index, {
-      ...baseSelection,
+      ...originSelection,
       voiceScope,
     }, {
       ...options,
@@ -171,7 +296,7 @@ export function resolveSelectionWithVoiceScope(
     }),
     selection.source,
     voiceScope,
-    selection.baseSelectedIndexes,
+    selection.originSelectedIndexes,
   )
 }
 
@@ -301,6 +426,197 @@ export function resolveSelectionByLineColumnRange(
   return resolveSelectionByTextRange(index, textRange.startpos, textRange.endpos, source, voiceScope)
 }
 
+export function resolveSelectionAfterActiveVoicesChange(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  activeVoiceIds: string[],
+): SelectionState {
+  if (selection.selectedIndexes.length === 0) return selection
+  if (selection.voiceScope !== 'extract-voices') return selection
+
+  return resolveSelectionWithVoiceScope(
+    index,
+    selection,
+    selection.voiceScope,
+    {
+      activeVoiceIds,
+    },
+  )
+}
+
+export function resolveSelectionAfterRenderRefresh(
+  previousIndex: SheetObjectIndex | undefined,
+  nextIndex: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  options?: SelectionProjectionOptions,
+): SelectionState {
+  if (nextIndex === undefined) {
+    return createClearedSelectionState(selection.source, selection.voiceScope)
+  }
+
+  const supportsTextRangeRebind = selection.source === 'abc-editor' || selection.source === 'score-preview'
+  if (!supportsTextRangeRebind) {
+    return createClearedSelectionState(selection.source, selection.voiceScope)
+  }
+
+  const originSelection: SelectionState = {
+    ...selection,
+    selectedIndexes: [...selection.originSelectedIndexes],
+  }
+  const previousTextRange = resolveSelectionEditorRange(previousIndex, originSelection)
+  if (previousTextRange === undefined) {
+    return createClearedSelectionState(selection.source, selection.voiceScope)
+  }
+
+  const reboundSelection = resolveSelectionByTextRange(
+    nextIndex,
+    previousTextRange.startpos,
+    previousTextRange.endpos,
+    selection.source,
+    selection.voiceScope,
+  )
+
+  if (selection.voiceScope === 'single-voice') {
+    return reboundSelection
+  }
+
+  return resolveSelectionWithVoiceScope(
+    nextIndex,
+    reboundSelection,
+    selection.voiceScope,
+    options,
+  )
+}
+
+export function dispatchSelectionEvent(
+  event: SelectionEvent,
+  context: {
+    selection: SelectionState
+    sheetObjectIndex?: SheetObjectIndex
+    activeVoiceIds?: string[]
+  },
+): SelectionState {
+  const projectInputSelectionToCurrentScope = (nextSelection: SelectionState): SelectionState => {
+    if (nextSelection.voiceScope === 'single-voice') {
+      return nextSelection
+    }
+    return resolveSelectionWithVoiceScope(
+      context.sheetObjectIndex,
+      nextSelection,
+      nextSelection.voiceScope,
+      {
+        activeVoiceIds: context.activeVoiceIds,
+      },
+    )
+  }
+
+  if (event.type === 'selection.replaced') {
+    return event.selection
+  }
+
+  if (event.type === 'selection.indexes-selected') {
+    return projectInputSelectionToCurrentScope(
+      resolveSelectionByIndexes(
+        event.selectedIndexes,
+        event.source ?? 'command',
+        context.selection.voiceScope,
+      ),
+    )
+  }
+
+  if (event.type === 'selection.text-range-selected') {
+    return projectInputSelectionToCurrentScope(
+      resolveSelectionByTextRange(
+        context.sheetObjectIndex,
+        event.startpos,
+        event.endpos,
+        event.source ?? 'abc-editor',
+        context.selection.voiceScope,
+      ),
+    )
+  }
+
+  if (event.type === 'selection.line-column-range-selected') {
+    return projectInputSelectionToCurrentScope(
+      resolveSelectionByLineColumnRange(
+        context.sheetObjectIndex,
+        event.start,
+        event.end,
+        event.source ?? 'abc-editor',
+        context.selection.voiceScope,
+      ),
+    )
+  }
+
+  if (event.type === 'selection.znid-selected') {
+    return projectInputSelectionToCurrentScope(
+      resolveSelectionByZnId(
+        context.sheetObjectIndex,
+        event.znId,
+        event.source ?? 'command',
+        context.selection.voiceScope,
+      ),
+    )
+  }
+
+  if (event.type === 'selection.music-range-selected') {
+    return projectInputSelectionToCurrentScope(
+      resolveSelectionByMusicRange(
+        context.sheetObjectIndex,
+        event.znIds,
+        event.source ?? 'command',
+        context.selection.voiceScope,
+      ),
+    )
+  }
+
+  if (event.type === 'selection.confkey-selected') {
+    return projectInputSelectionToCurrentScope(
+      resolveSelectionByConfKey(
+        context.sheetObjectIndex,
+        event.confKey,
+        event.source ?? 'command',
+        context.selection.voiceScope,
+      ),
+    )
+  }
+
+  if (event.type === 'selection.song-loaded') {
+    return createClearedSelectionState(
+      event.source ?? context.selection.source,
+      event.voiceScope ?? context.selection.voiceScope,
+    )
+  }
+
+  if (event.type === 'selection.scope-changed') {
+    return resolveSelectionWithVoiceScope(
+      context.sheetObjectIndex,
+      context.selection,
+      event.voiceScope,
+      {
+        activeVoiceIds: context.activeVoiceIds,
+      },
+    )
+  }
+
+  if (event.type === 'selection.extract-changed') {
+    return resolveSelectionAfterActiveVoicesChange(
+      context.sheetObjectIndex,
+      context.selection,
+      event.activeVoiceIds,
+    )
+  }
+
+  return resolveSelectionAfterRenderRefresh(
+    context.sheetObjectIndex,
+    event.nextIndex,
+    context.selection,
+    {
+      activeVoiceIds: context.activeVoiceIds,
+    },
+  )
+}
+
 export function resolveSelectionProjection(
   index: SheetObjectIndex | undefined,
   selection: SelectionState,
@@ -334,6 +650,14 @@ export function resolveSelectionScoreRanges(
   options?: SelectionProjectionOptions,
 ): SelectionTextRange[] {
   return resolveScoreSelectionRanges(index, selection, options)
+}
+
+export function resolveSelectionScoreEntries(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  options?: SelectionProjectionOptions,
+): SheetObjectIndexEntry[] {
+  return resolveScoreSelectionEntriesFromIndex(index, selection, options)
 }
 
 export function resolveSelectionZnIds(

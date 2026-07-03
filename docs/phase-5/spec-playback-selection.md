@@ -95,10 +95,12 @@ Extract-Stimmen umgehen.
 
 Das bedeutet:
 
-- die aktive Extract-Auswahl bleibt wirksam
-- nur die im aktuellen Extract aktiven Stimmen werden gespielt
+- bei Scope `extract-voices` bleibt die aktive Extract-Auswahl wirksam
+- bei Scope `all-voices` darf Playback nicht künstlich auf den Extract reduziert
+  werden
+- bei Scope `single-voice` gilt die Ursprungsauswahl der Selection
 - die Selection schränkt den Ablauf zusätzlich ein, ersetzt aber nicht die
-  Extract-Logik
+  Scope-Logik der zentralen Selection
 
 ### 5. Highlighting bleibt getrennt
 
@@ -119,6 +121,8 @@ Das bedeutet:
   Playback-Orchestrierung
 - Views liefern Selection-Ereignisse ein, entscheiden aber nicht selbst über den
   Playback-Scope
+- die Playback-Orchestrierung arbeitet auf der zentralen Selection inklusive
+  ihrer Scope-Semantik
 
 ### Trennung
 

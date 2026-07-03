@@ -12,6 +12,8 @@ import type {
   VoiceEntity,
 } from '@zupfnoter/types'
 
+import { isUserVisibleVoice, resolveUserVisibleVoiceId } from './songVoiceIdentity'
+
 type AddressablePane = 'editor' | 'score' | 'svg'
 type TextRangeMatchMode = 'overlap' | 'exact' | 'contained'
 
@@ -33,6 +35,7 @@ function cloneLineColumn(position: SelectionLineColumn): SelectionLineColumn {
 function cloneEntry(entry: SheetObjectIndexEntry): SheetObjectIndexEntry {
   return {
     kind: entry.kind,
+    scoreHitboxOrdinal: entry.scoreHitboxOrdinal,
     znId: entry.znId,
     voiceId: entry.voiceId,
     musicTime: entry.musicTime,
@@ -448,14 +451,19 @@ function createSheetEntryFromDrawable(drawable: DrawableElement): SheetObjectInd
 function parseScoreEntriesFromSvg(scoreSvg: string, lineStarts: number[]): SheetObjectIndexEntry[] {
   const entries: SheetObjectIndexEntry[] = []
   const pattern = /data-start-char="(\d+)"\s+data-end-char="(\d+)"/g
+  const ordinalsByTextRange = new Map<string, number>()
 
   for (const match of scoreSvg.matchAll(pattern)) {
     const startpos = Number(match[1])
     const endpos = Number(match[2])
     if (Number.isNaN(startpos) || Number.isNaN(endpos)) continue
     const textRange = normalizeTextRange(startpos, endpos)
+    const rangeKey = textRangeKey(textRange)
+    const nextOrdinal = ordinalsByTextRange.get(rangeKey) ?? 0
+    ordinalsByTextRange.set(rangeKey, nextOrdinal + 1)
     entries.push({
       kind: 'score-object',
+      scoreHitboxOrdinal: nextOrdinal,
       textRange,
       startPos: charOffsetToLineColumn(lineStarts, textRange.startpos),
       endPos: charOffsetToLineColumn(lineStarts, textRange.endpos),
@@ -480,8 +488,10 @@ export function buildSheetObjectIndex(
   const voiceByLine = createVoiceByLine(abcText)
   const entries: SheetObjectIndexEntry[] = [
     ...parseScoreEntriesFromSvg(scoreSvg, lineStarts),
-    ...song.voices.flatMap((voice, voiceIndex) => voice.entities
-      .map((entity) => createSongEntryFromVoiceEntity(entity, `${voiceIndex + 1}`))
+    ...song.voices
+      .filter(isUserVisibleVoice)
+      .flatMap((voice) => voice.entities
+      .map((entity) => createSongEntryFromVoiceEntity(entity, resolveUserVisibleVoiceId(voice) ?? ''))
       .filter((entry): entry is SheetObjectIndexEntry => entry !== undefined)),
     ...sheet.children.map(createSheetEntryFromDrawable).filter((entry): entry is SheetObjectIndexEntry => entry !== undefined),
   ]
@@ -670,6 +680,14 @@ export function resolveScoreSelectionRanges(
         return [textRangeKey(textRange), { ...textRange }]
       }),
   ).values()]
+}
+
+export function resolveScoreSelectionEntries(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  options?: SelectionProjectionOptions,
+): SheetObjectIndexEntry[] {
+  return resolveScopedPaneEntries(index, selection, 'score', options).entries
 }
 
 export function resolveSvgSelection(

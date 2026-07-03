@@ -156,7 +156,7 @@ describe('resolvePlaybackSteps', () => {
           }],
         },
         {
-          index: 1,
+          index: 2,
           showVoice: true,
           showFlowline: true,
           showJumpline: true,
@@ -204,7 +204,7 @@ describe('resolvePlaybackSteps', () => {
   it('keeps only matching occurrences for range playback inside repeated material', () => {
     const selection: SelectionState = {
       selectedIndexes: [0, 1, 2, 3],
-      baseSelectedIndexes: [0, 1, 2, 3],
+      originSelectedIndexes: [0, 1, 2, 3],
       source: 'harp-preview',
       voiceScope: 'single-voice',
     }
@@ -265,7 +265,7 @@ describe('resolvePlaybackSteps', () => {
     }
     const selection: SelectionState = {
       selectedIndexes: [0],
-      baseSelectedIndexes: [0],
+      originSelectedIndexes: [0],
       source: 'abc-editor',
       voiceScope: 'single-voice',
     }
@@ -313,7 +313,7 @@ describe('resolvePlaybackSteps', () => {
     }
     const extractScopedSelection: SelectionState = {
       selectedIndexes: [0, 1],
-      baseSelectedIndexes: [0, 1],
+      originSelectedIndexes: [0, 1],
       source: 'abc-editor',
       voiceScope: 'extract-voices',
     }
@@ -353,7 +353,7 @@ describe('resolvePlaybackSteps', () => {
   it('keeps all song voices when nothing is selected and the scope is all voices', () => {
     const selection: SelectionState = {
       selectedIndexes: [],
-      baseSelectedIndexes: [],
+      originSelectedIndexes: [],
       source: 'command',
       voiceScope: 'all-voices',
     }
@@ -389,7 +389,7 @@ describe('resolvePlaybackSteps', () => {
   it('limits no-selection playback to the active extract voices when the scope is extract', () => {
     const selection: SelectionState = {
       selectedIndexes: [],
-      baseSelectedIndexes: [],
+      originSelectedIndexes: [],
       source: 'command',
       voiceScope: 'extract-voices',
     }

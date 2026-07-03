@@ -15,6 +15,7 @@ import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, type PlaybackStep } from '../playback'
+import { resolveActiveVoiceIdsFromSheet, resolveUserVisibleVoiceIds } from '../songVoiceIdentity'
 import {
   parserErrorToWorkbenchDiagnostic,
   songDiagnosticToWorkbenchDiagnostic,
@@ -97,12 +98,12 @@ export function renderWorkbenchPreviews(
     const parsedModel = modelParser.parse(abcText)
     const transformedSong = new AbcToSong().transform(parsedModel, config)
     song = transformedSong
-    allVoiceIds = transformedSong.voices.map((_voice, index) => `${index + 1}`)
+    allVoiceIds = resolveUserVisibleVoiceIds(transformedSong)
     const layoutOptions: ConstructorParameters<typeof HarpnotesLayout>[1] = {
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
     }
     const sheet = new HarpnotesLayout(config, layoutOptions).layout(transformedSong, extractNr, 'A3')
-    activeVoiceIds = sheet.activeVoices.map((voiceNr) => `${voiceNr}`)
+    activeVoiceIds = resolveActiveVoiceIdsFromSheet(sheet)
     sheetObjectIndex = buildSheetObjectIndex(transformedSong, sheet as Sheet, abcText, scoreSvg)
     sheetChildCount = sheet.children.length
     harpSvg = scaleSvgForPreview(new SvgEngine().draw(sheet))
@@ -131,9 +132,9 @@ export function renderWorkbenchPreviews(
   const renderError = scoreError ?? modelError
   const summary = song === null
     ? 'render failed'
-    : `${song.voices.length} voice(s), ${song.voices.map((voice: Voice, index: number) => {
+    : `${allVoiceIds.length} voice(s), ${song.voices.filter((voice) => voice.index > 0).map((voice: Voice) => {
       const noteCount = voice.entities.filter((entity: VoiceEntity) => entity.type === 'Note').length
-      return `V${index + 1}: ${noteCount} notes`
+      return `V${voice.index}: ${noteCount} notes`
     }).join(', ')}, ${sheetChildCount} drawables`
 
   return {

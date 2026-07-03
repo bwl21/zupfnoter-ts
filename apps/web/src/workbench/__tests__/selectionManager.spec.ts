@@ -96,7 +96,7 @@ describe('selectionManager', () => {
   it('filters projections by target capabilities', () => {
     const selection: SelectionState = {
       selectedIndexes: [1],
-      baseSelectedIndexes: [1],
+      originSelectedIndexes: [1],
       source: 'abc-editor',
       voiceScope: 'single-voice',
     }
@@ -121,7 +121,7 @@ describe('selectionManager', () => {
   it('keeps editor-driven harp projections on a single voice by default', () => {
     const selection: SelectionState = {
       selectedIndexes: [3],
-      baseSelectedIndexes: [3],
+      originSelectedIndexes: [3],
       source: 'abc-editor',
       voiceScope: 'single-voice',
     }
@@ -138,7 +138,7 @@ describe('selectionManager', () => {
   it('can explicitly project editor-driven selections across all matching voices', () => {
     const selection: SelectionState = {
       selectedIndexes: [3],
-      baseSelectedIndexes: [3],
+      originSelectedIndexes: [3],
       source: 'abc-editor',
       voiceScope: 'all-voices',
     }
@@ -159,7 +159,7 @@ describe('selectionManager', () => {
   it('can explicitly project editor-driven score selections across all matching voices', () => {
     const selection: SelectionState = {
       selectedIndexes: [3],
-      baseSelectedIndexes: [3],
+      originSelectedIndexes: [3],
       source: 'abc-editor',
       voiceScope: 'all-voices',
     }
@@ -177,7 +177,7 @@ describe('selectionManager', () => {
   it('can project editor-driven selections only across active extract voices', () => {
     const selection: SelectionState = {
       selectedIndexes: [3],
-      baseSelectedIndexes: [3],
+      originSelectedIndexes: [3],
       source: 'abc-editor',
       voiceScope: 'extract-voices',
     }
@@ -256,7 +256,7 @@ describe('selectionManager', () => {
     }
     const selection: SelectionState = {
       selectedIndexes: [1],
-      baseSelectedIndexes: [1],
+      originSelectedIndexes: [1],
       source: 'score-preview',
       voiceScope: 'extract-voices',
     }

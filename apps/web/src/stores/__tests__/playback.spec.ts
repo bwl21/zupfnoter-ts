@@ -37,14 +37,25 @@ describe('playback store', () => {
 
     const selectionStore = useSelectionStore()
     const playbackStore = usePlaybackStore()
-    selectionStore.setSheetObjectIndex(sheetObjectIndex)
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.render-refreshed',
+      nextIndex: sheetObjectIndex,
+    })
 
     expect(playbackStore.mode).toBe('all-score')
 
-    selectionStore.selectZnId('note-1', 'harp-preview')
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.znid-selected',
+      znId: 'note-1',
+      source: 'harp-preview',
+    })
     expect(playbackStore.mode).toBe('range-harp')
 
-    selectionStore.selectMusicRange(['note-1', 'note-2'], 'harp-preview')
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.music-range-selected',
+      znIds: ['note-1', 'note-2'],
+      source: 'harp-preview',
+    })
     expect(playbackStore.mode).toBe('range-harp')
   })
 
@@ -53,7 +64,9 @@ describe('playback store', () => {
 
     const selectionStore = useSelectionStore()
     const playbackStore = usePlaybackStore()
-    selectionStore.setSheetObjectIndex({
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.render-refreshed',
+      nextIndex: {
       ...sheetObjectIndex,
       byTextRange: {
         '4:6': [0],
@@ -72,9 +85,15 @@ describe('playback store', () => {
           addressableIn: { editor: true, score: true, svg: true },
         },
       ],
+      },
     })
 
-    selectionStore.selectTextRange(4, 6, 'abc-editor')
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 4,
+      endpos: 6,
+      source: 'abc-editor',
+    })
 
     expect(playbackStore.mode).toBe('range-harp')
   })

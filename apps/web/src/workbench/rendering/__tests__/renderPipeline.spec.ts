@@ -63,6 +63,45 @@ describe('renderWorkbenchPreviews', () => {
     expect(result.scoreSvg).toContain('class="zn-score-annotation zn-score-hitbox"')
   })
 
+  it('keeps user-visible voice ids stable when the song contains the legacy duplicate voice 0', () => {
+    const result = renderWorkbenchPreviews(`X:1
+T:Voice Ids
+%%score 1 2 3 4
+L:1/4
+M:4/4
+K:C
+V:1 treble
+V:2 treble
+V:3 bass
+V:4 bass
+V:1
+C
+V:2
+D
+V:3
+E
+V:4
+F
+
+%%%%zupfnoter.config
+{
+  "extract": {
+    "2": {
+      "voices": [1, 3, 4]
+    }
+  }
+}`, 2)
+
+    expect(result.activeVoiceIds).toEqual(['1', '3', '4'])
+    expect(result.allVoiceIds).toEqual(['1', '2', '3', '4'])
+    expect(new Set(
+      result.sheetObjectIndex?.entries
+        .filter((entry) => entry.kind === 'music-entity')
+        .map((entry) => entry.voiceId),
+    )).toEqual(new Set(['1', '2', '3', '4']))
+    expect(result.playbackTimeline[0]?.originVoiceIds).toEqual(['1', '2', '3', '4'])
+  })
+
   it('builds an expanded playback timeline for repeat endings', () => {
     const result = renderWorkbenchPreviews('X:1\nT:Demo\nM:4/4\nL:1/4\nK:C\n|: C D | [1 E :| [2 F |]')
 

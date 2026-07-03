@@ -13,6 +13,7 @@ import type {
 } from '@zupfnoter/types'
 import { expandPlaybackFlow } from '@zupfnoter/core'
 import { textRangeKey, buildPlaybackIdentity, projectIndexesToEntries, resolveSelectedPlaybackIds } from './selectionIndex'
+import { isUserVisibleVoice, resolveUserVisibleVoiceId } from './songVoiceIdentity'
 
 export interface PlaybackNote {
   originVoiceId: string
@@ -149,7 +150,7 @@ function appendPlaybackNote(
     pitch,
     durationMs,
     attack: true,
-    pan: voiceIndex < 2 ? 'left' : 'right',
+    pan: Number(originVoiceId) <= 2 ? 'left' : 'right',
   }
   notes.push(nextNote)
 
@@ -164,10 +165,10 @@ function collectActiveNotes(
   entity: PlayableEntity,
   song: Song,
   voiceIndex: number,
+  originVoiceId: string,
   pendingTies: Map<string, TiedPlaybackNote>,
 ): PlaybackNote[] {
   const notes: PlaybackNote[] = []
-  const originVoiceId = `${voiceIndex + 1}`
   const originPlaybackId = buildPlaybackIdentity(originVoiceId, entity.znId)
 
   switch (entity.type) {
@@ -221,10 +222,12 @@ function collectPlaybackStepGroups(song: Song, activeVoices?: number[]): Map<num
   const grouped = new Map<number, PlaybackStepGroup>()
   const allowedVoiceIndexes = activeVoices === undefined
     ? undefined
-    : new Set(activeVoices.map((voiceNr) => voiceNr - 1).filter((voiceIndex) => voiceIndex >= 0))
+    : new Set(activeVoices)
 
   for (const [voiceIndex, voice] of song.voices.entries()) {
-    if (allowedVoiceIndexes !== undefined && !allowedVoiceIndexes.has(voiceIndex)) continue
+    const originVoiceId = resolveUserVisibleVoiceId(voice)
+    if (!isUserVisibleVoice(voice) || originVoiceId === undefined) continue
+    if (allowedVoiceIndexes !== undefined && !allowedVoiceIndexes.has(voice.index)) continue
     const pendingTies = new Map<string, TiedPlaybackNote>()
     for (const entity of voice.entities) {
       if (!isPlayableEntity(entity)) continue
@@ -234,8 +237,7 @@ function collectPlaybackStepGroups(song: Song, activeVoices?: number[]): Map<num
       const textRange = entity.sourceOffsets
         ? { startpos: entity.sourceOffsets[0], endpos: entity.sourceOffsets[1] }
         : undefined
-      const notes = collectActiveNotes(entity, song, voiceIndex, pendingTies)
-      const originVoiceId = `${voiceIndex + 1}`
+      const notes = collectActiveNotes(entity, song, voiceIndex, originVoiceId, pendingTies)
       const originPlaybackId = buildPlaybackIdentity(originVoiceId, entity.znId)
       if (existing === undefined) {
         grouped.set(entity.time, {

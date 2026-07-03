@@ -38,6 +38,11 @@ import { CommandError, CommandStack, registerLegacyCommands, registerStorageComm
 import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
 import {
   canTargetCreateSelection,
+  createExtractChangedSelectionEvent,
+  createRenderRefreshedSelectionEvent,
+  createScopeChangedSelectionEvent,
+  createSongLoadedSelectionEvent,
+  createTextRangeSelectionEvent,
   resolvePlaybackProjection,
   resolvePlaybackScoreRanges,
   resolveSelectionEditorRange,
@@ -374,9 +379,9 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   scoreSvg.value = result.scoreSvg
   harpSvg.value = result.harpSvg
   activeVoiceIds.value = result.activeVoiceIds
-  selectionStore.setActiveVoiceIds(result.activeVoiceIds)
+  selectionStore.dispatchSelectionEvent(createExtractChangedSelectionEvent(result.activeVoiceIds))
   allVoiceIds.value = result.allVoiceIds
-  selectionStore.setSheetObjectIndex(result.sheetObjectIndex)
+  selectionStore.dispatchSelectionEvent(createRenderRefreshedSelectionEvent(result.sheetObjectIndex))
   renderIssues.value = result.issues
   workbenchDiagnostics.value = result.diagnostics
   editorDiagnostics.value = result.editorDiagnostics
@@ -458,7 +463,7 @@ function buildHarpMirrorSnapshot(): HarpMirrorSnapshot {
     },
     selectionState: {
       selectedIndexes: [...selectionStore.selection.selectedIndexes],
-      baseSelectedIndexes: [...selectionStore.selection.baseSelectedIndexes],
+      originSelectedIndexes: [...selectionStore.selection.originSelectedIndexes],
       anchorIndex: selectionStore.selection.anchorIndex,
       source: selectionStore.selection.source,
       voiceScope: selectionStore.selection.voiceScope,
@@ -734,15 +739,19 @@ function handleEditorSelectionChange(payload: {
   end: { line: number; column: number }
 }): void {
   if (payload.startpos === payload.endpos) {
-    selectionStore.clearSelection('abc-editor')
+    selectionStore.dispatchSelectionEvent(
+      createSongLoadedSelectionEvent('abc-editor', selectionStore.selection.voiceScope),
+    )
     return
   }
 
-  selectionStore.selectTextRange(payload.startpos, payload.endpos, 'abc-editor')
+  selectionStore.dispatchSelectionEvent(
+    createTextRangeSelectionEvent(payload.startpos, payload.endpos, 'abc-editor'),
+  )
 }
 
 function handleSelectionVoiceScopeChange(voiceScope: 'single-voice' | 'extract-voices' | 'all-voices'): void {
-  selectionStore.setVoiceScope(voiceScope)
+  selectionStore.dispatchSelectionEvent(createScopeChangedSelectionEvent(voiceScope))
 }
 
 watch(abcText, () => {
@@ -762,7 +771,9 @@ function handleHarpPreviewSelection(payload: {
   source: 'harp-preview'
 }): void {
   if (!canTargetCreateSelection(payload.source, 'textRange')) return
-  selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
+  selectionStore.dispatchSelectionEvent(
+    createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source),
+  )
 }
 
 function handleHarpPreviewScroll(payload: { scrollLeft: number; scrollTop: number }): void {
@@ -779,11 +790,15 @@ function handleScorePreviewSelection(payload: {
 }): void {
   if (!canTargetCreateSelection(payload.source, 'textRange')) return
   if (payload.extend) {
-    selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
+    selectionStore.dispatchSelectionEvent(
+      createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source),
+    )
     return
   }
 
-  selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
+  selectionStore.dispatchSelectionEvent(
+    createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source),
+  )
 }
 
 function handleGlobalKeydown(event: KeyboardEvent): void {
