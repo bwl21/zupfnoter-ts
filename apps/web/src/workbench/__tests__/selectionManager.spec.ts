@@ -7,6 +7,7 @@ import {
   getSelectionTargetCapabilities,
   registerSelectionTargetCapabilities,
   resolvePlaybackProjection,
+  resolveSelectionEditorRange,
   resolvePlaybackScoreRanges,
   resolveSelectionProjection,
 } from '../selectionManager'
@@ -192,6 +193,20 @@ describe('selectionManager', () => {
       confKeys: [
         'extract.0.notebound.nconf.v_2.t_384.n_0.***',
       ],
+    })
+  })
+
+  it('keeps the editor selection on the origin voice when the scope expands to extract voices', () => {
+    const selection: SelectionState = {
+      selectedIndexes: [3, 4],
+      originSelectedIndexes: [3],
+      source: 'abc-editor',
+      voiceScope: 'extract-voices',
+    }
+
+    expect(resolveSelectionEditorRange(sheetObjectIndex, selection)).toEqual({
+      startpos: 10,
+      endpos: 12,
     })
   })
 

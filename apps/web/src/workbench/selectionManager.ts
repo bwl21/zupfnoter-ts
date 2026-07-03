@@ -792,7 +792,13 @@ export function resolveSelectionEditorRange(
   index: SheetObjectIndex | undefined,
   selection: SelectionState,
 ): SelectionTextRange | undefined {
-  return resolveEditorSelectionRange(index, selection)
+  const editorSelection: SelectionState = {
+    ...selection,
+    selectedIndexes: selection.originSelectedIndexes.length > 0
+      ? [...selection.originSelectedIndexes]
+      : [...selection.selectedIndexes],
+  }
+  return resolveEditorSelectionRange(index, editorSelection)
 }
 
 export function resolveSelectionScoreRanges(

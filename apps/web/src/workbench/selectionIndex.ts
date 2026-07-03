@@ -889,6 +889,7 @@ export function resolveSelectedPlaybackIds(
   selection: SelectionState,
 ): string[] {
   const { entries, selectedVoiceId, allowedVoiceIds } = resolveScopedPaneEntries(index, selection, 'svg')
+  const shouldRestrictToSelectedVoice = selection.voiceScope === 'single-voice' && selectedVoiceId !== undefined
   return [...new Set(
     entries
       .filter((entry) => entry.znId !== undefined)
@@ -897,7 +898,7 @@ export function resolveSelectedPlaybackIds(
         if (allowedVoiceIds !== undefined && allowedVoiceIds.size > 0) {
           return voiceId === undefined || allowedVoiceIds.has(voiceId)
         }
-        if (selectedVoiceId !== undefined) {
+        if (shouldRestrictToSelectedVoice) {
           return voiceId === undefined || voiceId === selectedVoiceId
         }
         return true
