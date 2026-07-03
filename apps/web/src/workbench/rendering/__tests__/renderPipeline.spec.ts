@@ -63,13 +63,52 @@ describe('renderWorkbenchPreviews', () => {
     expect(result.scoreSvg).toContain('class="zn-score-annotation zn-score-hitbox"')
   })
 
+  it('keeps user-visible voice ids stable when the song contains the legacy duplicate voice 0', () => {
+    const result = renderWorkbenchPreviews(`X:1
+T:Voice Ids
+%%score 1 2 3 4
+L:1/4
+M:4/4
+K:C
+V:1 treble
+V:2 treble
+V:3 bass
+V:4 bass
+V:1
+C
+V:2
+D
+V:3
+E
+V:4
+F
+
+%%%%zupfnoter.config
+{
+  "extract": {
+    "2": {
+      "voices": [1, 3, 4]
+    }
+  }
+}`, 2)
+
+    expect(result.activeVoiceIds).toEqual(['1', '3', '4'])
+    expect(result.allVoiceIds).toEqual(['1', '2', '3', '4'])
+    expect(new Set(
+      result.sheetObjectIndex?.entries
+        .filter((entry) => entry.kind === 'music-entity')
+        .map((entry) => entry.voiceId),
+    )).toEqual(new Set(['1', '2', '3', '4']))
+    expect(result.playbackTimeline[0]?.originVoiceIds).toEqual(['1', '2', '3', '4'])
+  })
+
   it('builds an expanded playback timeline for repeat endings', () => {
     const result = renderWorkbenchPreviews('X:1\nT:Demo\nM:4/4\nL:1/4\nK:C\n|: C D | [1 E :| [2 F |]')
 
-    expect(result.playbackTimeline).toHaveLength(7)
-    expect(result.playbackTimeline.map((step) => step.passIndex)).toEqual([1, 1, 1, 2, 2, 2, 3])
-    expect(result.playbackTimeline.map((step) => step.voltaNumber ?? 0)).toEqual([0, 0, 1, 0, 0, 2, 2])
-    expect(result.playbackTimeline.map((step) => step.playbackStartMs)).toEqual([0, 500, 1000, 1500, 2000, 2500, 3000])
+    expect(result.playbackTimeline).toHaveLength(6)
+    expect(result.playbackTimeline.map((step) => step.passIndex)).toEqual([1, 1, 1, 2, 2, 2])
+    expect(result.playbackTimeline.map((step) => step.voltaNumber ?? 0)).toEqual([0, 0, 1, 0, 0, 2])
+    expect(result.playbackTimeline.map((step) => step.playbackStartMs)).toEqual([0, 500, 1000, 1500, 2000, 2500])
     expect(result.playbackTimeline[4]?.durationMs).toBe(result.playbackTimeline[1]?.durationMs)
     expect(result.playbackTimeline[4]?.durationMs).toBe(result.playbackTimeline[5]?.durationMs)
   })
@@ -86,5 +125,91 @@ describe('renderWorkbenchPreviews', () => {
     expect(secondVoltaSteps[0]?.playbackStartMs).toBe(
       (finalSharedStep?.playbackStartMs ?? 0) + (finalSharedStep?.durationMs ?? 0),
     )
+  })
+
+  it('merges tied note durations into a single playback attack', () => {
+    const result = renderWorkbenchPreviews('X:1\nT:Tie\nL:1/4\nK:C\nV:1\nC-C D')
+
+    expect(result.playbackTimeline).toHaveLength(3)
+    expect(result.playbackTimeline[0]?.activeNotes).toContainEqual(expect.objectContaining({
+      originVoiceId: '1',
+      pitch: 60,
+      durationMs: 1000,
+      attack: true,
+      pan: 'left',
+    }))
+    expect(result.playbackTimeline[1]?.activeNotes).toEqual([])
+    expect(result.playbackTimeline[2]?.activeNotes).toContainEqual(expect.objectContaining({
+      originVoiceId: '1',
+      pitch: 62,
+      durationMs: 500,
+      attack: true,
+      pan: 'left',
+    }))
+  })
+
+  it('keeps all song voices in the playback timeline even when an extract narrows the rendered sheet', () => {
+    const result = renderWorkbenchPreviews(`X:1
+T:Extract Playback
+L:1/4
+M:4/4
+K:C
+V:1
+C D
+V:2
+G, A,
+
+%%%%zupfnoter.config
+{
+  "extract": {
+    "1": {
+      "voices": [1]
+    }
+    }
+}
+`, 1)
+
+    expect(result.activeVoiceIds).toEqual(['1'])
+    expect(result.playbackTimeline).toHaveLength(2)
+    expect(result.playbackTimeline[0]?.originVoiceIds).toContain('1')
+    expect(result.playbackTimeline[0]?.originVoiceIds).toContain('2')
+    expect(result.playbackTimeline[0]?.activeNotes.length ?? 0).toBeGreaterThanOrEqual(2)
+    expect(result.playbackTimeline[1]?.originVoiceIds).toContain('1')
+    expect(result.playbackTimeline[1]?.originVoiceIds).toContain('2')
+    expect(result.playbackTimeline[1]?.activeNotes.length ?? 0).toBeGreaterThanOrEqual(2)
+  })
+
+  it('keeps higher song voice numbers in the playback timeline even when the extract targets one voice', () => {
+    const result = renderWorkbenchPreviews(`X:1
+T:Fourth Voice Playback
+L:1/4
+M:4/4
+K:C
+V:1
+C
+V:2
+D
+V:3
+E
+V:4
+F
+
+%%%%zupfnoter.config
+{
+  "extract": {
+    "1": {
+      "voices": [4]
+    }
+  }
+}
+`, 1)
+
+    expect(result.activeVoiceIds).toEqual(['4'])
+    expect(result.allVoiceIds).toContain('4')
+    expect(result.allVoiceIds.length).toBeGreaterThan(1)
+    expect(result.playbackTimeline).toHaveLength(1)
+    expect(result.playbackTimeline[0]?.originVoiceIds).toContain('4')
+    expect(result.playbackTimeline[0]?.originVoiceIds.length).toBeGreaterThan(1)
+    expect(result.playbackTimeline[0]?.activeNotes.length ?? 0).toBeGreaterThanOrEqual(4)
   })
 })

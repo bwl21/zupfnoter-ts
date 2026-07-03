@@ -1,214 +1,324 @@
 import type {
-  PlaybackFlowStep,
-  SelectionTextRange,
-  PlayableEntity,
-  Song,
-  Voice,
-  VoiceEntity,
   Goto,
+  PlaybackFlowStep,
+  PlayableEntity,
+  SelectionTextRange,
+  Song,
+  VoiceEntity,
 } from '@zupfnoter/types'
 
-interface PlaybackNote {
-  pitch: number
-  durationMs: number
-  attack: boolean
-}
-
-interface ExpandedVoiceEvent {
-  voiceIndex: number
-  entityIndex: number
-  playbackTimeMs: number
-  durationMs: number
-  passIndex: number
+interface PlayableGroup {
   sourceTime: number
   originZnIds: string[]
   activeTextRanges: SelectionTextRange[]
-  activeNotes: PlaybackNote[]
   activeStartChar?: number
   voltaNumber?: number
-}
-
-interface TraversalState {
-  entityIndex: number
-  passIndex: number
-  currentPlaybackTimeMs: number
 }
 
 function isPlayableEntity(entity: VoiceEntity): entity is PlayableEntity {
   return entity.type === 'Note' || entity.type === 'Pause' || entity.type === 'SynchPoint'
 }
 
-function resolveTempoBpm(song: Song): number {
-  const tempo = song.metaData.tempo
-  if (typeof tempo === 'number') return tempo
-  if (tempo !== undefined && typeof tempo.bpm === 'number') return tempo.bpm
-  return 120
+function isGotoEntity(entity: VoiceEntity): entity is Goto {
+  return entity.type === 'Goto'
 }
 
-function resolveTempoUnit(song: Song): number {
-  const tempo = song.metaData.tempo
-  if (tempo !== undefined && typeof tempo !== 'number' && tempo.duration.length > 0) {
-    const firstDuration = tempo.duration[0]
-    if (typeof firstDuration === 'number' && firstDuration > 0) {
-      return firstDuration
+function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
+  const groups = new Map<number, PlayableGroup>()
+
+  for (const voice of song.voices) {
+    for (const entity of voice.entities) {
+      if (!isPlayableEntity(entity)) continue
+
+      const existing = groups.get(entity.time)
+      const textRange = entity.sourceOffsets === undefined
+        ? undefined
+        : { startpos: entity.sourceOffsets[0], endpos: entity.sourceOffsets[1] }
+
+      if (existing === undefined) {
+        groups.set(entity.time, {
+          sourceTime: entity.time,
+          originZnIds: [entity.znId],
+          activeTextRanges: textRange === undefined ? [] : [textRange],
+          activeStartChar: entity.sourceOffsets?.[0],
+          voltaNumber: entity.variant > 0 ? entity.variant : undefined,
+        })
+        continue
+      }
+
+      existing.originZnIds.push(entity.znId)
+      if (textRange !== undefined) {
+        existing.activeTextRanges.push(textRange)
+      }
+      existing.activeStartChar = existing.activeStartChar === undefined
+        ? entity.sourceOffsets?.[0]
+        : entity.sourceOffsets === undefined
+          ? existing.activeStartChar
+          : Math.min(existing.activeStartChar, entity.sourceOffsets[0])
+      if (entity.variant > 0) {
+        existing.voltaNumber = existing.voltaNumber === undefined
+          ? entity.variant
+          : Math.max(existing.voltaNumber, entity.variant) as 1 | 2
+      }
     }
   }
-  return 0.25
-}
 
-function computeStepDurationMs(song: Song, duration: number): number {
-  const bpm = resolveTempoBpm(song)
-  const unit = resolveTempoUnit(song)
-  const shortestNote = 64
-  const wholeNoteFraction = duration / shortestNote
-  return Math.max(120, (wholeNoteFraction / unit) * (60000 / bpm))
-}
-
-function collectActiveNotes(entity: PlayableEntity, song: Song): PlaybackNote[] {
-  switch (entity.type) {
-    case 'Pause':
-      return []
-    case 'Note':
-      return [{
-        pitch: entity.pitch,
-        durationMs: computeStepDurationMs(song, entity.duration),
-        attack: !entity.tieEnd || entity.tieStart,
-      }]
-    case 'SynchPoint':
-      return entity.notes.map((note) => ({
-        pitch: note.pitch,
-        durationMs: computeStepDurationMs(song, note.duration),
-        attack: !note.tieEnd || note.tieStart,
-      }))
-  }
-}
-
-function uniqueTextRanges(ranges: SelectionTextRange[]): SelectionTextRange[] {
-  const seen = new Map<string, SelectionTextRange>()
-  for (const range of ranges) {
-    const key = `${range.startpos}:${range.endpos}`
-    if (!seen.has(key)) seen.set(key, range)
-  }
-  return [...seen.values()]
-}
-
-function createTextRange(entity: PlayableEntity): SelectionTextRange | undefined {
-  const offsets = entity.sourceOffsets
-  if (offsets === undefined) return undefined
-  return { startpos: offsets[0], endpos: offsets[1] }
-}
-
-function expandVoice(song: Song, voice: Voice): ExpandedVoiceEvent[] {
-  const entityIndexByObject = new Map<VoiceEntity, number>()
-  voice.entities.forEach((entity, index) => {
-    entityIndexByObject.set(entity, index)
-  })
-
-  const emittedRepeatCounts = new Map<number, number>()
-  const events: ExpandedVoiceEvent[] = []
-  const state: TraversalState = {
-    entityIndex: 0,
-    passIndex: 1,
-    currentPlaybackTimeMs: 0,
+  for (const group of groups.values()) {
+    group.originZnIds = [...new Set(group.originZnIds)]
+    group.activeTextRanges = [...new Map(
+      group.activeTextRanges.map((range) => [`${range.startpos}:${range.endpos}`, range]),
+    ).values()]
   }
 
-  while (state.entityIndex < voice.entities.length) {
-    const entity = voice.entities[state.entityIndex]
-    if (entity === undefined) break
+  return groups
+}
 
-    if (entity.type === 'Goto' && entity.policy.isRepeat === true) {
-      const goto = entity as Goto
-      const fromIndex = entityIndexByObject.get(goto.from as VoiceEntity)
-      const toIndex = entityIndexByObject.get(goto.to as VoiceEntity)
-      if (fromIndex !== undefined && toIndex !== undefined) {
-        const seen = emittedRepeatCounts.get(fromIndex) ?? 0
-        if (seen < 1) {
-          emittedRepeatCounts.set(fromIndex, seen + 1)
-          state.passIndex += 1
-          state.entityIndex = toIndex
+function resolveGotoConfKey(goto: Goto): string | undefined {
+  return goto.confKey ?? goto.policy.confKey
+}
+
+function isRepeatGoto(goto: Goto): boolean {
+  const confKey = resolveGotoConfKey(goto)
+  return goto.policy.isRepeat === true
+    && goto.from.time > goto.to.time
+    && confKey?.endsWith('.p_repeat') === true
+}
+
+function isVariantBeginGoto(goto: Goto): boolean {
+  const confKey = resolveGotoConfKey(goto)
+  return goto.policy.isRepeat === true
+    && goto.to.time > goto.from.time
+    && confKey?.endsWith('.p_begin') === true
+}
+
+function isVariantFollowGoto(goto: Goto): boolean {
+  const confKey = resolveGotoConfKey(goto)
+  return goto.policy.isRepeat === true
+    && goto.to.time > goto.from.time
+    && (confKey?.endsWith('.p_follow') === true || confKey?.endsWith('.p_end') === true)
+}
+
+function parseVariantBeginOrder(goto: Goto): number {
+  const confKey = resolveGotoConfKey(goto)
+  const match = confKey?.match(/\.([0-9]+)\.p_begin$/)
+  const order = match?.[1]
+  if (order === undefined) return 0
+  const parsed = Number.parseInt(order, 10)
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
+interface RepeatDecision {
+  key: string
+  fromTime: number
+  toTime: number
+  level: number
+}
+
+interface VariantBeginDecision {
+  fromTime: number
+  toTime: number
+  order: number
+}
+
+function collectRepeatDecisions(song: Song): Map<number, RepeatDecision> {
+  const grouped = new Map<string, RepeatDecision>()
+
+  for (const voice of song.voices) {
+    for (const entity of voice.entities) {
+      if (!isGotoEntity(entity) || !isRepeatGoto(entity)) continue
+
+      const level = entity.policy.level ?? 0
+      const groupKey = `${entity.to.time}:${level}`
+      const existing = grouped.get(groupKey)
+      if (existing !== undefined && existing.fromTime >= entity.from.time) continue
+
+      grouped.set(groupKey, {
+        key: `${entity.from.time}:${entity.to.time}:${level}`,
+        fromTime: entity.from.time,
+        toTime: entity.to.time,
+        level,
+      })
+    }
+  }
+
+  const decisions = new Map<number, RepeatDecision>()
+  for (const decision of grouped.values()) {
+    decisions.set(decision.fromTime, decision)
+  }
+
+  return decisions
+}
+
+function collectVariantBeginDecisions(song: Song): Map<number, VariantBeginDecision[]> {
+  const grouped = new Map<string, VariantBeginDecision>()
+
+  for (const voice of song.voices) {
+    for (const entity of voice.entities) {
+      if (!isGotoEntity(entity) || !isVariantBeginGoto(entity)) continue
+
+      const order = parseVariantBeginOrder(entity)
+      const groupKey = `${order}:${entity.to.time}`
+      const existing = grouped.get(groupKey)
+      if (existing !== undefined && existing.fromTime >= entity.from.time) continue
+      grouped.set(groupKey, {
+        fromTime: entity.from.time,
+        toTime: entity.to.time,
+        order,
+      })
+    }
+  }
+
+  const decisions = new Map<number, VariantBeginDecision[]>()
+  for (const decision of grouped.values()) {
+    const existing = decisions.get(decision.fromTime) ?? []
+    if (!decisions.has(decision.fromTime)) {
+      decisions.set(decision.fromTime, existing)
+    }
+    existing.push(decision)
+  }
+
+  for (const decisionList of decisions.values()) {
+    decisionList.sort((left, right) => left.order - right.order || left.toTime - right.toTime)
+  }
+
+  return decisions
+}
+
+function collectVariantFollowDecisions(song: Song): Map<number, number> {
+  const grouped = new Map<string, { fromTime: number; toTime: number }>()
+
+  for (const voice of song.voices) {
+    for (const entity of voice.entities) {
+      if (!isGotoEntity(entity) || !isVariantFollowGoto(entity)) continue
+
+      const groupKey = `${entity.to.time}`
+      const existing = grouped.get(groupKey)
+      if (existing !== undefined && existing.fromTime >= entity.from.time) continue
+      grouped.set(groupKey, { fromTime: entity.from.time, toTime: entity.to.time })
+    }
+  }
+
+  const decisions = new Map<number, number>()
+  for (const decision of grouped.values()) {
+    const existing = decisions.get(decision.fromTime)
+    if (existing === undefined || decision.toTime < existing) {
+      decisions.set(decision.fromTime, decision.toTime)
+    }
+  }
+
+  return decisions
+}
+
+/**
+ * Expand the notated song into a playback flow that follows repeats and voltas.
+ */
+export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
+  const groups = collectPlayableGroups(song)
+  const times = [...groups.keys()].sort((left, right) => left - right)
+  if (times.length === 0) return []
+
+  const repeatDecisions = collectRepeatDecisions(song)
+  const repeatDecisionByKey = new Map(
+    [...repeatDecisions.values()].map((decision) => [decision.key, decision]),
+  )
+  const variantBeginDecisions = collectVariantBeginDecisions(song)
+  const variantFollowDecisions = collectVariantFollowDecisions(song)
+  const timeIndexByTime = new Map(times.map((time, index) => [time, index]))
+  const flow: PlaybackFlowStep[] = []
+  const repeatUsageByKey = new Map<string, number>()
+  const variantUsageByFromTime = new Map<number, number>()
+  let index = 0
+  let passIndex = 1
+  let guard = 0
+  const maxIterations = Math.max(
+    times.length * 8,
+    256,
+  )
+
+  while (index < times.length) {
+    guard += 1
+    if (guard > maxIterations) {
+      throw new Error('expandPlaybackFlow(): repeat traversal exceeded safety limit')
+    }
+
+    const time = times[index]
+    if (time === undefined) {
+      break
+    }
+
+    const group = groups.get(time)
+    if (group !== undefined) {
+      flow.push({
+        sourceTime: group.sourceTime,
+        originZnIds: [...group.originZnIds],
+        activeTextRanges: group.activeTextRanges.map((range) => ({ ...range })),
+        activeStartChar: group.activeStartChar,
+        flowIndex: flow.length,
+        passIndex,
+        voltaNumber: group.voltaNumber,
+      })
+    }
+
+    const variantBegins = variantBeginDecisions.get(time)
+    if (variantBegins !== undefined && variantBegins.length > 0) {
+      const variantUsage = variantUsageByFromTime.get(time) ?? 0
+      if (variantUsage === 0) {
+        variantUsageByFromTime.set(time, 1)
+      } else {
+      const selectedVariant = variantBegins[variantUsage]
+        if (selectedVariant !== undefined) {
+          variantUsageByFromTime.set(time, variantUsage + 1)
+          const jumpIndex = timeIndexByTime.get(selectedVariant.toTime)
+          if (jumpIndex === undefined) {
+            throw new Error(`expandPlaybackFlow(): missing variant begin target time ${selectedVariant.toTime}`)
+          }
+          index = jumpIndex
           continue
         }
       }
-      state.entityIndex += 1
+    }
+
+    const repeatDecision = repeatDecisions.get(time)
+    if (repeatDecision !== undefined) {
+      const repeatUsage = repeatUsageByKey.get(repeatDecision.key) ?? 0
+      if (repeatUsage === 0) {
+        repeatUsageByKey.set(repeatDecision.key, 1)
+        if (repeatDecision.level > 1) {
+          for (const [key, usage] of repeatUsageByKey.entries()) {
+            const nestedDecision = repeatDecisionByKey.get(key)
+            if (
+              usage > 0 &&
+              nestedDecision !== undefined &&
+              nestedDecision.fromTime > repeatDecision.toTime &&
+              nestedDecision.fromTime < repeatDecision.fromTime
+            ) {
+              repeatUsageByKey.delete(key)
+            }
+          }
+
+        }
+        passIndex += 1
+        const jumpIndex = timeIndexByTime.get(repeatDecision.toTime)
+        if (jumpIndex === undefined) {
+          throw new Error(`expandPlaybackFlow(): missing repeat target time ${repeatDecision.toTime}`)
+        }
+        index = jumpIndex
+        continue
+      }
+    }
+
+    const followTarget = variantFollowDecisions.get(time)
+    if (followTarget !== undefined) {
+      const jumpIndex = timeIndexByTime.get(followTarget)
+      if (jumpIndex === undefined) {
+        throw new Error(`expandPlaybackFlow(): missing variant follow target time ${followTarget}`)
+      }
+      index = jumpIndex
       continue
     }
 
-    if (!isPlayableEntity(entity)) {
-      state.entityIndex += 1
-      continue
-    }
-
-    if (entity.variant === 1 && state.passIndex > 1) {
-      state.entityIndex += 1
-      continue
-    }
-    if (entity.variant === 2 && state.passIndex === 1) {
-      state.entityIndex += 1
-      continue
-    }
-
-    const durationMs = computeStepDurationMs(song, entity.duration)
-    const textRange = createTextRange(entity)
-    const activeTextRanges = textRange === undefined ? [] : [textRange]
-    const event: ExpandedVoiceEvent = {
-      voiceIndex: voice.index,
-      entityIndex: state.entityIndex,
-      playbackTimeMs: state.currentPlaybackTimeMs,
-      durationMs,
-      passIndex: state.passIndex,
-      sourceTime: entity.time,
-      originZnIds: [entity.znId],
-      activeTextRanges,
-      activeNotes: collectActiveNotes(entity, song),
-      activeStartChar: textRange?.startpos,
-      voltaNumber: entity.variant > 0 ? entity.variant : undefined,
-    }
-    events.push(event)
-    state.currentPlaybackTimeMs += durationMs
-    state.entityIndex += 1
+    index += 1
   }
 
-  return events
-}
-
-function mergeExpandedVoices(events: ExpandedVoiceEvent[]): PlaybackFlowStep[] {
-  const grouped = new Map<number, ExpandedVoiceEvent[]>()
-  for (const event of events) {
-    const bucket = grouped.get(event.playbackTimeMs)
-    if (bucket === undefined) {
-      grouped.set(event.playbackTimeMs, [event])
-      continue
-    }
-    bucket.push(event)
-  }
-
-  const playbackTimes = [...grouped.keys()].sort((left, right) => left - right)
-  return playbackTimes.map((playbackTimeMs, flowIndex) => {
-    const bucket = grouped.get(playbackTimeMs) ?? []
-    const originZnIds = [...new Set(bucket.flatMap((event) => event.originZnIds))]
-    const activeTextRanges = uniqueTextRanges(bucket.flatMap((event) => event.activeTextRanges))
-    const activeNotes = bucket.flatMap((event) => event.activeNotes)
-    const primary = bucket[0]
-    return {
-      playbackStartMs: playbackTimeMs,
-      sourceTime: primary?.sourceTime ?? 0,
-      originZnIds,
-      activeTextRanges,
-      activeNotes,
-      activeStartChar: bucket
-        .map((event) => event.activeStartChar)
-        .find((value): value is number => value !== undefined),
-      flowIndex,
-      passIndex: primary?.passIndex ?? 1,
-      voltaNumber: primary?.voltaNumber,
-    }
-  })
-}
-
-export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
-  const expanded: ExpandedVoiceEvent[] = []
-  for (const voice of song.voices) {
-    expanded.push(...expandVoice(song, voice))
-  }
-  return mergeExpandedVoices(expanded)
+  return flow
 }

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, toRef } from 'vue'
 
-import type { SelectionTextRange } from '@zupfnoter/types'
+import type { SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
+import { resolveSelectionOriginByTextRange } from '../selectionIndex'
 import { useTextRangeSvgHighlight } from './useTextRangeSvgHighlight'
 
 const props = defineProps<{
@@ -11,10 +12,17 @@ const props = defineProps<{
   errorMessage?: string
   selectedTextRanges?: SelectionTextRange[]
   playbackTextRanges?: SelectionTextRange[]
+  sheetObjectIndex?: SheetObjectIndex
 }>()
 
 const emit = defineEmits<{
-  (event: 'select-text-range', payload: { startpos: number; endpos: number; extend: boolean; source: 'score-preview' }): void
+  (event: 'select-text-range', payload: {
+    startpos: number
+    endpos: number
+    extend: boolean
+    origin?: SelectionOrigin
+    source: 'score-preview'
+  }): void
 }>()
 
 const svgFrame = ref<HTMLElement | null>(null)
@@ -39,10 +47,12 @@ function handleSvgClick(event: MouseEvent): void {
   const startpos = Number(element?.getAttribute('data-start-char'))
   const endpos = Number(element?.getAttribute('data-end-char'))
   if (Number.isNaN(startpos) || Number.isNaN(endpos)) return
+  const origin = resolveSelectionOriginByTextRange(props.sheetObjectIndex, { startpos, endpos })
   emit('select-text-range', {
     startpos,
     endpos,
     extend: event.shiftKey,
+    origin,
     source: 'score-preview',
   })
 }
@@ -143,17 +153,19 @@ function handleSvgClick(event: MouseEvent): void {
 }
 
 .preview-stage__svg :deep(.zn-score-hitbox.zn-selection-highlight-range) {
-  fill: color-mix(in srgb, var(--zn-danger) 12%, transparent);
+  fill: color-mix(in srgb, var(--zn-danger) 38%, transparent);
   fill-opacity: 1;
   stroke: color-mix(in srgb, var(--zn-danger) 88%, white);
-  stroke-width: 1.5;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--zn-danger) 45%, transparent));
 }
 
 .preview-stage__svg :deep(.zn-score-hitbox.zn-selection-highlight-range.zn-playback-highlight) {
   fill: color-mix(in srgb, var(--zn-accent) 22%, transparent);
   fill-opacity: 1;
   stroke: color-mix(in srgb, var(--zn-danger) 88%, white);
-  stroke-width: 1.5;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--zn-danger) 45%, transparent));
 }
 
 .preview-stage__error {

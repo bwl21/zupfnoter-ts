@@ -34,10 +34,16 @@ import { usePlaybackDriver } from './usePlaybackDriver'
 import { useAudioPlayer, type PlaybackInstrument } from './useAudioPlayer'
 import { resolvePlaybackInstrument } from './sound'
 import type { PlaybackStep } from './playback'
+import type { SelectionOrigin } from '@zupfnoter/types'
 import { CommandError, CommandStack, registerLegacyCommands, registerStorageCommands } from '@zupfnoter/core'
 import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
 import {
   canTargetCreateSelection,
+  createExtractChangedSelectionEvent,
+  createRenderRefreshedSelectionEvent,
+  createScopeChangedSelectionEvent,
+  createSongLoadedSelectionEvent,
+  createTextRangeSelectionEvent,
   resolvePlaybackProjection,
   resolvePlaybackScoreRanges,
   resolveSelectionEditorRange,
@@ -63,7 +69,7 @@ const storageState = reactive({
   pendingCandidates: [] as string[],
 })
 const dropboxProvider = createDropboxProvider()
-const playbackInstrument = ref<PlaybackInstrument>('piano')
+const playbackInstrument = ref<PlaybackInstrument>('oscillator')
 const logLevel = ref('warning')
 const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
 const runtimeSettings = ref<Record<string, string>>({
@@ -93,6 +99,8 @@ const renderError = ref('')
 const renderSummary = ref('not rendered')
 const playbackTimeline = ref<PlaybackStep[]>([])
 const baseTempoFromQ = ref<number | undefined>(undefined)
+const activeVoiceIds = ref<string[]>([])
+const allVoiceIds = ref<string[]>([])
 const commandBusy = ref(false)
 const { toasts, syncDiagnostics, dismissToast } = useWorkbenchToasts()
 const playbackStore = usePlaybackStore()
@@ -101,6 +109,10 @@ const selectedHarpProjection = computed(() => resolveSelectionProjection(
   selectionStore.sheetObjectIndex,
   selectionStore.selection,
   'harp-preview',
+  {
+    voiceScope: selectionStore.selection.voiceScope,
+    activeVoiceIds: activeVoiceIds.value,
+  },
 ))
 const projectedPlaybackHighlight = computed(() => resolvePlaybackProjection(
   selectionStore.sheetObjectIndex,
@@ -111,6 +123,10 @@ const selectedScoreTextRanges = computed(() => resolveSelectionProjection(
   selectionStore.sheetObjectIndex,
   selectionStore.selection,
   'score-preview',
+  {
+    voiceScope: selectionStore.selection.voiceScope,
+    activeVoiceIds: activeVoiceIds.value,
+  },
 ).textRanges)
 const selectedEditorTextRange = computed(() => selectionStore.selection.source === 'abc-editor'
   ? undefined
@@ -127,6 +143,7 @@ const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
   computed(() => ({
     timeline: playbackTimeline.value,
     baseTempoFromQ: baseTempoFromQ.value,
+    activeVoiceIds: activeVoiceIds.value,
     mode: 'all-score',
   })),
   audioPlayer,
@@ -179,6 +196,21 @@ const playbackStatusOverlay = computed(() => {
   }
 
   return passParts.join(' · ')
+})
+
+const selectionVoiceScopeSummary = computed(() => {
+  const activeLabel = activeVoiceIds.value.length > 0 ? activeVoiceIds.value.join(', ') : '–'
+  const allLabel = allVoiceIds.value.length > 0 ? allVoiceIds.value.join(', ') : '–'
+
+  if (selectionStore.selection.voiceScope === 'single-voice') {
+    return 'wirkt auf die ausgewählte Stimme'
+  }
+
+  if (selectionStore.selection.voiceScope === 'extract-voices') {
+    return `Auszug: Stimmen ${activeLabel}`
+  }
+
+  return `Alle Stimmen: ${allLabel}`
 })
 
 const previewErrorMessage = computed(() => {
@@ -347,7 +379,10 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   const loggedDiagnostics = new Set<string>()
   scoreSvg.value = result.scoreSvg
   harpSvg.value = result.harpSvg
-  selectionStore.setSheetObjectIndex(result.sheetObjectIndex)
+  activeVoiceIds.value = result.activeVoiceIds
+  selectionStore.dispatchSelectionEvent(createExtractChangedSelectionEvent(result.activeVoiceIds))
+  allVoiceIds.value = result.allVoiceIds
+  selectionStore.dispatchSelectionEvent(createRenderRefreshedSelectionEvent(result.sheetObjectIndex))
   renderIssues.value = result.issues
   workbenchDiagnostics.value = result.diagnostics
   editorDiagnostics.value = result.editorDiagnostics
@@ -429,8 +464,10 @@ function buildHarpMirrorSnapshot(): HarpMirrorSnapshot {
     },
     selectionState: {
       selectedIndexes: [...selectionStore.selection.selectedIndexes],
+      originSelectedIndexes: [...selectionStore.selection.originSelectedIndexes],
       anchorIndex: selectionStore.selection.anchorIndex,
       source: selectionStore.selection.source,
+      voiceScope: selectionStore.selection.voiceScope,
     },
     selectedScoreTextRanges: selectedScoreTextRanges.value.map((range) => ({ ...range })),
     playbackScoreTextRanges: playbackScoreTextRanges.value.map((range) => ({ ...range })),
@@ -703,11 +740,19 @@ function handleEditorSelectionChange(payload: {
   end: { line: number; column: number }
 }): void {
   if (payload.startpos === payload.endpos) {
-    selectionStore.clearSelection('abc-editor')
+    selectionStore.dispatchSelectionEvent(
+      createSongLoadedSelectionEvent('abc-editor', selectionStore.selection.voiceScope),
+    )
     return
   }
 
-  selectionStore.selectTextRange(payload.startpos, payload.endpos, 'abc-editor')
+  selectionStore.dispatchSelectionEvent(
+    createTextRangeSelectionEvent(payload.startpos, payload.endpos, 'abc-editor'),
+  )
+}
+
+function handleSelectionVoiceScopeChange(voiceScope: 'single-voice' | 'extract-voices' | 'all-voices'): void {
+  selectionStore.dispatchSelectionEvent(createScopeChangedSelectionEvent(voiceScope))
 }
 
 watch(abcText, () => {
@@ -724,10 +769,13 @@ function handleHarpPreviewSelection(payload: {
   startpos: number
   endpos: number
   extend: boolean
+  origin?: SelectionOrigin
   source: 'harp-preview'
 }): void {
   if (!canTargetCreateSelection(payload.source, 'textRange')) return
-  selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
+  selectionStore.dispatchSelectionEvent(
+    createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source, payload.extend, payload.origin),
+  )
 }
 
 function handleHarpPreviewScroll(payload: { scrollLeft: number; scrollTop: number }): void {
@@ -740,15 +788,13 @@ function handleScorePreviewSelection(payload: {
   startpos: number
   endpos: number
   extend: boolean
+  origin?: SelectionOrigin
   source: 'score-preview'
 }): void {
   if (!canTargetCreateSelection(payload.source, 'textRange')) return
-  if (payload.extend) {
-    selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
-    return
-  }
-
-  selectionStore.selectTextRange(payload.startpos, payload.endpos, payload.source)
+  selectionStore.dispatchSelectionEvent(
+    createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source, payload.extend, payload.origin),
+  )
 }
 
 function handleGlobalKeydown(event: KeyboardEvent): void {
@@ -994,6 +1040,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :error-message="previewErrorMessage"
                   :playback-text-ranges="playbackScoreTextRanges"
                   :selected-text-ranges="selectedScoreTextRanges"
+                  :sheet-object-index="selectionStore.sheetObjectIndex"
                   :svg="scoreSvg"
                   @select-text-range="handleScorePreviewSelection"
                 />
@@ -1004,6 +1051,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :error-message="previewErrorMessage"
                   :playback-highlight="projectedPlaybackHighlight"
                   :selection="selectedHarpProjection"
+                  :sheet-object-index="selectionStore.sheetObjectIndex"
                   :svg="harpSvg"
                   @select-text-range="handleHarpPreviewSelection"
                 />
@@ -1018,14 +1066,17 @@ function handleMirrorMessage(event: MessageEvent): void {
       <div class="workbench-footer">
         <FooterBar
           :extract-label="`Extract ${currentExtractLabel}`"
-        :storage-path="storageState.path"
+          :storage-path="storageState.path"
           :dirty="true"
           :save-format="saveFormat"
           :cursor-position="editorCursor"
           :speed-factor="playbackStore.state.speedFactor"
+          :selection-voice-scope="selectionStore.selection.voiceScope"
+          :selection-voice-scope-summary="selectionVoiceScopeSummary"
           @speed-down="playbackStore.decreaseSpeed"
           @speed-reset="playbackStore.resetSpeed"
           @speed-up="playbackStore.increaseSpeed"
+          @selection-voice-scope-change="handleSelectionVoiceScopeChange"
         />
         <div
           v-if="playbackStatusOverlay !== undefined"

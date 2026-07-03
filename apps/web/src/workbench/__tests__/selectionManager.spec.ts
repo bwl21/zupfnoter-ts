@@ -32,10 +32,16 @@ const sheetObjectIndex: SheetObjectIndex = {
     '4:6': [0, 1, 2],
     '10:12': [3, 4, 5, 6],
   },
+  byMusicTime: {
+    '64': [0],
+    '128': [4],
+  },
   entries: [
     {
       kind: 'music-entity',
       znId: 'note-1',
+      voiceId: '1',
+      musicTime: 64,
       textRange: { startpos: 4, endpos: 6 },
       startPos: { line: 2, column: 1 },
       endPos: { line: 2, column: 3 },
@@ -64,6 +70,8 @@ const sheetObjectIndex: SheetObjectIndex = {
     {
       kind: 'music-entity',
       znId: 'note-3',
+      voiceId: '1',
+      musicTime: 128,
       textRange: { startpos: 10, endpos: 12 },
       startPos: { line: 2, column: 6 },
       endPos: { line: 2, column: 8 },
@@ -88,7 +96,9 @@ describe('selectionManager', () => {
   it('filters projections by target capabilities', () => {
     const selection: SelectionState = {
       selectedIndexes: [1],
+      originSelectedIndexes: [1],
       source: 'abc-editor',
+      voiceScope: 'single-voice',
     }
 
     expect(resolveSelectionProjection(sheetObjectIndex, selection, 'score-preview'))
@@ -111,7 +121,9 @@ describe('selectionManager', () => {
   it('keeps editor-driven harp projections on a single voice by default', () => {
     const selection: SelectionState = {
       selectedIndexes: [3],
+      originSelectedIndexes: [3],
       source: 'abc-editor',
+      voiceScope: 'single-voice',
     }
 
     expect(resolveSelectionProjection(sheetObjectIndex, selection, 'harp-preview'))
@@ -126,11 +138,13 @@ describe('selectionManager', () => {
   it('can explicitly project editor-driven selections across all matching voices', () => {
     const selection: SelectionState = {
       selectedIndexes: [3],
+      originSelectedIndexes: [3],
       source: 'abc-editor',
+      voiceScope: 'all-voices',
     }
 
     expect(resolveSelectionProjection(sheetObjectIndex, selection, 'harp-preview', {
-      editorVoiceScope: 'all-matching-voices',
+      voiceScope: 'all-voices',
     })).toEqual({
       selectedIndexes: [3],
       textRanges: [{ startpos: 10, endpos: 12 }],
@@ -139,6 +153,125 @@ describe('selectionManager', () => {
         'extract.0.notebound.nconf.v_1.t_384.n_0.***',
         'extract.0.notebound.nconf.v_2.t_384.n_0.***',
       ],
+    })
+  })
+
+  it('can explicitly project editor-driven score selections across all matching voices', () => {
+    const selection: SelectionState = {
+      selectedIndexes: [3],
+      originSelectedIndexes: [3],
+      source: 'abc-editor',
+      voiceScope: 'all-voices',
+    }
+
+    expect(resolveSelectionProjection(sheetObjectIndex, selection, 'score-preview', {
+      voiceScope: 'all-voices',
+    })).toEqual({
+      selectedIndexes: [3],
+      textRanges: [{ startpos: 10, endpos: 12 }],
+      znIds: [],
+      confKeys: [],
+    })
+  })
+
+  it('can project editor-driven selections only across active extract voices', () => {
+    const selection: SelectionState = {
+      selectedIndexes: [3],
+      originSelectedIndexes: [3],
+      source: 'abc-editor',
+      voiceScope: 'extract-voices',
+    }
+
+    expect(resolveSelectionProjection(sheetObjectIndex, selection, 'harp-preview', {
+      voiceScope: 'extract-voices',
+      activeVoiceIds: ['2'],
+    })).toEqual({
+      selectedIndexes: [3],
+      textRanges: [{ startpos: 10, endpos: 12 }],
+      znIds: [],
+      confKeys: [
+        'extract.0.notebound.nconf.v_2.t_384.n_0.***',
+      ],
+    })
+  })
+
+  it('projects extract-scoped score selections across different source ranges that share the same music time', () => {
+    const scoreScopedIndex: SheetObjectIndex = {
+      version: 2,
+      lineStarts: [0, 4, 9, 14],
+      voiceByLine: {
+        1: undefined,
+        2: '1',
+        3: '2',
+        4: '2',
+      },
+      byZnId: {
+        'note-a': [0],
+        'note-b': [2],
+      },
+      byConfKey: {},
+      byTextRange: {
+        '4:6': [0, 1],
+        '10:12': [2, 3],
+      },
+      byMusicTime: {
+        '128': [0, 2],
+      },
+      entries: [
+        {
+          kind: 'music-entity',
+          znId: 'note-a',
+          voiceId: '1',
+          musicTime: 128,
+          textRange: { startpos: 4, endpos: 6 },
+          startPos: { line: 2, column: 1 },
+          endPos: { line: 2, column: 3 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+        {
+          kind: 'score-object',
+          textRange: { startpos: 4, endpos: 6 },
+          startPos: { line: 2, column: 1 },
+          endPos: { line: 2, column: 3 },
+          addressableIn: { editor: true, score: true, svg: false },
+        },
+        {
+          kind: 'music-entity',
+          znId: 'note-b',
+          voiceId: '2',
+          musicTime: 128,
+          textRange: { startpos: 10, endpos: 12 },
+          startPos: { line: 3, column: 1 },
+          endPos: { line: 3, column: 3 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+        {
+          kind: 'score-object',
+          textRange: { startpos: 10, endpos: 12 },
+          startPos: { line: 3, column: 1 },
+          endPos: { line: 3, column: 3 },
+          addressableIn: { editor: true, score: true, svg: false },
+        },
+      ],
+    }
+    const selection: SelectionState = {
+      selectedIndexes: [1],
+      originSelectedIndexes: [1],
+      source: 'score-preview',
+      voiceScope: 'extract-voices',
+    }
+
+    expect(resolveSelectionProjection(scoreScopedIndex, selection, 'score-preview', {
+      voiceScope: 'extract-voices',
+      activeVoiceIds: ['1', '2'],
+    })).toEqual({
+      selectedIndexes: [1],
+      textRanges: [
+        { startpos: 4, endpos: 6 },
+        { startpos: 10, endpos: 12 },
+      ],
+      znIds: [],
+      confKeys: [],
     })
   })
 

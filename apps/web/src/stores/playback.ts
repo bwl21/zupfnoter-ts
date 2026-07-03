@@ -9,12 +9,7 @@ import type {
 } from '@zupfnoter/types'
 
 import { useSelectionStore } from './selection'
-import {
-  createEmptyPlaybackHighlight,
-  createPlaybackHighlightFromEvent,
-  resolvePlaybackMode,
-} from '../workbench/playback'
-import { textRangeKey } from '../workbench/selectionIndex'
+import { createEmptyPlaybackHighlight, createPlaybackHighlightFromEvent, resolvePlaybackMode } from '../workbench/playback'
 
 const SPEED_STEP = 0.1
 
@@ -103,25 +98,6 @@ export const usePlaybackStore = defineStore('playback', () => {
     highlight.value = createEmptyPlaybackHighlight()
   }
 
-  function addHighlightRanges(ranges: PlaybackHighlight['activeTextRanges']): void {
-    const current = new Map(highlight.value.activeTextRanges.map((range) => [textRangeKey(range), range] as const))
-    for (const range of ranges) {
-      current.set(textRangeKey(range), { ...range })
-    }
-    highlight.value = {
-      ...highlight.value,
-      activeTextRanges: [...current.values()],
-    }
-  }
-
-  function removeHighlightRanges(ranges: PlaybackHighlight['activeTextRanges']): void {
-    const removeKeys = new Set(ranges.map((range) => textRangeKey(range)))
-    highlight.value = {
-      ...highlight.value,
-      activeTextRanges: highlight.value.activeTextRanges.filter((range) => !removeKeys.has(textRangeKey(range))),
-    }
-  }
-
   function markDocumentChanged(): void {
     state.value = {
       ...state.value,
@@ -169,8 +145,6 @@ export const usePlaybackStore = defineStore('playback', () => {
     startPlayback,
     pausePlayback,
     stopPlayback,
-    addHighlightRanges,
-    removeHighlightRanges,
     markDocumentChanged,
     handlePlayerEvent,
   }

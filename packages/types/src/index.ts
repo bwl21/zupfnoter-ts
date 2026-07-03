@@ -36,6 +36,7 @@ export type {
 } from './music.js'
 
 export type {
+  SelectionOrigin,
   SelectionTextRange,
   SelectionLineColumn,
   SheetObjectAddressability,
@@ -49,6 +50,7 @@ export type {
   SelectionProjectionOptions,
   SelectionSource,
   SelectionState,
+  SelectionEvent,
 } from './selection.js'
 
 export type {
@@ -56,7 +58,6 @@ export type {
   PlaybackMode,
   PlaybackState,
   PlaybackHighlight,
-  PlaybackNote,
   PlaybackFlowStep,
   PlaybackPlayerEvent,
 } from './playback.js'

@@ -16,6 +16,7 @@ const sheetObjectIndex: SheetObjectIndex = {
   },
   byConfKey: {},
   byTextRange: {},
+  byMusicTime: {},
   entries: [
     {
       kind: 'music-entity',
@@ -36,14 +37,64 @@ describe('playback store', () => {
 
     const selectionStore = useSelectionStore()
     const playbackStore = usePlaybackStore()
-    selectionStore.setSheetObjectIndex(sheetObjectIndex)
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.render-refreshed',
+      nextIndex: sheetObjectIndex,
+    })
 
     expect(playbackStore.mode).toBe('all-score')
 
-    selectionStore.selectZnId('note-1', 'harp-preview')
-    expect(playbackStore.mode).toBe('from-note-harp')
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.znid-selected',
+      znId: 'note-1',
+      source: 'harp-preview',
+    })
+    expect(playbackStore.mode).toBe('range-harp')
 
-    selectionStore.selectMusicRange(['note-1', 'note-2'], 'harp-preview')
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.music-range-selected',
+      znIds: ['note-1', 'note-2'],
+      source: 'harp-preview',
+    })
+    expect(playbackStore.mode).toBe('range-harp')
+  })
+
+  it('resolves editor-driven note selections as selection playback too', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    const playbackStore = usePlaybackStore()
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.render-refreshed',
+      nextIndex: {
+      ...sheetObjectIndex,
+      byTextRange: {
+        '4:6': [0],
+      },
+      entries: [
+        {
+          kind: 'music-entity',
+          znId: 'note-1',
+          textRange: { startpos: 4, endpos: 6 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+        {
+          kind: 'music-entity',
+          znId: 'note-2',
+          textRange: { startpos: 8, endpos: 10 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+      ],
+      },
+    })
+
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 4,
+      endpos: 6,
+      source: 'abc-editor',
+    })
+
     expect(playbackStore.mode).toBe('range-harp')
   })
 
@@ -78,38 +129,5 @@ describe('playback store', () => {
     expect(playbackStore.state.documentVersion).toBe(1)
     expect(playbackStore.state.totalPassCount).toBeUndefined()
     expect(playbackStore.highlight.activeTextRanges).toEqual([])
-  })
-
-  it('adds and removes playback highlight ranges independently', () => {
-    setActivePinia(createPinia())
-
-    const playbackStore = usePlaybackStore()
-
-    playbackStore.addHighlightRanges([
-      { startpos: 10, endpos: 12 },
-      { startpos: 20, endpos: 22 },
-    ])
-    expect(playbackStore.highlight.activeTextRanges).toEqual([
-      { startpos: 10, endpos: 12 },
-      { startpos: 20, endpos: 22 },
-    ])
-
-    playbackStore.addHighlightRanges([
-      { startpos: 20, endpos: 22 },
-      { startpos: 30, endpos: 32 },
-    ])
-    expect(playbackStore.highlight.activeTextRanges).toEqual([
-      { startpos: 10, endpos: 12 },
-      { startpos: 20, endpos: 22 },
-      { startpos: 30, endpos: 32 },
-    ])
-
-    playbackStore.removeHighlightRanges([
-      { startpos: 20, endpos: 22 },
-    ])
-    expect(playbackStore.highlight.activeTextRanges).toEqual([
-      { startpos: 10, endpos: 12 },
-      { startpos: 30, endpos: 32 },
-    ])
   })
 })

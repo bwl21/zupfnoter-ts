@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, toRef } from 'vue'
 
-import type { PlaybackHighlight, SelectionTextRange } from '@zupfnoter/types'
+import type { PlaybackHighlight, SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
 import ZnZoomControl from '../../design-system/components/ZnZoomControl.vue'
 import ZnTabs from '../../design-system/components/ZnTabs.vue'
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
+import { resolveSelectionOriginByZnId } from '../selectionIndex'
 import { useZoomableSvgPreview } from './useZoomableSvgPreview'
 import { usePlaybackSvgHighlight } from './usePlaybackSvgHighlight'
 import { useSelectionSvgHighlight } from './useSelectionSvgHighlight'
@@ -19,11 +20,18 @@ const props = defineProps<{
     confKeys: string[]
     textRanges: SelectionTextRange[]
   }
+  sheetObjectIndex?: SheetObjectIndex
   allowWheelZoomWithoutModifier?: boolean
 }>()
 
 const emit = defineEmits<{
-  (event: 'select-text-range', payload: { startpos: number; endpos: number; extend: boolean; source: 'harp-preview' }): void
+  (event: 'select-text-range', payload: {
+    startpos: number
+    endpos: number
+    extend: boolean
+    origin?: SelectionOrigin
+    source: 'harp-preview'
+  }): void
   (event: 'scroll', payload: { scrollLeft: number; scrollTop: number }): void
 }>()
 
@@ -55,14 +63,17 @@ function emitSelectionFromEvent(target: EventTarget | null, extend: boolean): vo
   const element = target.closest('.zupfnoter-hitbox[data-start-char][data-end-char]')
   const startChar = element?.getAttribute('data-start-char')
   const endChar = element?.getAttribute('data-end-char')
+  const znId = element?.getAttribute('data-zn-id') ?? undefined
   if (startChar === null || endChar === null) return
   const startpos = Number(startChar)
   const endpos = Number(endChar)
   if (Number.isNaN(startpos) || Number.isNaN(endpos)) return
+  const origin = znId === undefined ? undefined : resolveSelectionOriginByZnId(props.sheetObjectIndex, znId)
   emit('select-text-range', {
     startpos,
     endpos,
     extend,
+    origin,
     source: 'harp-preview',
   })
 }

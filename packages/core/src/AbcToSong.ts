@@ -30,6 +30,7 @@ import type { ZupfnoterConfig } from '@zupfnoter/types'
 import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
 import { ABC_TYPE } from './AbcModel.js'
 import { requireDefined } from './requireDefined.js'
+import { resolveConfigVoiceNumberFromAbcVoiceIndex } from './voiceIdentity.js'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -738,11 +739,11 @@ export class AbcToSong {
           visible: true,
           variant: state.variantNo,
           znId: `goto-${voiceIndex}-${repeatStart.time}`,
-          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${repeatTime}.p_repeat`,
+          confKey: `notebound.c_jumplines.v_${resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)}.${repeatTime}.p_repeat`,
           from: previousNote,
           to: repeatStart,
           policy: {
-            confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${repeatTime}.p_repeat`,
+            confKey: `notebound.c_jumplines.v_${resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)}.${repeatTime}.p_repeat`,
             distance: repeatDistance,
             isRepeat: true,
             level: repeatLevel,
@@ -791,7 +792,7 @@ export class AbcToSong {
       position: this._getDefaultNoteBoundPosition('variantend', [5, -7]),
       style: 'regular',
       policy: 'Goto',
-      confKey: `notebound.variantend.v_${voiceIndex + 1}.${companion.time}`,
+      confKey: `notebound.variantend.v_${resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)}.${companion.time}`,
       duration: state.pendingVariantEndingDuration ?? companion.duration,
     }
 
@@ -867,7 +868,7 @@ export class AbcToSong {
       text: partText,
       position: this._getDefaultNoteBoundPosition('partname', [5, -7]),
       style: 'bold',
-      confKey: `notebound.partname.v_${voiceIndex + 1}.${companion.time}`,
+      confKey: `notebound.partname.v_${resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)}.${companion.time}`,
     }]
   }
 
@@ -933,11 +934,11 @@ export class AbcToSong {
         visible: true,
         variant: 0,
         znId: `goto-${voiceIndex}-${sym.istart}-${state.pendingVariantEntryIndex}`,
-        confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.${state.pendingVariantEntryIndex}.p_begin`,
+        confKey: `notebound.c_jumplines.v_${resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)}.${resolvedSource.time}.${state.pendingVariantEntryIndex}.p_begin`,
         from: resolvedSource,
         to: target,
         policy: {
-          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${resolvedSource.time}.${state.pendingVariantEntryIndex}.p_begin`,
+          confKey: `notebound.c_jumplines.v_${resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)}.${resolvedSource.time}.${state.pendingVariantEntryIndex}.p_begin`,
           distance: entry.distances?.[0],
           fromAnchor: 'after',
           toAnchor: 'before',
@@ -973,11 +974,11 @@ export class AbcToSong {
         visible: true,
         variant: 0,
         znId: `goto-${voiceIndex}-${sym.istart}-${state.pendingVariantEntryIndex}`,
-        confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${variantAnchorTime ?? resolvedSource.time}.${suffix}`,
+        confKey: `notebound.c_jumplines.v_${resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)}.${variantAnchorTime ?? resolvedSource.time}.${suffix}`,
         from: resolvedSource,
         to: target,
         policy: {
-          confKey: `notebound.c_jumplines.v_${voiceIndex + 1}.${variantAnchorTime ?? resolvedSource.time}.${suffix}`,
+          confKey: `notebound.c_jumplines.v_${resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)}.${variantAnchorTime ?? resolvedSource.time}.${suffix}`,
           distance: exit.distances?.[2] ?? currentGotoDistances?.[2],
           isRepeat: true,
           fromAnchor: 'after',
@@ -1006,7 +1007,7 @@ export class AbcToSong {
     voiceIndex: number,
   ): void {
     if (!sym.a_gch) return
-    const voiceId = voiceIndex + 1
+    const voiceId = resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)
 
     for (let extraIndex = 0; extraIndex < sym.a_gch.length; extraIndex++) {
       const extra = requireDefined(

@@ -15,6 +15,7 @@ import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, type PlaybackStep } from '../playback'
+import { isUserVisibleVoice, resolveActiveVoiceIdsFromSheet, resolveUserVisibleVoiceIds } from '../songVoiceIdentity'
 import {
   parserErrorToWorkbenchDiagnostic,
   songDiagnosticToWorkbenchDiagnostic,
@@ -34,6 +35,8 @@ export interface WorkbenchRenderResult {
   scoreSvg: string
   harpSvg: string
   sheetObjectIndex?: SheetObjectIndex
+  activeVoiceIds: string[]
+  allVoiceIds: string[]
   issues: RenderIssue[]
   diagnostics: WorkbenchDiagnostic[]
   toastDiagnostics: WorkbenchDiagnostic[]
@@ -87,16 +90,20 @@ export function renderWorkbenchPreviews(
   let harpSvg = ''
   let song: ReturnType<AbcToSong['transform']> | null = null
   let sheetChildCount = 0
+  let activeVoiceIds: string[] = []
+  let allVoiceIds: string[] = []
   let modelError: string | undefined
   let sheetObjectIndex: SheetObjectIndex | undefined
   try {
     const parsedModel = modelParser.parse(abcText)
     const transformedSong = new AbcToSong().transform(parsedModel, config)
     song = transformedSong
+    allVoiceIds = resolveUserVisibleVoiceIds(transformedSong)
     const layoutOptions: ConstructorParameters<typeof HarpnotesLayout>[1] = {
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
     }
     const sheet = new HarpnotesLayout(config, layoutOptions).layout(transformedSong, extractNr, 'A3')
+    activeVoiceIds = resolveActiveVoiceIdsFromSheet(sheet)
     sheetObjectIndex = buildSheetObjectIndex(transformedSong, sheet as Sheet, abcText, scoreSvg)
     sheetChildCount = sheet.children.length
     harpSvg = scaleSvgForPreview(new SvgEngine().draw(sheet))
@@ -125,15 +132,17 @@ export function renderWorkbenchPreviews(
   const renderError = scoreError ?? modelError
   const summary = song === null
     ? 'render failed'
-    : `${song.voices.length} voice(s), ${song.voices.map((voice: Voice, index: number) => {
+    : `${allVoiceIds.length} voice(s), ${song.voices.filter(isUserVisibleVoice).map((voice: Voice) => {
       const noteCount = voice.entities.filter((entity: VoiceEntity) => entity.type === 'Note').length
-      return `V${index + 1}: ${noteCount} notes`
+      return `V${voice.index}: ${noteCount} notes`
     }).join(', ')}, ${sheetChildCount} drawables`
 
   return {
     scoreSvg,
     harpSvg,
     sheetObjectIndex,
+    activeVoiceIds,
+    allVoiceIds,
     issues,
     diagnostics: modelDiagnostics,
     toastDiagnostics,

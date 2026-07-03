@@ -5,138 +5,115 @@ export interface PlaybackScheduleCallbacks {
   onStepEnd?: (step: PlaybackStep) => void
 }
 
+type StereoSide = 'left' | 'right'
+
 export type PlaybackInstrument = 'harp' | 'piano' | 'western-guitar' | 'oscillator'
 
-const INSTRUMENT_CONFIG: Record<'harp' | 'piano' | 'western-guitar', { instrument: string, soundfont: string, gain: number, attack: number, decay: number, sustain: number, release: number }> = {
-  harp: { instrument: 'orchestral_harp', soundfont: 'FluidR3_GM', gain: 1.1, attack: 0.01, decay: 0.18, sustain: 0.55, release: 0.18 },
-  piano: { instrument: 'acoustic_grand_piano', soundfont: 'FluidR3_GM', gain: 0.85, attack: 0.004, decay: 0.1, sustain: 0.55, release: 0.08 },
-  'western-guitar': { instrument: 'acoustic_guitar_steel', soundfont: 'FluidR3_GM', gain: 1.3, attack: 0.008, decay: 0.15, sustain: 0.5, release: 0.1 },
+type SoundfontPlaybackInstrument = Exclude<PlaybackInstrument, 'oscillator'>
+
+const INSTRUMENT_CONFIG: Record<SoundfontPlaybackInstrument, { instrument: string, soundfont: string }> = {
+  harp: { instrument: 'orchestral_harp', soundfont: 'FluidR3_GM' },
+  piano: { instrument: 'acoustic_grand_piano', soundfont: 'FluidR3_GM' },
+  'western-guitar': { instrument: 'acoustic_guitar_steel', soundfont: 'FluidR3_GM' },
 }
 
-const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const
-
-function midiPitchToNoteName(pitch: number): string {
-  const octave = Math.trunc(pitch / 12) - 1
-  const noteName = NOTE_NAMES[((pitch % 12) + 12) % 12]
-  return `${noteName}${octave}`
+const INSTRUMENT_GAIN = 1
+const MAX_CHORD_GAIN = 0.9
+const OSCILLATOR_GAIN = 0.3
+const OSCILLATOR_ATTACK_SEC = 0.01
+const OSCILLATOR_RELEASE_SEC = 0.2
+const SCHEDULE_LOOKAHEAD_SEC = 0.05
+const MASTER_OUTPUT_GAIN = 6
+const STEREO_PAN_BY_SIDE: Record<StereoSide, number> = {
+  left: -0.9,
+  right: 0.9,
 }
 
-function isSoundfontInstrument(value: PlaybackInstrument): value is 'harp' | 'piano' | 'western-guitar' {
-  return value !== 'oscillator'
-}
-
-function playTriangleHarpNote(
-  pitch: number,
-  startTime: number,
-  durationSec: number,
-  context: AudioContext,
-): OscillatorNode {
-  const frequency = 440 * (2 ** ((pitch - 69) / 12))
-  const oscillator = context.createOscillator()
-  const gain = context.createGain()
-  const attackSec = 0.008
-  const noteDurationSec = Math.max(durationSec, 0.05)
-  const releaseSec = noteDurationSec * 0.9
-  const endTime = startTime + noteDurationSec
-
-  oscillator.type = 'triangle'
-  oscillator.frequency.value = frequency
-
-  gain.gain.setValueAtTime(0, startTime)
-  gain.gain.linearRampToValueAtTime(0.25, startTime + attackSec)
-  gain.gain.setValueAtTime(0.25, startTime + releaseSec)
-  gain.gain.exponentialRampToValueAtTime(0.001, endTime)
-
-  oscillator.connect(gain)
-  gain.connect(context.destination)
-
-  oscillator.start(startTime)
-  oscillator.stop(endTime + 0.02)
-  return oscillator
+function midiToFrequency(pitch: number): number {
+  return 440 * 2 ** ((pitch - 69) / 12)
 }
 
 export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   type SoundfontModule = typeof import('soundfont-player')
   type SoundfontPlayer = Awaited<ReturnType<SoundfontModule['instrument']>>
+  type SoundfontPlayerSet = Record<StereoSide, SoundfontPlayer>
 
   let ctx: AudioContext | null = null
-  let playerPromise: Promise<SoundfontPlayer> | null = null
+  let masterGainNode: GainNode | null = null
+  let stereoPannerNodes: Record<StereoSide, StereoPannerNode> | null = null
+  let playerPromise: Promise<SoundfontPlayerSet> | null = null
   let loadedInstrument: PlaybackInstrument | null = null
   let timers: ReturnType<typeof setTimeout>[] = []
-  let activeNotes: SoundfontPlayer[] = []
 
   function getContext(): AudioContext {
     if (ctx === null || ctx.state === 'closed') {
       ctx = new AudioContext()
+      masterGainNode = null
+      stereoPannerNodes = null
     }
     return ctx
   }
 
-  function loadPlayer(): Promise<SoundfontPlayer> {
+  function getMasterGainNode(): GainNode {
+    const context = getContext()
+    if (masterGainNode === null) {
+      const gainNode = context.createGain()
+      gainNode.gain.value = MASTER_OUTPUT_GAIN
+      gainNode.connect(context.destination)
+      masterGainNode = gainNode
+    }
+    return masterGainNode
+  }
+
+  function getStereoPannerNodes(): Record<StereoSide, StereoPannerNode> {
+    const context = getContext()
+    if (stereoPannerNodes === null) {
+      const masterGain = getMasterGainNode()
+      stereoPannerNodes = {
+        left: context.createStereoPanner(),
+        right: context.createStereoPanner(),
+      }
+      for (const side of Object.keys(stereoPannerNodes) as StereoSide[]) {
+        const panner = stereoPannerNodes[side]
+        panner.pan.value = STEREO_PAN_BY_SIDE[side]
+        panner.connect(masterGain)
+      }
+    }
+    return stereoPannerNodes
+  }
+
+  function loadPlayer(): Promise<SoundfontPlayerSet> {
     if (loadedInstrument !== instrument.value) {
       playerPromise = null
     }
-    if (instrument.value === 'oscillator') {
-      loadedInstrument = 'oscillator'
-      playerPromise = Promise.resolve({
-        play: (note: string, when?: number, options?: { duration?: number }) => {
-          const context = getContext()
-          const startAt = when ?? context.currentTime
-          const duration = options?.duration ?? 0.5
-          const oscillator = context.createOscillator()
-          const gainNode = context.createGain()
-          oscillator.type = 'sine'
-          oscillator.frequency.value = noteNameToFrequency(note)
-          gainNode.gain.setValueAtTime(0.00001, startAt)
-          gainNode.gain.linearRampToValueAtTime(0.9, startAt + 0.02)
-          gainNode.gain.exponentialRampToValueAtTime(0.00001, startAt + duration)
-          oscillator.connect(gainNode)
-          gainNode.connect(context.destination)
-          oscillator.start(startAt)
-          oscillator.stop(startAt + duration + 0.05)
-          return {
-            stop: (stopAt?: number) => {
-              oscillator.stop(stopAt ?? context.currentTime)
-            },
-          } as SoundfontPlayer
-        },
-      } as SoundfontPlayer)
-      return playerPromise
-    }
-    const config = INSTRUMENT_CONFIG[instrument.value]
     if (playerPromise !== null) return playerPromise
-    loadedInstrument = instrument.value
-    playerPromise = import('soundfont-player').then(async (module) => {
-      const Soundfont = module.default ?? module
+    if (instrument.value === 'oscillator') {
+      throw new Error('loadPlayer() is unavailable for oscillator playback')
+    }
+    const currentInstrument = instrument.value
+    loadedInstrument = currentInstrument
+    playerPromise = import('soundfont-player').then(async (Soundfont) => {
       const context = getContext()
       if (context.state === 'suspended') {
         await context.resume()
       }
-      if (typeof Soundfont.instrument !== 'function') {
-        throw new Error('soundfont-player instrument API unavailable')
-      }
-      return Soundfont.instrument(context, config.instrument as Parameters<SoundfontModule['instrument']>[1], {
-        soundfont: config.soundfont,
-        gain: config.gain,
-        attack: config.attack,
-        release: config.release,
-      })
+      const config = INSTRUMENT_CONFIG[currentInstrument]
+      const panners = getStereoPannerNodes()
+      const playerEntries = await Promise.all((['left', 'right'] as StereoSide[]).map(async (side) => {
+        const player = await Soundfont.instrument(
+          context,
+          config.instrument as Parameters<SoundfontModule['instrument']>[1],
+          {
+            destination: panners[side],
+            soundfont: config.soundfont,
+            gain: INSTRUMENT_GAIN,
+          },
+        )
+        return [side, player] as const
+      }))
+      return Object.fromEntries(playerEntries) as SoundfontPlayerSet
     })
     return playerPromise
-  }
-
-  function noteNameToFrequency(note: string): number {
-    const match = /^([A-G])(#?)(-?\d+)$/.exec(note)
-    if (match === null || match.length < 4) return 440
-    const [, letterRaw, sharp, octaveText] = match as unknown as [string, string, string, string]
-    const letter = letterRaw as 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G'
-    const semitoneBase: Record<'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G', number> = {
-      C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11,
-    }
-    const octave = Number.parseInt(octaveText, 10)
-    const semitone = semitoneBase[letter] + (sharp === '#' ? 1 : 0)
-    const midi = (octave + 1) * 12 + semitone
-    return 440 * (2 ** ((midi - 69) / 12))
   }
 
   function clearTimers(): void {
@@ -146,8 +123,12 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     timers = []
   }
 
-  function clearActiveNotes(): void {
-    activeNotes = []
+  async function ensureRunningContext(): Promise<AudioContext> {
+    const context = getContext()
+    if (context.state === 'suspended') {
+      await context.resume()
+    }
+    return context
   }
 
   async function schedule(
@@ -155,14 +136,12 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     speedFactor: number,
     callbacks: PlaybackScheduleCallbacks = {},
   ): Promise<void> {
-    const player = await loadPlayer()
-    const context = getContext()
-    const config = isSoundfontInstrument(instrument.value)
-      ? INSTRUMENT_CONFIG[instrument.value]
-      : undefined
+    const eventsBySide: Record<StereoSide, Array<{ time: number; note: number; duration: number; gain: number }>> = {
+      left: [],
+      right: [],
+    }
 
     clearTimers()
-    clearActiveNotes()
     for (const step of steps) {
       const stepOffsetMs = step.playbackStartMs / speedFactor
       if (callbacks.onStepStart !== undefined) {
@@ -175,49 +154,81 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
           callbacks.onStepEnd?.(step)
         }, stepOffsetMs + (step.durationMs / speedFactor)))
       }
+      const uniqueNotes = new Map<string, { pitch: number; duration: number; side: StereoSide }>()
       for (const note of step.activeNotes) {
         if (!note.attack) continue
-        const startTime = context.currentTime + (stepOffsetMs / 1000)
-        const duration = note.durationMs / speedFactor / 1000
-        if (config !== undefined) {
-          const node = player.play(midiPitchToNoteName(note.pitch), startTime, {
-            duration,
-            gain: config.gain,
-            attack: config.attack,
-            decay: config.decay,
-            sustain: config.sustain,
-            release: config.release,
+        const noteKey = `${note.originPlaybackId}:${note.pitch}:${note.pan}`
+        const nextDuration = note.durationMs / speedFactor / 1000
+        const existing = uniqueNotes.get(noteKey)
+        if (existing === undefined || nextDuration > existing.duration) {
+          uniqueNotes.set(noteKey, {
+            pitch: note.pitch,
+            duration: nextDuration,
+            side: note.pan,
           })
-          if (node !== undefined) {
-            activeNotes.push(node)
-          }
-        } else {
-          const oscillator = playTriangleHarpNote(note.pitch, startTime, duration, context)
-          activeNotes.push({
-            stop: (stopAt?: number) => {
-              oscillator.stop(stopAt ?? context.currentTime)
-            },
-          } as SoundfontPlayer)
         }
       }
+      const chordGain = uniqueNotes.size === 0
+        ? MAX_CHORD_GAIN
+        : Math.min(MAX_CHORD_GAIN, MAX_CHORD_GAIN / Math.sqrt(uniqueNotes.size))
+      for (const { pitch, duration, side } of uniqueNotes.values()) {
+        eventsBySide[side].push({
+          time: stepOffsetMs / 1000,
+          note: pitch,
+          duration,
+          gain: chordGain,
+        })
+      }
     }
-    console.debug('audio-schedule', JSON.stringify({
-      contextState: context.state,
-      steps: steps.length,
-      events: activeNotes.length,
-      speedFactor,
-      instrument: instrument.value,
-    }))
-    if (activeNotes.length === 0) return
+    if (eventsBySide.left.length === 0 && eventsBySide.right.length === 0) return
+    const context = await ensureRunningContext()
+    const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC
+    if (instrument.value === 'oscillator') {
+      const masterGain = getMasterGainNode()
+      for (const side of ['left', 'right'] as StereoSide[]) {
+        const events = eventsBySide[side]
+        for (const event of events) {
+        const gainNode = context.createGain()
+        const oscillator = context.createOscillator()
+        const panner = context.createStereoPanner()
+        const startTime = baseStartTime + event.time
+        const releaseSec = Math.min(OSCILLATOR_RELEASE_SEC, event.duration / 2)
+        const stopTime = startTime + event.duration + releaseSec
+        const peakGain = Math.min(OSCILLATOR_GAIN, event.gain * OSCILLATOR_GAIN)
+        const sustainTime = Math.max(startTime + OSCILLATOR_ATTACK_SEC, startTime + event.duration)
+
+        oscillator.type = 'triangle'
+        panner.pan.value = STEREO_PAN_BY_SIDE[side]
+        oscillator.frequency.setValueAtTime(midiToFrequency(event.note), startTime)
+        gainNode.gain.setValueAtTime(0.0001, startTime)
+        gainNode.gain.linearRampToValueAtTime(peakGain, startTime + OSCILLATOR_ATTACK_SEC)
+        gainNode.gain.setValueAtTime(peakGain, sustainTime)
+        gainNode.gain.linearRampToValueAtTime(0.0001, stopTime)
+        oscillator.connect(gainNode)
+        gainNode.connect(panner)
+        panner.connect(masterGain)
+        oscillator.start(startTime)
+        oscillator.stop(stopTime)
+      }
+      }
+      return
+    }
+    const players = await loadPlayer()
+    for (const side of ['left', 'right'] as StereoSide[]) {
+      const events = eventsBySide[side]
+      if (events.length === 0) continue
+      players[side].schedule(baseStartTime, events)
+    }
   }
 
   function stop(): void {
     clearTimers()
-    clearActiveNotes()
     if (ctx !== null && ctx.state !== 'closed') {
       ctx.close()
       ctx = null
     }
+    masterGainNode = null
+    stereoPannerNodes = null
     playerPromise = null
     loadedInstrument = null
   }

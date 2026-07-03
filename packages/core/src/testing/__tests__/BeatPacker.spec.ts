@@ -91,7 +91,7 @@ function makeNote(beat: number, duration: number, opts: Partial<Note> = {}): Not
 /** Erstellt einen minimalen Song mit einer Stimme. */
 function makeSong(notes: PlayableEntity[]): Song {
   const voice: Voice = {
-    index: 0,
+    index: 1,
     name: 'V1',
     showVoice: true,
     showFlowline: true,
@@ -100,7 +100,7 @@ function makeSong(notes: PlayableEntity[]): Song {
   }
   return {
     voices: [voice],
-    beatMaps: [{ index: 0, entries: Object.fromEntries(notes.map(n => [n.beat, n])) }],
+    beatMaps: [{ index: 1, entries: Object.fromEntries(notes.map(n => [n.beat, n])) }],
     metaData: {},
   }
 }
@@ -118,7 +118,7 @@ describe('computeBeatCompression – method 2 (linear)', () => {
     ]
     const song = makeSong(notes)
     const conf = makeConf(2)
-    const result = computeBeatCompression(song, [0], conf)
+    const result = computeBeatCompression(song, [1], conf)
 
     expect(result[0]).toBe(0)
     expect(result[96]).toBe(96 * 8)
@@ -130,14 +130,14 @@ describe('computeBeatCompression – method 2 (linear)', () => {
     const voice1 = [makeNote(200, 96)]
     const song: Song = {
       voices: [
-        { index: 0, name: 'V1', showVoice: true, showFlowline: true, showJumpline: true, entities: voice0 },
-        { index: 1, name: 'V2', showVoice: true, showFlowline: true, showJumpline: true, entities: voice1 },
+        { index: 1, name: 'V1', showVoice: true, showFlowline: true, showJumpline: true, entities: voice0 },
+        { index: 2, name: 'V2', showVoice: true, showFlowline: true, showJumpline: true, entities: voice1 },
       ],
       beatMaps: [],
       metaData: {},
     }
     const conf = makeConf(2)
-    const result = computeBeatCompression(song, [0], conf)
+    const result = computeBeatCompression(song, [1], conf)
     expect(result[200]).toBeUndefined()
   })
 })
@@ -156,7 +156,7 @@ describe('computeBeatCompression – method 0 (standard)', () => {
     ]
     const song = makeSong(notes)
     const conf = makeConf(0)
-    const result = computeBeatCompression(song, [0], conf)
+    const result = computeBeatCompression(song, [1], conf)
 
     const positions = Object.keys(result).map(Number).sort((a, b) => a - b).map(k => result[k]!)
     for (let i = 1; i < positions.length; i++) {
@@ -173,7 +173,7 @@ describe('computeBeatCompression – method 0 (standard)', () => {
     ]
     const song = makeSong(notes)
     const conf = makeConf(0)
-    const result = computeBeatCompression(song, [0], conf)
+    const result = computeBeatCompression(song, [1], conf)
 
     const gap01 = result[96]!  - result[0]!
     const gap12 = result[192]! - result[96]!
@@ -191,7 +191,7 @@ describe('computeBeatCompression – method 0 (standard)', () => {
     ]
     const song = makeSong(notes)
     const conf = makeConf(0)
-    const result = computeBeatCompression(song, [0], conf)
+    const result = computeBeatCompression(song, [1], conf)
 
     const gapMeasure = result[96]!  - result[0]!
     const gapPart    = result[192]! - result[96]!
@@ -211,7 +211,7 @@ describe('computeBeatCompression – method 0 (standard)', () => {
     })
     const notes = [makeNote(0, 96), makeNote(96, 96)]
     const song = makeSong(notes)
-    const result0 = computeBeatCompression(song, [0], conf)
+    const result0 = computeBeatCompression(song, [1], conf)
 
     const confDefault = new Confstack()
     confDefault.push({
@@ -222,7 +222,7 @@ describe('computeBeatCompression – method 0 (standard)', () => {
       },
       notebound: { minc: {} },
     })
-    const resultDefault = computeBeatCompression(song, [0], confDefault)
+    const resultDefault = computeBeatCompression(song, [1], confDefault)
 
     expect(result0).toEqual(resultDefault)
   })
@@ -234,8 +234,8 @@ describe('computeBeatCompression – method 0 (standard)', () => {
     const songLarge = makeSong(notesLarge)
     const conf = makeConf(0)
 
-    const resultSmall = computeBeatCompression(songSmall, [0], conf)
-    const resultLarge = computeBeatCompression(songLarge, [0], conf)
+    const resultSmall = computeBeatCompression(songSmall, [1], conf)
+    const resultLarge = computeBeatCompression(songLarge, [1], conf)
 
     const gapSmall = resultSmall[8]!  - resultSmall[0]!
     const gapLarge = resultLarge[96]! - resultLarge[0]!
@@ -257,7 +257,7 @@ describe('computeBeatCompression – method 10 (legacy standard)', () => {
     ]
     const song = makeSong(notes)
     const conf = makeConf(10)
-    const result = computeBeatCompression(song, [0], conf)
+    const result = computeBeatCompression(song, [1], conf)
 
     const positions = Object.keys(result).map(Number).sort((a, b) => a - b).map(k => result[k]!)
     for (let i = 1; i < positions.length; i++) {
@@ -280,7 +280,7 @@ describe('computeBeatCompression – method 1 (collision)', () => {
     ]
     const song = makeSong(notes)
     const conf = makeConf(1)
-    const result = computeBeatCompression(song, [0], conf)
+    const result = computeBeatCompression(song, [1], conf)
 
     const positions = Object.keys(result).map(Number).sort((a, b) => a - b).map(k => result[k]!)
     for (let i = 1; i < positions.length; i++) {
@@ -310,7 +310,7 @@ describe('computeBeatCompression – method 1 (collision)', () => {
       makeNote(96, 96, { pitch: 62, time: 96, prevPitch: 60, nextPitch: 64 }),
     ]
     const song = makeSong(notes)
-    const result = computeBeatCompression(song, [0], conf)
+    const result = computeBeatCompression(song, [1], conf)
 
     expect(result[0]).toBe(0)
     expect(result[96]).toBe(384)
@@ -332,7 +332,7 @@ describe('computeBeatCompression – method 1 (collision)', () => {
       makeNote(192, 96, { pitch: 64, prevPitch: 62, nextPitch: undefined }),
     ]
     const song = makeSong(notes)
-    const result = computeBeatCompression(song, [0], conf)
+    const result = computeBeatCompression(song, [1], conf)
 
     const positions = Object.keys(result).map(Number).sort((a, b) => a - b).map(k => result[k]!)
     for (let i = 1; i < positions.length; i++) {
@@ -356,7 +356,7 @@ describe('computeBeatCompression – method 3 (collision v2)', () => {
     ]
     const song = makeSong(notes)
     const conf = makeConf(3)
-    const result = computeBeatCompression(song, [0], conf)
+    const result = computeBeatCompression(song, [1], conf)
 
     const positions = Object.keys(result).map(Number).sort((a, b) => a - b).map(k => result[k]!)
     for (let i = 1; i < positions.length; i++) {

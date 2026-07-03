@@ -1,6 +1,6 @@
 # Current State
 
-Stand: 2026-04-29
+Stand: 2026-06-29
 
 Dieses Dokument beschreibt den aktuellen Zustand von `zupfnoter-ts` als technisches
 Arbeits- und Architektur-Snapshot.
@@ -13,10 +13,11 @@ weitgehend umgesetzt:
 
 `ABC -> Song -> Sheet -> SVG`
 
-Der Kern ist testbar und durch Unit-, Snapshot- und Fixture-Tests abgesichert. Die
-Weboberfläche ist noch ein Scaffold, während `apps/demo` die aktuelle funktionale
-Oberfläche für die Pipeline darstellt. Eine PDF-Ausgabe und die geplante Produkt-UI
-sind noch nicht fertig.
+Der Kern ist testbar und durch Unit-, Snapshot- und Fixture-Tests abgesichert. Neben
+`apps/demo` existiert inzwischen auch in `apps/web` eine fachlich nutzbare Workbench
+mit Editor-, Preview-, Selection-, Command- und Playback-Grundfunktionen. Eine
+PDF-Ausgabe, vollständige Datei-Integration und einige größere Produktbausteine sind
+noch nicht fertig.
 
 ## Repository-Struktur
 
@@ -26,7 +27,8 @@ Das Repository ist als Monorepo aufgebaut:
   Konfiguration.
 - `packages/core` enthält Parser, Transformation, Layout, Beat-Packing und SVG-Export.
 - `apps/demo` ist die derzeit nutzbare Demo-Oberfläche.
-- `apps/web` ist die spätere Produkt-App, derzeit noch Scaffold.
+- `apps/web` ist die aktive Produkt-App in Phase 5 mit Workbench, Editor, mehreren
+  Preview-Panels, Selection-Orchestrierung, Command-Anbindung und Playback.
 - `apps/cli` ist die geplante CLI, derzeit nur ein Platzhalter.
 - `fixtures/` enthält versionsierte Testfälle für die fixture-driven Tests.
 - `docs/` enthält Phasen-Dokumentation, Architektur-Notizen und Testkonzepte.
@@ -105,9 +107,23 @@ zum Testen und zur Visualisierung der Pipeline, nicht als vollständige Endanwen
 
 ### `apps/web`
 
-Die Web-App ist technisch vorbereitet, aber inhaltlich noch nicht ausgebaut. Sie
-enthält noch die Vue-Starterstruktur und wartet auf die eigentliche Editor-, Preview-
-und Konfigurationsoberfläche.
+Die Web-App ist nicht mehr nur vorbereitet, sondern der aktuelle Schwerpunkt der
+Produktentwicklung. Der bisherige Ausbau umfasst insbesondere:
+
+- Workbench-Struktur mit Editor-, Harp- und Score-Preview
+- gemeinsame Selection über die beteiligten Sichten
+- Playback-Highlight getrennt von der Benutzerselektion
+- Command-System mit Legacy-orientierten Kommandos
+- Mehrfenster-/Mirror-Anbindung für Preview-Panels
+- Playback mit expandiertem Ablauf, Volten-/Repeat-Berücksichtigung, aktiven
+  Extract-Stimmen und Stereo-Panning
+
+Offen bleiben in `apps/web` unter anderem:
+
+- vollständige Datei-Integration
+- ausgebauter Konfigurationseditor
+- finalisierte Playback-Scopes auf Basis der zentralen Selection
+- Browser-validierte Produktpolitur
 
 ### `apps/cli`
 
@@ -126,26 +142,49 @@ Die Architektur- und Migrationsdokumentation ist bereits breit angelegt:
 
 `AGENTS.md` beschreibt zusätzlich den geplanten Ausbaupfad für das Monorepo.
 
+## Phasenstand
+
+Die grobe Projektlage entlang der offiziellen Phasen ist derzeit:
+
+- Phase 0: praktisch umgesetzt, auch wenn die Checkboxen im Plan nicht laufend
+  gepflegt wurden
+- Phase 1: umgesetzt
+- Phase 2: fachlich umgesetzt und testseitig verankert
+- Phase 3: fachlich weitgehend umgesetzt
+- Phase 4: SVG-Ausgabe umgesetzt, PDF-Ausgabe noch offen
+- Phase 5: aktiv in Arbeit; `apps/web` ist hier der aktuelle Schwerpunkt
+- Phase 6: angelegt, aber noch nicht als echte CLI ausgebaut
+- Phase 7: noch offen
+
+Der aktuelle Arbeitsfokus liegt innerhalb von Phase 5 vor allem auf:
+
+- Selection und Selection-Projektionen
+- Preview-Kopplung zwischen Harfennoten, Score und Editor
+- Command-Verhalten
+- Playback inklusive Ablaufmodell, Highlighting und Audio-Ausgabe
+
 ## Offene Punkte
 
 Folgende Bereiche sind noch offen oder unvollständig:
 
 - PDF-Export fehlt
-- die echte `apps/web`-Produktoberfläche fehlt
+- die `apps/web`-Produktoberfläche ist begonnen, aber noch nicht vollständig
 - CLI-Funktionalität ist noch nicht vollständig ausgebaut
 - Worker-Architektur ist noch nicht vorhanden
 - Voice Styles sind dokumentiert, aber noch nicht als Feature umgesetzt
-- weitere technische Integrationen wie File Handling, Command-System und MIDI sind
-  noch nicht fertig
+- weitere technische Integrationen wie File Handling und Teile des
+  Command-/Playback-Umfangs sind noch nicht fertig
 
 ## Praktische Einordnung
 
 Der aktuelle Zustand ist damit nicht mehr ein reiner Scaffold, sondern ein
-fachlich brauchbares Transformationssystem mit:
+fachlich brauchbares Transformations- und Workbench-System mit:
 
 - sauber getrennten Typen und Kernmodulen
 - implementierter ABC-zu-SVG-Pipeline
 - versionsierten Fixtures
+- ausgebauter Web-Workbench in Phase 5
 - stabiler Testbasis
 
-Was noch fehlt, ist vor allem die produktive Hülle um diesen Kern herum.
+Was noch fehlt, ist vor allem die Vollständigkeit und Konsolidierung der
+Produktoberfläche um diesen Kern herum.

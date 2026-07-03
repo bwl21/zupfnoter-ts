@@ -15,6 +15,7 @@ import type { Song, PlayableEntity, SynchPoint } from '@zupfnoter/types'
 import type { DurationKey, DurationStyle } from '@zupfnoter/types'
 import type { Confstack } from './Confstack.js'
 import { requireDefined } from './requireDefined.js'
+import { getSongVoiceByVoiceNumber } from './voiceIdentity.js'
 
 // ---------------------------------------------------------------------------
 // Typen
@@ -33,7 +34,7 @@ export type BeatCompressionMap = Record<number, number>
  * Entspricht `compute_beat_compression()` in `harpnotes.rb`.
  *
  * @param song        Das Musikmodell
- * @param layoutLines Stimmen-Indizes die für das Layout berücksichtigt werden
+ * @param layoutLines fachliche Stimmennummern die für das Layout berücksichtigt werden
  * @param conf        Confstack mit layout.packer.pack_method etc.
  */
 export function computeBeatCompression(
@@ -65,7 +66,7 @@ export function computeBeatCompression(
 function collectRelevantPlayables(song: Song, layoutLines: number[]): PlayableEntity[] {
   const playables: PlayableEntity[] = []
   for (const voiceId of layoutLines) {
-    const voice = song.voices[voiceId]
+    const voice = getSongVoiceByVoiceNumber(song, voiceId)
     if (!voice) continue
     for (const entity of voice.entities) {
       if (isPlayable(entity)) {

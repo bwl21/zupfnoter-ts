@@ -5,15 +5,6 @@
 import type { SelectionTextRange } from './selection.js'
 
 /**
- * One note scheduled by playback.
- */
-export interface PlaybackNote {
-  pitch: number
-  durationMs: number
-  attack: boolean
-}
-
-/**
  * Runtime status of playback.
  */
 export type PlaybackStatus = 'stopped' | 'playing' | 'paused'
@@ -51,16 +42,12 @@ export interface PlaybackHighlight {
  * One step in the expanded playback flow after repeats and voltas are resolved.
  */
 export interface PlaybackFlowStep {
-  /** Playback start time in milliseconds after local traversal. */
-  playbackStartMs: number
   /** Time position of the originating notated material in abc2svg units. */
   sourceTime: number
   /** Zupfnoter ids of the notated playables that sound at this flow step. */
   originZnIds: string[]
   /** Addressable ABC text ranges that belong to this flow step. */
   activeTextRanges: SelectionTextRange[]
-  /** Notes that should be triggered at this step. */
-  activeNotes: PlaybackNote[]
   /** Earliest ABC start offset of the grouped playables, if available. */
   activeStartChar?: number
   /** Index within the expanded playback flow. */

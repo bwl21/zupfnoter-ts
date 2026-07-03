@@ -35,8 +35,14 @@ export interface SheetObjectAddressability {
 export interface SheetObjectIndexEntry {
   /** Origin domain of the addressable object. */
   kind: 'score-object' | 'music-entity' | 'sheet-object'
+  /** Stable ordinal among score hitboxes with the same text range, if applicable. */
+  scoreHitboxOrdinal?: number
   /** Stable Zupfnoter identifier when the entry belongs to a music entity. */
   znId?: string
+  /** 1-based voice id when the mapped entry belongs to a concrete voice. */
+  voiceId?: string
+  /** Music-time position used for cross-voice synchronization, if available. */
+  musicTime?: number
   /** ABC text range for the mapped entity, if available. */
   textRange?: SelectionTextRange
   /** 1-based start position in line/column form, if available. */
@@ -63,6 +69,8 @@ export interface SheetObjectIndex {
   byConfKey: Record<string, number[]>
   /** Exact text range lookup (`start:end`). */
   byTextRange: Record<string, number[]>
+  /** Music-time lookup (`time`) for cross-voice selection expansion. */
+  byMusicTime: Record<string, number[]>
   /** Ordered entries for range-based lookups. */
   entries: SheetObjectIndexEntry[]
 }
@@ -76,8 +84,8 @@ export type SelectionProjectionKind = 'textRange' | 'znId' | 'confKey'
 /** Logical workbench target that can consume or create selection projections. */
 export type SelectionTarget = 'abc-editor' | 'score-preview' | 'harp-preview' | 'player'
 
-/** Voice-scoping strategy for editor-driven selection projections. */
-export type SelectionVoiceScope = 'single-voice' | 'all-matching-voices'
+/** Voice-scoping strategy for cross-view selection. */
+export type SelectionVoiceScope = 'single-voice' | 'extract-voices' | 'all-voices'
 
 /** Capability profile declared by a workbench target. */
 export interface SelectionTargetCapabilities {
@@ -90,10 +98,14 @@ export interface SelectionTargetCapabilities {
 export interface SelectionState {
   /** Selected index entries within the current render-generation-local sheet object index. */
   selectedIndexes: number[]
+  /** Stable origin selection before voice-scope expansion is applied. */
+  originSelectedIndexes: number[]
   /** Anchor index for range extension, if applicable. */
   anchorIndex?: number
   /** Where the selection originated from. */
   source: SelectionSource
+  /** Voice scope used when projecting or expanding the current selection. */
+  voiceScope: SelectionVoiceScope
 }
 
 /** Projection resolved from the current selection state. */
@@ -110,6 +122,89 @@ export interface SelectionProjection {
 
 /** Optional projection controls resolved by the selection manager. */
 export interface SelectionProjectionOptions {
-  /** How editor-driven projections should treat equally matching objects across voices. */
-  editorVoiceScope?: SelectionVoiceScope
+  /** Optional override for the voice scope of the projected selection. */
+  voiceScope?: SelectionVoiceScope
+  /** Active extract voice ids when the selection should follow the current extract. */
+  activeVoiceIds?: string[]
 }
+
+/** Fachliche Ursprungsidentität einer Selektion aus einer Projektion. */
+export interface SelectionOrigin {
+  /** 1-basierte Stimm-ID der geklickten musikalischen Entity, wenn bekannt. */
+  voiceId?: string
+  /** Musikalische Zeitposition der geklickten Entity, wenn bekannt. */
+  musicTime?: number
+  /** Zupfnoter-ID der geklickten musikalischen Entity, wenn bekannt. */
+  znId?: string
+}
+
+/** Fachliche Zustandsübergänge rund um die zentrale Selection. */
+export type SelectionEvent =
+  | {
+    /** Benutzer- oder Systemselektion wurde vollständig ersetzt. */
+    type: 'selection.replaced'
+    selection: SelectionState
+  }
+  | {
+    /** Selektion wurde direkt über Indexeinträge adressiert. */
+    type: 'selection.indexes-selected'
+    selectedIndexes: number[]
+    source?: SelectionSource
+  }
+  | {
+    /** Selektion wurde über einen Textbereich adressiert. */
+    type: 'selection.text-range-selected'
+    startpos: number
+    endpos: number
+    origin?: SelectionOrigin
+    extend?: boolean
+    source?: SelectionSource
+  }
+  | {
+    /** Selektion wurde über Zeile und Spalte adressiert. */
+    type: 'selection.line-column-range-selected'
+    start: SelectionLineColumn
+    end: SelectionLineColumn
+    origin?: SelectionOrigin
+    extend?: boolean
+    source?: SelectionSource
+  }
+  | {
+    /** Selektion wurde über eine musikalische Kennung adressiert. */
+    type: 'selection.znid-selected'
+    znId: string
+    source?: SelectionSource
+  }
+  | {
+    /** Selektion wurde über eine musikalische Materialmenge adressiert. */
+    type: 'selection.music-range-selected'
+    znIds: string[]
+    source?: SelectionSource
+  }
+  | {
+    /** Selektion wurde über einen Konfigurationsschlüssel adressiert. */
+    type: 'selection.confkey-selected'
+    confKey: string
+    source?: SelectionSource
+  }
+  | {
+    /** Eine neue leere Partitur oder ein neues Stück wurde geladen. */
+    type: 'selection.song-loaded'
+    source?: SelectionSource
+    voiceScope?: SelectionVoiceScope
+  }
+  | {
+    /** Der Stimmumfang der bestehenden Selection wurde geändert. */
+    type: 'selection.scope-changed'
+    voiceScope: SelectionVoiceScope
+  }
+  | {
+    /** Die aktiven Stimmen des aktuellen Auszugs wurden geändert. */
+    type: 'selection.extract-changed'
+    activeVoiceIds: string[]
+  }
+  | {
+    /** Ein neuer renderlokaler Selection-Index wurde erzeugt. */
+    type: 'selection.render-refreshed'
+    nextIndex?: SheetObjectIndex
+  }
