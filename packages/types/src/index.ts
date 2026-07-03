@@ -49,6 +49,7 @@ export type {
   SelectionProjectionOptions,
   SelectionSource,
   SelectionState,
+  SelectionEvent,
 } from './selection.js'
 
 export type {

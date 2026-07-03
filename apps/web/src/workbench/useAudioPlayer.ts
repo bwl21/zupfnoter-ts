@@ -9,7 +9,9 @@ type StereoSide = 'left' | 'right'
 
 export type PlaybackInstrument = 'harp' | 'piano' | 'western-guitar' | 'oscillator'
 
-const INSTRUMENT_CONFIG: Record<PlaybackInstrument, { instrument: string, soundfont: string }> = {
+type SoundfontPlaybackInstrument = Exclude<PlaybackInstrument, 'oscillator'>
+
+const INSTRUMENT_CONFIG: Record<SoundfontPlaybackInstrument, { instrument: string, soundfont: string }> = {
   harp: { instrument: 'orchestral_harp', soundfont: 'FluidR3_GM' },
   piano: { instrument: 'acoustic_grand_piano', soundfont: 'FluidR3_GM' },
   'western-guitar': { instrument: 'acoustic_guitar_steel', soundfont: 'FluidR3_GM' },
@@ -85,13 +87,17 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       playerPromise = null
     }
     if (playerPromise !== null) return playerPromise
-    loadedInstrument = instrument.value
+    if (instrument.value === 'oscillator') {
+      throw new Error('loadPlayer() is unavailable for oscillator playback')
+    }
+    const currentInstrument = instrument.value
+    loadedInstrument = currentInstrument
     playerPromise = import('soundfont-player').then(async (Soundfont) => {
       const context = getContext()
       if (context.state === 'suspended') {
         await context.resume()
       }
-      const config = INSTRUMENT_CONFIG[instrument.value]
+      const config = INSTRUMENT_CONFIG[currentInstrument]
       const panners = getStereoPannerNodes()
       const playerEntries = await Promise.all((['left', 'right'] as StereoSide[]).map(async (side) => {
         const player = await Soundfont.instrument(

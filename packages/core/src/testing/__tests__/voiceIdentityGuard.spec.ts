@@ -6,9 +6,13 @@ import { describe, expect, it } from 'vitest'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const SOURCE_ROOT = join(__dirname, '../..')
-const INCLUDED_EXTENSIONS = new Set(['.ts', '.vue'])
+const INCLUDED_EXTENSIONS = new Set(['.ts'])
 const EXCLUDED_SEGMENTS = new Set([
   '__tests__',
+  'testing',
+])
+const EXCLUDED_FILES = new Set([
+  'voiceIdentity.ts',
 ])
 
 interface GuardFinding {
@@ -51,6 +55,7 @@ function collectSourceFiles(root: string): string[] {
 
     const extension = absolutePath.slice(absolutePath.lastIndexOf('.'))
     if (!INCLUDED_EXTENSIONS.has(extension)) continue
+    if (EXCLUDED_FILES.has(entry)) continue
     result.push(absolutePath)
   }
 
@@ -84,7 +89,7 @@ function collectFindings(): GuardFinding[] {
 }
 
 describe('voice identity guard', () => {
-  it('forbids ad-hoc voice number conversions in web production code', () => {
+  it('forbids ad-hoc voice number conversions in core production code', () => {
     const findings = collectFindings()
 
     expect(findings).toEqual([])

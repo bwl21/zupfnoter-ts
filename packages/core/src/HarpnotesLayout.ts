@@ -44,7 +44,7 @@ import { buildConfstack } from './buildConfstack.js'
 import { computeBeatCompression, type BeatCompressionMap } from './BeatPacker.js'
 import type { Confstack } from './Confstack.js'
 import { requireDefined } from './requireDefined.js'
-import { resolveSongVoiceByConfigVoiceNumber } from './voiceIdentity.js'
+import { getSongVoiceByVoiceNumber } from './voiceIdentity.js'
 import {
   createDefaultAnnotationTextMetrics,
   type AnnotationTextMetrics,
@@ -594,8 +594,7 @@ export class HarpnotesLayout {
     const startpos = extractOptions.startpos ?? 15
 
     // Compute beat compression for all layout voices.
-    // layoutlineVoices contains 1-based voice numbers (from config);
-    // computeBeatCompression expects 0-based indices into song.voices.
+    // layoutlineVoices contains the fachliche voice numbers from config.
     const layoutlineIndices = Array.from(new Set([...activeVoiceNrs, ...layoutlineVoices]))
     const beatCompressionMap = applyLegacyBeatSpread(
       computeBeatCompression(song, layoutlineIndices, conf),
@@ -608,7 +607,7 @@ export class HarpnotesLayout {
     const activeVoices: number[] = []
 
     for (const voiceNr of activeVoiceNrs) {
-      const voice = resolveSongVoiceByConfigVoiceNumber(song, voiceNr)
+      const voice = getSongVoiceByVoiceNumber(song, voiceNr)
       if (!voice) continue
 
       activeVoices.push(voiceNr)
@@ -693,8 +692,8 @@ export class HarpnotesLayout {
       if (leftVoiceNr === undefined || rightVoiceNr === undefined) continue
       if (!activeVoices.has(leftVoiceNr) || !activeVoices.has(rightVoiceNr)) continue
 
-      const leftVoice = song.voices[leftVoiceNr]
-      const rightVoice = song.voices[rightVoiceNr]
+      const leftVoice = getSongVoiceByVoiceNumber(song, leftVoiceNr)
+      const rightVoice = getSongVoiceByVoiceNumber(song, rightVoiceNr)
       if (!leftVoice || !rightVoice) continue
 
       const leftByBeat = playablesByBeat(leftVoice)
@@ -1733,8 +1732,8 @@ export class HarpnotesLayout {
     for (const [v1Nr, v2Nr] of synchlinePairs) {
       if (v1Nr === undefined || v2Nr === undefined) continue
       if (!activeVoices.has(v1Nr) || !activeVoices.has(v2Nr)) continue
-      const voice1 = song.voices[v1Nr]
-      const voice2 = song.voices[v2Nr]
+      const voice1 = getSongVoiceByVoiceNumber(song, v1Nr)
+      const voice2 = getSongVoiceByVoiceNumber(song, v2Nr)
       if (!voice1 || !voice2) continue
 
       const beatMap1 = beatMaps.get(v1Nr) ?? beatMaps.values().next().value

@@ -15,7 +15,7 @@ import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, type PlaybackStep } from '../playback'
-import { resolveActiveVoiceIdsFromSheet, resolveUserVisibleVoiceIds } from '../songVoiceIdentity'
+import { isUserVisibleVoice, resolveActiveVoiceIdsFromSheet, resolveUserVisibleVoiceIds } from '../songVoiceIdentity'
 import {
   parserErrorToWorkbenchDiagnostic,
   songDiagnosticToWorkbenchDiagnostic,
@@ -132,7 +132,7 @@ export function renderWorkbenchPreviews(
   const renderError = scoreError ?? modelError
   const summary = song === null
     ? 'render failed'
-    : `${allVoiceIds.length} voice(s), ${song.voices.filter((voice) => voice.index > 0).map((voice: Voice) => {
+    : `${allVoiceIds.length} voice(s), ${song.voices.filter(isUserVisibleVoice).map((voice: Voice) => {
       const noteCount = voice.entities.filter((entity: VoiceEntity) => entity.type === 'Note').length
       return `V${voice.index}: ${noteCount} notes`
     }).join(', ')}, ${sheetChildCount} drawables`

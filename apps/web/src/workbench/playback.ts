@@ -432,7 +432,7 @@ export function resolvePlaybackSteps(
     const matchingOriginVoiceIds = [...new Set(
       matchingOriginPlaybackIds
         .map((playbackId) => playbackId.split('::')[0])
-        .filter((voiceId) => voiceId !== undefined && voiceId !== ''),
+        .filter((voiceId): voiceId is string => voiceId !== undefined && voiceId !== ''),
     )]
     const matchingOriginZnIds = [...new Set(
       matchingOriginPlaybackIds.map((playbackId) => playbackId.split('::').slice(1).join('::')),
@@ -515,7 +515,9 @@ export function resolvePlaybackSteps(
     const nextStep: PlaybackStep = {
       ...step,
       originVoiceIds: [...new Set(
-        matchingOriginPlaybackIds.map((playbackId) => playbackId.split('::')[0]).filter((voiceId) => voiceId !== undefined && voiceId !== ''),
+        matchingOriginPlaybackIds
+          .map((playbackId) => playbackId.split('::')[0])
+          .filter((voiceId): voiceId is string => voiceId !== undefined && voiceId !== ''),
       )],
       originPlaybackIds: matchingOriginPlaybackIds,
       originZnIds: matchingOriginZnIds,

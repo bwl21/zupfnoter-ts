@@ -186,6 +186,24 @@ Das Architekturproblem gilt erst dann als ausreichend gelöst, wenn:
 4. Danach entscheiden, ob die zusätzliche Lookup-Struktur im Core genügt oder
    ob das Fachmodell selbst umgestellt werden soll.
 
+## Inventarstand nach Option A
+
+Nach Einführung der zentralen Lookup-Helfer sollen freie fachliche
+Stimmen-Umrechnungen im Produktionscode nicht mehr vorkommen.
+
+Aktuell verbleiben nur noch bewusst zentrale Stellen:
+
+- `packages/core/src/voiceIdentity.ts`
+  - zentrale erlaubte Umrechnung `abcVoiceIndex -> configVoiceNumber`
+  - zentrale Lookups `voiceNumber -> Voice`
+- `apps/web/src/workbench/songVoiceIdentity.ts`
+  - zentrale benutzersichtbare Stimmen-ID im Web
+- `packages/core/src/AbcToSong.ts`
+  - technischer Legacy-Aufbau der Dublette an `song.voices[0]`
+
+Alle weiteren produktiven Pfade sollen über diese Helfer laufen und nicht mehr
+selbst `+1/-1` oder positionsbasierte Ableitungen durchführen.
+
 ## Betroffene Bereiche
 
 - `packages/core`
