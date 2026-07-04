@@ -56,6 +56,27 @@ Im aktuellen Stand gilt:
   Audio-Ausgabe
 - Bereichserweiterung mit `Shift` ist noch nicht in allen Perspektiven fertig
 
+## 3.1 Aktueller Architekturstatus
+
+Die Architektur ist funktional tragfähig, aber noch nicht vollständig sauber
+geschnitten.
+
+Insbesondere gilt aktuell:
+
+- `SelectionStore` ist die zentrale fachliche Wahrheit
+- `selectionManager` verarbeitet Selection-Events und kennt zugleich konkrete
+  Perspektiven bzw. Projektionen
+- `SheetObjectIndex` ist die technische Übersetzungsschicht zwischen
+  Identitätsräumen
+- Playback verwendet inzwischen stimmsichere `playbackId = voiceId::znId`
+
+Die wichtigste offene Architekturschuld dazu ist:
+
+- [GitHub Issue #36: Selection-Projektionen aus dem selectionManager entkoppeln](https://github.com/bwl21/zupfnoter-ts/issues/36)
+
+Dieses Dokument beschreibt also weiterhin korrekt den aktuellen Ist-Stand, aber
+nicht in allen Teilen bereits das gewünschte Zielbild.
+
 ## 4. Grundidee
 
 Selection ist in Phase 5 kein panel-lokaler Zustand, sondern ein zentraler

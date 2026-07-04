@@ -29,6 +29,8 @@ können im jeweiligen Phase-Ordner auch ergänzende Dateien wie `spec-<thema>.md
 | [docs/phase-5/spec-codemirror.md](docs/phase-5/spec-codemirror.md) | Phase 5 – CodeMirror-Integration für den ABC-Editor |
 | [docs/phase-5/spec-selection.md](docs/phase-5/spec-selection.md) | Phase 5 – Selection in Editor, Score und Harfe |
 | [docs/phase-5/spec-playback-selection.md](docs/phase-5/spec-playback-selection.md) | Phase 5.7 – Selection-gesteuertes Playback |
+| [docs/phase-5/status.md](docs/phase-5/status.md) | Phase 5 – aktueller Umsetzungsstand |
+| [docs/phase-5/roadmap.md](docs/phase-5/roadmap.md) | Phase 5 – aktuelle Arbeitsreihenfolge |
 | [docs/phase-5/architektur_selection_perspektiven.md](docs/phase-5/architektur_selection_perspektiven.md) | Phase 5 – Architektur von Selection, Perspektiven und Player |
 | [docs/adr/vector-umsetzung.md](docs/adr/vector-umsetzung.md) | ADR: Ruby `Vector` → TypeScript |
 | [docs/adr/stabile-stimmenidentitaet.md](docs/adr/stabile-stimmenidentitaet.md) | Architektur-Issue: stabile Stimmenidentität über Core, Web und CLI |
