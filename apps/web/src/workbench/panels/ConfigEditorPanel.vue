@@ -58,7 +58,8 @@ const emit = defineEmits<{
 }>()
 
 const searchText = ref('')
-const viewportWidth = ref<number>(typeof window === 'undefined' ? 1400 : window.innerWidth)
+const panelElement = ref<HTMLElement | null>(null)
+const panelWidth = ref(1400)
 const expandedPaths = ref<string[]>([
   'extract',
   'extract.current',
@@ -159,9 +160,9 @@ const parsedSongConfig = computed(() => {
 const defaultConfig = computed(() => initConf(new Confstack()))
 const effectiveConfig = computed(() => mergeSongConfig(defaultConfig.value, parsedSongConfig.value.config))
 const filteredSearch = computed(() => searchText.value.trim().toLowerCase())
-const useCompactLabels = computed(() => viewportWidth.value < 1180)
 
 const visibleRows = computed(() => buildVisibleRows())
+let panelResizeObserver: ResizeObserver | undefined
 
 watch(
   [() => props.currentExtract, () => props.abcText],
@@ -171,11 +172,19 @@ watch(
 )
 
 onMounted(() => {
-  window.addEventListener('resize', syncViewportWidth)
+  syncPanelWidth()
+  if (typeof ResizeObserver !== 'undefined') {
+    panelResizeObserver = new ResizeObserver(() => {
+      syncPanelWidth()
+    })
+    if (panelElement.value !== null) {
+      panelResizeObserver.observe(panelElement.value)
+    }
+  }
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', syncViewportWidth)
+  panelResizeObserver?.disconnect()
 })
 
 function buildVisibleRows(): ConfigTreeRow[] {
@@ -350,18 +359,34 @@ function canSelectPath(path: string | undefined): boolean {
     || path.includes('.annotations.')
 }
 
-function syncViewportWidth(): void {
-  viewportWidth.value = window.innerWidth
+function syncPanelWidth(): void {
+  panelWidth.value = panelElement.value?.clientWidth ?? 1400
 }
 
-function displayLabel(label: string): string {
-  if (!useCompactLabels.value) return label
-  return abbreviateMiddle(label, 14, 5, 5)
+function displayLabel(label: string, depth: number): string {
+  const maxLength = estimateLabelCapacity(depth)
+  if (label.length <= maxLength) return label
+  return abbreviateMiddle(label, maxLength)
 }
 
-function abbreviateMiddle(value: string, maxLength: number, headLength: number, tailLength: number): string {
+function estimateLabelCapacity(depth: number): number {
+  const reservedWidth = 224 + 108 + 96 + 22
+  const estimatedNameColumnWidth = Math.max(128, panelWidth.value - reservedWidth)
+  const indentationWidth = depth * 13 + 26
+  const labelWidth = Math.max(52, estimatedNameColumnWidth - indentationWidth)
+  return Math.max(7, Math.floor(labelWidth / 8.2))
+}
+
+function abbreviateMiddle(value: string, maxLength: number): string {
   if (value.length <= maxLength) return value
+  const visibleCharacters = Math.max(4, maxLength - 3)
+  const headLength = Math.max(2, Math.ceil(visibleCharacters / 2))
+  const tailLength = Math.max(2, Math.floor(visibleCharacters / 2))
   return `${value.slice(0, headLength)}...${value.slice(-tailLength)}`
+}
+
+function isAbbreviatedLabel(label: string, depth: number): boolean {
+  return displayLabel(label, depth) !== label
 }
 
 function getPathValue(source: unknown, path: string): unknown {
@@ -397,7 +422,7 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 
 <template>
   <ZnPanel>
-    <div class="config-panel">
+    <div ref="panelElement" class="config-panel">
       <ZnToolbar class="config-panel__toolbar">
         <template #leading>
           <ZnBadge tone="warning">Ausz. {{ props.currentExtract }}</ZnBadge>
@@ -465,9 +490,9 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
             <div class="config-row__name-copy" :title="row.localPath ?? row.path">
               <span
                 class="config-row__label"
-                :class="{ 'config-row__label--compact': useCompactLabels }"
+                :class="{ 'config-row__label--compact': isAbbreviatedLabel(row.label, row.depth) }"
               >
-                {{ displayLabel(row.label) }}
+                {{ displayLabel(row.label, row.depth) }}
               </span>
             </div>
           </div>
@@ -641,8 +666,8 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 .config-row {
   --indent-size: calc(var(--config-depth) * 0.8rem);
   display: grid;
-  grid-template-columns: minmax(8rem, 1.35fr) minmax(14rem, 1.8fr) auto minmax(6rem, 0.7fr);
-  gap: 0.35rem;
+  grid-template-columns: minmax(8rem, 1.55fr) minmax(11rem, 1.45fr) auto minmax(5rem, 0.58fr);
+  gap: 0.22rem;
   align-items: start;
   min-height: 1.7rem;
   padding: 0.12rem 0.35rem;
@@ -730,12 +755,15 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 .config-row__object-placeholder {
   width: 100%;
   min-height: 1.35rem;
-  padding: 0.08rem 0.38rem;
+  padding: 0.08rem 0.28rem;
   border: 1px solid var(--zn-border);
   border-radius: 0.45rem;
   background: color-mix(in srgb, var(--zn-bg-surface) 86%, white);
   color: var(--zn-text);
-  font: inherit;
+  font-size: 0.9em;
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: 1.1;
   line-height: 1.1;
   box-sizing: border-box;
 }
@@ -782,7 +810,7 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 .config-row__effective-value {
   color: var(--zn-heading);
   font-family: var(--zn-font-mono);
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   line-height: 1.1;
   overflow: hidden;
   text-overflow: ellipsis;
