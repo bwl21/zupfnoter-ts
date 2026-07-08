@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import tippy, { type Instance as TippyInstance } from 'tippy.js'
+import 'tippy.js/dist/tippy.css'
 
 import { Confstack, extractSongConfig, initConf, mergeSongConfig } from '@zupfnoter/core'
 
@@ -8,6 +10,7 @@ import ZnButton from '../../design-system/components/ZnButton.vue'
 import ZnIconButton from '../../design-system/components/ZnIconButton.vue'
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
 import ZnToolbar from '../../design-system/components/ZnToolbar.vue'
+import { loadConfigHelpTexts, resolveConfigHelpHtml, type ConfigHelpTexts } from './configHelp'
 
 interface ConfigIntent {
   action:
@@ -163,12 +166,24 @@ const filteredSearch = computed(() => searchText.value.trim().toLowerCase())
 
 const visibleRows = computed(() => buildVisibleRows())
 let panelResizeObserver: ResizeObserver | undefined
+const helpTooltips = new Map<HTMLElement, TippyInstance>()
+const configHelpTexts = ref<ConfigHelpTexts>({})
 
 watch(
   [() => props.currentExtract, () => props.abcText],
   () => {
     draftValues.value = {}
   },
+)
+
+watch(
+  visibleRows,
+  () => {
+    void nextTick(() => {
+      syncHelpTooltips()
+    })
+  },
+  { deep: true },
 )
 
 onMounted(() => {
@@ -181,10 +196,18 @@ onMounted(() => {
       panelResizeObserver.observe(panelElement.value)
     }
   }
+  void loadConfigHelpTexts().then((texts) => {
+    configHelpTexts.value = texts
+    syncHelpTooltips()
+  })
+  void nextTick(() => {
+    syncHelpTooltips()
+  })
 })
 
 onBeforeUnmount(() => {
   panelResizeObserver?.disconnect()
+  destroyHelpTooltips()
 })
 
 function buildVisibleRows(): ConfigTreeRow[] {
@@ -361,6 +384,64 @@ function canSelectPath(path: string | undefined): boolean {
 
 function syncPanelWidth(): void {
   panelWidth.value = panelElement.value?.clientWidth ?? 1400
+}
+
+function syncHelpTooltips(): void {
+  if (panelElement.value === null) return
+  const elements = panelElement.value.querySelectorAll<HTMLElement>('.config-row__help[data-help-key]')
+
+  for (const element of elements) {
+    const helpKey = element.dataset.helpKey
+    if (helpKey === undefined) continue
+    const existing = helpTooltips.get(element)
+    if (existing !== undefined) {
+      existing.setContent(createHelpTooltipContent(helpKey))
+      continue
+    }
+    const instance = tippy(element, {
+      content: createHelpTooltipContent(helpKey),
+      allowHTML: true,
+      interactive: true,
+      trigger: 'mouseenter click',
+      hideOnClick: true,
+      theme: 'zn-config-help',
+      maxWidth: 320,
+      placement: 'left-start',
+    })
+    helpTooltips.set(element, instance)
+  }
+
+  for (const [element, instance] of helpTooltips) {
+    if (panelElement.value.contains(element)) continue
+    instance.destroy()
+    helpTooltips.delete(element)
+  }
+}
+
+function destroyHelpTooltips(): void {
+  for (const instance of helpTooltips.values()) {
+    instance.destroy()
+  }
+  helpTooltips.clear()
+}
+
+function createHelpTooltipContent(helpKey: string): HTMLElement {
+  const container = document.createElement('div')
+  container.className = 'config-help-tooltip'
+
+  const path = document.createElement('div')
+  path.className = 'config-help-tooltip__path'
+  const resolvedPath = resolveLocalPath(helpKey) ?? helpKey
+  path.textContent = resolvedPath
+  container.append(path)
+
+  const body = document.createElement('div')
+  body.className = 'config-help-tooltip__body'
+  body.innerHTML = resolveConfigHelpHtml(resolvedPath, configHelpTexts.value)
+    ?? '<p>Noch keine Hilfebeschreibung vorhanden.</p>'
+  container.append(body)
+
+  return container
 }
 
 function displayLabel(label: string, depth: number): string {
@@ -549,7 +630,12 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
             >
               ⌫
             </ZnIconButton>
-            <button class="config-row__help" type="button" tabindex="-1" :title="row.sourceLabel ? `Wirksam aus ${row.sourceLabel}` : 'Noch keine Herkunft aufgeloest'">
+            <button
+              class="config-row__help"
+              type="button"
+              tabindex="-1"
+              :data-help-key="row.localPath ?? row.path"
+            >
               ?
             </button>
           </div>
@@ -854,6 +940,67 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   font-size: 0.58rem;
   font-weight: 700;
   cursor: help;
+}
+
+:global(.tippy-box[data-theme~='zn-config-help']) {
+  border: 1px solid color-mix(in srgb, var(--zn-border-strong) 68%, transparent);
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, var(--zn-bg-surface) 94%, white);
+  color: var(--zn-text);
+  box-shadow: 0 12px 32px color-mix(in srgb, black 18%, transparent);
+}
+
+:global(.tippy-box[data-theme~='zn-config-help'] > .tippy-arrow) {
+  color: color-mix(in srgb, var(--zn-bg-surface) 94%, white);
+}
+
+:global(.config-help-tooltip) {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 14rem;
+}
+
+:global(.config-help-tooltip__path) {
+  color: var(--zn-text-muted);
+  font-family: var(--zn-font-mono);
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+:global(.config-help-tooltip__body) {
+  color: var(--zn-text);
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+:global(.config-help-tooltip__body p) {
+  margin: 0;
+}
+
+:global(.config-help-tooltip__body p + p) {
+  margin-top: 0.45rem;
+}
+
+:global(.config-help-tooltip__body ul) {
+  margin: 0.35rem 0 0 1rem;
+  padding: 0;
+}
+
+:global(.config-help-tooltip__body li + li) {
+  margin-top: 0.18rem;
+}
+
+:global(.config-help-tooltip__body blockquote) {
+  margin: 0.45rem 0 0;
+  padding: 0.35rem 0.55rem;
+  border-left: 2px solid color-mix(in srgb, var(--zn-warning) 45%, transparent);
+  background: color-mix(in srgb, var(--zn-warning) 10%, white);
+  border-radius: 0.35rem;
+}
+
+:global(.config-help-tooltip__body code) {
+  font-family: var(--zn-font-mono);
+  font-size: 0.92em;
 }
 
 @media (max-width: 1100px) {

@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "servedeploy": "vite preview --host 127.0.0.1 --port 4173",
     "test:unit": "pnpm --dir ../.. run test:web",
-    "build-only": "vite build",
+    "build-only": "pnpm --dir ../.. run sync:conf-help && vite build",
     "type-check": "vue-tsc --build",
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
