@@ -1010,7 +1010,12 @@ function handleMirrorMessage(event: MessageEvent): void {
                   @selection-change="handleEditorSelectionChange"
                 />
                 <LyricsPanel v-else-if="activeId === 'lyrics'" />
-                <ConfigEditorPanel v-else-if="activeId === 'config'" />
+                <ConfigEditorPanel
+                  v-else-if="activeId === 'config'"
+                  :abc-text="abcText"
+                  :current-extract="currentExtract"
+                  @intent="appendConsoleLine(`config intent: ${$event.action}${$event.path ? ` ${$event.path}` : ''}`, 'info')"
+                />
                 <ConsolePanel
                   v-else
                   :lines="consoleLines"

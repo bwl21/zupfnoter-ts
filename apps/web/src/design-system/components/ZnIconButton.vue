@@ -2,9 +2,15 @@
 const props = withDefaults(defineProps<{
   label: string
   variant?: 'primary' | 'secondary' | 'ghost'
+  disabled?: boolean
 }>(), {
   variant: 'secondary',
+  disabled: false,
 })
+
+defineEmits<{
+  click: [event: MouseEvent]
+}>()
 </script>
 
 <template>
@@ -14,6 +20,8 @@ const props = withDefaults(defineProps<{
     type="button"
     :aria-label="props.label"
     :title="props.label"
+    :disabled="props.disabled"
+    @click="$emit('click', $event)"
   >
     <span class="zn-icon-button__icon" aria-hidden="true">
       <slot />
@@ -44,6 +52,13 @@ const props = withDefaults(defineProps<{
 .zn-icon-button:hover {
   transform: translateY(-1px);
   border-color: var(--zn-border-strong);
+}
+
+.zn-icon-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .zn-icon-button:focus-visible {

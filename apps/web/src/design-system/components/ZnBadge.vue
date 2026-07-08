@@ -21,40 +21,42 @@ withDefaults(defineProps<{
   border-radius: var(--zn-radius-pill);
   border: 1px solid var(--zn-border);
   background: var(--zn-bg-surface-soft);
-  color: var(--zn-text-soft);
+  color: var(--zn-heading);
   font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  text-transform: none;
+  white-space: nowrap;
 }
 
 .zn-badge[data-tone='accent'] {
-  background: var(--zn-accent-soft);
-  border-color: color-mix(in srgb, var(--zn-accent) 45%, transparent);
-  color: var(--zn-accent-strong);
+  background: color-mix(in srgb, var(--zn-accent) 16%, white);
+  border-color: color-mix(in srgb, var(--zn-accent) 52%, transparent);
+  color: color-mix(in srgb, var(--zn-heading) 82%, var(--zn-accent) 18%);
 }
 
 .zn-badge[data-tone='success'] {
-  background: color-mix(in srgb, var(--zn-success) 16%, transparent);
-  border-color: color-mix(in srgb, var(--zn-success) 44%, transparent);
-  color: var(--zn-success);
+  background: color-mix(in srgb, var(--zn-success) 16%, white);
+  border-color: color-mix(in srgb, var(--zn-success) 50%, transparent);
+  color: color-mix(in srgb, var(--zn-heading) 82%, var(--zn-success) 18%);
 }
 
 .zn-badge[data-tone='warning'] {
-  background: color-mix(in srgb, var(--zn-warning) 16%, transparent);
-  border-color: color-mix(in srgb, var(--zn-warning) 44%, transparent);
-  color: var(--zn-warning);
+  background: color-mix(in srgb, var(--zn-warning) 18%, white);
+  border-color: color-mix(in srgb, var(--zn-warning) 54%, transparent);
+  color: color-mix(in srgb, var(--zn-heading) 82%, var(--zn-warning) 18%);
 }
 
 .zn-badge[data-tone='danger'] {
-  background: color-mix(in srgb, var(--zn-danger) 16%, transparent);
-  border-color: color-mix(in srgb, var(--zn-danger) 44%, transparent);
-  color: var(--zn-danger);
+  background: color-mix(in srgb, var(--zn-danger) 16%, white);
+  border-color: color-mix(in srgb, var(--zn-danger) 50%, transparent);
+  color: color-mix(in srgb, var(--zn-heading) 82%, var(--zn-danger) 18%);
 }
 
 .zn-badge[data-tone='info'] {
-  background: color-mix(in srgb, var(--zn-info) 16%, transparent);
-  border-color: color-mix(in srgb, var(--zn-info) 44%, transparent);
-  color: var(--zn-info);
+  background: color-mix(in srgb, var(--zn-info) 16%, white);
+  border-color: color-mix(in srgb, var(--zn-info) 50%, transparent);
+  color: color-mix(in srgb, var(--zn-heading) 82%, var(--zn-info) 18%);
 }
 </style>
-
