@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import { Confstack, extractSongConfig, initConf, mergeSongConfig } from '@zupfnoter/core'
 
@@ -42,6 +42,7 @@ interface ConfigTreeRow {
   localValue?: unknown
   effectiveValue?: unknown
   sourceLabel?: string
+  hasExtractZeroMarker: boolean
   canFill: boolean
   canDelete: boolean
   canSelect: boolean
@@ -57,7 +58,7 @@ const emit = defineEmits<{
 }>()
 
 const searchText = ref('')
-const compactSyntax = ref(false)
+const viewportWidth = ref<number>(typeof window === 'undefined' ? 1400 : window.innerWidth)
 const expandedPaths = ref<string[]>([
   'extract',
   'extract.current',
@@ -158,6 +159,7 @@ const parsedSongConfig = computed(() => {
 const defaultConfig = computed(() => initConf(new Confstack()))
 const effectiveConfig = computed(() => mergeSongConfig(defaultConfig.value, parsedSongConfig.value.config))
 const filteredSearch = computed(() => searchText.value.trim().toLowerCase())
+const useCompactLabels = computed(() => viewportWidth.value < 1180)
 
 const visibleRows = computed(() => buildVisibleRows())
 
@@ -167,6 +169,14 @@ watch(
     draftValues.value = {}
   },
 )
+
+onMounted(() => {
+  window.addEventListener('resize', syncViewportWidth)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', syncViewportWidth)
+})
 
 function buildVisibleRows(): ConfigTreeRow[] {
   return flattenTree(treeDefinition)
@@ -210,6 +220,7 @@ function createRow(
   const effectivePath = resolveEffectivePath(path)
   const localValue = localPath === undefined ? undefined : getPathValue(parsedSongConfig.value.config, localPath)
   const effectiveValue = effectivePath === undefined ? undefined : getPathValue(effectiveConfig.value, effectivePath)
+  const extractZeroValue = effectivePath === undefined ? undefined : getExtractZeroValue(effectivePath)
 
   return {
     key: path,
@@ -223,6 +234,7 @@ function createRow(
     localValue,
     effectiveValue,
     sourceLabel: resolveSourceLabel(localPath, effectivePath),
+    hasExtractZeroMarker: hasExtractZeroMarker(localPath, localValue, extractZeroValue),
     canFill: !isBranch && localPath !== undefined && localValue === undefined && effectiveValue !== undefined,
     canDelete: localPath !== undefined && hasPathValue(parsedSongConfig.value.config, localPath),
     canSelect: canSelectPath(localPath),
@@ -262,6 +274,25 @@ function resolveSourceLabel(localPath: string | undefined, effectivePath: string
   return undefined
 }
 
+function getExtractZeroValue(effectivePath: string): unknown {
+  if (!effectivePath.startsWith(`extract.${props.currentExtract}.`)) {
+    return undefined
+  }
+  const extractZeroPath = effectivePath.replace(`extract.${props.currentExtract}.`, 'extract.0.')
+  return getPathValue(parsedSongConfig.value.config, extractZeroPath)
+}
+
+function hasExtractZeroMarker(
+  localPath: string | undefined,
+  localValue: unknown,
+  extractZeroValue: unknown,
+): boolean {
+  if (props.currentExtract === 0) return false
+  if (localPath === undefined || localValue === undefined || extractZeroValue === undefined) return false
+  if (!localPath.startsWith(`extract.${props.currentExtract}.`)) return false
+  return areValuesEqual(localValue, extractZeroValue)
+}
+
 function matchesRow(row: ConfigTreeRow): boolean {
   if (filteredSearch.value === '') return true
   return row.label.toLowerCase().includes(filteredSearch.value)
@@ -282,7 +313,7 @@ function formatValue(value: unknown): string {
   if (value === undefined) return '—'
   if (typeof value === 'string') return value
   if (typeof value === 'number' || typeof value === 'boolean') return String(value)
-  if (Array.isArray(value)) return compactSyntax.value ? formatCompactArray(value) : JSON.stringify(value)
+  if (Array.isArray(value)) return formatCompactArray(value)
   if (typeof value === 'object' && value !== null) return '{…}'
   return String(value)
 }
@@ -319,6 +350,20 @@ function canSelectPath(path: string | undefined): boolean {
     || path.includes('.annotations.')
 }
 
+function syncViewportWidth(): void {
+  viewportWidth.value = window.innerWidth
+}
+
+function displayLabel(label: string): string {
+  if (!useCompactLabels.value) return label
+  return abbreviateMiddle(label, 14, 5, 5)
+}
+
+function abbreviateMiddle(value: string, maxLength: number, headLength: number, tailLength: number): string {
+  if (value.length <= maxLength) return value
+  return `${value.slice(0, headLength)}...${value.slice(-tailLength)}`
+}
+
 function getPathValue(source: unknown, path: string): unknown {
   const parts = path.split('.')
   let current: unknown = source
@@ -331,6 +376,10 @@ function getPathValue(source: unknown, path: string): unknown {
 
 function hasPathValue(source: unknown, path: string): boolean {
   return getPathValue(source, path) !== undefined
+}
+
+function areValuesEqual(left: unknown, right: unknown): boolean {
+  return JSON.stringify(left) === JSON.stringify(right)
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -347,12 +396,7 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 </script>
 
 <template>
-  <ZnPanel
-    title="Konfigurationseditor"
-    :subtitle="`Baumansicht fuer Auszug ${props.currentExtract} mit wirksamen Werten und Platzhaltern fuer Commands.`"
-    eyebrow="Phase 1 Stub"
-    tone="accent"
-  >
+  <ZnPanel>
     <div class="config-panel">
       <ZnToolbar class="config-panel__toolbar">
         <template #leading>
@@ -384,23 +428,14 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
           >
         </div>
         <template #trailing>
-          <label class="config-panel__compact-toggle">
-            <input v-model="compactSyntax" type="checkbox">
-            <span>Kompakte Syntax</span>
-          </label>
           <ZnButton variant="ghost" @click="emitIntent('config.quicksettings')">Schnelleinst.</ZnButton>
           <ZnButton variant="ghost" @click="emitIntent('config.addEntry')">Neuer Eintrag</ZnButton>
-          <ZnButton variant="ghost" @click="emitIntent('config.openMainMenu')">Hauptmenue</ZnButton>
+          <ZnButton variant="ghost" @click="emitIntent('config.openMainMenu')">Konfig. bearb.</ZnButton>
         </template>
       </ZnToolbar>
 
       <div v-if="parsedSongConfig.parseError" class="config-panel__parse-error" role="alert">
         {{ parsedSongConfig.parseError }}
-      </div>
-
-      <div class="config-panel__legend">
-        <span>Lokaler Wert</span>
-        <span>Wirksamer Wert</span>
       </div>
 
       <div class="config-panel__tree" role="tree" aria-label="Konfigurationsbaum">
@@ -428,7 +463,12 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
             </ZnIconButton>
             <span v-else class="config-row__toggle-spacer" aria-hidden="true" />
             <div class="config-row__name-copy" :title="row.localPath ?? row.path">
-              <span class="config-row__label">{{ row.label }}</span>
+              <span
+                class="config-row__label"
+                :class="{ 'config-row__label--compact': useCompactLabels }"
+              >
+                {{ displayLabel(row.label) }}
+              </span>
             </div>
           </div>
 
@@ -449,6 +489,7 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
               label="Betroffenes Objekt selektieren"
               variant="ghost"
               :disabled="!row.canSelect"
+              :tabindex="-1"
               @click="emitIntent('config.selectAffectedObject', row.localPath)"
             >
               ◎
@@ -458,6 +499,7 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
               label="Parameter mit wirksamem Wert auffuellen"
               variant="ghost"
               :disabled="!row.canFill"
+              :tabindex="-1"
               @click="emitIntent('config.fillPath', row.localPath)"
             >
               ⤓
@@ -467,6 +509,7 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
               label="Parametermenue oeffnen"
               variant="ghost"
               :title="row.localPath ?? row.path"
+              :tabindex="-1"
               @click="emitIntent('config.openMenuAtPath', row.localPath)"
             >
               ≡
@@ -476,18 +519,32 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
               label="Pfad oder Teilbaum loeschen"
               variant="ghost"
               :disabled="!row.canDelete"
+              :tabindex="-1"
               @click="emitIntent('config.deletePath', row.localPath)"
             >
               ⌫
             </ZnIconButton>
-            <button class="config-row__help" type="button" :title="row.sourceLabel ? `Wirksam aus ${row.sourceLabel}` : 'Noch keine Herkunft aufgeloest'">
+            <button class="config-row__help" type="button" tabindex="-1" :title="row.sourceLabel ? `Wirksam aus ${row.sourceLabel}` : 'Noch keine Herkunft aufgeloest'">
               ?
             </button>
           </div>
 
           <div v-if="row.isLeaf" class="config-row__effective">
-            <span class="config-row__effective-value">{{ formatValue(row.effectiveValue) }}</span>
-            <span v-if="row.sourceLabel" class="config-row__source">{{ row.sourceLabel }}</span>
+            <div class="config-row__effective-main">
+              <span
+                class="config-row__effective-value"
+                :title="formatValue(row.effectiveValue)"
+              >
+                {{ formatValue(row.effectiveValue) }}
+              </span>
+              <span
+                v-if="row.hasExtractZeroMarker"
+                class="config-row__effective-marker"
+                title="Lokaler Wert entspricht Auszug 0"
+              >
+                =
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -560,15 +617,6 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   outline-offset: 2px;
 }
 
-.config-panel__compact-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.28rem;
-  color: var(--zn-text-soft);
-  font-size: 0.76rem;
-  white-space: nowrap;
-}
-
 .config-panel__parse-error {
   padding: 0.8rem 0.9rem;
   border: 1px solid color-mix(in srgb, var(--zn-danger) 35%, transparent);
@@ -576,18 +624,6 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   background: color-mix(in srgb, var(--zn-danger) 10%, var(--zn-bg-surface));
   color: var(--zn-danger);
   font-size: 0.84rem;
-}
-
-.config-panel__legend {
-  display: grid;
-  grid-template-columns: minmax(15rem, 2.4fr) minmax(9rem, 1fr) auto minmax(7rem, 0.8fr);
-  gap: 0.35rem;
-  padding: 0 0.35rem;
-  color: var(--zn-text-soft);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
 }
 
 .config-panel__tree {
@@ -605,7 +641,7 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 .config-row {
   --indent-size: calc(var(--config-depth) * 0.8rem);
   display: grid;
-  grid-template-columns: minmax(15rem, 2.4fr) minmax(9rem, 1fr) auto minmax(7rem, 0.8fr);
+  grid-template-columns: minmax(8rem, 1.35fr) minmax(14rem, 1.8fr) auto minmax(6rem, 0.7fr);
   gap: 0.35rem;
   align-items: start;
   min-height: 1.7rem;
@@ -642,16 +678,17 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 }
 
 .config-row__toggle-spacer {
-  width: 0.92rem;
-  height: 0.92rem;
+  width: 1.35rem;
+  height: 1.35rem;
 }
 
 :deep(.config-row__toggle.zn-icon-button) {
-  width: 0.92rem;
-  height: 0.92rem;
+  width: 1.35rem;
+  height: 1.35rem;
   border-radius: 0.22rem;
   box-shadow: none;
-  font-size: 0.58rem;
+  font-size: 0.88rem;
+  font-weight: 700;
   line-height: 1;
   padding: 0;
 }
@@ -675,6 +712,10 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.config-row__label--compact {
+  text-overflow: clip;
 }
 
 .config-row__value {
@@ -718,8 +759,8 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 .config-row__actions {
   display: inline-flex;
   align-items: flex-start;
-  gap: 0.08rem;
-  padding-inline: 0.06rem;
+  gap: 0.02rem;
+  padding-inline: 0.02rem;
   padding-top: 0.02rem;
 }
 
@@ -729,6 +770,13 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   align-content: start;
   min-width: 0;
   padding-top: 0.08rem;
+}
+
+.config-row__effective-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  min-width: 0;
 }
 
 .config-row__effective-value {
@@ -741,20 +789,20 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   white-space: nowrap;
 }
 
-.config-row__source {
+.config-row__effective-marker {
   display: inline-flex;
-  width: fit-content;
-  padding: 0.08rem 0.35rem;
-  border: 1px solid color-mix(in srgb, var(--zn-warning) 44%, transparent);
+  align-items: center;
+  justify-content: center;
+  width: 0.82rem;
+  height: 0.82rem;
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--zn-warning) 48%, transparent);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--zn-warning) 16%, white);
+  background: color-mix(in srgb, var(--zn-warning) 14%, white);
   color: color-mix(in srgb, var(--zn-heading) 82%, var(--zn-warning) 18%);
   font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1.1;
-  text-transform: none;
-  white-space: nowrap;
+  font-weight: 700;
+  line-height: 1;
 }
 
 :deep(.config-row__action.zn-icon-button) {
@@ -781,10 +829,6 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 }
 
 @media (max-width: 1100px) {
-  .config-panel__legend {
-    display: none;
-  }
-
   .config-row {
     grid-template-columns: 1fr;
     gap: 0.2rem;

@@ -20,11 +20,9 @@ describe('ConfigEditorPanel', () => {
       },
     })
 
-    expect(wrapper.text()).toContain('Konfigurationseditor')
     expect(wrapper.text()).toContain('Auszug')
     expect(wrapper.text()).toContain('0')
     expect(wrapper.text()).toContain('X-Abstand')
-    expect(wrapper.text()).toContain('Lokaler Wert')
     const inputs = wrapper.findAll('input')
     expect(inputs.some((input) => (input.element as HTMLInputElement).value === '13')).toBe(true)
   })
