@@ -4,16 +4,18 @@ withDefaults(defineProps<{
   subtitle?: string
   eyebrow?: string
   tone?: 'surface' | 'sunken' | 'accent'
+  fillHeight?: boolean
 }>(), {
   title: undefined,
   subtitle: undefined,
   eyebrow: undefined,
   tone: 'surface',
+  fillHeight: true,
 })
 </script>
 
 <template>
-  <section class="zn-panel" :data-tone="tone">
+  <section class="zn-panel" :data-tone="tone" :data-fill-height="fillHeight">
     <div class="zn-panel__shell">
       <slot name="header">
         <header v-if="title || subtitle || eyebrow" class="zn-panel__default-header">
@@ -49,6 +51,11 @@ withDefaults(defineProps<{
   height: 100%;
 }
 
+.zn-panel[data-fill-height='false'] {
+  height: auto;
+  align-self: start;
+}
+
 .zn-panel__shell {
   display: flex;
   flex-direction: column;
@@ -60,6 +67,12 @@ withDefaults(defineProps<{
   border-radius: var(--zn-radius-md);
   background: var(--zn-bg-elevated);
   box-shadow: var(--zn-shadow-soft);
+}
+
+.zn-panel[data-fill-height='false'] .zn-panel__shell,
+.zn-panel[data-fill-height='false'] .zn-panel__body {
+  flex: 0 0 auto;
+  height: auto;
 }
 
 .zn-panel[data-tone='sunken'] .zn-panel__shell {

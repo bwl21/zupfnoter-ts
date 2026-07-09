@@ -165,6 +165,7 @@ const effectiveConfig = computed(() => mergeSongConfig(defaultConfig.value, pars
 const filteredSearch = computed(() => searchText.value.trim().toLowerCase())
 
 const visibleRows = computed(() => buildVisibleRows())
+const usesCompactShell = computed(() => visibleRows.value.length <= 4)
 let panelResizeObserver: ResizeObserver | undefined
 const helpTooltips = new Map<HTMLElement, TippyInstance>()
 const configHelpTexts = ref<ConfigHelpTexts>({})
@@ -502,8 +503,9 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 </script>
 
 <template>
-  <ZnPanel>
-    <div ref="panelElement" class="config-panel">
+  <div class="config-panel-frame" :class="{ 'config-panel-frame--compact': usesCompactShell }">
+    <ZnPanel :fill-height="!usesCompactShell">
+      <div ref="panelElement" class="config-panel" :class="{ 'config-panel--compact': usesCompactShell }">
       <ZnToolbar class="config-panel__toolbar">
         <template #leading>
           <ZnBadge tone="warning">Ausz. {{ props.currentExtract }}</ZnBadge>
@@ -544,7 +546,16 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
         {{ parsedSongConfig.parseError }}
       </div>
 
-      <div class="config-panel__tree" role="tree" aria-label="Konfigurationsbaum">
+      <div
+        class="config-panel__tree"
+        :class="{ 'config-panel__tree--compact': usesCompactShell }"
+        :style="{ '--config-visible-rows': visibleRows.length }"
+        role="tree"
+        aria-label="Konfigurationsbaum"
+      >
+        <div v-if="visibleRows.length === 0" class="config-panel__empty">
+          Keine passenden Parameter
+        </div>
         <div
           v-for="row in visibleRows"
           :key="row.key"
@@ -659,17 +670,35 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
           </div>
         </div>
       </div>
-    </div>
-  </ZnPanel>
+      </div>
+    </ZnPanel>
+  </div>
 </template>
 
 <style scoped>
+.config-panel-frame {
+  height: 100%;
+  min-height: 0;
+}
+
+.config-panel-frame--compact {
+  height: auto;
+  align-self: start;
+}
+
 .config-panel {
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   gap: var(--zn-space-2);
   min-height: 0;
   height: 100%;
   font-size: 0.82rem;
+}
+
+.config-panel--compact {
+  grid-template-rows: auto auto;
+  height: auto;
+  min-height: auto;
 }
 
 .config-panel__toolbar {
@@ -679,13 +708,19 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 }
 
 .config-panel__toolbar:deep(.zn-toolbar) {
+  box-sizing: border-box;
+  height: 2.08rem;
+  min-height: 2.08rem;
+  max-height: 2.08rem;
   gap: var(--zn-space-2);
   padding: 0.18rem 0.28rem;
+  overflow: hidden;
+  flex-wrap: nowrap;
 }
 
 .config-panel__toolbar:deep(.zn-button) {
-  min-height: 1.8rem;
-  padding: 0.2rem 0.55rem;
+  min-height: 1.52rem;
+  padding: 0.12rem 0.48rem;
   font-size: 0.78rem;
 }
 
@@ -700,8 +735,8 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 }
 
 :deep(.config-panel__toolbar-icon.zn-icon-button) {
-  width: 1.3rem;
-  height: 1.3rem;
+  width: 1.22rem;
+  height: 1.22rem;
   border-radius: 999px;
   box-shadow: none;
   font-size: 0.72rem;
@@ -714,8 +749,9 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 
 .config-panel__search-input {
   width: 100%;
-  min-height: 1.8rem;
-  padding: 0.24rem 0.55rem;
+  height: 1.52rem;
+  min-height: 1.52rem;
+  padding: 0.12rem 0.5rem;
   border: 1px solid var(--zn-border);
   border-radius: var(--zn-radius-md);
   background: color-mix(in srgb, var(--zn-bg-surface) 90%, white);
@@ -749,14 +785,25 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   background: color-mix(in srgb, var(--zn-bg-surface) 92%, white);
 }
 
+.config-panel__tree--compact {
+  min-height: 2.5rem;
+  max-height: min(14rem, calc(var(--config-visible-rows) * 1.95rem + 2.5rem));
+}
+
+.config-panel__empty {
+  padding: 0.65rem 0.8rem;
+  color: var(--zn-text-muted);
+  font-size: 0.76rem;
+}
+
 .config-row {
   --indent-size: calc(var(--config-depth) * 0.8rem);
   display: grid;
   grid-template-columns: minmax(8rem, 1.55fr) minmax(11rem, 1.45fr) auto minmax(5rem, 0.58fr);
   gap: 0.22rem;
-  align-items: start;
+  align-items: center;
   min-height: 1.7rem;
-  padding: 0.12rem 0.35rem;
+  padding: 0.1rem 0.35rem;
   border-top: 1px solid color-mix(in srgb, var(--zn-border) 72%, transparent);
   background: transparent;
 }
@@ -775,11 +822,11 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 
 .config-row__name {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.28rem;
   min-width: 0;
+  min-height: 1.35rem;
   padding-left: var(--indent-size);
-  padding-top: 0.08rem;
 }
 
 .config-row__toggle,
@@ -810,12 +857,13 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 
 .config-row__name-copy {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   min-width: 0;
   min-height: 1.35rem;
 }
 
 .config-row__label {
+  display: block;
   color: var(--zn-heading);
   font-size: 0.83rem;
   font-weight: 700;
@@ -830,11 +878,9 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 }
 
 .config-row__value {
+  display: flex;
+  align-items: center;
   min-width: 0;
-}
-
-.config-row__value {
-  padding-top: 0.04rem;
 }
 
 .config-row__input,
@@ -872,18 +918,18 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 
 .config-row__actions {
   display: inline-flex;
-  align-items: flex-start;
+  align-items: center;
+  align-self: center;
   gap: 0.02rem;
   padding-inline: 0.02rem;
-  padding-top: 0.02rem;
 }
 
 .config-row__effective {
   display: grid;
   gap: 0.02rem;
-  align-content: start;
+  align-content: center;
+  align-self: center;
   min-width: 0;
-  padding-top: 0.08rem;
 }
 
 .config-row__effective-main {
@@ -963,14 +1009,14 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 :global(.config-help-tooltip__path) {
   color: var(--zn-text-muted);
   font-family: var(--zn-font-mono);
-  font-size: 0.68rem;
+  font-size: 0.76rem;
   line-height: 1.25;
 }
 
 :global(.config-help-tooltip__body) {
   color: var(--zn-text);
-  font-size: 0.74rem;
-  line-height: 1.4;
+  font-size: 0.86rem;
+  line-height: 1.5;
 }
 
 :global(.config-help-tooltip__body p) {
