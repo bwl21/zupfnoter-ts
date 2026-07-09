@@ -3,7 +3,15 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 
-import { Confstack, extractSongConfig, initConf, mergeSongConfig } from '@zupfnoter/core'
+import {
+  CONFIG_EDITOR_MENU_ITEMS,
+  Confstack,
+  extractSongConfig,
+  getConfigEditorFormSet,
+  initConf,
+  mergeSongConfig,
+  type ConfigEditorMenuCommand,
+} from '@zupfnoter/core'
 
 import ZnBadge from '../../design-system/components/ZnBadge.vue'
 import ZnButton from '../../design-system/components/ZnButton.vue'
@@ -19,6 +27,7 @@ interface ConfigIntent {
     | 'config.quicksettings'
     | 'config.addEntry'
     | 'config.openMainMenu'
+    | 'config.editSection'
     | 'config.selectAffectedObject'
     | 'config.fillPath'
     | 'config.deletePath'
@@ -54,6 +63,7 @@ interface ConfigTreeRow {
 const props = defineProps<{
   abcText: string
   currentExtract: number
+  activeSection: string
 }>()
 
 const emit = defineEmits<{
@@ -62,6 +72,7 @@ const emit = defineEmits<{
 
 const searchText = ref('')
 const panelElement = ref<HTMLElement | null>(null)
+const configMenuElement = ref<HTMLDetailsElement | null>(null)
 const panelWidth = ref(1400)
 const expandedPaths = ref<string[]>([
   'extract',
@@ -71,6 +82,25 @@ const expandedPaths = ref<string[]>([
   'extract.current.printer',
 ])
 const draftValues = ref<Record<string, string>>({})
+
+const fallbackSectionVisiblePaths: Record<string, string[]> = {
+  layout: [
+    'extract.current.layout',
+  ],
+  instrument_specific: [
+    'extract.current.layout.X_SPACING',
+    'extract.current.layout.X_OFFSET',
+    'extract.current.layout.PITCH_OFFSET',
+    'extract.current.layout.DRAWING_AREA_SIZE',
+  ],
+  barnumbers_countnotes: [
+    'extract.current.barnumbers',
+    'extract.current.countnotes',
+  ],
+  printer: [
+    'extract.current.printer',
+  ],
+}
 
 const treeDefinition: ConfigTreeDefinition[] = [
   {
@@ -163,6 +193,10 @@ const parsedSongConfig = computed(() => {
 const defaultConfig = computed(() => initConf(new Confstack()))
 const effectiveConfig = computed(() => mergeSongConfig(defaultConfig.value, parsedSongConfig.value.config))
 const filteredSearch = computed(() => searchText.value.trim().toLowerCase())
+const activeSectionSearch = computed(() => getConfigEditorFormSet(props.activeSection) === undefined
+  ? props.activeSection.trim().toLowerCase()
+  : '')
+const effectiveSearch = computed(() => filteredSearch.value === '' ? activeSectionSearch.value : filteredSearch.value)
 
 const visibleRows = computed(() => buildVisibleRows())
 const usesCompactShell = computed(() => visibleRows.value.length <= 4)
@@ -185,6 +219,15 @@ watch(
     })
   },
   { deep: true },
+)
+
+watch(
+  () => props.activeSection,
+  (section) => {
+    expandSection(section)
+    searchText.value = ''
+  },
+  { immediate: true },
 )
 
 onMounted(() => {
@@ -224,6 +267,9 @@ function flattenTree(
 
   for (const definition of definitions) {
     const path = joinPath(parentPath, definition.key)
+    if (!isVisibleInActiveSection(path)) {
+      continue
+    }
     const branch = definition.children !== undefined && definition.children.length > 0
     const row = createRow(definition, path, depth, branch)
     const matches = matchesRow(row)
@@ -235,12 +281,99 @@ function flattenTree(
     }
 
     rows.push(row)
-    if (branch && (isExpanded(path) || filteredSearch.value !== '')) {
+    if (branch && (isExpanded(path) || effectiveSearch.value !== '')) {
       rows.push(...children)
     }
   }
 
   return rows
+}
+
+function isVisibleInActiveSection(path: string): boolean {
+  const visiblePaths = resolveSectionVisiblePaths()
+  if (visiblePaths === undefined || visiblePaths.includes('.')) return true
+  return visiblePaths.some((visiblePath) => visiblePath.startsWith(path) || path.startsWith(visiblePath))
+}
+
+function expandSection(section: string): void {
+  const visiblePaths = resolveSectionVisiblePaths(section)
+  if (visiblePaths === undefined || visiblePaths.includes('.')) return
+  const nextExpanded = new Set(expandedPaths.value)
+  for (const visiblePath of visiblePaths) {
+    for (const ancestor of getPathAncestors(visiblePath)) {
+      nextExpanded.add(ancestor)
+    }
+  }
+  expandedPaths.value = [...nextExpanded]
+}
+
+function resolveSectionVisiblePaths(section = props.activeSection): string[] | undefined {
+  const formSet = getConfigEditorFormSet(section)
+  const visiblePaths = formSet?.keys.map(configEditorKeyToTreePath)
+  if (visiblePaths === undefined) {
+    const directPath = configEditorKeyToTreePath(section)
+    return pathExistsInTree(directPath) ? [directPath] : undefined
+  }
+  if (visiblePaths.includes('.') || visiblePaths.some((path) => pathExistsInTree(path))) {
+    return visiblePaths
+  }
+  return fallbackSectionVisiblePaths[section] ?? visiblePaths
+}
+
+function configEditorKeyToTreePath(key: string): string {
+  const currentExtractKey = key.replace(/^extract\.(\{extract\}|\d+)(?=\.|$)/, 'extract.current')
+  const aliases: Record<string, string> = {
+    a3_offset: 'a3Offset',
+    a4_offset: 'a4Offset',
+    a4_pages: 'a4Pages',
+    show_border: 'showBorder',
+  }
+  return currentExtractKey.split('.').map(segment => aliases[segment] ?? segment).join('.')
+}
+
+function rowMatchesActiveSection(row: ConfigTreeRow): boolean {
+  if (activeSectionSearch.value === '') return true
+  if (filteredSearch.value !== '') return true
+  if (row.label.toLowerCase().includes(activeSectionSearch.value)) return true
+  if (row.path.toLowerCase().includes(activeSectionSearch.value)) return true
+  const localPath = row.localPath
+  return localPath === undefined ? false : localPath.toLowerCase().includes(activeSectionSearch.value)
+}
+
+function rowMatchesTypedSearch(row: ConfigTreeRow): boolean {
+  if (filteredSearch.value === '') return true
+  return row.label.toLowerCase().includes(filteredSearch.value)
+    || row.path.toLowerCase().includes(filteredSearch.value)
+    || (row.localPath?.toLowerCase().includes(filteredSearch.value) ?? false)
+}
+
+function pathExistsInTree(path: string): boolean {
+  return findDefinitionByPath(treeDefinition, path) !== undefined
+}
+
+function findDefinitionByPath(
+  definitions: ConfigTreeDefinition[],
+  path: string,
+  parentPath = '',
+): ConfigTreeDefinition | undefined {
+  for (const definition of definitions) {
+    const currentPath = joinPath(parentPath, definition.key)
+    if (currentPath === path) return definition
+    const found = definition.children === undefined
+      ? undefined
+      : findDefinitionByPath(definition.children, path, currentPath)
+    if (found !== undefined) return found
+  }
+  return undefined
+}
+
+function getPathAncestors(path: string): string[] {
+  const parts = path.split('.')
+  const ancestors: string[] = []
+  for (let index = 1; index < parts.length; index += 1) {
+    ancestors.push(parts.slice(0, index).join('.'))
+  }
+  return ancestors
 }
 
 function createRow(
@@ -327,9 +460,7 @@ function hasExtractZeroMarker(
 }
 
 function matchesRow(row: ConfigTreeRow): boolean {
-  if (filteredSearch.value === '') return true
-  return row.label.toLowerCase().includes(filteredSearch.value)
-    || row.path.toLowerCase().includes(filteredSearch.value)
+  return rowMatchesActiveSection(row) && rowMatchesTypedSearch(row)
 }
 
 function isExpanded(path: string): boolean {
@@ -500,6 +631,13 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
     extractId: props.currentExtract,
   })
 }
+
+function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
+  if (configMenuElement.value !== null) {
+    configMenuElement.value.open = false
+  }
+  emitIntent('config.editSection', item.id)
+}
 </script>
 
 <template>
@@ -538,7 +676,37 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
         <template #trailing>
           <ZnButton variant="ghost" @click="emitIntent('config.quicksettings')">Schnelleinst.</ZnButton>
           <ZnButton variant="ghost" @click="emitIntent('config.addEntry')">Neuer Eintrag</ZnButton>
-          <ZnButton variant="ghost" @click="emitIntent('config.openMainMenu')">Konfig. bearb.</ZnButton>
+          <details ref="configMenuElement" class="config-panel__main-menu">
+            <summary
+              class="config-panel__main-menu-summary"
+              aria-haspopup="menu"
+            >
+              <span class="config-panel__main-menu-icon" aria-hidden="true">✎</span>
+              <span>Konfig. bearb.</span>
+              <span class="config-panel__main-menu-caret" aria-hidden="true">v</span>
+            </summary>
+            <div class="config-panel__main-menu-list" role="menu" aria-label="Konfiguration bearbeiten">
+              <template v-for="(item, index) in CONFIG_EDITOR_MENU_ITEMS" :key="item.type === 'command' ? item.id : `separator-${index}`">
+                <div v-if="item.type === 'separator'" class="config-panel__main-menu-separator" role="separator" />
+                <button
+                  v-else
+                  class="config-panel__main-menu-item"
+                  type="button"
+                  role="menuitem"
+                  :title="item.title"
+                  @click="selectConfigMenuItem(item)"
+                >
+                  <span
+                    class="config-panel__main-menu-item-icon"
+                    :class="item.legacyIcon.split(' ')"
+                    :data-legacy-icon="item.legacyIcon"
+                    aria-hidden="true"
+                  />
+                  {{ item.label }}
+                </button>
+              </template>
+            </div>
+          </details>
         </template>
       </ZnToolbar>
 
@@ -681,6 +849,12 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   min-height: 0;
 }
 
+.config-panel-frame:deep(.zn-panel),
+.config-panel-frame:deep(.zn-panel__shell),
+.config-panel-frame:deep(.zn-panel__body) {
+  overflow: visible;
+}
+
 .config-panel-frame--compact {
   height: auto;
   align-self: start;
@@ -714,7 +888,7 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   max-height: 2.08rem;
   gap: var(--zn-space-2);
   padding: 0.18rem 0.28rem;
-  overflow: hidden;
+  overflow: visible;
   flex-wrap: nowrap;
 }
 
@@ -745,6 +919,100 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 .config-panel__toolbar-search {
   flex: 1 1 auto;
   min-width: 10rem;
+}
+
+.config-panel__main-menu {
+  position: relative;
+}
+
+.config-panel__main-menu-summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 1.52rem;
+  padding: 0.12rem 0.48rem;
+  border: 1px solid transparent;
+  border-radius: var(--zn-radius-md);
+  color: var(--zn-text-soft);
+  font-size: 0.78rem;
+  cursor: pointer;
+  list-style: none;
+  white-space: nowrap;
+}
+
+.config-panel__main-menu-summary::-webkit-details-marker {
+  display: none;
+}
+
+.config-panel__main-menu-summary:hover {
+  border-color: var(--zn-border);
+  background: var(--zn-bg-surface-soft);
+}
+
+.config-panel__main-menu-summary:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--zn-accent) 65%, white);
+  outline-offset: 2px;
+}
+
+.config-panel__main-menu-icon,
+.config-panel__main-menu-caret {
+  color: var(--zn-text-muted);
+  font-size: 0.74rem;
+  line-height: 1;
+}
+
+.config-panel__main-menu-list {
+  position: absolute;
+  top: calc(100% + 0.3rem);
+  right: 0;
+  z-index: 40;
+  display: grid;
+  gap: 0.08rem;
+  min-width: 14rem;
+  padding: 0.28rem;
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-md);
+  background: var(--zn-bg-surface);
+  box-shadow: var(--zn-shadow-soft);
+}
+
+.config-panel__main-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.46rem;
+  width: 100%;
+  padding: 0.34rem 0.46rem;
+  border: 0;
+  border-radius: var(--zn-radius-sm);
+  background: transparent;
+  color: var(--zn-text);
+  font: inherit;
+  font-size: 0.76rem;
+  line-height: 1.15;
+  text-align: left;
+  cursor: pointer;
+}
+
+.config-panel__main-menu-item-icon {
+  flex: 0 0 1rem;
+  width: 1rem;
+  color: var(--zn-text-muted);
+  font-size: 0.78rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.config-panel__main-menu-item:hover,
+.config-panel__main-menu-item:focus-visible {
+  background: var(--zn-bg-surface-soft);
+  outline: none;
+}
+
+.config-panel__main-menu-separator {
+  height: 1px;
+  margin: 0.18rem 0.24rem;
+  background: color-mix(in srgb, var(--zn-border) 76%, transparent);
 }
 
 .config-panel__search-input {

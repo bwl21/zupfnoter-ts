@@ -19,6 +19,7 @@ export interface WorkbenchCommandRuntime {
   openPanelDuplicate(target: string): void
   setSpeed(speed: number): void
   setEditorTab(tab: 'abc' | 'lyrics' | 'config'): void
+  setConfigEditorSection(section: string): void
   setCurrentExtract(extract: number): void
   setSound(sound: string): void
   setSaveFormat(saveFormat: string): void
@@ -460,7 +461,10 @@ function registerCreateAndConfigCommands(
     help: 'open configuration editor',
     undoable: false,
     parameters: [{ name: 'set', type: 'string', help: 'configuration form', defaultValue: 'basic_settings' }],
-    perform: (_args) => runtime.setEditorTab('config'),
+    perform: (args) => {
+      runtime.setConfigEditorSection(readString(args, 'set'))
+      runtime.setEditorTab('config')
+    },
   })
 
   stack.addCommand({

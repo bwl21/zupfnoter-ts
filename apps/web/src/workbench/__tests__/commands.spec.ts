@@ -33,6 +33,7 @@ function createRuntime(log: string[]): WorkbenchCommandRuntime {
     stop: () => log.push('stop'),
     setSpeed: (speed) => log.push(`speed:${speed}`),
     setEditorTab: (tab) => log.push(`tab:${tab}`),
+    setConfigEditorSection: (section) => log.push(`config:${section}`),
     setCurrentExtract: (extract) => log.push(`view:${extract}`),
     openHarpDuplicate: () => log.push('duplicate:harp'),
     openPanelDuplicate: (target: string) => log.push(`duplicate:${target}`),
@@ -115,6 +116,7 @@ describe('legacy command registration', () => {
       'play:auto',
       'speed:0.5',
       'saveformat:A4',
+      'config:layout',
       'tab:config',
     ])
   })

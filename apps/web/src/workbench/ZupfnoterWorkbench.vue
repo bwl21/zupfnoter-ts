@@ -53,6 +53,12 @@ import { workbenchDiagnosticKey, type WorkbenchDiagnostic as WebWorkbenchDiagnos
 import { createHarpMirrorChannel, postHarpMirrorSnapshot, type HarpMirrorSnapshot } from './multiWindow/harpMirrorChannel'
 import { createDropboxProvider, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
 
+interface ConfigEditorIntent {
+  action: string
+  path?: string
+  extractId: number
+}
+
 const editorTab = ref('abc')
 const editorPaneSize = ref(54)
 const previewPaneSize = ref(62)
@@ -61,6 +67,7 @@ const harpScrollLeft = ref(0)
 const harpScrollTop = ref(0)
 const abcText = ref(DEFAULT_ABC)
 const currentExtract = ref(0)
+const activeConfigSection = ref('basic_settings')
 const saveFormat = ref('A3-A4')
 const storageState = reactive({
   system: 'dropbox',
@@ -549,6 +556,15 @@ async function executeToolbarCommand(command: string): Promise<void> {
   }
 }
 
+function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
+  if (intent.action === 'config.editSection' && intent.path !== undefined) {
+    void executeToolbarCommand(`editconf ${intent.path}`)
+    return
+  }
+
+  appendConsoleLine(`config intent: ${intent.action}${intent.path ? ` ${intent.path}` : ''}`, 'info')
+}
+
 function enrichCommandError(command: string, message: string): string {
   if (!message.startsWith('Unknown command: ')) {
     return message
@@ -703,6 +719,9 @@ registerStorageCommands(commandStack, storageState, {
   setSpeed: playbackStore.setSpeedFactor,
   setEditorTab: (tab) => {
     editorTab.value = tab
+  },
+  setConfigEditorSection: (section) => {
+    activeConfigSection.value = section
   },
   setCurrentExtract: setCurrentExtractFromCommand,
   setSound: setPlaybackInstrumentFromCommand,
@@ -1014,7 +1033,8 @@ function handleMirrorMessage(event: MessageEvent): void {
                   v-else-if="activeId === 'config'"
                   :abc-text="abcText"
                   :current-extract="currentExtract"
-                  @intent="appendConsoleLine(`config intent: ${$event.action}${$event.path ? ` ${$event.path}` : ''}`, 'info')"
+                  :active-section="activeConfigSection"
+                  @intent="handleConfigEditorIntent"
                 />
                 <ConsolePanel
                   v-else

@@ -70,6 +70,7 @@ const runtime: WorkbenchCommandRuntime = {
   openPanelDuplicate: (target) => log(`panel duplicate ${target} is not available in CLI`),
   setSpeed: (speed) => log(`speed=${speed}`),
   setEditorTab: (tab) => log(`tab=${tab}`),
+  setConfigEditorSection: (section) => log(`config=${section}`),
   setCurrentExtract: (extract) => {
     state.currentExtract = Math.trunc(extract)
     log(`extract=${state.currentExtract}`)

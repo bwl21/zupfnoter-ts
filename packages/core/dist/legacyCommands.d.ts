@@ -12,6 +12,7 @@ export interface WorkbenchCommandRuntime {
     openPanelDuplicate(target: string): void;
     setSpeed(speed: number): void;
     setEditorTab(tab: 'abc' | 'lyrics' | 'config'): void;
+    setConfigEditorSection(section: string): void;
     setCurrentExtract(extract: number): void;
     setSound(sound: string): void;
     setSaveFormat(saveFormat: string): void;

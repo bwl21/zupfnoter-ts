@@ -38,6 +38,20 @@ export type { GlyphDef } from './glyphs.js'
 
 export { initConf } from './initConf.js'
 
+export {
+  CONFIG_EDITOR_FORM_SETS,
+  CONFIG_EDITOR_MENU_ITEMS,
+  getConfigEditorFormSet,
+  isConfigEditorFormId,
+} from './configEditorForms.js'
+export type {
+  ConfigEditorFormId,
+  ConfigEditorFormSet,
+  ConfigEditorMenuCommand,
+  ConfigEditorMenuItem,
+  ConfigEditorMenuSeparator,
+} from './configEditorForms.js'
+
 export { extractSongConfig, mergeSongConfig, CONFIG_SEPARATOR } from './extractSongConfig.js'
 
 export {
