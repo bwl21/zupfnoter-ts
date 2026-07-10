@@ -94,6 +94,32 @@ export const ZUPFNOTER_LAYOUT_CORE_KEYS = [
   'packer',
 ] as const
 
+export const LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES = [
+  'layout.LINE_THIN',
+  'layout.LINE_MEDIUM',
+  'layout.LINE_THICK',
+  'layout.ELLIPSE_SIZE',
+  'layout.REST_SIZE',
+  'layout.limit_a3',
+  'layout.DRAWING_AREA_SIZE',
+  'layout.packer.pack_method',
+  'layout.packer.pack_max_spreadfactor',
+  'layout.packer.pack_min_increment',
+  'layout.jumpline_anchor',
+  'layout.jumpline_vcut',
+  'layout.color.color_default',
+  'layout.color.color_variant1',
+  'layout.color.color_variant2',
+  'layout.bottomup',
+  'layout.beams',
+] as const
+
+export const LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES = [
+  'layout.packer.pack_method',
+  'layout.packer.pack_max_spreadfactor',
+  'layout.packer.pack_min_increment',
+] as const
+
 export const ZUPFNOTER_PRINTER_REQUIRED_KEYS = [
   'a3_offset',
   'a4_offset',
@@ -106,6 +132,87 @@ export const ZUPFNOTER_PRINTER_KEYS = [
   'a4_pages',
   'show_border',
 ] as const
+
+export const LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES = [
+  'printer.show_border',
+  'printer.a3_offset',
+  'printer.a4_offset',
+  'printer.a4_pages',
+] as const
+
+export const LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES = [
+  'barnumbers.voices',
+  'barnumbers.pos',
+  'barnumbers.autopos',
+  'barnumbers.apanchor',
+  'barnumbers.apbase',
+  'barnumbers.style',
+] as const
+
+export const LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES = [
+  'countnotes.voices',
+  'countnotes.pos',
+  'countnotes.autopos',
+  'countnotes.apanchor',
+  'countnotes.apbase',
+  'countnotes.style',
+  'countnotes.cntextleft',
+  'countnotes.cntextright',
+] as const
+
+export const LEGACY_NOTES_EXTRACT_PATH_SUFFIXES = [
+  'legend.pos',
+  'legend.align',
+  'legend.spos',
+  'notes',
+] as const
+
+export const LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS = [
+  'lyrics.*.verses',
+  'lyrics.*.pos',
+  'lyrics.*.style',
+] as const
+
+export const LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES = [
+  'stringnames',
+  'stringnames.text',
+  'stringnames.vpos',
+  'stringnames.marks.hpos',
+  'stringnames.marks.vpos',
+] as const
+
+export const LEGACY_SELECTABLE_CONFIG_PATH_SEGMENTS = [
+  'notebound',
+  'notes',
+  'annotations',
+] as const
+
+export const LEGACY_CONFIG_MENU_PATH_SEGMENTS = [
+  'layout',
+  'printer',
+  'notebound',
+  'notes',
+  'lyrics',
+  'stringnames',
+  'annotations',
+] as const
+
+export type ConfigMenuKind =
+  | 'default'
+  | 'layout'
+  | 'printer'
+  | 'notebound'
+  | 'notes'
+  | 'lyrics'
+  | 'stringnames'
+  | 'annotations'
+
+export interface ConfigPathActionProfile {
+  canDelete: boolean
+  canFill: boolean
+  canSelect: boolean
+  menuKind: ConfigMenuKind
+}
 
 const POSITION_SCHEMA: JsonSchemaNode = {
   type: 'array',
@@ -365,6 +472,58 @@ export function isLegacyTopLevelConfigKey(key: string): boolean {
   return ZUPFNOTER_TOP_LEVEL_REQUIRED_KEYS.includes(
     key as (typeof ZUPFNOTER_TOP_LEVEL_REQUIRED_KEYS)[number],
   )
+}
+
+export function toExtractConfigPath(
+  suffix: string,
+  extractPlaceholder = '{extract}',
+): string {
+  return `extract.${extractPlaceholder}.${suffix}`
+}
+
+export function hasConfigPathSegment(path: string, segment: string): boolean {
+  return path.split('.').includes(segment)
+}
+
+export function isSelectableConfigPath(path: string | undefined): boolean {
+  if (path === undefined) return false
+  return LEGACY_SELECTABLE_CONFIG_PATH_SEGMENTS.some((segment) => hasConfigPathSegment(path, segment))
+}
+
+export function getConfigMenuKind(path: string | undefined): ConfigMenuKind {
+  if (path === undefined) return 'default'
+
+  for (const segment of LEGACY_CONFIG_MENU_PATH_SEGMENTS) {
+    if (!hasConfigPathSegment(path, segment)) continue
+    switch (segment) {
+      case 'layout':
+      case 'printer':
+      case 'notebound':
+      case 'notes':
+      case 'lyrics':
+      case 'stringnames':
+      case 'annotations':
+        return segment
+    }
+  }
+
+  return 'default'
+}
+
+export function getConfigPathActionProfile(
+  path: string | undefined,
+  options: {
+    hasEffectiveValue: boolean
+    hasLocalValue: boolean
+    isLeaf: boolean
+  },
+): ConfigPathActionProfile {
+  return {
+    canDelete: path !== undefined && options.hasLocalValue,
+    canFill: path !== undefined && options.isLeaf && !options.hasLocalValue && options.hasEffectiveValue,
+    canSelect: isSelectableConfigPath(path),
+    menuKind: getConfigMenuKind(path),
+  }
 }
 
 export function validateZupfnoterConfigShape(config: unknown): string[] {

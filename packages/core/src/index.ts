@@ -38,8 +38,23 @@ export type { GlyphDef } from './glyphs.js'
 
 export { initConf } from './initConf.js'
 export {
+  getConfigMenuKind,
+  getConfigPathActionProfile,
+  LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
+  LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES,
   getLegacyConfigSchemaOverview,
+  hasConfigPathSegment,
   isLegacyTopLevelConfigKey,
+  isSelectableConfigPath,
+  LEGACY_CONFIG_MENU_PATH_SEGMENTS,
+  LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS,
+  LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
+  LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
+  LEGACY_SELECTABLE_CONFIG_PATH_SEGMENTS,
+  LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
+  toExtractConfigPath,
   validateZupfnoterConfigShape,
   ZUPFNOTER_CONFIG_SCHEMA_DRAFT,
   ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW,
@@ -51,7 +66,7 @@ export {
   ZUPFNOTER_PRINTER_REQUIRED_KEYS,
   ZUPFNOTER_TOP_LEVEL_REQUIRED_KEYS,
 } from './configSchema.js'
-export type { JsonSchemaNode } from './configSchema.js'
+export type { ConfigMenuKind, ConfigPathActionProfile, JsonSchemaNode } from './configSchema.js'
 
 export {
   CONFIG_EDITOR_FORM_SETS,

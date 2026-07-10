@@ -6,6 +6,18 @@
  * in `controller_command_definitions.rb`.
  */
 
+import {
+  LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
+  LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS,
+  LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
+  LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
+  LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
+  toExtractConfigPath,
+} from './configSchema.js'
+
 export type ConfigEditorFormId =
   | 'extract_annotation'
   | 'notes'
@@ -46,6 +58,56 @@ export interface ConfigEditorFormSet {
   quicksettingCommands?: string[]
   supportsNewEntry: boolean
 }
+
+const LAYOUT_FORM_KEYS = [
+  'extract.{extract}.layoutlines',
+  'extract.{extract}.startpos',
+  ...LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES
+    .filter((suffix) => !LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES.includes(
+      suffix as (typeof LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES)[number],
+    ))
+    .map((suffix) => toExtractConfigPath(suffix)),
+  ...LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix)),
+] as const
+
+const PRINTER_FORM_KEYS = [
+  'extract.{extract}.printer',
+  'extract.{extract}.layout.limit_a3',
+] as const
+
+const INSTRUMENT_SPECIFIC_FORM_KEYS = [
+  'extract.{extract}.layout.instrument',
+  'extract.{extract}.layout.tuning',
+  'extract.{extract}.layout.limit_a3',
+  'extract.{extract}.layout.bottomup',
+  'extract.{extract}.layout.beams',
+  'extract.{extract}.layout.X_OFFSET',
+  'extract.{extract}.layout.X_SPACING',
+  'extract.{extract}.layout.PITCH_OFFSET',
+  'extract.{extract}.stringnames.text',
+  ...LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix)),
+  'extract.{extract}.stringnames.marks.hpos',
+  'extract.{extract}.stringnames.marks.vpos',
+] as const
+
+const BARNUMBERS_COUNTNOTES_FORM_KEYS = [
+  ...LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix)),
+  ...LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix)),
+  'extract.{extract}.chords.voices',
+  'extract.{extract}.chords.pos',
+  'extract.{extract}.chords.style',
+  'extract.{extract}.tuplets.text',
+  'extract.{extract}.tuplets.style',
+] as const
+
+const NOTES_FORM_KEYS = LEGACY_NOTES_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix)) as readonly string[]
+
+const LYRICS_FORM_KEYS = LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS.map((suffix) => toExtractConfigPath(suffix)) as readonly string[]
+
+const STRINGNAMES_FORM_KEYS = [
+  toExtractConfigPath(LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES[0]),
+  'extract.{extract}.sortmark',
+] as const
 
 export const CONFIG_EDITOR_MENU_ITEMS: ConfigEditorMenuItem[] = [
   { type: 'command', id: 'extract_annotation', legacyText: 'Extract-Annotation', legacyIcon: 'fa fa-bars', label: 'Auszugsbeschriftung', title: 'Auszugsbeschriftungen bearbeiten' },
@@ -112,27 +174,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'barnumbers_countnotes',
     scope: 'extract',
     supportsNewEntry: false,
-    keys: [
-      'extract.{extract}.barnumbers.voices',
-      'extract.{extract}.barnumbers.pos',
-      'extract.{extract}.barnumbers.autopos',
-      'extract.{extract}.barnumbers.apanchor',
-      'extract.{extract}.barnumbers.apbase',
-      'extract.{extract}.barnumbers.style',
-      'extract.{extract}.countnotes.voices',
-      'extract.{extract}.countnotes.pos',
-      'extract.{extract}.countnotes.autopos',
-      'extract.{extract}.countnotes.apanchor',
-      'extract.{extract}.countnotes.apbase',
-      'extract.{extract}.countnotes.style',
-      'extract.{extract}.countnotes.cntextleft',
-      'extract.{extract}.countnotes.cntextright',
-      'extract.{extract}.chords.voices',
-      'extract.{extract}.chords.pos',
-      'extract.{extract}.chords.style',
-      'extract.{extract}.tuplets.text',
-      'extract.{extract}.tuplets.style',
-    ],
+    keys: [...BARNUMBERS_COUNTNOTES_FORM_KEYS],
   },
   annotations: {
     id: 'annotations',
@@ -144,22 +186,13 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'notes',
     scope: 'extract',
     supportsNewEntry: true,
-    keys: [
-      'extract.{extract}.legend.pos',
-      'extract.{extract}.legend.align',
-      'extract.{extract}.legend.spos',
-      'extract.{extract}.notes',
-    ],
+    keys: [...NOTES_FORM_KEYS],
   },
   lyrics: {
     id: 'lyrics',
     scope: 'extract',
     supportsNewEntry: true,
-    keys: [
-      'extract.{extract}.lyrics.*.verses',
-      'extract.{extract}.lyrics.*.pos',
-      'extract.{extract}.lyrics.*.style',
-    ],
+    keys: [...LYRICS_FORM_KEYS],
   },
   images: {
     id: 'images',
@@ -183,37 +216,13 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'layout',
     scope: 'extract',
     supportsNewEntry: false,
-    keys: [
-      'extract.{extract}.layoutlines',
-      'extract.{extract}.startpos',
-      'extract.{extract}.layout.LINE_THIN',
-      'extract.{extract}.layout.LINE_MEDIUM',
-      'extract.{extract}.layout.LINE_THICK',
-      'extract.{extract}.layout.ELLIPSE_SIZE',
-      'extract.{extract}.layout.REST_SIZE',
-      'extract.{extract}.layout.limit_a3',
-      'extract.{extract}.layout.DRAWING_AREA_SIZE',
-      'extract.{extract}.layout.packer.pack_method',
-      'extract.{extract}.layout.packer.pack_max_spreadfactor',
-      'extract.{extract}.layout.packer.pack_min_increment',
-      'extract.{extract}.layout.jumpline_anchor',
-      'extract.{extract}.layout.jumpline_vcut',
-      'extract.{extract}.layout.color.color_default',
-      'extract.{extract}.layout.color.color_variant1',
-      'extract.{extract}.layout.color.color_variant2',
-      'extract.{extract}.layout.bottomup',
-      'extract.{extract}.layout.beams',
-    ],
+    keys: [...LAYOUT_FORM_KEYS],
   },
   printer: {
     id: 'printer',
     scope: 'extract',
     supportsNewEntry: false,
-    keys: [
-      'extract.{extract}.printer',
-      'extract.{extract}.printer.show_border',
-      'extract.{extract}.layout.limit_a3',
-    ],
+    keys: [...PRINTER_FORM_KEYS],
   },
   repeatsigns: {
     id: 'repeatsigns',
@@ -235,32 +244,13 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'instrument_specific',
     scope: 'extract',
     supportsNewEntry: false,
-    keys: [
-      'extract.{extract}.layout.instrument',
-      'extract.{extract}.layout.tuning',
-      'extract.{extract}.layout.limit_a3',
-      'extract.{extract}.layout.bottomup',
-      'extract.{extract}.layout.beams',
-      'extract.{extract}.layout.X_OFFSET',
-      'extract.{extract}.layout.X_SPACING',
-      'extract.{extract}.layout.PITCH_OFFSET',
-      'extract.{extract}.stringnames.text',
-      'extract.{extract}.printer.a3_offset',
-      'extract.{extract}.printer.a4_offset',
-      'extract.{extract}.printer.a4_pages',
-      'extract.{extract}.printer.show_border',
-      'extract.{extract}.stringnames.marks.hpos',
-      'extract.{extract}.stringnames.marks.vpos',
-    ],
+    keys: [...INSTRUMENT_SPECIFIC_FORM_KEYS],
   },
   stringnames: {
     id: 'stringnames',
     scope: 'extract',
     supportsNewEntry: false,
-    keys: [
-      'extract.{extract}.stringnames',
-      'extract.{extract}.sortmark',
-    ],
+    keys: [...STRINGNAMES_FORM_KEYS],
   },
   template: {
     id: 'template',

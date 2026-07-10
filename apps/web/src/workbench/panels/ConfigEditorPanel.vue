@@ -7,8 +7,17 @@ import {
   CONFIG_EDITOR_MENU_ITEMS,
   Confstack,
   extractSongConfig,
+  getConfigPathActionProfile,
   getConfigEditorFormSet,
   initConf,
+  LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
+  LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS,
+  LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
+  LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
+  LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
   mergeSongConfig,
   type ConfigEditorMenuCommand,
 } from '@zupfnoter/core'
@@ -42,6 +51,11 @@ interface ConfigTreeDefinition {
   children?: ConfigTreeDefinition[]
 }
 
+interface PathLabelDefinition {
+  pathSuffix: string
+  label: string
+}
+
 interface ConfigTreeRow {
   key: string
   path: string
@@ -58,6 +72,7 @@ interface ConfigTreeRow {
   canFill: boolean
   canDelete: boolean
   canSelect: boolean
+  menuKind: string
 }
 
 const props = defineProps<{
@@ -97,10 +112,78 @@ const fallbackSectionVisiblePaths: Record<string, string[]> = {
     'extract.current.barnumbers',
     'extract.current.countnotes',
   ],
+  notes: [
+    'extract.current.legend',
+    'extract.current.notes',
+  ],
+  lyrics: [
+    'extract.current.lyrics',
+  ],
   printer: [
     'extract.current.printer',
   ],
+  stringnames: [
+    'extract.current.stringnames',
+  ],
 }
+
+const layoutTreeLeafDefinitions: PathLabelDefinition[] = [
+  { pathSuffix: 'layout.LINE_THIN', label: 'Linienstaerke duenn' },
+  { pathSuffix: 'layout.LINE_MEDIUM', label: 'Linienstaerke mittel' },
+  { pathSuffix: 'layout.LINE_THICK', label: 'Linienstaerke dick' },
+  { pathSuffix: 'layout.ELLIPSE_SIZE', label: 'Notengroesse' },
+  { pathSuffix: 'layout.REST_SIZE', label: 'Pausengroesse' },
+  { pathSuffix: 'layout.X_SPACING', label: 'X-Abstand' },
+  { pathSuffix: 'layout.X_OFFSET', label: 'X-Offset' },
+  { pathSuffix: 'layout.PITCH_OFFSET', label: 'Pitch-Offset' },
+  { pathSuffix: 'layout.DRAWING_AREA_SIZE', label: 'Zeichenflaeche' },
+]
+
+const printerTreeLeafDefinitions: PathLabelDefinition[] = [
+  { pathSuffix: 'printer.show_border', label: 'Rahmen anzeigen' },
+  { pathSuffix: 'printer.a3_offset', label: 'A3-Offset' },
+  { pathSuffix: 'printer.a4_offset', label: 'A4-Offset' },
+  { pathSuffix: 'printer.a4_pages', label: 'A4-Seiten' },
+]
+
+const packerTreeLeafDefinitions: PathLabelDefinition[] = [
+  { pathSuffix: 'layout.packer.pack_method', label: 'Packmethode' },
+  { pathSuffix: 'layout.packer.pack_max_spreadfactor', label: 'max. Spreizung' },
+  { pathSuffix: 'layout.packer.pack_min_increment', label: 'min. Inkrement' },
+]
+
+const barnumbersTreeLeafDefinitions: PathLabelDefinition[] = [
+  { pathSuffix: 'barnumbers.voices', label: 'Stimmen' },
+  { pathSuffix: 'barnumbers.pos', label: 'Position' },
+  { pathSuffix: 'barnumbers.style', label: 'Stil' },
+]
+
+const countnotesTreeLeafDefinitions: PathLabelDefinition[] = [
+  { pathSuffix: 'countnotes.voices', label: 'Stimmen' },
+  { pathSuffix: 'countnotes.pos', label: 'Position' },
+  { pathSuffix: 'countnotes.style', label: 'Stil' },
+]
+
+const notesTreeLeafDefinitions: PathLabelDefinition[] = [
+  { pathSuffix: 'legend.pos', label: 'Legende Position' },
+  { pathSuffix: 'legend.align', label: 'Legende Ausrichtung' },
+  { pathSuffix: 'legend.spos', label: 'Legende Startposition' },
+  { pathSuffix: 'notes', label: 'Seitenbeschriftung' },
+]
+
+const lyricsTreeLeafDefinitions: PathLabelDefinition[] = [
+  { pathSuffix: 'lyrics.*.verses', label: 'Strophen' },
+  { pathSuffix: 'lyrics.*.pos', label: 'Position' },
+  { pathSuffix: 'lyrics.*.style', label: 'Stil' },
+]
+
+const stringnamesTreeLeafDefinitions: PathLabelDefinition[] = [
+  { pathSuffix: 'stringnames', label: 'Saitennamen' },
+  { pathSuffix: 'stringnames.text', label: 'Text' },
+  { pathSuffix: 'stringnames.vpos', label: 'Stimmen' },
+  { pathSuffix: 'stringnames.marks.hpos', label: 'Marker horizontal' },
+  { pathSuffix: 'stringnames.marks.vpos', label: 'Marker vertikal' },
+]
 
 const treeDefinition: ConfigTreeDefinition[] = [
   {
@@ -122,59 +205,117 @@ const treeDefinition: ConfigTreeDefinition[] = [
             key: 'layout',
             label: 'Layout',
             children: [
-              { key: 'LINE_THIN', label: 'Linienstaerke duenn' },
-              { key: 'LINE_MEDIUM', label: 'Linienstaerke mittel' },
-              { key: 'LINE_THICK', label: 'Linienstaerke dick' },
-              { key: 'ELLIPSE_SIZE', label: 'Notengroesse' },
-              { key: 'REST_SIZE', label: 'Pausengroesse' },
-              { key: 'X_SPACING', label: 'X-Abstand' },
-              { key: 'X_OFFSET', label: 'X-Offset' },
-              { key: 'PITCH_OFFSET', label: 'Pitch-Offset' },
-              { key: 'DRAWING_AREA_SIZE', label: 'Zeichenflaeche' },
+              ...mapTreeDefinitionsForPrefix(
+                LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES,
+                'layout.',
+                layoutTreeLeafDefinitions,
+              ),
               {
                 key: 'packer',
                 label: 'Packer',
-                children: [
-                  { key: 'pack_method', label: 'Packmethode' },
-                  { key: 'pack_max_spreadfactor', label: 'max. Spreizung' },
-                  { key: 'pack_min_increment', label: 'min. Inkrement' },
-                ],
+                children: mapTreeDefinitionsForPrefix(
+                  LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES,
+                  'layout.packer.',
+                  packerTreeLeafDefinitions,
+                ),
               },
             ],
           },
           {
             key: 'printer',
             label: 'Druck',
-            children: [
-              { key: 'show_border', label: 'Rahmen anzeigen' },
-              { key: 'a3_offset', label: 'A3-Offset' },
-              { key: 'a4_offset', label: 'A4-Offset' },
-              { key: 'a4_pages', label: 'A4-Seiten' },
-            ],
+            children: mapTreeDefinitionsForPrefix(
+              LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
+              'printer.',
+              printerTreeLeafDefinitions,
+            ),
           },
           {
             key: 'barnumbers',
             label: 'Taktnummern',
-            children: [
-              { key: 'voices', label: 'Stimmen' },
-              { key: 'pos', label: 'Position' },
-              { key: 'style', label: 'Stil' },
-            ],
+            children: mapTreeDefinitionsForPrefix(
+              LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
+              'barnumbers.',
+              barnumbersTreeLeafDefinitions,
+            ),
           },
           {
             key: 'countnotes',
             label: 'Zaehlnoten',
-            children: [
-              { key: 'voices', label: 'Stimmen' },
-              { key: 'pos', label: 'Position' },
-              { key: 'style', label: 'Stil' },
-            ],
+            children: mapTreeDefinitionsForPrefix(
+              LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES,
+              'countnotes.',
+              countnotesTreeLeafDefinitions,
+            ),
+          },
+          {
+            key: 'legend',
+            label: 'Legende',
+            children: mapTreeDefinitionsForPrefix(
+              LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
+              'legend.',
+              notesTreeLeafDefinitions,
+            ),
+          },
+          {
+            key: 'notes',
+            label: 'Seitenbeschriftung',
+          },
+          {
+            key: 'lyrics',
+            label: 'Liedtexte',
+            children: mapTreeDefinitionsForWildcardPrefix(
+              LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS,
+              'lyrics.*.',
+              lyricsTreeLeafDefinitions,
+            ),
+          },
+          {
+            key: 'stringnames',
+            label: 'Saitennamen',
+            children: mapTreeDefinitionsForPrefix(
+              LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
+              'stringnames.',
+              stringnamesTreeLeafDefinitions,
+            ),
           },
         ],
       },
     ],
   },
 ]
+
+function mapTreeDefinitionsForPrefix(
+  pathSuffixes: readonly string[],
+  prefix: string,
+  labels: readonly PathLabelDefinition[],
+): ConfigTreeDefinition[] {
+  const labelMap = new Map(labels.map((entry) => [entry.pathSuffix, entry.label]))
+  return pathSuffixes
+    .filter((pathSuffix) => {
+      if (!pathSuffix.startsWith(prefix)) return false
+      if (pathSuffix.includes('.packer.')) return false
+      return labelMap.has(pathSuffix)
+    })
+    .map((pathSuffix) => ({
+      key: pathSuffix.slice(prefix.length),
+      label: labelMap.get(pathSuffix) ?? pathSuffix.slice(prefix.length),
+    }))
+}
+
+function mapTreeDefinitionsForWildcardPrefix(
+  pathSuffixes: readonly string[],
+  prefix: string,
+  labels: readonly PathLabelDefinition[],
+): ConfigTreeDefinition[] {
+  const labelMap = new Map(labels.map((entry) => [entry.pathSuffix, entry.label]))
+  return pathSuffixes
+    .filter((pathSuffix) => pathSuffix.startsWith(prefix) && labelMap.has(pathSuffix))
+    .map((pathSuffix) => ({
+      key: pathSuffix.slice(prefix.length),
+      label: labelMap.get(pathSuffix) ?? pathSuffix.slice(prefix.length),
+    }))
+}
 
 const parsedSongConfig = computed(() => {
   try {
@@ -380,6 +521,11 @@ function createRow(
   const localValue = localPath === undefined ? undefined : getPathValue(parsedSongConfig.value.config, localPath)
   const effectiveValue = effectivePath === undefined ? undefined : getPathValue(effectiveConfig.value, effectivePath)
   const extractZeroValue = effectivePath === undefined ? undefined : getExtractZeroValue(effectivePath)
+  const actionProfile = getConfigPathActionProfile(localPath, {
+    hasEffectiveValue: effectiveValue !== undefined,
+    hasLocalValue: localValue !== undefined,
+    isLeaf: !isBranch,
+  })
 
   return {
     key: path,
@@ -394,9 +540,10 @@ function createRow(
     effectiveValue,
     sourceLabel: resolveSourceLabel(localPath, effectivePath),
     hasExtractZeroMarker: hasExtractZeroMarker(localPath, localValue, extractZeroValue),
-    canFill: !isBranch && localPath !== undefined && localValue === undefined && effectiveValue !== undefined,
-    canDelete: localPath !== undefined && hasPathValue(parsedSongConfig.value.config, localPath),
-    canSelect: canSelectPath(localPath),
+    canFill: actionProfile.canFill,
+    canDelete: actionProfile.canDelete,
+    canSelect: actionProfile.canSelect,
+    menuKind: actionProfile.menuKind,
   }
 }
 
@@ -498,13 +645,6 @@ function updateDraftValue(row: ConfigTreeRow, value: string): void {
     ...draftValues.value,
     [row.path]: value,
   }
-}
-
-function canSelectPath(path: string | undefined): boolean {
-  if (path === undefined) return false
-  return path.includes('.notebound.')
-    || path.includes('.notes.')
-    || path.includes('.annotations.')
 }
 
 function syncPanelWidth(): void {

@@ -1,8 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  getConfigMenuKind,
+  getConfigPathActionProfile,
   getLegacyConfigSchemaOverview,
+  hasConfigPathSegment,
   isLegacyTopLevelConfigKey,
+  isSelectableConfigPath,
+  LEGACY_CONFIG_MENU_PATH_SEGMENTS,
   validateZupfnoterConfigShape,
   ZUPFNOTER_CONFIG_SCHEMA_DRAFT,
   ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW,
@@ -13,6 +18,7 @@ import {
   ZUPFNOTER_PRINTER_KEYS,
   ZUPFNOTER_PRINTER_REQUIRED_KEYS,
   ZUPFNOTER_TOP_LEVEL_REQUIRED_KEYS,
+  LEGACY_SELECTABLE_CONFIG_PATH_SEGMENTS,
 } from '../../configSchema.js'
 
 describe('configSchema', () => {
@@ -86,6 +92,57 @@ describe('configSchema', () => {
     expect(isLegacyTopLevelConfigKey('extract')).toBe(true)
     expect(isLegacyTopLevelConfigKey('layout')).toBe(true)
     expect(isLegacyTopLevelConfigKey('printer')).toBe(false)
+  })
+
+  it('exposes central selectable config path segments', () => {
+    expect(LEGACY_SELECTABLE_CONFIG_PATH_SEGMENTS).toEqual([
+      'notebound',
+      'notes',
+      'annotations',
+    ])
+    expect(hasConfigPathSegment('extract.0.notebound.flowline.v_1.9024', 'notebound')).toBe(true)
+    expect(hasConfigPathSegment('extract.0.stringnames.text', 'notes')).toBe(false)
+    expect(isSelectableConfigPath('extract.0.notes.T01_number')).toBe(true)
+    expect(isSelectableConfigPath('annotations.vl')).toBe(true)
+    expect(isSelectableConfigPath('extract.0.stringnames.text')).toBe(false)
+  })
+
+  it('classifies config menu kinds and row actions centrally', () => {
+    expect(LEGACY_CONFIG_MENU_PATH_SEGMENTS).toEqual([
+      'layout',
+      'printer',
+      'notebound',
+      'notes',
+      'lyrics',
+      'stringnames',
+      'annotations',
+    ])
+    expect(getConfigMenuKind('extract.0.layout.LINE_THIN')).toBe('layout')
+    expect(getConfigMenuKind('extract.0.printer.a4_pages')).toBe('printer')
+    expect(getConfigMenuKind('extract.0.notes.T01_number')).toBe('notes')
+    expect(getConfigMenuKind('extract.0.voices')).toBe('default')
+
+    expect(getConfigPathActionProfile('extract.0.notes.T01_number', {
+      hasEffectiveValue: true,
+      hasLocalValue: false,
+      isLeaf: true,
+    })).toEqual({
+      canDelete: false,
+      canFill: true,
+      canSelect: true,
+      menuKind: 'notes',
+    })
+
+    expect(getConfigPathActionProfile('extract.0.stringnames', {
+      hasEffectiveValue: true,
+      hasLocalValue: true,
+      isLeaf: false,
+    })).toEqual({
+      canDelete: true,
+      canFill: false,
+      canSelect: false,
+      menuKind: 'stringnames',
+    })
   })
 
   it('flags unknown keys in strict legacy subtrees', () => {

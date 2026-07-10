@@ -4,6 +4,28 @@ import {
   CONFIG_EDITOR_FORM_SETS,
   CONFIG_EDITOR_MENU_ITEMS,
 } from '../../configEditorForms.js'
+import {
+  LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
+  LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES,
+  LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS,
+  LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
+  LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
+  LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
+  toExtractConfigPath,
+} from '../../configSchema.js'
+
+const expectedLayoutFormKeys = [
+  'extract.{extract}.layoutlines',
+  'extract.{extract}.startpos',
+  ...LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES
+    .filter((suffix) => !LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES.includes(
+      suffix as (typeof LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES)[number],
+    ))
+    .map((suffix) => toExtractConfigPath(suffix)),
+  ...LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix)),
+]
 
 describe('ConfigEditorForms', () => {
   it('ports the legacy editconf menu order and ids', () => {
@@ -67,26 +89,40 @@ describe('ConfigEditorForms', () => {
   })
 
   it('ports the legacy layout form key list', () => {
-    expect(CONFIG_EDITOR_FORM_SETS.layout.keys).toEqual([
-      'extract.{extract}.layoutlines',
-      'extract.{extract}.startpos',
-      'extract.{extract}.layout.LINE_THIN',
-      'extract.{extract}.layout.LINE_MEDIUM',
-      'extract.{extract}.layout.LINE_THICK',
-      'extract.{extract}.layout.ELLIPSE_SIZE',
-      'extract.{extract}.layout.REST_SIZE',
-      'extract.{extract}.layout.limit_a3',
-      'extract.{extract}.layout.DRAWING_AREA_SIZE',
-      'extract.{extract}.layout.packer.pack_method',
-      'extract.{extract}.layout.packer.pack_max_spreadfactor',
-      'extract.{extract}.layout.packer.pack_min_increment',
-      'extract.{extract}.layout.jumpline_anchor',
-      'extract.{extract}.layout.jumpline_vcut',
-      'extract.{extract}.layout.color.color_default',
-      'extract.{extract}.layout.color.color_variant1',
-      'extract.{extract}.layout.color.color_variant2',
-      'extract.{extract}.layout.bottomup',
-      'extract.{extract}.layout.beams',
+    expect(CONFIG_EDITOR_FORM_SETS.layout.keys).toEqual(expectedLayoutFormKeys)
+  })
+
+  it('derives layout and printer form paths from the central schema source', () => {
+    const expectedLayoutPaths = LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix))
+    const expectedPrinterPaths = LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix))
+
+    expect(CONFIG_EDITOR_FORM_SETS.layout.keys).toEqual(expectedLayoutFormKeys)
+
+    expect(CONFIG_EDITOR_FORM_SETS.instrument_specific.keys).toEqual(expect.arrayContaining(expectedPrinterPaths))
+  })
+
+  it('derives barnumber and countnote paths from the central schema source', () => {
+    const expectedBarnumberPaths = LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix))
+    const expectedCountnotePaths = LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix))
+
+    expect(CONFIG_EDITOR_FORM_SETS.barnumbers_countnotes.keys).toEqual(expect.arrayContaining(expectedBarnumberPaths))
+    expect(CONFIG_EDITOR_FORM_SETS.barnumbers_countnotes.keys).toEqual(expect.arrayContaining(expectedCountnotePaths))
+  })
+
+  it('keeps packer keys attached to the central layout schema path set', () => {
+    const expectedPackerPaths = LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix))
+    expect(CONFIG_EDITOR_FORM_SETS.layout.keys).toEqual(expect.arrayContaining(expectedPackerPaths))
+  })
+
+  it('derives notes, lyrics and stringnames paths from the central schema source', () => {
+    const expectedNotesPaths = LEGACY_NOTES_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix))
+    const expectedLyricsPaths = LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS.map((suffix) => toExtractConfigPath(suffix))
+
+    expect(CONFIG_EDITOR_FORM_SETS.notes.keys).toEqual(expectedNotesPaths)
+    expect(CONFIG_EDITOR_FORM_SETS.lyrics.keys).toEqual(expectedLyricsPaths)
+    expect(CONFIG_EDITOR_FORM_SETS.stringnames.keys).toEqual([
+      toExtractConfigPath(LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES[0]),
+      'extract.{extract}.sortmark',
     ])
   })
 })
