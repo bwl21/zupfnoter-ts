@@ -117,4 +117,147 @@ describe('ConfigEditorPanel', () => {
     expect(labels.indexOf('Pitch-Offset')).toBeLessThan(labels.indexOf('Saitennamen'))
     expect(labels.indexOf('Saitennamen')).toBeLessThan(labels.indexOf('Drucker'))
   })
+
+  it('keeps the intermediate entry level for lyrics configuration', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"lyrics":{"0":{"verses":[1],"pos":[350,70],"style":"regular"}}}}}',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'lyrics',
+      },
+    })
+
+    const labels = wrapper.findAll('.config-row__label').map((node) => node.text())
+    expect(labels).toContain('0')
+    expect(labels).toContain('Strophen')
+    expect(labels).toContain('Position')
+    expect(labels).toContain('Stil')
+    expect(labels.indexOf('0')).toBeLessThan(labels.indexOf('Strophen'))
+  })
+
+  it('expands page annotation entries from the current config', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"notes":{"T01_number_extract":{"pos":[320,6],"text":"{{extract_filename}}","style":"large"}}}}}',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'notes',
+      },
+    })
+
+    const labels = wrapper.findAll('.config-row__label').map((node) => node.text())
+    expect(labels).toContain('T01_number_extract')
+    expect(labels).toContain('Position')
+    expect(labels).toContain('Text')
+    expect(labels).toContain('Stil')
+    expect(labels.indexOf('T01_number_extract')).toBeLessThan(labels.indexOf('Position'))
+  })
+
+  it('expands global annotation templates from effective and current config', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"annotations":{"accel":{"text":"accel.","pos":[1,2],"style":"italic"}}}',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'annotations',
+      },
+    })
+
+    const labels = wrapper.findAll('.config-row__label').map((node) => node.text())
+    expect(labels).toContain('vl')
+    expect(labels).toContain('accel')
+    expect(labels).toContain('Position')
+    expect(labels).toContain('Text')
+    expect(labels).toContain('Stil')
+  })
+
+  it('disables new entry when the current form set does not support it', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'layout',
+      },
+    })
+
+    const newEntryButton = wrapper.findAll('button').find((button) => button.text() === 'Neuer Eintrag')
+    expect(newEntryButton).toBeDefined()
+    expect(newEntryButton?.attributes('disabled')).toBeDefined()
+  })
+
+  it('emits the legacy addconf key for supported new entry sections', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'lyrics',
+      },
+    })
+
+    const newEntryButton = wrapper.findAll('button').find((button) => button.text() === 'Neuer Eintrag')
+    expect(newEntryButton).toBeDefined()
+    expect(newEntryButton?.attributes('disabled')).toBeUndefined()
+    if (newEntryButton === undefined) return
+
+    await newEntryButton.trigger('click')
+
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.addEntry',
+        path: 'lyrics',
+        extractId: 0,
+      },
+    ])
+  })
+
+  it('disables new entry for extract-zero-only sections outside extract 0', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+        ].join('\n'),
+        currentExtract: 2,
+        activeSection: 'lyrics',
+      },
+    })
+
+    const newEntryButton = wrapper.findAll('button').find((button) => button.text() === 'Neuer Eintrag')
+    expect(newEntryButton).toBeDefined()
+    expect(newEntryButton?.attributes('disabled')).toBeDefined()
+  })
 })

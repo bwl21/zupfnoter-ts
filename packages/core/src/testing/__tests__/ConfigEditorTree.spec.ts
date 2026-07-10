@@ -1,0 +1,140 @@
+import { describe, expect, it } from 'vitest'
+
+import { buildConfigEditorSectionTree } from '../../configEditorTree.js'
+import type { ConfigEditorTreeDefinition } from '../../configEditorTree.js'
+import type { CommandArgumentValue } from '../../commands.js'
+
+function flattenConfigPaths(definitions: readonly ConfigEditorTreeDefinition[]): string[] {
+  const paths: string[] = []
+
+  const visit = (items: readonly ConfigEditorTreeDefinition[]): void => {
+    for (const item of items) {
+      if (item.configPath !== undefined) {
+        paths.push(item.configPath)
+      }
+      if (item.children !== undefined) {
+        visit(item.children)
+      }
+    }
+  }
+
+  visit(definitions)
+  return paths
+}
+
+describe('buildConfigEditorSectionTree', () => {
+  it('expands extract annotation keys for extract ids from current and effective config', () => {
+    const currentConfig = {
+      extract: {
+        0: { title: 'Zero' },
+        2: { title: 'Two' },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+    const effectiveConfig = {
+      extract: {
+        0: { title: 'Zero' },
+        1: { title: 'One' },
+        2: { title: 'Two' },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+
+    const tree = buildConfigEditorSectionTree('extract_annotation', currentConfig, effectiveConfig, 0)
+    expect(tree).toBeDefined()
+
+    const configPaths = flattenConfigPaths(tree ?? [])
+    expect(configPaths).toContain('extract.0.title')
+    expect(configPaths).toContain('extract.1.voices')
+    expect(configPaths).toContain('extract.2.filenamepart')
+  })
+
+  it('expands lyrics entries from extract 0 for any active extract', () => {
+    const currentConfig = {
+      extract: {
+        0: {
+          lyrics: {
+            0: { verses: [1], pos: [10, 20], style: 'regular' },
+          },
+        },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+
+    const tree = buildConfigEditorSectionTree('lyrics', currentConfig, currentConfig, 2)
+    expect(tree).toBeDefined()
+
+    const configPaths = flattenConfigPaths(tree ?? [])
+    expect(configPaths).toContain('extract.current.lyrics.0.verses')
+    expect(configPaths).toContain('extract.current.lyrics.0.pos')
+    expect(configPaths).toContain('extract.current.lyrics.0.style')
+  })
+
+  it('expands image resources and image entries from extract 0', () => {
+    const currentConfig = {
+      $resources: {
+        logo: 'data:image/png;base64,abc',
+      },
+      extract: {
+        0: {
+          images: {
+            0: { imagename: 'logo', show: true, pos: [1, 2], height: 30 },
+          },
+        },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+
+    const tree = buildConfigEditorSectionTree('images', currentConfig, currentConfig, 2)
+    expect(tree).toBeDefined()
+
+    const configPaths = flattenConfigPaths(tree ?? [])
+    expect(configPaths).toContain('$resources.logo')
+    expect(configPaths).toContain('extract.2.images.0.imagename')
+    expect(configPaths).toContain('extract.2.images.0.pos')
+  })
+
+  it('expands stringnames from effective extract 0 keys', () => {
+    const effectiveConfig = {
+      extract: {
+        0: {
+          stringnames: {
+            text: 'A B C',
+            vpos: [5],
+            marks: {
+              hpos: [43, 55, 79],
+              vpos: [290],
+            },
+          },
+        },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+
+    const tree = buildConfigEditorSectionTree('stringnames', {}, effectiveConfig, 2)
+    expect(tree).toBeDefined()
+
+    const configPaths = flattenConfigPaths(tree ?? [])
+    expect(configPaths).toContain('extract.2.stringnames.text')
+    expect(configPaths).toContain('extract.2.stringnames.vpos')
+    expect(configPaths).toContain('extract.2.stringnames.marks.hpos')
+    expect(configPaths).toContain('extract.2.stringnames.marks.vpos')
+  })
+
+  it('expands global annotations from current and effective config', () => {
+    const currentConfig = {
+      annotations: {
+        accel: { text: 'accel.', pos: [1, 2], style: 'italic' },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+    const effectiveConfig = {
+      annotations: {
+        vl: { text: 'v', pos: [-5, -5] },
+        accel: { text: 'accel.', pos: [1, 2], style: 'italic' },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+
+    const tree = buildConfigEditorSectionTree('annotations', currentConfig, effectiveConfig, 0)
+    expect(tree).toBeDefined()
+
+    const configPaths = flattenConfigPaths(tree ?? [])
+    expect(configPaths).toContain('annotations.vl.text')
+    expect(configPaths).toContain('annotations.vl.pos')
+    expect(configPaths).toContain('annotations.accel.style')
+  })
+})

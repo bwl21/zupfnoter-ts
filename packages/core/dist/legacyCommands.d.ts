@@ -4,6 +4,7 @@ export interface WorkbenchCommandRuntime {
     setAbcText(value: string): void;
     readDocument(): string;
     writeDocument(value: string): void;
+    getCurrentExtract(): number;
     getSound(): string;
     render(): void;
     play(range: string): void;

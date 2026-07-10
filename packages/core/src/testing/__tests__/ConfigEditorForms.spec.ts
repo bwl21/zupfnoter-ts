@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   CONFIG_EDITOR_FORM_SETS,
   CONFIG_EDITOR_MENU_ITEMS,
+  getConfigEditorNewEntryCommand,
   getConfigEditorFormSections,
 } from '../../configEditorForms.js'
 import {
@@ -148,5 +149,17 @@ describe('ConfigEditorForms', () => {
     expect(sections?.flatMap((section) => section.keys) ?? []).toEqual(
       CONFIG_EDITOR_FORM_SETS.instrument_specific.keys,
     )
+  })
+
+  it('ports legacy new-entry command wiring', () => {
+    expect(getConfigEditorNewEntryCommand('extract_annotation', 0)).toBe('extracts')
+    expect(getConfigEditorNewEntryCommand('annotations', 0)).toBe('annotations')
+    expect(getConfigEditorNewEntryCommand('notes', 0)).toBe('notes')
+    expect(getConfigEditorNewEntryCommand('lyrics', 0)).toBe('lyrics')
+    expect(getConfigEditorNewEntryCommand('images', 0)).toBe('images')
+
+    expect(getConfigEditorNewEntryCommand('lyrics', 2)).toBeUndefined()
+    expect(getConfigEditorNewEntryCommand('images', 2)).toBeUndefined()
+    expect(getConfigEditorNewEntryCommand('layout', 0)).toBeUndefined()
   })
 })

@@ -35,6 +35,7 @@ function createRuntime(log: string[]): WorkbenchCommandRuntime {
     setEditorTab: (tab) => log.push(`tab:${tab}`),
     setConfigEditorSection: (section) => log.push(`config:${section}`),
     setCurrentExtract: (extract) => log.push(`view:${extract}`),
+    getCurrentExtract: () => 0,
     openHarpDuplicate: () => log.push('duplicate:harp'),
     openPanelDuplicate: (target: string) => log.push(`duplicate:${target}`),
     setSound: (sound) => log.push(`sound:${sound}`),
@@ -412,6 +413,47 @@ describe('legacy command registration', () => {
 
     await stack.runString('redoconfig')
     expect(runtime.getAbcText()).not.toContain('"title": "NeuerTitel"')
+  })
+
+  it('adds config entries through legacy addconf templates', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('addconf lyrics')
+
+    expect(runtime.getAbcText()).toContain('"lyrics"')
+    expect(runtime.getAbcText()).toContain('"0": {')
+    expect(log).toContain('render')
+  })
+
+  it('adds page annotation entries through the legacy notes template', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('addconf notes')
+
+    expect(runtime.getAbcText()).toContain('"notes"')
+    expect(runtime.getAbcText()).toContain('"0": {')
+    expect(runtime.getAbcText()).toContain('"text": "ENTER_NOTE"')
+    expect(log).toContain('render')
+  })
+
+  it('adds global annotation entries through the legacy annotations template', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('addconf annotations')
+
+    expect(runtime.getAbcText()).toContain('"annotations"')
+    expect(runtime.getAbcText()).toContain('"0": {')
+    expect(runtime.getAbcText()).toContain('"text": "_vorlage_"')
+    expect(log).toContain('render')
   })
 
   it('copies config values between extracts', async () => {

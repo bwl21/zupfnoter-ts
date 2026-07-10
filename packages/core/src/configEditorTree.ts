@@ -8,6 +8,7 @@ import {
   LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
   LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
 } from './configSchema.js'
+import { type CommandArgumentValue } from './commands.js'
 import { getConfigEditorFormSections } from './configEditorForms.js'
 
 export interface ConfigEditorTreeDefinition {
@@ -80,6 +81,19 @@ const notesTreeLeafDefinitions: PathLabelDefinition[] = [
   { pathSuffix: 'legend.align', label: 'Legende Ausrichtung' },
   { pathSuffix: 'legend.spos', label: 'Legende Startposition' },
   { pathSuffix: 'notes', label: 'Seitenbeschriftung' },
+]
+
+const noteEntryTreeLeafDefinitions: PathLabelDefinition[] = [
+  { pathSuffix: 'notes.*.pos', label: 'Position' },
+  { pathSuffix: 'notes.*.text', label: 'Text' },
+  { pathSuffix: 'notes.*.style', label: 'Stil' },
+  { pathSuffix: 'notes.*.align', label: 'Ausrichtung' },
+]
+
+const annotationEntryTreeLeafDefinitions: PathLabelDefinition[] = [
+  { pathSuffix: 'annotations.*.pos', label: 'Position' },
+  { pathSuffix: 'annotations.*.text', label: 'Text' },
+  { pathSuffix: 'annotations.*.style', label: 'Stil' },
 ]
 
 const lyricsTreeLeafDefinitions: PathLabelDefinition[] = [
@@ -175,6 +189,11 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
           {
             key: 'notes',
             label: 'Seitenbeschriftung',
+            children: mapTreeDefinitionsForWildcardPrefix(
+              ['notes.*.pos', 'notes.*.text', 'notes.*.style', 'notes.*.align'],
+              'notes.*.',
+              noteEntryTreeLeafDefinitions,
+            ),
           },
           {
             key: 'lyrics',
@@ -197,6 +216,15 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
         ],
       },
     ],
+  },
+  {
+    key: 'annotations',
+    label: 'Notenbeschriftungsvorlagen',
+    children: mapTreeDefinitionsForWildcardPrefix(
+      ['annotations.*.pos', 'annotations.*.text', 'annotations.*.style'],
+      'annotations.*.',
+      annotationEntryTreeLeafDefinitions,
+    ),
   },
 ]
 
@@ -264,20 +292,31 @@ export function findConfigEditorTreeDefinition(
   return undefined
 }
 
-export function buildConfigEditorSectionTree(formId: string): ConfigEditorTreeDefinition[] | undefined {
+export function buildConfigEditorSectionTree(
+  formId: string,
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+  extractId: number,
+): ConfigEditorTreeDefinition[] | undefined {
   const formSections = getConfigEditorFormSections(formId)
   if (formSections === undefined) return undefined
 
   return formSections.map((section) => ({
     key: `section:${section.id}`,
     label: section.label,
-    children: buildSectionChildren(section.keys),
+    children: buildSectionChildren(formId, section.keys, currentConfig, effectiveConfig, extractId),
   }))
 }
 
-function buildSectionChildren(keys: readonly string[]): ConfigEditorTreeDefinition[] {
+function buildSectionChildren(
+  formId: string,
+  keys: readonly string[],
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+  extractId: number,
+): ConfigEditorTreeDefinition[] {
   const sectionPaths = keys
-    .map((key) => configEditorKeyToTreePath(key))
+    .flatMap((key) => expandConfigEditorKeyToTreePaths(formId, key, currentConfig, effectiveConfig, extractId))
     .filter((path) => path !== '.')
 
   if (sectionPaths.length === 0) return []
@@ -296,6 +335,274 @@ function buildSectionChildren(keys: readonly string[]): ConfigEditorTreeDefiniti
   }
 
   return children
+}
+
+function expandConfigEditorKeyToTreePaths(
+  formId: string,
+  key: string,
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+  extractId: number,
+): string[] {
+  switch (formId) {
+    case 'extract_annotation':
+      return expandExtractAnnotationPaths(key, currentConfig, effectiveConfig)
+    case 'annotations': {
+      const annotationPaths = expandAnnotationsCollectionPaths(key, currentConfig, effectiveConfig)
+      if (annotationPaths !== undefined) return annotationPaths
+      break
+    }
+    case 'lyrics':
+      return expandLegacyExtractZeroWildcardPaths(key, currentConfig, extractId, 'lyrics')
+    case 'images':
+      return expandImagePaths(key, currentConfig, extractId)
+    case 'notes': {
+      const notesPaths = expandNotesCollectionPaths(key, currentConfig, extractId)
+      if (notesPaths !== undefined) return notesPaths
+      break
+    }
+    case 'stringnames': {
+      const stringnamesPaths = expandStringnamesPaths(key, effectiveConfig, extractId)
+      if (stringnamesPaths !== undefined) return stringnamesPaths
+      break
+    }
+    default:
+      break
+  }
+
+  const treePath = configEditorKeyToTreePath(key)
+  if (!treePath.includes('.*.')) return [treePath]
+
+  const [prefix, suffix] = treePath.split('.*.')
+  if (prefix === undefined || suffix === undefined) return [treePath]
+
+  const configPathPrefix = key
+    .replace(/^extract\.(\{extract\}|\d+)(?=\.|$)/, `extract.${extractId}`)
+    .split('.*.')[0]
+  if (configPathPrefix === undefined) return [treePath]
+
+  const wildcardParent = getPathValue(currentConfig, configPathPrefix)
+  if (!isRecord(wildcardParent)) return []
+
+  return Object.keys(wildcardParent)
+    .sort(compareConfigKeys)
+    .map((entryKey) => `${prefix}.${entryKey}.${suffix}`)
+}
+
+function expandExtractAnnotationPaths(
+  key: string,
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+): string[] {
+  if (!key.startsWith('extract.{extract}.')) return [configEditorKeyToTreePath(key)]
+
+  const suffix = key.slice('extract.{extract}.'.length)
+  const extractIds = collectExtractIds(currentConfig, effectiveConfig)
+  if (extractIds.length === 0) return [configEditorKeyToTreePath(key)]
+
+  return extractIds.map((extractKey) => `extract.${extractKey}.${suffix}`)
+}
+
+function expandLegacyExtractZeroWildcardPaths(
+  key: string,
+  currentConfig: Record<string, CommandArgumentValue>,
+  extractId: number,
+  collectionName: 'lyrics',
+): string[] {
+  const wildcardToken = `extract.{extract}.${collectionName}.*.`
+  if (!key.startsWith(wildcardToken)) return [configEditorKeyToTreePath(key)]
+
+  const suffix = key.slice(wildcardToken.length)
+  const wildcardParent = getPathValue(currentConfig, `extract.0.${collectionName}`)
+  if (!isRecord(wildcardParent)) return []
+
+  return Object.keys(wildcardParent)
+    .sort(compareConfigKeys)
+    .map((entryKey) => `extract.current.${collectionName}.${entryKey}.${suffix}`)
+}
+
+function expandImagePaths(
+  key: string,
+  currentConfig: Record<string, CommandArgumentValue>,
+  extractId: number,
+): string[] {
+  if (key === '$resources.*') {
+    const resources = getPathValue(currentConfig, '$resources')
+    if (!isRecord(resources)) return []
+    return Object.keys(resources).sort(compareConfigKeys).map((entryKey) => `$resources.${entryKey}`)
+  }
+
+  const wildcardToken = 'extract.{extract}.images.*.'
+  if (!key.startsWith(wildcardToken)) return [configEditorKeyToTreePath(key)]
+
+  const suffix = key.slice(wildcardToken.length)
+  const wildcardParent = getPathValue(currentConfig, 'extract.0.images')
+  if (!isRecord(wildcardParent)) return []
+
+  return Object.keys(wildcardParent)
+    .sort(compareConfigKeys)
+    .map((entryKey) => `extract.${extractId}.images.${entryKey}.${suffix}`)
+}
+
+function expandNotesCollectionPaths(
+  key: string,
+  config: Record<string, CommandArgumentValue>,
+  extractId: number,
+): string[] | undefined {
+  if (key !== 'extract.{extract}.notes' && key !== `extract.${extractId}.notes`) return undefined
+
+  const configPath = key.replace(/^extract\.(\{extract\}|\d+)(?=\.|$)/, `extract.${extractId}`)
+  const notesValue = getPathValue(config, configPath)
+  if (!isRecord(notesValue)) return [configEditorKeyToTreePath(key)]
+
+  const entryPaths = Object.keys(notesValue)
+    .sort(compareConfigKeys)
+    .flatMap((entryKey) => {
+      const noteValue = notesValue[entryKey]
+      const properties = isRecord(noteValue)
+        ? ['pos', 'text', 'style', 'align'].filter((property) => property in noteValue)
+        : []
+
+      if (properties.length === 0) return [`extract.current.notes.${entryKey}`]
+      return properties.map((property) => `extract.current.notes.${entryKey}.${property}`)
+    })
+
+  return entryPaths.length === 0 ? [configEditorKeyToTreePath(key)] : entryPaths
+}
+
+function expandAnnotationsCollectionPaths(
+  key: string,
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+): string[] | undefined {
+  if (key !== 'annotations') return undefined
+
+  const entryKeys = collectUnionObjectKeys(
+    getPathValue(currentConfig, 'annotations'),
+    getPathValue(effectiveConfig, 'annotations'),
+  )
+  if (entryKeys.length === 0) return ['annotations']
+
+  return entryKeys.flatMap((entryKey) => {
+    const currentValue = getPathValue(currentConfig, `annotations.${entryKey}`)
+    const effectiveValue = getPathValue(effectiveConfig, `annotations.${entryKey}`)
+    const propertyKeys = collectUnionPropertyKeys(currentValue, effectiveValue, ['pos', 'text', 'style'])
+
+    if (propertyKeys.length === 0) return [`annotations.${entryKey}`]
+    return propertyKeys.map((property) => `annotations.${entryKey}.${property}`)
+  })
+}
+
+function expandStringnamesPaths(
+  key: string,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+  extractId: number,
+): string[] | undefined {
+  if (key !== 'extract.{extract}.stringnames' && key !== `extract.${extractId}.stringnames`) return undefined
+
+  const subtree = getPathValue(effectiveConfig, 'extract.0.stringnames')
+  if (!isRecord(subtree)) return [configEditorKeyToTreePath(key)]
+
+  const suffixes = collectLeafSuffixes(subtree)
+  if (suffixes.length === 0) return [configEditorKeyToTreePath(key)]
+
+  return suffixes.map((suffix) => `extract.${extractId}.stringnames.${suffix}`)
+}
+
+function collectExtractIds(
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+): string[] {
+  const currentExtracts = getPathValue(currentConfig, 'extract')
+  const effectiveExtracts = getPathValue(effectiveConfig, 'extract')
+  const extractIds = new Set<string>()
+
+  if (isRecord(currentExtracts)) {
+    for (const key of Object.keys(currentExtracts)) {
+      extractIds.add(key)
+    }
+  }
+  if (isRecord(effectiveExtracts)) {
+    for (const key of Object.keys(effectiveExtracts)) {
+      extractIds.add(key)
+    }
+  }
+
+  return [...extractIds].sort(compareConfigKeys)
+}
+
+function collectLeafSuffixes(
+  source: Record<string, CommandArgumentValue>,
+  prefix = '',
+): string[] {
+  const result: string[] = []
+
+  for (const key of Object.keys(source).sort(compareConfigKeys)) {
+    const value = source[key]
+    const nextPrefix = prefix === '' ? key : `${prefix}.${key}`
+    if (isRecord(value)) {
+      result.push(...collectLeafSuffixes(value, nextPrefix))
+      continue
+    }
+    result.push(nextPrefix)
+  }
+
+  return result
+}
+
+function collectUnionObjectKeys(...sources: unknown[]): string[] {
+  const keys = new Set<string>()
+
+  for (const source of sources) {
+    if (!isRecord(source)) continue
+    for (const key of Object.keys(source)) {
+      keys.add(key)
+    }
+  }
+
+  return [...keys].sort(compareConfigKeys)
+}
+
+function collectUnionPropertyKeys(
+  currentValue: unknown,
+  effectiveValue: unknown,
+  knownPropertyOrder: readonly string[],
+): string[] {
+  const keys = new Set<string>()
+
+  for (const property of knownPropertyOrder) {
+    if ((isRecord(currentValue) && property in currentValue) || (isRecord(effectiveValue) && property in effectiveValue)) {
+      keys.add(property)
+    }
+  }
+
+  return [...keys]
+}
+
+function getPathValue(source: unknown, path: string): unknown {
+  const parts = path.split('.').filter((part) => part !== '')
+  let current: unknown = source
+  for (const part of parts) {
+    if (!isRecord(current) || !(part in current)) return undefined
+    current = current[part]
+  }
+  return current
+}
+
+function isRecord(value: unknown): value is Record<string, CommandArgumentValue> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function compareConfigKeys(left: string, right: string): number {
+  const leftNumber = Number(left)
+  const rightNumber = Number(right)
+  const leftIsNumber = Number.isInteger(leftNumber)
+  const rightIsNumber = Number.isInteger(rightNumber)
+
+  if (leftIsNumber && rightIsNumber) return leftNumber - rightNumber
+  if (leftIsNumber) return -1
+  if (rightIsNumber) return 1
+  return left.localeCompare(right)
 }
 
 function longestCommonAncestor(paths: readonly string[]): string {
@@ -346,16 +653,24 @@ function insertSectionPath(
 }
 
 function resolveTreeLabel(fullPath: string, relativePath: string): string {
-  const fullDefinition = findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, fullPath)
-  if (fullDefinition !== undefined && fullPath === buildFullConfigPath(fullPath, relativePath)) {
+  const normalizedFullPath = normalizeTreeDefinitionPath(fullPath)
+  const fullDefinition = findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, normalizedFullPath)
+  if (fullDefinition !== undefined && normalizedFullPath === normalizeTreeDefinitionPath(buildFullConfigPath(fullPath, relativePath))) {
     return fullDefinition.label
   }
 
   const candidatePath = fullPath.endsWith(relativePath) ? fullPath : buildFullConfigPath(fullPath, relativePath)
-  const candidateDefinition = findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, candidatePath)
+  const candidateDefinition = findConfigEditorTreeDefinition(
+    CONFIG_EDITOR_TREE_DEFINITION,
+    normalizeTreeDefinitionPath(candidatePath),
+  )
   if (candidateDefinition !== undefined) return candidateDefinition.label
 
   return relativePath.split('.').at(-1) ?? relativePath
+}
+
+function normalizeTreeDefinitionPath(path: string): string {
+  return path.replace(/^extract\.\d+(?=\.|$)/, 'extract.current')
 }
 
 function buildFullConfigPath(fullPath: string, relativePath: string): string {

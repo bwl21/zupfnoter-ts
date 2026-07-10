@@ -65,6 +65,8 @@ export interface ConfigEditorFormSet {
   scope: 'extract' | 'global' | 'mixed'
   quicksettingCommands?: string[]
   supportsNewEntry: boolean
+  newEntryCommand?: string
+  newEntryExtractZeroOnly?: boolean
   sections?: ConfigEditorFormSection[]
 }
 
@@ -349,6 +351,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     scope: 'global',
     quicksettingCommands: ['stdextract'],
     supportsNewEntry: true,
+    newEntryCommand: 'extracts',
     keys: [
       'produce',
       'extract.{extract}.title',
@@ -368,6 +371,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'annotations',
     scope: 'global',
     supportsNewEntry: true,
+    newEntryCommand: 'annotations',
     keys: ['annotations'],
     sections: CONFIG_EDITOR_FORM_SECTIONS.annotations,
   },
@@ -375,6 +379,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'notes',
     scope: 'extract',
     supportsNewEntry: true,
+    newEntryCommand: 'notes',
     keys: [...NOTES_FORM_KEYS],
     sections: CONFIG_EDITOR_FORM_SECTIONS.notes,
   },
@@ -382,6 +387,8 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'lyrics',
     scope: 'extract',
     supportsNewEntry: true,
+    newEntryCommand: 'lyrics',
+    newEntryExtractZeroOnly: true,
     keys: [...LYRICS_FORM_KEYS],
     sections: CONFIG_EDITOR_FORM_SECTIONS.lyrics,
   },
@@ -389,6 +396,8 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'images',
     scope: 'mixed',
     supportsNewEntry: true,
+    newEntryCommand: 'images',
+    newEntryExtractZeroOnly: true,
     keys: [
       '$resources.*',
       'extract.{extract}.images.*.imagename',
@@ -488,4 +497,15 @@ export function isConfigEditorFormId(formId: string): formId is ConfigEditorForm
 
 export function getConfigEditorFormSections(formId: string): ConfigEditorFormSection[] | undefined {
   return getConfigEditorFormSet(formId)?.sections
+}
+
+export function getConfigEditorNewEntryCommand(
+  formId: string,
+  extractId: number,
+): string | undefined {
+  const formSet = getConfigEditorFormSet(formId)
+  if (formSet?.supportsNewEntry !== true) return undefined
+  if (formSet.newEntryCommand === undefined) return undefined
+  if (formSet.newEntryExtractZeroOnly === true && extractId !== 0) return undefined
+  return formSet.newEntryCommand
 }

@@ -11,10 +11,12 @@ import {
   Confstack,
   extractSongConfig,
   findConfigEditorTreeDefinition,
+  getConfigEditorNewEntryCommand,
   getConfigPathActionProfile,
   getConfigEditorFormSet,
   initConf,
   mergeSongConfig,
+  type CommandArgumentValue,
   type ConfigEditorMenuCommand,
   type ConfigEditorTreeDefinition,
 } from '@zupfnoter/core'
@@ -134,6 +136,8 @@ const activeSectionSearch = computed(() => getConfigEditorFormSet(props.activeSe
   ? props.activeSection.trim().toLowerCase()
   : '')
 const effectiveSearch = computed(() => filteredSearch.value === '' ? activeSectionSearch.value : filteredSearch.value)
+const newEntryCommand = computed(() => getConfigEditorNewEntryCommand(props.activeSection, props.currentExtract))
+const canAddEntry = computed(() => newEntryCommand.value !== undefined)
 
 const visibleRows = computed(() => buildVisibleRows())
 const usesCompactShell = computed(() => visibleRows.value.length <= 4)
@@ -377,7 +381,12 @@ function resolveEffectivePath(path: string): string | undefined {
 
 function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | undefined {
   if (props.activeSection === 'all_parameters') return undefined
-  return buildConfigEditorSectionTree(props.activeSection)
+  return buildConfigEditorSectionTree(
+    props.activeSection,
+    parsedSongConfig.value.config as unknown as Record<string, CommandArgumentValue>,
+    effectiveConfig.value as unknown as Record<string, CommandArgumentValue>,
+    props.currentExtract,
+  )
 }
 
 function resolveSourceLabel(localPath: string | undefined, effectivePath: string | undefined): string | undefined {
@@ -581,6 +590,11 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   })
 }
 
+function handleAddEntry(): void {
+  if (newEntryCommand.value === undefined) return
+  emitIntent('config.addEntry', newEntryCommand.value)
+}
+
 function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
   if (configMenuElement.value !== null) {
     configMenuElement.value.open = false
@@ -624,7 +638,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
         </div>
         <template #trailing>
           <ZnButton variant="ghost" @click="emitIntent('config.quicksettings')">Schnelleinst.</ZnButton>
-          <ZnButton variant="ghost" @click="emitIntent('config.addEntry')">Neuer Eintrag</ZnButton>
+          <ZnButton variant="ghost" :disabled="!canAddEntry" @click="handleAddEntry">Neuer Eintrag</ZnButton>
           <details ref="configMenuElement" class="config-panel__main-menu">
             <summary
               class="config-panel__main-menu-summary"

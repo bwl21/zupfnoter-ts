@@ -562,6 +562,11 @@ function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
     return
   }
 
+  if (intent.action === 'config.addEntry' && intent.path !== undefined) {
+    void executeToolbarCommand(`addconf ${intent.path}`)
+    return
+  }
+
   appendConsoleLine(`config intent: ${intent.action}${intent.path ? ` ${intent.path}` : ''}`, 'info')
 }
 
@@ -724,6 +729,7 @@ registerStorageCommands(commandStack, storageState, {
     activeConfigSection.value = section
   },
   setCurrentExtract: setCurrentExtractFromCommand,
+  getCurrentExtract: () => currentExtract.value,
   setSound: setPlaybackInstrumentFromCommand,
   setSaveFormat: (value) => {
     saveFormat.value = value

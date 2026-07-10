@@ -5,12 +5,15 @@ import {
   type CommandArguments,
   type CommandDefinition,
 } from './commands.js'
+import { Confstack } from './Confstack.js'
+import { initConf } from './initConf.js'
 
 export interface WorkbenchCommandRuntime {
   getAbcText(): string
   setAbcText(value: string): void
   readDocument(): string
   writeDocument(value: string): void
+  getCurrentExtract(): number
   getSound(): string
   render(): void
   play(range: string): void
@@ -513,8 +516,19 @@ function registerCreateAndConfigCommands(
     },
   })
 
+  stack.addCommand({
+    name: 'addconf',
+    help: 'add configuration parameter',
+    undoable: false,
+    parameters: [{ name: 'key', type: 'string', help: 'configuration preset key' }],
+    perform: (args) => {
+      const key = readString(args, 'key')
+      applyAddConfig(runtime, state, key)
+      runtime.render()
+    },
+  })
+
   for (const name of [
-    'addconf',
     'editsnippet',
     'addsnippet',
     'adddecoration',
@@ -640,6 +654,50 @@ function createNewSongAbc(id: string, title: string): string {
   ].join('\n')
 }
 
+function getDefaultConfigValues(): Record<string, CommandArgumentValue> {
+  return initConf(new Confstack()) as unknown as Record<string, CommandArgumentValue>
+}
+
+function applyAddConfig(
+  runtime: WorkbenchCommandRuntime,
+  state: LegacyCommandState,
+  addKey: string,
+): void {
+  const defaults = getDefaultConfigValues()
+  const templates = readObjectValue(defaults, 'templates')
+  const currentExtract = runtime.getCurrentExtract()
+
+  const values: Record<string, { key: string; value: CommandArgumentValue | undefined }> = {
+    notes: {
+      key: `extract.${currentExtract}.notes.x`,
+      value: templates['notes'],
+    },
+    lyrics: {
+      key: `extract.${currentExtract}.lyrics.x`,
+      value: templates['lyrics'],
+    },
+    images: {
+      key: `extract.${currentExtract}.images.x`,
+      value: templates['images'],
+    },
+    annotations: {
+      key: 'annotations.x',
+      value: templates['annotations'],
+    },
+    extracts: {
+      key: 'extract.x',
+      value: templates['extracts'],
+    },
+  }
+
+  const entry = values[addKey]
+  if (entry === undefined) {
+    throw new CommandError(`Unsupported addconf key: ${addKey}`)
+  }
+
+  patchConfig(runtime, state, entry.key, entry.value, `addconf ${addKey}`)
+}
+
 function readConfig(abcText: string): Record<string, CommandArgumentValue> {
   const configText = readConfigText(abcText)
   if (configText === undefined) return {}
@@ -673,7 +731,7 @@ function patchConfig(
 ): void {
   const previousAbcText = runtime.getAbcText()
   const config = readConfig(previousAbcText)
-  setConfigPath(config, key, value)
+  setConfigPath(config, key, value, key.endsWith('.x'))
   const nextAbcText = writeConfig(previousAbcText, config)
   pushConfigHistory(state, title, previousAbcText, nextAbcText)
   runtime.setAbcText(nextAbcText)
@@ -717,11 +775,18 @@ function setConfigPath(
   config: Record<string, CommandArgumentValue>,
   path: string,
   value: CommandArgumentValue | undefined,
+  resolveNewEntry = false,
 ): void {
   const parts = path.split('.').filter((part) => part !== '')
   const leaf = parts.pop()
   if (leaf === undefined) {
     throw new CommandError('configuration key must not be empty')
+  }
+  if (resolveNewEntry && leaf === 'x') {
+    const parentPath = parts.join('.')
+    const nextKey = String(getNextFreeConfigKey(config, parentPath))
+    setConfigPath(config, [...parts, nextKey].join('.'), value, false)
+    return
   }
   let cursor: Record<string, CommandArgumentValue> = config
   for (const part of parts) {
@@ -735,6 +800,21 @@ function setConfigPath(
     }
   }
   cursor[leaf] = value ?? null
+}
+
+function getNextFreeConfigKey(
+  config: Record<string, CommandArgumentValue>,
+  parentPath: string,
+): number {
+  const parentValue = getConfigPath(config, parentPath)
+  if (!isPlainObject(parentValue)) return 0
+
+  const numericKeys = Object.keys(parentValue)
+    .map((key) => Number(key))
+    .filter((value) => Number.isInteger(value) && value >= 0)
+
+  const lastKey = numericKeys.length === 0 ? -1 : Math.max(...numericKeys)
+  return lastKey + 1
 }
 
 function deleteConfigPath(config: Record<string, CommandArgumentValue>, path: string): void {
@@ -768,6 +848,15 @@ function parseConfigCommandValue(value: string): CommandArgumentValue {
 
 function sanitizeResourceKey(key: string): string {
   return key.replace(/[^a-zA-Z0-9_]/g, '_')
+}
+
+function readObjectValue(
+  source: Record<string, CommandArgumentValue>,
+  key: string,
+): Record<string, CommandArgumentValue> {
+  const value = source[key]
+  if (isPlainObject(value)) return value
+  throw new CommandError(`Missing object value for ${key}`)
 }
 
 function createDefaultTemplate(): string {
