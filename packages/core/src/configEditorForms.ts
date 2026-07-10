@@ -4,6 +4,14 @@
  * Portiert aus `ConfstackEditor.get_config_form_menu_entries` in
  * `config-form.rb` und aus den `form_sets` des Legacy-Kommandos `editconf`
  * in `controller_command_definitions.rb`.
+ *
+ * Wichtig:
+ * Das Legacy-System definiert fuer `editconf` nur Menueeintraege und eine
+ * geordnete Keyliste pro Formset. Abschnitts- oder Gruppierungsdaten gibt es
+ * dort nicht als eigene produktive Struktur. Falls das TS-UI Abschnitte
+ * braucht, muessen sie hier als Darstellungsmetadaten an derselben fachlichen
+ * Keyquelle haengen und duerfen nicht als direkte Legacy-Struktur ausgegeben
+ * werden.
  */
 
 import {
@@ -57,6 +65,25 @@ export interface ConfigEditorFormSet {
   scope: 'extract' | 'global' | 'mixed'
   quicksettingCommands?: string[]
   supportsNewEntry: boolean
+  sections?: ConfigEditorFormSection[]
+}
+
+export interface ConfigEditorFormSection {
+  id: string
+  label: string
+  keys: string[]
+}
+
+function createFormSection(
+  id: string,
+  label: string,
+  keys: readonly string[],
+): ConfigEditorFormSection {
+  return {
+    id,
+    label,
+    keys: [...keys],
+  }
 }
 
 const LAYOUT_FORM_KEYS = [
@@ -90,6 +117,43 @@ const INSTRUMENT_SPECIFIC_FORM_KEYS = [
   'extract.{extract}.stringnames.marks.vpos',
 ] as const
 
+const INSTRUMENT_SPECIFIC_FORM_SECTIONS: ConfigEditorFormSection[] = [
+  {
+    id: 'layout',
+    label: 'Layout',
+    keys: [
+      'extract.{extract}.layout.instrument',
+      'extract.{extract}.layout.tuning',
+      'extract.{extract}.layout.limit_a3',
+      'extract.{extract}.layout.bottomup',
+      'extract.{extract}.layout.beams',
+      'extract.{extract}.layout.X_OFFSET',
+      'extract.{extract}.layout.X_SPACING',
+      'extract.{extract}.layout.PITCH_OFFSET',
+    ],
+  },
+  {
+    id: 'stringnames_text',
+    label: 'Saitennamen',
+    keys: [
+      'extract.{extract}.stringnames.text',
+    ],
+  },
+  {
+    id: 'printer',
+    label: 'Drucker',
+    keys: [...LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix))],
+  },
+  {
+    id: 'stringnames_marks',
+    label: 'Saitenmarken',
+    keys: [
+      'extract.{extract}.stringnames.marks.hpos',
+      'extract.{extract}.stringnames.marks.vpos',
+    ],
+  },
+]
+
 const BARNUMBERS_COUNTNOTES_FORM_KEYS = [
   ...LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix)),
   ...LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix)),
@@ -108,6 +172,127 @@ const STRINGNAMES_FORM_KEYS = [
   toExtractConfigPath(LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES[0]),
   'extract.{extract}.sortmark',
 ] as const
+
+const CONFIG_EDITOR_FORM_SECTIONS: Record<ConfigEditorFormId, ConfigEditorFormSection[]> = {
+  basic_settings: [
+    createFormSection('basic_settings', 'Grundeinstellungen', [
+      'produce',
+      'extract.{extract}.title',
+      'extract.{extract}.filenamepart',
+      'extract.{extract}.voices',
+      'extract.{extract}.flowlines',
+      'extract.{extract}.subflowlines',
+      'extract.{extract}.synchlines',
+      'extract.{extract}.jumplines',
+      'extract.{extract}.layoutlines',
+      'extract.{extract}.nonflowrest',
+      'extract.{extract}.startpos',
+      'extract.{extract}.repeatsigns.voices',
+      'extract.{extract}.barnumbers.voices',
+      'extract.{extract}.countnotes.voices',
+      'extract.{extract}.stringnames.vpos',
+      'extract.{extract}.sortmark.show',
+      'restposition',
+    ]),
+  ],
+  extract_annotation: [
+    createFormSection('extract_annotation', 'Auszugsbeschriftung', [
+      'produce',
+      'extract.{extract}.title',
+      'extract.{extract}.voices',
+      'extract.{extract}.filenamepart',
+    ]),
+  ],
+  barnumbers_countnotes: [
+    createFormSection('barnumbers', 'Taktnummern', LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix))),
+    createFormSection('countnotes', 'Zaehlmarken', LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix))),
+    createFormSection('chords', 'Akkorde', [
+      'extract.{extract}.chords.voices',
+      'extract.{extract}.chords.pos',
+      'extract.{extract}.chords.style',
+    ]),
+    createFormSection('tuplets', 'Tuplets', [
+      'extract.{extract}.tuplets.text',
+      'extract.{extract}.tuplets.style',
+    ]),
+  ],
+  annotations: [
+    createFormSection('annotations', 'Notenbeschriftungsvorlagen', ['annotations']),
+  ],
+  notes: [
+    createFormSection('notes', 'Seitenbeschriftung', NOTES_FORM_KEYS),
+  ],
+  lyrics: [
+    createFormSection('lyrics', 'Liedtexte', LYRICS_FORM_KEYS),
+  ],
+  images: [
+    createFormSection('images', 'Bilder', [
+      '$resources.*',
+      'extract.{extract}.images.*.imagename',
+      'extract.{extract}.images.*.show',
+      'extract.{extract}.images.*.pos',
+      'extract.{extract}.images.*.height',
+    ]),
+  ],
+  notebound: [
+    createFormSection('notebound', 'Notenbezogen', ['extract.{extract}.notebound']),
+  ],
+  layout: [
+    createFormSection('extract', 'Auszug', [
+      'extract.{extract}.layoutlines',
+      'extract.{extract}.startpos',
+    ]),
+    createFormSection(
+      'layout',
+      'Layout',
+      LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES
+        .filter((suffix) => !LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES.includes(
+          suffix as (typeof LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES)[number],
+        ))
+        .map((suffix) => toExtractConfigPath(suffix)),
+    ),
+    createFormSection(
+      'packer',
+      'Packer',
+      LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES.map((suffix) => toExtractConfigPath(suffix)),
+    ),
+  ],
+  printer: [
+    createFormSection('printer', 'Druckeranpassungen', [
+      'extract.{extract}.printer',
+      'extract.{extract}.layout.limit_a3',
+    ]),
+  ],
+  repeatsigns: [
+    createFormSection('repeatsigns', 'Wiederholungszeichen', [
+      'extract.{extract}.repeatsigns.voices',
+      'extract.{extract}.repeatsigns.left.pos',
+      'extract.{extract}.repeatsigns.left.text',
+      'extract.{extract}.repeatsigns.left.style',
+      'extract.{extract}.repeatsigns.right.pos',
+      'extract.{extract}.repeatsigns.right.text',
+      'extract.{extract}.repeatsigns.right.style',
+      'extract.{extract}.layout.jumpline_anchor',
+      'extract.{extract}.layout.jumpline_vcut',
+    ]),
+  ],
+  instrument_specific: INSTRUMENT_SPECIFIC_FORM_SECTIONS,
+  stringnames: [
+    createFormSection('stringnames', 'Saitennamen', STRINGNAMES_FORM_KEYS),
+  ],
+  template: [
+    createFormSection('template', 'Vorlage', [
+      'template.filebase',
+      'template.title',
+    ]),
+  ],
+  validationerrors: [
+    createFormSection('validationerrors', 'Konfigurationsfehler', []),
+  ],
+  all_parameters: [
+    createFormSection('all_parameters', 'Alle Parameter', ['.']),
+  ],
+}
 
 export const CONFIG_EDITOR_MENU_ITEMS: ConfigEditorMenuItem[] = [
   { type: 'command', id: 'extract_annotation', legacyText: 'Extract-Annotation', legacyIcon: 'fa fa-bars', label: 'Auszugsbeschriftung', title: 'Auszugsbeschriftungen bearbeiten' },
@@ -157,6 +342,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
       'extract.{extract}.sortmark.show',
       'restposition',
     ],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.basic_settings,
   },
   extract_annotation: {
     id: 'extract_annotation',
@@ -169,30 +355,35 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
       'extract.{extract}.voices',
       'extract.{extract}.filenamepart',
     ],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.extract_annotation,
   },
   barnumbers_countnotes: {
     id: 'barnumbers_countnotes',
     scope: 'extract',
     supportsNewEntry: false,
     keys: [...BARNUMBERS_COUNTNOTES_FORM_KEYS],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.barnumbers_countnotes,
   },
   annotations: {
     id: 'annotations',
     scope: 'global',
     supportsNewEntry: true,
     keys: ['annotations'],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.annotations,
   },
   notes: {
     id: 'notes',
     scope: 'extract',
     supportsNewEntry: true,
     keys: [...NOTES_FORM_KEYS],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.notes,
   },
   lyrics: {
     id: 'lyrics',
     scope: 'extract',
     supportsNewEntry: true,
     keys: [...LYRICS_FORM_KEYS],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.lyrics,
   },
   images: {
     id: 'images',
@@ -205,24 +396,28 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
       'extract.{extract}.images.*.pos',
       'extract.{extract}.images.*.height',
     ],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.images,
   },
   notebound: {
     id: 'notebound',
     scope: 'extract',
     supportsNewEntry: false,
     keys: ['extract.{extract}.notebound'],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.notebound,
   },
   layout: {
     id: 'layout',
     scope: 'extract',
     supportsNewEntry: false,
     keys: [...LAYOUT_FORM_KEYS],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.layout,
   },
   printer: {
     id: 'printer',
     scope: 'extract',
     supportsNewEntry: false,
     keys: [...PRINTER_FORM_KEYS],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.printer,
   },
   repeatsigns: {
     id: 'repeatsigns',
@@ -239,18 +434,21 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
       'extract.{extract}.layout.jumpline_anchor',
       'extract.{extract}.layout.jumpline_vcut',
     ],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.repeatsigns,
   },
   instrument_specific: {
     id: 'instrument_specific',
     scope: 'extract',
     supportsNewEntry: false,
     keys: [...INSTRUMENT_SPECIFIC_FORM_KEYS],
+    sections: INSTRUMENT_SPECIFIC_FORM_SECTIONS,
   },
   stringnames: {
     id: 'stringnames',
     scope: 'extract',
     supportsNewEntry: false,
     keys: [...STRINGNAMES_FORM_KEYS],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.stringnames,
   },
   template: {
     id: 'template',
@@ -260,12 +458,14 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
       'template.filebase',
       'template.title',
     ],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.template,
   },
   validationerrors: {
     id: 'validationerrors',
     scope: 'global',
     supportsNewEntry: false,
     keys: [],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.validationerrors,
   },
   all_parameters: {
     id: 'all_parameters',
@@ -273,6 +473,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     quicksettingCommands: ['stdextract'],
     supportsNewEntry: false,
     keys: ['.'],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.all_parameters,
   },
 }
 
@@ -283,4 +484,8 @@ export function getConfigEditorFormSet(formId: string): ConfigEditorFormSet | un
 
 export function isConfigEditorFormId(formId: string): formId is ConfigEditorFormId {
   return formId in CONFIG_EDITOR_FORM_SETS
+}
+
+export function getConfigEditorFormSections(formId: string): ConfigEditorFormSection[] | undefined {
+  return getConfigEditorFormSet(formId)?.sections
 }

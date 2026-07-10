@@ -85,4 +85,36 @@ describe('ConfigEditorPanel', () => {
     expect(treeText).not.toContain('Taktnummern')
     expect(treeText).not.toContain('Druck')
   })
+
+  it('shows the legacy instrument-specific parameter set', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'instrument_specific',
+      },
+    })
+
+    const labels = wrapper.findAll('.config-row__label').map((node) => node.text())
+    expect(labels).toContain('Instrument')
+    expect(labels).toContain('Stimmung')
+    expect(labels).toContain('Begrenzung auf A3')
+    expect(labels).toContain('Spiel aufwaerts')
+    expect(labels).toContain('Notenhaelse')
+    expect(labels).toContain('X - Offset')
+    expect(labels).toContain('Saitenabstand')
+    expect(labels).toContain('Pitch-Offset')
+    expect(labels).toContain('Saitennamen')
+    expect(labels).toContain('Drucker')
+
+    expect(labels.indexOf('Instrument')).toBeLessThan(labels.indexOf('Stimmung'))
+    expect(labels.indexOf('Stimmung')).toBeLessThan(labels.indexOf('Begrenzung auf A3'))
+    expect(labels.indexOf('Pitch-Offset')).toBeLessThan(labels.indexOf('Saitennamen'))
+    expect(labels.indexOf('Saitennamen')).toBeLessThan(labels.indexOf('Drucker'))
+  })
 })

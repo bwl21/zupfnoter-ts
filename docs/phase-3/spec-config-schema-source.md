@@ -180,6 +180,23 @@ muessen.
 - Defaults und Schema werden getrennt gehalten
 - neue Konfigurationspfade werden zuerst an der Schemaquelle festgemacht
 
+## Verifikationsregel waehrend der Migration
+
+Fuer die Schema-Migration gilt zusaetzlich:
+
+- ein gruener Testlauf ist kein Fachbeleg fuer Legacy-Paritaet
+- Fixture-Inhalte sind kein Legacy-Beleg, solange der konkrete Sachverhalt
+  nicht in `opal-ajv.rb`, der massgeblichen Legacy-Codebasis oder der
+  Referenzdokumentation nachgewiesen ist
+- Aussagen wie `paritaetisch`, `wie im Legacy`, `bewiesen` oder `abgesichert`
+  sind nur zulaessig, wenn der konkrete Legacy-Beleg benannt werden kann
+- wenn ein technischer Fix Tests grün macht, aber kein Legacy-Beleg fuer die
+  fachliche Annahme vorliegt, bleibt der Zustand unsicher und muss als offener
+  Pruefpunkt behandelt werden
+- bei Widerspruch zwischen grünem Vergleichstest und fehlendem Legacy-Beleg
+  hat der fehlende Beleg Vorrang; dann ist weiter zu pruefen statt die
+  Abweichung still als geloest zu behandeln
+
 ## Offene Punkte
 
 - Ob die TS-Schemaquelle direkt als JSON Schema oder als TS-Objekt mit

@@ -37,6 +37,14 @@ Nach Änderungen möglichst ausführen:
     pnpm test
     pnpm type-check
 
+### Testgrün ist kein Fachbeleg
+
+- Ein grüner Testlauf beweist nur das aktuell getestete Verhalten, nicht automatisch fachliche Richtigkeit oder Legacy-Parität.
+- Fixture-Inhalte sind kein Legacy-Beleg, solange der entsprechende Sachverhalt nicht in der maßgeblichen Legacy-Codebasis oder Doku nachgewiesen ist.
+- Wenn ein Fix nur Tests grün macht, der fachliche Beleg aber fehlt, muss das im Ergebnis explizit als unsicher markiert werden.
+- Aussagen wie `paritätisch`, `wie im Legacy`, `bewiesen` oder `abgesichert` sind nur zulässig, wenn der konkrete Legacy-Beleg benannt werden kann.
+- Bei Widerspruch zwischen grünem Test und fehlendem Legacy-Beleg hat der fehlende Beleg Vorrang; dann ist weiter zu prüfen statt das Ergebnis als gelöst darzustellen.
+
 ### Browser Validation
 
 For UI-related work:
@@ -825,6 +833,8 @@ Vor Abschluss einer Änderung prüfen:
 - Bestehende Tests nicht gelöscht oder abgeschwächt?
 - Neue Logik mit Tests abgesichert?
 - Snapshots nur bewusst aktualisiert?
+- Testgrün nicht mit fachlicher Korrektheit verwechselt?
+- Fixture-Befunde nicht als Legacy-Wahrheit behandelt?
 - Falls Tests nicht ausgeführt wurden: wurde das klar im Ergebnis gesagt?
 
 ### Ergebnisbericht
@@ -834,4 +844,6 @@ Am Ende der Arbeit kurz berichten:
 - Was wurde geändert?
 - Welche Dateien wurden geändert?
 - Welche Tests wurden ausgeführt?
-  - Welche Risiken oder offenen Punkte bleiben?
+- Welche Punkte sind fachlich belegt?
+- Welche Punkte sind nur technisch grün, aber noch unsicher?
+- Welche Risiken oder offenen Punkte bleiben?

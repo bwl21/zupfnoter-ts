@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   CONFIG_EDITOR_FORM_SETS,
   CONFIG_EDITOR_MENU_ITEMS,
+  getConfigEditorFormSections,
 } from '../../configEditorForms.js'
 import {
   LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
@@ -124,5 +125,28 @@ describe('ConfigEditorForms', () => {
       toExtractConfigPath(LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES[0]),
       'extract.{extract}.sortmark',
     ])
+  })
+
+  it('defines productive sections for every formset', () => {
+    for (const [formId, formSet] of Object.entries(CONFIG_EDITOR_FORM_SETS)) {
+      const sections = getConfigEditorFormSections(formId)
+
+      expect(sections, `missing sections for ${formId}`).toBeDefined()
+      expect(sections?.flatMap((section) => section.keys) ?? []).toEqual(formSet.keys)
+    }
+  })
+
+  it('keeps instrument-specific section order in the central form source', () => {
+    const sections = getConfigEditorFormSections('instrument_specific')
+
+    expect(sections?.map((section) => section.id)).toEqual([
+      'layout',
+      'stringnames_text',
+      'printer',
+      'stringnames_marks',
+    ])
+    expect(sections?.flatMap((section) => section.keys) ?? []).toEqual(
+      CONFIG_EDITOR_FORM_SETS.instrument_specific.keys,
+    )
   })
 })

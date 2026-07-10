@@ -80,15 +80,24 @@ export {
   CONFIG_EDITOR_FORM_SETS,
   CONFIG_EDITOR_MENU_ITEMS,
   getConfigEditorFormSet,
+  getConfigEditorFormSections,
   isConfigEditorFormId,
 } from './configEditorForms.js'
 export type {
   ConfigEditorFormId,
+  ConfigEditorFormSection,
   ConfigEditorFormSet,
   ConfigEditorMenuCommand,
   ConfigEditorMenuItem,
   ConfigEditorMenuSeparator,
 } from './configEditorForms.js'
+export {
+  buildConfigEditorSectionTree,
+  configEditorKeyToTreePath,
+  CONFIG_EDITOR_TREE_DEFINITION,
+  findConfigEditorTreeDefinition,
+} from './configEditorTree.js'
+export type { ConfigEditorTreeDefinition } from './configEditorTree.js'
 
 export { extractSongConfig, mergeSongConfig, CONFIG_SEPARATOR } from './extractSongConfig.js'
 

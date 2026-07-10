@@ -4,22 +4,19 @@ import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 
 import {
+  buildConfigEditorSectionTree,
+  configEditorKeyToTreePath,
+  CONFIG_EDITOR_TREE_DEFINITION,
   CONFIG_EDITOR_MENU_ITEMS,
   Confstack,
   extractSongConfig,
+  findConfigEditorTreeDefinition,
   getConfigPathActionProfile,
   getConfigEditorFormSet,
   initConf,
-  LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
-  LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES,
-  LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES,
-  LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES,
-  LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS,
-  LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
-  LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
-  LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
   mergeSongConfig,
   type ConfigEditorMenuCommand,
+  type ConfigEditorTreeDefinition,
 } from '@zupfnoter/core'
 
 import ZnBadge from '../../design-system/components/ZnBadge.vue'
@@ -43,17 +40,6 @@ interface ConfigIntent {
     | 'config.openMenuAtPath'
   path?: string
   extractId: number
-}
-
-interface ConfigTreeDefinition {
-  key: string
-  label: string
-  children?: ConfigTreeDefinition[]
-}
-
-interface PathLabelDefinition {
-  pathSuffix: string
-  label: string
 }
 
 interface ConfigTreeRow {
@@ -127,196 +113,6 @@ const fallbackSectionVisiblePaths: Record<string, string[]> = {
   ],
 }
 
-const layoutTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'layout.LINE_THIN', label: 'Linienstaerke duenn' },
-  { pathSuffix: 'layout.LINE_MEDIUM', label: 'Linienstaerke mittel' },
-  { pathSuffix: 'layout.LINE_THICK', label: 'Linienstaerke dick' },
-  { pathSuffix: 'layout.ELLIPSE_SIZE', label: 'Notengroesse' },
-  { pathSuffix: 'layout.REST_SIZE', label: 'Pausengroesse' },
-  { pathSuffix: 'layout.X_SPACING', label: 'X-Abstand' },
-  { pathSuffix: 'layout.X_OFFSET', label: 'X-Offset' },
-  { pathSuffix: 'layout.PITCH_OFFSET', label: 'Pitch-Offset' },
-  { pathSuffix: 'layout.DRAWING_AREA_SIZE', label: 'Zeichenflaeche' },
-]
-
-const printerTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'printer.show_border', label: 'Rahmen anzeigen' },
-  { pathSuffix: 'printer.a3_offset', label: 'A3-Offset' },
-  { pathSuffix: 'printer.a4_offset', label: 'A4-Offset' },
-  { pathSuffix: 'printer.a4_pages', label: 'A4-Seiten' },
-]
-
-const packerTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'layout.packer.pack_method', label: 'Packmethode' },
-  { pathSuffix: 'layout.packer.pack_max_spreadfactor', label: 'max. Spreizung' },
-  { pathSuffix: 'layout.packer.pack_min_increment', label: 'min. Inkrement' },
-]
-
-const barnumbersTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'barnumbers.voices', label: 'Stimmen' },
-  { pathSuffix: 'barnumbers.pos', label: 'Position' },
-  { pathSuffix: 'barnumbers.style', label: 'Stil' },
-]
-
-const countnotesTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'countnotes.voices', label: 'Stimmen' },
-  { pathSuffix: 'countnotes.pos', label: 'Position' },
-  { pathSuffix: 'countnotes.style', label: 'Stil' },
-]
-
-const notesTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'legend.pos', label: 'Legende Position' },
-  { pathSuffix: 'legend.align', label: 'Legende Ausrichtung' },
-  { pathSuffix: 'legend.spos', label: 'Legende Startposition' },
-  { pathSuffix: 'notes', label: 'Seitenbeschriftung' },
-]
-
-const lyricsTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'lyrics.*.verses', label: 'Strophen' },
-  { pathSuffix: 'lyrics.*.pos', label: 'Position' },
-  { pathSuffix: 'lyrics.*.style', label: 'Stil' },
-]
-
-const stringnamesTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'stringnames', label: 'Saitennamen' },
-  { pathSuffix: 'stringnames.text', label: 'Text' },
-  { pathSuffix: 'stringnames.vpos', label: 'Stimmen' },
-  { pathSuffix: 'stringnames.marks.hpos', label: 'Marker horizontal' },
-  { pathSuffix: 'stringnames.marks.vpos', label: 'Marker vertikal' },
-]
-
-const treeDefinition: ConfigTreeDefinition[] = [
-  {
-    key: 'extract',
-    label: 'Auszug',
-    children: [
-      {
-        key: 'current',
-        label: '0',
-        children: [
-          { key: 'title', label: 'Titel' },
-          { key: 'voices', label: 'Stimmen' },
-          { key: 'flowlines', label: 'Flowlines' },
-          { key: 'subflowlines', label: 'Subflowlines' },
-          { key: 'synchlines', label: 'Synchronisationslinien' },
-          { key: 'layoutlines', label: 'Layoutstimmen' },
-          { key: 'startpos', label: 'Startposition' },
-          {
-            key: 'layout',
-            label: 'Layout',
-            children: [
-              ...mapTreeDefinitionsForPrefix(
-                LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES,
-                'layout.',
-                layoutTreeLeafDefinitions,
-              ),
-              {
-                key: 'packer',
-                label: 'Packer',
-                children: mapTreeDefinitionsForPrefix(
-                  LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES,
-                  'layout.packer.',
-                  packerTreeLeafDefinitions,
-                ),
-              },
-            ],
-          },
-          {
-            key: 'printer',
-            label: 'Druck',
-            children: mapTreeDefinitionsForPrefix(
-              LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
-              'printer.',
-              printerTreeLeafDefinitions,
-            ),
-          },
-          {
-            key: 'barnumbers',
-            label: 'Taktnummern',
-            children: mapTreeDefinitionsForPrefix(
-              LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
-              'barnumbers.',
-              barnumbersTreeLeafDefinitions,
-            ),
-          },
-          {
-            key: 'countnotes',
-            label: 'Zaehlnoten',
-            children: mapTreeDefinitionsForPrefix(
-              LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES,
-              'countnotes.',
-              countnotesTreeLeafDefinitions,
-            ),
-          },
-          {
-            key: 'legend',
-            label: 'Legende',
-            children: mapTreeDefinitionsForPrefix(
-              LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
-              'legend.',
-              notesTreeLeafDefinitions,
-            ),
-          },
-          {
-            key: 'notes',
-            label: 'Seitenbeschriftung',
-          },
-          {
-            key: 'lyrics',
-            label: 'Liedtexte',
-            children: mapTreeDefinitionsForWildcardPrefix(
-              LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS,
-              'lyrics.*.',
-              lyricsTreeLeafDefinitions,
-            ),
-          },
-          {
-            key: 'stringnames',
-            label: 'Saitennamen',
-            children: mapTreeDefinitionsForPrefix(
-              LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
-              'stringnames.',
-              stringnamesTreeLeafDefinitions,
-            ),
-          },
-        ],
-      },
-    ],
-  },
-]
-
-function mapTreeDefinitionsForPrefix(
-  pathSuffixes: readonly string[],
-  prefix: string,
-  labels: readonly PathLabelDefinition[],
-): ConfigTreeDefinition[] {
-  const labelMap = new Map(labels.map((entry) => [entry.pathSuffix, entry.label]))
-  return pathSuffixes
-    .filter((pathSuffix) => {
-      if (!pathSuffix.startsWith(prefix)) return false
-      if (prefix !== 'layout.packer.' && pathSuffix.includes('.packer.')) return false
-      return labelMap.has(pathSuffix)
-    })
-    .map((pathSuffix) => ({
-      key: pathSuffix.slice(prefix.length),
-      label: labelMap.get(pathSuffix) ?? pathSuffix.slice(prefix.length),
-    }))
-}
-
-function mapTreeDefinitionsForWildcardPrefix(
-  pathSuffixes: readonly string[],
-  prefix: string,
-  labels: readonly PathLabelDefinition[],
-): ConfigTreeDefinition[] {
-  const labelMap = new Map(labels.map((entry) => [entry.pathSuffix, entry.label]))
-  return pathSuffixes
-    .filter((pathSuffix) => pathSuffix.startsWith(prefix) && labelMap.has(pathSuffix))
-    .map((pathSuffix) => ({
-      key: pathSuffix.slice(prefix.length),
-      label: labelMap.get(pathSuffix) ?? pathSuffix.slice(prefix.length),
-    }))
-}
-
 const parsedSongConfig = computed(() => {
   try {
     return {
@@ -344,6 +140,7 @@ const usesCompactShell = computed(() => visibleRows.value.length <= 4)
 let panelResizeObserver: ResizeObserver | undefined
 const helpTooltips = new Map<HTMLElement, TippyInstance>()
 const configHelpTexts = ref<ConfigHelpTexts>({})
+const activeSectionTreeDefinition = computed(() => buildActiveSectionTreeDefinition())
 
 watch(
   [() => props.currentExtract, () => props.abcText],
@@ -396,25 +193,31 @@ onBeforeUnmount(() => {
 })
 
 function buildVisibleRows(): ConfigTreeRow[] {
-  return flattenTree(treeDefinition)
+  if (activeSectionTreeDefinition.value !== undefined) {
+    return flattenTree(activeSectionTreeDefinition.value, '', 0, false)
+  }
+  return flattenTree(CONFIG_EDITOR_TREE_DEFINITION)
 }
 
 function flattenTree(
-  definitions: ConfigTreeDefinition[],
+  definitions: ConfigEditorTreeDefinition[],
   parentPath = '',
   depth = 0,
+  respectActiveSectionFilter = true,
 ): ConfigTreeRow[] {
   const rows: ConfigTreeRow[] = []
 
   for (const definition of definitions) {
     const path = joinPath(parentPath, definition.key)
-    if (!isVisibleInActiveSection(path)) {
+    if (respectActiveSectionFilter && !isVisibleInActiveSection(path)) {
       continue
     }
     const branch = definition.children !== undefined && definition.children.length > 0
     const row = createRow(definition, path, depth, branch)
     const matches = matchesRow(row)
-    const children = branch ? flattenTree(definition.children ?? [], path, depth + 1) : []
+    const children = branch
+      ? flattenTree(definition.children ?? [], path, depth + 1, respectActiveSectionFilter)
+      : []
     const hasVisibleChildren = children.length > 0
 
     if (!matches && !hasVisibleChildren) {
@@ -437,6 +240,15 @@ function isVisibleInActiveSection(path: string): boolean {
 }
 
 function expandSection(section: string): void {
+  if (section === props.activeSection && activeSectionTreeDefinition.value !== undefined) {
+    const nextExpanded = new Set(expandedPaths.value)
+    for (const branchPath of collectBranchPaths(activeSectionTreeDefinition.value)) {
+      nextExpanded.add(branchPath)
+    }
+    expandedPaths.value = [...nextExpanded]
+    return
+  }
+
   const visiblePaths = resolveSectionVisiblePaths(section)
   if (visiblePaths === undefined || visiblePaths.includes('.')) return
   const nextExpanded = new Set(expandedPaths.value)
@@ -446,6 +258,22 @@ function expandSection(section: string): void {
     }
   }
   expandedPaths.value = [...nextExpanded]
+}
+
+function collectBranchPaths(
+  definitions: ConfigEditorTreeDefinition[],
+  parentPath = '',
+): string[] {
+  const branchPaths: string[] = []
+
+  for (const definition of definitions) {
+    const path = joinPath(parentPath, definition.key)
+    if (definition.children !== undefined && definition.children.length > 0) {
+      branchPaths.push(path, ...collectBranchPaths(definition.children, path))
+    }
+  }
+
+  return branchPaths
 }
 
 function resolveSectionVisiblePaths(section = props.activeSection): string[] | undefined {
@@ -459,10 +287,6 @@ function resolveSectionVisiblePaths(section = props.activeSection): string[] | u
     return visiblePaths
   }
   return fallbackSectionVisiblePaths[section] ?? visiblePaths
-}
-
-function configEditorKeyToTreePath(key: string): string {
-  return key.replace(/^extract\.(\{extract\}|\d+)(?=\.|$)/, 'extract.current')
 }
 
 function rowMatchesActiveSection(row: ConfigTreeRow): boolean {
@@ -482,23 +306,7 @@ function rowMatchesTypedSearch(row: ConfigTreeRow): boolean {
 }
 
 function pathExistsInTree(path: string): boolean {
-  return findDefinitionByPath(treeDefinition, path) !== undefined
-}
-
-function findDefinitionByPath(
-  definitions: ConfigTreeDefinition[],
-  path: string,
-  parentPath = '',
-): ConfigTreeDefinition | undefined {
-  for (const definition of definitions) {
-    const currentPath = joinPath(parentPath, definition.key)
-    if (currentPath === path) return definition
-    const found = definition.children === undefined
-      ? undefined
-      : findDefinitionByPath(definition.children, path, currentPath)
-    if (found !== undefined) return found
-  }
-  return undefined
+  return findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, path) !== undefined
 }
 
 function getPathAncestors(path: string): string[] {
@@ -511,13 +319,16 @@ function getPathAncestors(path: string): string[] {
 }
 
 function createRow(
-  definition: ConfigTreeDefinition,
+  definition: ConfigEditorTreeDefinition,
   path: string,
   depth: number,
   isBranch: boolean,
 ): ConfigTreeRow {
-  const localPath = resolveLocalPath(path)
-  const effectivePath = resolveEffectivePath(path)
+  const configPath = definition.configPath ?? path
+  const localPath = definition.configPath === undefined && path.startsWith('section:')
+    ? undefined
+    : resolveLocalPath(configPath)
+  const effectivePath = localPath === undefined ? undefined : resolveEffectivePath(configPath)
   const localValue = localPath === undefined ? undefined : getPathValue(parsedSongConfig.value.config, localPath)
   const effectiveValue = effectivePath === undefined ? undefined : getPathValue(effectiveConfig.value, effectivePath)
   const extractZeroValue = effectivePath === undefined ? undefined : getExtractZeroValue(effectivePath)
@@ -562,6 +373,11 @@ function resolveLocalPath(path: string): string | undefined {
 
 function resolveEffectivePath(path: string): string | undefined {
   return resolveLocalPath(path)
+}
+
+function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | undefined {
+  if (props.activeSection === 'all_parameters') return undefined
+  return buildConfigEditorSectionTree(props.activeSection)
 }
 
 function resolveSourceLabel(localPath: string | undefined, effectivePath: string | undefined): string | undefined {
