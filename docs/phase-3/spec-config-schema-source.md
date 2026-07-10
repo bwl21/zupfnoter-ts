@@ -152,6 +152,26 @@ erweitert.
 Perspektiven, Kontextmenues und Baumdarstellung bleiben fachlich eigenstaendig,
 werden aber gegen die zentrale Quelle geprueft.
 
+### Schritt 5: Exakter Schema-Vergleich waehrend der Migration
+
+Solange `opal-ajv.rb` noch die Legacy-Quelle ist und `configSchema.ts` erst
+schrittweise zur kuenftigen TS-Quelle wird, braucht es einen harten Vergleich
+zwischen beiden Artefakten.
+
+Workflow:
+
+- `pnpm parity:config-schema`
+  erzeugt einen kanonisierten Vergleichsreport zwischen Legacy und TS
+- `pnpm test:parity:config-schema`
+  faehrt denselben Vergleich im strikten Modus und endet bei Abweichungen mit
+  Fehlercode `1`
+
+Dabei werden beide Schemaobjekte programmatisch exportiert, rekursiv nach
+Schluesseln sortiert und dann strukturell verglichen. Dadurch bleibt die
+programmatische Bearbeitung in Ruby und TypeScript moeglich, ohne waehrend der
+Migration ein manuell gepflegtes JSON-Zwischenformat als Quelle erzwingen zu
+muessen.
+
 ## Verbindliche Regeln fuer den Port
 
 - Legacy-Parameternamen werden nicht in neue Namensstile umbenannt

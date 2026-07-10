@@ -83,13 +83,13 @@ describe('configSchema', () => {
   it('offers a reusable schema overview object', () => {
     expect(getLegacyConfigSchemaOverview()).toBe(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW)
     expect(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW.$schema).toBe(ZUPFNOTER_CONFIG_SCHEMA_DRAFT)
-    expect(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW.properties?.extract?.patternProperties?.[ZUPFNOTER_EXTRACT_KEY_PATTERN]).toBeDefined()
+    expect(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW.definitions?.pos).toBeDefined()
+    expect(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW.properties?.extract?.patternProperties?.['d*']).toBeDefined()
     expect(
-      ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW.properties?.extract?.patternProperties?.[ZUPFNOTER_EXTRACT_KEY_PATTERN]?.properties?.printer?.properties,
+      ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW.properties?.extract?.patternProperties?.['d*']?.properties?.printer?.properties,
     ).toMatchObject({
       a3_offset: { type: 'array' },
       a4_offset: { type: 'array' },
-      a4_pages: { type: 'array' },
       show_border: { type: 'boolean' },
     })
   })
@@ -202,6 +202,16 @@ describe('configSchema', () => {
             barnumber: {
               v_2: {
                 t_384: { align: 'r' },
+              },
+            },
+            c_jumplines: {
+              v_1: {
+                '8640': { p_repeat: -3 },
+                '26880': {
+                  '0': { p_begin: -2 },
+                  '1': { p_begin: 4 },
+                  p_follow: -3,
+                },
               },
             },
           },
