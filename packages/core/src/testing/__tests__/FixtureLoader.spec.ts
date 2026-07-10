@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { extractSongConfig } from '../../extractSongConfig.js'
 import {
   fixtureConfigFromAbc,
   fixtureAbcPath,
@@ -51,6 +52,19 @@ describe('fixtureLoader', () => {
     expect(config.layout.SHORTEST_NOTE).toBe(32)
     expect(config.layout.ELLIPSE_SIZE).toEqual(defaultTestConfig.layout.ELLIPSE_SIZE)
     expect(config.extract['0']?.voices).toEqual([2])
+  })
+
+  it('rejects embedded config with non-legacy printer keys', () => {
+    expect(() => extractSongConfig(
+      [
+        'X:1',
+        'T:Inline Config',
+        'K:C',
+        'C',
+        '%%%%zupfnoter.config',
+        '{"extract":{"0":{"printer":{"showBorder":false}}}}',
+      ].join('\n'),
+    )).toThrow('$.extract.0.printer.showBorder: unknown key')
   })
 
   it('loads input, effective config, and stage references as one fixture set', () => {

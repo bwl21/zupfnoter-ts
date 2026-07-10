@@ -37,6 +37,21 @@ export { GLYPHS } from './glyphs.js'
 export type { GlyphDef } from './glyphs.js'
 
 export { initConf } from './initConf.js'
+export {
+  getLegacyConfigSchemaOverview,
+  isLegacyTopLevelConfigKey,
+  validateZupfnoterConfigShape,
+  ZUPFNOTER_CONFIG_SCHEMA_DRAFT,
+  ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW,
+  ZUPFNOTER_CONFIG_SCHEMA_URI,
+  ZUPFNOTER_EXTRACT_KEY_PATTERN,
+  ZUPFNOTER_EXTRACT_REQUIRED_KEYS,
+  ZUPFNOTER_LAYOUT_CORE_KEYS,
+  ZUPFNOTER_PRINTER_KEYS,
+  ZUPFNOTER_PRINTER_REQUIRED_KEYS,
+  ZUPFNOTER_TOP_LEVEL_REQUIRED_KEYS,
+} from './configSchema.js'
+export type { JsonSchemaNode } from './configSchema.js'
 
 export {
   CONFIG_EDITOR_FORM_SETS,

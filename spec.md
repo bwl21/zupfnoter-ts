@@ -24,6 +24,7 @@ können im jeweiligen Phase-Ordner auch ergänzende Dateien wie `spec-<thema>.md
 | [docs/phase-3/konzept_json_serialisierung.md](docs/phase-3/konzept_json_serialisierung.md) | Phase 3 – JSON-Serialisierung und Referenz für Song → Sheet |
 | [docs/phase-3/spec-beatpacker.md](docs/phase-3/spec-beatpacker.md) | Phase 3.2 – BeatPacker |
 | [docs/phase-3/spec-layout.md](docs/phase-3/spec-layout.md) | Phase 3.3 – HarpnotesLayout |
+| [docs/phase-3/spec-config-schema-source.md](docs/phase-3/spec-config-schema-source.md) | Zentrale Schema-Quelle fuer die eingebettete ZupfnoterConfig |
 | [docs/phase-3/spec-apps-demo.md](docs/phase-3/spec-apps-demo.md) | Phase 3 – `apps/demo`: Pipeline-Demo-App |
 | [docs/phase-4/spec-svg.md](docs/phase-4/spec-svg.md) | Phase 4.1 – SvgEngine |
 | [docs/phase-5/spec-codemirror.md](docs/phase-5/spec-codemirror.md) | Phase 5 – CodeMirror-Integration für den ABC-Editor |

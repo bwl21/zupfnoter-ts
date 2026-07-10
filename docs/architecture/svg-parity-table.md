@@ -153,5 +153,7 @@ Wenn sich an `init_conf`, `opal-ajv` oder den TS-Typen etwas ändert, wird diese
 Praktische Regel:
 
 - neue Legacy-Funde zuerst hier eintragen
+- Schema-Quellenfragen zuerst in `docs/phase-3/spec-config-schema-source.md`
+  klaeren
 - danach die betroffenen TS-Typen / Transformer / Renderer anpassen
 - anschließend den Fixture-/SVG-Report neu erzeugen
