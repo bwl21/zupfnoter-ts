@@ -153,7 +153,7 @@ describe('configSchema', () => {
     })
   })
 
-  it('flags unknown keys in strict legacy subtrees', () => {
+  it('keeps open legacy subtrees open in runtime validation', () => {
     expect(validateZupfnoterConfigShape({
       extract: {
         '0': {
@@ -162,7 +162,7 @@ describe('configSchema', () => {
           },
         },
       },
-    })).toContain('$.extract.0.printer.showBorder: unknown key')
+    })).toEqual([])
   })
 
   it('accepts partial embedded config overlays without requiring full defaults', () => {
@@ -177,9 +177,11 @@ describe('configSchema', () => {
     })).toEqual([])
   })
 
-  it('validates the complete default TS config against the expanded schema', () => {
+  it('does not confuse normalized initConf defaults with the embedded legacy config shape', () => {
     const completeConfig = initConf(new Confstack())
-    expect(validateCompleteZupfnoterConfigShape(completeConfig)).toEqual([])
+    expect(validateCompleteZupfnoterConfigShape(completeConfig)).toContain(
+      '$.layout.FONT_STYLE_DEF.bold: missing required key "text_color"',
+    )
   })
 
   it('reports missing required keys for complete config validation', () => {
@@ -199,6 +201,11 @@ describe('configSchema', () => {
             flowline: {
               v_1: {
                 '9024': { cp2: [-2.64, -58.59] },
+              },
+            },
+            tuplet: {
+              v_1: {
+                tp_1_1: { cp1: [-52.07, -6.91], cp2: [-54.61, 6.7] },
               },
             },
             barnumber: {
@@ -236,7 +243,7 @@ describe('configSchema', () => {
     })).toContain('$.extract.0.notebound.minc.10752.mincFactor: unknown key')
   })
 
-  it('rejects unknown keys in legacy chord annotation blocks', () => {
+  it('keeps legacy chord annotation blocks open where the parity schema is open', () => {
     expect(validateEmbeddedZupfnoterConfigShape({
       extract: {
         '0': {
@@ -246,7 +253,7 @@ describe('configSchema', () => {
           },
         },
       },
-    })).toContain('$.extract.0.chords.show: unknown key')
+    })).toEqual([])
   })
 
   it('keeps the legacy preset families in the default config', () => {

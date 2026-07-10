@@ -54,7 +54,7 @@ describe('fixtureLoader', () => {
     expect(config.extract['0']?.voices).toEqual([2])
   })
 
-  it('rejects embedded config with non-legacy printer keys', () => {
+  it('keeps open embedded legacy overlay branches open during config extraction', () => {
     expect(() => extractSongConfig(
       [
         'X:1',
@@ -64,7 +64,7 @@ describe('fixtureLoader', () => {
         '%%%%zupfnoter.config',
         '{"extract":{"0":{"printer":{"showBorder":false}}}}',
       ].join('\n'),
-    )).toThrow('$.extract.0.printer.showBorder: unknown key')
+    )).not.toThrow()
   })
 
   it('loads input, effective config, and stage references as one fixture set', () => {

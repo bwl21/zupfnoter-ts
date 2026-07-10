@@ -23,9 +23,9 @@ describe('ConfigEditorPanel', () => {
 
     expect(wrapper.text()).toContain('Auszug')
     expect(wrapper.text()).toContain('0')
-    expect(wrapper.text()).toContain('X-Abstand')
+    expect(wrapper.text()).toContain('Titel')
     const inputs = wrapper.findAll('input')
-    expect(inputs.some((input) => (input.element as HTMLInputElement).value === '13')).toBe(true)
+    expect(inputs.some((input) => (input.element as HTMLInputElement).value === 'Alt')).toBe(true)
   })
 
   it('renders the legacy config edit menu entries and emits edit commands', async () => {
@@ -81,7 +81,7 @@ describe('ConfigEditorPanel', () => {
     expect(treeText).toContain('Startposition')
     expect(treeText).toContain('Linienstaerke duenn')
     expect(treeText).toContain('Packmethode')
-    expect(treeText).not.toContain('X-Abstand')
+    expect(treeText).not.toContain('Saitennamen')
     expect(treeText).not.toContain('Taktnummern')
     expect(treeText).not.toContain('Druck')
   })

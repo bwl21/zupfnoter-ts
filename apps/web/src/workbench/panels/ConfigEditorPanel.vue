@@ -294,7 +294,7 @@ function mapTreeDefinitionsForPrefix(
   return pathSuffixes
     .filter((pathSuffix) => {
       if (!pathSuffix.startsWith(prefix)) return false
-      if (pathSuffix.includes('.packer.')) return false
+      if (prefix !== 'layout.packer.' && pathSuffix.includes('.packer.')) return false
       return labelMap.has(pathSuffix)
     })
     .map((pathSuffix) => ({

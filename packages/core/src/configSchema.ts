@@ -374,6 +374,20 @@ const VOICE_INDEXED_BEZIER_SCHEMA: JsonSchemaNode = {
   },
 }
 
+const TUPLET_VOICE_INDEXED_BEZIER_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  patternProperties: {
+    '^v_\\d+$': {
+      type: 'object',
+      additionalProperties: false,
+      patternProperties: {
+        '^.+$': ANNOTATED_BEZIER_SCHEMA,
+      },
+    },
+  },
+}
+
 const NOTEBOUND_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
@@ -420,7 +434,7 @@ const NOTEBOUND_SCHEMA: JsonSchemaNode = {
     partname: NOTEBOUND_POS_SCHEMA,
     repeat_begin: NOTEBOUND_POS_SCHEMA,
     repeat_end: NOTEBOUND_POS_SCHEMA,
-    tuplet: VOICE_INDEXED_BEZIER_SCHEMA,
+    tuplet: TUPLET_VOICE_INDEXED_BEZIER_SCHEMA,
     variantend: NOTEBOUND_POS_SCHEMA,
   },
 }
@@ -901,80 +915,6 @@ const EXTRACT_SCHEMA: JsonSchemaNode = {
       },
     },
     notebound: NOTEBOUND_SCHEMA,
-  },
-}
-
-const VALIDATION_SCHEMA_OVERVIEW: JsonSchemaNode = {
-  $schema: ZUPFNOTER_CONFIG_SCHEMA_DRAFT,
-  description: 'TS validation port of the legacy Zupfnoter configuration schema',
-  type: 'object',
-  required: ZUPFNOTER_TOP_LEVEL_REQUIRED_KEYS,
-  properties: {
-    $schema: { type: 'string' },
-    $version: { type: 'string' },
-    produce: INTEGER_ARRAY_SCHEMA,
-    abc_parser: { type: 'string' },
-    restposition: {
-      type: 'object',
-      required: ['default', 'repeatstart', 'repeatend'],
-      properties: {
-        default: { type: 'string' },
-        repeatstart: { type: 'string' },
-        repeatend: { type: 'string' },
-      },
-    },
-    wrap: { type: 'integer' },
-    defaults: DEFAULTS_SCHEMA,
-    templates: TEMPLATES_SCHEMA,
-    annotations: ANNOTATIONS_SCHEMA,
-    extract: {
-      type: 'object',
-      patternProperties: {
-        [ZUPFNOTER_EXTRACT_KEY_PATTERN]: EXTRACT_SCHEMA,
-      },
-    },
-    layout: LAYOUT_SCHEMA,
-    neatjson: {
-      type: 'object',
-      required: [
-        'wrap',
-        'aligned',
-        'after_comma',
-        'after_colon_1',
-        'after_colon_n',
-        'before_colon_n',
-        'explicit_sort',
-      ],
-      additionalProperties: false,
-      properties: {
-        wrap: { type: 'integer' },
-        aligned: { type: 'boolean' },
-        after_comma: { type: 'integer' },
-        after_colon_1: { type: 'integer' },
-        after_colon_n: { type: 'integer' },
-        before_colon_n: { type: 'integer' },
-        sorted: { type: 'boolean' },
-        explicit_sort: {
-          type: 'object',
-          additionalProperties: true,
-        },
-      },
-    },
-    template: {
-      type: 'object',
-      properties: {
-        filebase: { type: 'string' },
-        title: { type: 'string' },
-      },
-    },
-    presets: {
-      type: 'object',
-      additionalProperties: true,
-    },
-    resources: {
-      type: 'object',
-      additionalProperties: true,
-    },
   },
 }
 
@@ -1488,9 +1428,176 @@ export function buildConfigSchemaOverview(): JsonSchemaNode {
 }
 
 export const ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW: JsonSchemaNode = buildConfigSchemaOverview()
+const VALIDATION_SCHEMA_OVERVIEW: JsonSchemaNode = buildValidationSchemaOverview(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW)
 
 export function getConfigSchemaOverview(): JsonSchemaNode {
   return ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW
+}
+
+function buildValidationSchemaOverview(schema: JsonSchemaNode): JsonSchemaNode {
+  return normalizeSchemaNodeForValidation(schema, schema)
+}
+
+function normalizeSchemaNodeForValidation(
+  schema: JsonSchemaNode,
+  rootSchema: JsonSchemaNode,
+): JsonSchemaNode {
+  const resolvedSchema = resolveSchemaNodeReference(schema, rootSchema)
+  const normalized: JsonSchemaNode = {}
+
+  for (const [key, value] of Object.entries(resolvedSchema)) {
+    if (key === '$ref' || key === 'ref' || key === 'definitions') {
+      continue
+    }
+
+    if (key === 'properties' && isPlainObject(value)) {
+      normalized.properties = normalizeSchemaPropertyMapForValidation(value, rootSchema)
+      continue
+    }
+
+    if (key === 'patternProperties' && isPlainObject(value)) {
+      normalized.patternProperties = normalizeSchemaPatternMapForValidation(value, rootSchema)
+      continue
+    }
+
+    if (key === 'items') {
+      if (Array.isArray(value)) {
+        normalized.items = value.map((item) => (
+          isSchemaNode(item) ? normalizeSchemaNodeForValidation(item, rootSchema) : item
+        ))
+        continue
+      }
+      if (isSchemaNode(value)) {
+        normalized.items = normalizeSchemaNodeForValidation(value, rootSchema)
+        continue
+      }
+    }
+
+    if (key === 'additionalProperties' && isSchemaNode(value)) {
+      normalized.additionalProperties = normalizeSchemaNodeForValidation(value, rootSchema)
+      continue
+    }
+
+    normalized[key] = value
+  }
+
+  return normalized
+}
+
+function normalizeSchemaPropertyMapForValidation(
+  schemaMap: Record<string, unknown>,
+  rootSchema: JsonSchemaNode,
+): Record<string, JsonSchemaNode> {
+  return Object.fromEntries(
+    Object.entries(schemaMap).map(([propertyKey, propertySchema]) => [
+      propertyKey,
+      isSchemaNode(propertySchema)
+        ? normalizeSchemaNodeForValidation(propertySchema, rootSchema)
+        : {},
+    ]),
+  ) as Record<string, JsonSchemaNode>
+}
+
+function normalizeSchemaPatternMapForValidation(
+  schemaMap: Record<string, unknown>,
+  rootSchema: JsonSchemaNode,
+): Record<string, JsonSchemaNode> {
+  return Object.fromEntries(
+    Object.entries(schemaMap).map(([pattern, patternSchema]) => [
+      normalizeLegacyPattern(pattern),
+      isSchemaNode(patternSchema)
+        ? normalizeSchemaNodeForValidation(patternSchema, rootSchema)
+        : {},
+    ]),
+  ) as Record<string, JsonSchemaNode>
+}
+
+function resolveSchemaNodeReference(
+  schema: JsonSchemaNode,
+  rootSchema: JsonSchemaNode,
+): JsonSchemaNode {
+  const refPath = typeof schema.$ref === 'string'
+    ? schema.$ref
+    : typeof schema.ref === 'string'
+      ? schema.ref
+      : undefined
+
+  if (refPath === undefined) {
+    return schema
+  }
+
+  const referencedSchema = readSchemaReference(rootSchema, refPath)
+  if (referencedSchema === undefined) {
+    return schema
+  }
+
+  const resolvedReference = resolveSchemaNodeReference(referencedSchema, rootSchema)
+  const { $ref: _ref, ref: _legacyRef, ...schemaOverrides } = schema
+
+  return mergeSchemaNodes(resolvedReference, schemaOverrides)
+}
+
+function readSchemaReference(
+  rootSchema: JsonSchemaNode,
+  refPath: string,
+): JsonSchemaNode | undefined {
+  if (!refPath.startsWith('#/')) {
+    return undefined
+  }
+
+  const pathSegments = refPath.slice(2).split('/')
+  let current: unknown = rootSchema
+
+  for (const segment of pathSegments) {
+    if (!isPlainObject(current) || !(segment in current)) {
+      return undefined
+    }
+    current = current[segment]
+  }
+
+  return isSchemaNode(current) ? current : undefined
+}
+
+function mergeSchemaNodes(
+  baseSchema: JsonSchemaNode,
+  overrideSchema: JsonSchemaNode,
+): JsonSchemaNode {
+  const mergedSchema: JsonSchemaNode = {
+    ...baseSchema,
+    ...overrideSchema,
+  }
+
+  if (baseSchema.properties !== undefined || overrideSchema.properties !== undefined) {
+    mergedSchema.properties = {
+      ...(baseSchema.properties ?? {}),
+      ...(overrideSchema.properties ?? {}),
+    }
+  }
+
+  if (baseSchema.patternProperties !== undefined || overrideSchema.patternProperties !== undefined) {
+    mergedSchema.patternProperties = {
+      ...(baseSchema.patternProperties ?? {}),
+      ...(overrideSchema.patternProperties ?? {}),
+    }
+  }
+
+  if (overrideSchema.additionalProperties === undefined) {
+    mergedSchema.additionalProperties = baseSchema.additionalProperties
+  }
+
+  return mergedSchema
+}
+
+function normalizeLegacyPattern(pattern: string): string {
+  if (pattern === 'd*' || pattern === 'd+') {
+    return '^\\d+$'
+  }
+
+  if (pattern === 'v_d*' || pattern === 'v_d+') {
+    return '^v_\\d+$'
+  }
+
+  return pattern
 }
 
 export function isLegacyTopLevelConfigKey(key: string): boolean {
@@ -1635,6 +1742,9 @@ function validateSchemaNode(
     }
 
     if (schema.additionalProperties === false) {
+      if (schema.requiredx !== undefined) {
+        continue
+      }
       errors.push(`${appendPath(path, key)}: unknown key`)
       continue
     }
@@ -1697,6 +1807,6 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-function isSchemaNode(value: boolean | JsonSchemaNode | undefined): value is JsonSchemaNode {
+function isSchemaNode(value: unknown): value is JsonSchemaNode {
   return typeof value === 'object' && value !== null
 }
