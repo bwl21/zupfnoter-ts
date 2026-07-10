@@ -65,6 +65,7 @@ export const ZUPFNOTER_EXTRACT_REQUIRED_KEYS = [
   'flowlines',
   'subflowlines',
   'jumplines',
+  'repeatsigns',
   'layoutlines',
   'legend',
   'lyrics',
@@ -73,6 +74,7 @@ export const ZUPFNOTER_EXTRACT_REQUIRED_KEYS = [
   'notes',
   'barnumbers',
   'countnotes',
+  'chords',
   'stringnames',
   'printer',
 ] as const
@@ -560,6 +562,19 @@ const COUNTNOTES_SCHEMA: JsonSchemaNode = {
   },
 }
 
+const NB_ANNOTATION_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    voices: INTEGER_ARRAY_SCHEMA,
+    pos: POSITION_SCHEMA,
+    autopos: { type: 'boolean' },
+    apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
+    apbase: POSITION_SCHEMA,
+    style: { type: 'string' },
+  },
+}
+
 const LEGEND_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
@@ -586,10 +601,12 @@ const LYRICS_ENTRY_SCHEMA: JsonSchemaNode = {
 const DEFAULTS_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
+  required: ['notebound'],
   properties: {
     notebound: {
       type: 'object',
       additionalProperties: false,
+      required: ['annotation', 'chord', 'partname', 'variantend', 'tuplet'],
       properties: {
         annotation: POSITIONED_TEXT_SCHEMA,
         chord: POSITIONED_TEXT_SCHEMA,
@@ -613,6 +630,7 @@ const DEFAULTS_SCHEMA: JsonSchemaNode = {
 const TEMPLATES_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: true,
+  required: ['notes', 'lyrics', 'tuplet', 'annotations'],
   properties: {
     notes: NOTES_ENTRY_SCHEMA,
     lyrics: LYRICS_ENTRY_SCHEMA,
@@ -642,6 +660,7 @@ const TEMPLATES_SCHEMA: JsonSchemaNode = {
 const ANNOTATIONS_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
+  required: ['vl', 'vt', 'vr'],
   patternProperties: {
     '.*': POSITIONED_TEXT_SCHEMA,
   },
@@ -830,8 +849,8 @@ const EXTRACT_SCHEMA: JsonSchemaNode = {
       enforceRequired: false,
     },
     chords: {
-      type: 'object',
-      additionalProperties: true,
+      ...NB_ANNOTATION_SCHEMA,
+      enforceRequired: false,
     },
     tuplets: {
       type: 'object',
@@ -898,6 +917,15 @@ export const ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW: JsonSchemaNode = {
     layout: LAYOUT_SCHEMA,
     neatjson: {
       type: 'object',
+      required: [
+        'wrap',
+        'aligned',
+        'after_comma',
+        'after_colon_1',
+        'after_colon_n',
+        'before_colon_n',
+        'explicit_sort',
+      ],
       additionalProperties: false,
       properties: {
         wrap: { type: 'integer' },

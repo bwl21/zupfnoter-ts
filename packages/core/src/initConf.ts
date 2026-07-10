@@ -27,8 +27,11 @@ import type { Confstack } from './Confstack.js'
  * Erzeugt Saitennamen-Text für ein Instrument.
  * Port von `cut_string_names()` aus `init_conf.rb`.
  */
-function cutStringNames(strings: string[]): string {
-  return strings.join('\n')
+function cutStringNames(stringNames: string, from: number, to: number): string {
+  return stringNames
+    .split(' ')
+    .map((value, index) => (index >= from && index <= to ? value : '~'))
+    .join(' ')
 }
 
 // ---------------------------------------------------------------------------
@@ -371,161 +374,422 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
     // Closures über `conf` werden lazy ausgewertet (nach conf.push(songConfig)).
     // -------------------------------------------------------------------------
     presets: {
+      barnumbers_countnotes: {
+        anchor_at_box: {
+          barnumbers: { apanchor: 'box', apbase: [1, 1] },
+          countnotes: { apanchor: 'box', apbase: [1, -0.5] },
+        },
+        anchor_at_center: {
+          barnumbers: { apanchor: 'center', apbase: [1, 0.3] },
+          countnotes: { apanchor: 'center', apbase: [1, 0] },
+        },
+        countnotes_with_lyrics: {
+          countnotes: {
+            cntextleft: '{lyrics} {countnote}',
+            cntextright: '{countnote} {lyrics}',
+          },
+        },
+      },
+      stdextract: {},
       layout: {
-        notes_regular: {
-          LINE_MEDIUM:  () => conf.get('extract.0.layout.LINE_MEDIUM'),
-          LINE_THICK:   () => conf.get('extract.0.layout.LINE_THICK'),
-          ELLIPSE_SIZE: () => conf.get('extract.0.layout.ELLIPSE_SIZE'),
-          REST_SIZE:    () => conf.get('extract.0.layout.REST_SIZE'),
+        notes_small: {
+          LINE_MEDIUM: 0.2,
+          LINE_THICK: 0.3,
+          ELLIPSE_SIZE: [3.5, 1.3],
+          REST_SIZE: [4, 1.5],
           beams: false,
         },
-        notes_small: {
-          LINE_MEDIUM:  0.1,
-          LINE_THICK:   0.3,
-          ELLIPSE_SIZE: [2.8, 1.4],
-          REST_SIZE:    [3.2, 1.6],
+        notes_regular: {
+          LINE_MEDIUM: () => conf.get('extract.0.layout.LINE_MEDIUM'),
+          LINE_THICK: () => conf.get('extract.0.layout.LINE_THICK'),
+          ELLIPSE_SIZE: () => conf.get('extract.0.layout.ELLIPSE_SIZE'),
+          REST_SIZE: () => conf.get('extract.0.layout.REST_SIZE'),
           beams: false,
         },
         notes_large: {
-          LINE_MEDIUM:  0.5,
-          LINE_THICK:   0.7,
-          ELLIPSE_SIZE: [4.2, 2.0],
-          REST_SIZE:    [4.8, 2.4],
+          LINE_MEDIUM: 0.3,
+          LINE_THICK: 0.7,
+          ELLIPSE_SIZE: [4, 2],
+          REST_SIZE: [4, 2],
           beams: false,
         },
+        notes_with_beams: {
+          LINE_THIN: 0.1,
+          LINE_MEDIUM: 0.2,
+          LINE_THICK: 0.5,
+          ELLIPSE_SIZE: [1.3, 1],
+          REST_SIZE: [2, 1.3],
+          beams: true,
+        },
+        '-': {},
         packer_compact: {
-          pack_method: 1,
-          pack_max_spreadfactor: 1,
-          pack_min_increment: 0.1,
+          packer: {
+            pack_method: 1,
+            pack_max_spreadfactor: 2,
+            pack_min_increment: 0.2,
+          },
         },
-        packer_spread: {
-          pack_method: 0,
-          pack_max_spreadfactor: 3,
-          pack_min_increment: 0.3,
+        packer_regular: {
+          packer: () => conf.get('extract.0.layout.packer'),
         },
+        '--': {},
+        color_on: {
+          color: {
+            color_default: 'black',
+            color_variant1: 'grey',
+            color_variant2: 'darkgrey',
+          },
+        },
+        color_off: {
+          color: {
+            color_default: 'black',
+            color_variant1: 'black',
+            color_variant2: 'black',
+          },
+        },
+        '---': {},
+        jumpline_anchor_close: { jumpline_anchor: [3, 1] },
+        jumpline_anchor_medium: { jumpline_anchor: [5, 1] },
+        jumpline_anchor_wide: { jumpline_anchor: [10, 1] },
+        jumpline_open: { jumpline_vcut: 3 },
+        jumpline_close: { jumpline_vcut: 0 },
       },
       instrument: {
         '37-strings-g-g': {
           layout: {
+            instrument: '37-strings-g-g',
+            tuning: 'fixed',
+            limit_a3: true,
+            beams: false,
+            bottomup: false,
             PITCH_OFFSET: () => conf.get('extract.0.layout.PITCH_OFFSET'),
-            X_SPACING:    () => conf.get('extract.0.layout.X_SPACING'),
-            X_OFFSET:     () => conf.get('extract.0.layout.X_OFFSET'),
+            X_SPACING: () => conf.get('extract.0.layout.X_SPACING'),
+            X_OFFSET: () => conf.get('extract.0.layout.X_OFFSET'),
           },
           stringnames: {
-            text: () => cutStringNames([
-              'G,', 'A,', 'B,', 'C', 'D', 'E', 'F', 'G', 'A', 'B',
-              'c', 'd', 'e', 'f', 'g', 'a', 'b',
-              "c'", "d'", "e'", "f'", "g'", "a'", "b'",
-              "c''", "d''", "e''", "f''", "g''", "a''", "b''",
-              "c'''", "d'''", "e'''", "f'''", "g'''", "a'''",
-            ]),
+            text: () => conf.get('extract.0.stringnames.text'),
+            marks: { hpos: [43, 79] },
           },
+          instrument_shape: null,
           printer: {
+            a4_pages: [0, 1, 2],
             a4_offset: () => conf.get('extract.0.printer.a4_offset'),
             a3_offset: () => conf.get('extract.0.printer.a3_offset'),
           },
         },
         '25-strings-g-g': {
           layout: {
-            PITCH_OFFSET: -43,
-            X_SPACING:    11.5,
-            X_OFFSET:     2.8,
+            instrument: '25-strings-g-g',
+            tuning: 'fixed',
+            limit_a3: false,
+            beams: false,
+            bottomup: false,
+            PITCH_OFFSET: () => conf.get('extract.0.layout.PITCH_OFFSET'),
+            X_SPACING: () => conf.get('extract.0.layout.X_SPACING'),
+            X_OFFSET: () => conf.get('extract.0.layout.X_OFFSET'),
           },
           stringnames: {
-            text: () => cutStringNames([
-              'G,', 'A,', 'B,', 'C', 'D', 'E', 'F', 'G', 'A', 'B',
-              'c', 'd', 'e', 'f', 'g', 'a', 'b',
-              "c'", "d'", "e'", "f'", "g'", "a'", "b'", "c''",
-            ]),
+            text: () => cutStringNames(String(conf.get('extract.0.stringnames.text')), 12, 36),
+            marks: { hpos: [55, 79] },
+          },
+          instrument_shape: null,
+          printer: {
+            a4_pages: [1, 2],
+            a3_offset: [-5, 0],
+            a4_offset: () => conf.get('extract.0.printer.a4_offset'),
           },
         },
         '25-strings-G-g Bass': {
           layout: {
-            PITCH_OFFSET: -55,
-            X_SPACING:    11.5,
-            X_OFFSET:     2.8,
+            instrument: '25-strings-g-g',
+            tuning: 'fixed',
+            limit_a3: false,
+            beams: false,
+            bottomup: false,
+            PITCH_OFFSET: () => -31,
+            X_SPACING: () => conf.get('extract.0.layout.X_SPACING'),
+            X_OFFSET: () => conf.get('extract.0.layout.X_OFFSET'),
           },
           stringnames: {
-            text: () => cutStringNames([
-              'G,,', 'A,,', 'B,,', 'C,', 'D,', 'E,', 'F,', 'G,', 'A,', 'B,',
-              'C', 'D', 'E', 'F', 'G', 'A', 'B',
-              'c', 'd', 'e', 'f', 'g', 'a', 'b', "c'",
-            ]),
+            text: () => cutStringNames(String(conf.get('extract.0.stringnames.text')), 12, 36),
+            marks: { hpos: [43, 67] },
+          },
+          instrument_shape: null,
+          printer: {
+            a4_pages: [1, 2],
+            a3_offset: [-5, 0],
+            a4_offset: () => conf.get('extract.0.printer.a4_offset'),
           },
         },
         '21-strings-a-f': {
           layout: {
-            PITCH_OFFSET: -40,
-            X_SPACING:    13.5,
-            X_OFFSET:     2.8,
+            instrument: '21-strings-a-f',
+            tuning: 'fixed',
+            limit_a3: false,
+            beams: false,
+            bottomup: false,
+            PITCH_OFFSET: () => conf.get('extract.0.layout.PITCH_OFFSET'),
+            X_SPACING: () => conf.get('extract.0.layout.X_SPACING'),
+            X_OFFSET: 23,
           },
           stringnames: {
-            text: () => cutStringNames([
-              'A,', 'B,', 'C', 'D', 'E', 'F', 'G', 'A', 'B',
-              'c', 'd', 'e', 'f', 'g', 'a', 'b',
-              "c'", "d'", "e'", "f'", "g'",
-            ]),
+            text: () => cutStringNames(String(conf.get('extract.0.stringnames.text')), 14, 34),
+            marks: { hpos: [57, 77] },
+          },
+          instrument_shape: null,
+          printer: {
+            a4_pages: [1, 2],
+            a3_offset: [-5, 0],
+            a4_offset: () => conf.get('extract.0.printer.a4_offset'),
           },
         },
         '18-strings-b-e': {
           layout: {
-            PITCH_OFFSET: -38,
-            X_SPACING:    15.5,
-            X_OFFSET:     2.8,
+            instrument: '18-strings-b-e',
+            tuning: 'fixed',
+            limit_a3: false,
+            beams: false,
+            bottomup: false,
+            PITCH_OFFSET: () => conf.get('extract.0.layout.PITCH_OFFSET'),
+            X_SPACING: () => conf.get('extract.0.layout.X_SPACING'),
+            X_OFFSET: 28.5,
           },
           stringnames: {
-            text: () => cutStringNames([
-              'B,', 'C', 'D', 'E', 'F', 'G', 'A', 'B',
-              'c', 'd', 'e', 'f', 'g', 'a', 'b',
-              "c'", "d'", "e'",
-            ]),
+            text: () => cutStringNames(String(conf.get('extract.0.stringnames.text')), 16, 33),
+            marks: { hpos: [59, 76] },
+          },
+          instrument_shape: null,
+          printer: {
+            a4_pages: [2],
+            a3_offset: [0, 0],
+            a4_offset: [40, 0],
+          },
+        },
+        '14-strings-b-d': {
+          layout: {
+            instrument: 'klein-a4',
+            tuning: 'open',
+            limit_a3: false,
+            beams: false,
+            bottomup: false,
+            PITCH_OFFSET: 0,
+            X_SPACING: 15,
+            X_OFFSET: 0,
+          },
+          stringnames: {
+            text: ' ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~ B c c# d e f f# g a a# b c\' c#\' d\' ~ ~',
+            marks: { hpos: [71] },
+          },
+          instrument_shape: null,
+          printer: {
+            a4_pages: [2],
+            a3_offset: [0, 0],
+            a4_offset: [45, 0],
+          },
+        },
+        'kleine Bauerharfe': {
+          layout: {
+            instrument: 'klein-a4',
+            tuning: 'open',
+            limit_a3: false,
+            beams: false,
+            bottomup: false,
+            PITCH_OFFSET: 0,
+            X_SPACING: 15,
+            X_OFFSET: 70,
+          },
+          stringnames: {
+            text: '~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ C D E F G A H c d e',
+            marks: { hpos: [] },
+          },
+          instrument_shape: null,
+          printer: {
+            a4_pages: [2],
+            a3_offset: [0, 0],
+            a4_offset: [40, 0],
           },
         },
         saitenspiel: {
           layout: {
-            PITCH_OFFSET: -43,
-            X_SPACING:    11.5,
-            X_OFFSET:     2.8,
+            instrument: 'saitenspiel',
+            limit_a3: false,
+            beams: false,
+            bottomup: false,
+            PITCH_OFFSET: -24,
+            X_SPACING: 14.5,
+            X_OFFSET: 240,
           },
           stringnames: {
-            text: () => cutStringNames([
-              'G,', 'A,', 'B,', 'C', 'D', 'E', 'F', 'G', 'A', 'B',
-              'c', 'd', 'e', 'f', 'g', 'a', 'b',
-              "c'", "d'", "e'", "f'", "g'", "a'", "b'",
-              "c''", "d''", "e''", "f''", "g''", "a''", "b''",
-              "c'''", "d'''", "e'''", "f'''", "g'''", "a'''",
-            ]),
+            text: 'G C D E F G A B C D  ~ ~ ~ ~ ~ ~ ~',
+            marks: { hpos: [55, 74] },
+          },
+          instrument_shape: null,
+          printer: {
+            a4_pages: [2],
+            a3_offset: [0, 0],
+            a4_offset: [35, 0],
+          },
+        },
+        Zipino: {
+          layout: {
+            instrument: 'Zipino',
+            limit_a3: true,
+            beams: true,
+            bottomup: false,
+            PITCH_OFFSET: 0,
+            X_SPACING: 12.5,
+            X_OFFSET: 230,
+            ELLIPSE_SIZE: [2, 2],
+            REST_SIZE: [2, 2],
+          },
+          stringnames: {
+            text: 'F# G A B C D E F# G A B C D E F# ~ ~ ~ ~ ~ ~  ~',
+            marks: { hpos: [54] },
+          },
+          instrument_shape: null,
+          printer: {
+            a4_pages: [2],
+            a3_offset: [0, 0],
+            a4_offset: [35, 0],
+          },
+        },
+        'Okon-Harfe': {
+          layout: {
+            instrument: 'okon-f',
+            beams: true,
+            bottomup: true,
+            limit_a3: false,
+            PITCH_OFFSET: 0,
+            X_SPACING: 15,
+            X_OFFSET: 50,
+          },
+          stringnames: {
+            text: 'G, A, BB, C D E F G A BB c d e f g a bb c\' ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~',
+            marks: { hpos: [55, 74] },
+          },
+          instrument_shape: null,
+          printer: {
+            a4_pages: [1, 2],
+            a3_offset: [-35, 0],
+            a4_offset: [70, 0],
+          },
+        },
+        Akkordzither: {
+          layout: {
+            instrument: 'akkordzither',
+            tuning: 'open',
+            beams: true,
+            bottomup: false,
+            limit_a3: false,
+            PITCH_OFFSET: 0,
+            X_SPACING: 8.9,
+            X_OFFSET: 140,
+          },
+          stringnames: {
+            text: 'C C# D E F F# G G# A B C\' C#\' D\' E\' F\' F#\' G\' G#\' A\' B\' C\'\'  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ',
+            marks: { hpos: [60] },
+          },
+          instrument_shape: '[["M", 228, 0], ["L",  335, 185], ["L", 335,297]]',
+          printer: {
+            a4_pages: [1, 2, 3],
+            a3_offset: [0, 0],
+            a4_offset: [108, 0],
           },
         },
       },
       notes: {
+        T01_number: {
+          value: {
+            pos: [410, 17],
+            text: 'XXX-{{number}}',
+            style: 'bold',
+            align: 'l',
+          },
+        },
+        T01_number_extract: {
+          value: {
+            pos: [411, 17],
+            text: '{{extract_filename}}',
+            style: 'bold',
+          },
+        },
+        T01_number_extract_value: {
+          key: 'T01_number_extract',
+          value: {
+            text: '{{extract_filename}}',
+          },
+        },
         T02_copyright_music: {
           value: {
-            pos:   [340, 251],
-            text:  () => `© ${new Date().getFullYear()}\nPrivatkopie`,
+            pos: [340, 251],
+            text: () => `© ${new Date().getFullYear()}\nPrivatkopie`,
             style: 'small',
           },
         },
         T03_copyright_harpnotes: {
           value: {
-            pos:   [340, 260],
-            text:  () => `© ${new Date().getFullYear()} Notenbild: zupfnoter.de`,
+            pos: [340, 260],
+            text: () => `© ${new Date().getFullYear()} Notenbild: zupfnoter.de`,
             style: 'small',
           },
         },
         T04_to_order: {
           value: {
-            pos:   [340, 269],
-            text:  () => 'Bereitgestellt von\n',
+            pos: [340, 242],
+            text: () => 'Bereitgestellt von\n',
+            style: 'small',
+          },
+        },
+        T05_printed_extracts: {
+          value: {
+            pos: [410, 22],
+            text: '{{printed_extracts}}',
+            style: 'smaller',
+            align: 'l',
+          },
+        },
+        T06_legend: {
+          value: {
+            pos: [360, 30],
+            text: '{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}',
             style: 'small',
           },
         },
         T99_do_not_copy: {
           value: {
-            pos:   [340, 278],
-            text:  () => 'Bitte nicht kopieren',
-            style: 'small',
+            pos: [380, 284],
+            text: () => 'Bitte nicht kopieren',
+            style: 'small_bold',
           },
+        },
+        T01_T99: {
+          value: {},
+        },
+      },
+      printer: {
+        printer_left: {
+          printer: {
+            a3_offset: [-10, 0],
+            a4_offset: [-5, 0],
+            show_border: false,
+          },
+          layout: { limit_a3: false },
+        },
+        printer_centric: {
+          printer: {
+            a3_offset: [0, 0],
+            a4_offset: [5, 0],
+            show_border: false,
+          },
+          layout: { limit_a3: true },
+        },
+        printer_right: {
+          printer: {
+            a3_offset: [10, 0],
+            a4_offset: [5, 0],
+            show_border: false,
+          },
+          layout: { limit_a3: false },
         },
       },
     },

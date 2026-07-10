@@ -51,6 +51,8 @@ describe('configSchema', () => {
     expect(ZUPFNOTER_EXTRACT_REQUIRED_KEYS).toContain('printer')
     expect(ZUPFNOTER_EXTRACT_REQUIRED_KEYS).toContain('layout')
     expect(ZUPFNOTER_EXTRACT_REQUIRED_KEYS).toContain('stringnames')
+    expect(ZUPFNOTER_EXTRACT_REQUIRED_KEYS).toContain('repeatsigns')
+    expect(ZUPFNOTER_EXTRACT_REQUIRED_KEYS).toContain('chords')
   })
 
   it('keeps the corrected legacy printer keys in the schema source', () => {
@@ -220,5 +222,43 @@ describe('configSchema', () => {
         },
       },
     })).toContain('$.extract.0.notebound.minc.10752.mincFactor: unknown key')
+  })
+
+  it('rejects unknown keys in legacy chord annotation blocks', () => {
+    expect(validateEmbeddedZupfnoterConfigShape({
+      extract: {
+        '0': {
+          chords: {
+            voices: [],
+            show: true,
+          },
+        },
+      },
+    })).toContain('$.extract.0.chords.show: unknown key')
+  })
+
+  it('keeps the legacy preset families in the default config', () => {
+    const config = initConf(new Confstack())
+    const presets = config.presets as Record<string, unknown>
+    const instrumentPresets = presets.instrument as Record<string, unknown>
+    const layoutPresets = presets.layout as Record<string, unknown>
+    const notesPresets = presets.notes as Record<string, unknown>
+    const printerPresets = presets.printer as Record<string, unknown>
+
+    expect(Object.keys(presets)).toEqual([
+      'barnumbers_countnotes',
+      'stdextract',
+      'layout',
+      'instrument',
+      'notes',
+      'printer',
+    ])
+    expect(layoutPresets).toHaveProperty('notes_with_beams')
+    expect(layoutPresets).toHaveProperty('packer_regular')
+    expect(instrumentPresets).toHaveProperty('Akkordzither')
+    expect(instrumentPresets).toHaveProperty('Zipino')
+    expect(notesPresets).toHaveProperty('T01_number')
+    expect(notesPresets).toHaveProperty('T06_legend')
+    expect(printerPresets).toHaveProperty('printer_centric')
   })
 })
