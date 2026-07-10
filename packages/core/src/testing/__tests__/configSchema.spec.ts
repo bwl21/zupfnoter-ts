@@ -3,9 +3,10 @@ import { Confstack } from '../../Confstack.js'
 import { initConf } from '../../initConf.js'
 
 import {
+  buildConfigSchemaOverview,
   getConfigMenuKind,
+  getConfigSchemaOverview,
   getConfigPathActionProfile,
-  getLegacyConfigSchemaOverview,
   hasConfigPathSegment,
   isLegacyTopLevelConfigKey,
   isSelectableConfigPath,
@@ -80,8 +81,9 @@ describe('configSchema', () => {
     expect(ZUPFNOTER_LAYOUT_CORE_KEYS).toContain('PITCH_OFFSET')
   })
 
-  it('offers a reusable schema overview object', () => {
-    expect(getLegacyConfigSchemaOverview()).toBe(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW)
+  it('offers the productive schema overview from the TS builder', () => {
+    expect(buildConfigSchemaOverview()).toEqual(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW)
+    expect(getConfigSchemaOverview()).toBe(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW)
     expect(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW.$schema).toBe(ZUPFNOTER_CONFIG_SCHEMA_DRAFT)
     expect(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW.definitions?.pos).toBeDefined()
     expect(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW.properties?.extract?.patternProperties?.['d*']).toBeDefined()

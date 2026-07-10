@@ -38,11 +38,12 @@ export type { GlyphDef } from './glyphs.js'
 
 export { initConf } from './initConf.js'
 export {
+  buildConfigSchemaOverview,
   getConfigMenuKind,
+  getConfigSchemaOverview,
   getConfigPathActionProfile,
   LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
   LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES,
-  getLegacyConfigSchemaOverview,
   hasConfigPathSegment,
   isLegacyTopLevelConfigKey,
   isSelectableConfigPath,

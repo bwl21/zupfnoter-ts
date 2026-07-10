@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -15,10 +15,12 @@ type JsonValue =
 
 interface SchemaDiff {
   path: string
-  kind: 'missing-in-ts' | 'missing-in-legacy' | 'value-mismatch'
-  legacy?: JsonValue
+  kind: 'missing-in-ts' | 'missing-in-reference' | 'value-mismatch'
+  reference?: JsonValue
   ts?: JsonValue
 }
+
+type Mode = 'compare' | 'verify-legacy' | 'sync-fixture'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -27,6 +29,7 @@ const legacySchemaPath = resolve(
   repoRoot,
   '../200_zupfnoter/30_sources/SRC_Zupfnoter/src/opal-ajv.rb',
 )
+const fixturePath = resolve(repoRoot, 'fixtures/legacy-config-schema.json')
 const reportPath = resolve(repoRoot, 'fixtures/reports/config-schema-parity.md')
 const reportJsonPath = resolve(repoRoot, 'fixtures/reports/config-schema-parity.json')
 
@@ -44,7 +47,7 @@ function normalizeJsonValue(value: unknown): JsonValue {
   return String(value)
 }
 
-function loadLegacySchema(): JsonValue {
+function loadLegacySchemaFromRuby(): JsonValue {
   const rubySource = `
     require 'json'
     legacy_path = ARGV.fetch(0)
@@ -84,66 +87,70 @@ function loadLegacySchema(): JsonValue {
   return normalizeJsonValue(JSON.parse(output) as unknown)
 }
 
+function loadFixtureSchema(): JsonValue {
+  const content = readFileSync(fixturePath, 'utf8')
+  return normalizeJsonValue(JSON.parse(content) as unknown)
+}
+
 function formatPath(basePath: string, segment: string): string {
   return basePath === '$' ? `$.${segment}` : `${basePath}.${segment}`
 }
 
-function diffSchemas(legacyValue: JsonValue, tsValue: JsonValue, path = '$'): SchemaDiff[] {
-  if (Array.isArray(legacyValue) && Array.isArray(tsValue)) {
-    const diff: SchemaDiff[] = []
-    const maxLength = Math.max(legacyValue.length, tsValue.length)
+function diffSchemas(referenceValue: JsonValue, tsValue: JsonValue, path = '$'): SchemaDiff[] {
+  if (Array.isArray(referenceValue) && Array.isArray(tsValue)) {
+    const diffs: SchemaDiff[] = []
+    const maxLength = Math.max(referenceValue.length, tsValue.length)
     for (let index = 0; index < maxLength; index += 1) {
       const nextPath = `${path}[${index}]`
-      if (index >= legacyValue.length) {
-        diff.push({ path: nextPath, kind: 'missing-in-legacy', ts: tsValue[index] })
+      if (index >= referenceValue.length) {
+        diffs.push({ path: nextPath, kind: 'missing-in-reference', ts: tsValue[index] })
         continue
       }
       if (index >= tsValue.length) {
-        diff.push({ path: nextPath, kind: 'missing-in-ts', legacy: legacyValue[index] })
+        diffs.push({ path: nextPath, kind: 'missing-in-ts', reference: referenceValue[index] })
         continue
       }
-      diff.push(...diffSchemas(legacyValue[index] as JsonValue, tsValue[index] as JsonValue, nextPath))
+      diffs.push(...diffSchemas(referenceValue[index] as JsonValue, tsValue[index] as JsonValue, nextPath))
     }
-    return diff
+    return diffs
   }
 
   if (
-    typeof legacyValue === 'object' &&
-    legacyValue !== null &&
-    !Array.isArray(legacyValue) &&
+    typeof referenceValue === 'object' &&
+    referenceValue !== null &&
+    !Array.isArray(referenceValue) &&
     typeof tsValue === 'object' &&
     tsValue !== null &&
     !Array.isArray(tsValue)
   ) {
-    const legacyObject = legacyValue as Record<string, JsonValue>
+    const referenceObject = referenceValue as Record<string, JsonValue>
     const tsObject = tsValue as Record<string, JsonValue>
-    const legacyKeys = Object.keys(legacyObject)
-    const tsKeys = Object.keys(tsObject)
-    const allKeys = [...new Set([...legacyKeys, ...tsKeys])].sort((left, right) => left.localeCompare(right))
-    const diff: SchemaDiff[] = []
+    const allKeys = [...new Set([...Object.keys(referenceObject), ...Object.keys(tsObject)])]
+      .sort((left, right) => left.localeCompare(right))
+    const diffs: SchemaDiff[] = []
     for (const key of allKeys) {
       const nextPath = formatPath(path, key)
       if (!(key in tsObject)) {
-        diff.push({ path: nextPath, kind: 'missing-in-ts', legacy: legacyObject[key] })
+        diffs.push({ path: nextPath, kind: 'missing-in-ts', reference: referenceObject[key] })
         continue
       }
-      if (!(key in legacyObject)) {
-        diff.push({ path: nextPath, kind: 'missing-in-legacy', ts: tsObject[key] })
+      if (!(key in referenceObject)) {
+        diffs.push({ path: nextPath, kind: 'missing-in-reference', ts: tsObject[key] })
         continue
       }
-      diff.push(...diffSchemas(legacyObject[key], tsObject[key], nextPath))
+      diffs.push(...diffSchemas(referenceObject[key], tsObject[key], nextPath))
     }
-    return diff
+    return diffs
   }
 
-  if (JSON.stringify(legacyValue) === JSON.stringify(tsValue)) {
+  if (JSON.stringify(referenceValue) === JSON.stringify(tsValue)) {
     return []
   }
 
   return [{
     path,
     kind: 'value-mismatch',
-    legacy: legacyValue,
+    reference: referenceValue,
     ts: tsValue,
   }]
 }
@@ -153,13 +160,13 @@ function toPrettyJson(value: JsonValue | undefined): string {
   return JSON.stringify(value, null, 2)
 }
 
-function createReport(diffs: SchemaDiff[]): string {
+function createReport(diffs: SchemaDiff[], sourceLabel: string): string {
   const lines = [
     '# Config Schema Parity Report',
     '',
     `Stand: ${new Date().toISOString().slice(0, 10)}`,
     '',
-    `- Legacy-Quelle: \`${legacySchemaPath}\``,
+    `- Referenz: ${sourceLabel}`,
     '- TS-Quelle: `packages/core/src/configSchema.ts`',
     `- Anzahl Abweichungen: ${diffs.length}`,
     '',
@@ -174,9 +181,9 @@ function createReport(diffs: SchemaDiff[]): string {
   for (const diff of diffs.slice(0, 50)) {
     lines.push(`### ${diff.path}`)
     lines.push(`- Art: \`${diff.kind}\``)
-    lines.push('- Legacy:')
+    lines.push('- Referenz:')
     lines.push('```json')
-    lines.push(toPrettyJson(diff.legacy))
+    lines.push(toPrettyJson(diff.reference))
     lines.push('```')
     lines.push('- TS:')
     lines.push('```json')
@@ -193,15 +200,54 @@ function createReport(diffs: SchemaDiff[]): string {
   return `${lines.join('\n')}\n`
 }
 
+function parseMode(): Mode {
+  if (process.argv.includes('--verify-legacy')) return 'verify-legacy'
+  if (process.argv.includes('--sync-fixture')) return 'sync-fixture'
+  return 'compare'
+}
+
+function ensureReportDir(): void {
+  mkdirSync(dirname(reportPath), { recursive: true })
+}
+
+function writeFixture(schema: JsonValue): void {
+  mkdirSync(dirname(fixturePath), { recursive: true })
+  writeFileSync(fixturePath, `${JSON.stringify(schema, null, 2)}\n`, 'utf8')
+}
+
 function main(): void {
   const strict = process.argv.includes('--strict')
-  const legacySchema = loadLegacySchema()
+  const mode = parseMode()
   const tsSchema = normalizeJsonValue(ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW)
-  const diffs = diffSchemas(legacySchema, tsSchema)
 
-  mkdirSync(dirname(reportPath), { recursive: true })
-  writeFileSync(reportPath, createReport(diffs), 'utf8')
-  writeFileSync(reportJsonPath, JSON.stringify(diffs, null, 2), 'utf8')
+  if (mode === 'sync-fixture') {
+    const legacySchema = loadLegacySchemaFromRuby()
+    writeFixture(legacySchema)
+    process.stdout.write('config schema fixture synced from opal-ajv.rb\n')
+    return
+  }
+
+  const referenceSchema = loadFixtureSchema()
+  const diffs = diffSchemas(referenceSchema, tsSchema)
+  ensureReportDir()
+  writeFileSync(
+    reportPath,
+    createReport(diffs, `[legacy-config-schema.json](${fixturePath})`),
+    'utf8',
+  )
+  writeFileSync(reportJsonPath, `${JSON.stringify(diffs, null, 2)}\n`, 'utf8')
+
+  if (mode === 'verify-legacy') {
+    const legacySchema = loadLegacySchemaFromRuby()
+    const fixtureDiffs = diffSchemas(legacySchema, referenceSchema)
+    if (fixtureDiffs.length === 0) {
+      process.stdout.write('legacy config schema fixture matches opal-ajv.rb\n')
+      return
+    }
+    process.stdout.write(`legacy config schema fixture drift: ${fixtureDiffs.length} differences\n`)
+    process.exitCode = 1
+    return
+  }
 
   if (diffs.length === 0) {
     process.stdout.write('config schema parity: OK\n')

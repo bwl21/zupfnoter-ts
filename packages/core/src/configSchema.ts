@@ -978,45 +978,183 @@ const VALIDATION_SCHEMA_OVERVIEW: JsonSchemaNode = {
   },
 }
 
-export const ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW: JsonSchemaNode = {
-  $schema: ZUPFNOTER_CONFIG_SCHEMA_DRAFT,
-  description: 'Generated from x.json with shasum 0b1781e0803dc084178858e9fbe2b4e0b65c08e7',
-  type: 'object',
-  required: ZUPFNOTER_TOP_LEVEL_REQUIRED_KEYS,
-  definitions: {
-    apanchor: {
-      type: 'string',
-      enum: ['manual', 'box', 'center'],
+function cloneSchemaNode(schema: JsonSchemaNode): JsonSchemaNode {
+  return structuredClone(schema)
+}
+
+function cloneSchemaMap(schemaMap: Record<string, JsonSchemaNode>): Record<string, JsonSchemaNode> {
+  return structuredClone(schemaMap)
+}
+
+function refTo(path: string): JsonSchemaNode {
+  return { $ref: path }
+}
+
+function legacyPosRef(): JsonSchemaNode {
+  return refTo('#/definitions/pos')
+}
+
+function legacyAlignRef(): JsonSchemaNode {
+  return refTo('#/definitions/align')
+}
+
+function legacyApanchorRef(): JsonSchemaNode {
+  return refTo('#/definitions/apanchor')
+}
+
+function integerArraySchema(itemsSchema: JsonSchemaNode = { type: 'integer' }, minItems?: number): JsonSchemaNode {
+  const schema: JsonSchemaNode = {
+    type: 'array',
+    uniqueItems: true,
+    items: itemsSchema,
+  }
+  if (minItems !== undefined) schema.minItems = minItems
+  return schema
+}
+
+function numberArraySchema(minItems?: number, itemType: JsonSchemaType = 'number'): JsonSchemaNode {
+  const schema: JsonSchemaNode = {
+    type: 'array',
+    items: { type: itemType },
+  }
+  if (minItems !== undefined) schema.minItems = minItems
+  return schema
+}
+
+function legacyNotesEntrySchema(): JsonSchemaNode {
+  return {
+    type: 'object',
+    required: ['pos', 'text', 'style'],
+    properties: {
+      pos: legacyPosRef(),
+      text: { type: 'string' },
+      align: legacyAlignRef(),
+      style: { type: 'string' },
     },
-    pos: {
-      type: 'array',
-      minItems: 2,
-      uniqueItems: false,
-      items: { type: 'number' },
+  }
+}
+
+function legacyPositionedTextSchema(required: readonly string[] = ['text', 'pos']): JsonSchemaNode {
+  return {
+    type: 'object',
+    required,
+    properties: {
+      text: { type: 'string' },
+      pos: legacyPosRef(),
+      style: { type: 'string' },
     },
-    notes_entry: {
-      type: 'object',
-      required: ['pos', 'text', 'style'],
-      properties: {
-        pos: { $ref: '#/definitions/pos' },
-        text: { type: 'string' },
-        align: { $ref: '#/definitions/align' },
-        style: { type: 'string' },
+  }
+}
+
+function legacyAnnotatedBezierSchema(): JsonSchemaNode {
+  return {
+    type: 'object',
+    properties: {
+      cp1: legacyPosRef(),
+      cp2: legacyPosRef(),
+      pos: legacyPosRef(),
+      shape: {
+        type: 'array',
+        minItems: 0,
+        uniqueItems: true,
+        items: { type: 'string' },
+      },
+      show: { type: 'boolean' },
+      style: { type: 'string' },
+    },
+  }
+}
+
+function legacyNoteboundPosSchema(): JsonSchemaNode {
+  const timedEntry: JsonSchemaNode = {
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      pos: legacyPosRef(),
+      align: legacyAlignRef(),
+      show: { type: 'boolean' },
+      text: { type: 'string' },
+      style: { type: 'string' },
+    },
+  }
+  return {
+    type: 'object',
+    additionalProperties: false,
+    patternProperties: {
+      'v_d*': {
+        type: 'object',
+        additionalProperties: false,
+        patternProperties: {
+          't_\\d*|\\d*': {
+            type: 'object',
+            additionalProperties: false,
+            properties: cloneSchemaMap(timedEntry.properties as Record<string, JsonSchemaNode>),
+            patternProperties: {
+              '\\d+': timedEntry,
+            },
+          },
+        },
       },
     },
+  }
+}
+
+function legacyExtractLayoutSchema(): JsonSchemaNode {
+  return {
+    type: 'object',
+    requiredx: ['limit_a3', 'LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'ELLIPSE_SIZE', 'REST_SIZE', 'grid'],
+    additionalProperties: false,
+    properties: {
+      limit_a3: { type: 'boolean' },
+      beams: { type: 'boolean' },
+      bottomup: { type: 'boolean' },
+      jumpline_anchor: legacyPosRef(),
+      jumpline_vcut: { type: 'number' },
+      LINE_THIN: { type: 'number' },
+      LINE_MEDIUM: { type: 'number' },
+      LINE_THICK: { type: 'number' },
+      PITCH_OFFSET: { type: 'integer' },
+      X_SPACING: { type: 'number' },
+      X_OFFSET: { type: 'number' },
+      instrument: { type: 'string' },
+      tuning: { type: 'string' },
+      DRAWING_AREA_SIZE: numberArraySchema(2),
+      ELLIPSE_SIZE: numberArraySchema(2),
+      REST_SIZE: numberArraySchema(2),
+      grid: { type: 'boolean' },
+      color: {
+        type: 'object',
+        properties: {
+          color_default: { type: 'string' },
+          color_variant1: { type: 'string' },
+          color_variant2: { type: 'string' },
+        },
+      },
+      packer: {
+        type: 'object',
+        properties: {
+          pack_method: { type: 'integer' },
+          pack_max_spread_factor: { type: 'number' },
+          pack_min_increment: { type: 'number' },
+        },
+      },
+    },
+  }
+}
+
+function legacyDefinitions(): Record<string, JsonSchemaNode> {
+  return {
+    apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
+    pos: { type: 'array', minItems: 2, uniqueItems: false, items: { type: 'number' } },
+    notes_entry: legacyNotesEntrySchema(),
     nb_annotation_xx: {
       type: 'object',
       required: ['voices', 'pos', 'autopos', 'style'],
       properties: {
-        voices: {
-          type: 'array',
-          minItems: 0,
-          uniqueItems: true,
-          items: {},
-        },
-        pos: { $ref: '#/definitions/pos' },
+        voices: integerArraySchema({}, 0),
+        pos: legacyPosRef(),
         autopos: { type: 'boolean' },
-        apanchor: { $ref: '#/definitions/apanchor' },
+        apanchor: legacyApanchorRef(),
         style: { type: 'string' },
       },
     },
@@ -1024,9 +1162,7 @@ export const ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW: JsonSchemaNode = {
       type: 'object',
       required: ['minc_f'],
       additionalProperties: false,
-      properties: {
-        minc_f: { type: 'number' },
-      },
+      properties: { minc_f: { type: 'number' } },
     },
     nconf_entry: {
       type: 'object',
@@ -1039,54 +1175,14 @@ export const ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW: JsonSchemaNode = {
             'n_d*': {
               type: 'object',
               additionalProperties: false,
-              properties: {
-                nshift: { type: 'number' },
-              },
+              properties: { nshift: { type: 'number' } },
             },
           },
         },
       },
     },
-    align: {
-      type: 'string',
-      enum: ['l', 'r', 'auto'],
-    },
-    notebound_pos: {
-      type: 'object',
-      additionalProperties: false,
-      patternProperties: {
-        'v_d*': {
-          type: 'object',
-          additionalProperties: false,
-          patternProperties: {
-            't_\\d*|\\d*': {
-              type: 'object',
-              additionalProperties: false,
-              properties: {
-                pos: { $ref: '#/definitions/pos' },
-                align: { $ref: '#/definitions/align' },
-                show: { type: 'boolean' },
-                text: { type: 'string' },
-                style: { type: 'string' },
-              },
-              patternProperties: {
-                '\\d+': {
-                  type: 'object',
-                  additionalProperties: false,
-                  properties: {
-                    pos: { $ref: '#/definitions/pos' },
-                    align: { $ref: '#/definitions/align' },
-                    show: { type: 'boolean' },
-                    text: { type: 'string' },
-                    style: { type: 'string' },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
+    align: { type: 'string', enum: ['l', 'r', 'auto'] },
+    notebound_pos: legacyNoteboundPosSchema(),
     notebound_repeat_outdated: {
       type: 'object',
       additionalProperties: false,
@@ -1094,714 +1190,306 @@ export const ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW: JsonSchemaNode = {
         'v_d*': {
           text: 'integer',
           style: { type: 'string' },
-          pos: { $ref: '#/definitions/pos' },
+          pos: legacyPosRef(),
         },
       },
     },
-    annotated_bezier: {
-      type: 'object',
-      properties: {
-        cp1: { $ref: '#/definitions/pos' },
-        cp2: { $ref: '#/definitions/pos' },
-        pos: { $ref: '#/definitions/pos' },
-        shape: {
-          type: 'array',
-          minItems: 0,
-          uniqueItems: true,
-          items: { type: 'string' },
-        },
-        show: { type: 'boolean' },
-        style: { type: 'string' },
-      },
-    },
-    extract_layout: {
-      type: 'object',
-      requiredx: ['limit_a3', 'LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'ELLIPSE_SIZE', 'REST_SIZE', 'grid'],
-      additionalProperties: false,
-      properties: {
-        limit_a3: { type: 'boolean' },
-        beams: { type: 'boolean' },
-        bottomup: { type: 'boolean' },
-        jumpline_anchor: { $ref: '#/definitions/pos' },
-        jumpline_vcut: { type: 'number' },
-        LINE_THIN: { type: 'number' },
-        LINE_MEDIUM: { type: 'number' },
-        LINE_THICK: { type: 'number' },
-        PITCH_OFFSET: { type: 'integer' },
-        X_SPACING: { type: 'number' },
-        X_OFFSET: { type: 'number' },
-        instrument: { type: 'string' },
-        tuning: { type: 'string' },
-        DRAWING_AREA_SIZE: {
-          type: 'array',
-          minItems: 2,
-          items: { type: 'number' },
-        },
-        ELLIPSE_SIZE: {
-          type: 'array',
-          minItems: 2,
-          items: { type: 'number' },
-        },
-        REST_SIZE: {
-          type: 'array',
-          minItems: 2,
-          items: { type: 'number' },
-        },
-        grid: { type: 'boolean' },
-        color: {
-          type: 'object',
-          properties: {
-            color_default: { type: 'string' },
-            color_variant1: { type: 'string' },
-            color_variant2: { type: 'string' },
-          },
-        },
-        packer: {
-          type: 'object',
-          properties: {
-            pack_method: { type: 'integer' },
-            pack_max_spread_factor: { type: 'number' },
-            pack_min_increment: { type: 'number' },
-          },
-        },
-      },
-    },
-  },
-  properties: {
-    confstack: {
-      type: 'object',
-      required: ['env'],
-      properties: {
-        env: { type: 'string' },
-      },
-    },
-    produce: {
-      type: 'array',
-      minItems: 0,
-      uniqueItems: true,
-      items: { type: 'integer' },
-    },
-    template: {
-      type: 'object',
-      additionalProperties: false,
-      properties: {
-        filebase: { type: 'string' },
-        title: { type: 'string' },
-      },
-    },
-    abc_parser: { type: 'string' },
-    restposition: {
-      type: 'object',
-      additionalProperties: false,
-      required: ['default', 'repeatstart', 'repeatend'],
-      properties: {
-        default: { type: 'string' },
-        repeatstart: { type: 'string' },
-        repeatend: { type: 'string' },
-      },
-    },
-    wrap: { type: 'integer' },
-    defaults: {
-      type: 'object',
-      required: ['notebound'],
-      properties: {
-        notebound: {
-          type: 'object',
-          required: ['annotation', 'partname', 'variantend', 'tuplet', 'chord'],
-          properties: {
-            annotation: {
-              type: 'object',
-              required: ['pos'],
-              properties: {
-                pos: { $ref: '#/definitions/pos' },
-                style: { type: 'string' },
-              },
-            },
-            chord: {
-              type: 'object',
-              required: ['pos'],
-              properties: {
-                pos: { $ref: '#/definitions/pos' },
-                style: { type: 'string' },
-              },
-            },
-            partname: {
-              type: 'object',
-              required: ['pos'],
-              properties: {
-                pos: { $ref: '#/definitions/pos' },
-                style: { type: 'string' },
-                show: { type: 'boolean' },
-              },
-            },
-            variantend: {
-              type: 'object',
-              required: ['pos'],
-              properties: {
-                pos: { $ref: '#/definitions/pos' },
-                style: { type: 'string' },
-              },
-            },
-            tuplet: {
-              $ref: '#/definitions/annotated_bezier',
-              required: ['cp1', 'cp2', 'shape'],
-            },
-          },
-        },
-      },
-    },
-    templates: {
-      type: 'object',
-      required: ['notes', 'lyrics', 'tuplet', 'annotations'],
-      properties: {
-        notes: { $ref: '#/definitions/notes_entry' },
-        lyrics: {
-          type: 'object',
-          required: ['verses', 'pos'],
-          properties: {
-            verses: {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: { type: 'integer' },
-            },
-            pos: { $ref: '#/definitions/pos' },
-            style: { type: 'string' },
-          },
-        },
-        tuplet: {
-          type: 'object',
-          required: ['cp1', 'cp2', 'shape'],
-          properties: {
-            cp1: { $ref: '#/definitions/pos' },
-            cp2: { $ref: '#/definitions/pos' },
-            shape: {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: { type: 'string' },
-            },
-          },
-        },
-        annotations: {
-          type: 'object',
-          required: ['text', 'pos'],
-          properties: {
-            text: { type: 'string' },
-            pos: { $ref: '#/definitions/pos' },
-            style: { type: 'string' },
-          },
-        },
-      },
-    },
-    annotations: {
-      type: 'object',
-      required: ['vl', 'vt', 'vr'],
-      properties: {
-        vl: {
-          type: 'object',
-          required: ['text', 'pos'],
-          properties: {
-            text: { type: 'string' },
-            pos: { $ref: '#/definitions/pos' },
-          },
-        },
-        vt: {
-          type: 'object',
-          required: ['text', 'pos'],
-          properties: {
-            text: { type: 'string' },
-            pos: { $ref: '#/definitions/pos' },
-          },
-        },
-        vr: {
-          type: 'object',
-          required: ['text', 'pos'],
-          properties: {
-            text: { type: 'string' },
-            pos: { $ref: '#/definitions/pos' },
-          },
-        },
-      },
-    },
-    extract: {
-      type: 'object',
-      patternProperties: {
-        'd*': {
-          type: 'object',
-          additionalProperties: false,
-          requiredx: [
-            'title',
-            'filenamepart',
-            'startpos',
-            'voices',
-            'synchlines',
-            'flowlines',
-            'subflowlines',
-            'jumplines',
-            'repeatsigns',
-            'layoutlines',
-            'legend',
-            'lyrics',
-            'layout',
-            'nonflowrest',
-            'notes',
-            'barnumbers',
-            'countnotes',
-            'chords',
-            'stringnames',
-            'printer',
-          ],
-          properties: {
-            title: { type: 'string' },
-            filenamepart: {},
-            startpos: { type: 'integer' },
-            voices: {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: { type: 'integer' },
-            },
-            synchlines: {
-              type: 'array',
-              minItems: 0,
-              uniqueItems: true,
-              items: {
-                type: 'array',
-                minItems: 1,
-                uniqueItems: true,
-                items: { type: 'integer' },
-              },
-            },
-            flowlines: {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: { type: 'integer' },
-            },
-            subflowlines: {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: { type: 'integer' },
-            },
-            jumplines: {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: { type: 'integer' },
-            },
-            repeatsigns: {
-              type: 'object',
-              requiredx: ['voices', 'left', 'right'],
-              properties: {
-                voices: {
-                  type: 'array',
-                  minItems: 0,
-                  uniqueItems: true,
-                  items: {},
-                },
-                left: {
-                  type: 'object',
-                  required: ['pos', 'text', 'style'],
-                  properties: {
-                    pos: { $ref: '#/definitions/pos' },
-                    text: { type: 'string' },
-                    style: { type: 'string' },
-                  },
-                },
-                right: {
-                  type: 'object',
-                  required: ['pos', 'text', 'style'],
-                  properties: {
-                    pos: { $ref: '#/definitions/pos' },
-                    text: { type: 'string' },
-                    style: { type: 'string' },
-                  },
-                },
-              },
-            },
-            layoutlines: {
-              type: 'array',
-              minItems: 0,
-              uniqueItems: true,
-              items: { type: 'integer' },
-            },
-            legend: {
-              type: 'object',
-              required: ['spos', 'pos'],
-              properties: {
-                spos: { $ref: '#/definitions/pos' },
-                pos: { $ref: '#/definitions/pos' },
-                tstyle: { type: 'string' },
-                align: { $ref: '#/definitions/align' },
-                style: { type: 'string' },
-                salign: { $ref: '#/definitions/align' },
-              },
-            },
-            lyrics: {
-              type: 'object',
-              patternProperties: {
-                '.*': {
-                  type: 'object',
-                  required: ['verses', 'pos'],
-                },
-              },
-            },
-            layout: { $ref: '#/definitions/extract_layout' },
-            nonflowrest: { type: 'boolean' },
-            notes: {
-              patternProperties: {
-                '.*': { $ref: '#/definitions/notes_entry' },
-              },
-            },
-            notebound: {
-              type: 'object',
-              additionalProperties: false,
-              properties: {
-                annotation: { $ref: '#/definitions/notebound_pos' },
-                chord: { $ref: '#/definitions/notebound_pos' },
-                barnumber: { $ref: '#/definitions/notebound_pos', align: { $ref: '#/definitions/align' } },
-                c_jumplines: {
-                  type: 'object',
-                  additionalProperties: false,
-                  patternProperties: {
-                    'v_d*': {
-                      p_repeat: { type: 'number' },
-                      p_begin: { type: 'number' },
-                      p_end: { type: 'number' },
-                      p_follow: { type: 'number' },
-                    },
-                  },
-                },
-                countnote: { $ref: '#/definitions/notebound_pos' },
-                decoration: {
-                  type: 'object',
-                  patternProperties: {
-                    'd+': { $ref: '#/definitions/notebound_pos' },
-                  },
-                },
-                flowline: {
-                  type: 'object',
-                  patternProperties: {
-                    'v_d+': {
-                      type: 'object',
-                      patternProperties: {
-                        'd*': { $ref: '#/definitions/annotated_bezier' },
-                      },
-                    },
-                  },
-                },
-                minc: {
-                  type: 'object',
-                  additionalProperties: false,
-                  patternProperties: {
-                    'd*': { $ref: '#/definitions/minc_entry' },
-                  },
-                },
-                nconf: {
-                  type: 'object',
-                  additionalProperties: false,
-                  patternProperties: {
-                    'v_d*': { $ref: '#/definitions/nconf_entry' },
-                  },
-                },
-                partname: { $ref: '#/definitions/notebound_pos' },
-                repeat_begin: { $ref: '#/definitions/notebound_pos' },
-                repeat_end: { $ref: '#/definitions/notebound_pos' },
-                tuplet: {
-                  type: 'object',
-                  patternProperties: {
-                    'v_d*': {
-                      type: 'object',
-                      patternProperties: {
-                        'd*': { $ref: '#/definitions/annotated_bezier' },
-                      },
-                    },
-                  },
-                },
-                variantend: { $ref: '#/definitions/notebound_pos' },
-              },
-            },
-            tuplets: {
-              type: 'object',
-              properties: {
-                text: { type: 'string' },
-              },
-            },
-            barnumbers: {
-              type: 'object',
-              required: ['voices', 'pos', 'autopos', 'style', 'prefix'],
-              properties: {
-                voices: {
-                  type: 'array',
-                  minItems: 0,
-                  uniqueItems: true,
-                  items: {},
-                },
-                pos: { $ref: '#/definitions/pos' },
-                autopos: { type: 'boolean' },
-                apanchor: { $ref: '#/definitions/apanchor' },
-                style: { type: 'string' },
-                prefix: { type: 'string' },
-              },
-            },
-            countnotes: {
-              type: 'object',
-              required: ['voices', 'pos', 'autopos', 'style'],
-              properties: {
-                voices: {
-                  type: 'array',
-                  minItems: 0,
-                  uniqueItems: true,
-                  items: {},
-                },
-                pos: { $ref: '#/definitions/pos' },
-                autopos: { type: 'boolean' },
-                apanchor: { $ref: '#/definitions/apanchor' },
-                style: { type: 'string' },
-              },
-              cntextleft: { type: 'string' },
-              cntextright: { type: 'string' },
-            },
-            chords: {
-              ref: '#/definitions/nb_annotations',
-              style: { type: 'string' },
-            },
-            stringnames: {
-              type: 'object',
-              required: ['text', 'vpos', 'style', 'marks'],
-              properties: {
-                text: { type: 'string' },
-                vpos: {
-                  type: 'array',
-                  minItems: 0,
-                  uniqueItems: true,
-                  items: { type: 'integer' },
-                },
-                style: { type: 'string' },
-                marks: {
-                  type: 'object',
-                  required: ['vpos', 'hpos'],
-                  properties: {
-                    vpos: {
-                      type: 'array',
-                      minItems: 0,
-                      uniqueItems: true,
-                      items: { type: 'integer' },
-                    },
-                    hpos: {
-                      type: 'array',
-                      minItems: 0,
-                      uniqueItems: true,
-                      items: { type: 'integer' },
-                    },
-                  },
-                },
-              },
-            },
-            instrument_shape: { type: 'string' },
-            sortmark: {
-              type: 'object',
-              properties: {
-                show: { type: 'boolean' },
-              },
-            },
-            printer: {
-              type: 'object',
-              required: ['a3_offset', 'a4_offset', 'show_border'],
-              properties: {
-                a3_offset: {
-                  type: 'array',
-                  minItems: 2,
-                  axItems: 2,
-                  uniqueItems: false,
-                  items: { type: 'integer' },
-                },
-                a4_offset: {
-                  type: 'array',
-                  minItems: 2,
-                  uniqueItems: false,
-                  items: { type: 'integer' },
-                },
-                show_border: { type: 'boolean' },
-              },
-            },
-            images: {
-              type: 'object',
-              patternProperties: {
-                'd*': {
-                  type: 'object',
-                  properties: {
-                    imagename: { type: 'string' },
-                    show: { type: 'boolean' },
-                    pos: { $ref: '#/definitions/pos' },
-                    height: { type: 'number' },
-                  },
-                },
-              },
-            },
-          },
-        },
-        '4': {
-          type: 'object',
-          required: ['title', 'voices'],
-          properties: {
-            title: { type: 'string' },
-            filenamepart: {},
-            voices: {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: { type: 'integer' },
-            },
-          },
-        },
-        '5': {
-          type: 'object',
-          required: ['title', 'voices'],
-          properties: {
-            title: { type: 'string' },
-            filenamepart: {},
-            voices: {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: { type: 'integer' },
-            },
-          },
-        },
-      },
-    },
-    layout: {
-      type: 'object',
-      required: [
-        'grid',
-        'limit_a3',
-        'SHOW_SLUR',
-        'LINE_THIN',
-        'LINE_MEDIUM',
-        'LINE_THICK',
-        'ELLIPSE_SIZE',
-        'REST_SIZE',
-        'X_SPACING',
-        'X_OFFSET',
-        'Y_SCALE',
-        'DRAWING_AREA_SIZE',
-        'BEAT_RESOLUTION',
-        'SHORTEST_NOTE',
-        'BEAT_PER_DURATION',
-        'PITCH_OFFSET',
-        'FONT_STYLE_DEF',
-        'MM_PER_POINT',
-        'DURATION_TO_STYLE',
-        'REST_TO_GLYPH',
-      ],
-      properties: {
-        grid: { type: 'boolean' },
-        limit_a3: { type: 'boolean' },
-        SHOW_SLUR: { type: 'boolean' },
-        LINE_THIN: { type: 'number' },
-        LINE_MEDIUM: { type: 'number' },
-        LINE_THICK: { type: 'number' },
-        ELLIPSE_SIZE: {
-          type: 'array',
-          minItems: 1,
-          uniqueItems: true,
-          items: { type: 'number' },
-        },
-        REST_SIZE: {
-          type: 'array',
-          minItems: 1,
-          uniqueItems: true,
-          items: { type: 'number' },
-        },
-        X_SPACING: { type: 'number' },
-        X_OFFSET: { type: 'number' },
-        Y_SCALE: { type: 'integer' },
-        DRAWING_AREA_SIZE: {
-          type: 'array',
-          minItems: 1,
-          uniqueItems: true,
-          items: { type: 'integer' },
-        },
-        BEAT_RESOLUTION: { type: 'integer' },
-        SHORTEST_NOTE: { type: 'integer' },
-        BEAT_PER_DURATION: { type: 'integer' },
-        PITCH_OFFSET: { type: 'integer' },
-        FONT_STYLE_DEF: {
-          type: 'object',
-          required: ['bold', 'italic', 'large', 'regular', 'small_bold', 'small_italic', 'small', 'smaller'],
-          patternProperties: {
-            '.*': {
-              type: 'object',
-              required: ['text_color', 'font_size', 'font_style'],
-              properties: {
-                text_color: {
-                  type: 'array',
-                  minItems: 3,
-                  uniqueItems: false,
-                  items: { type: 'integer' },
-                },
-                font_size: { type: 'integer' },
-                font_style: { type: 'string' },
-              },
-            },
-          },
-        },
-        MM_PER_POINT: { type: 'number' },
-        DURATION_TO_STYLE: {
-          type: 'object',
-          required: ['err', 'd64', 'd48', 'd32', 'd24', 'd16', 'd12', 'd8', 'd6', 'd4', 'd3', 'd2', 'd1'],
-          patternProperties: {
-            '.*': {
-              type: 'array',
-              minItems: 3,
-              uniqueItems: false,
-              items: { type: ['number', 'string', 'boolean'] },
-            },
-          },
-        },
-        REST_TO_GLYPH: {
-          type: 'object',
-          patternProperties: {
-            '.*': {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: [
-                {
-                  type: 'array',
-                  minItems: 1,
-                  uniqueItems: false,
-                  items: { type: 'number' },
-                },
-                { type: 'string' },
-                { type: 'boolean' },
-              ],
-            },
-          },
-        },
-      },
-    },
-    neatjson: {
-      type: 'object',
-      required: ['wrap', 'aligned', 'after_comma', 'after_colon_1', 'after_colon_n', 'before_colon_n', 'explicit_sort'],
-      properties: {
-        wrap: { type: 'integer' },
-        aligned: { type: 'boolean' },
-        after_comma: { type: 'integer' },
-        after_colon_1: { type: 'integer' },
-        after_colon_n: { type: 'integer' },
-        before_colon_n: { type: 'integer' },
-        sorted: { type: 'boolean' },
-        explicit_sort: { type: 'object' },
-      },
-    },
-  },
+    annotated_bezier: legacyAnnotatedBezierSchema(),
+    extract_layout: legacyExtractLayoutSchema(),
+  }
 }
 
-export function getLegacyConfigSchemaOverview(): JsonSchemaNode {
+function legacyDefaultsSchema(): JsonSchemaNode {
+  return {
+    type: 'object',
+    required: ['notebound'],
+    properties: {
+      notebound: {
+        type: 'object',
+        required: ['annotation', 'partname', 'variantend', 'tuplet', 'chord'],
+        properties: {
+          annotation: {
+            type: 'object',
+            required: ['pos'],
+            properties: { pos: legacyPosRef(), style: { type: 'string' } },
+          },
+          chord: {
+            type: 'object',
+            required: ['pos'],
+            properties: { pos: legacyPosRef(), style: { type: 'string' } },
+          },
+          partname: {
+            type: 'object',
+            required: ['pos'],
+            properties: { pos: legacyPosRef(), style: { type: 'string' }, show: { type: 'boolean' } },
+          },
+          variantend: {
+            type: 'object',
+            required: ['pos'],
+            properties: { pos: legacyPosRef(), style: { type: 'string' } },
+          },
+          tuplet: { $ref: '#/definitions/annotated_bezier', required: ['cp1', 'cp2', 'shape'] },
+        },
+      },
+    },
+  }
+}
+
+function legacyTemplatesSchema(): JsonSchemaNode {
+  return {
+    type: 'object',
+    required: ['notes', 'lyrics', 'tuplet', 'annotations'],
+    properties: {
+      notes: refTo('#/definitions/notes_entry'),
+      lyrics: {
+        type: 'object',
+        required: ['verses', 'pos'],
+        properties: {
+          verses: integerArraySchema({ type: 'integer' }, 1),
+          pos: legacyPosRef(),
+          style: { type: 'string' },
+        },
+      },
+      tuplet: {
+        type: 'object',
+        required: ['cp1', 'cp2', 'shape'],
+        properties: {
+          cp1: legacyPosRef(),
+          cp2: legacyPosRef(),
+          shape: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'string' } },
+        },
+      },
+      annotations: legacyPositionedTextSchema(),
+    },
+  }
+}
+
+function legacyAnnotationsSchema(): JsonSchemaNode {
+  return {
+    type: 'object',
+    required: ['vl', 'vt', 'vr'],
+    properties: {
+      vl: { type: 'object', required: ['text', 'pos'], properties: { text: { type: 'string' }, pos: legacyPosRef() } },
+      vt: { type: 'object', required: ['text', 'pos'], properties: { text: { type: 'string' }, pos: legacyPosRef() } },
+      vr: { type: 'object', required: ['text', 'pos'], properties: { text: { type: 'string' }, pos: legacyPosRef() } },
+    },
+  }
+}
+
+function legacyExtractPatternSchema(): JsonSchemaNode {
+  return {
+    type: 'object',
+    additionalProperties: false,
+    requiredx: [
+      'title', 'filenamepart', 'startpos', 'voices', 'synchlines', 'flowlines', 'subflowlines',
+      'jumplines', 'repeatsigns', 'layoutlines', 'legend', 'lyrics', 'layout', 'nonflowrest',
+      'notes', 'barnumbers', 'countnotes', 'chords', 'stringnames', 'printer',
+    ],
+    properties: {
+      title: { type: 'string' },
+      filenamepart: {},
+      startpos: { type: 'integer' },
+      voices: integerArraySchema({ type: 'integer' }, 1),
+      synchlines: {
+        type: 'array',
+        minItems: 0,
+        uniqueItems: true,
+        items: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'integer' } },
+      },
+      flowlines: integerArraySchema({ type: 'integer' }, 1),
+      subflowlines: integerArraySchema({ type: 'integer' }, 1),
+      jumplines: integerArraySchema({ type: 'integer' }, 1),
+      repeatsigns: {
+        type: 'object',
+        requiredx: ['voices', 'left', 'right'],
+        properties: {
+          voices: integerArraySchema({}, 0),
+          left: { type: 'object', required: ['pos', 'text', 'style'], properties: { pos: legacyPosRef(), text: { type: 'string' }, style: { type: 'string' } } },
+          right: { type: 'object', required: ['pos', 'text', 'style'], properties: { pos: legacyPosRef(), text: { type: 'string' }, style: { type: 'string' } } },
+        },
+      },
+      layoutlines: integerArraySchema({ type: 'integer' }, 0),
+      legend: {
+        type: 'object',
+        required: ['spos', 'pos'],
+        properties: { spos: legacyPosRef(), pos: legacyPosRef(), tstyle: { type: 'string' }, align: legacyAlignRef(), style: { type: 'string' }, salign: legacyAlignRef() },
+      },
+      lyrics: { type: 'object', patternProperties: { '.*': { type: 'object', required: ['verses', 'pos'] } } },
+      layout: refTo('#/definitions/extract_layout'),
+      nonflowrest: { type: 'boolean' },
+      notes: { patternProperties: { '.*': refTo('#/definitions/notes_entry') } },
+      notebound: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          annotation: refTo('#/definitions/notebound_pos'),
+          chord: refTo('#/definitions/notebound_pos'),
+          barnumber: { $ref: '#/definitions/notebound_pos', align: legacyAlignRef() },
+          c_jumplines: { type: 'object', additionalProperties: false, patternProperties: { 'v_d*': { p_repeat: { type: 'number' }, p_begin: { type: 'number' }, p_end: { type: 'number' }, p_follow: { type: 'number' } } } },
+          countnote: refTo('#/definitions/notebound_pos'),
+          decoration: { type: 'object', patternProperties: { 'd+': refTo('#/definitions/notebound_pos') } },
+          flowline: { type: 'object', patternProperties: { 'v_d+': { type: 'object', patternProperties: { 'd*': refTo('#/definitions/annotated_bezier') } } } },
+          minc: { type: 'object', additionalProperties: false, patternProperties: { 'd*': refTo('#/definitions/minc_entry') } },
+          nconf: { type: 'object', additionalProperties: false, patternProperties: { 'v_d*': refTo('#/definitions/nconf_entry') } },
+          partname: refTo('#/definitions/notebound_pos'),
+          repeat_begin: refTo('#/definitions/notebound_pos'),
+          repeat_end: refTo('#/definitions/notebound_pos'),
+          tuplet: { type: 'object', patternProperties: { 'v_d*': { type: 'object', patternProperties: { 'd*': refTo('#/definitions/annotated_bezier') } } } },
+          variantend: refTo('#/definitions/notebound_pos'),
+        },
+      },
+      tuplets: { type: 'object', properties: { text: { type: 'string' } } },
+      barnumbers: {
+        type: 'object',
+        required: ['voices', 'pos', 'autopos', 'style', 'prefix'],
+        properties: { voices: integerArraySchema({}, 0), pos: legacyPosRef(), autopos: { type: 'boolean' }, apanchor: legacyApanchorRef(), style: { type: 'string' }, prefix: { type: 'string' } },
+      },
+      countnotes: {
+        type: 'object',
+        required: ['voices', 'pos', 'autopos', 'style'],
+        properties: { voices: integerArraySchema({}, 0), pos: legacyPosRef(), autopos: { type: 'boolean' }, apanchor: legacyApanchorRef(), style: { type: 'string' } },
+        cntextleft: { type: 'string' },
+        cntextright: { type: 'string' },
+      },
+      chords: { ref: '#/definitions/nb_annotations', style: { type: 'string' } },
+      stringnames: {
+        type: 'object',
+        required: ['text', 'vpos', 'style', 'marks'],
+        properties: {
+          text: { type: 'string' },
+          vpos: integerArraySchema({ type: 'integer' }, 0),
+          style: { type: 'string' },
+          marks: { type: 'object', required: ['vpos', 'hpos'], properties: { vpos: integerArraySchema({ type: 'integer' }, 0), hpos: integerArraySchema({ type: 'integer' }, 0) } },
+        },
+      },
+      instrument_shape: { type: 'string' },
+      sortmark: { type: 'object', properties: { show: { type: 'boolean' } } },
+      printer: {
+        type: 'object',
+        required: ['a3_offset', 'a4_offset', 'show_border'],
+        properties: {
+          a3_offset: { type: 'array', minItems: 2, axItems: 2, uniqueItems: false, items: { type: 'integer' } },
+          a4_offset: { type: 'array', minItems: 2, uniqueItems: false, items: { type: 'integer' } },
+          show_border: { type: 'boolean' },
+        },
+      },
+      images: { type: 'object', patternProperties: { 'd*': { type: 'object', properties: { imagename: { type: 'string' }, show: { type: 'boolean' }, pos: legacyPosRef(), height: { type: 'number' } } } } },
+    },
+  }
+}
+
+function legacyRootLayoutSchema(): JsonSchemaNode {
+  return {
+    type: 'object',
+    required: ['grid', 'limit_a3', 'SHOW_SLUR', 'LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'ELLIPSE_SIZE', 'REST_SIZE', 'X_SPACING', 'X_OFFSET', 'Y_SCALE', 'DRAWING_AREA_SIZE', 'BEAT_RESOLUTION', 'SHORTEST_NOTE', 'BEAT_PER_DURATION', 'PITCH_OFFSET', 'FONT_STYLE_DEF', 'MM_PER_POINT', 'DURATION_TO_STYLE', 'REST_TO_GLYPH'],
+    properties: {
+      grid: { type: 'boolean' },
+      limit_a3: { type: 'boolean' },
+      SHOW_SLUR: { type: 'boolean' },
+      LINE_THIN: { type: 'number' },
+      LINE_MEDIUM: { type: 'number' },
+      LINE_THICK: { type: 'number' },
+      ELLIPSE_SIZE: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'number' } },
+      REST_SIZE: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'number' } },
+      X_SPACING: { type: 'number' },
+      X_OFFSET: { type: 'number' },
+      Y_SCALE: { type: 'integer' },
+      DRAWING_AREA_SIZE: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'integer' } },
+      BEAT_RESOLUTION: { type: 'integer' },
+      SHORTEST_NOTE: { type: 'integer' },
+      BEAT_PER_DURATION: { type: 'integer' },
+      PITCH_OFFSET: { type: 'integer' },
+      FONT_STYLE_DEF: {
+        type: 'object',
+        required: ['bold', 'italic', 'large', 'regular', 'small_bold', 'small_italic', 'small', 'smaller'],
+        patternProperties: {
+          '.*': {
+            type: 'object',
+            required: ['text_color', 'font_size', 'font_style'],
+            properties: {
+              text_color: { type: 'array', minItems: 3, uniqueItems: false, items: { type: 'integer' } },
+              font_size: { type: 'integer' },
+              font_style: { type: 'string' },
+            },
+          },
+        },
+      },
+      MM_PER_POINT: { type: 'number' },
+      DURATION_TO_STYLE: {
+        type: 'object',
+        required: ['err', 'd64', 'd48', 'd32', 'd24', 'd16', 'd12', 'd8', 'd6', 'd4', 'd3', 'd2', 'd1'],
+        patternProperties: { '.*': { type: 'array', minItems: 3, uniqueItems: false, items: { type: ['number', 'string', 'boolean'] } } },
+      },
+      REST_TO_GLYPH: {
+        type: 'object',
+        patternProperties: {
+          '.*': {
+            type: 'array',
+            minItems: 1,
+            uniqueItems: true,
+            items: [
+              { type: 'array', minItems: 1, uniqueItems: false, items: { type: 'number' } },
+              { type: 'string' },
+              { type: 'boolean' },
+            ],
+          },
+        },
+      },
+    },
+  }
+}
+
+function legacyNeatjsonSchema(): JsonSchemaNode {
+  return {
+    type: 'object',
+    required: ['wrap', 'aligned', 'after_comma', 'after_colon_1', 'after_colon_n', 'before_colon_n', 'explicit_sort'],
+    properties: {
+      wrap: { type: 'integer' },
+      aligned: { type: 'boolean' },
+      after_comma: { type: 'integer' },
+      after_colon_1: { type: 'integer' },
+      after_colon_n: { type: 'integer' },
+      before_colon_n: { type: 'integer' },
+      sorted: { type: 'boolean' },
+      explicit_sort: { type: 'object' },
+    },
+  }
+}
+
+export function buildConfigSchemaOverview(): JsonSchemaNode {
+  return {
+    $schema: ZUPFNOTER_CONFIG_SCHEMA_DRAFT,
+    description: 'Generated from x.json with shasum 0b1781e0803dc084178858e9fbe2b4e0b65c08e7',
+    type: 'object',
+    required: ZUPFNOTER_TOP_LEVEL_REQUIRED_KEYS,
+    definitions: legacyDefinitions(),
+    properties: {
+      confstack: { type: 'object', required: ['env'], properties: { env: { type: 'string' } } },
+      produce: integerArraySchema({ type: 'integer' }, 0),
+      template: { type: 'object', additionalProperties: false, properties: { filebase: { type: 'string' }, title: { type: 'string' } } },
+      abc_parser: { type: 'string' },
+      restposition: { type: 'object', additionalProperties: false, required: ['default', 'repeatstart', 'repeatend'], properties: { default: { type: 'string' }, repeatstart: { type: 'string' }, repeatend: { type: 'string' } } },
+      wrap: { type: 'integer' },
+      defaults: legacyDefaultsSchema(),
+      templates: legacyTemplatesSchema(),
+      annotations: legacyAnnotationsSchema(),
+      extract: {
+        type: 'object',
+        patternProperties: {
+          'd*': legacyExtractPatternSchema(),
+          '4': { type: 'object', required: ['title', 'voices'], properties: { title: { type: 'string' }, filenamepart: {}, voices: integerArraySchema({ type: 'integer' }, 1) } },
+          '5': { type: 'object', required: ['title', 'voices'], properties: { title: { type: 'string' }, filenamepart: {}, voices: integerArraySchema({ type: 'integer' }, 1) } },
+        },
+      },
+      layout: legacyRootLayoutSchema(),
+      neatjson: legacyNeatjsonSchema(),
+    },
+  }
+}
+
+export const ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW: JsonSchemaNode = buildConfigSchemaOverview()
+
+export function getConfigSchemaOverview(): JsonSchemaNode {
   return ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW
 }
 

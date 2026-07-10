@@ -1,0 +1,1381 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "align": {
+      "enum": [
+        "l",
+        "r",
+        "auto"
+      ],
+      "type": "string"
+    },
+    "annotated_bezier": {
+      "properties": {
+        "cp1": {
+          "$ref": "#/definitions/pos"
+        },
+        "cp2": {
+          "$ref": "#/definitions/pos"
+        },
+        "pos": {
+          "$ref": "#/definitions/pos"
+        },
+        "shape": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "show": {
+          "type": "boolean"
+        },
+        "style": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "apanchor": {
+      "enum": [
+        "manual",
+        "box",
+        "center"
+      ],
+      "type": "string"
+    },
+    "extract_layout": {
+      "additionalProperties": false,
+      "properties": {
+        "beams": {
+          "type": "boolean"
+        },
+        "bottomup": {
+          "type": "boolean"
+        },
+        "color": {
+          "properties": {
+            "color_default": {
+              "type": "string"
+            },
+            "color_variant1": {
+              "type": "string"
+            },
+            "color_variant2": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "DRAWING_AREA_SIZE": {
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "type": "array"
+        },
+        "ELLIPSE_SIZE": {
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "type": "array"
+        },
+        "grid": {
+          "type": "boolean"
+        },
+        "instrument": {
+          "type": "string"
+        },
+        "jumpline_anchor": {
+          "$ref": "#/definitions/pos"
+        },
+        "jumpline_vcut": {
+          "type": "number"
+        },
+        "limit_a3": {
+          "type": "boolean"
+        },
+        "LINE_MEDIUM": {
+          "type": "number"
+        },
+        "LINE_THICK": {
+          "type": "number"
+        },
+        "LINE_THIN": {
+          "type": "number"
+        },
+        "packer": {
+          "properties": {
+            "pack_max_spread_factor": {
+              "type": "number"
+            },
+            "pack_method": {
+              "type": "integer"
+            },
+            "pack_min_increment": {
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "PITCH_OFFSET": {
+          "type": "integer"
+        },
+        "REST_SIZE": {
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "type": "array"
+        },
+        "tuning": {
+          "type": "string"
+        },
+        "X_OFFSET": {
+          "type": "number"
+        },
+        "X_SPACING": {
+          "type": "number"
+        }
+      },
+      "requiredx": [
+        "limit_a3",
+        "LINE_THIN",
+        "LINE_MEDIUM",
+        "LINE_THICK",
+        "ELLIPSE_SIZE",
+        "REST_SIZE",
+        "grid"
+      ],
+      "type": "object"
+    },
+    "minc_entry": {
+      "additionalProperties": false,
+      "properties": {
+        "minc_f": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "minc_f"
+      ],
+      "type": "object"
+    },
+    "nb_annotation_xx": {
+      "properties": {
+        "apanchor": {
+          "$ref": "#/definitions/apanchor"
+        },
+        "autopos": {
+          "type": "boolean"
+        },
+        "pos": {
+          "$ref": "#/definitions/pos"
+        },
+        "style": {
+          "type": "string"
+        },
+        "voices": {
+          "items": {},
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "voices",
+        "pos",
+        "autopos",
+        "style"
+      ],
+      "type": "object"
+    },
+    "nconf_entry": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "t_d*": {
+          "additionalProperties": false,
+          "patternProperties": {
+            "n_d*": {
+              "additionalProperties": false,
+              "properties": {
+                "nshift": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "notebound_pos": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "v_d*": {
+          "additionalProperties": false,
+          "patternProperties": {
+            "t_\\d*|\\d*": {
+              "additionalProperties": false,
+              "patternProperties": {
+                "\\d+": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "align": {
+                      "$ref": "#/definitions/align"
+                    },
+                    "pos": {
+                      "$ref": "#/definitions/pos"
+                    },
+                    "show": {
+                      "type": "boolean"
+                    },
+                    "style": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "properties": {
+                "align": {
+                  "$ref": "#/definitions/align"
+                },
+                "pos": {
+                  "$ref": "#/definitions/pos"
+                },
+                "show": {
+                  "type": "boolean"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "notebound_repeat_outdated": {
+      "additionalProperties": false,
+      "patternProperties": {
+        "v_d*": {
+          "pos": {
+            "$ref": "#/definitions/pos"
+          },
+          "style": {
+            "type": "string"
+          },
+          "text": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "notes_entry": {
+      "properties": {
+        "align": {
+          "$ref": "#/definitions/align"
+        },
+        "pos": {
+          "$ref": "#/definitions/pos"
+        },
+        "style": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "pos",
+        "text",
+        "style"
+      ],
+      "type": "object"
+    },
+    "pos": {
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "type": "array",
+      "uniqueItems": false
+    }
+  },
+  "description": "Generated from x.json with shasum 0b1781e0803dc084178858e9fbe2b4e0b65c08e7",
+  "properties": {
+    "abc_parser": {
+      "type": "string"
+    },
+    "annotations": {
+      "properties": {
+        "vl": {
+          "properties": {
+            "pos": {
+              "$ref": "#/definitions/pos"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text",
+            "pos"
+          ],
+          "type": "object"
+        },
+        "vr": {
+          "properties": {
+            "pos": {
+              "$ref": "#/definitions/pos"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text",
+            "pos"
+          ],
+          "type": "object"
+        },
+        "vt": {
+          "properties": {
+            "pos": {
+              "$ref": "#/definitions/pos"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text",
+            "pos"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "vl",
+        "vt",
+        "vr"
+      ],
+      "type": "object"
+    },
+    "confstack": {
+      "properties": {
+        "env": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "env"
+      ],
+      "type": "object"
+    },
+    "defaults": {
+      "properties": {
+        "notebound": {
+          "properties": {
+            "annotation": {
+              "properties": {
+                "pos": {
+                  "$ref": "#/definitions/pos"
+                },
+                "style": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "pos"
+              ],
+              "type": "object"
+            },
+            "chord": {
+              "properties": {
+                "pos": {
+                  "$ref": "#/definitions/pos"
+                },
+                "style": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "pos"
+              ],
+              "type": "object"
+            },
+            "partname": {
+              "properties": {
+                "pos": {
+                  "$ref": "#/definitions/pos"
+                },
+                "show": {
+                  "type": "boolean"
+                },
+                "style": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "pos"
+              ],
+              "type": "object"
+            },
+            "tuplet": {
+              "$ref": "#/definitions/annotated_bezier",
+              "required": [
+                "cp1",
+                "cp2",
+                "shape"
+              ]
+            },
+            "variantend": {
+              "properties": {
+                "pos": {
+                  "$ref": "#/definitions/pos"
+                },
+                "style": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "pos"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "annotation",
+            "partname",
+            "variantend",
+            "tuplet",
+            "chord"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "notebound"
+      ],
+      "type": "object"
+    },
+    "extract": {
+      "patternProperties": {
+        "4": {
+          "properties": {
+            "filenamepart": {},
+            "title": {
+              "type": "string"
+            },
+            "voices": {
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "title",
+            "voices"
+          ],
+          "type": "object"
+        },
+        "5": {
+          "properties": {
+            "filenamepart": {},
+            "title": {
+              "type": "string"
+            },
+            "voices": {
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "title",
+            "voices"
+          ],
+          "type": "object"
+        },
+        "d*": {
+          "additionalProperties": false,
+          "properties": {
+            "barnumbers": {
+              "properties": {
+                "apanchor": {
+                  "$ref": "#/definitions/apanchor"
+                },
+                "autopos": {
+                  "type": "boolean"
+                },
+                "pos": {
+                  "$ref": "#/definitions/pos"
+                },
+                "prefix": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "voices": {
+                  "items": {},
+                  "minItems": 0,
+                  "type": "array",
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "voices",
+                "pos",
+                "autopos",
+                "style",
+                "prefix"
+              ],
+              "type": "object"
+            },
+            "chords": {
+              "ref": "#/definitions/nb_annotations",
+              "style": {
+                "type": "string"
+              }
+            },
+            "countnotes": {
+              "cntextleft": {
+                "type": "string"
+              },
+              "cntextright": {
+                "type": "string"
+              },
+              "properties": {
+                "apanchor": {
+                  "$ref": "#/definitions/apanchor"
+                },
+                "autopos": {
+                  "type": "boolean"
+                },
+                "pos": {
+                  "$ref": "#/definitions/pos"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "voices": {
+                  "items": {},
+                  "minItems": 0,
+                  "type": "array",
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "voices",
+                "pos",
+                "autopos",
+                "style"
+              ],
+              "type": "object"
+            },
+            "filenamepart": {},
+            "flowlines": {
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "images": {
+              "patternProperties": {
+                "d*": {
+                  "properties": {
+                    "height": {
+                      "type": "number"
+                    },
+                    "imagename": {
+                      "type": "string"
+                    },
+                    "pos": {
+                      "$ref": "#/definitions/pos"
+                    },
+                    "show": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "instrument_shape": {
+              "type": "string"
+            },
+            "jumplines": {
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "layout": {
+              "$ref": "#/definitions/extract_layout"
+            },
+            "layoutlines": {
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 0,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "legend": {
+              "properties": {
+                "align": {
+                  "$ref": "#/definitions/align"
+                },
+                "pos": {
+                  "$ref": "#/definitions/pos"
+                },
+                "salign": {
+                  "$ref": "#/definitions/align"
+                },
+                "spos": {
+                  "$ref": "#/definitions/pos"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "tstyle": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "spos",
+                "pos"
+              ],
+              "type": "object"
+            },
+            "lyrics": {
+              "patternProperties": {
+                ".*": {
+                  "required": [
+                    "verses",
+                    "pos"
+                  ],
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "nonflowrest": {
+              "type": "boolean"
+            },
+            "notebound": {
+              "additionalProperties": false,
+              "properties": {
+                "annotation": {
+                  "$ref": "#/definitions/notebound_pos"
+                },
+                "barnumber": {
+                  "$ref": "#/definitions/notebound_pos",
+                  "align": {
+                    "$ref": "#/definitions/align"
+                  }
+                },
+                "c_jumplines": {
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "v_d*": {
+                      "p_begin": {
+                        "type": "number"
+                      },
+                      "p_end": {
+                        "type": "number"
+                      },
+                      "p_follow": {
+                        "type": "number"
+                      },
+                      "p_repeat": {
+                        "type": "number"
+                      }
+                    }
+                  },
+                  "type": "object"
+                },
+                "chord": {
+                  "$ref": "#/definitions/notebound_pos"
+                },
+                "countnote": {
+                  "$ref": "#/definitions/notebound_pos"
+                },
+                "decoration": {
+                  "patternProperties": {
+                    "d+": {
+                      "$ref": "#/definitions/notebound_pos"
+                    }
+                  },
+                  "type": "object"
+                },
+                "flowline": {
+                  "patternProperties": {
+                    "v_d+": {
+                      "patternProperties": {
+                        "d*": {
+                          "$ref": "#/definitions/annotated_bezier"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "minc": {
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "d*": {
+                      "$ref": "#/definitions/minc_entry"
+                    }
+                  },
+                  "type": "object"
+                },
+                "nconf": {
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "v_d*": {
+                      "$ref": "#/definitions/nconf_entry"
+                    }
+                  },
+                  "type": "object"
+                },
+                "partname": {
+                  "$ref": "#/definitions/notebound_pos"
+                },
+                "repeat_begin": {
+                  "$ref": "#/definitions/notebound_pos"
+                },
+                "repeat_end": {
+                  "$ref": "#/definitions/notebound_pos"
+                },
+                "tuplet": {
+                  "patternProperties": {
+                    "v_d*": {
+                      "patternProperties": {
+                        "d*": {
+                          "$ref": "#/definitions/annotated_bezier"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "variantend": {
+                  "$ref": "#/definitions/notebound_pos"
+                }
+              },
+              "type": "object"
+            },
+            "notes": {
+              "patternProperties": {
+                ".*": {
+                  "$ref": "#/definitions/notes_entry"
+                }
+              }
+            },
+            "printer": {
+              "properties": {
+                "a3_offset": {
+                  "axItems": 2,
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "a4_offset": {
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "show_border": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "a3_offset",
+                "a4_offset",
+                "show_border"
+              ],
+              "type": "object"
+            },
+            "repeatsigns": {
+              "properties": {
+                "left": {
+                  "properties": {
+                    "pos": {
+                      "$ref": "#/definitions/pos"
+                    },
+                    "style": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "pos",
+                    "text",
+                    "style"
+                  ],
+                  "type": "object"
+                },
+                "right": {
+                  "properties": {
+                    "pos": {
+                      "$ref": "#/definitions/pos"
+                    },
+                    "style": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "pos",
+                    "text",
+                    "style"
+                  ],
+                  "type": "object"
+                },
+                "voices": {
+                  "items": {},
+                  "minItems": 0,
+                  "type": "array",
+                  "uniqueItems": true
+                }
+              },
+              "requiredx": [
+                "voices",
+                "left",
+                "right"
+              ],
+              "type": "object"
+            },
+            "sortmark": {
+              "properties": {
+                "show": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "startpos": {
+              "type": "integer"
+            },
+            "stringnames": {
+              "properties": {
+                "marks": {
+                  "properties": {
+                    "hpos": {
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 0,
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "vpos": {
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 0,
+                      "type": "array",
+                      "uniqueItems": true
+                    }
+                  },
+                  "required": [
+                    "vpos",
+                    "hpos"
+                  ],
+                  "type": "object"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "vpos": {
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 0,
+                  "type": "array",
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "text",
+                "vpos",
+                "style",
+                "marks"
+              ],
+              "type": "object"
+            },
+            "subflowlines": {
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "synchlines": {
+              "items": {
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "minItems": 0,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "title": {
+              "type": "string"
+            },
+            "tuplets": {
+              "properties": {
+                "text": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "voices": {
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "requiredx": [
+            "title",
+            "filenamepart",
+            "startpos",
+            "voices",
+            "synchlines",
+            "flowlines",
+            "subflowlines",
+            "jumplines",
+            "repeatsigns",
+            "layoutlines",
+            "legend",
+            "lyrics",
+            "layout",
+            "nonflowrest",
+            "notes",
+            "barnumbers",
+            "countnotes",
+            "chords",
+            "stringnames",
+            "printer"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "layout": {
+      "properties": {
+        "BEAT_PER_DURATION": {
+          "type": "integer"
+        },
+        "BEAT_RESOLUTION": {
+          "type": "integer"
+        },
+        "DRAWING_AREA_SIZE": {
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "DURATION_TO_STYLE": {
+          "patternProperties": {
+            ".*": {
+              "items": {
+                "type": [
+                  "number",
+                  "string",
+                  "boolean"
+                ]
+              },
+              "minItems": 3,
+              "type": "array",
+              "uniqueItems": false
+            }
+          },
+          "required": [
+            "err",
+            "d64",
+            "d48",
+            "d32",
+            "d24",
+            "d16",
+            "d12",
+            "d8",
+            "d6",
+            "d4",
+            "d3",
+            "d2",
+            "d1"
+          ],
+          "type": "object"
+        },
+        "ELLIPSE_SIZE": {
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "FONT_STYLE_DEF": {
+          "patternProperties": {
+            ".*": {
+              "properties": {
+                "font_size": {
+                  "type": "integer"
+                },
+                "font_style": {
+                  "type": "string"
+                },
+                "text_color": {
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 3,
+                  "type": "array",
+                  "uniqueItems": false
+                }
+              },
+              "required": [
+                "text_color",
+                "font_size",
+                "font_style"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "bold",
+            "italic",
+            "large",
+            "regular",
+            "small_bold",
+            "small_italic",
+            "small",
+            "smaller"
+          ],
+          "type": "object"
+        },
+        "grid": {
+          "type": "boolean"
+        },
+        "limit_a3": {
+          "type": "boolean"
+        },
+        "LINE_MEDIUM": {
+          "type": "number"
+        },
+        "LINE_THICK": {
+          "type": "number"
+        },
+        "LINE_THIN": {
+          "type": "number"
+        },
+        "MM_PER_POINT": {
+          "type": "number"
+        },
+        "PITCH_OFFSET": {
+          "type": "integer"
+        },
+        "REST_SIZE": {
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "REST_TO_GLYPH": {
+          "patternProperties": {
+            ".*": {
+              "items": [
+                {
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 1,
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "boolean"
+                }
+              ],
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "type": "object"
+        },
+        "SHORTEST_NOTE": {
+          "type": "integer"
+        },
+        "SHOW_SLUR": {
+          "type": "boolean"
+        },
+        "X_OFFSET": {
+          "type": "number"
+        },
+        "X_SPACING": {
+          "type": "number"
+        },
+        "Y_SCALE": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "grid",
+        "limit_a3",
+        "SHOW_SLUR",
+        "LINE_THIN",
+        "LINE_MEDIUM",
+        "LINE_THICK",
+        "ELLIPSE_SIZE",
+        "REST_SIZE",
+        "X_SPACING",
+        "X_OFFSET",
+        "Y_SCALE",
+        "DRAWING_AREA_SIZE",
+        "BEAT_RESOLUTION",
+        "SHORTEST_NOTE",
+        "BEAT_PER_DURATION",
+        "PITCH_OFFSET",
+        "FONT_STYLE_DEF",
+        "MM_PER_POINT",
+        "DURATION_TO_STYLE",
+        "REST_TO_GLYPH"
+      ],
+      "type": "object"
+    },
+    "neatjson": {
+      "properties": {
+        "after_colon_1": {
+          "type": "integer"
+        },
+        "after_colon_n": {
+          "type": "integer"
+        },
+        "after_comma": {
+          "type": "integer"
+        },
+        "aligned": {
+          "type": "boolean"
+        },
+        "before_colon_n": {
+          "type": "integer"
+        },
+        "explicit_sort": {
+          "type": "object"
+        },
+        "sorted": {
+          "type": "boolean"
+        },
+        "wrap": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "wrap",
+        "aligned",
+        "after_comma",
+        "after_colon_1",
+        "after_colon_n",
+        "before_colon_n",
+        "explicit_sort"
+      ],
+      "type": "object"
+    },
+    "produce": {
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 0,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "restposition": {
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "type": "string"
+        },
+        "repeatend": {
+          "type": "string"
+        },
+        "repeatstart": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "default",
+        "repeatstart",
+        "repeatend"
+      ],
+      "type": "object"
+    },
+    "template": {
+      "additionalProperties": false,
+      "properties": {
+        "filebase": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "templates": {
+      "properties": {
+        "annotations": {
+          "properties": {
+            "pos": {
+              "$ref": "#/definitions/pos"
+            },
+            "style": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text",
+            "pos"
+          ],
+          "type": "object"
+        },
+        "lyrics": {
+          "properties": {
+            "pos": {
+              "$ref": "#/definitions/pos"
+            },
+            "style": {
+              "type": "string"
+            },
+            "verses": {
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "verses",
+            "pos"
+          ],
+          "type": "object"
+        },
+        "notes": {
+          "$ref": "#/definitions/notes_entry"
+        },
+        "tuplet": {
+          "properties": {
+            "cp1": {
+              "$ref": "#/definitions/pos"
+            },
+            "cp2": {
+              "$ref": "#/definitions/pos"
+            },
+            "shape": {
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "cp1",
+            "cp2",
+            "shape"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "notes",
+        "lyrics",
+        "tuplet",
+        "annotations"
+      ],
+      "type": "object"
+    },
+    "wrap": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "produce",
+    "abc_parser",
+    "restposition",
+    "wrap",
+    "defaults",
+    "templates",
+    "annotations",
+    "extract",
+    "layout",
+    "neatjson"
+  ],
+  "type": "object"
+}
