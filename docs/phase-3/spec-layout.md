@@ -183,7 +183,7 @@ export class HarpnotesLayout {
 
 - Zeichnet Schnittmarkierungen für A4-Druck an den Seitenrändern
 - Nur bei `pageFormat === 'A4'`: horizontale Linien an den A4-Seitengrenzen
-- Position: `12 * X_SPACING` pro Seite (aus `printer.a4Pages`)
+- Position: `12 * X_SPACING` pro Seite (aus `printer.a4_pages`)
 - Bei `pageFormat === 'A3'`: leeres Array `[]`
 
 ### `restposition` in `AbcToSong._transformRest()` (Phase 2 Nacharbeit)

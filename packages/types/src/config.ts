@@ -160,12 +160,12 @@ export interface LayoutConfig {
  */
 export interface PrinterConfig {
   /** Offset für A3-Ausgabe [x, y] in mm */
-  a3Offset: [number, number]
+  a3_offset: [number, number]
   /** Offset für A4-Ausgabe [x, y] in mm */
-  a4Offset: [number, number]
+  a4_offset: [number, number]
   /** Seitennummern für A4-Ausgabe (0-basiert) */
-  a4Pages: number[]
-  showBorder: boolean
+  a4_pages: number[]
+  show_border: boolean
 }
 
 // ---------------------------------------------------------------------------

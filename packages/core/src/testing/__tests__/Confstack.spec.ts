@@ -360,10 +360,10 @@ describe('Confstack.getAll()', () => {
   it('gibt den gesamten Stack als verschachteltes Objekt zurück', () => {
     const cs = new Confstack()
     cs.push({ layout: { X_SPACING: 11.5 } })
-    cs.push({ printer: { showBorder: false } })
+    cs.push({ printer: { show_border: false } })
     const all = cs.getAll() as Record<string, Record<string, unknown>>
     expect(all.layout?.X_SPACING).toBe(11.5)
-    expect(all.printer?.showBorder).toBe(false)
+    expect(all.printer?.show_border).toBe(false)
   })
 
   it('spätere pushes überschreiben frühere (Deep-Merge)', () => {
@@ -397,10 +397,10 @@ describe('Confstack.toFlat()', () => {
   it('gibt alle Schlüssel als Punkt-Pfade zurück', () => {
     const cs = new Confstack()
     cs.push({ layout: { X_SPACING: 11.5 } })
-    cs.push({ printer: { showBorder: false } })
+    cs.push({ printer: { show_border: false } })
     expect(cs.toFlat()).toMatchObject({
       'layout.X_SPACING': 11.5,
-      'printer.showBorder': false,
+      'printer.show_border': false,
     })
   })
 })
@@ -423,7 +423,7 @@ describe('buildConfstack()', () => {
 
   it('liest globale Printer-Werte', () => {
     const cs = buildConfstack(defaultTestConfig, 0)
-    expect(cs.get('printer.showBorder')).toBe(false)
+    expect(cs.get('printer.show_border')).toBe(false)
   })
 
   it('liest Extrakt-Werte', () => {
@@ -464,13 +464,13 @@ describe('buildConfstack()', () => {
         '0': {
           ...base0,
           printer: {
-            showBorder: true,
+            show_border: true,
           },
         },
       },
     }
     const cs = buildConfstack(config, 0)
-    expect(cs.get('printer.showBorder')).toBe(true)
+    expect(cs.get('printer.show_border')).toBe(true)
   })
 
   it('stellt das Legacy-Beam-Mapping bereit', () => {

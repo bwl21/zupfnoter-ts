@@ -99,10 +99,10 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
     },
     notes: {},
     printer: {
-      a3Offset: [0, 0],
-      a4Offset: [-5, 0],
-      a4Pages: [0, 1, 2],
-      showBorder: false,
+      a3_offset: [0, 0],
+      a4_offset: [-5, 0],
+      a4_pages: [0, 1, 2],
+      show_border: false,
     },
     layout: {
       limit_a3: true,
@@ -349,10 +349,10 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
     },
 
     printer: {
-      a3Offset: [0, 0],
-      a4Offset: [-5, 0],
-      a4Pages: [0, 1, 2],
-      showBorder: false,
+      a3_offset: [0, 0],
+      a4_offset: [-5, 0],
+      a4_pages: [0, 1, 2],
+      show_border: false,
     },
 
     // -------------------------------------------------------------------------

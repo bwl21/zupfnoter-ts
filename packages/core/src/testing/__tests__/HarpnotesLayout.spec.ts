@@ -8,6 +8,7 @@
 import { describe, it, expect } from 'vitest'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
+import { extractSongConfig, mergeSongConfig } from '../../extractSongConfig.js'
 import { HarpnotesLayout } from '../../HarpnotesLayout.js'
 import type { AnnotationTextMetrics } from '../../TextMetrics.js'
 import { defaultTestConfig } from '../defaultConfig.js'
@@ -778,7 +779,7 @@ V:V1 clef=treble-8
   describe('sheetmarks', () => {
     it('renders configured string names and cutmarks', () => {
       const config = clonedDefaultConfig()
-      config.printer = { ...config.printer, a4Pages: [0, 1] }
+      config.printer = { ...config.printer, a4_pages: [0, 1] }
       const extract0 = config.extract['0']
       if (!extract0) throw new Error('Missing extract 0 in default test config')
       extract0.stringnames = {
@@ -800,6 +801,30 @@ V:V1 clef=treble-8
       expect(stringNames.length).toBe(37)
       expect(new Set(stringNames.map((entry) => entry.text))).toEqual(new Set(['string_a', 'string_b']))
       expect(sheetmarks.length).toBe(1)
+      expect(cutmarks.some((entry) => entry.center[1] === 4)).toBe(true)
+      expect(cutmarks.some((entry) => entry.center[1] === 290)).toBe(true)
+    })
+
+    it('uses legacy printer.a4_pages from embedded song configuration', () => {
+      const abcText = `${ABC_SINGLE_NOTE}
+
+%%%%zupfnoter.config
+{
+  "extract": {
+    "0": {
+      "printer": {
+        "a4_pages": [1, 2]
+      }
+    }
+  }
+}`
+      const config = mergeSongConfig(defaultTestConfig, extractSongConfig(abcText))
+      const { sheet } = pipelineWithConfig(abcText, config)
+      const cutmarks = sheet.children.filter((c): c is Annotation => (
+        c.type === 'Annotation' && c.text === 'x' && c.style === 'small'
+      ))
+
+      expect(cutmarks.map((entry) => entry.center[0])).toEqual([143.675, 143.675, 281.675, 281.675])
       expect(cutmarks.some((entry) => entry.center[1] === 4)).toBe(true)
       expect(cutmarks.some((entry) => entry.center[1] === 290)).toBe(true)
     })

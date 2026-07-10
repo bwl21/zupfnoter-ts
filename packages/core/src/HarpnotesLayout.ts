@@ -2418,12 +2418,13 @@ export class HarpnotesLayout {
 
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const a4Pages = (conf.get('printer.a4Pages') as number[] | undefined) ?? []
+    const a4Pages = (conf.get('printer.a4_pages') as number[] | undefined) ?? []
     const xSpacing = layout.X_SPACING
-    if (a4Pages.length <= 1) return result
+    const pageBreaks = a4Pages.filter((page) => page > 0)
+    if (pageBreaks.length === 0) return result
 
-    for (let i = 1; i < a4Pages.length; i++) {
-      const x = 0.25 * xSpacing + layout.X_OFFSET + 12 * xSpacing * i
+    for (const page of pageBreaks) {
+      const x = 0.25 * xSpacing + layout.X_OFFSET + 12 * xSpacing * page
 
       result.push({
         type: 'Annotation',

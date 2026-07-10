@@ -276,10 +276,10 @@ interface LayoutConfig {
 }
 
 interface PrinterConfig {
-  a3Offset: [number, number]
-  a4Offset: [number, number]
-  a4Pages: number[]
-  showBorder: boolean
+  a3_offset: [number, number]
+  a4_offset: [number, number]
+  a4_pages: number[]
+  show_border: boolean
 }
 
 interface BarnumberConfig {
@@ -345,4 +345,3 @@ interface ZupfnoterConfig {
 5. Type-Check ausführen und Fehler beheben
 
 ---
-

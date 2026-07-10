@@ -146,10 +146,10 @@ const treeDefinition: ConfigTreeDefinition[] = [
             key: 'printer',
             label: 'Druck',
             children: [
-              { key: 'showBorder', label: 'Rahmen anzeigen' },
-              { key: 'a3Offset', label: 'A3-Offset' },
-              { key: 'a4Offset', label: 'A4-Offset' },
-              { key: 'a4Pages', label: 'A4-Seiten' },
+              { key: 'show_border', label: 'Rahmen anzeigen' },
+              { key: 'a3_offset', label: 'A3-Offset' },
+              { key: 'a4_offset', label: 'A4-Offset' },
+              { key: 'a4_pages', label: 'A4-Seiten' },
             ],
           },
           {
@@ -321,14 +321,7 @@ function resolveSectionVisiblePaths(section = props.activeSection): string[] | u
 }
 
 function configEditorKeyToTreePath(key: string): string {
-  const currentExtractKey = key.replace(/^extract\.(\{extract\}|\d+)(?=\.|$)/, 'extract.current')
-  const aliases: Record<string, string> = {
-    a3_offset: 'a3Offset',
-    a4_offset: 'a4Offset',
-    a4_pages: 'a4Pages',
-    show_border: 'showBorder',
-  }
-  return currentExtractKey.split('.').map(segment => aliases[segment] ?? segment).join('.')
+  return key.replace(/^extract\.(\{extract\}|\d+)(?=\.|$)/, 'extract.current')
 }
 
 function rowMatchesActiveSection(row: ConfigTreeRow): boolean {
