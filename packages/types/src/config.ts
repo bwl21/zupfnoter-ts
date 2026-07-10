@@ -334,6 +334,16 @@ export interface ZupfnoterConfig {
   abc_parser?: string
   template?: TemplateConfig
   wrap?: number
+  neatjson?: {
+    wrap?: number
+    aligned?: boolean
+    after_comma?: number
+    after_colon_1?: number
+    after_colon_n?: number
+    before_colon_n?: number
+    sorted?: boolean
+    explicit_sort?: Record<string, string>
+  }
   layout: LayoutConfig
   extract: Record<string, ExtractConfig>
   printer: PrinterConfig

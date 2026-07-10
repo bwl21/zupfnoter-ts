@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { Confstack } from '../../Confstack.js'
+import { initConf } from '../../initConf.js'
 
 import {
   getConfigMenuKind,
@@ -8,6 +10,8 @@ import {
   isLegacyTopLevelConfigKey,
   isSelectableConfigPath,
   LEGACY_CONFIG_MENU_PATH_SEGMENTS,
+  validateCompleteZupfnoterConfigShape,
+  validateEmbeddedZupfnoterConfigShape,
   validateZupfnoterConfigShape,
   ZUPFNOTER_CONFIG_SCHEMA_DRAFT,
   ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW,
@@ -155,5 +159,66 @@ describe('configSchema', () => {
         },
       },
     })).toContain('$.extract.0.printer.showBorder: unknown key')
+  })
+
+  it('accepts partial embedded config overlays without requiring full defaults', () => {
+    expect(validateEmbeddedZupfnoterConfigShape({
+      extract: {
+        '0': {
+          printer: {
+            show_border: false,
+          },
+        },
+      },
+    })).toEqual([])
+  })
+
+  it('validates the complete default TS config against the expanded schema', () => {
+    const completeConfig = initConf(new Confstack())
+    expect(validateCompleteZupfnoterConfigShape(completeConfig)).toEqual([])
+  })
+
+  it('reports missing required keys for complete config validation', () => {
+    expect(validateCompleteZupfnoterConfigShape({
+      extract: {},
+    })).toContain('$: missing required key "produce"')
+  })
+
+  it('accepts legacy-shaped deep notebound structures', () => {
+    expect(validateEmbeddedZupfnoterConfigShape({
+      extract: {
+        '0': {
+          notebound: {
+            minc: {
+              '10752': { minc_f: 0.5 },
+            },
+            flowline: {
+              v_1: {
+                '9024': { cp2: [-2.64, -58.59] },
+              },
+            },
+            barnumber: {
+              v_2: {
+                t_384: { align: 'r' },
+              },
+            },
+          },
+        },
+      },
+    })).toEqual([])
+  })
+
+  it('rejects unknown keys inside strict deep notebound structures', () => {
+    expect(validateEmbeddedZupfnoterConfigShape({
+      extract: {
+        '0': {
+          notebound: {
+            minc: {
+              '10752': { mincFactor: 0.5 },
+            },
+          },
+        },
+      },
+    })).toContain('$.extract.0.notebound.minc.10752.mincFactor: unknown key')
   })
 })

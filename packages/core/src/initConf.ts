@@ -151,6 +151,16 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
       filebase: '-no-template-',
       title: '- no template -',
     },
+    neatjson: {
+      wrap: 60,
+      aligned: true,
+      after_comma: 1,
+      after_colon_1: 1,
+      after_colon_n: 1,
+      before_colon_n: 1,
+      sorted: false,
+      explicit_sort: {},
+    },
     wrap: 60,
     produce: [0],
     restposition: {

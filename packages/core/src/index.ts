@@ -55,6 +55,8 @@ export {
   LEGACY_SELECTABLE_CONFIG_PATH_SEGMENTS,
   LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
   toExtractConfigPath,
+  validateCompleteZupfnoterConfigShape,
+  validateEmbeddedZupfnoterConfigShape,
   validateZupfnoterConfigShape,
   ZUPFNOTER_CONFIG_SCHEMA_DRAFT,
   ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW,
@@ -66,7 +68,12 @@ export {
   ZUPFNOTER_PRINTER_REQUIRED_KEYS,
   ZUPFNOTER_TOP_LEVEL_REQUIRED_KEYS,
 } from './configSchema.js'
-export type { ConfigMenuKind, ConfigPathActionProfile, JsonSchemaNode } from './configSchema.js'
+export type {
+  ConfigMenuKind,
+  ConfigPathActionProfile,
+  ConfigSchemaValidationOptions,
+  JsonSchemaNode,
+} from './configSchema.js'
 
 export {
   CONFIG_EDITOR_FORM_SETS,

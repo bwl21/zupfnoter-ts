@@ -24,6 +24,7 @@ export interface JsonSchemaNode {
   $schema?: string
   additionalProperties?: boolean | JsonSchemaNode
   description?: string
+  enforceRequired?: boolean
   enum?: readonly string[]
   items?: JsonSchemaNode
   minItems?: number
@@ -32,6 +33,10 @@ export interface JsonSchemaNode {
   required?: readonly string[]
   type?: JsonSchemaType | readonly JsonSchemaType[]
   uniqueItems?: boolean
+}
+
+export interface ConfigSchemaValidationOptions {
+  enforceRequired?: boolean
 }
 
 export const ZUPFNOTER_CONFIG_SCHEMA_URI = 'https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json'
@@ -238,6 +243,7 @@ const NUMBER_ARRAY_SCHEMA: JsonSchemaNode = {
 const NOTES_ENTRY_SCHEMA: JsonSchemaNode = {
   type: 'object',
   required: ['pos', 'text', 'style'],
+  additionalProperties: false,
   properties: {
     pos: POSITION_SCHEMA,
     text: { type: 'string' },
@@ -246,9 +252,430 @@ const NOTES_ENTRY_SCHEMA: JsonSchemaNode = {
   },
 }
 
+const ANNOTATED_BEZIER_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    cp1: POSITION_SCHEMA,
+    cp2: POSITION_SCHEMA,
+    pos: POSITION_SCHEMA,
+    shape: STRING_ARRAY_SCHEMA,
+    show: { type: 'boolean' },
+    style: { type: 'string' },
+  },
+}
+
+const NOTEBOUND_TIMED_ENTRY_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    pos: POSITION_SCHEMA,
+    align: { type: 'string', enum: ['l', 'r', 'auto'] },
+    show: { type: 'boolean' },
+    text: { type: 'string' },
+    style: { type: 'string' },
+  },
+}
+
+const NOTEBOUND_NESTED_ENTRY_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    pos: POSITION_SCHEMA,
+    align: { type: 'string', enum: ['l', 'r', 'auto'] },
+    show: { type: 'boolean' },
+    text: { type: 'string' },
+    style: { type: 'string' },
+  },
+  patternProperties: {
+    '^\\d+$': NOTEBOUND_TIMED_ENTRY_SCHEMA,
+  },
+}
+
+const NOTEBOUND_POS_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  patternProperties: {
+    '^v_\\d+$': {
+      type: 'object',
+      additionalProperties: false,
+      patternProperties: {
+        '^(t_\\d+|\\d+)$': NOTEBOUND_NESTED_ENTRY_SCHEMA,
+      },
+    },
+  },
+}
+
+const MINC_ENTRY_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    minc_f: { type: 'number' },
+  },
+}
+
+const NCONF_ENTRY_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  patternProperties: {
+    '^t_\\d+$': {
+      type: 'object',
+      additionalProperties: false,
+      patternProperties: {
+        '^n_\\d+$': {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            nshift: { type: 'number' },
+          },
+        },
+      },
+    },
+  },
+}
+
+const C_JUMPLINES_ENTRY_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    p_repeat: { type: 'number' },
+    p_begin: { type: 'number' },
+    p_end: { type: 'number' },
+    p_follow: { type: 'number' },
+  },
+}
+
+const VOICE_INDEXED_BEZIER_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  patternProperties: {
+    '^v_\\d+$': {
+      type: 'object',
+      additionalProperties: false,
+      patternProperties: {
+        '^\\d+$': ANNOTATED_BEZIER_SCHEMA,
+      },
+    },
+  },
+}
+
+const NOTEBOUND_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    annotation: NOTEBOUND_POS_SCHEMA,
+    chord: NOTEBOUND_POS_SCHEMA,
+    barnumber: NOTEBOUND_POS_SCHEMA,
+    c_jumplines: {
+      type: 'object',
+      additionalProperties: false,
+      patternProperties: {
+        '^v_\\d+$': C_JUMPLINES_ENTRY_SCHEMA,
+      },
+    },
+    countnote: NOTEBOUND_POS_SCHEMA,
+    decoration: {
+      type: 'object',
+      additionalProperties: false,
+      patternProperties: {
+        '^\\d+$': NOTEBOUND_POS_SCHEMA,
+      },
+    },
+    flowline: VOICE_INDEXED_BEZIER_SCHEMA,
+    minc: {
+      type: 'object',
+      additionalProperties: false,
+      patternProperties: {
+        '^\\d+$': MINC_ENTRY_SCHEMA,
+      },
+    },
+    nconf: {
+      type: 'object',
+      additionalProperties: false,
+      patternProperties: {
+        '^v_\\d+$': NCONF_ENTRY_SCHEMA,
+      },
+    },
+    partname: NOTEBOUND_POS_SCHEMA,
+    repeat_begin: NOTEBOUND_POS_SCHEMA,
+    repeat_end: NOTEBOUND_POS_SCHEMA,
+    tuplet: VOICE_INDEXED_BEZIER_SCHEMA,
+    variantend: NOTEBOUND_POS_SCHEMA,
+  },
+}
+
+const POSITIONED_TEXT_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    pos: POSITION_SCHEMA,
+    text: { type: 'string' },
+    style: { type: 'string' },
+  },
+}
+
+const FONT_STYLE_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['textColor', 'fontSize', 'fontStyle'],
+  properties: {
+    textColor: {
+      type: 'array',
+      minItems: 3,
+      items: { type: 'integer' },
+    },
+    fontSize: { type: 'number' },
+    fontStyle: { type: 'string', enum: ['normal', 'bold', 'italic'] },
+  },
+}
+
+const DURATION_STYLE_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['sizeFactor', 'fill', 'dotted'],
+  properties: {
+    sizeFactor: { type: 'number' },
+    fill: { type: 'string', enum: ['filled', 'empty'] },
+    dotted: { type: 'boolean' },
+  },
+}
+
+const BEAM_STYLE_SCHEMA: JsonSchemaNode = {
+  type: 'array',
+  minItems: 3,
+  items: {
+    type: ['number', 'string', 'boolean'],
+  },
+}
+
+const REST_STYLE_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['scale', 'glyphName', 'dotted'],
+  properties: {
+    scale: NUMBER_ARRAY_SCHEMA,
+    glyphName: { type: 'string' },
+    dotted: { type: 'boolean' },
+  },
+}
+
+const DECORATION_ANNOTATION_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['text', 'pos', 'style'],
+  properties: {
+    text: { type: 'string' },
+    pos: POSITION_SCHEMA,
+    style: { type: 'string' },
+    align: { type: 'string', enum: ['left', 'right', 'center'] },
+    show: { type: 'string' },
+  },
+}
+
+const REPEATSIGN_SIDE_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    pos: POSITION_SCHEMA,
+    text: { type: 'string' },
+    style: { type: 'string' },
+  },
+}
+
+const REPEATSIGNS_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    voices: INTEGER_ARRAY_SCHEMA,
+    left: REPEATSIGN_SIDE_SCHEMA,
+    right: REPEATSIGN_SIDE_SCHEMA,
+  },
+}
+
+const IMAGE_ENTRY_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    imagename: { type: 'string' },
+    show: { type: 'boolean' },
+    pos: POSITION_SCHEMA,
+    height: { type: 'number' },
+  },
+}
+
+const SORTMARK_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    show: { type: 'boolean' },
+    size: NUMBER_ARRAY_SCHEMA,
+    fill: { type: 'boolean' },
+  },
+}
+
+const STRINGNAMES_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    text: { type: 'string' },
+    vpos: INTEGER_ARRAY_SCHEMA,
+    style: { type: 'string' },
+    marks: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        vpos: INTEGER_ARRAY_SCHEMA,
+        hpos: INTEGER_ARRAY_SCHEMA,
+      },
+    },
+  },
+}
+
+const BARNUMBERS_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    voices: INTEGER_ARRAY_SCHEMA,
+    pos: POSITION_SCHEMA,
+    autopos: { type: 'boolean' },
+    apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
+    apbase: POSITION_SCHEMA,
+    style: { type: 'string' },
+    prefix: { type: 'string' },
+  },
+}
+
+const COUNTNOTES_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    voices: INTEGER_ARRAY_SCHEMA,
+    pos: POSITION_SCHEMA,
+    autopos: { type: 'boolean' },
+    apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
+    apbase: POSITION_SCHEMA,
+    style: { type: 'string' },
+    cntextleft: { type: 'string' },
+    cntextright: { type: 'string' },
+  },
+}
+
+const LEGEND_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    spos: POSITION_SCHEMA,
+    pos: POSITION_SCHEMA,
+    tstyle: { type: 'string' },
+    align: { type: 'string', enum: ['l', 'r', 'auto'] },
+    style: { type: 'string' },
+    salign: { type: 'string', enum: ['l', 'r', 'auto'] },
+  },
+}
+
+const LYRICS_ENTRY_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    verses: INTEGER_ARRAY_SCHEMA,
+    pos: POSITION_SCHEMA,
+    style: { type: 'string' },
+  },
+}
+
+const DEFAULTS_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    notebound: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        annotation: POSITIONED_TEXT_SCHEMA,
+        chord: POSITIONED_TEXT_SCHEMA,
+        partname: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            pos: POSITION_SCHEMA,
+            style: { type: 'string' },
+            show: { type: 'boolean' },
+          },
+        },
+        variantend: POSITIONED_TEXT_SCHEMA,
+        tuplet: ANNOTATED_BEZIER_SCHEMA,
+        flowline: ANNOTATED_BEZIER_SCHEMA,
+      },
+    },
+  },
+}
+
+const TEMPLATES_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: true,
+  properties: {
+    notes: NOTES_ENTRY_SCHEMA,
+    lyrics: LYRICS_ENTRY_SCHEMA,
+    images: IMAGE_ENTRY_SCHEMA,
+    tuplet: ANNOTATED_BEZIER_SCHEMA,
+    annotations: POSITIONED_TEXT_SCHEMA,
+    extracts: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        title: { type: 'string' },
+        filenamepart: { type: 'string' },
+        notes: {
+          type: 'object',
+          patternProperties: {
+            '.*': {
+              type: 'object',
+              additionalProperties: true,
+            },
+          },
+        },
+      },
+    },
+  },
+}
+
+const ANNOTATIONS_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  patternProperties: {
+    '.*': POSITIONED_TEXT_SCHEMA,
+  },
+}
+
 const LAYOUT_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
+  required: [
+    'grid',
+    'limit_a3',
+    'SHOW_SLUR',
+    'LINE_THIN',
+    'LINE_MEDIUM',
+    'LINE_THICK',
+    'ELLIPSE_SIZE',
+    'REST_SIZE',
+    'X_SPACING',
+    'X_OFFSET',
+    'Y_SCALE',
+    'DRAWING_AREA_SIZE',
+    'BEAT_RESOLUTION',
+    'SHORTEST_NOTE',
+    'BEAT_PER_DURATION',
+    'PITCH_OFFSET',
+    'FONT_STYLE_DEF',
+    'MM_PER_POINT',
+    'DURATION_TO_STYLE',
+    'DURATION_TO_BEAMS',
+    'REST_TO_GLYPH',
+    'DECORATIIONS_AS_ANNOTATIONS',
+    'instrument',
+    'packer',
+  ],
   properties: {
     limit_a3: { type: 'boolean' },
     beams: { type: 'boolean' },
@@ -269,6 +696,7 @@ const LAYOUT_SCHEMA: JsonSchemaNode = {
     grid: { type: 'boolean' },
     color: {
       type: 'object',
+      additionalProperties: false,
       properties: {
         color_default: { type: 'string' },
         color_variant1: { type: 'string' },
@@ -277,10 +705,47 @@ const LAYOUT_SCHEMA: JsonSchemaNode = {
     },
     packer: {
       type: 'object',
+      additionalProperties: false,
       properties: {
         pack_method: { type: 'integer' },
         pack_max_spreadfactor: { type: 'number' },
         pack_min_increment: { type: 'number' },
+      },
+    },
+    SHOW_SLUR: { type: 'boolean' },
+    Y_SCALE: { type: 'integer' },
+    BEAT_RESOLUTION: { type: 'integer' },
+    SHORTEST_NOTE: { type: 'integer' },
+    BEAT_PER_DURATION: { type: 'integer' },
+    MM_PER_POINT: { type: 'number' },
+    FONT_STYLE_DEF: {
+      type: 'object',
+      patternProperties: {
+        '.*': FONT_STYLE_SCHEMA,
+      },
+    },
+    DURATION_TO_STYLE: {
+      type: 'object',
+      patternProperties: {
+        '.*': DURATION_STYLE_SCHEMA,
+      },
+    },
+    DURATION_TO_BEAMS: {
+      type: 'object',
+      patternProperties: {
+        '.*': BEAM_STYLE_SCHEMA,
+      },
+    },
+    REST_TO_GLYPH: {
+      type: 'object',
+      patternProperties: {
+        '.*': REST_STYLE_SCHEMA,
+      },
+    },
+    DECORATIIONS_AS_ANNOTATIONS: {
+      type: 'object',
+      patternProperties: {
+        '.*': DECORATION_ANNOTATION_SCHEMA,
       },
     },
   },
@@ -300,6 +765,7 @@ const PRINTER_SCHEMA: JsonSchemaNode = {
 
 const EXTRACT_SCHEMA: JsonSchemaNode = {
   type: 'object',
+  enforceRequired: false,
   additionalProperties: true,
   required: ZUPFNOTER_EXTRACT_REQUIRED_KEYS,
   properties: {
@@ -321,82 +787,82 @@ const EXTRACT_SCHEMA: JsonSchemaNode = {
     jumplines: INTEGER_ARRAY_SCHEMA,
     layoutlines: INTEGER_ARRAY_SCHEMA,
     legend: {
-      type: 'object',
+      ...LEGEND_SCHEMA,
+      enforceRequired: false,
       required: ['spos', 'pos'],
-      properties: {
-        spos: POSITION_SCHEMA,
-        pos: POSITION_SCHEMA,
-        tstyle: { type: 'string' },
-        align: { type: 'string', enum: ['l', 'r', 'auto'] },
-        style: { type: 'string' },
-        salign: { type: 'string', enum: ['l', 'r', 'auto'] },
-      },
     },
     lyrics: {
       type: 'object',
+      enforceRequired: false,
       patternProperties: {
         '.*': {
-          type: 'object',
+          ...LYRICS_ENTRY_SCHEMA,
+          enforceRequired: false,
           required: ['verses', 'pos'],
-          properties: {
-            verses: INTEGER_ARRAY_SCHEMA,
-            pos: POSITION_SCHEMA,
-            style: { type: 'string' },
-          },
         },
       },
     },
-    layout: LAYOUT_SCHEMA,
+    layout: {
+      ...LAYOUT_SCHEMA,
+      enforceRequired: false,
+    },
     nonflowrest: { type: 'boolean' },
     notes: {
       type: 'object',
+      enforceRequired: false,
       patternProperties: {
-        '.*': NOTES_ENTRY_SCHEMA,
-      },
-    },
-    barnumbers: {
-      type: 'object',
-      properties: {
-        voices: INTEGER_ARRAY_SCHEMA,
-        pos: POSITION_SCHEMA,
-        autopos: { type: 'boolean' },
-        apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
-        style: { type: 'string' },
-        prefix: { type: 'string' },
-      },
-    },
-    countnotes: {
-      type: 'object',
-      properties: {
-        voices: INTEGER_ARRAY_SCHEMA,
-        pos: POSITION_SCHEMA,
-        autopos: { type: 'boolean' },
-        apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
-        style: { type: 'string' },
-        cntextleft: { type: 'string' },
-        cntextright: { type: 'string' },
-      },
-    },
-    stringnames: {
-      type: 'object',
-      properties: {
-        text: { type: 'string' },
-        vpos: INTEGER_ARRAY_SCHEMA,
-        style: { type: 'string' },
-        marks: {
-          type: 'object',
-          properties: {
-            vpos: INTEGER_ARRAY_SCHEMA,
-            hpos: INTEGER_ARRAY_SCHEMA,
-          },
+        '.*': {
+          ...NOTES_ENTRY_SCHEMA,
+          enforceRequired: false,
         },
       },
     },
-    printer: PRINTER_SCHEMA,
-    notebound: {
+    repeatsigns: {
+      ...REPEATSIGNS_SCHEMA,
+      enforceRequired: false,
+    },
+    barnumbers: {
+      ...BARNUMBERS_SCHEMA,
+      enforceRequired: false,
+    },
+    countnotes: {
+      ...COUNTNOTES_SCHEMA,
+      enforceRequired: false,
+    },
+    chords: {
       type: 'object',
       additionalProperties: true,
     },
+    tuplets: {
+      type: 'object',
+      enforceRequired: false,
+      additionalProperties: false,
+      properties: {
+        text: { type: 'string' },
+        style: { type: 'string' },
+      },
+    },
+    stringnames: {
+      ...STRINGNAMES_SCHEMA,
+      enforceRequired: false,
+    },
+    instrument_shape: { type: 'string' },
+    sortmark: {
+      ...SORTMARK_SCHEMA,
+      enforceRequired: false,
+    },
+    printer: {
+      ...PRINTER_SCHEMA,
+      enforceRequired: false,
+    },
+    images: {
+      type: 'object',
+      enforceRequired: false,
+      patternProperties: {
+        '^\\d+$': IMAGE_ENTRY_SCHEMA,
+      },
+    },
+    notebound: NOTEBOUND_SCHEMA,
   },
 }
 
@@ -420,31 +886,32 @@ export const ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW: JsonSchemaNode = {
       },
     },
     wrap: { type: 'integer' },
-    defaults: {
-      type: 'object',
-      additionalProperties: true,
-    },
-    templates: {
-      type: 'object',
-      additionalProperties: true,
-    },
-    annotations: {
-      type: 'object',
-      additionalProperties: true,
-    },
+    defaults: DEFAULTS_SCHEMA,
+    templates: TEMPLATES_SCHEMA,
+    annotations: ANNOTATIONS_SCHEMA,
     extract: {
       type: 'object',
       patternProperties: {
         [ZUPFNOTER_EXTRACT_KEY_PATTERN]: EXTRACT_SCHEMA,
       },
     },
-    layout: {
-      type: 'object',
-      additionalProperties: true,
-    },
+    layout: LAYOUT_SCHEMA,
     neatjson: {
       type: 'object',
-      additionalProperties: true,
+      additionalProperties: false,
+      properties: {
+        wrap: { type: 'integer' },
+        aligned: { type: 'boolean' },
+        after_comma: { type: 'integer' },
+        after_colon_1: { type: 'integer' },
+        after_colon_n: { type: 'integer' },
+        before_colon_n: { type: 'integer' },
+        sorted: { type: 'boolean' },
+        explicit_sort: {
+          type: 'object',
+          additionalProperties: true,
+        },
+      },
     },
     template: {
       type: 'object',
@@ -526,10 +993,21 @@ export function getConfigPathActionProfile(
   }
 }
 
-export function validateZupfnoterConfigShape(config: unknown): string[] {
+export function validateZupfnoterConfigShape(
+  config: unknown,
+  options: ConfigSchemaValidationOptions = {},
+): string[] {
   const errors: string[] = []
-  validateSchemaNode(config, ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW, '$', errors)
+  validateSchemaNode(config, ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW, '$', errors, options)
   return errors
+}
+
+export function validateEmbeddedZupfnoterConfigShape(config: unknown): string[] {
+  return validateZupfnoterConfigShape(config, { enforceRequired: false })
+}
+
+export function validateCompleteZupfnoterConfigShape(config: unknown): string[] {
+  return validateZupfnoterConfigShape(config, { enforceRequired: true })
 }
 
 function validateSchemaNode(
@@ -537,6 +1015,7 @@ function validateSchemaNode(
   schema: JsonSchemaNode,
   path: string,
   errors: string[],
+  options: ConfigSchemaValidationOptions,
 ): void {
   if (schema.type !== undefined && !matchesSchemaType(value, schema.type)) {
     errors.push(`${path}: expected ${formatSchemaType(schema.type)}`)
@@ -558,7 +1037,7 @@ function validateSchemaNode(
     }
     if (schema.items !== undefined) {
       value.forEach((entry, index) => {
-        validateSchemaNode(entry, schema.items as JsonSchemaNode, `${path}[${index}]`, errors)
+        validateSchemaNode(entry, schema.items as JsonSchemaNode, `${path}[${index}]`, errors, options)
       })
     }
     return
@@ -570,17 +1049,30 @@ function validateSchemaNode(
 
   const properties = schema.properties ?? {}
   const patternProperties = schema.patternProperties ?? {}
+  const enforceRequired = schema.enforceRequired ?? options.enforceRequired ?? false
+  const nestedOptions: ConfigSchemaValidationOptions = {
+    ...options,
+    enforceRequired,
+  }
+  if (enforceRequired) {
+    const required = schema.required ?? []
+    for (const key of required) {
+      if (!(key in value)) {
+        errors.push(`${path}: missing required key "${key}"`)
+      }
+    }
+  }
   const propertyKeys = Object.keys(value)
   for (const key of propertyKeys) {
     const directSchema = properties[key]
     if (directSchema !== undefined) {
-      validateSchemaNode(value[key], directSchema, appendPath(path, key), errors)
+      validateSchemaNode(value[key], directSchema, appendPath(path, key), errors, nestedOptions)
       continue
     }
 
     const patternSchema = findPatternSchema(key, patternProperties)
     if (patternSchema !== undefined) {
-      validateSchemaNode(value[key], patternSchema, appendPath(path, key), errors)
+      validateSchemaNode(value[key], patternSchema, appendPath(path, key), errors, nestedOptions)
       continue
     }
 
@@ -590,7 +1082,7 @@ function validateSchemaNode(
     }
 
     if (isSchemaNode(schema.additionalProperties)) {
-      validateSchemaNode(value[key], schema.additionalProperties, appendPath(path, key), errors)
+      validateSchemaNode(value[key], schema.additionalProperties, appendPath(path, key), errors, nestedOptions)
     }
   }
 }
