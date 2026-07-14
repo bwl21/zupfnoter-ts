@@ -99,6 +99,7 @@ export {
   findConfigEditorTreeDefinition,
 } from './configEditorTree.js'
 export type { ConfigEditorTreeDefinition } from './configEditorTree.js'
+export { formatConfigEditorValue, serializeConfigEditorValue } from './configEditorValue.js'
 
 export { extractSongConfig, mergeSongConfig, CONFIG_SEPARATOR } from './extractSongConfig.js'
 

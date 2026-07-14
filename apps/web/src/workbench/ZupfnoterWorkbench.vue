@@ -56,6 +56,7 @@ import { createDropboxProvider, resumeDropboxLoginFromRedirect } from './storage
 interface ConfigEditorIntent {
   action: string
   path?: string
+  value?: string
   extractId: number
 }
 
@@ -584,6 +585,11 @@ function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
 
   if (intent.action === 'config.deletePath' && intent.path !== undefined) {
     void executeToolbarCommand(`delconfig ${intent.path}`)
+    return
+  }
+
+  if (intent.action === 'config.setPath' && intent.path !== undefined && intent.value !== undefined) {
+    void executeToolbarCommand(`cconf ${intent.path} ${JSON.stringify(intent.value)}`)
     return
   }
 

@@ -311,6 +311,95 @@ describe('ConfigEditorPanel', () => {
     ])
   })
 
+  it('emits a config command when a local value is committed', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"title":"Alt"}}}',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'all_parameters',
+      },
+    })
+
+    const titleRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Titel'))
+    expect(titleRow).toBeDefined()
+    if (titleRow === undefined) return
+
+    const input = titleRow.find('input')
+    await input.setValue('Neu')
+    await input.trigger('blur')
+
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.setPath',
+        path: 'extract.0.title',
+        value: 'Neu',
+        extractId: 0,
+      },
+    ])
+  })
+
+  it('preserves numeric array values when committing compact input', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'all_parameters',
+      },
+    })
+
+    const produceRow = wrapper.findAll('.config-row').find((row) => row.text().includes('PDF für Auszüge'))
+    expect(produceRow).toBeDefined()
+    if (produceRow === undefined) return
+
+    const input = produceRow.find('input')
+    await input.setValue('0')
+    await input.trigger('blur')
+
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.setPath',
+        path: 'produce',
+        value: '[0]',
+        extractId: 0,
+      },
+    ])
+  })
+
+  it('serializes synchronization lines with the legacy integer-pair notation', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'all_parameters',
+      },
+    })
+
+    const synchlinesRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Synchronisationslinien'))
+    expect(synchlinesRow).toBeDefined()
+    if (synchlinesRow === undefined) return
+
+    const input = synchlinesRow.find('input')
+    await input.setValue('1-2, 2-3')
+    await input.trigger('blur')
+
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.setPath',
+        path: 'extract.0.synchlines',
+        value: '[[1,2],[2,3]]',
+        extractId: 0,
+      },
+    ])
+  })
+
   it('expands a newly added configuration entry after the command succeeds', async () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

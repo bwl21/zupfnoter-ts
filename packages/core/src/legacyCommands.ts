@@ -476,11 +476,15 @@ function registerCreateAndConfigCommands(
     undoable: false,
     parameters: [
       { name: 'key', type: 'string', help: 'configuration key' },
-      { name: 'value', type: 'string', help: 'configuration value as JSON or string' },
+      { name: 'value', type: 'json', help: 'configuration value as JSON or string' },
     ],
     perform: (args) => {
       const key = readString(args, 'key')
-      patchConfig(runtime, state, key, parseConfigCommandValue(readString(args, 'value')), `cconf ${key}`)
+      const value = args['value']
+      if (value === undefined) {
+        throw new CommandError('Argument <value> is required')
+      }
+      patchConfig(runtime, state, key, value, `cconf ${key}`)
       runtime.render()
     },
   })
@@ -831,19 +835,6 @@ function deleteConfigPath(config: Record<string, CommandArgumentValue>, path: st
   if (isPlainObject(cursor)) {
     delete cursor[leaf]
   }
-}
-
-function parseConfigCommandValue(value: string): CommandArgumentValue {
-  const trimmedValue = value.trim()
-  if (trimmedValue.startsWith('{') || trimmedValue.startsWith('[')) {
-    const parsedValue: unknown = JSON.parse(trimmedValue)
-    if (isCommandArgumentValue(parsedValue)) return parsedValue
-  }
-  if (trimmedValue === 'true') return true
-  if (trimmedValue === 'false') return false
-  if (trimmedValue === 'null') return null
-  if (/^-?\d+(\.\d+)?$/.test(trimmedValue)) return Number(trimmedValue)
-  return value
 }
 
 function sanitizeResourceKey(key: string): string {

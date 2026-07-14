@@ -11,11 +11,13 @@ import {
   Confstack,
   extractSongConfig,
   findConfigEditorTreeDefinition,
+  formatConfigEditorValue,
   getConfigEditorNewEntryCommand,
   getConfigPathActionProfile,
   getConfigEditorFormSet,
   initConf,
   mergeSongConfig,
+  serializeConfigEditorValue,
   type CommandArgumentValue,
   type ConfigEditorMenuCommand,
   type ConfigEditorTreeDefinition,
@@ -40,8 +42,10 @@ interface ConfigIntent {
     | 'config.selectAffectedObject'
     | 'config.fillPath'
     | 'config.deletePath'
+    | 'config.setPath'
     | 'config.openMenuAtPath'
   path?: string
+  value?: string
   extractId: number
 }
 
@@ -466,31 +470,8 @@ function toggleExpanded(path: string): void {
     : [...expandedPaths.value, path]
 }
 
-function formatValue(value: unknown): string {
-  if (value === undefined) return '—'
-  if (typeof value === 'string') return value
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
-  if (Array.isArray(value)) return formatCompactArray(value)
-  if (typeof value === 'object' && value !== null) return '{…}'
-  return String(value)
-}
-
-function formatCompactArray(value: unknown[]): string {
-  if (value.every(entry => typeof entry === 'number')) {
-    return value.join(',')
-  }
-
-  if (value.every(entry => Array.isArray(entry) && entry.length === 2 && entry.every(item => typeof item === 'number'))) {
-    return value
-      .map(entry => `${(entry as unknown[])[0]}-${(entry as unknown[])[1]}`)
-      .join(',,')
-  }
-
-  return JSON.stringify(value)
-}
-
 function getDraftValue(row: ConfigTreeRow): string {
-  return draftValues.value[row.path] ?? formatValue(row.localValue)
+  return draftValues.value[row.path] ?? formatConfigEditorValue(row.path, row.localValue)
 }
 
 function updateDraftValue(row: ConfigTreeRow, value: string): void {
@@ -498,6 +479,17 @@ function updateDraftValue(row: ConfigTreeRow, value: string): void {
     ...draftValues.value,
     [row.path]: value,
   }
+}
+
+function commitDraftValue(row: ConfigTreeRow): void {
+  const value = draftValues.value[row.path]
+  if (value === undefined || value === formatConfigEditorValue(row.path, row.localValue)) return
+  emit('intent', {
+    action: 'config.setPath',
+    path: row.localPath,
+    value: serializeConfigEditorValue(row.path, value),
+    extractId: props.currentExtract,
+  })
 }
 
 function syncPanelWidth(): void {
@@ -768,6 +760,8 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               type="text"
               :placeholder="row.canFill ? 'Mit wirksamem Wert auffuellen' : 'Kein lokaler Wert'"
               @input="updateDraftValue(row, ($event.target as HTMLInputElement).value)"
+              @blur="commitDraftValue(row)"
+              @keydown.enter.prevent="commitDraftValue(row)"
             >
           </div>
 
@@ -818,9 +812,9 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
             <div class="config-row__effective-main">
               <span
                 class="config-row__effective-value"
-                :title="formatValue(row.effectiveValue)"
+                :title="formatConfigEditorValue(row.path, row.effectiveValue)"
               >
-                {{ formatValue(row.effectiveValue) }}
+                {{ formatConfigEditorValue(row.path, row.effectiveValue) }}
               </span>
               <span
                 v-if="row.hasExtractZeroMarker"

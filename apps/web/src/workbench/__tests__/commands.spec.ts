@@ -5,6 +5,7 @@ import {
   parseCommandString,
   registerLegacyCommands,
   registerStorageCommands,
+  serializeConfigEditorValue,
   type WorkbenchCommandRuntime,
 } from '@zupfnoter/core'
 
@@ -404,6 +405,11 @@ describe('legacy command registration', () => {
 
     await stack.runString('cconf extract.0.title NeuerTitel')
     expect(runtime.getAbcText()).toContain('"title": "NeuerTitel"')
+
+    await stack.runString(`cconf produce ${serializeConfigEditorValue('produce', '0, 2')}`)
+    await stack.runString(`cconf extract.0.synchlines ${serializeConfigEditorValue('extract.0.synchlines', '1-2, 2-3')}`)
+    expect(runtime.getAbcText()).toContain('"produce": [\n    0,\n    2\n  ]')
+    expect(runtime.getAbcText()).toContain('"synchlines": [\n        [\n          1,\n          2\n        ],\n        [\n          2,\n          3\n        ]\n      ]')
 
     await stack.runString('delconfig extract.0.title')
     expect(runtime.getAbcText()).not.toContain('"title": "NeuerTitel"')
