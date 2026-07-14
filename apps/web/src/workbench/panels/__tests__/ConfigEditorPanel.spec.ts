@@ -406,7 +406,7 @@ describe('ConfigEditorPanel', () => {
     ])
   })
 
-  it('renders boolean schema values as checkboxes and emits booleans', async () => {
+  it('renders boolean schema values as switches and emits booleans', async () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {
         abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
@@ -416,8 +416,10 @@ describe('ConfigEditorPanel', () => {
     })
 
     const limitRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Begrenzung auf A3'))
-    expect(limitRow?.find('input[type="checkbox"]').exists()).toBe(true)
-    await limitRow?.find('input[type="checkbox"]').setValue(false)
+    const switchButton = limitRow?.find('[role="switch"]')
+    expect(switchButton?.exists()).toBe(true)
+    expect(switchButton?.attributes('aria-checked')).toBe('true')
+    await switchButton?.trigger('click')
 
     expect(wrapper.emitted('intent')).toContainEqual([
       {

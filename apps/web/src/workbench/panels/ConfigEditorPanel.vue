@@ -975,15 +975,20 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
                 </button>
               </div>
             </details>
-            <label v-else-if="row.isLeaf && isBooleanValue(row)" class="config-row__boolean">
-              <input
-                type="checkbox"
-                :checked="getBooleanValue(row)"
+            <div v-else-if="row.isLeaf && isBooleanValue(row)" class="config-row__boolean">
+              <button
+                type="button"
+                class="config-row__switch"
+                :class="{ 'config-row__switch--on': getBooleanValue(row) }"
+                role="switch"
+                :aria-checked="getBooleanValue(row)"
                 :aria-label="`${row.label} aktivieren`"
-                @change="commitBooleanValue(row, ($event.target as HTMLInputElement).checked)"
+                @click="commitBooleanValue(row, !getBooleanValue(row))"
               >
+                <span class="config-row__switch-thumb" aria-hidden="true" />
+              </button>
               <span>{{ getBooleanValue(row) ? 'Ja' : 'Nein' }}</span>
-            </label>
+            </div>
             <textarea
               v-else-if="row.isLeaf && isTextareaValue(row)"
               :value="getDraftValue(row)"
@@ -1507,9 +1512,36 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
   cursor: pointer;
 }
 
-.config-row__boolean input {
-  margin: 0;
-  accent-color: var(--zn-accent);
+.config-row__switch {
+  position: relative;
+  width: 2.25rem;
+  height: 1.25rem;
+  padding: 0.12rem;
+  border: 1px solid var(--zn-border-strong);
+  border-radius: 999px;
+  background: var(--zn-border-strong);
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.config-row__switch--on {
+  border-color: #3f9c5f;
+  background: #4caf70;
+}
+
+.config-row__switch-thumb {
+  display: block;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  background: var(--zn-bg-elevated);
+  box-shadow: var(--zn-shadow-soft);
+  transform: translateX(0);
+  transition: transform 140ms ease;
+}
+
+.config-row__switch--on .config-row__switch-thumb {
+  transform: translateX(0.96rem);
 }
 
 .config-row__input:focus-visible {
