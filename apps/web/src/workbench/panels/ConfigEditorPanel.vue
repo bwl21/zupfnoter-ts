@@ -63,11 +63,14 @@ interface ConfigTreeRow {
   menuKind: string
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   abcText: string
   currentExtract: number
   activeSection: string
-}>()
+  entryMutationVersion?: number
+}>(), {
+  entryMutationVersion: 0,
+})
 
 const emit = defineEmits<{
   intent: [intent: ConfigIntent]
@@ -145,6 +148,7 @@ let panelResizeObserver: ResizeObserver | undefined
 const helpTooltips = new Map<HTMLElement, TippyInstance>()
 const configHelpTexts = ref<ConfigHelpTexts>({})
 const activeSectionTreeDefinition = computed(() => buildActiveSectionTreeDefinition())
+const pendingNewEntryBranchPaths = ref<ReadonlySet<string> | undefined>(undefined)
 
 watch(
   [() => props.currentExtract, () => props.abcText],
@@ -170,6 +174,29 @@ watch(
     searchText.value = ''
   },
   { immediate: true },
+)
+
+watch(
+  () => props.entryMutationVersion,
+  () => {
+    const previousBranchPaths = pendingNewEntryBranchPaths.value
+    if (previousBranchPaths === undefined) return
+
+    void nextTick(() => {
+      const definitions = activeSectionTreeDefinition.value
+      const newBranchPaths = definitions === undefined
+        ? []
+        : collectBranchPaths(definitions).filter((path) => !previousBranchPaths.has(path))
+
+      if (newBranchPaths.length > 0) {
+        const nextExpanded = new Set(expandedPaths.value)
+        newBranchPaths.forEach((path) => nextExpanded.add(path))
+        expandedPaths.value = [...nextExpanded]
+      }
+
+      pendingNewEntryBranchPaths.value = undefined
+    })
+  },
 )
 
 onMounted(() => {
@@ -592,6 +619,8 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 
 function handleAddEntry(): void {
   if (newEntryCommand.value === undefined) return
+  const definitions = activeSectionTreeDefinition.value
+  pendingNewEntryBranchPaths.value = new Set(definitions === undefined ? [] : collectBranchPaths(definitions))
   emitIntent('config.addEntry', newEntryCommand.value)
 }
 
@@ -768,9 +797,9 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               variant="ghost"
               :disabled="!row.canDelete"
               :tabindex="-1"
-              @click="emitIntent('config.deletePath', row.localPath)"
+            @click="emitIntent('config.deletePath', row.localPath)"
             >
-              ⌫
+              🗑
             </ZnIconButton>
             <button
               class="config-row__help"

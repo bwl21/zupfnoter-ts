@@ -242,6 +242,45 @@ describe('ConfigEditorPanel', () => {
     ])
   })
 
+  it('expands a newly added configuration entry after the command succeeds', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'lyrics',
+        entryMutationVersion: 0,
+      },
+    })
+
+    const newEntryButton = wrapper.findAll('button').find((button) => button.text() === 'Neuer Eintrag')
+    expect(newEntryButton).toBeDefined()
+    if (newEntryButton === undefined) return
+
+    await newEntryButton.trigger('click')
+    await wrapper.setProps({
+      abcText: [
+        'X:1',
+        'T:Config Demo',
+        'K:C',
+        'C |]',
+        '',
+        '%%%%zupfnoter.config',
+        '{"extract":{"0":{"lyrics":{"0":{"verses":[1],"pos":[1,2],"style":"default"}}}}}',
+      ].join('\n'),
+      entryMutationVersion: 1,
+    })
+
+    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.findAll('.config-row__label').map((node) => node.text())).toContain('Strophen')
+  })
+
   it('disables new entry for extract-zero-only sections outside extract 0', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

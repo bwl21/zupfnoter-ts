@@ -68,6 +68,7 @@ const harpScrollTop = ref(0)
 const abcText = ref(DEFAULT_ABC)
 const currentExtract = ref(0)
 const activeConfigSection = ref('basic_settings')
+const configEntryMutationVersion = ref(0)
 const saveFormat = ref('A3-A4')
 const storageState = reactive({
   system: 'dropbox',
@@ -543,14 +544,16 @@ async function executeCommand(command: string): Promise<void> {
   }
 }
 
-async function executeToolbarCommand(command: string): Promise<void> {
+async function executeToolbarCommand(command: string): Promise<boolean> {
   commandBusy.value = true
   appendConsoleLine(command, 'command')
   try {
     await commandStack.runString(command)
+    return true
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     appendConsoleLine(enrichCommandError(command, message), 'error')
+    return false
   } finally {
     commandBusy.value = false
   }
@@ -563,7 +566,9 @@ function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
   }
 
   if (intent.action === 'config.addEntry' && intent.path !== undefined) {
-    void executeToolbarCommand(`addconf ${intent.path}`)
+    void executeToolbarCommand(`addconf ${intent.path}`).then((wasAdded) => {
+      if (wasAdded) configEntryMutationVersion.value += 1
+    })
     return
   }
 
@@ -1042,6 +1047,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :abc-text="abcText"
                   :current-extract="currentExtract"
                   :active-section="activeConfigSection"
+                  :entry-mutation-version="configEntryMutationVersion"
                   @intent="handleConfigEditorIntent"
                 />
                 <ConsolePanel
