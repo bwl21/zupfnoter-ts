@@ -180,6 +180,7 @@ onBeforeUnmount(() => {
 <template>
   <ZnPanel tone="surface">
     <div class="panel-shell">
+      <slot name="toolbar" />
       <div ref="editorHost" class="panel-shell__editor" />
     </div>
   </ZnPanel>
@@ -188,12 +189,11 @@ onBeforeUnmount(() => {
 <style scoped>
 .panel-shell {
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--zn-space-2);
   min-height: 0;
   min-width: 0;
   height: 100%;
-  border: 1px solid var(--zn-border);
-  border-radius: var(--zn-radius-sm);
-  background: var(--zn-bg-surface);
 }
 
 .panel-shell__editor {

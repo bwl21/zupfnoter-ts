@@ -1008,16 +1008,6 @@ function handleMirrorMessage(event: MessageEvent): void {
       >
         <template #primary>
           <div class="editor-pane">
-            <ZnToolbar>
-              <template #leading>
-                <ZnButton variant="ghost">Bearbeiten</ZnButton>
-                <ZnButton variant="ghost" @click="executeToolbarCommand('adddecoration !fermata!')">Dekoration einfügen</ZnButton>
-                <ZnButton variant="ghost" @click="executeToolbarCommand('addsnippet note')">Zusatz einfügen</ZnButton>
-                <ZnButton variant="ghost" @click="executeToolbarCommand('editsnippet')">Zusatz bearbeiten</ZnButton>
-                <ZnButton variant="ghost" @click="executeToolbarCommand('editconf basic_settings')">Konfig. bearb.</ZnButton>
-              </template>
-            </ZnToolbar>
-
             <ZnTabs v-model="editorTab" :items="[
               { id: 'abc', label: 'ABC-Notation' },
               { id: 'lyrics', label: 'Liedtexte' },
@@ -1033,7 +1023,19 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :selected-text-range="selectedEditorTextRange"
                   @cursor-change="handleEditorCursorChange"
                   @selection-change="handleEditorSelectionChange"
-                />
+                >
+                  <template #toolbar>
+                    <ZnToolbar class="abc-editor-toolbar">
+                      <template #leading>
+                        <ZnButton variant="ghost">Bearbeiten</ZnButton>
+                        <ZnButton variant="ghost" @click="executeToolbarCommand('adddecoration !fermata!')">Dekoration einfügen</ZnButton>
+                        <ZnButton variant="ghost" @click="executeToolbarCommand('addsnippet note')">Zusatz einfügen</ZnButton>
+                        <ZnButton variant="ghost" @click="executeToolbarCommand('editsnippet')">Zusatz bearbeiten</ZnButton>
+                        <ZnButton variant="ghost" @click="executeToolbarCommand('editconf basic_settings')">Konfig. bearb.</ZnButton>
+                      </template>
+                    </ZnToolbar>
+                  </template>
+                </AbcEditorPanel>
                 <LyricsPanel v-else-if="activeId === 'lyrics'" />
                 <ConfigEditorPanel
                   v-else-if="activeId === 'config'"
@@ -1253,11 +1255,25 @@ function handleMirrorMessage(event: MessageEvent): void {
 
 .editor-pane {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 0.25rem;
+  grid-template-rows: minmax(0, 1fr);
   min-height: 0;
   height: 100%;
   overflow: hidden;
+}
+
+.abc-editor-toolbar:deep(.zn-toolbar) {
+  box-sizing: border-box;
+  height: 2.08rem;
+  min-height: 2.08rem;
+  max-height: 2.08rem;
+  gap: var(--zn-space-2);
+  padding: 0.18rem 0.28rem;
+}
+
+.abc-editor-toolbar:deep(.zn-button) {
+  min-height: 1.52rem;
+  padding: 0.12rem 0.48rem;
+  font-size: 0.78rem;
 }
 
 .preview-pane {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
+import ZnToolbar from '../../design-system/components/ZnToolbar.vue'
 
 const lyrics = [
   { label: 'Verse 1', text: 'Hands on the strings, eyes on the line.' },
@@ -11,6 +12,11 @@ const lyrics = [
 <template>
   <ZnPanel>
     <div class="lyrics-panel">
+      <ZnToolbar>
+        <template #leading>
+          <span class="lyrics-panel__toolbar-title">Liedtexte</span>
+        </template>
+      </ZnToolbar>
       <article v-for="item in lyrics" :key="item.label" class="lyrics-panel__card">
         <h3>{{ item.label }}</h3>
         <p>{{ item.text }}</p>
@@ -22,8 +28,15 @@ const lyrics = [
 <style scoped>
 .lyrics-panel {
   display: grid;
+  grid-template-rows: auto repeat(3, auto);
   gap: var(--zn-space-3);
   min-height: 0;
+}
+
+.lyrics-panel__toolbar-title {
+  color: var(--zn-heading);
+  font-size: 0.86rem;
+  font-weight: 700;
 }
 
 .lyrics-panel__card {
