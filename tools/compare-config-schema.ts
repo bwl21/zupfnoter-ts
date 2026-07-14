@@ -24,6 +24,31 @@ type Mode = 'compare' | 'verify-legacy' | 'sync-fixture'
 
 const EDITOR_ONLY_SCHEMA_KEYS = new Set(['title', 'description', 'x-zupfnoter-editor'])
 
+interface LegacySchemaExtension {
+  /** Exakter Pfad der bewusst über das Legacy-Schema hinausgehenden TS-Regel. */
+  path: string
+  /** Fachlicher Grund der Erweiterung. */
+  reason: string
+}
+
+/**
+ * Bewusst freigegebene, rückwärtskompatible Ergänzungen des TS-Schemas.
+ *
+ * Die Liste bleibt absichtlich eng: Nur eine fehlende Regel im Legacy-Schema
+ * am angegebenen Pfad wird toleriert. Abweichende Validierungsregeln bleiben
+ * im Vergleich sichtbar.
+ */
+const LEGACY_SCHEMA_EXTENSIONS: readonly LegacySchemaExtension[] = [
+  {
+    path: '$.properties.layout.properties.FONT_STYLE_DEF.patternProperties..*.properties.description',
+    reason: 'Dynamische Schriftstile können eine Markdown-Beschreibung für die Auswahl anbieten.',
+  },
+  {
+    path: '$.properties.layout.properties.FONT_STYLE_DEF.patternProperties..*.properties.label',
+    reason: 'Dynamische Schriftstile können eine fachliche Beschriftung für die Auswahl anbieten.',
+  },
+]
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const repoRoot = resolve(__dirname, '..')
@@ -35,15 +60,16 @@ const fixturePath = resolve(repoRoot, 'fixtures/legacy-config-schema.json')
 const reportPath = resolve(repoRoot, 'fixtures/reports/config-schema-parity.md')
 const reportJsonPath = resolve(repoRoot, 'fixtures/reports/config-schema-parity.json')
 
-function normalizeJsonValue(value: unknown): JsonValue {
+function normalizeJsonValue(value: unknown, parentKey?: string): JsonValue {
   if (value === null) return null
   if (typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string') return value
-  if (Array.isArray(value)) return value.map((entry) => normalizeJsonValue(entry))
+  if (Array.isArray(value)) return value.map((entry) => normalizeJsonValue(entry, parentKey))
   if (typeof value === 'object') {
+    const preservesSchemaPropertyNames = parentKey === 'properties' || parentKey === 'patternProperties'
     const entries = Object.entries(value as Record<string, unknown>)
-      .filter(([key, entry]) => entry !== undefined && !EDITOR_ONLY_SCHEMA_KEYS.has(key))
+      .filter(([key, entry]) => entry !== undefined && (preservesSchemaPropertyNames || !EDITOR_ONLY_SCHEMA_KEYS.has(key)))
       .sort(([left], [right]) => left.localeCompare(right))
-      .map(([key, entry]) => [key, normalizeJsonValue(entry)] as const)
+      .map(([key, entry]) => [key, normalizeJsonValue(entry, key)] as const)
     return Object.fromEntries(entries)
   }
   return String(value)
@@ -162,6 +188,10 @@ function toPrettyJson(value: JsonValue | undefined): string {
   return JSON.stringify(value, null, 2)
 }
 
+function isDeclaredLegacySchemaExtension(diff: SchemaDiff): boolean {
+  return diff.kind === 'missing-in-reference' && LEGACY_SCHEMA_EXTENSIONS.some((extension) => extension.path === diff.path)
+}
+
 function createReport(diffs: SchemaDiff[], sourceLabel: string): string {
   const lines = [
     '# Config Schema Parity Report',
@@ -174,8 +204,14 @@ function createReport(diffs: SchemaDiff[], sourceLabel: string): string {
     '',
   ]
 
+  lines.push('## Freigegebene TS-Erweiterungen gegenüber Legacy', '')
+  for (const extension of LEGACY_SCHEMA_EXTENSIONS) {
+    lines.push(`- \`${extension.path}\`: ${extension.reason}`)
+  }
+  lines.push('')
+
   if (diffs.length === 0) {
-    lines.push('Die kanonisierten Schemaobjekte sind identisch.')
+    lines.push('Abgesehen von den oben freigegebenen Erweiterungen sind die kanonisierten Schemaobjekte identisch.')
     return `${lines.join('\n')}\n`
   }
 
@@ -230,7 +266,8 @@ function main(): void {
   }
 
   const referenceSchema = loadFixtureSchema()
-  const diffs = diffSchemas(referenceSchema, tsSchema)
+  const allDiffs = diffSchemas(referenceSchema, tsSchema)
+  const diffs = allDiffs.filter((diff) => !isDeclaredLegacySchemaExtension(diff))
   ensureReportDir()
   writeFileSync(
     reportPath,

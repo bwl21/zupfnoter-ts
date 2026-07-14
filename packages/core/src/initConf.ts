@@ -244,14 +244,14 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
 
       // Schriftstile
       FONT_STYLE_DEF: {
-        bold:         { textColor: [0, 0, 0], fontSize: 12, fontStyle: 'bold' },
-        italic:       { textColor: [0, 0, 0], fontSize: 12, fontStyle: 'italic' },
-        large:        { textColor: [0, 0, 0], fontSize: 20, fontStyle: 'bold' },
-        regular:      { textColor: [0, 0, 0], fontSize: 12, fontStyle: 'normal' },
-        small_bold:   { textColor: [0, 0, 0], fontSize: 9,  fontStyle: 'bold' },
-        small_italic: { textColor: [0, 0, 0], fontSize: 9,  fontStyle: 'italic' },
-        small:        { textColor: [0, 0, 0], fontSize: 9,  fontStyle: 'normal' },
-        smaller:      { textColor: [0, 0, 0], fontSize: 6,  fontStyle: 'normal' },
+        bold:         { label: 'Fett', description: 'Text wird **fett** gesetzt.', textColor: [0, 0, 0], fontSize: 12, fontStyle: 'bold' },
+        italic:       { label: 'Kursiv', description: 'Text wird *kursiv* gesetzt.', textColor: [0, 0, 0], fontSize: 12, fontStyle: 'italic' },
+        large:        { label: 'Groß', description: 'Große, **fette** Schrift.', textColor: [0, 0, 0], fontSize: 20, fontStyle: 'bold' },
+        regular:      { label: 'Standard', description: 'Normale Standardschrift.', textColor: [0, 0, 0], fontSize: 12, fontStyle: 'normal' },
+        small_bold:   { label: 'Klein fett', description: 'Kleine, **fette** Schrift.', textColor: [0, 0, 0], fontSize: 9,  fontStyle: 'bold' },
+        small_italic: { label: 'Klein kursiv', description: 'Kleine, *kursive* Schrift.', textColor: [0, 0, 0], fontSize: 9,  fontStyle: 'italic' },
+        small:        { label: 'Klein', description: 'Kleine Standardschrift.', textColor: [0, 0, 0], fontSize: 9,  fontStyle: 'normal' },
+        smaller:      { label: 'Sehr klein', description: 'Besonders kleine Standardschrift.', textColor: [0, 0, 0], fontSize: 6,  fontStyle: 'normal' },
       },
 
       // Notendauer → Darstellungsstil (SHORTEST_NOTE=64-Skala)

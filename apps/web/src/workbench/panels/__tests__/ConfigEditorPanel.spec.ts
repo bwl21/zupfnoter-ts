@@ -203,16 +203,18 @@ describe('ConfigEditorPanel', () => {
 
     const textarea = wrapper.find('textarea.config-row__textarea')
     expect(textarea.exists()).toBe(true)
+    expect(textarea.attributes('rows')).toBe('2')
     expect((textarea.element as HTMLTextAreaElement).value).toBe('erste\nzweite Zeile')
     expect(textarea.element.closest('.config-row')?.classList.contains('config-row--multiline')).toBe(true)
 
     const styleRow = wrapper.findAll('.config-row').find((row) => row.find('.config-row__label').text() === 'Stil')
     expect(styleRow?.find('details.config-row__select').exists()).toBe(true)
-    expect(styleRow?.findAll('.config-row__select-option').map((option) => option.text())).toContain('bold (bold)')
+    const styleOption = styleRow?.findAll('.config-row__select-option').find((option) => option.text() === 'Fett (bold)')
+    expect(styleOption?.attributes('data-option-description')).toBe('Text wird **fett** gesetzt.')
 
     const alignRow = wrapper.findAll('.config-row').find((row) => row.find('.config-row__label').text() === 'Ausrichtung')
     expect(alignRow?.find('details.config-row__select').exists()).toBe(true)
-    expect(alignRow?.findAll('.config-row__select-option').map((option) => option.text())).toContain('auto (auto)')
+    expect(alignRow?.findAll('.config-row__select-option').map((option) => option.text())).toContain('Automatisch (auto)')
   })
 
   it('expands global annotation templates from effective and current config', () => {
@@ -503,6 +505,23 @@ describe('ConfigEditorPanel', () => {
     const options = wrapper.find('.config-row__select')
     ;(options.element as HTMLDetailsElement).open = true
     await options.trigger('keydown', { key: 'Escape' })
+
+    expect((options.element as HTMLDetailsElement).open).toBe(false)
+  })
+
+  it('closes an open documented option list when clicking outside', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n{"extract":{"0":{"layout":{"tuning":"open"}}}}',
+        currentExtract: 0,
+        activeSection: 'instrument_specific',
+      },
+    })
+
+    const options = wrapper.find('.config-row__select')
+    ;(options.element as HTMLDetailsElement).open = true
+    document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }))
+    await wrapper.vm.$nextTick()
 
     expect((options.element as HTMLDetailsElement).open).toBe(false)
   })

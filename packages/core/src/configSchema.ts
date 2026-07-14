@@ -1,4 +1,5 @@
 import { CONFIG_EDITOR_OPTION_DOCUMENTATION } from './generated/configEditorDocumentation.js'
+import type { Markdown } from '@zupfnoter/types'
 
 /**
  * Zentrale Schema-Quelle fuer die eingebettete `%%%%zupfnoter.config`.
@@ -50,7 +51,7 @@ export interface ConfigEditorOption {
   /** Fachliche Beschriftung aus der User-Dokumentation. */
   label: string
   /** Kurzbeschreibung aus der User-Dokumentation. */
-  description: string
+  description: Markdown
 }
 
 /** Darstellungsstrategie eines Konfigurationswerts im Editor. */
@@ -481,6 +482,8 @@ const FONT_STYLE_SCHEMA: JsonSchemaNode = {
   additionalProperties: false,
   required: ['textColor', 'fontSize', 'fontStyle'],
   properties: {
+    label: { type: 'string' },
+    description: { type: 'string' },
     textColor: {
       type: 'array',
       minItems: 3,
@@ -1417,6 +1420,8 @@ function legacyRootLayoutSchema(): JsonSchemaNode {
             type: 'object',
             required: ['text_color', 'font_size', 'font_style'],
             properties: {
+              label: { type: 'string' },
+              description: { type: 'string' },
               text_color: { type: 'array', minItems: 3, uniqueItems: false, items: { type: 'integer' } },
               font_size: { type: 'integer' },
               font_style: { type: 'string' },

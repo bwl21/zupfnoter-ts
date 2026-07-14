@@ -76,6 +76,7 @@ export type {
 } from './drawing.js'
 
 export type {
+  Markdown,
   FontStyle,
   DurationKey,
   DurationStyle,

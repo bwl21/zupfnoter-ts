@@ -11,11 +11,18 @@ import type { FillStyle } from './drawing.js'
 // Schrift- und Darstellungsstile
 // ---------------------------------------------------------------------------
 
+/** Markdown-Text für fachliche Beschreibungen in der Benutzeroberfläche. */
+export type Markdown = string
+
 /**
  * Schriftstil-Definition für Annotationen und Legenden.
  * Entspricht `FONT_STYLE_DEF`-Einträgen in `init_conf.rb`.
  */
 export interface FontStyle {
+  /** Fachliche Beschriftung für Auswahllisten. */
+  label?: string
+  /** Fachliche Beschreibung im Markdown-Format. */
+  description?: Markdown
   textColor: [number, number, number]  // RGB 0–255
   fontSize: number
   fontStyle: 'normal' | 'bold' | 'italic'

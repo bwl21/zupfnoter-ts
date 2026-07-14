@@ -4,11 +4,11 @@ Hier kannst du die Anordnung des Textes bezogen auf den Bezugspunkt,
 (z.B. die Note) vorgeben. Wenn dieser Parameter fehlt, wird die
 Anordnung automatisch errechnet
 
--   `l`: der Text steht links vom Bezugspunkt (und ist daher
+-   **Links: `l`** der Text steht links vom Bezugspunkt (und ist daher
     rechtsbündig)
--   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
+-   **Rechts: `r`** der Text steht rechts vom Bezugspunkt (und ist daher
     linksbündig)
--   `auto`: die Ausrichtung wird automatisch errechnet
+-   **Automatisch: `auto`** die Ausrichtung wird automatisch errechnet
 
 > **Hinweis**: Auch beim manuellen Verschieben wird die Anordnung der
 > Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung
@@ -118,11 +118,11 @@ vertikaler Position.
 
 Hier kannst du die Ausrichtung des Titels ausweählen:
 
--   `l`: der Text steht links vom Bezugspunkt (und ist daher
+-   **Links: `l`** der Text steht links vom Bezugspunkt (und ist daher
     rechtsbündig)
--   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
+-   **Rechts: `r`** der Text steht rechts vom Bezugspunkt (und ist daher
     linksbündig)
--   `auto`: wie `l`
+-   **Wie links: `auto`** wie `l`
 
 ## extract.0.legend.spos
 

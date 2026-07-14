@@ -205,6 +205,22 @@ describe('configSchema', () => {
     })).toEqual([])
   })
 
+  it('accepts labels and Markdown descriptions for dynamic font styles', () => {
+    expect(validateEmbeddedZupfnoterConfigShape({
+      layout: {
+        FONT_STYLE_DEF: {
+          handschrift: {
+            label: 'Handschrift',
+            description: 'Für **persönliche** Hinweise.',
+            text_color: [0, 0, 0],
+            font_size: 12,
+            font_style: 'normal',
+          },
+        },
+      },
+    })).toEqual([])
+  })
+
   it('does not confuse normalized initConf defaults with the embedded legacy config shape', () => {
     const completeConfig = initConf(new Confstack())
     expect(validateCompleteZupfnoterConfigShape(completeConfig)).toContain(

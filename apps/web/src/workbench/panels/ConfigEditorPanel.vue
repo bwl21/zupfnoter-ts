@@ -214,6 +214,7 @@ watch(
 )
 
 onMounted(() => {
+  document.addEventListener('pointerdown', closeEditorOptionsOnOutsidePointerDown)
   syncPanelWidth()
   if (typeof ResizeObserver !== 'undefined') {
     panelResizeObserver = new ResizeObserver(() => {
@@ -235,6 +236,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  document.removeEventListener('pointerdown', closeEditorOptionsOnOutsidePointerDown)
   panelResizeObserver?.disconnect()
   destroyHelpTooltips()
   destroyOptionTooltips()
@@ -530,7 +532,11 @@ function getEditorOptions(row: ConfigTreeRow): readonly ConfigEditorOption[] {
 
   const styles = getPathValue(effectiveConfig.value, 'layout.FONT_STYLE_DEF')
   if (!isRecord(styles)) return []
-  return Object.keys(styles).map((value) => ({ value, label: value, description: '' }))
+  return Object.entries(styles).map(([value, style]) => ({
+    value,
+    label: isRecord(style) && typeof style.label === 'string' ? style.label : value,
+    description: isRecord(style) && typeof style.description === 'string' ? style.description : '',
+  }))
 }
 
 function isBooleanValue(row: ConfigTreeRow): boolean {
@@ -580,6 +586,15 @@ function closeEditorOptions(event: KeyboardEvent): void {
   const details = event.currentTarget as HTMLDetailsElement
   details.open = false
   details.querySelector<HTMLElement>('summary')?.focus()
+}
+
+function closeEditorOptionsOnOutsidePointerDown(event: PointerEvent): void {
+  const target = event.target
+  if (!(target instanceof Node) || panelElement.value === null) return
+
+  for (const details of panelElement.value.querySelectorAll<HTMLDetailsElement>('details.config-row__select[open]')) {
+    if (!details.contains(target)) details.open = false
+  }
 }
 
 function syncPanelWidth(): void {
@@ -635,11 +650,11 @@ function syncOptionTooltips(): void {
     if (description === undefined || description === '') continue
     const existing = optionTooltips.get(element)
     if (existing !== undefined) {
-      existing.setContent(description)
+      existing.setContent(createMarkdownTooltipContent(description))
       continue
     }
     optionTooltips.set(element, tippy(element, {
-      content: description,
+      content: createMarkdownTooltipContent(description),
       placement: 'right',
       maxWidth: 280,
       theme: 'zn-config-help',
@@ -658,6 +673,41 @@ function destroyOptionTooltips(): void {
     instance.destroy()
   }
   optionTooltips.clear()
+}
+
+/** Erzeugt sichere Tooltip-Inhalte aus dem unterstützten Inline-Markdown. */
+function createMarkdownTooltipContent(markdown: string): HTMLElement {
+  const container = document.createElement('div')
+  const lines = markdown.split('\n')
+
+  for (const [index, line] of lines.entries()) {
+    if (index > 0) container.append(document.createElement('br'))
+    appendInlineMarkdown(container, line)
+  }
+
+  return container
+}
+
+function appendInlineMarkdown(container: HTMLElement, markdown: string): void {
+  const tokenPattern = /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g
+  let cursor = 0
+
+  for (const match of markdown.matchAll(tokenPattern)) {
+    const start = match.index ?? 0
+    if (start > cursor) container.append(document.createTextNode(markdown.slice(cursor, start)))
+
+    const token = match[0]
+    const element = token.startsWith('**')
+      ? document.createElement('strong')
+      : token.startsWith('*')
+        ? document.createElement('em')
+        : document.createElement('code')
+    element.textContent = token.startsWith('**') ? token.slice(2, -2) : token.slice(1, -1)
+    container.append(element)
+    cursor = start + token.length
+  }
+
+  if (cursor < markdown.length) container.append(document.createTextNode(markdown.slice(cursor)))
 }
 
 function createHelpTooltipContent(helpKey: string): HTMLElement {
@@ -938,7 +988,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               v-else-if="row.isLeaf && isTextareaValue(row)"
               :value="getDraftValue(row)"
               class="config-row__input config-row__textarea"
-              rows="3"
+              rows="2"
               :placeholder="row.canFill ? 'Mit wirksamem Wert auffuellen' : 'Kein lokaler Wert'"
               :aria-invalid="inputErrors[row.path] !== undefined"
               :aria-describedby="inputErrors[row.path] !== undefined ? `config-error-${row.key}` : undefined"
@@ -1278,7 +1328,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 
 .config-row--multiline {
   align-items: start;
-  min-height: 4.35rem;
+  min-height: calc(2.7em + 0.55rem);
 }
 
 .config-row--multiline .config-row__name,
@@ -1382,7 +1432,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 }
 
 .config-row__textarea {
-  min-height: 4.1rem;
+  min-height: calc(2.7em + 0.35rem);
   resize: vertical;
   line-height: 1.35;
 }

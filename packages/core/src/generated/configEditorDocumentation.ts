@@ -7,15 +7,15 @@ export interface ConfigEditorOptionDocumentation {
 export const CONFIG_EDITOR_OPTION_DOCUMENTATION: Readonly<Record<string, Readonly<Record<string, ConfigEditorOptionDocumentation>>>> = {
   "align": {
     "l": {
-      "label": "l",
+      "label": "Links",
       "description": "der Text steht links vom Bezugspunkt (und ist daher rechtsbündig)"
     },
     "r": {
-      "label": "r",
+      "label": "Rechts",
       "description": "der Text steht rechts vom Bezugspunkt (und ist daher linksbündig)"
     },
     "auto": {
-      "label": "auto",
+      "label": "Automatisch",
       "description": "die Ausrichtung wird automatisch errechnet"
     }
   },
@@ -31,15 +31,15 @@ export const CONFIG_EDITOR_OPTION_DOCUMENTATION: Readonly<Record<string, Readonl
   },
   "extract.0.legend.align": {
     "l": {
-      "label": "l",
+      "label": "Links",
       "description": "der Text steht links vom Bezugspunkt (und ist daher rechtsbündig)"
     },
     "r": {
-      "label": "r",
+      "label": "Rechts",
       "description": "der Text steht rechts vom Bezugspunkt (und ist daher linksbündig)"
     },
     "auto": {
-      "label": "auto",
+      "label": "Wie links",
       "description": "wie `l`"
     }
   },
