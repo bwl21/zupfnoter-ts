@@ -48,7 +48,7 @@ const instrumentSpecificLayoutTreeLeafDefinitions: PathLabelDefinition[] = [
   { pathSuffix: 'layout.beams', label: 'Notenhaelse' },
   { pathSuffix: 'layout.X_OFFSET', label: 'X - Offset' },
   { pathSuffix: 'layout.X_SPACING', label: 'Saitenabstand' },
-  { pathSuffix: 'layout.PITCH_OFFSET', label: 'PitchOffset' },
+  { pathSuffix: 'layout.PITCH_OFFSET', label: 'Pitch-Offset' },
 ]
 
 const printerTreeLeafDefinitions: PathLabelDefinition[] = [
@@ -321,7 +321,7 @@ function buildSectionChildren(
 
   if (sectionPaths.length === 0) return []
 
-  const ancestor = longestCommonAncestor(sectionPaths)
+  const ancestor = resolveSectionAncestor(formId, sectionPaths)
   const children: ConfigEditorTreeDefinition[] = []
 
   for (const path of sectionPaths) {
@@ -335,6 +335,17 @@ function buildSectionChildren(
   }
 
   return children
+}
+
+function resolveSectionAncestor(formId: string, sectionPaths: readonly string[]): string {
+  if (formId === 'lyrics') {
+    const collectionRoot = 'extract.current.lyrics'
+    if (sectionPaths.some((path) => path.startsWith(`${collectionRoot}.`))) {
+      return collectionRoot
+    }
+  }
+
+  return longestCommonAncestor(sectionPaths)
 }
 
 function expandConfigEditorKeyToTreePaths(
@@ -670,7 +681,10 @@ function resolveTreeLabel(fullPath: string, relativePath: string): string {
 }
 
 function normalizeTreeDefinitionPath(path: string): string {
-  return path.replace(/^extract\.\d+(?=\.|$)/, 'extract.current')
+  return path
+    .replace(/^extract\.\d+(?=\.|$)/, 'extract.current')
+    .replace(/^(extract\.current\.(lyrics|notes|images))\.[^.]+(\..+)$/, '$1$3')
+    .replace(/^(annotations)\.[^.]+(\..+)$/, '$1$2')
 }
 
 function buildFullConfigPath(fullPath: string, relativePath: string): string {
