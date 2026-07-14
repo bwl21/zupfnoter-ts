@@ -24,6 +24,7 @@ import {
 import ZnBadge from '../../design-system/components/ZnBadge.vue'
 import ZnButton from '../../design-system/components/ZnButton.vue'
 import ZnIconButton from '../../design-system/components/ZnIconButton.vue'
+import ZnIcon from '../../design-system/components/ZnIcon.vue'
 import ZnPanel from '../../design-system/components/ZnPanel.vue'
 import ZnToolbar from '../../design-system/components/ZnToolbar.vue'
 import { loadConfigHelpTexts, resolveConfigHelpHtml, type ConfigHelpTexts } from './configHelp'
@@ -519,11 +520,12 @@ function syncHelpTooltips(): void {
       content: createHelpTooltipContent(helpKey),
       allowHTML: true,
       interactive: true,
-      trigger: 'mouseenter click',
+      trigger: 'click',
       hideOnClick: true,
       theme: 'zn-config-help',
       maxWidth: 320,
-      placement: 'left-start',
+      placement: 'top-start',
+      offset: [0, 6],
     })
     helpTooltips.set(element, instance)
   }
@@ -736,7 +738,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               variant="ghost"
               @click="toggleExpanded(row.path)"
             >
-              {{ isExpanded(row.path) ? 'v' : '>' }}
+              <ZnIcon :name="isExpanded(row.path) ? 'collapse' : 'expand'" />
             </ZnIconButton>
             <span v-else class="config-row__toggle-spacer" aria-hidden="true" />
             <div class="config-row__name-copy" :title="row.localPath ?? row.path">
@@ -750,6 +752,15 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
           </div>
 
           <div class="config-row__value">
+            <span
+              class="config-row__help"
+              role="button"
+              tabindex="0"
+              aria-label="Hilfe anzeigen"
+              :data-help-key="row.localPath ?? row.path"
+            >
+              <ZnIcon name="help" />
+            </span>
             <input
               v-if="row.isLeaf"
               :value="getDraftValue(row)"
@@ -769,7 +780,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               :tabindex="-1"
               @click="emitIntent('config.selectAffectedObject', row.localPath)"
             >
-              ◎
+              <ZnIcon name="select" />
             </ZnIconButton>
             <ZnIconButton
               class="config-row__action"
@@ -779,7 +790,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               :tabindex="-1"
               @click="emitIntent('config.fillPath', row.localPath)"
             >
-              ⤓
+              <ZnIcon name="fill" />
             </ZnIconButton>
             <ZnIconButton
               class="config-row__action"
@@ -789,7 +800,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               :tabindex="-1"
               @click="emitIntent('config.openMenuAtPath', row.localPath)"
             >
-              ≡
+              <ZnIcon name="menu" />
             </ZnIconButton>
             <ZnIconButton
               class="config-row__action"
@@ -799,16 +810,8 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               :tabindex="-1"
             @click="emitIntent('config.deletePath', row.localPath)"
             >
-              🗑
+              <ZnIcon name="delete" />
             </ZnIconButton>
-            <button
-              class="config-row__help"
-              type="button"
-              tabindex="-1"
-              :data-help-key="row.localPath ?? row.path"
-            >
-              ?
-            </button>
           </div>
 
           <div v-if="row.isLeaf" class="config-row__effective">
@@ -901,8 +904,8 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 }
 
 :deep(.config-panel__toolbar-icon.zn-icon-button) {
-  width: 1.22rem;
-  height: 1.22rem;
+  width: 0.96rem;
+  height: 0.96rem;
   border-radius: 999px;
   box-shadow: none;
   font-size: 0.72rem;
@@ -1140,6 +1143,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 .config-row__value {
   display: flex;
   align-items: center;
+  gap: 0.28rem;
   min-width: 0;
 }
 
@@ -1228,7 +1232,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 :deep(.config-row__action.zn-icon-button) {
   width: 1.45rem;
   height: 1.45rem;
-  border-radius: 0.42rem;
+  border-radius: 999px;
   box-shadow: none;
   font-size: 0.76rem;
 }
@@ -1237,15 +1241,21 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.2rem;
-  height: 1.2rem;
-  border: 1px solid var(--zn-border);
+  width: 1.45rem;
+  height: 1.45rem;
+  flex: 0 0 auto;
+  border: 0;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--zn-bg-surface) 84%, white);
+  background: transparent;
   color: var(--zn-text-soft);
-  font-size: 0.58rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  cursor: help;
+  cursor: pointer;
+}
+
+.config-row__help:hover,
+.config-row__help:focus-visible {
+  color: var(--zn-accent);
 }
 
 :global(.tippy-box[data-theme~='zn-config-help']) {

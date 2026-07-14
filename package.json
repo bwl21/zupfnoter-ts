@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.33.1",
   "scripts": {
     "commit:gap": "node tools/commit-gap.mjs",
     "dev": "pnpm --filter @zupfnoter/demo dev",
