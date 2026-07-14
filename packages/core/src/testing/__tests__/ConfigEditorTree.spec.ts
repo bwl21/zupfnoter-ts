@@ -30,7 +30,7 @@ describe('buildConfigEditorSectionTree', () => {
   it('contains the legacy global produce and rest-position settings for all parameters', () => {
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'produce')?.label).toBe('PDF für Auszüge')
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition')?.label).toBe('Position der Pausen')
-    expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition.default')?.label).toBe('Standard')
+    expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition.default')?.label).toBe('Vorgabewert')
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition.repeatstart')?.label).toBe('Wiederholungsanfang')
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition.repeatend')?.label).toBe('Wiederholungsende')
   })

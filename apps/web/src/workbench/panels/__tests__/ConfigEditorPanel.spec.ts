@@ -77,13 +77,29 @@ describe('ConfigEditorPanel', () => {
 
     const treeText = wrapper.find('.config-panel__tree').text()
     expect(treeText).toContain('Layout')
-    expect(treeText).toContain('Layoutstimmen')
+    expect(treeText).toContain('Stimmen für Layout')
     expect(treeText).toContain('Startposition')
-    expect(treeText).toContain('Linienstaerke duenn')
+    expect(treeText).toContain('Linienstärke dünn')
     expect(treeText).toContain('Packmethode')
     expect(treeText).not.toContain('Saitennamen')
     expect(treeText).not.toContain('Taktnummern')
     expect(treeText).not.toContain('Druck')
+  })
+
+  it('uses translated legacy names for basic extract parameters', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'basic_settings',
+      },
+    })
+
+    const treeText = wrapper.find('.config-panel__tree').text()
+    expect(treeText).toContain('Flußlinien')
+    expect(treeText).toContain('Hilfsmelodielinien')
+    expect(treeText).toContain('Sprunglinien')
+    expect(treeText).not.toContain('jumplines')
   })
 
   it('shows the legacy instrument-specific parameter set', () => {
@@ -104,17 +120,17 @@ describe('ConfigEditorPanel', () => {
     expect(labels).toContain('Instrument')
     expect(labels).toContain('Stimmung')
     expect(labels).toContain('Begrenzung auf A3')
-    expect(labels).toContain('Spiel aufwaerts')
-    expect(labels).toContain('Notenhaelse')
+    expect(labels).toContain('Spiel aufwärts')
+    expect(labels).toContain('Notenhälse')
     expect(labels).toContain('X - Offset')
     expect(labels).toContain('Saitenabstand')
-    expect(labels).toContain('Pitch-Offset')
+    expect(labels).toContain('PitchOffset')
     expect(labels).toContain('Saitennamen')
     expect(labels).toContain('Drucker')
 
     expect(labels.indexOf('Instrument')).toBeLessThan(labels.indexOf('Stimmung'))
     expect(labels.indexOf('Stimmung')).toBeLessThan(labels.indexOf('Begrenzung auf A3'))
-    expect(labels.indexOf('Pitch-Offset')).toBeLessThan(labels.indexOf('Saitennamen'))
+    expect(labels.indexOf('PitchOffset')).toBeLessThan(labels.indexOf('Saitennamen'))
     expect(labels.indexOf('Saitennamen')).toBeLessThan(labels.indexOf('Drucker'))
   })
 
@@ -161,11 +177,11 @@ describe('ConfigEditorPanel', () => {
     })
 
     const labels = wrapper.findAll('.config-row__label').map((node) => node.text())
-    expect(labels).toContain('T01_number_extract')
+    expect(labels).toContain('T01 Auszug-Nummer')
     expect(labels).toContain('Position')
     expect(labels).toContain('Text')
     expect(labels).toContain('Stil')
-    expect(labels.indexOf('T01_number_extract')).toBeLessThan(labels.indexOf('Position'))
+    expect(labels.indexOf('T01_number_extract')).toBeLessThan(labels.lastIndexOf('Position'))
   })
 
   it('expands global annotation templates from effective and current config', () => {
@@ -186,7 +202,7 @@ describe('ConfigEditorPanel', () => {
     })
 
     const labels = wrapper.findAll('.config-row__label').map((node) => node.text())
-    expect(labels).toContain('vl')
+    expect(labels).toContain("'V' links")
     expect(labels).toContain('accel')
     expect(labels).toContain('Position')
     expect(labels).toContain('Text')

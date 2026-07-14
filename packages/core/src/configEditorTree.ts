@@ -10,6 +10,7 @@ import {
 } from './configSchema.js'
 import { type CommandArgumentValue } from './commands.js'
 import { getConfigEditorFormSections } from './configEditorForms.js'
+import { abc2svgTextrans } from './localization/de-de.js'
 
 export interface ConfigEditorTreeDefinition {
   key: string
@@ -24,121 +25,126 @@ interface PathLabelDefinition {
 }
 
 const layoutTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'layout.instrument', label: 'Instrument' },
-  { pathSuffix: 'layout.tuning', label: 'Stimmung' },
-  { pathSuffix: 'layout.limit_a3', label: 'Begrenzung auf A3' },
-  { pathSuffix: 'layout.bottomup', label: 'Spiel aufwaerts' },
-  { pathSuffix: 'layout.beams', label: 'Notenhaelse' },
-  { pathSuffix: 'layout.LINE_THIN', label: 'Linienstaerke duenn' },
-  { pathSuffix: 'layout.LINE_MEDIUM', label: 'Linienstaerke mittel' },
-  { pathSuffix: 'layout.LINE_THICK', label: 'Linienstaerke dick' },
-  { pathSuffix: 'layout.ELLIPSE_SIZE', label: 'Notengroesse' },
-  { pathSuffix: 'layout.REST_SIZE', label: 'Pausengroesse' },
-  { pathSuffix: 'layout.X_SPACING', label: 'Saitenabstand' },
-  { pathSuffix: 'layout.X_OFFSET', label: 'X - Offset' },
-  { pathSuffix: 'layout.PITCH_OFFSET', label: 'Pitch-Offset' },
-  { pathSuffix: 'layout.DRAWING_AREA_SIZE', label: 'Zeichenflaeche' },
+  { pathSuffix: 'layout.instrument', label: legacyLabel('instrument') },
+  { pathSuffix: 'layout.tuning', label: legacyLabel('tuning') },
+  { pathSuffix: 'layout.limit_a3', label: legacyLabel('limit_a3') },
+  { pathSuffix: 'layout.bottomup', label: legacyLabel('bottomup') },
+  { pathSuffix: 'layout.beams', label: legacyLabel('beams') },
+  { pathSuffix: 'layout.LINE_THIN', label: legacyLabel('LINE_THIN') },
+  { pathSuffix: 'layout.LINE_MEDIUM', label: legacyLabel('LINE_MEDIUM') },
+  { pathSuffix: 'layout.LINE_THICK', label: legacyLabel('LINE_THICK') },
+  { pathSuffix: 'layout.ELLIPSE_SIZE', label: legacyLabel('ELLIPSE_SIZE') },
+  { pathSuffix: 'layout.REST_SIZE', label: legacyLabel('REST_SIZE') },
+  { pathSuffix: 'layout.X_SPACING', label: legacyLabel('X_SPACING') },
+  { pathSuffix: 'layout.X_OFFSET', label: legacyLabel('X_OFFSET') },
+  { pathSuffix: 'layout.PITCH_OFFSET', label: legacyLabel('PITCH_OFFSET') },
+  { pathSuffix: 'layout.DRAWING_AREA_SIZE', label: legacyLabel('DRAWING_AREA_SIZE') },
 ]
 
 const instrumentSpecificLayoutTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'layout.instrument', label: 'Instrument' },
-  { pathSuffix: 'layout.tuning', label: 'Stimmung' },
-  { pathSuffix: 'layout.limit_a3', label: 'Begrenzung auf A3' },
-  { pathSuffix: 'layout.bottomup', label: 'Spiel aufwaerts' },
-  { pathSuffix: 'layout.beams', label: 'Notenhaelse' },
-  { pathSuffix: 'layout.X_OFFSET', label: 'X - Offset' },
-  { pathSuffix: 'layout.X_SPACING', label: 'Saitenabstand' },
-  { pathSuffix: 'layout.PITCH_OFFSET', label: 'Pitch-Offset' },
+  { pathSuffix: 'layout.instrument', label: legacyLabel('instrument') },
+  { pathSuffix: 'layout.tuning', label: legacyLabel('tuning') },
+  { pathSuffix: 'layout.limit_a3', label: legacyLabel('limit_a3') },
+  { pathSuffix: 'layout.bottomup', label: legacyLabel('bottomup') },
+  { pathSuffix: 'layout.beams', label: legacyLabel('beams') },
+  { pathSuffix: 'layout.X_OFFSET', label: legacyLabel('X_OFFSET') },
+  { pathSuffix: 'layout.X_SPACING', label: legacyLabel('X_SPACING') },
+  { pathSuffix: 'layout.PITCH_OFFSET', label: legacyLabel('PITCH_OFFSET') },
 ]
 
 const printerTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'printer.show_border', label: 'Rahmen anzeigen' },
-  { pathSuffix: 'printer.a3_offset', label: 'A3-Offset' },
-  { pathSuffix: 'printer.a4_offset', label: 'A4-Offset' },
-  { pathSuffix: 'printer.a4_pages', label: 'A4-Seiten' },
+  { pathSuffix: 'printer.show_border', label: legacyLabel('show_border') },
+  { pathSuffix: 'printer.a3_offset', label: legacyLabel('a3_offset') },
+  { pathSuffix: 'printer.a4_offset', label: legacyLabel('a4_offset') },
+  { pathSuffix: 'printer.a4_pages', label: legacyLabel('a4_pages') },
 ]
 
 const packerTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'layout.packer.pack_method', label: 'Packmethode' },
-  { pathSuffix: 'layout.packer.pack_max_spreadfactor', label: 'max. Spreizung' },
-  { pathSuffix: 'layout.packer.pack_min_increment', label: 'min. Inkrement' },
+  { pathSuffix: 'layout.packer.pack_method', label: legacyLabel('pack_method') },
+  { pathSuffix: 'layout.packer.pack_max_spreadfactor', label: legacyLabel('pack_max_spreadfactor') },
+  { pathSuffix: 'layout.packer.pack_min_increment', label: legacyLabel('pack_min_increment') },
 ]
 
 const barnumbersTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'barnumbers.voices', label: 'Stimmen' },
-  { pathSuffix: 'barnumbers.pos', label: 'Position' },
-  { pathSuffix: 'barnumbers.style', label: 'Stil' },
+  { pathSuffix: 'barnumbers.voices', label: legacyLabel('voices') },
+  { pathSuffix: 'barnumbers.pos', label: legacyLabel('pos') },
+  { pathSuffix: 'barnumbers.style', label: legacyLabel('style') },
 ]
 
 const countnotesTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'countnotes.voices', label: 'Stimmen' },
-  { pathSuffix: 'countnotes.pos', label: 'Position' },
-  { pathSuffix: 'countnotes.style', label: 'Stil' },
+  { pathSuffix: 'countnotes.voices', label: legacyLabel('voices') },
+  { pathSuffix: 'countnotes.pos', label: legacyLabel('pos') },
+  { pathSuffix: 'countnotes.style', label: legacyLabel('style') },
 ]
 
 const notesTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'legend.pos', label: 'Legende Position' },
-  { pathSuffix: 'legend.align', label: 'Legende Ausrichtung' },
-  { pathSuffix: 'legend.spos', label: 'Legende Startposition' },
-  { pathSuffix: 'notes', label: 'Seitenbeschriftung' },
+  { pathSuffix: 'legend.pos', label: legacyLabel('pos') },
+  { pathSuffix: 'legend.align', label: legacyLabel('align') },
+  { pathSuffix: 'legend.spos', label: legacyLabel('spos') },
+  { pathSuffix: 'notes', label: legacyLabel('notes') },
 ]
 
 const noteEntryTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'notes.*.pos', label: 'Position' },
-  { pathSuffix: 'notes.*.text', label: 'Text' },
-  { pathSuffix: 'notes.*.style', label: 'Stil' },
-  { pathSuffix: 'notes.*.align', label: 'Ausrichtung' },
+  { pathSuffix: 'notes.*.pos', label: legacyLabel('pos') },
+  { pathSuffix: 'notes.*.text', label: legacyLabel('text') },
+  { pathSuffix: 'notes.*.style', label: legacyLabel('style') },
+  { pathSuffix: 'notes.*.align', label: legacyLabel('align') },
 ]
 
 const annotationEntryTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'annotations.*.pos', label: 'Position' },
-  { pathSuffix: 'annotations.*.text', label: 'Text' },
-  { pathSuffix: 'annotations.*.style', label: 'Stil' },
+  { pathSuffix: 'annotations.*.pos', label: legacyLabel('pos') },
+  { pathSuffix: 'annotations.*.text', label: legacyLabel('text') },
+  { pathSuffix: 'annotations.*.style', label: legacyLabel('style') },
 ]
 
 const lyricsTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'lyrics.*.verses', label: 'Strophen' },
-  { pathSuffix: 'lyrics.*.pos', label: 'Position' },
-  { pathSuffix: 'lyrics.*.style', label: 'Stil' },
+  { pathSuffix: 'lyrics.*.verses', label: legacyLabel('verses') },
+  { pathSuffix: 'lyrics.*.pos', label: legacyLabel('pos') },
+  { pathSuffix: 'lyrics.*.style', label: legacyLabel('style') },
 ]
 
 const stringnamesTreeLeafDefinitions: PathLabelDefinition[] = [
-  { pathSuffix: 'stringnames', label: 'Saitennamen' },
-  { pathSuffix: 'stringnames.text', label: 'Text' },
-  { pathSuffix: 'stringnames.vpos', label: 'Stimmen' },
-  { pathSuffix: 'stringnames.marks.hpos', label: 'Marker horizontal' },
-  { pathSuffix: 'stringnames.marks.vpos', label: 'Marker vertikal' },
+  { pathSuffix: 'stringnames', label: legacyLabel('stringnames') },
+  { pathSuffix: 'stringnames.text', label: legacyLabel('text') },
+  { pathSuffix: 'stringnames.vpos', label: legacyLabel('vpos') },
+  { pathSuffix: 'stringnames.marks.hpos', label: legacyLabel('hpos') },
+  { pathSuffix: 'stringnames.marks.vpos', label: legacyLabel('vpos') },
 ]
 
+function legacyLabel(key: string): string {
+  const labelKey = key.split('.').pop() ?? key
+  return abc2svgTextrans[labelKey as keyof typeof abc2svgTextrans] ?? key
+}
+
 export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
-  { key: 'produce', label: 'PDF für Auszüge' },
+  { key: 'produce', label: legacyLabel('produce') },
   {
     key: 'restposition',
-    label: 'Position der Pausen',
+    label: legacyLabel('restposition'),
     children: [
-      { key: 'default', label: 'Standard' },
-      { key: 'repeatstart', label: 'Wiederholungsanfang' },
-      { key: 'repeatend', label: 'Wiederholungsende' },
+      { key: 'default', label: legacyLabel('default') },
+      { key: 'repeatstart', label: legacyLabel('repeatstart') },
+      { key: 'repeatend', label: legacyLabel('repeatend') },
     ],
   },
   {
     key: 'extract',
-    label: 'Auszug',
+    label: legacyLabel('extract'),
     children: [
       {
         key: 'current',
         label: '0',
         children: [
-          { key: 'title', label: 'Titel' },
-          { key: 'voices', label: 'Stimmen' },
-          { key: 'flowlines', label: 'Flowlines' },
-          { key: 'subflowlines', label: 'Subflowlines' },
-          { key: 'synchlines', label: 'Synchronisationslinien' },
-          { key: 'layoutlines', label: 'Layoutstimmen' },
-          { key: 'startpos', label: 'Startposition' },
+          { key: 'title', label: legacyLabel('title') },
+          { key: 'voices', label: legacyLabel('voices') },
+          { key: 'flowlines', label: legacyLabel('flowlines') },
+          { key: 'subflowlines', label: legacyLabel('subflowlines') },
+          { key: 'synchlines', label: legacyLabel('synchlines') },
+          { key: 'layoutlines', label: legacyLabel('layoutlines') },
+          { key: 'startpos', label: legacyLabel('startpos') },
           {
             key: 'layout',
-            label: 'Layout',
+            label: legacyLabel('layout'),
             children: [
               ...mapTreeDefinitionsForPrefix(
                 LEGACY_LAYOUT_EXTRACT_PATH_SUFFIXES,
@@ -151,7 +157,7 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
               ),
               {
                 key: 'packer',
-                label: 'Packer',
+                label: legacyLabel('packer'),
                 children: mapTreeDefinitionsForPrefix(
                   LEGACY_LAYOUT_PACKER_EXTRACT_PATH_SUFFIXES,
                   'layout.packer.',
@@ -162,7 +168,7 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
           },
           {
             key: 'printer',
-            label: 'Druck',
+            label: legacyLabel('printer'),
             children: mapTreeDefinitionsForPrefix(
               LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
               'printer.',
@@ -171,7 +177,7 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
           },
           {
             key: 'barnumbers',
-            label: 'Taktnummern',
+            label: legacyLabel('barnumbers'),
             children: mapTreeDefinitionsForPrefix(
               LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
               'barnumbers.',
@@ -180,7 +186,7 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
           },
           {
             key: 'countnotes',
-            label: 'Zaehlnoten',
+            label: legacyLabel('countnotes'),
             children: mapTreeDefinitionsForPrefix(
               LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES,
               'countnotes.',
@@ -189,7 +195,7 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
           },
           {
             key: 'legend',
-            label: 'Legende',
+            label: legacyLabel('legend'),
             children: mapTreeDefinitionsForPrefix(
               LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
               'legend.',
@@ -198,7 +204,7 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
           },
           {
             key: 'notes',
-            label: 'Seitenbeschriftung',
+            label: legacyLabel('notes'),
             children: mapTreeDefinitionsForWildcardPrefix(
               ['notes.*.pos', 'notes.*.text', 'notes.*.style', 'notes.*.align'],
               'notes.*.',
@@ -207,7 +213,7 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
           },
           {
             key: 'lyrics',
-            label: 'Liedtexte',
+            label: legacyLabel('lyrics'),
             children: mapTreeDefinitionsForWildcardPrefix(
               LEGACY_LYRICS_EXTRACT_PATH_SUFFIX_PATTERNS,
               'lyrics.*.',
@@ -216,7 +222,7 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
           },
           {
             key: 'stringnames',
-            label: 'Saitennamen',
+            label: legacyLabel('stringnames'),
             children: mapTreeDefinitionsForPrefix(
               LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
               'stringnames.',
@@ -229,7 +235,7 @@ export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
   },
   {
     key: 'annotations',
-    label: 'Notenbeschriftungsvorlagen',
+    label: legacyLabel('annotations'),
     children: mapTreeDefinitionsForWildcardPrefix(
       ['annotations.*.pos', 'annotations.*.text', 'annotations.*.style'],
       'annotations.*.',
@@ -687,7 +693,7 @@ function resolveTreeLabel(fullPath: string, relativePath: string): string {
   )
   if (candidateDefinition !== undefined) return candidateDefinition.label
 
-  return relativePath.split('.').at(-1) ?? relativePath
+  return legacyLabel(relativePath.split('.').at(-1) ?? relativePath)
 }
 
 function normalizeTreeDefinitionPath(path: string): string {
