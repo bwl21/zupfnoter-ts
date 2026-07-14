@@ -39,7 +39,9 @@
     "ai-task": "tsx tools/ai-task/src/cli.ts",
     "ai-task:check": "tsc -p tools/ai-task/tsconfig.json --noEmit",
     "format": "pnpm -r run format",
-    "sync:conf-help": "node tools/sync-conf-help.mjs"
+    "sync:conf-help": "node tools/generate-config-docs.mjs",
+    "generate:config-docs": "node tools/generate-config-docs.mjs",
+    "test:config-docs": "node --test tools/config-help-documentation.test.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

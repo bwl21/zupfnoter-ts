@@ -36,6 +36,7 @@ import { resolvePlaybackInstrument } from './sound'
 import type { PlaybackStep } from './playback'
 import type { SelectionOrigin } from '@zupfnoter/types'
 import { CommandError, CommandStack, registerLegacyCommands, registerStorageCommands } from '@zupfnoter/core'
+import type { CommandArgumentValue } from '@zupfnoter/core'
 import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
 import {
   canTargetCreateSelection,
@@ -56,7 +57,7 @@ import { createDropboxProvider, resumeDropboxLoginFromRedirect } from './storage
 interface ConfigEditorIntent {
   action: string
   path?: string
-  value?: string
+  value?: CommandArgumentValue
   extractId: number
 }
 
@@ -560,6 +561,25 @@ async function executeToolbarCommand(command: string): Promise<boolean> {
   }
 }
 
+async function executeParsedToolbarCommand(
+  command: string,
+  commandName: string,
+  values: CommandArgumentValue[],
+): Promise<boolean> {
+  commandBusy.value = true
+  appendConsoleLine(command, 'command')
+  try {
+    await commandStack.runParsedCommand(commandName, values)
+    return true
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    appendConsoleLine(enrichCommandError(command, message), 'error')
+    return false
+  } finally {
+    commandBusy.value = false
+  }
+}
+
 function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
   if (intent.action === 'config.undo') {
     void executeToolbarCommand('undoconfig')
@@ -589,7 +609,11 @@ function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
   }
 
   if (intent.action === 'config.setPath' && intent.path !== undefined && intent.value !== undefined) {
-    void executeToolbarCommand(`cconf ${intent.path} ${JSON.stringify(intent.value)}`)
+    void executeParsedToolbarCommand(
+      `cconf ${intent.path} ${JSON.stringify(intent.value)}`,
+      'cconf',
+      [intent.path, intent.value],
+    )
     return
   }
 

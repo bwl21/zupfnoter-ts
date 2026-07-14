@@ -42,6 +42,7 @@ export {
   getConfigMenuKind,
   getConfigSchemaOverview,
   getConfigPathActionProfile,
+  resolveConfigSchemaPath,
   LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
   LEGACY_COUNTNOTES_EXTRACT_PATH_SUFFIXES,
   hasConfigPathSegment,
@@ -72,6 +73,8 @@ export {
 export type {
   ConfigMenuKind,
   ConfigPathActionProfile,
+  ConfigEditorOption,
+  ConfigEditorSchemaMetadata,
   ConfigSchemaValidationOptions,
   JsonSchemaNode,
 } from './configSchema.js'
@@ -99,7 +102,12 @@ export {
   findConfigEditorTreeDefinition,
 } from './configEditorTree.js'
 export type { ConfigEditorTreeDefinition } from './configEditorTree.js'
-export { formatConfigEditorValue, serializeConfigEditorValue } from './configEditorValue.js'
+export {
+  formatConfigEditorValue,
+  parseConfigEditorValue,
+  serializeConfigEditorValue,
+} from './configEditorValue.js'
+export type { ConfigEditorValueParseResult } from './configEditorValue.js'
 
 export { extractSongConfig, mergeSongConfig, CONFIG_SEPARATOR } from './extractSongConfig.js'
 

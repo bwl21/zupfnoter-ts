@@ -27,12 +27,21 @@ function flattenConfigPaths(definitions: readonly ConfigEditorTreeDefinition[]):
 }
 
 describe('buildConfigEditorSectionTree', () => {
-  it('contains the legacy global produce and rest-position settings for all parameters', () => {
+  it('derives the rest-position subtree from the configuration schema', () => {
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'produce')?.label).toBe('PDF für Auszüge')
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition')?.label).toBe('Position der Pausen')
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition.default')?.label).toBe('Vorgabewert')
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition.repeatstart')?.label).toBe('Wiederholungsanfang')
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition.repeatend')?.label).toBe('Wiederholungsende')
+  })
+
+  it('expands object-valued form keys from the configuration schema', () => {
+    const tree = buildConfigEditorSectionTree('basic_settings', {}, {}, 0)
+    const paths = flattenConfigPaths(tree ?? [])
+
+    expect(paths).toContain('restposition.default')
+    expect(paths).toContain('restposition.repeatstart')
+    expect(paths).toContain('restposition.repeatend')
   })
 
   it('expands extract annotation keys for extract ids from current and effective config', () => {

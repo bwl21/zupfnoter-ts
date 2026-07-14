@@ -7,6 +7,7 @@ import {
   LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
   LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
   LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
+  resolveConfigSchemaPath,
 } from './configSchema.js'
 import { type CommandArgumentValue } from './commands.js'
 import { getConfigEditorFormSections } from './configEditorForms.js'
@@ -116,16 +117,18 @@ function legacyLabel(key: string): string {
   return abc2svgTextrans[labelKey as keyof typeof abc2svgTextrans] ?? key
 }
 
+function schemaPropertyTreeChildren(path: string): ConfigEditorTreeDefinition[] {
+  const properties = resolveConfigSchemaPath(path)?.properties
+  if (properties === undefined) return []
+  return Object.keys(properties).map((key) => ({ key, label: legacyLabel(key) }))
+}
+
 export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
   { key: 'produce', label: legacyLabel('produce') },
   {
     key: 'restposition',
     label: legacyLabel('restposition'),
-    children: [
-      { key: 'default', label: legacyLabel('default') },
-      { key: 'repeatstart', label: legacyLabel('repeatstart') },
-      { key: 'repeatend', label: legacyLabel('repeatend') },
-    ],
+    children: schemaPropertyTreeChildren('restposition'),
   },
   {
     key: 'extract',
@@ -398,6 +401,11 @@ function expandConfigEditorKeyToTreePaths(
   }
 
   const treePath = configEditorKeyToTreePath(key)
+  const schemaPath = key.replace(/^extract\.(\{extract\}|\d+)(?=\.|$)/, `extract.${extractId}`)
+  const schemaProperties = resolveConfigSchemaPath(schemaPath)?.properties
+  if (schemaProperties !== undefined) {
+    return Object.keys(schemaProperties).map((property) => `${treePath}.${property}`)
+  }
   if (!treePath.includes('.*.')) return [treePath]
 
   const [prefix, suffix] = treePath.split('.*.')

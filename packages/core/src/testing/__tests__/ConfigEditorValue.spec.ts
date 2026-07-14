@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatConfigEditorValue, serializeConfigEditorValue } from '../../configEditorValue.js'
+import {
+  formatConfigEditorValue,
+  parseConfigEditorValue,
+  serializeConfigEditorValue,
+} from '../../configEditorValue.js'
 
 describe('config editor value conversion', () => {
   it('ports the legacy integer-list conversion for produce', () => {
@@ -10,5 +14,17 @@ describe('config editor value conversion', () => {
   it('ports the legacy integer-pair conversion for synchronization lines', () => {
     expect(formatConfigEditorValue('extract.0.synchlines', [[1, 2], [3, 4]])).toBe('1-2, 3-4')
     expect(serializeConfigEditorValue('extract.0.synchlines', '1-2, 2-3')).toBe('[[1,2],[2,3]]')
+  })
+
+  it('derives scalar and nested array values from the schema', () => {
+    expect(parseConfigEditorValue('produce', '0, 2')).toEqual({ value: [0, 2] })
+    expect(parseConfigEditorValue('extract.0.synchlines', '1-2, 2-3')).toEqual({ value: [[1, 2], [2, 3]] })
+  })
+
+  it('rejects malformed values instead of coercing them', () => {
+    expect(parseConfigEditorValue('produce', '0, nope')).toEqual({ error: 'Bitte eine ganze Zahl eingeben.' })
+    expect(parseConfigEditorValue('extract.0.synchlines', '1-2-3')).toEqual({
+      error: 'Paarwerte bitte als „erste-zweite“ eingeben.',
+    })
   })
 })

@@ -7,6 +7,7 @@ import {
   getConfigMenuKind,
   getConfigSchemaOverview,
   getConfigPathActionProfile,
+  resolveConfigSchemaPath,
   hasConfigPathSegment,
   isLegacyTopLevelConfigKey,
   isSelectableConfigPath,
@@ -96,6 +97,21 @@ describe('configSchema', () => {
     })
   })
 
+  it('resolves direct properties, numeric extract patterns and references', () => {
+    expect(resolveConfigSchemaPath('produce')).toMatchObject({ type: 'array', items: { type: 'integer' } })
+    expect(resolveConfigSchemaPath('extract.0.synchlines')).toMatchObject({
+      type: 'array',
+      items: { type: 'array', items: { type: 'integer' } },
+    })
+    expect(resolveConfigSchemaPath('extract.0.layout.tuning')?.['x-zupfnoter-editor']?.options).toEqual([
+      expect.objectContaining({ value: 'fixed', label: 'feste stimmung' }),
+      expect.objectContaining({ value: 'open', label: 'offene Stimmung' }),
+    ])
+    expect(resolveConfigSchemaPath('extract.0.layout.instrument')?.['x-zupfnoter-editor']?.options).toContainEqual(
+      expect.objectContaining({ value: 'okon-g', label: 'Okon-Tischharfe' }),
+    )
+  })
+
   it('recognizes legacy top-level keys', () => {
     expect(isLegacyTopLevelConfigKey('extract')).toBe(true)
     expect(isLegacyTopLevelConfigKey('layout')).toBe(true)
@@ -151,6 +167,12 @@ describe('configSchema', () => {
       canSelect: false,
       menuKind: 'stringnames',
     })
+
+    expect(getConfigPathActionProfile('restposition', {
+      hasEffectiveValue: true,
+      hasLocalValue: false,
+      isLeaf: false,
+    }).canFill).toBe(true)
   })
 
   it('keeps open legacy subtrees open in runtime validation', () => {

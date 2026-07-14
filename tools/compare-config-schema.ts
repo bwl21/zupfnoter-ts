@@ -22,6 +22,8 @@ interface SchemaDiff {
 
 type Mode = 'compare' | 'verify-legacy' | 'sync-fixture'
 
+const EDITOR_ONLY_SCHEMA_KEYS = new Set(['title', 'description', 'x-zupfnoter-editor'])
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const repoRoot = resolve(__dirname, '..')
@@ -39,7 +41,7 @@ function normalizeJsonValue(value: unknown): JsonValue {
   if (Array.isArray(value)) return value.map((entry) => normalizeJsonValue(entry))
   if (typeof value === 'object') {
     const entries = Object.entries(value as Record<string, unknown>)
-      .filter(([, entry]) => entry !== undefined)
+      .filter(([key, entry]) => entry !== undefined && !EDITOR_ONLY_SCHEMA_KEYS.has(key))
       .sort(([left], [right]) => left.localeCompare(right))
       .map(([key, entry]) => [key, normalizeJsonValue(entry)] as const)
     return Object.fromEntries(entries)

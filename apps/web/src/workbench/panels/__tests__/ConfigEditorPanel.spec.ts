@@ -17,7 +17,7 @@ describe('ConfigEditorPanel', () => {
           '{"extract":{"0":{"title":"Alt","voices":[1,2],"layout":{"X_SPACING":13}}}}',
         ].join('\n'),
         currentExtract: 0,
-        activeSection: 'all_parameters',
+        activeSection: 'basic_settings',
       },
     })
 
@@ -38,7 +38,7 @@ describe('ConfigEditorPanel', () => {
           'C |]',
         ].join('\n'),
         currentExtract: 0,
-        activeSection: 'all_parameters',
+        activeSection: 'basic_settings',
       },
     })
 
@@ -367,7 +367,30 @@ describe('ConfigEditorPanel', () => {
       {
         action: 'config.setPath',
         path: 'produce',
-        value: '[0]',
+        value: [0],
+        extractId: 0,
+      },
+    ])
+  })
+
+  it('renders boolean schema values as checkboxes and emits booleans', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'instrument_specific',
+      },
+    })
+
+    const limitRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Begrenzung auf A3'))
+    expect(limitRow?.find('input[type="checkbox"]').exists()).toBe(true)
+    await limitRow?.find('input[type="checkbox"]').setValue(false)
+
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.setPath',
+        path: 'extract.0.layout.limit_a3',
+        value: false,
         extractId: 0,
       },
     ])
@@ -394,7 +417,93 @@ describe('ConfigEditorPanel', () => {
       {
         action: 'config.setPath',
         path: 'extract.0.synchlines',
-        value: '[[1,2],[2,3]]',
+        value: [[1, 2], [2, 3]],
+        extractId: 0,
+      },
+    ])
+  })
+
+  it('keeps an invalid typed value local and shows an error', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'all_parameters',
+      },
+    })
+
+    const produceRow = wrapper.findAll('.config-row').find((row) => row.text().includes('PDF für Auszüge'))
+    expect(produceRow).toBeDefined()
+    if (produceRow === undefined) return
+
+    const input = produceRow.find('input')
+    await input.setValue('not-a-number')
+    await input.trigger('blur')
+
+    expect(wrapper.emitted('intent')).toBeUndefined()
+    expect(produceRow.text()).toContain('Bitte eine ganze Zahl eingeben.')
+  })
+
+  it('renders documented static options as a select with its explanation', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n{"extract":{"0":{"layout":{"tuning":"open"}}}}',
+        currentExtract: 0,
+        activeSection: 'instrument_specific',
+      },
+    })
+
+    const tuningRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Stimmung'))
+    expect(tuningRow?.find('details').exists()).toBe(true)
+    expect(tuningRow?.find('.config-row__select-caret').exists()).toBe(true)
+    expect(tuningRow?.text()).not.toContain('Stimmung der Saiten')
+    expect(tuningRow?.find('[data-option-description*="Stimmung der Saiten"]').exists()).toBe(true)
+  })
+
+  it('closes an open documented option list with Escape', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n{"extract":{"0":{"layout":{"tuning":"open"}}}}',
+        currentExtract: 0,
+        activeSection: 'instrument_specific',
+      },
+    })
+
+    const options = wrapper.find('.config-row__select')
+    ;(options.element as HTMLDetailsElement).open = true
+    await options.trigger('keydown', { key: 'Escape' })
+
+    expect((options.element as HTMLDetailsElement).open).toBe(false)
+  })
+
+  it('fills a missing structure with its effective object value', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'all_parameters',
+      },
+    })
+
+    const restpositionRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Position der Pausen'))
+    expect(restpositionRow).toBeDefined()
+    if (restpositionRow === undefined) return
+
+    const fillButton = restpositionRow.find('button[aria-label="Parameter mit wirksamem Wert auffuellen"]')
+    expect(fillButton.attributes('disabled')).toBeUndefined()
+    await fillButton.trigger('click')
+
+    expect(restpositionRow.find('input').exists()).toBe(false)
+    const visiblePaths = wrapper.findAll('.config-row__name-copy').map((element) => element.attributes('title'))
+    expect(visiblePaths).toContain('restposition.default')
+    expect(visiblePaths).toContain('restposition.repeatstart')
+    expect(visiblePaths).toContain('restposition.repeatend')
+
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.setPath',
+        path: 'restposition',
+        value: { default: 'center', repeatstart: 'next', repeatend: 'default' },
         extractId: 0,
       },
     ])

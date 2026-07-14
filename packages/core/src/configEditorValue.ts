@@ -1,80 +1,191 @@
-/**
- * Legacy-specific value conversions used by the configuration editor.
- *
- * The mapping ports `ConfstackEditor::ConfHelper` from `config-form.rb`.
- * It is intentionally based on the final configuration-key segment, because
- * the legacy editor uses the same convention for nested configuration paths.
- */
-const INTEGER_PAIR_KEYS = new Set(['synchlines'])
-const FLOAT_PAIR_KEYS = new Set([
-  'apbase', 'pos', 'size', 'spos', 'ELLIPSE_SIZE', 'REST_SIZE', 'DRAWING_AREA_SIZE',
-  'cp1', 'cp2', 'a3_offset', 'a4_offset', 'jumpline_anchor',
-])
-const INTEGER_LIST_KEYS = new Set([
-  'a4_pages', 'voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines',
-  'verses', 'hpos', 'vpos', 'produce', 'llpos', 'trpos',
-])
-const TUPLET_SHAPE_KEYS = new Set(['shape'])
+import type { CommandArgumentValue } from './commands.js'
+import { resolveConfigSchemaPath, type JsonSchemaNode } from './configSchema.js'
 
-/** Formats an editor value with the compact notation used in the legacy form. */
+/** Result of converting one editor field into its configuration value. */
+export type ConfigEditorValueParseResult =
+  | { value: CommandArgumentValue; error?: never }
+  | { value?: never; error: string }
+
+/** Formats a value using only its resolved configuration schema. */
 export function formatConfigEditorValue(path: string, value: unknown): string {
   if (value === undefined) return '—'
-  if (typeof value === 'string') return value
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
-  if (!Array.isArray(value)) return typeof value === 'object' && value !== null ? '{…}' : String(value)
+  const schema = resolveConfigSchemaPath(path)
+  return formatValue(schema, value)
+}
 
-  const key = getConfigKey(path)
-  if (INTEGER_PAIR_KEYS.has(key) && value.every(isNumberPair)) {
-    return value.map(([from, to]) => `${from}-${to}`).join(', ')
+/** Parses an editor input strictly before it reaches a configuration command. */
+export function parseConfigEditorValue(path: string, input: string): ConfigEditorValueParseResult {
+  const schema = resolveConfigSchemaPath(path)
+  if (schema === undefined) return { value: input }
+
+  try {
+    return { value: parseValue(schema, input) }
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : String(error) }
   }
-  if (value.every((entry) => typeof entry === 'number')) return value.join(', ')
+}
+
+/** Compatibility wrapper for console callers that need a command-string argument. */
+export function serializeConfigEditorValue(path: string, value: string): string {
+  const result = parseConfigEditorValue(path, value)
+  if (result.value === undefined) return value
+  return typeof result.value === 'string' ? result.value : JSON.stringify(result.value)
+}
+
+function formatValue(schema: JsonSchemaNode | undefined, value: unknown): string {
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (!Array.isArray(value)) return typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value)
+
+  const items = getSchemaItems(schema)
+  if (items !== undefined && isNumericSchema(items) && value.every(isFiniteNumber)) {
+    return value.join(', ')
+  }
+  if (items !== undefined && isNumericArraySchema(items) && value.every(isNumericPair)) {
+    return value.map((pair) => pair.join('-')).join(', ')
+  }
+  if (items !== undefined && isStringSchema(items) && value.every((entry) => typeof entry === 'string')) {
+    return value.join(', ')
+  }
   return JSON.stringify(value)
 }
 
-/** Converts compact legacy form notation into the JSON value syntax accepted by `cconf`. */
-export function serializeConfigEditorValue(path: string, value: string): string {
-  const key = getConfigKey(path)
-  if (INTEGER_PAIR_KEYS.has(key)) return JSON.stringify(parseIntegerPairs(value))
-  if (FLOAT_PAIR_KEYS.has(key)) return JSON.stringify(parseFloatPair(value))
-  if (INTEGER_LIST_KEYS.has(key)) return JSON.stringify(parseIntegerList(value))
-  if (TUPLET_SHAPE_KEYS.has(key)) return JSON.stringify(value.split(',').map((entry) => entry.trim()))
+function parseValue(schema: JsonSchemaNode, input: string): CommandArgumentValue {
+  const type = getSchemaType(schema)
+  switch (type) {
+    case 'array':
+      return parseArray(schema, input)
+    case 'boolean':
+      if (input === 'true') return true
+      if (input === 'false') return false
+      throw new Error('Bitte true oder false eingeben.')
+    case 'integer':
+      return parseNumber(input, true)
+    case 'number':
+      return parseNumber(input, false)
+    case 'object':
+      return parseJson(input, 'Objekte müssen gültiges JSON sein.')
+    case 'string':
+    case undefined:
+      return input
+    default:
+      return input
+  }
+}
+
+function parseArray(schema: JsonSchemaNode, input: string): CommandArgumentValue[] {
+  const trimmed = input.trim()
+  if (trimmed.startsWith('[')) {
+    const parsed = parseJson(trimmed, 'Listen müssen gültiges JSON sein.')
+    if (!Array.isArray(parsed)) throw new Error('Bitte eine JSON-Liste eingeben.')
+    validateArrayEntries(schema, parsed)
+    return parsed as CommandArgumentValue[]
+  }
+
+  if (trimmed === '') return []
+  const items = getSchemaItems(schema)
+  if (items === undefined) throw new Error('Listen ohne Elementtyp müssen als JSON eingegeben werden.')
+
+  if (isNumericSchema(items)) {
+    const result = input.split(',').map((entry) => parseNumber(entry, getSchemaType(items) === 'integer'))
+    validateArrayEntries(schema, result)
+    return result
+  }
+
+  if (isStringSchema(items)) {
+    return input.split(',').map((entry) => entry.trim())
+  }
+
+  if (isNumericArraySchema(items)) {
+    const itemSchema = getSchemaItems(items)
+    if (itemSchema === undefined) throw new Error('Verschachtelte Listen müssen als JSON eingegeben werden.')
+    const result = input.split(',').map((pair) => {
+      const entries = pair.trim().split('-')
+      if (entries.length !== 2) throw new Error('Paarwerte bitte als „erste-zweite“ eingeben.')
+      return entries.map((entry) => parseNumber(entry, getSchemaType(itemSchema) === 'integer'))
+    })
+    validateArrayEntries(schema, result)
+    return result
+  }
+
+  throw new Error('Verschachtelte Listen müssen als JSON eingegeben werden.')
+}
+
+function validateArrayEntries(schema: JsonSchemaNode, value: unknown[]): void {
+  if (schema.minItems !== undefined && value.length < schema.minItems) {
+    throw new Error(`Bitte mindestens ${schema.minItems} Einträge eingeben.`)
+  }
+  const items = getSchemaItems(schema)
+  if (items === undefined) return
+  for (const entry of value) {
+    validateValue(items, entry)
+  }
+}
+
+function validateValue(schema: JsonSchemaNode, value: unknown): void {
+  const type = getSchemaType(schema)
+  if (type === 'array') {
+    if (!Array.isArray(value)) throw new Error('Der eingegebene Wert hat nicht die erwartete Listenform.')
+    validateArrayEntries(schema, value)
+    return
+  }
+  if (type === 'integer' && (!isFiniteNumber(value) || !Number.isInteger(value))) {
+    throw new Error('Die Liste erwartet ganze Zahlen.')
+  }
+  if (type === 'number' && !isFiniteNumber(value)) {
+    throw new Error('Die Liste erwartet Zahlen.')
+  }
+  if (type === 'string' && typeof value !== 'string') {
+    throw new Error('Die Liste erwartet Textwerte.')
+  }
+}
+
+function parseNumber(input: string, integer: boolean): number {
+  const trimmed = input.trim()
+  if (trimmed === '' || !/^[+-]?(?:\d+\.?\d*|\.\d+)$/.test(trimmed)) {
+    throw new Error(integer ? 'Bitte eine ganze Zahl eingeben.' : 'Bitte eine Zahl eingeben.')
+  }
+  const value = Number(trimmed)
+  if (!Number.isFinite(value) || (integer && !Number.isInteger(value))) {
+    throw new Error(integer ? 'Bitte eine ganze Zahl eingeben.' : 'Bitte eine Zahl eingeben.')
+  }
   return value
 }
 
-function getConfigKey(path: string): string {
-  return path.split('.').at(-1) ?? path
+function parseJson(input: string, message: string): CommandArgumentValue {
+  try {
+    return JSON.parse(input) as CommandArgumentValue
+  } catch {
+    throw new Error(message)
+  }
 }
 
-function parseIntegerPairs(value: string): number[][] {
-  if (value.trim() === '') return []
-  return value.split(',').map((pair) => {
-    const entries = pair.split('-')
-    return [parseLegacyInteger(entries[0]), parseLegacyInteger(entries[1])]
-  })
+function getSchemaType(schema: JsonSchemaNode): 'array' | 'boolean' | 'integer' | 'number' | 'object' | 'string' | undefined {
+  if (typeof schema.type === 'string') return schema.type
+  return schema.type?.[0]
 }
 
-function parseFloatPair(value: string): number[] {
-  const entries = value.split(',')
-  return [parseLegacyFloat(entries[0]), parseLegacyFloat(entries[1])]
+function getSchemaItems(schema: JsonSchemaNode | undefined): JsonSchemaNode | undefined {
+  return schema !== undefined && !Array.isArray(schema.items) ? schema.items : undefined
 }
 
-function parseIntegerList(value: string): number[] {
-  if (value.trim() === '') return []
-  return value.split(',').map(parseLegacyInteger)
+function isNumericSchema(schema: JsonSchemaNode): boolean {
+  const type = getSchemaType(schema)
+  return type === 'integer' || type === 'number'
 }
 
-function parseLegacyInteger(value: string | undefined): number {
-  const parsed = Number.parseInt(value?.trim() ?? '', 10)
-  return Number.isNaN(parsed) ? 0 : parsed
+function isStringSchema(schema: JsonSchemaNode): boolean {
+  return getSchemaType(schema) === 'string'
 }
 
-function parseLegacyFloat(value: string | undefined): number {
-  const parsed = Number.parseFloat(value?.trim() ?? '')
-  return Number.isNaN(parsed) ? 0 : parsed
+function isNumericArraySchema(schema: JsonSchemaNode): boolean {
+  const items = getSchemaItems(schema)
+  return getSchemaType(schema) === 'array' && items !== undefined && isNumericSchema(items)
 }
 
-function isNumberPair(value: unknown): value is [number, number] {
-  return Array.isArray(value)
-    && value.length === 2
-    && value.every((entry) => typeof entry === 'number')
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value)
+}
+
+function isNumericPair(value: unknown): value is number[] {
+  return Array.isArray(value) && value.length === 2 && value.every(isFiniteNumber)
 }

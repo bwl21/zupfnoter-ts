@@ -62,6 +62,7 @@ const runtime: WorkbenchCommandRuntime = {
   writeDocument: (content) => {
     state.abcText = content
   },
+  getCurrentExtract: () => state.currentExtract,
   getSound: () => 'cli-default',
   render: renderSummary,
   play: (range) => log(`playback is not available in CLI (${range})`),

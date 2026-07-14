@@ -411,6 +411,9 @@ describe('legacy command registration', () => {
     expect(runtime.getAbcText()).toContain('"produce": [\n    0,\n    2\n  ]')
     expect(runtime.getAbcText()).toContain('"synchlines": [\n        [\n          1,\n          2\n        ],\n        [\n          2,\n          3\n        ]\n      ]')
 
+    await stack.runParsedCommand('cconf', ['produce', [1]])
+    expect(runtime.getAbcText()).toContain('"produce": [\n    1\n  ]')
+
     await stack.runString('delconfig extract.0.title')
     expect(runtime.getAbcText()).not.toContain('"title": "NeuerTitel"')
 

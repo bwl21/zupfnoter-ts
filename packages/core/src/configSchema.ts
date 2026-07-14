@@ -1,3 +1,5 @@
+import { CONFIG_EDITOR_OPTION_DOCUMENTATION } from './generated/configEditorDocumentation.js'
+
 /**
  * Zentrale Schema-Quelle fuer die eingebettete `%%%%zupfnoter.config`.
  *
@@ -37,6 +39,26 @@ export interface JsonSchemaNode {
   ref?: string
   type?: JsonSchemaType | readonly JsonSchemaType[]
   uniqueItems?: boolean
+  /** Nicht-validierende Metadaten für den Konfigurationseditor. */
+  'x-zupfnoter-editor'?: ConfigEditorSchemaMetadata
+}
+
+/** Sichtbare Auswahl eines Konfigurationswerts im Editor. */
+export interface ConfigEditorOption {
+  /** Gespeicherter Konfigurationswert. */
+  value: string
+  /** Fachliche Beschriftung aus der User-Dokumentation. */
+  label: string
+  /** Kurzbeschreibung aus der User-Dokumentation. */
+  description: string
+}
+
+/** Nicht-validierende UI-Metadaten eines Schemafelds. */
+export interface ConfigEditorSchemaMetadata {
+  /** Schlüssel des zugehörigen Hilfeabschnitts. */
+  helpKey: string
+  /** Statische, im Editor als Auswahl darzustellende Werte. */
+  options: readonly ConfigEditorOption[]
 }
 
 export interface ConfigSchemaValidationOptions {
@@ -573,7 +595,7 @@ const BARNUMBERS_SCHEMA: JsonSchemaNode = {
     voices: INTEGER_ARRAY_SCHEMA,
     pos: POSITION_SCHEMA,
     autopos: { type: 'boolean' },
-    apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
+    apanchor: { type: 'string', enum: ['manual', 'box', 'center'], ...editorSelection('apanchor', ['box', 'center']) },
     apbase: POSITION_SCHEMA,
     style: { type: 'string' },
     prefix: { type: 'string' },
@@ -615,7 +637,7 @@ const LEGEND_SCHEMA: JsonSchemaNode = {
     spos: POSITION_SCHEMA,
     pos: POSITION_SCHEMA,
     tstyle: { type: 'string' },
-    align: { type: 'string', enum: ['l', 'r', 'auto'] },
+    align: { type: 'string', enum: ['l', 'r', 'auto'], ...editorSelection('align', ['l', 'r', 'auto']) },
     style: { type: 'string' },
     salign: { type: 'string', enum: ['l', 'r', 'auto'] },
   },
@@ -740,8 +762,8 @@ const LAYOUT_SCHEMA: JsonSchemaNode = {
     PITCH_OFFSET: { type: 'integer' },
     X_SPACING: { type: 'number' },
     X_OFFSET: { type: 'number' },
-    instrument: { type: 'string' },
-    tuning: { type: 'string' },
+    instrument: { type: 'string', ...editorSelection('instrument', ['37-strings-g-g', '25-strings-g-g', '21-strings-a-f', '18-strings-b-e', 'saitenspiel', 'Zipino', 'okon-f', 'okon-g', 'okon-c', 'okon-d', 'akkordzither', 'klein-a4']) },
+    tuning: { type: 'string', ...editorSelection('tuning', ['fixed', 'open']) },
     DRAWING_AREA_SIZE: NUMBER_ARRAY_SCHEMA,
     ELLIPSE_SIZE: NUMBER_ARRAY_SCHEMA,
     REST_SIZE: NUMBER_ARRAY_SCHEMA,
@@ -750,9 +772,9 @@ const LAYOUT_SCHEMA: JsonSchemaNode = {
       type: 'object',
       additionalProperties: false,
       properties: {
-        color_default: { type: 'string' },
-        color_variant1: { type: 'string' },
-        color_variant2: { type: 'string' },
+        color_default: { type: 'string', ...editorSelection('layout.color', ['black', 'grey', 'darkgrey', 'dimgrey']) },
+        color_variant1: { type: 'string', ...editorSelection('layout.color', ['black', 'grey', 'darkgrey', 'dimgrey']) },
+        color_variant2: { type: 'string', ...editorSelection('layout.color', ['black', 'grey', 'darkgrey', 'dimgrey']) },
       },
     },
     packer: {
@@ -942,6 +964,35 @@ function legacyApanchorRef(): JsonSchemaNode {
   return refTo('#/definitions/apanchor')
 }
 
+function editorSelection(helpKey: string, values: readonly string[]): Pick<JsonSchemaNode, 'x-zupfnoter-editor'> {
+  const documentedOptions = CONFIG_EDITOR_OPTION_DOCUMENTATION[helpKey] ?? {}
+  const findDocumentation = (value: string) => documentedOptions[value]
+    ?? Object.entries(documentedOptions).find(([pattern]) => matchesDocumentedValuePattern(pattern, value))?.[1]
+  const missingOptions = values.filter((value) => findDocumentation(value) === undefined)
+  if (missingOptions.length > 0) {
+    throw new Error(`Missing configuration help for ${helpKey}: ${missingOptions.join(', ')}`)
+  }
+
+  return {
+    'x-zupfnoter-editor': {
+      helpKey,
+      options: values.map((value) => {
+        const documentation = findDocumentation(value)
+        if (documentation === undefined) {
+          throw new Error(`Missing configuration help for ${helpKey}: ${value}`)
+        }
+        return { value, ...documentation }
+      }),
+    },
+  }
+}
+
+function matchesDocumentedValuePattern(pattern: string, value: string): boolean {
+  if (!pattern.includes('*')) return false
+  const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\\\*/g, '.*')
+  return new RegExp(`^${escapedPattern}$`).test(value)
+}
+
 function integerArraySchema(itemsSchema: JsonSchemaNode = { type: 'integer' }, minItems?: number): JsonSchemaNode {
   const schema: JsonSchemaNode = {
     type: 'array',
@@ -1056,8 +1107,8 @@ function legacyExtractLayoutSchema(): JsonSchemaNode {
       PITCH_OFFSET: { type: 'integer' },
       X_SPACING: { type: 'number' },
       X_OFFSET: { type: 'number' },
-      instrument: { type: 'string' },
-      tuning: { type: 'string' },
+      instrument: { type: 'string', ...editorSelection('instrument', ['37-strings-g-g', '25-strings-g-g', '21-strings-a-f', '18-strings-b-e', 'saitenspiel', 'Zipino', 'okon-f', 'okon-g', 'okon-c', 'okon-d', 'akkordzither', 'klein-a4']) },
+      tuning: { type: 'string', ...editorSelection('tuning', ['fixed', 'open']) },
       DRAWING_AREA_SIZE: numberArraySchema(2),
       ELLIPSE_SIZE: numberArraySchema(2),
       REST_SIZE: numberArraySchema(2),
@@ -1065,9 +1116,9 @@ function legacyExtractLayoutSchema(): JsonSchemaNode {
       color: {
         type: 'object',
         properties: {
-          color_default: { type: 'string' },
-          color_variant1: { type: 'string' },
-          color_variant2: { type: 'string' },
+          color_default: { type: 'string', ...editorSelection('layout.color', ['black', 'grey', 'darkgrey', 'dimgrey']) },
+          color_variant1: { type: 'string', ...editorSelection('layout.color', ['black', 'grey', 'darkgrey', 'dimgrey']) },
+          color_variant2: { type: 'string', ...editorSelection('layout.color', ['black', 'grey', 'darkgrey', 'dimgrey']) },
         },
       },
       packer: {
@@ -1408,7 +1459,16 @@ export function buildConfigSchemaOverview(): JsonSchemaNode {
       produce: integerArraySchema({ type: 'integer' }, 0),
       template: { type: 'object', additionalProperties: false, properties: { filebase: { type: 'string' }, title: { type: 'string' } } },
       abc_parser: { type: 'string' },
-      restposition: { type: 'object', additionalProperties: false, required: ['default', 'repeatstart', 'repeatend'], properties: { default: { type: 'string' }, repeatstart: { type: 'string' }, repeatend: { type: 'string' } } },
+      restposition: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['default', 'repeatstart', 'repeatend'],
+        properties: {
+          default: { type: 'string', ...editorSelection('restposition', ['center', 'next', 'previous', 'default']) },
+          repeatstart: { type: 'string', ...editorSelection('restposition', ['center', 'next', 'previous', 'default']) },
+          repeatend: { type: 'string', ...editorSelection('restposition', ['center', 'next', 'previous', 'default']) },
+        },
+      },
       wrap: { type: 'integer' },
       defaults: legacyDefaultsSchema(),
       templates: legacyTemplatesSchema(),
@@ -1432,6 +1492,34 @@ const VALIDATION_SCHEMA_OVERVIEW: JsonSchemaNode = buildValidationSchemaOverview
 
 export function getConfigSchemaOverview(): JsonSchemaNode {
   return ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW
+}
+
+/** Resolves a concrete path through schema properties, legacy patterns, references and arrays. */
+export function resolveConfigSchemaPath(path: string): JsonSchemaNode | undefined {
+  let current: JsonSchemaNode = ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW
+
+  for (const segment of path.split('.')) {
+    current = resolveSchemaNodeReference(current, ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW)
+    if (current.type === 'array' && /^\d+$/.test(segment)) {
+      if (!isSchemaNode(current.items)) return undefined
+      current = current.items
+      continue
+    }
+
+    const directSchema = current.properties?.[segment]
+    if (directSchema !== undefined) {
+      current = directSchema
+      continue
+    }
+
+    const patternSchema = current.patternProperties === undefined
+      ? undefined
+      : findPatternSchema(segment, current.patternProperties)
+    if (patternSchema === undefined) return undefined
+    current = patternSchema
+  }
+
+  return resolveSchemaNodeReference(current, ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW)
 }
 
 function buildValidationSchemaOverview(schema: JsonSchemaNode): JsonSchemaNode {
@@ -1652,7 +1740,7 @@ export function getConfigPathActionProfile(
 ): ConfigPathActionProfile {
   return {
     canDelete: path !== undefined && options.hasLocalValue,
-    canFill: path !== undefined && options.isLeaf && !options.hasLocalValue && options.hasEffectiveValue,
+    canFill: path !== undefined && !options.hasLocalValue && options.hasEffectiveValue,
     canSelect: isSelectableConfigPath(path),
     menuKind: getConfigMenuKind(path),
   }

@@ -17,8 +17,10 @@ import {
   getConfigEditorFormSet,
   initConf,
   mergeSongConfig,
-  serializeConfigEditorValue,
+  parseConfigEditorValue,
+  resolveConfigSchemaPath,
   type CommandArgumentValue,
+  type ConfigEditorOption,
   type ConfigEditorMenuCommand,
   type ConfigEditorTreeDefinition,
 } from '@zupfnoter/core'
@@ -40,12 +42,11 @@ interface ConfigIntent {
     | 'config.openMainMenu'
     | 'config.editSection'
     | 'config.selectAffectedObject'
-    | 'config.fillPath'
     | 'config.deletePath'
     | 'config.setPath'
     | 'config.openMenuAtPath'
   path?: string
-  value?: string
+  value?: CommandArgumentValue
   extractId: number
 }
 
@@ -66,6 +67,8 @@ interface ConfigTreeRow {
   canDelete: boolean
   canSelect: boolean
   menuKind: string
+  editorOptions?: readonly ConfigEditorOption[]
+  valueType?: string
 }
 
 const props = withDefaults(defineProps<{
@@ -93,6 +96,7 @@ const expandedPaths = ref<string[]>([
   'extract.current.printer',
 ])
 const draftValues = ref<Record<string, string>>({})
+const inputErrors = ref<Record<string, string>>({})
 
 const fallbackSectionVisiblePaths: Record<string, string[]> = {
   layout: [
@@ -151,6 +155,7 @@ const visibleRows = computed(() => buildVisibleRows())
 const usesCompactShell = computed(() => visibleRows.value.length <= 4)
 let panelResizeObserver: ResizeObserver | undefined
 const helpTooltips = new Map<HTMLElement, TippyInstance>()
+const optionTooltips = new Map<HTMLElement, TippyInstance>()
 const configHelpTexts = ref<ConfigHelpTexts>({})
 const activeSectionTreeDefinition = computed(() => buildActiveSectionTreeDefinition())
 const pendingNewEntryBranchPaths = ref<ReadonlySet<string> | undefined>(undefined)
@@ -159,6 +164,7 @@ watch(
   [() => props.currentExtract, () => props.abcText],
   () => {
     draftValues.value = {}
+    inputErrors.value = {}
   },
 )
 
@@ -167,6 +173,7 @@ watch(
   () => {
     void nextTick(() => {
       syncHelpTooltips()
+      syncOptionTooltips()
     })
   },
   { deep: true },
@@ -217,15 +224,18 @@ onMounted(() => {
   void loadConfigHelpTexts().then((texts) => {
     configHelpTexts.value = texts
     syncHelpTooltips()
+    syncOptionTooltips()
   })
   void nextTick(() => {
     syncHelpTooltips()
+    syncOptionTooltips()
   })
 })
 
 onBeforeUnmount(() => {
   panelResizeObserver?.disconnect()
   destroyHelpTooltips()
+  destroyOptionTooltips()
 })
 
 function buildVisibleRows(): ConfigTreeRow[] {
@@ -373,6 +383,7 @@ function createRow(
     hasLocalValue: localValue !== undefined,
     isLeaf: !isBranch,
   })
+  const schema = localPath === undefined ? undefined : resolveConfigSchemaPath(localPath)
 
   return {
     key: path,
@@ -391,6 +402,8 @@ function createRow(
     canDelete: actionProfile.canDelete,
     canSelect: actionProfile.canSelect,
     menuKind: actionProfile.menuKind,
+    editorOptions: schema?.['x-zupfnoter-editor']?.options,
+    valueType: typeof schema?.type === 'string' ? schema.type : undefined,
   }
 }
 
@@ -479,17 +492,78 @@ function updateDraftValue(row: ConfigTreeRow, value: string): void {
     ...draftValues.value,
     [row.path]: value,
   }
+  if (inputErrors.value[row.path] !== undefined) {
+    const { [row.path]: _error, ...remainingErrors } = inputErrors.value
+    inputErrors.value = remainingErrors
+  }
 }
 
 function commitDraftValue(row: ConfigTreeRow): void {
   const value = draftValues.value[row.path]
   if (value === undefined || value === formatConfigEditorValue(row.path, row.localValue)) return
+  const parsed = row.localPath === undefined ? { error: 'Der Konfigurationspfad fehlt.' } : parseConfigEditorValue(row.localPath, value)
+  if (parsed.error !== undefined) {
+    inputErrors.value = {
+      ...inputErrors.value,
+      [row.path]: parsed.error,
+    }
+    return
+  }
   emit('intent', {
     action: 'config.setPath',
     path: row.localPath,
-    value: serializeConfigEditorValue(row.path, value),
+    value: parsed.value,
     extractId: props.currentExtract,
   })
+}
+
+function hasEditorOptions(row: ConfigTreeRow): boolean {
+  return (row.editorOptions?.length ?? 0) > 0
+}
+
+function isBooleanValue(row: ConfigTreeRow): boolean {
+  return row.valueType === 'boolean'
+}
+
+function getBooleanValue(row: ConfigTreeRow): boolean {
+  if (typeof row.localValue === 'boolean') return row.localValue
+  return typeof row.effectiveValue === 'boolean' ? row.effectiveValue : false
+}
+
+function commitBooleanValue(row: ConfigTreeRow, value: boolean): void {
+  if (row.localPath === undefined) return
+  emit('intent', {
+    action: 'config.setPath',
+    path: row.localPath,
+    value,
+    extractId: props.currentExtract,
+  })
+}
+
+function getSelectDraftValue(row: ConfigTreeRow): string {
+  const draftValue = draftValues.value[row.path]
+  if (draftValue !== undefined) return draftValue
+  if (typeof row.localValue === 'string') return row.localValue
+  return typeof row.effectiveValue === 'string' ? row.effectiveValue : ''
+}
+
+function getSelectedOptionLabel(row: ConfigTreeRow): string {
+  const value = getSelectDraftValue(row)
+  const option = row.editorOptions?.find((entry) => entry.value === value)
+  return option === undefined ? 'Bitte auswählen' : `${option.label} (${option.value})`
+}
+
+function selectEditorOption(row: ConfigTreeRow, value: string, event: MouseEvent): void {
+  updateDraftValue(row, value)
+  commitDraftValue(row)
+  const details = (event.currentTarget as HTMLElement).closest('details')
+  if (details !== null) details.open = false
+}
+
+function closeEditorOptions(event: KeyboardEvent): void {
+  const details = event.currentTarget as HTMLDetailsElement
+  details.open = false
+  details.querySelector<HTMLElement>('summary')?.focus()
 }
 
 function syncPanelWidth(): void {
@@ -534,6 +608,40 @@ function destroyHelpTooltips(): void {
     instance.destroy()
   }
   helpTooltips.clear()
+}
+
+function syncOptionTooltips(): void {
+  if (panelElement.value === null) return
+  const elements = panelElement.value.querySelectorAll<HTMLElement>('.config-row__select-option[data-option-description]')
+
+  for (const element of elements) {
+    const description = element.dataset.optionDescription
+    if (description === undefined || description === '') continue
+    const existing = optionTooltips.get(element)
+    if (existing !== undefined) {
+      existing.setContent(description)
+      continue
+    }
+    optionTooltips.set(element, tippy(element, {
+      content: description,
+      placement: 'right',
+      maxWidth: 280,
+      theme: 'zn-config-help',
+    }))
+  }
+
+  for (const [element, instance] of optionTooltips) {
+    if (panelElement.value.contains(element)) continue
+    instance.destroy()
+    optionTooltips.delete(element)
+  }
+}
+
+function destroyOptionTooltips(): void {
+  for (const instance of optionTooltips.values()) {
+    instance.destroy()
+  }
+  optionTooltips.clear()
 }
 
 function createHelpTooltipContent(helpKey: string): HTMLElement {
@@ -609,6 +717,28 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
     path,
     extractId: props.currentExtract,
   })
+}
+
+function fillFromEffectiveValue(row: ConfigTreeRow): void {
+  if (row.localPath === undefined || !isCommandArgumentValue(row.effectiveValue)) return
+  if (row.isBranch && !isExpanded(row.path)) {
+    expandedPaths.value = [...expandedPaths.value, row.path]
+  }
+  emit('intent', {
+    action: 'config.setPath',
+    path: row.localPath,
+    value: row.effectiveValue,
+    extractId: props.currentExtract,
+  })
+}
+
+function isCommandArgumentValue(value: unknown): value is CommandArgumentValue {
+  if (value === null || typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    return true
+  }
+  if (Array.isArray(value)) return value.every(isCommandArgumentValue)
+  if (!isRecord(value)) return false
+  return Object.values(value).every(isCommandArgumentValue)
 }
 
 function handleAddEntry(): void {
@@ -753,16 +883,60 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
             >
               <ZnIcon name="help" />
             </span>
+            <details
+              v-if="row.isLeaf && hasEditorOptions(row)"
+              class="config-row__input config-row__select"
+              @keydown.esc.prevent="closeEditorOptions($event)"
+            >
+              <summary class="config-row__select-summary">
+                <span>{{ getSelectedOptionLabel(row) }}</span>
+                <ZnIcon class="config-row__select-caret" name="collapse" aria-hidden="true" />
+              </summary>
+              <div class="config-row__select-options" role="listbox" :aria-label="`${row.label} auswählen`">
+                <button
+                  v-for="option in row.editorOptions"
+                  :key="option.value"
+                  class="config-row__select-option"
+                  :class="{ 'config-row__select-option--selected': option.value === getSelectDraftValue(row) }"
+                  type="button"
+                  role="option"
+                  :aria-selected="option.value === getSelectDraftValue(row)"
+                  :data-option-description="option.description"
+                  @click="selectEditorOption(row, option.value, $event)"
+                >
+                  {{ option.label }} ({{ option.value }})
+                </button>
+              </div>
+            </details>
+            <label v-else-if="row.isLeaf && isBooleanValue(row)" class="config-row__boolean">
+              <input
+                type="checkbox"
+                :checked="getBooleanValue(row)"
+                :aria-label="`${row.label} aktivieren`"
+                @change="commitBooleanValue(row, ($event.target as HTMLInputElement).checked)"
+              >
+              <span>{{ getBooleanValue(row) ? 'Ja' : 'Nein' }}</span>
+            </label>
             <input
-              v-if="row.isLeaf"
+              v-else-if="row.isLeaf"
               :value="getDraftValue(row)"
               class="config-row__input"
               type="text"
               :placeholder="row.canFill ? 'Mit wirksamem Wert auffuellen' : 'Kein lokaler Wert'"
+              :aria-invalid="inputErrors[row.path] !== undefined"
+              :aria-describedby="inputErrors[row.path] !== undefined ? `config-error-${row.key}` : undefined"
               @input="updateDraftValue(row, ($event.target as HTMLInputElement).value)"
               @blur="commitDraftValue(row)"
               @keydown.enter.prevent="commitDraftValue(row)"
             >
+            <span
+              v-if="row.isLeaf && inputErrors[row.path] !== undefined"
+              :id="`config-error-${row.key}`"
+              class="config-row__input-error"
+              role="alert"
+            >
+              {{ inputErrors[row.path] }}
+            </span>
           </div>
 
           <div class="config-row__actions">
@@ -782,7 +956,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               variant="ghost"
               :disabled="!row.canFill"
               :tabindex="-1"
-              @click="emitIntent('config.fillPath', row.localPath)"
+              @click="fillFromEffectiveValue(row)"
             >
               <ZnIcon name="fill" />
             </ZnIconButton>
@@ -1162,9 +1336,94 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
   font-family: var(--zn-font-mono);
 }
 
+.config-row__select {
+  font-family: inherit;
+  position: relative;
+}
+
+.config-row__select-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.config-row__select-summary::-webkit-details-marker {
+  display: none;
+}
+
+.config-row__select-caret {
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+  transition: transform 120ms ease;
+}
+
+.config-row__select[open] .config-row__select-caret {
+  transform: rotate(180deg);
+}
+
+.config-row__select-options {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 0.2rem);
+  left: 0;
+  min-width: 100%;
+  padding: 0.2rem;
+  border: 1px solid var(--zn-border);
+  border-radius: 0.45rem;
+  background: var(--zn-bg-surface);
+  box-shadow: var(--zn-shadow-soft);
+}
+
+.config-row__select-option {
+  display: block;
+  width: 100%;
+  padding: 0.22rem 0.35rem;
+  border: 0;
+  border-radius: 0.28rem;
+  background: transparent;
+  color: var(--zn-text);
+  font: inherit;
+  font-size: 0.82rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.config-row__select-option:hover,
+.config-row__select-option--selected {
+  background: var(--zn-bg-surface-soft);
+}
+
+.config-row__boolean {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 1.35rem;
+  color: var(--zn-text);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.config-row__boolean input {
+  margin: 0;
+  accent-color: var(--zn-accent);
+}
+
 .config-row__input:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--zn-accent) 60%, white);
   outline-offset: 2px;
+}
+
+.config-row__input-error {
+  color: var(--zn-text-muted);
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+.config-row__input-error {
+  color: var(--zn-danger, #9f1c1c);
 }
 
 .config-row__object-placeholder {

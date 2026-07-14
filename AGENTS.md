@@ -144,6 +144,25 @@ Root-`spec.md` ist ein Doku-Index für Specs, Konzepte und referenznahe Architek
 Die aktuelle Arbeits-Spec wird von Ona direkt in `spec.md` verwaltet und nach Abschluss
 in den zugehörigen Phase-Ordner verschoben oder von dort verlinkt.
 
+### User-Dokumentation und Konfigurationshilfe
+
+- Die gepflegten Quellen der User-Dokumentation liegen in `docs/user-manual/UD_*`.
+  Die Legacy-Verzeichnisse sind nur noch Referenz und werden nicht geändert.
+- Die Konfigurationshilfe wird in
+  `docs/user-manual/UD_Zupfnoter-Handbuch/help_de-de.md` gepflegt. Daraus entstehen
+  `apps/web/public/locale/conf-help_de-de.json` und die Editor-Metadaten via
+  `pnpm generate:config-docs`; diese generierten Dateien nicht manuell bearbeiten.
+- Das Handbuchkapitel `090_UD_Zupfnoter-Konfiguration.md` bleibt ein erzeugtes
+  Handbuchartefakt. Änderungen an Konfigurationshilfe oder Auswahlwerten immer mit
+  `pnpm generate:config-docs` nachvollziehen.
+- Statische Auswahlwerte werden sichtbar dokumentiert, entweder als
+  `**Fachlicher Name: \`wert\`**` mit Erklärung oder als Listenpunkt
+  `- \`wert\`: Erklärung`. Dokumentierte Muster wie `okon-*` sind zulässig.
+  Keine unsichtbaren Titelmarker einführen.
+- Wird ein statischer Auswahlwert ergänzt, muss seine Dokumentation vor der
+  Schema-Metadatenänderung ergänzt werden; die Generator- und Schema-Prüfungen
+  müssen danach laufen.
+
 ---
 
 ## Zielarchitektur (Monorepo)
