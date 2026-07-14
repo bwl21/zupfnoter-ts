@@ -60,6 +60,13 @@ function createRuntime(log: string[]): WorkbenchCommandRuntime {
   }
 }
 
+function readRuntimeConfig(runtime: WorkbenchCommandRuntime): Record<string, unknown> {
+  const marker = '%%%%zupfnoter.config'
+  const markerIndex = runtime.getAbcText().indexOf(marker)
+  if (markerIndex < 0) throw new Error('Missing config block')
+  return JSON.parse(runtime.getAbcText().slice(markerIndex + marker.length).trim()) as Record<string, unknown>
+}
+
 describe('parseCommandString', () => {
   it('keeps quoted strings and JSON arguments together', () => {
     expect(parseCommandString('c 4711 "Mein Titel"')).toEqual({
@@ -475,6 +482,29 @@ describe('legacy command registration', () => {
 
     expect(runtime.getAbcText()).toContain('"2": {')
     expect(runtime.getAbcText()).toContain('"voices": [')
+  })
+
+  it('moves a config value between extracts as one config history entry', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('cconf extract.3.voices [2]')
+    await stack.runString('moveconfig extract.3.voices 0')
+
+    const movedConfig = readRuntimeConfig(runtime)
+    expect(movedConfig).toMatchObject({ extract: { '0': { voices: [2] } } })
+    expect((movedConfig.extract as Record<string, unknown>)['3']).toEqual({})
+
+    await stack.runString('undoconfig')
+    const undoneConfig = readRuntimeConfig(runtime)
+    expect(undoneConfig).toMatchObject({ extract: { '3': { voices: [2] } } })
+
+    await stack.runString('redoconfig')
+    const redoneConfig = readRuntimeConfig(runtime)
+    expect(redoneConfig).toMatchObject({ extract: { '0': { voices: [2] } } })
+    expect((redoneConfig.extract as Record<string, unknown>)['3']).toEqual({})
   })
 
   it('stores standard config snippets and applies them through legacy commands', async () => {

@@ -35,12 +35,15 @@ export interface WorkbenchCommandRuntime {
   listLocalStore(): string[]
   saveLocalStore(): void
   openLocalStore(id: string): string | undefined
+  setConfigHistoryState?(state: { canUndo: boolean; canRedo: boolean }): void
 }
 
 export function registerLegacyCommands(stack: CommandStack, runtime: WorkbenchCommandRuntime): void {
   registerInternalCommands(stack, runtime)
   registerPlaybackCommands(stack, runtime)
-  registerCreateAndConfigCommands(stack, runtime, createCommandState(runtime))
+  const state = createCommandState(runtime)
+  registerCreateAndConfigCommands(stack, runtime, state)
+  notifyConfigHistoryState(runtime, state)
   registerLocalStoreCommands(stack, runtime)
   registerDropboxCommands(stack)
 }
@@ -404,6 +407,7 @@ function registerCreateAndConfigCommands(
       }
       runtime.setAbcText(entry.previousAbcText)
       state.configRedoStack.push(entry)
+      notifyConfigHistoryState(runtime, state)
       context.log(`undid ${entry.title}`)
     },
   })
@@ -420,6 +424,7 @@ function registerCreateAndConfigCommands(
       }
       runtime.setAbcText(entry.nextAbcText)
       state.configUndoStack.push(entry)
+      notifyConfigHistoryState(runtime, state)
       context.log(`redid ${entry.title}`)
     },
   })
@@ -516,6 +521,22 @@ function registerCreateAndConfigCommands(
       const sourceValue = getConfigPath(config, key)
       const targetKey = key.replace(/^extract\.\d+/, `extract.${targetId}`)
       patchConfig(runtime, state, targetKey, sourceValue, `cpconfig ${key} ${targetId}`)
+      runtime.render()
+    },
+  })
+
+  stack.addCommand({
+    name: 'moveconfig',
+    help: 'move config parameter to another extract',
+    undoable: false,
+    parameters: [
+      { name: 'key', type: 'string', help: 'configuration key' },
+      { name: 'targetid', type: 'string', help: 'target extract number' },
+    ],
+    perform: (args) => {
+      const key = readString(args, 'key')
+      const targetId = readString(args, 'targetid')
+      moveConfig(runtime, state, key, targetId, `moveconfig ${key} ${targetId}`)
       runtime.render()
     },
   })
@@ -737,7 +758,25 @@ function patchConfig(
   const config = readConfig(previousAbcText)
   setConfigPath(config, key, value, key.endsWith('.x'))
   const nextAbcText = writeConfig(previousAbcText, config)
-  pushConfigHistory(state, title, previousAbcText, nextAbcText)
+  pushConfigHistory(runtime, state, title, previousAbcText, nextAbcText)
+  runtime.setAbcText(nextAbcText)
+}
+
+function moveConfig(
+  runtime: WorkbenchCommandRuntime,
+  state: LegacyCommandState,
+  key: string,
+  targetId: string,
+  title: string,
+): void {
+  const previousAbcText = runtime.getAbcText()
+  const config = readConfig(previousAbcText)
+  const sourceValue = getConfigPath(config, key)
+  const targetKey = key.replace(/^extract\.\d+/, `extract.${targetId}`)
+  setConfigPath(config, targetKey, sourceValue)
+  deleteConfigPath(config, key)
+  const nextAbcText = writeConfig(previousAbcText, config)
+  pushConfigHistory(runtime, state, title, previousAbcText, nextAbcText)
   runtime.setAbcText(nextAbcText)
 }
 
@@ -751,11 +790,12 @@ function deleteConfig(
   const config = readConfig(previousAbcText)
   deleteConfigPath(config, key)
   const nextAbcText = writeConfig(previousAbcText, config)
-  pushConfigHistory(state, title, previousAbcText, nextAbcText)
+  pushConfigHistory(runtime, state, title, previousAbcText, nextAbcText)
   runtime.setAbcText(nextAbcText)
 }
 
 function pushConfigHistory(
+  runtime: WorkbenchCommandRuntime,
   state: LegacyCommandState,
   title: string,
   previousAbcText: string,
@@ -763,6 +803,14 @@ function pushConfigHistory(
 ): void {
   state.configUndoStack.push({ title, previousAbcText, nextAbcText })
   state.configRedoStack.length = 0
+  notifyConfigHistoryState(runtime, state)
+}
+
+function notifyConfigHistoryState(runtime: WorkbenchCommandRuntime, state: LegacyCommandState): void {
+  runtime.setConfigHistoryState?.({
+    canUndo: state.configUndoStack.length > 0,
+    canRedo: state.configRedoStack.length > 0,
+  })
 }
 
 function getConfigPath(config: Record<string, CommandArgumentValue>, path: string): CommandArgumentValue | undefined {

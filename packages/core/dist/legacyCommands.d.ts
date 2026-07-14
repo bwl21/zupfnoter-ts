@@ -26,6 +26,10 @@ export interface WorkbenchCommandRuntime {
     listLocalStore(): string[];
     saveLocalStore(): void;
     openLocalStore(id: string): string | undefined;
+    setConfigHistoryState?(state: {
+        canUndo: boolean;
+        canRedo: boolean;
+    }): void;
 }
 export declare function registerLegacyCommands(stack: CommandStack, runtime: WorkbenchCommandRuntime): void;
 export declare function createLegacyCommandStack(runtime: WorkbenchCommandRuntime, log: (message: string) => void): CommandStack;

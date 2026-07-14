@@ -45,10 +45,13 @@ interface ConfigIntent {
     | 'config.selectAffectedObject'
     | 'config.deletePath'
     | 'config.setPath'
+    | 'config.copyPathToExtract'
+    | 'config.movePathToExtract'
     | 'config.openMenuAtPath'
   path?: string
   value?: CommandArgumentValue
   extractId: number
+  targetExtract?: number
 }
 
 interface ConfigTreeRow {
@@ -73,12 +76,23 @@ interface ConfigTreeRow {
   valueType?: string
 }
 
+interface ConfigExtractOption {
+  extractNumber: number
+  label: string
+}
+
 const props = withDefaults(defineProps<{
   abcText: string
   currentExtract: number
   activeSection: string
+  canUndo?: boolean
+  canRedo?: boolean
+  extractOptions?: readonly ConfigExtractOption[]
   entryMutationVersion?: number
 }>(), {
+  extractOptions: () => [],
+  canUndo: false,
+  canRedo: false,
   entryMutationVersion: 0,
 })
 
@@ -602,6 +616,78 @@ function closeEditorOptionsOnOutsidePointerDown(event: PointerEvent): void {
   for (const details of panelElement.value.querySelectorAll<HTMLDetailsElement>('details.config-row__select[open]')) {
     if (!details.contains(target)) details.open = false
   }
+  for (const details of panelElement.value.querySelectorAll<HTMLDetailsElement>('details.config-row__menu[open]')) {
+    if (!details.contains(target)) details.open = false
+  }
+}
+
+interface ConfigRowMenuEntry {
+  label: string
+  path: string
+  targetExtract: number
+  action: 'copy' | 'move'
+}
+
+function getConfigExtractOptions(): ConfigExtractOption[] {
+  const options = new Map<number, ConfigExtractOption>([[0, { extractNumber: 0, label: '0' }]])
+  for (const option of props.extractOptions) options.set(option.extractNumber, option)
+  if (!options.has(props.currentExtract)) {
+    options.set(props.currentExtract, { extractNumber: props.currentExtract, label: String(props.currentExtract) })
+  }
+  return [...options.values()].sort((left, right) => left.extractNumber - right.extractNumber)
+}
+
+function getRowSourceEntries(row: ConfigTreeRow): ConfigRowMenuEntry[] {
+  const localPath = row.localPath
+  if (localPath === undefined || !localPath.startsWith('extract.')) return []
+
+  const match = localPath.match(/^extract\.(\d+)(\..+)$/)
+  if (match === null) return []
+  const sourceExtract = Number(match[1])
+  const suffix = match[2]
+  return getConfigExtractOptions()
+    .filter((option) => option.extractNumber !== sourceExtract)
+    .map((option) => ({
+      label: option.label,
+      path: `extract.${option.extractNumber}${suffix}`,
+      targetExtract: sourceExtract,
+      action: 'copy' as const,
+    }))
+}
+
+function getRowMoveEntry(row: ConfigTreeRow): ConfigRowMenuEntry | undefined {
+  const localPath = row.localPath
+  if (localPath === undefined || !/^extract\.\d+\./.test(localPath)) return undefined
+  const sourceExtract = Number(localPath.match(/^extract\.(\d+)\./)?.[1])
+  if (!Number.isFinite(sourceExtract) || sourceExtract === 0) return undefined
+  return {
+    label: 'Nach Auszug 0 verschieben',
+    path: localPath,
+    targetExtract: 0,
+    action: 'move',
+  }
+}
+
+function hasRowMenu(row: ConfigTreeRow): boolean {
+  return getRowSourceEntries(row).length > 0 || getRowMoveEntry(row) !== undefined
+}
+
+function closeRowMenu(event: KeyboardEvent): void {
+  const details = (event.currentTarget as HTMLElement).closest('details.config-row__menu') as HTMLDetailsElement | null
+  if (details === null) return
+  details.open = false
+  details.querySelector<HTMLElement>('summary')?.focus()
+}
+
+function emitRowMenuIntent(entry: ConfigRowMenuEntry, event: MouseEvent): void {
+  const details = (event.currentTarget as HTMLElement).closest('details.config-row__menu') as HTMLDetailsElement | null
+  if (details !== null) details.open = false
+  emit('intent', {
+    action: entry.action === 'move' ? 'config.movePathToExtract' : 'config.copyPathToExtract',
+    path: entry.path,
+    extractId: props.currentExtract,
+    targetExtract: entry.targetExtract,
+  })
 }
 
 function syncPanelWidth(): void {
@@ -840,6 +926,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
             class="config-panel__toolbar-icon"
             label="Undo"
             variant="ghost"
+            :disabled="!props.canUndo"
             @click="emitIntent('config.undo')"
           >
             ↺
@@ -848,6 +935,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
             class="config-panel__toolbar-icon"
             label="Redo"
             variant="ghost"
+            :disabled="!props.canRedo"
             @click="emitIntent('config.redo')"
           >
             ↻
@@ -1050,13 +1138,47 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
             >
               <ZnIcon name="fill" />
             </ZnIconButton>
+            <details
+              v-if="hasRowMenu(row)"
+              class="config-row__menu"
+              @keydown.esc.prevent="closeRowMenu($event)"
+            >
+              <summary class="config-row__menu-summary" aria-haspopup="menu" :title="row.localPath ?? row.path">
+                <ZnIcon name="menu" />
+              </summary>
+              <div class="config-row__menu-list" role="menu" :aria-label="`${row.label} verschieben oder holen`">
+                <div v-if="getRowSourceEntries(row).length > 0" class="config-row__submenu-group">
+                  <div class="config-row__menu-heading">Aus Auszug holen …</div>
+                  <button
+                    v-for="entry in getRowSourceEntries(row)"
+                    :key="`${entry.path}:${entry.targetExtract}`"
+                    type="button"
+                    class="config-row__menu-item config-row__submenu-item"
+                    role="menuitem"
+                    @click="emitRowMenuIntent(entry, $event)"
+                  >
+                    {{ entry.label }}
+                  </button>
+                </div>
+                <button
+                  v-if="getRowMoveEntry(row) !== undefined"
+                  type="button"
+                  class="config-row__menu-item"
+                  role="menuitem"
+                  @click="emitRowMenuIntent(getRowMoveEntry(row) as ConfigRowMenuEntry, $event)"
+                >
+                  Nach Auszug 0 verschieben
+                </button>
+              </div>
+            </details>
             <ZnIconButton
+              v-else
               class="config-row__action"
-              label="Parametermenue oeffnen"
+              label="Parametermenue nicht verfügbar"
               variant="ghost"
               :title="row.localPath ?? row.path"
+              :disabled="true"
               :tabindex="-1"
-              @click="emitIntent('config.openMenuAtPath', row.localPath)"
             >
               <ZnIcon name="menu" />
             </ZnIconButton>
@@ -1167,6 +1289,12 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
   border-radius: 999px;
   box-shadow: none;
   font-size: 0.72rem;
+}
+
+:deep(.config-panel__toolbar-icon.zn-icon-button:not(:disabled)) {
+  color: var(--zn-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 .config-panel__toolbar-search {
@@ -1579,6 +1707,81 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
   align-self: center;
   gap: 0.02rem;
   padding-inline: 0.02rem;
+}
+
+.config-row__menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.config-row__menu-summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 999px;
+  color: var(--zn-text-soft);
+  cursor: pointer;
+  list-style: none;
+}
+
+.config-row__menu-summary::-webkit-details-marker {
+  display: none;
+}
+
+.config-row__menu-summary:hover,
+.config-row__menu-summary:focus-visible {
+  background: var(--zn-bg-surface-soft);
+  outline: none;
+}
+
+.config-row__menu-list {
+  position: absolute;
+  z-index: 6;
+  top: calc(100% + 0.2rem);
+  right: 0;
+  display: grid;
+  min-width: max-content;
+  padding: 0.2rem;
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-md);
+  background: var(--zn-bg-elevated);
+  box-shadow: var(--zn-shadow-soft);
+}
+
+.config-row__menu-item {
+  padding: 0.3rem 0.55rem;
+  border: 0;
+  border-radius: var(--zn-radius-sm);
+  background: transparent;
+  color: var(--zn-text);
+  font: inherit;
+  font-size: 0.78rem;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.config-row__menu-heading {
+  padding: 0.3rem 0.55rem 0.15rem;
+  color: var(--zn-text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.config-row__submenu-item {
+  display: block;
+  width: 100%;
+  padding-left: 0.9rem;
+}
+
+.config-row__menu-item:hover,
+.config-row__menu-item:focus-visible {
+  background: var(--zn-bg-surface-soft);
+  outline: none;
 }
 
 .config-row__effective {

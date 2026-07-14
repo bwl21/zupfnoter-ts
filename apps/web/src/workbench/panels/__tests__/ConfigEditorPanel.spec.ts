@@ -61,6 +61,129 @@ describe('ConfigEditorPanel', () => {
     ])
   })
 
+  it('opens extract copy actions for a parameter in the current extract', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"voices":[1]},"3":{"voices":[2]}}}',
+        ].join('\n'),
+        currentExtract: 0,
+        extractOptions: [
+          { extractNumber: 0, label: '0 Grundeinstellungen' },
+          { extractNumber: 3, label: '3 Sopran' },
+        ],
+        activeSection: 'basic_settings',
+      },
+    })
+
+    const voicesRow = wrapper.findAll('.config-row').find((row) => {
+      const input = row.find('input')
+      return row.text().includes('Stimmen') && input.exists() && (input.element as HTMLInputElement).value === '1'
+    })
+    expect(voicesRow).toBeDefined()
+    if (voicesRow === undefined) return
+
+    await voicesRow.find('.config-row__menu-summary').trigger('click')
+    expect(voicesRow.find('.config-row__menu-list').text()).toContain('Aus Auszug holen')
+    expect(voicesRow.find('.config-row__menu-list').text()).toContain('3 Sopran')
+    expect(voicesRow.find('.config-row__menu-list').text()).not.toContain('Nach Auszug 0 verschieben')
+
+    const rowMenu = voicesRow.find('.config-row__menu')
+    await rowMenu.trigger('keydown', { key: 'Escape' })
+    expect((rowMenu.element as HTMLDetailsElement).open).toBe(false)
+    await voicesRow.find('.config-row__menu-summary').trigger('click')
+
+    await voicesRow.find('.config-row__submenu-item').trigger('click')
+    expect((rowMenu.element as HTMLDetailsElement).open).toBe(false)
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.copyPathToExtract',
+        path: 'extract.3.voices',
+        extractId: 0,
+        targetExtract: 0,
+      },
+    ])
+  })
+
+  it('emits a source path when pulling a parameter from another extract', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"voices":[1]},"3":{"voices":[2]}}}',
+        ].join('\n'),
+        currentExtract: 3,
+        extractOptions: [
+          { extractNumber: 0, label: '0 Grundeinstellungen' },
+          { extractNumber: 3, label: '3 Sopran' },
+        ],
+        activeSection: 'basic_settings',
+      },
+    })
+
+    const voicesRow = wrapper.findAll('.config-row').find((row) => {
+      const input = row.find('input')
+      return row.text().includes('Stimmen') && input.exists() && (input.element as HTMLInputElement).value === '2'
+    })
+    expect(voicesRow).toBeDefined()
+    if (voicesRow === undefined) return
+
+    await voicesRow.find('.config-row__menu-summary').trigger('click')
+    await voicesRow.find('.config-row__submenu-item').trigger('click')
+
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.copyPathToExtract',
+        path: 'extract.0.voices',
+        extractId: 3,
+        targetExtract: 3,
+      },
+    ])
+
+    await voicesRow.find('.config-row__menu-summary').trigger('click')
+    await voicesRow.findAll('.config-row__menu-item').find((item) => item.text() === 'Nach Auszug 0 verschieben')?.trigger('click')
+
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.movePathToExtract',
+        path: 'extract.3.voices',
+        extractId: 3,
+        targetExtract: 0,
+      },
+    ])
+  })
+
+  it('keeps the menu icon disabled for global parameters', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        extractOptions: [
+          { extractNumber: 0, label: '0 Grundeinstellungen' },
+          { extractNumber: 3, label: '3 Sopran' },
+        ],
+        activeSection: 'all_parameters',
+      },
+    })
+
+    const produceRow = wrapper.findAll('.config-row').find((row) => row.text().includes('PDF für Auszüge'))
+    expect(produceRow).toBeDefined()
+    if (produceRow === undefined) return
+    expect(produceRow.find('.config-row__menu').exists()).toBe(false)
+    expect(produceRow.find('button[disabled]').exists()).toBe(true)
+  })
+
   it('filters the tree to the selected config edit section', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {
@@ -330,6 +453,8 @@ describe('ConfigEditorPanel', () => {
         abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
         currentExtract: 0,
         activeSection: 'layout',
+        canUndo: true,
+        canRedo: true,
       },
     })
 
@@ -342,6 +467,19 @@ describe('ConfigEditorPanel', () => {
     expect(wrapper.emitted('intent')).toContainEqual([
       { action: 'config.redo', extractId: 0 },
     ])
+  })
+
+  it('disables config undo and redo when their stacks are empty', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'layout',
+      },
+    })
+
+    expect(wrapper.find('button[aria-label="Undo"]').attributes('disabled')).toBeDefined()
+    expect(wrapper.find('button[aria-label="Redo"]').attributes('disabled')).toBeDefined()
   })
 
   it('emits a config command when a local value is committed', async () => {

@@ -59,6 +59,7 @@ interface ConfigEditorIntent {
   path?: string
   value?: CommandArgumentValue
   extractId: number
+  targetExtract?: number
 }
 
 const editorTab = ref('abc')
@@ -71,6 +72,8 @@ const abcText = ref(DEFAULT_ABC)
 const currentExtract = ref(0)
 const activeConfigSection = ref('basic_settings')
 const configEntryMutationVersion = ref(0)
+const configCanUndo = ref(false)
+const configCanRedo = ref(false)
 const saveFormat = ref('A3-A4')
 const storageState = reactive({
   system: 'dropbox',
@@ -617,6 +620,16 @@ function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
     return
   }
 
+  if (intent.action === 'config.copyPathToExtract' && intent.path !== undefined && intent.targetExtract !== undefined) {
+    void executeToolbarCommand(`cpconfig ${intent.path} ${intent.targetExtract}`)
+    return
+  }
+
+  if (intent.action === 'config.movePathToExtract' && intent.path !== undefined && intent.targetExtract !== undefined) {
+    void executeToolbarCommand(`moveconfig ${intent.path} ${intent.targetExtract}`)
+    return
+  }
+
   appendConsoleLine(`config intent: ${intent.action}${intent.path ? ` ${intent.path}` : ''}`, 'info')
 }
 
@@ -799,6 +812,10 @@ registerStorageCommands(commandStack, storageState, {
   listLocalStore,
   saveLocalStore: saveToLocalStore,
   openLocalStore: openFromLocalStore,
+  setConfigHistoryState: ({ canUndo, canRedo }) => {
+      configCanUndo.value = canUndo
+      configCanRedo.value = canRedo
+  },
 })
 
 
@@ -1097,8 +1114,11 @@ function handleMirrorMessage(event: MessageEvent): void {
                   v-else-if="activeId === 'config'"
                   :abc-text="abcText"
                   :current-extract="currentExtract"
+                  :extract-options="extractMenuItems"
                   :active-section="activeConfigSection"
                   :entry-mutation-version="configEntryMutationVersion"
+                  :can-undo="configCanUndo"
+                  :can-redo="configCanRedo"
                   @intent="handleConfigEditorIntent"
                 />
                 <ConsolePanel
