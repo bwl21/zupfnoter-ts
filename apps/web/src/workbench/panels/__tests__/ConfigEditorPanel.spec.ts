@@ -393,6 +393,7 @@ describe('ConfigEditorPanel', () => {
     if (produceRow === undefined) return
 
     const input = produceRow.find('input')
+    expect((input.element as HTMLInputElement).value).toBe('0')
     await input.setValue('0')
     await input.trigger('blur')
 

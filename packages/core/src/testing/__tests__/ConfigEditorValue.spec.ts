@@ -16,6 +16,11 @@ describe('config editor value conversion', () => {
     expect(serializeConfigEditorValue('extract.0.synchlines', '1-2, 2-3')).toBe('[[1,2],[2,3]]')
   })
 
+  it('uses editor metadata for compact array display', () => {
+    expect(formatConfigEditorValue('extract.0.voices', [1, 3])).toBe('1, 3')
+    expect(formatConfigEditorValue('extract.0.synchlines', [[1, 2], [3, 4]])).toBe('1-2, 3-4')
+  })
+
   it('derives scalar and nested array values from the schema', () => {
     expect(parseConfigEditorValue('produce', '0, 2')).toEqual({ value: [0, 2] })
     expect(parseConfigEditorValue('extract.0.synchlines', '1-2, 2-3')).toEqual({ value: [[1, 2], [2, 3]] })

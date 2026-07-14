@@ -65,6 +65,8 @@ export interface ConfigEditorSchemaMetadata {
   options?: readonly ConfigEditorOption[]
   /** Spezialisierte Bearbeitungsoberfläche für diesen Wert. */
   strategy?: ConfigEditorStrategy
+  /** Darstellung eines Listenwerts im kompakten Konfigurationseditor. */
+  valueFormat?: 'array' | 'pair-array'
 }
 
 export interface ConfigSchemaValidationOptions {
@@ -257,21 +259,25 @@ const POSITION_SCHEMA: JsonSchemaNode = {
   type: 'array',
   minItems: 2,
   items: { type: 'number' },
+  'x-zupfnoter-editor': { valueFormat: 'array' },
 }
 
 const STRING_ARRAY_SCHEMA: JsonSchemaNode = {
   type: 'array',
   items: { type: 'string' },
+  'x-zupfnoter-editor': { valueFormat: 'array' },
 }
 
 const INTEGER_ARRAY_SCHEMA: JsonSchemaNode = {
   type: 'array',
   items: { type: 'integer' },
+  'x-zupfnoter-editor': { valueFormat: 'array' },
 }
 
 const NUMBER_ARRAY_SCHEMA: JsonSchemaNode = {
   type: 'array',
   items: { type: 'number' },
+  'x-zupfnoter-editor': { valueFormat: 'array' },
 }
 
 const NOTES_ENTRY_SCHEMA: JsonSchemaNode = {
@@ -488,6 +494,7 @@ const FONT_STYLE_SCHEMA: JsonSchemaNode = {
       type: 'array',
       minItems: 3,
       items: { type: 'integer' },
+      'x-zupfnoter-editor': { valueFormat: 'array' },
     },
     fontSize: { type: 'number' },
     fontStyle: { type: 'string', enum: ['normal', 'bold', 'italic'] },
@@ -511,6 +518,7 @@ const BEAM_STYLE_SCHEMA: JsonSchemaNode = {
   items: {
     type: ['number', 'string', 'boolean'],
   },
+  'x-zupfnoter-editor': { valueFormat: 'array' },
 }
 
 const REST_STYLE_SCHEMA: JsonSchemaNode = {
@@ -857,6 +865,7 @@ const EXTRACT_SCHEMA: JsonSchemaNode = {
     voices: INTEGER_ARRAY_SCHEMA,
     synchlines: {
       type: 'array',
+      'x-zupfnoter-editor': { valueFormat: 'pair-array' },
       items: {
         type: 'array',
         minItems: 1,
@@ -1020,6 +1029,9 @@ function integerArraySchema(itemsSchema: JsonSchemaNode = { type: 'integer' }, m
     type: 'array',
     uniqueItems: true,
     items: itemsSchema,
+    'x-zupfnoter-editor': {
+      valueFormat: itemsSchema.type === 'array' ? 'pair-array' : 'array',
+    },
   }
   if (minItems !== undefined) schema.minItems = minItems
   return schema
@@ -1029,6 +1041,7 @@ function numberArraySchema(minItems?: number, itemType: JsonSchemaType = 'number
   const schema: JsonSchemaNode = {
     type: 'array',
     items: { type: itemType },
+    'x-zupfnoter-editor': { valueFormat: 'array' },
   }
   if (minItems !== undefined) schema.minItems = minItems
   return schema
@@ -1071,6 +1084,7 @@ function legacyAnnotatedBezierSchema(): JsonSchemaNode {
         minItems: 0,
         uniqueItems: true,
         items: { type: 'string' },
+        'x-zupfnoter-editor': { valueFormat: 'array' },
       },
       show: { type: 'boolean' },
       style: fontStyleSchema(),
@@ -1269,7 +1283,7 @@ function legacyTemplatesSchema(): JsonSchemaNode {
         properties: {
           cp1: legacyPosRef(),
           cp2: legacyPosRef(),
-          shape: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'string' } },
+          shape: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'string' }, 'x-zupfnoter-editor': { valueFormat: 'array' } },
         },
       },
       annotations: legacyPositionedTextSchema(),
@@ -1307,6 +1321,7 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
         type: 'array',
         minItems: 0,
         uniqueItems: true,
+        'x-zupfnoter-editor': { valueFormat: 'pair-array' },
         items: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'integer' } },
       },
       flowlines: integerArraySchema({ type: 'integer' }, 1),
@@ -1381,8 +1396,8 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
         type: 'object',
         required: ['a3_offset', 'a4_offset', 'show_border'],
         properties: {
-          a3_offset: { type: 'array', minItems: 2, axItems: 2, uniqueItems: false, items: { type: 'integer' } },
-          a4_offset: { type: 'array', minItems: 2, uniqueItems: false, items: { type: 'integer' } },
+          a3_offset: { type: 'array', minItems: 2, axItems: 2, uniqueItems: false, items: { type: 'integer' }, 'x-zupfnoter-editor': { valueFormat: 'array' } },
+          a4_offset: { type: 'array', minItems: 2, uniqueItems: false, items: { type: 'integer' }, 'x-zupfnoter-editor': { valueFormat: 'array' } },
           show_border: { type: 'boolean' },
         },
       },
@@ -1402,12 +1417,12 @@ function legacyRootLayoutSchema(): JsonSchemaNode {
       LINE_THIN: { type: 'number' },
       LINE_MEDIUM: { type: 'number' },
       LINE_THICK: { type: 'number' },
-      ELLIPSE_SIZE: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'number' } },
-      REST_SIZE: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'number' } },
+      ELLIPSE_SIZE: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'number' }, 'x-zupfnoter-editor': { valueFormat: 'array' } },
+      REST_SIZE: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'number' }, 'x-zupfnoter-editor': { valueFormat: 'array' } },
       X_SPACING: { type: 'number' },
       X_OFFSET: { type: 'number' },
       Y_SCALE: { type: 'integer' },
-      DRAWING_AREA_SIZE: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'integer' } },
+      DRAWING_AREA_SIZE: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'integer' }, 'x-zupfnoter-editor': { valueFormat: 'array' } },
       BEAT_RESOLUTION: { type: 'integer' },
       SHORTEST_NOTE: { type: 'integer' },
       BEAT_PER_DURATION: { type: 'integer' },
@@ -1422,7 +1437,7 @@ function legacyRootLayoutSchema(): JsonSchemaNode {
             properties: {
               label: { type: 'string' },
               description: { type: 'string' },
-              text_color: { type: 'array', minItems: 3, uniqueItems: false, items: { type: 'integer' } },
+              text_color: { type: 'array', minItems: 3, uniqueItems: false, items: { type: 'integer' }, 'x-zupfnoter-editor': { valueFormat: 'array' } },
               font_size: { type: 'integer' },
               font_style: { type: 'string' },
             },
@@ -1433,7 +1448,7 @@ function legacyRootLayoutSchema(): JsonSchemaNode {
       DURATION_TO_STYLE: {
         type: 'object',
         required: ['err', 'd64', 'd48', 'd32', 'd24', 'd16', 'd12', 'd8', 'd6', 'd4', 'd3', 'd2', 'd1'],
-        patternProperties: { '.*': { type: 'array', minItems: 3, uniqueItems: false, items: { type: ['number', 'string', 'boolean'] } } },
+        patternProperties: { '.*': { type: 'array', minItems: 3, uniqueItems: false, items: { type: ['number', 'string', 'boolean'] }, 'x-zupfnoter-editor': { valueFormat: 'array' } } },
       },
       REST_TO_GLYPH: {
         type: 'object',

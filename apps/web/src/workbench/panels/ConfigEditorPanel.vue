@@ -489,7 +489,14 @@ function toggleExpanded(path: string): void {
 }
 
 function getDraftValue(row: ConfigTreeRow): string {
-  return draftValues.value[row.path] ?? formatConfigEditorValue(row.path, row.localValue)
+  const draftValue = draftValues.value[row.path]
+  if (draftValue !== undefined) return draftValue
+  const localFormatPath = row.localPath ?? row.path
+  if (Array.isArray(row.localValue)) return formatConfigEditorValue(localFormatPath, row.localValue)
+  if (row.localValue === undefined && Array.isArray(row.effectiveValue)) {
+    return formatConfigEditorValue(row.effectivePath ?? row.path, row.effectiveValue)
+  }
+  return formatConfigEditorValue(localFormatPath, row.localValue)
 }
 
 function updateDraftValue(row: ConfigTreeRow, value: string): void {
@@ -505,7 +512,7 @@ function updateDraftValue(row: ConfigTreeRow, value: string): void {
 
 function commitDraftValue(row: ConfigTreeRow): void {
   const value = draftValues.value[row.path]
-  if (value === undefined || value === formatConfigEditorValue(row.path, row.localValue)) return
+  if (value === undefined || value === formatConfigEditorValue(row.localPath ?? row.path, row.localValue)) return
   const parsed = row.localPath === undefined ? { error: 'Der Konfigurationspfad fehlt.' } : parseConfigEditorValue(row.localPath, value)
   if (parsed.error !== undefined) {
     inputErrors.value = {
@@ -1069,9 +1076,9 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
             <div class="config-row__effective-main">
               <span
                 class="config-row__effective-value"
-                :title="formatConfigEditorValue(row.path, row.effectiveValue)"
+                :title="formatConfigEditorValue(row.effectivePath ?? row.path, row.effectiveValue)"
               >
-                {{ formatConfigEditorValue(row.path, row.effectiveValue) }}
+                {{ formatConfigEditorValue(row.effectivePath ?? row.path, row.effectiveValue) }}
               </span>
               <span
                 v-if="row.hasExtractZeroMarker"

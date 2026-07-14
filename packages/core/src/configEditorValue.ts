@@ -36,14 +36,11 @@ function formatValue(schema: JsonSchemaNode | undefined, value: unknown): string
   if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return String(value)
   if (!Array.isArray(value)) return typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value)
 
-  const items = getSchemaItems(schema)
-  if (items !== undefined && isNumericSchema(items) && value.every(isFiniteNumber)) {
-    return value.join(', ')
-  }
-  if (items !== undefined && isNumericArraySchema(items) && value.every(isNumericPair)) {
+  const valueFormat = schema?.['x-zupfnoter-editor']?.valueFormat
+  if (valueFormat === 'pair-array' && value.every(isNumericPair)) {
     return value.map((pair) => pair.join('-')).join(', ')
   }
-  if (items !== undefined && isStringSchema(items) && value.every((entry) => typeof entry === 'string')) {
+  if (valueFormat === 'array' && value.every((entry) => isFiniteNumber(entry) || typeof entry === 'string')) {
     return value.join(', ')
   }
   return JSON.stringify(value)
