@@ -242,6 +242,59 @@ describe('ConfigEditorPanel', () => {
     ])
   })
 
+  it('emits the delete command for a deletable local parameter', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"title":"Alt"}}}',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'all_parameters',
+      },
+    })
+
+    const titleRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Titel'))
+    expect(titleRow).toBeDefined()
+    if (titleRow === undefined) return
+
+    const deleteButton = titleRow.find('button[aria-label="Pfad oder Teilbaum loeschen"]')
+    await deleteButton.trigger('click')
+
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.deletePath',
+        path: 'extract.0.title',
+        extractId: 0,
+      },
+    ])
+  })
+
+  it('emits config undo and redo intents from the toolbar', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'layout',
+      },
+    })
+
+    await wrapper.find('button[aria-label="Undo"]').trigger('click')
+    await wrapper.find('button[aria-label="Redo"]').trigger('click')
+
+    expect(wrapper.emitted('intent')).toContainEqual([
+      { action: 'config.undo', extractId: 0 },
+    ])
+    expect(wrapper.emitted('intent')).toContainEqual([
+      { action: 'config.redo', extractId: 0 },
+    ])
+  })
+
   it('expands a newly added configuration entry after the command succeeds', async () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

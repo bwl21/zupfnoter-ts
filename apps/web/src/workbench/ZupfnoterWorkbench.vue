@@ -560,6 +560,16 @@ async function executeToolbarCommand(command: string): Promise<boolean> {
 }
 
 function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
+  if (intent.action === 'config.undo') {
+    void executeToolbarCommand('undoconfig')
+    return
+  }
+
+  if (intent.action === 'config.redo') {
+    void executeToolbarCommand('redoconfig')
+    return
+  }
+
   if (intent.action === 'config.editSection' && intent.path !== undefined) {
     void executeToolbarCommand(`editconf ${intent.path}`)
     return
@@ -569,6 +579,11 @@ function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
     void executeToolbarCommand(`addconf ${intent.path}`).then((wasAdded) => {
       if (wasAdded) configEntryMutationVersion.value += 1
     })
+    return
+  }
+
+  if (intent.action === 'config.deletePath' && intent.path !== undefined) {
+    void executeToolbarCommand(`delconfig ${intent.path}`)
     return
   }
 
@@ -829,6 +844,12 @@ function handleScorePreviewSelection(payload: {
 
 function handleGlobalKeydown(event: KeyboardEvent): void {
   if (!event.ctrlKey && !event.metaKey) return
+  if (editorTab.value === 'config' && (event.key === 'z' || event.key === 'Z' || event.key === 'y' || event.key === 'Y')) {
+    event.preventDefault()
+    const isRedo = event.key === 'y' || event.key === 'Y' || event.shiftKey
+    void executeToolbarCommand(isRedo ? 'redoconfig' : 'undoconfig')
+    return
+  }
   if (event.key === 'r' || event.key === 'R' || event.key === 'Enter') {
     event.preventDefault()
     executeToolbarCommand('render')
