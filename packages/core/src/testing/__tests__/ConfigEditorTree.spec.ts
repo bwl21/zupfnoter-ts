@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildConfigEditorSectionTree } from '../../configEditorTree.js'
+import {
+  buildConfigEditorSectionTree,
+  CONFIG_EDITOR_TREE_DEFINITION,
+  findConfigEditorTreeDefinition,
+} from '../../configEditorTree.js'
 import type { ConfigEditorTreeDefinition } from '../../configEditorTree.js'
 import type { CommandArgumentValue } from '../../commands.js'
 
@@ -23,6 +27,14 @@ function flattenConfigPaths(definitions: readonly ConfigEditorTreeDefinition[]):
 }
 
 describe('buildConfigEditorSectionTree', () => {
+  it('contains the legacy global produce and rest-position settings for all parameters', () => {
+    expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'produce')?.label).toBe('PDF für Auszüge')
+    expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition')?.label).toBe('Position der Pausen')
+    expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition.default')?.label).toBe('Standard')
+    expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition.repeatstart')?.label).toBe('Wiederholungsanfang')
+    expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition.repeatend')?.label).toBe('Wiederholungsende')
+  })
+
   it('expands extract annotation keys for extract ids from current and effective config', () => {
     const currentConfig = {
       extract: {

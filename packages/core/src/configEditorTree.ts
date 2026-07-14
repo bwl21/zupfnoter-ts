@@ -111,6 +111,16 @@ const stringnamesTreeLeafDefinitions: PathLabelDefinition[] = [
 ]
 
 export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
+  { key: 'produce', label: 'PDF für Auszüge' },
+  {
+    key: 'restposition',
+    label: 'Position der Pausen',
+    children: [
+      { key: 'default', label: 'Standard' },
+      { key: 'repeatstart', label: 'Wiederholungsanfang' },
+      { key: 'repeatend', label: 'Wiederholungsende' },
+    ],
+  },
   {
     key: 'extract',
     label: 'Auszug',
