@@ -54,4 +54,25 @@ describe('AbcEditorPanel', () => {
     expect(gutterMarker.exists()).toBe(true)
     expect(wrapper.find('.cm-abc-gutter-marker--error').exists()).toBe(true)
   })
+
+  it('opens the native CodeMirror search panel with Ctrl+F', async () => {
+    const wrapper = mount(AbcEditorPanel, {
+      props: { modelValue: 'X:1\nT:Demo\nK:C\nC D C' },
+    })
+
+    await wrapper.find('.cm-content').trigger('keydown', { key: 'f', ctrlKey: true })
+    expect(wrapper.find('.cm-search').exists()).toBe(true)
+    expect(wrapper.find('.cm-search input').exists()).toBe(true)
+  })
+
+  it('uses the native CodeMirror replace controls', async () => {
+    const wrapper = mount(AbcEditorPanel, {
+      props: { modelValue: 'X:1\nT:C C\nK:C\nC' },
+    })
+
+    await wrapper.find('.cm-content').trigger('keydown', { key: 'f', ctrlKey: true })
+    const searchPanel = wrapper.find('.cm-search')
+    expect(searchPanel.findAll('input').length).toBeGreaterThanOrEqual(1)
+    expect(searchPanel.findAll('button').length).toBeGreaterThan(2)
+  })
 })

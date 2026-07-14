@@ -1,4 +1,5 @@
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
+import { search, searchKeymap } from '@codemirror/search'
 import {
   type EditorState,
   StateEffect,
@@ -442,7 +443,8 @@ export function createAbcEditorExtensions(): Extension[] {
     drawSelection(),
     highlightActiveLine(),
     history(),
-    keymap.of([...defaultKeymap, ...historyKeymap]),
+    search(),
+    keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
     EditorView.contentAttributes.of({
       'aria-label': 'ABC notation editor',
       role: 'textbox',
@@ -459,6 +461,9 @@ export function createAbcEditorExtensions(): Extension[] {
         fontFamily: 'var(--zn-font-mono)',
         fontSize: '0.82rem',
         lineHeight: '1.55',
+        border: '1px solid var(--zn-border)',
+        borderRadius: 'var(--zn-radius-md)',
+        overflow: 'hidden',
       },
       '.cm-editor': {
         width: '100%',
