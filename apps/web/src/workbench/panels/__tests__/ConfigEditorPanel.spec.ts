@@ -184,6 +184,37 @@ describe('ConfigEditorPanel', () => {
     expect(labels.indexOf('T01_number_extract')).toBeLessThan(labels.lastIndexOf('Position'))
   })
 
+  it('renders legacy text fields as multi-line inputs', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"notes":{"T01":{"pos":[1,2],"text":"erste\\nzweite Zeile","style":"regular","align":"l"}}}}}',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'notes',
+      },
+    })
+
+    const textarea = wrapper.find('textarea.config-row__textarea')
+    expect(textarea.exists()).toBe(true)
+    expect((textarea.element as HTMLTextAreaElement).value).toBe('erste\nzweite Zeile')
+    expect(textarea.element.closest('.config-row')?.classList.contains('config-row--multiline')).toBe(true)
+
+    const styleRow = wrapper.findAll('.config-row').find((row) => row.find('.config-row__label').text() === 'Stil')
+    expect(styleRow?.find('details.config-row__select').exists()).toBe(true)
+    expect(styleRow?.findAll('.config-row__select-option').map((option) => option.text())).toContain('bold (bold)')
+
+    const alignRow = wrapper.findAll('.config-row').find((row) => row.find('.config-row__label').text() === 'Ausrichtung')
+    expect(alignRow?.find('details.config-row__select').exists()).toBe(true)
+    expect(alignRow?.findAll('.config-row__select-option').map((option) => option.text())).toContain('auto (auto)')
+  })
+
   it('expands global annotation templates from effective and current config', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

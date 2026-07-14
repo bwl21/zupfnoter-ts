@@ -72,11 +72,44 @@ function buildConfig(abcText: string) {
   return mergeSongConfig(defaults, extractSongConfig(abcText))
 }
 
+/** Meldet eine fehlende oder leere anfängliche Tonartzeile vor dem Konfigurationsblock. */
+function findInitialKeyHeaderDiagnostic(abcText: string): WorkbenchDiagnostic | undefined {
+  const configMarkerLine = abcText.indexOf('%%%%zupfnoter.config')
+  const notationSource = configMarkerLine < 0 ? abcText : abcText.slice(0, configMarkerLine)
+  const lines = notationSource.split('\n')
+  const keyLineIndex = lines.findIndex((line) => line.startsWith('K:'))
+
+  if (keyLineIndex < 0) {
+    return {
+      severity: 'error',
+      message: 'Eine Tonartzeile K: fehlt. Zum Beispiel: K:C',
+      source: 'abc-header',
+      startPos: [1, 1],
+      endPos: [1, 1],
+    }
+  }
+
+  const keyValue = lines[keyLineIndex]?.slice(2).trim() ?? ''
+  if (keyValue.length === 0 || keyValue.startsWith('%')) {
+    const line = keyLineIndex + 1
+    return {
+      severity: 'error',
+      message: 'Die Tonartzeile K: braucht einen Wert. Zum Beispiel: K:C',
+      source: 'abc-header',
+      startPos: [line, 1],
+      endPos: [line, 1],
+    }
+  }
+
+  return undefined
+}
+
 export function renderWorkbenchPreviews(
   abcText: string,
   extractNr: number = 0,
 ): WorkbenchRenderResult {
   const config = buildConfig(abcText)
+  const keyHeaderDiagnostic = findInitialKeyHeaderDiagnostic(abcText)
   const scoreParser = new AbcParser()
   let scoreSvg = ''
   let scoreError: string | undefined
@@ -111,8 +144,11 @@ export function renderWorkbenchPreviews(
     modelError = error instanceof Error ? error.message : String(error)
   }
 
+  const parserDiagnostics = keyHeaderDiagnostic === undefined
+    ? modelParser.errors.map(parserErrorToWorkbenchDiagnostic)
+    : [keyHeaderDiagnostic]
   const modelDiagnostics: WorkbenchDiagnostic[] = [
-    ...modelParser.errors.map(parserErrorToWorkbenchDiagnostic),
+    ...parserDiagnostics,
     ...((song?.metaData.diagnostics ?? []) as SongDiagnostic[]).map(songDiagnosticToWorkbenchDiagnostic),
   ]
   const issues = scoreParser.errors.map(parserIssueToRenderIssue)

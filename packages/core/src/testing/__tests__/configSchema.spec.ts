@@ -110,6 +110,12 @@ describe('configSchema', () => {
     expect(resolveConfigSchemaPath('extract.0.layout.instrument')?.['x-zupfnoter-editor']?.options).toContainEqual(
       expect.objectContaining({ value: 'okon-g', label: 'Okon-Tischharfe' }),
     )
+    expect(resolveConfigSchemaPath('extract.0.notes.T01.text')?.['x-zupfnoter-editor']?.strategy).toBe('textarea')
+    expect(resolveConfigSchemaPath('extract.0.notes.T01.style')?.['x-zupfnoter-editor']?.strategy).toBe('font-style-select')
+    expect(resolveConfigSchemaPath('extract.0.notes.T01.align')?.['x-zupfnoter-editor']?.options).toContainEqual(
+      expect.objectContaining({ value: 'auto' }),
+    )
+    expect(resolveConfigSchemaPath('extract.0.countnotes.cntextleft')?.['x-zupfnoter-editor']?.strategy).toBeUndefined()
   })
 
   it('recognizes legacy top-level keys', () => {

@@ -75,6 +75,7 @@ export type {
   ConfigPathActionProfile,
   ConfigEditorOption,
   ConfigEditorSchemaMetadata,
+  ConfigEditorStrategy,
   ConfigSchemaValidationOptions,
   JsonSchemaNode,
 } from './configSchema.js'

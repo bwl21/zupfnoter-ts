@@ -21,6 +21,7 @@ import {
   resolveConfigSchemaPath,
   type CommandArgumentValue,
   type ConfigEditorOption,
+  type ConfigEditorStrategy,
   type ConfigEditorMenuCommand,
   type ConfigEditorTreeDefinition,
 } from '@zupfnoter/core'
@@ -68,6 +69,7 @@ interface ConfigTreeRow {
   canSelect: boolean
   menuKind: string
   editorOptions?: readonly ConfigEditorOption[]
+  editorStrategy?: ConfigEditorStrategy
   valueType?: string
 }
 
@@ -403,6 +405,7 @@ function createRow(
     canSelect: actionProfile.canSelect,
     menuKind: actionProfile.menuKind,
     editorOptions: schema?.['x-zupfnoter-editor']?.options,
+    editorStrategy: schema?.['x-zupfnoter-editor']?.strategy,
     valueType: typeof schema?.type === 'string' ? schema.type : undefined,
   }
 }
@@ -518,11 +521,24 @@ function commitDraftValue(row: ConfigTreeRow): void {
 }
 
 function hasEditorOptions(row: ConfigTreeRow): boolean {
-  return (row.editorOptions?.length ?? 0) > 0
+  return getEditorOptions(row).length > 0
+}
+
+function getEditorOptions(row: ConfigTreeRow): readonly ConfigEditorOption[] {
+  if (row.editorOptions !== undefined) return row.editorOptions
+  if (row.editorStrategy !== 'font-style-select') return []
+
+  const styles = getPathValue(effectiveConfig.value, 'layout.FONT_STYLE_DEF')
+  if (!isRecord(styles)) return []
+  return Object.keys(styles).map((value) => ({ value, label: value, description: '' }))
 }
 
 function isBooleanValue(row: ConfigTreeRow): boolean {
   return row.valueType === 'boolean'
+}
+
+function isTextareaValue(row: ConfigTreeRow): boolean {
+  return row.editorStrategy === 'textarea'
 }
 
 function getBooleanValue(row: ConfigTreeRow): boolean {
@@ -549,7 +565,7 @@ function getSelectDraftValue(row: ConfigTreeRow): string {
 
 function getSelectedOptionLabel(row: ConfigTreeRow): string {
   const value = getSelectDraftValue(row)
-  const option = row.editorOptions?.find((entry) => entry.value === value)
+  const option = getEditorOptions(row).find((entry) => entry.value === value)
   return option === undefined ? 'Bitte auswählen' : `${option.label} (${option.value})`
 }
 
@@ -847,6 +863,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
           :class="{
             'config-row--branch': row.isBranch,
             'config-row--leaf': row.isLeaf,
+            'config-row--multiline': isTextareaValue(row),
           }"
           :style="{ '--config-depth': row.depth }"
           role="treeitem"
@@ -894,7 +911,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               </summary>
               <div class="config-row__select-options" role="listbox" :aria-label="`${row.label} auswählen`">
                 <button
-                  v-for="option in row.editorOptions"
+                  v-for="option in getEditorOptions(row)"
                   :key="option.value"
                   class="config-row__select-option"
                   :class="{ 'config-row__select-option--selected': option.value === getSelectDraftValue(row) }"
@@ -917,6 +934,17 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               >
               <span>{{ getBooleanValue(row) ? 'Ja' : 'Nein' }}</span>
             </label>
+            <textarea
+              v-else-if="row.isLeaf && isTextareaValue(row)"
+              :value="getDraftValue(row)"
+              class="config-row__input config-row__textarea"
+              rows="3"
+              :placeholder="row.canFill ? 'Mit wirksamem Wert auffuellen' : 'Kein lokaler Wert'"
+              :aria-invalid="inputErrors[row.path] !== undefined"
+              :aria-describedby="inputErrors[row.path] !== undefined ? `config-error-${row.key}` : undefined"
+              @input="updateDraftValue(row, ($event.target as HTMLTextAreaElement).value)"
+              @blur="commitDraftValue(row)"
+            />
             <input
               v-else-if="row.isLeaf"
               :value="getDraftValue(row)"
@@ -1206,6 +1234,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 
 .config-panel__tree {
   display: grid;
+  grid-auto-rows: max-content;
   align-content: start;
   gap: 0;
   min-height: 0;
@@ -1245,6 +1274,22 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 
 .config-row--branch {
   background: color-mix(in srgb, var(--zn-accent) 4%, var(--zn-bg-surface));
+}
+
+.config-row--multiline {
+  align-items: start;
+  min-height: 4.35rem;
+}
+
+.config-row--multiline .config-row__name,
+.config-row--multiline .config-row__actions,
+.config-row--multiline .config-row__effective {
+  align-self: start;
+  padding-top: 0.25rem;
+}
+
+.config-row--multiline .config-row__value {
+  align-items: start;
 }
 
 .config-row:hover {
@@ -1334,6 +1379,12 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 
 .config-row__input {
   font-family: var(--zn-font-mono);
+}
+
+.config-row__textarea {
+  min-height: 4.1rem;
+  resize: vertical;
+  line-height: 1.35;
 }
 
 .config-row__select {

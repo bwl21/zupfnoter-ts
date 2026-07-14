@@ -53,6 +53,25 @@ describe('renderWorkbenchPreviews', () => {
     expect(result.editorDiagnostics.some((diagnostic) => diagnostic.line === 4)).toBe(true)
   })
 
+  it('marks a missing key header instead of the following configuration block', () => {
+    const result = renderWorkbenchPreviews(`X:1
+T:Ohne Tonart
+C D
+
+%%%%zupfnoter.config
+{
+  "extract": {}
+}`)
+
+    expect(result.editorDiagnostics).toContainEqual(expect.objectContaining({
+      source: 'abc-header',
+      message: 'Eine Tonartzeile K: fehlt. Zum Beispiel: K:C',
+      line: 1,
+      column: 1,
+    }))
+    expect(result.editorDiagnostics.some((diagnostic) => diagnostic.line === 5)).toBe(false)
+  })
+
   it('builds a sheet object index from the rendered score and song model', () => {
     const result = renderWorkbenchPreviews('X:1\nT:Demo\nK:C\nC D')
 

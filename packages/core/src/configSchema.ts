@@ -53,12 +53,17 @@ export interface ConfigEditorOption {
   description: string
 }
 
+/** Darstellungsstrategie eines Konfigurationswerts im Editor. */
+export type ConfigEditorStrategy = 'textarea' | 'json-modal' | 'voice-selector' | 'font-style-select'
+
 /** Nicht-validierende UI-Metadaten eines Schemafelds. */
 export interface ConfigEditorSchemaMetadata {
-  /** Schlüssel des zugehörigen Hilfeabschnitts. */
-  helpKey: string
+  /** Schlüssel des zugehörigen Hilfeabschnitts, falls Auswahlwerte dokumentiert sind. */
+  helpKey?: string
   /** Statische, im Editor als Auswahl darzustellende Werte. */
-  options: readonly ConfigEditorOption[]
+  options?: readonly ConfigEditorOption[]
+  /** Spezialisierte Bearbeitungsoberfläche für diesen Wert. */
+  strategy?: ConfigEditorStrategy
 }
 
 export interface ConfigSchemaValidationOptions {
@@ -274,9 +279,9 @@ const NOTES_ENTRY_SCHEMA: JsonSchemaNode = {
   additionalProperties: false,
   properties: {
     pos: POSITION_SCHEMA,
-    text: { type: 'string' },
-    style: { type: 'string' },
-    align: { type: 'string', enum: ['l', 'r', 'auto'] },
+    text: multilineTextSchema(),
+    style: fontStyleSchema(),
+    align: { type: 'string', enum: ['l', 'r', 'auto'], ...editorSelection('align', ['l', 'r', 'auto']) },
   },
 }
 
@@ -289,7 +294,7 @@ const ANNOTATED_BEZIER_SCHEMA: JsonSchemaNode = {
     pos: POSITION_SCHEMA,
     shape: STRING_ARRAY_SCHEMA,
     show: { type: 'boolean' },
-    style: { type: 'string' },
+    style: fontStyleSchema(),
   },
 }
 
@@ -300,8 +305,8 @@ const NOTEBOUND_TIMED_ENTRY_SCHEMA: JsonSchemaNode = {
     pos: POSITION_SCHEMA,
     align: { type: 'string', enum: ['l', 'r', 'auto'] },
     show: { type: 'boolean' },
-    text: { type: 'string' },
-    style: { type: 'string' },
+    text: multilineTextSchema(),
+    style: fontStyleSchema(),
   },
 }
 
@@ -312,8 +317,8 @@ const NOTEBOUND_NESTED_ENTRY_SCHEMA: JsonSchemaNode = {
     pos: POSITION_SCHEMA,
     align: { type: 'string', enum: ['l', 'r', 'auto'] },
     show: { type: 'boolean' },
-    text: { type: 'string' },
-    style: { type: 'string' },
+    text: multilineTextSchema(),
+    style: fontStyleSchema(),
   },
   patternProperties: {
     '^\\d+$': NOTEBOUND_TIMED_ENTRY_SCHEMA,
@@ -466,8 +471,8 @@ const POSITIONED_TEXT_SCHEMA: JsonSchemaNode = {
   additionalProperties: false,
   properties: {
     pos: POSITION_SCHEMA,
-    text: { type: 'string' },
-    style: { type: 'string' },
+    text: multilineTextSchema(),
+    style: fontStyleSchema(),
   },
 }
 
@@ -521,9 +526,9 @@ const DECORATION_ANNOTATION_SCHEMA: JsonSchemaNode = {
   additionalProperties: false,
   required: ['text', 'pos', 'style'],
   properties: {
-    text: { type: 'string' },
+    text: multilineTextSchema(),
     pos: POSITION_SCHEMA,
-    style: { type: 'string' },
+    style: fontStyleSchema(),
     align: { type: 'string', enum: ['left', 'right', 'center'] },
     show: { type: 'string' },
   },
@@ -534,8 +539,8 @@ const REPEATSIGN_SIDE_SCHEMA: JsonSchemaNode = {
   additionalProperties: false,
   properties: {
     pos: POSITION_SCHEMA,
-    text: { type: 'string' },
-    style: { type: 'string' },
+    text: multilineTextSchema(),
+    style: fontStyleSchema(),
   },
 }
 
@@ -574,9 +579,9 @@ const STRINGNAMES_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    text: { type: 'string' },
+    text: multilineTextSchema(),
     vpos: INTEGER_ARRAY_SCHEMA,
-    style: { type: 'string' },
+    style: fontStyleSchema(),
     marks: {
       type: 'object',
       additionalProperties: false,
@@ -597,7 +602,7 @@ const BARNUMBERS_SCHEMA: JsonSchemaNode = {
     autopos: { type: 'boolean' },
     apanchor: { type: 'string', enum: ['manual', 'box', 'center'], ...editorSelection('apanchor', ['box', 'center']) },
     apbase: POSITION_SCHEMA,
-    style: { type: 'string' },
+    style: fontStyleSchema(),
     prefix: { type: 'string' },
   },
 }
@@ -611,7 +616,7 @@ const COUNTNOTES_SCHEMA: JsonSchemaNode = {
     autopos: { type: 'boolean' },
     apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
     apbase: POSITION_SCHEMA,
-    style: { type: 'string' },
+    style: fontStyleSchema(),
     cntextleft: { type: 'string' },
     cntextright: { type: 'string' },
   },
@@ -626,7 +631,7 @@ const NB_ANNOTATION_SCHEMA: JsonSchemaNode = {
     autopos: { type: 'boolean' },
     apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
     apbase: POSITION_SCHEMA,
-    style: { type: 'string' },
+    style: fontStyleSchema(),
   },
 }
 
@@ -636,9 +641,9 @@ const LEGEND_SCHEMA: JsonSchemaNode = {
   properties: {
     spos: POSITION_SCHEMA,
     pos: POSITION_SCHEMA,
-    tstyle: { type: 'string' },
+    tstyle: fontStyleSchema(),
     align: { type: 'string', enum: ['l', 'r', 'auto'], ...editorSelection('align', ['l', 'r', 'auto']) },
-    style: { type: 'string' },
+    style: fontStyleSchema(),
     salign: { type: 'string', enum: ['l', 'r', 'auto'] },
   },
 }
@@ -649,7 +654,7 @@ const LYRICS_ENTRY_SCHEMA: JsonSchemaNode = {
   properties: {
     verses: INTEGER_ARRAY_SCHEMA,
     pos: POSITION_SCHEMA,
-    style: { type: 'string' },
+    style: fontStyleSchema(),
   },
 }
 
@@ -670,7 +675,7 @@ const DEFAULTS_SCHEMA: JsonSchemaNode = {
           additionalProperties: false,
           properties: {
             pos: POSITION_SCHEMA,
-            style: { type: 'string' },
+            style: fontStyleSchema(),
             show: { type: 'boolean' },
           },
         },
@@ -912,8 +917,8 @@ const EXTRACT_SCHEMA: JsonSchemaNode = {
       enforceRequired: false,
       additionalProperties: false,
       properties: {
-        text: { type: 'string' },
-        style: { type: 'string' },
+        text: multilineTextSchema(),
+        style: fontStyleSchema(),
       },
     },
     stringnames: {
@@ -962,6 +967,20 @@ function legacyAlignRef(): JsonSchemaNode {
 
 function legacyApanchorRef(): JsonSchemaNode {
   return refTo('#/definitions/apanchor')
+}
+
+function multilineTextSchema(): JsonSchemaNode {
+  return {
+    type: 'string',
+    'x-zupfnoter-editor': { strategy: 'textarea' },
+  }
+}
+
+function fontStyleSchema(): JsonSchemaNode {
+  return {
+    type: 'string',
+    'x-zupfnoter-editor': { strategy: 'font-style-select' },
+  }
 }
 
 function editorSelection(helpKey: string, values: readonly string[]): Pick<JsonSchemaNode, 'x-zupfnoter-editor'> {
@@ -1018,9 +1037,9 @@ function legacyNotesEntrySchema(): JsonSchemaNode {
     required: ['pos', 'text', 'style'],
     properties: {
       pos: legacyPosRef(),
-      text: { type: 'string' },
+      text: multilineTextSchema(),
       align: legacyAlignRef(),
-      style: { type: 'string' },
+      style: fontStyleSchema(),
     },
   }
 }
@@ -1030,9 +1049,9 @@ function legacyPositionedTextSchema(required: readonly string[] = ['text', 'pos'
     type: 'object',
     required,
     properties: {
-      text: { type: 'string' },
+      text: multilineTextSchema(),
       pos: legacyPosRef(),
-      style: { type: 'string' },
+      style: fontStyleSchema(),
     },
   }
 }
@@ -1051,7 +1070,7 @@ function legacyAnnotatedBezierSchema(): JsonSchemaNode {
         items: { type: 'string' },
       },
       show: { type: 'boolean' },
-      style: { type: 'string' },
+      style: fontStyleSchema(),
     },
   }
 }
@@ -1064,8 +1083,8 @@ function legacyNoteboundPosSchema(): JsonSchemaNode {
       pos: legacyPosRef(),
       align: legacyAlignRef(),
       show: { type: 'boolean' },
-      text: { type: 'string' },
-      style: { type: 'string' },
+      text: multilineTextSchema(),
+      style: fontStyleSchema(),
     },
   }
   return {
@@ -1146,7 +1165,7 @@ function legacyDefinitions(): Record<string, JsonSchemaNode> {
         pos: legacyPosRef(),
         autopos: { type: 'boolean' },
         apanchor: legacyApanchorRef(),
-        style: { type: 'string' },
+        style: fontStyleSchema(),
       },
     },
     minc_entry: {
@@ -1172,7 +1191,7 @@ function legacyDefinitions(): Record<string, JsonSchemaNode> {
         },
       },
     },
-    align: { type: 'string', enum: ['l', 'r', 'auto'] },
+    align: { type: 'string', enum: ['l', 'r', 'auto'], ...editorSelection('align', ['l', 'r', 'auto']) },
     notebound_pos: legacyNoteboundPosSchema(),
     notebound_repeat_outdated: {
       type: 'object',
@@ -1180,7 +1199,7 @@ function legacyDefinitions(): Record<string, JsonSchemaNode> {
       patternProperties: {
         'v_d*': {
           text: 'integer',
-          style: { type: 'string' },
+          style: fontStyleSchema(),
           pos: legacyPosRef(),
         },
       },
@@ -1202,22 +1221,22 @@ function legacyDefaultsSchema(): JsonSchemaNode {
           annotation: {
             type: 'object',
             required: ['pos'],
-            properties: { pos: legacyPosRef(), style: { type: 'string' } },
+            properties: { pos: legacyPosRef(), style: fontStyleSchema() },
           },
           chord: {
             type: 'object',
             required: ['pos'],
-            properties: { pos: legacyPosRef(), style: { type: 'string' } },
+            properties: { pos: legacyPosRef(), style: fontStyleSchema() },
           },
           partname: {
             type: 'object',
             required: ['pos'],
-            properties: { pos: legacyPosRef(), style: { type: 'string' }, show: { type: 'boolean' } },
+            properties: { pos: legacyPosRef(), style: fontStyleSchema(), show: { type: 'boolean' } },
           },
           variantend: {
             type: 'object',
             required: ['pos'],
-            properties: { pos: legacyPosRef(), style: { type: 'string' } },
+            properties: { pos: legacyPosRef(), style: fontStyleSchema() },
           },
           tuplet: { $ref: '#/definitions/annotated_bezier', required: ['cp1', 'cp2', 'shape'] },
         },
@@ -1238,7 +1257,7 @@ function legacyTemplatesSchema(): JsonSchemaNode {
         properties: {
           verses: integerArraySchema({ type: 'integer' }, 1),
           pos: legacyPosRef(),
-          style: { type: 'string' },
+          style: fontStyleSchema(),
         },
       },
       tuplet: {
@@ -1260,9 +1279,9 @@ function legacyAnnotationsSchema(): JsonSchemaNode {
     type: 'object',
     required: ['vl', 'vt', 'vr'],
     properties: {
-      vl: { type: 'object', required: ['text', 'pos'], properties: { text: { type: 'string' }, pos: legacyPosRef() } },
-      vt: { type: 'object', required: ['text', 'pos'], properties: { text: { type: 'string' }, pos: legacyPosRef() } },
-      vr: { type: 'object', required: ['text', 'pos'], properties: { text: { type: 'string' }, pos: legacyPosRef() } },
+      vl: { type: 'object', required: ['text', 'pos'], properties: { text: multilineTextSchema(), pos: legacyPosRef() } },
+      vt: { type: 'object', required: ['text', 'pos'], properties: { text: multilineTextSchema(), pos: legacyPosRef() } },
+      vr: { type: 'object', required: ['text', 'pos'], properties: { text: multilineTextSchema(), pos: legacyPosRef() } },
     },
   }
 }
@@ -1295,15 +1314,15 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
         requiredx: ['voices', 'left', 'right'],
         properties: {
           voices: integerArraySchema({}, 0),
-          left: { type: 'object', required: ['pos', 'text', 'style'], properties: { pos: legacyPosRef(), text: { type: 'string' }, style: { type: 'string' } } },
-          right: { type: 'object', required: ['pos', 'text', 'style'], properties: { pos: legacyPosRef(), text: { type: 'string' }, style: { type: 'string' } } },
+          left: { type: 'object', required: ['pos', 'text', 'style'], properties: { pos: legacyPosRef(), text: multilineTextSchema(), style: fontStyleSchema() } },
+          right: { type: 'object', required: ['pos', 'text', 'style'], properties: { pos: legacyPosRef(), text: multilineTextSchema(), style: fontStyleSchema() } },
         },
       },
       layoutlines: integerArraySchema({ type: 'integer' }, 0),
       legend: {
         type: 'object',
         required: ['spos', 'pos'],
-        properties: { spos: legacyPosRef(), pos: legacyPosRef(), tstyle: { type: 'string' }, align: legacyAlignRef(), style: { type: 'string' }, salign: legacyAlignRef() },
+        properties: { spos: legacyPosRef(), pos: legacyPosRef(), tstyle: fontStyleSchema(), align: legacyAlignRef(), style: fontStyleSchema(), salign: legacyAlignRef() },
       },
       lyrics: { type: 'object', patternProperties: { '.*': { type: 'object', required: ['verses', 'pos'] } } },
       layout: refTo('#/definitions/extract_layout'),
@@ -1329,27 +1348,27 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
           variantend: refTo('#/definitions/notebound_pos'),
         },
       },
-      tuplets: { type: 'object', properties: { text: { type: 'string' } } },
+      tuplets: { type: 'object', properties: { text: multilineTextSchema() } },
       barnumbers: {
         type: 'object',
         required: ['voices', 'pos', 'autopos', 'style', 'prefix'],
-        properties: { voices: integerArraySchema({}, 0), pos: legacyPosRef(), autopos: { type: 'boolean' }, apanchor: legacyApanchorRef(), style: { type: 'string' }, prefix: { type: 'string' } },
+        properties: { voices: integerArraySchema({}, 0), pos: legacyPosRef(), autopos: { type: 'boolean' }, apanchor: legacyApanchorRef(), style: fontStyleSchema(), prefix: { type: 'string' } },
       },
       countnotes: {
         type: 'object',
         required: ['voices', 'pos', 'autopos', 'style'],
-        properties: { voices: integerArraySchema({}, 0), pos: legacyPosRef(), autopos: { type: 'boolean' }, apanchor: legacyApanchorRef(), style: { type: 'string' } },
+        properties: { voices: integerArraySchema({}, 0), pos: legacyPosRef(), autopos: { type: 'boolean' }, apanchor: legacyApanchorRef(), style: fontStyleSchema() },
         cntextleft: { type: 'string' },
         cntextright: { type: 'string' },
       },
-      chords: { ref: '#/definitions/nb_annotations', style: { type: 'string' } },
+      chords: { ref: '#/definitions/nb_annotations', style: fontStyleSchema() },
       stringnames: {
         type: 'object',
         required: ['text', 'vpos', 'style', 'marks'],
         properties: {
-          text: { type: 'string' },
+          text: multilineTextSchema(),
           vpos: integerArraySchema({ type: 'integer' }, 0),
-          style: { type: 'string' },
+          style: fontStyleSchema(),
           marks: { type: 'object', required: ['vpos', 'hpos'], properties: { vpos: integerArraySchema({ type: 'integer' }, 0), hpos: integerArraySchema({ type: 'integer' }, 0) } },
         },
       },
