@@ -669,7 +669,7 @@ function getRowMoveEntry(row: ConfigTreeRow): ConfigRowMenuEntry | undefined {
 }
 
 function hasRowMenu(row: ConfigTreeRow): boolean {
-  return getRowSourceEntries(row).length > 0 || getRowMoveEntry(row) !== undefined
+  return row.canFill || getRowSourceEntries(row).length > 0 || getRowMoveEntry(row) !== undefined
 }
 
 function closeRowMenu(event: KeyboardEvent): void {
@@ -677,6 +677,12 @@ function closeRowMenu(event: KeyboardEvent): void {
   if (details === null) return
   details.open = false
   details.querySelector<HTMLElement>('summary')?.focus()
+}
+
+function closeRowMenuAndFill(row: ConfigTreeRow, event: MouseEvent): void {
+  const details = (event.currentTarget as HTMLElement).closest('details.config-row__menu') as HTMLDetailsElement | null
+  if (details !== null) details.open = false
+  fillFromEffectiveValue(row)
 }
 
 function emitRowMenuIntent(entry: ConfigRowMenuEntry, event: MouseEvent): void {
@@ -1128,16 +1134,6 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
             >
               <ZnIcon name="select" />
             </ZnIconButton>
-            <ZnIconButton
-              class="config-row__action"
-              label="Parameter mit wirksamem Wert auffuellen"
-              variant="ghost"
-              :disabled="!row.canFill"
-              :tabindex="-1"
-              @click="fillFromEffectiveValue(row)"
-            >
-              <ZnIcon name="fill" />
-            </ZnIconButton>
             <details
               v-if="hasRowMenu(row)"
               class="config-row__menu"
@@ -1147,6 +1143,15 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
                 <ZnIcon name="menu" />
               </summary>
               <div class="config-row__menu-list" role="menu" :aria-label="`${row.label} verschieben oder holen`">
+                <button
+                  v-if="row.canFill"
+                  type="button"
+                  class="config-row__menu-item"
+                  role="menuitem"
+                  @click="closeRowMenuAndFill(row, $event)"
+                >
+                  Wirksamen Wert eintragen
+                </button>
                 <div v-if="getRowSourceEntries(row).length > 0" class="config-row__submenu-group">
                   <div class="config-row__menu-heading">Aus Auszug holen …</div>
                   <button

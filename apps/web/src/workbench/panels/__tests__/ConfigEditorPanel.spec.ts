@@ -164,7 +164,7 @@ describe('ConfigEditorPanel', () => {
     ])
   })
 
-  it('keeps the menu icon disabled for global parameters', () => {
+  it('offers the effective value action for global parameters', async () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {
         abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
@@ -180,8 +180,9 @@ describe('ConfigEditorPanel', () => {
     const produceRow = wrapper.findAll('.config-row').find((row) => row.text().includes('PDF für Auszüge'))
     expect(produceRow).toBeDefined()
     if (produceRow === undefined) return
-    expect(produceRow.find('.config-row__menu').exists()).toBe(false)
-    expect(produceRow.find('button[disabled]').exists()).toBe(true)
+    expect(produceRow.find('.config-row__menu').exists()).toBe(true)
+    await produceRow.find('.config-row__menu-summary').trigger('click')
+    expect(produceRow.find('.config-row__menu-list').text()).toContain('Wirksamen Wert eintragen')
   })
 
   it('filters the tree to the selected config edit section', () => {
@@ -680,8 +681,11 @@ describe('ConfigEditorPanel', () => {
     expect(restpositionRow).toBeDefined()
     if (restpositionRow === undefined) return
 
-    const fillButton = restpositionRow.find('button[aria-label="Parameter mit wirksamem Wert auffuellen"]')
-    expect(fillButton.attributes('disabled')).toBeUndefined()
+    await restpositionRow.find('.config-row__menu-summary').trigger('click')
+    const fillButton = restpositionRow.findAll('.config-row__menu-item')
+      .find((item) => item.text() === 'Wirksamen Wert eintragen')
+    expect(fillButton).toBeDefined()
+    if (fillButton === undefined) return
     await fillButton.trigger('click')
 
     expect(restpositionRow.find('input').exists()).toBe(false)
