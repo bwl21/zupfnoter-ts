@@ -602,14 +602,18 @@ Hier kannst du weitere Einzelheiten für die vertikale Anordnung der
 Noten konfigurieren. Es sind subtile Feinheiten, welche den Unterschied
 ausmachen. Daher sind diese Funktionen noch experimentell.
 
-## layout.packer.pack\_method
+## layout.packer.pack_method
 
 Hier kannst du die pack-Methode auswählen
 
--   **0** : Die bisherige Methode: diese geht nach jedem Schritt um die
-    Höhe der größten Note weiter
+**Standard: `0`**
 
--   **1** : Kopmpakt: diese geht nur dann weiter, wenn
+Die bisherige Methode: diese geht nach jedem Schritt um die Höhe der
+größten Note weiter.
+
+**Kompakt: `1`**
+
+Diese Methode geht nur dann weiter, wenn
 
     -   ein Richtungswechsel der Melodie vorliegt
     -   Noten übereinander gezeichnet würden
@@ -625,13 +629,23 @@ Hier kannst du die pack-Methode auswählen
     > Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr
     > flach sind.
 
--   **2** : linear: die Zeitachse wird linear auf das Blatt verteilt.
+**Linear: `2`**
+
+Die Zeitachse wird linear auf das Blatt verteilt.
     Bei kurzen Stücken entspricht der Abstand der Noten dann auch dem
     Notenwert. Manche Spieler empfinden das als hilfreich. Es wird aber
     am meisten Platz verbraucht.
 
     Es wird auch kein extra Raum für Parts, Taktstriche und manuelle
     Vorschübe erstellt.
+
+**Kollisionserkennung erweitert: `3`**
+
+Kollisionserkennung mit erweitertem Tonhöhenbereich.
+
+**Legacy-Standard: `10`**
+
+Legacy-Standardmethode auf Basis der vorhandenen Beat-Maps.
 
 ## layout.packer.pack\_min\_increment
 

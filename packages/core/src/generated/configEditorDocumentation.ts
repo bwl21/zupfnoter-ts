@@ -195,6 +195,28 @@ export const CONFIG_EDITOR_OPTION_DOCUMENTATION: Readonly<Record<string, Readonl
       "description": "verschiebt die Note um eine Notenbreite nach links"
     }
   },
+  "layout.packer.pack_method": {
+    "0": {
+      "label": "Standard",
+      "description": "Die bisherige Methode: diese geht nach jedem Schritt um die Höhe der größten Note weiter."
+    },
+    "1": {
+      "label": "Kompakt",
+      "description": "Diese Methode geht nur dann weiter, wenn"
+    },
+    "2": {
+      "label": "Linear",
+      "description": "Die Zeitachse wird linear auf das Blatt verteilt. Bei kurzen Stücken entspricht der Abstand der Noten dann auch dem Notenwert. Manche Spieler empfinden das als hilfreich. Es wird aber am meisten Platz verbraucht."
+    },
+    "3": {
+      "label": "Kollisionserkennung erweitert",
+      "description": "Kollisionserkennung mit erweitertem Tonhöhenbereich."
+    },
+    "10": {
+      "label": "Legacy-Standard",
+      "description": "Legacy-Standardmethode auf Basis der vorhandenen Beat-Maps."
+    }
+  },
   "notes.T01\\_number\\_extract": {
     "-A": {
       "label": "-A",

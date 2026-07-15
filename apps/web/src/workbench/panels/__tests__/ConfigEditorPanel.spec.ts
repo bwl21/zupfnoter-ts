@@ -635,6 +635,33 @@ describe('ConfigEditorPanel', () => {
     expect(tuningRow?.find('[data-option-description*="Stimmung der Saiten"]').exists()).toBe(true)
   })
 
+  it('renders the packer method as a documented select', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n{"extract":{"0":{"layout":{"packer":{"pack_method":1}}}}}',
+        currentExtract: 0,
+        activeSection: 'layout',
+      },
+    })
+
+    const packerRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Packmethode'))
+    expect(packerRow).toBeDefined()
+    if (packerRow === undefined) return
+    expect(packerRow.find('.config-row__select').exists()).toBe(true)
+    expect(packerRow.find('.config-row__select-summary').text()).toContain('Kompakt (1)')
+    expect(packerRow.findAll('.config-row__select-option').map((option) => option.text())).toContain('Kompakt (1)')
+
+    await packerRow.findAll('.config-row__select-option').find((option) => option.text() === 'Linear (2)')?.trigger('click')
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.setPath',
+        path: 'extract.0.layout.packer.pack_method',
+        value: 2,
+        extractId: 0,
+      },
+    ])
+  })
+
   it('closes an open documented option list with Escape', async () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

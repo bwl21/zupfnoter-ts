@@ -586,8 +586,13 @@ function commitBooleanValue(row: ConfigTreeRow, value: boolean): void {
 function getSelectDraftValue(row: ConfigTreeRow): string {
   const draftValue = draftValues.value[row.path]
   if (draftValue !== undefined) return draftValue
-  if (typeof row.localValue === 'string') return row.localValue
-  return typeof row.effectiveValue === 'string' ? row.effectiveValue : ''
+  if (typeof row.localValue === 'string' || typeof row.localValue === 'number' || typeof row.localValue === 'boolean') {
+    return String(row.localValue)
+  }
+  if (typeof row.effectiveValue === 'string' || typeof row.effectiveValue === 'number' || typeof row.effectiveValue === 'boolean') {
+    return String(row.effectiveValue)
+  }
+  return ''
 }
 
 function getSelectedOptionLabel(row: ConfigTreeRow): string {

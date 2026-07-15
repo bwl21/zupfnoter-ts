@@ -797,7 +797,7 @@ const LAYOUT_SCHEMA: JsonSchemaNode = {
       type: 'object',
       additionalProperties: false,
       properties: {
-        pack_method: { type: 'integer' },
+        pack_method: { type: 'integer', ...editorSelection('layout.packer.pack_method', ['0', '1', '2', '3', '10']) },
         pack_max_spreadfactor: { type: 'number' },
         pack_min_increment: { type: 'number' },
       },
@@ -1160,7 +1160,7 @@ function legacyExtractLayoutSchema(): JsonSchemaNode {
       packer: {
         type: 'object',
         properties: {
-          pack_method: { type: 'integer' },
+          pack_method: { type: 'integer', ...editorSelection('layout.packer.pack_method', ['0', '1', '2', '3', '10']) },
           pack_max_spread_factor: { type: 'number' },
           pack_min_increment: { type: 'number' },
         },
