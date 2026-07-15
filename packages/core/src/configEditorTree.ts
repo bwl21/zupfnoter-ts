@@ -402,9 +402,9 @@ function expandConfigEditorKeyToTreePaths(
 
   const treePath = configEditorKeyToTreePath(key)
   const schemaPath = key.replace(/^extract\.(\{extract\}|\d+)(?=\.|$)/, `extract.${extractId}`)
-  const schemaProperties = resolveConfigSchemaPath(schemaPath)?.properties
-  if (schemaProperties !== undefined) {
-    return Object.keys(schemaProperties).map((property) => `${treePath}.${property}`)
+  const schema = resolveConfigSchemaPath(schemaPath)
+  if (schema?.properties !== undefined || schema?.patternProperties !== undefined) {
+    return expandSchemaObjectPaths(schemaPath, treePath, currentConfig, effectiveConfig)
   }
   if (!treePath.includes('.*.')) return [treePath]
 
@@ -422,6 +422,39 @@ function expandConfigEditorKeyToTreePaths(
   return Object.keys(wildcardParent)
     .sort(compareConfigKeys)
     .map((entryKey) => `${prefix}.${entryKey}.${suffix}`)
+}
+
+function expandSchemaObjectPaths(
+  schemaPath: string,
+  treePath: string,
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+): string[] {
+  const schema = resolveConfigSchemaPath(schemaPath)
+  if (schema === undefined) return [treePath]
+
+  const propertyNames = new Set(Object.keys(schema.properties ?? {}))
+  const currentValue = getPathValue(currentConfig, schemaPath)
+  const effectiveValue = getPathValue(effectiveConfig, schemaPath)
+  for (const value of [currentValue, effectiveValue]) {
+    if (!isRecord(value)) continue
+    for (const key of Object.keys(value)) propertyNames.add(key)
+  }
+
+  if (propertyNames.size === 0) return [treePath]
+
+  const paths: string[] = []
+  for (const propertyName of [...propertyNames].sort(compareConfigKeys)) {
+    const childSchemaPath = `${schemaPath}.${propertyName}`
+    const childTreePath = `${treePath}.${propertyName}`
+    const childSchema = resolveConfigSchemaPath(childSchemaPath)
+    if (childSchema?.properties !== undefined || childSchema?.patternProperties !== undefined) {
+      paths.push(...expandSchemaObjectPaths(childSchemaPath, childTreePath, currentConfig, effectiveConfig))
+    } else {
+      paths.push(childTreePath)
+    }
+  }
+  return paths
 }
 
 function expandExtractAnnotationPaths(

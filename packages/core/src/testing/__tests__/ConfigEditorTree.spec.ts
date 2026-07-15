@@ -137,6 +137,26 @@ describe('buildConfigEditorSectionTree', () => {
     expect(configPaths).toContain('extract.2.stringnames.marks.vpos')
   })
 
+  it('expands notebound fields from the configuration schema', () => {
+    const effectiveConfig = {
+      extract: {
+        0: {
+          notebound: {
+            annotation: { pos: [1, 2], text: 'A', style: 'regular' },
+            minc: { d1: { minc: 0.2 } },
+          },
+        },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+
+    const tree = buildConfigEditorSectionTree('notebound', {}, effectiveConfig, 0)
+    const configPaths = flattenConfigPaths(tree ?? [])
+
+    expect(configPaths).toContain('extract.current.notebound.annotation.pos')
+    expect(configPaths).toContain('extract.current.notebound.annotation.text')
+    expect(configPaths).toContain('extract.current.notebound.minc.d1.minc')
+  })
+
   it('expands global annotations from current and effective config', () => {
     const currentConfig = {
       annotations: {
