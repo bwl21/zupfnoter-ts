@@ -123,6 +123,16 @@ function schemaPropertyTreeChildren(path: string): ConfigEditorTreeDefinition[] 
   return Object.keys(properties).map((key) => ({ key, label: legacyLabel(key) }))
 }
 
+/**
+ * Darstellungsgeruest fuer den Konfigurationsbaum.
+ *
+ * Die aeussere Gliederung und Reihenfolge ist bewusst hier festgelegt. Die
+ * enthaltenen Parameterlisten werden dagegen aus den Schema-Pfadmetadaten in
+ * `configSchema.ts` abgeleitet. Dynamische `patternProperties` werden erst
+ * beim Aufbau der Ansicht zu konkreten Eintraegen wie `lyrics.0` erweitert.
+ * Diese Struktur daher nicht als zweite fachliche Konfigurationsquelle
+ * behandeln oder parallel zum Schema pflegen.
+ */
 export const CONFIG_EDITOR_TREE_DEFINITION: ConfigEditorTreeDefinition[] = [
   { key: 'produce', label: legacyLabel('produce') },
   {
@@ -325,6 +335,90 @@ export function buildConfigEditorSectionTree(
     label: section.label,
     children: buildSectionChildren(formId, section.keys, currentConfig, effectiveConfig, extractId),
   }))
+}
+
+/**
+ * Baut den vollstaendigen Konfigurationsbaum fuer die Legacy-Ansicht
+ * „Alle Parameter“.
+ *
+ * Dynamische Objektknoten aus dem Schema, etwa `lyrics.*`, werden anhand der
+ * vorhandenen Konfigurationseintraege in konkrete Knoten aufgeloest.
+ */
+export function buildConfigEditorAllParametersTree(
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+  extractId: number,
+): ConfigEditorTreeDefinition[] {
+  return materializeDynamicTreeDefinitions(
+    CONFIG_EDITOR_TREE_DEFINITION,
+    '',
+    currentConfig,
+    effectiveConfig,
+    extractId,
+  )
+}
+
+function materializeDynamicTreeDefinitions(
+  definitions: readonly ConfigEditorTreeDefinition[],
+  parentPath: string,
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+  extractId: number,
+): ConfigEditorTreeDefinition[] {
+  return definitions.map((definition) => {
+    const treePath = joinPath(parentPath, definition.key)
+    const schemaPath = treePath.replace(/^extract\.current(?=\.|$)/, `extract.${extractId}`)
+    const schema = resolveConfigSchemaPath(schemaPath)
+    const children = definition.children
+
+    if (children !== undefined && isDynamicEntryContainer(schemaPath, schema?.patternProperties)) {
+      return {
+        ...definition,
+        children: collectDynamicObjectKeys(currentConfig, effectiveConfig, schemaPath).map((entryKey) => ({
+          key: entryKey,
+          label: entryKey,
+          children: materializeDynamicTreeDefinitions(
+            children,
+            `${treePath}.${entryKey}`,
+            currentConfig,
+            effectiveConfig,
+            extractId,
+          ),
+        })),
+      }
+    }
+
+    return children === undefined
+      ? { ...definition }
+      : {
+          ...definition,
+          children: materializeDynamicTreeDefinitions(
+            children,
+            treePath,
+            currentConfig,
+            effectiveConfig,
+            extractId,
+          ),
+        }
+  })
+}
+
+function isDynamicEntryContainer(
+  schemaPath: string,
+  patternProperties: Record<string, unknown> | undefined,
+): boolean {
+  return patternProperties !== undefined && schemaPath !== 'extract'
+}
+
+function collectDynamicObjectKeys(
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+  path: string,
+): string[] {
+  return collectUnionObjectKeys(
+    getPathValue(currentConfig, path),
+    getPathValue(effectiveConfig, path),
+  )
 }
 
 function buildSectionChildren(

@@ -97,6 +97,7 @@ export type {
   ConfigEditorMenuSeparator,
 } from './configEditorForms.js'
 export {
+  buildConfigEditorAllParametersTree,
   buildConfigEditorSectionTree,
   configEditorKeyToTreePath,
   CONFIG_EDITOR_TREE_DEFINITION,

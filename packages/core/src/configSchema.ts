@@ -1172,7 +1172,13 @@ function legacyExtractLayoutSchema(): JsonSchemaNode {
 function legacyDefinitions(): Record<string, JsonSchemaNode> {
   return {
     apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
-    pos: { type: 'array', minItems: 2, uniqueItems: false, items: { type: 'number' } },
+    pos: {
+      type: 'array',
+      minItems: 2,
+      uniqueItems: false,
+      items: { type: 'number' },
+      'x-zupfnoter-editor': { valueFormat: 'array' },
+    },
     notes_entry: legacyNotesEntrySchema(),
     nb_annotation_xx: {
       type: 'object',

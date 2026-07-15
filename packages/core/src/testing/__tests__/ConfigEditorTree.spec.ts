@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  buildConfigEditorAllParametersTree,
   buildConfigEditorSectionTree,
   CONFIG_EDITOR_TREE_DEFINITION,
   findConfigEditorTreeDefinition,
@@ -26,6 +27,16 @@ function flattenConfigPaths(definitions: readonly ConfigEditorTreeDefinition[]):
   return paths
 }
 
+function flattenTreePaths(
+  definitions: readonly ConfigEditorTreeDefinition[],
+  parentPath = '',
+): string[] {
+  return definitions.flatMap((definition) => {
+    const path = parentPath === '' ? definition.key : `${parentPath}.${definition.key}`
+    return [path, ...flattenTreePaths(definition.children ?? [], path)]
+  })
+}
+
 describe('buildConfigEditorSectionTree', () => {
   it('derives the rest-position subtree from the configuration schema', () => {
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'produce')?.label).toBe('PDF für Auszüge')
@@ -42,6 +53,24 @@ describe('buildConfigEditorSectionTree', () => {
     expect(paths).toContain('restposition.default')
     expect(paths).toContain('restposition.repeatstart')
     expect(paths).toContain('restposition.repeatend')
+  })
+
+  it('materializes dynamic entries in the all-parameters tree', () => {
+    const currentConfig = {
+      extract: {
+        0: {
+          lyrics: {
+            0: { verses: [1], pos: [10, 20], style: 'regular' },
+          },
+        },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+
+    const tree = buildConfigEditorAllParametersTree(currentConfig, currentConfig, 0)
+    const paths = flattenTreePaths(tree)
+
+    expect(paths).toContain('extract.current.lyrics.0.verses')
+    expect(paths).toContain('extract.current.lyrics.0.pos')
   })
 
   it('expands extract annotation keys for extract ids from current and effective config', () => {

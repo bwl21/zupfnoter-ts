@@ -4,6 +4,7 @@ import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 
 import {
+  buildConfigEditorAllParametersTree,
   buildConfigEditorSectionTree,
   configEditorKeyToTreePath,
   CONFIG_EDITOR_TREE_DEFINITION,
@@ -65,8 +66,6 @@ interface ConfigTreeRow {
   effectivePath?: string
   localValue?: unknown
   effectiveValue?: unknown
-  sourceLabel?: string
-  hasExtractZeroMarker: boolean
   canFill: boolean
   canDelete: boolean
   canSelect: boolean
@@ -304,6 +303,15 @@ function isVisibleInActiveSection(path: string): boolean {
 }
 
 function expandSection(section: string): void {
+  if (section === 'all_parameters' && activeSectionTreeDefinition.value !== undefined) {
+    const nextExpanded = new Set(expandedPaths.value)
+    for (const branchPath of collectBranchPaths(activeSectionTreeDefinition.value)) {
+      nextExpanded.add(branchPath)
+    }
+    expandedPaths.value = [...nextExpanded]
+    return
+  }
+
   if (section === props.activeSection && activeSectionTreeDefinition.value !== undefined) {
     const nextExpanded = new Set(expandedPaths.value)
     for (const branchPath of collectBranchPaths(activeSectionTreeDefinition.value)) {
@@ -395,7 +403,6 @@ function createRow(
   const effectivePath = localPath === undefined ? undefined : resolveEffectivePath(configPath)
   const localValue = localPath === undefined ? undefined : getPathValue(parsedSongConfig.value.config, localPath)
   const effectiveValue = effectivePath === undefined ? undefined : getPathValue(effectiveConfig.value, effectivePath)
-  const extractZeroValue = effectivePath === undefined ? undefined : getExtractZeroValue(effectivePath)
   const actionProfile = getConfigPathActionProfile(localPath, {
     hasEffectiveValue: effectiveValue !== undefined,
     hasLocalValue: localValue !== undefined,
@@ -414,8 +421,6 @@ function createRow(
     effectivePath,
     localValue,
     effectiveValue,
-    sourceLabel: resolveSourceLabel(localPath, effectivePath),
-    hasExtractZeroMarker: hasExtractZeroMarker(localPath, localValue, extractZeroValue),
     canFill: actionProfile.canFill,
     canDelete: actionProfile.canDelete,
     canSelect: actionProfile.canSelect,
@@ -444,48 +449,19 @@ function resolveEffectivePath(path: string): string | undefined {
 }
 
 function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | undefined {
-  if (props.activeSection === 'all_parameters') return undefined
+  if (props.activeSection === 'all_parameters') {
+    return buildConfigEditorAllParametersTree(
+      parsedSongConfig.value.config as unknown as Record<string, CommandArgumentValue>,
+      effectiveConfig.value as unknown as Record<string, CommandArgumentValue>,
+      props.currentExtract,
+    )
+  }
   return buildConfigEditorSectionTree(
     props.activeSection,
     parsedSongConfig.value.config as unknown as Record<string, CommandArgumentValue>,
     effectiveConfig.value as unknown as Record<string, CommandArgumentValue>,
     props.currentExtract,
   )
-}
-
-function resolveSourceLabel(localPath: string | undefined, effectivePath: string | undefined): string | undefined {
-  if (effectivePath === undefined) return undefined
-  if (localPath !== undefined && hasPathValue(parsedSongConfig.value.config, localPath)) {
-    return localPath.startsWith(`extract.${props.currentExtract}`) ? `Auszug ${props.currentExtract}` : 'Dokument'
-  }
-
-  if (effectivePath.startsWith(`extract.${props.currentExtract}.`)) {
-    const extractZeroPath = effectivePath.replace(`extract.${props.currentExtract}.`, 'extract.0.')
-    if (hasPathValue(parsedSongConfig.value.config, extractZeroPath)) {
-      return 'Auszug 0'
-    }
-  }
-
-  return undefined
-}
-
-function getExtractZeroValue(effectivePath: string): unknown {
-  if (!effectivePath.startsWith(`extract.${props.currentExtract}.`)) {
-    return undefined
-  }
-  const extractZeroPath = effectivePath.replace(`extract.${props.currentExtract}.`, 'extract.0.')
-  return getPathValue(parsedSongConfig.value.config, extractZeroPath)
-}
-
-function hasExtractZeroMarker(
-  localPath: string | undefined,
-  localValue: unknown,
-  extractZeroValue: unknown,
-): boolean {
-  if (props.currentExtract === 0) return false
-  if (localPath === undefined || localValue === undefined || extractZeroValue === undefined) return false
-  if (!localPath.startsWith(`extract.${props.currentExtract}.`)) return false
-  return areValuesEqual(localValue, extractZeroValue)
 }
 
 function matchesRow(row: ConfigTreeRow): boolean {
@@ -505,12 +481,23 @@ function toggleExpanded(path: string): void {
 function getDraftValue(row: ConfigTreeRow): string {
   const draftValue = draftValues.value[row.path]
   if (draftValue !== undefined) return draftValue
+  if (row.localValue === undefined) return ''
   const localFormatPath = row.localPath ?? row.path
   if (Array.isArray(row.localValue)) return formatConfigEditorValue(localFormatPath, row.localValue)
-  if (row.localValue === undefined && Array.isArray(row.effectiveValue)) {
+  return formatConfigEditorValue(localFormatPath, row.localValue)
+}
+
+function getDraftPlaceholder(row: ConfigTreeRow): string {
+  if (row.canFill && row.effectiveValue !== undefined) {
     return formatConfigEditorValue(row.effectivePath ?? row.path, row.effectiveValue)
   }
-  return formatConfigEditorValue(localFormatPath, row.localValue)
+  return 'Kein lokaler Wert'
+}
+
+function getDeleteButtonLabel(row: ConfigTreeRow): string {
+  return row.canDelete
+    ? 'Pfad oder Teilbaum loeschen. Danach wird der wirksame Wert neu ermittelt.'
+    : 'Pfad oder Teilbaum loeschen'
 }
 
 function updateDraftValue(row: ConfigTreeRow, value: string): void {
@@ -724,7 +711,7 @@ function syncHelpTooltips(): void {
       trigger: 'click',
       hideOnClick: true,
       theme: 'zn-config-help',
-      maxWidth: 320,
+      maxWidth: 560,
       placement: 'top-start',
       offset: [0, 6],
     })
@@ -867,14 +854,6 @@ function getPathValue(source: unknown, path: string): unknown {
     current = current[part]
   }
   return current
-}
-
-function hasPathValue(source: unknown, path: string): boolean {
-  return getPathValue(source, path) !== undefined
-}
-
-function areValuesEqual(left: unknown, right: unknown): boolean {
-  return JSON.stringify(left) === JSON.stringify(right)
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -1100,7 +1079,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               :value="getDraftValue(row)"
               class="config-row__input config-row__textarea"
               rows="2"
-              :placeholder="row.canFill ? 'Mit wirksamem Wert auffuellen' : 'Kein lokaler Wert'"
+              :placeholder="getDraftPlaceholder(row)"
               :aria-invalid="inputErrors[row.path] !== undefined"
               :aria-describedby="inputErrors[row.path] !== undefined ? `config-error-${row.key}` : undefined"
               @input="updateDraftValue(row, ($event.target as HTMLTextAreaElement).value)"
@@ -1111,7 +1090,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
               :value="getDraftValue(row)"
               class="config-row__input"
               type="text"
-              :placeholder="row.canFill ? 'Mit wirksamem Wert auffuellen' : 'Kein lokaler Wert'"
+              :placeholder="getDraftPlaceholder(row)"
               :aria-invalid="inputErrors[row.path] !== undefined"
               :aria-describedby="inputErrors[row.path] !== undefined ? `config-error-${row.key}` : undefined"
               @input="updateDraftValue(row, ($event.target as HTMLInputElement).value)"
@@ -1194,7 +1173,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
             </ZnIconButton>
             <ZnIconButton
               class="config-row__action"
-              label="Pfad oder Teilbaum loeschen"
+              :label="getDeleteButtonLabel(row)"
               variant="ghost"
               :disabled="!row.canDelete"
               :tabindex="-1"
@@ -1204,23 +1183,6 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
             </ZnIconButton>
           </div>
 
-          <div v-if="row.isLeaf" class="config-row__effective">
-            <div class="config-row__effective-main">
-              <span
-                class="config-row__effective-value"
-                :title="formatConfigEditorValue(row.effectivePath ?? row.path, row.effectiveValue)"
-              >
-                {{ formatConfigEditorValue(row.effectivePath ?? row.path, row.effectiveValue) }}
-              </span>
-              <span
-                v-if="row.hasExtractZeroMarker"
-                class="config-row__effective-marker"
-                title="Lokaler Wert entspricht Auszug 0"
-              >
-                =
-              </span>
-            </div>
-          </div>
         </div>
       </div>
       </div>
@@ -1434,6 +1396,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 
 .config-panel__tree {
   display: grid;
+  grid-template-columns: minmax(8rem, max-content) minmax(11rem, 1fr) auto;
   grid-auto-rows: max-content;
   align-content: start;
   gap: 0;
@@ -1459,7 +1422,8 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 .config-row {
   --indent-size: calc(var(--config-depth) * 0.8rem);
   display: grid;
-  grid-template-columns: minmax(8rem, 1.55fr) minmax(11rem, 1.45fr) auto minmax(5rem, 0.58fr);
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   gap: 0.22rem;
   align-items: center;
   min-height: 1.7rem;
@@ -1482,8 +1446,7 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 }
 
 .config-row--multiline .config-row__name,
-.config-row--multiline .config-row__actions,
-.config-row--multiline .config-row__effective {
+.config-row--multiline .config-row__actions {
   align-self: start;
   padding-top: 0.25rem;
 }
@@ -1579,6 +1542,11 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 
 .config-row__input {
   font-family: var(--zn-font-mono);
+}
+
+.config-row__input::placeholder {
+  color: var(--zn-text-muted);
+  opacity: 0.62;
 }
 
 .config-row__textarea {
@@ -1792,47 +1760,6 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
 .config-row__menu-item:focus-visible {
   background: var(--zn-bg-surface-soft);
   outline: none;
-}
-
-.config-row__effective {
-  display: grid;
-  gap: 0.02rem;
-  align-content: center;
-  align-self: center;
-  min-width: 0;
-}
-
-.config-row__effective-main {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.28rem;
-  min-width: 0;
-}
-
-.config-row__effective-value {
-  color: var(--zn-heading);
-  font-family: var(--zn-font-mono);
-  font-size: 0.65rem;
-  line-height: 1.1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.config-row__effective-marker {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 0.82rem;
-  height: 0.82rem;
-  flex: 0 0 auto;
-  border: 1px solid color-mix(in srgb, var(--zn-warning) 48%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--zn-warning) 14%, white);
-  color: color-mix(in srgb, var(--zn-heading) 82%, var(--zn-warning) 18%);
-  font-size: 0.62rem;
-  font-weight: 700;
-  line-height: 1;
 }
 
 :deep(.config-row__action.zn-icon-button) {

@@ -19,6 +19,7 @@ describe('config editor value conversion', () => {
   it('uses editor metadata for compact array display', () => {
     expect(formatConfigEditorValue('extract.0.voices', [1, 3])).toBe('1, 3')
     expect(formatConfigEditorValue('extract.0.synchlines', [[1, 2], [3, 4]])).toBe('1-2, 3-4')
+    expect(formatConfigEditorValue('extract.0.notebound.annotation.v_1.1.pos', [10, 20])).toBe('10, 20')
   })
 
   it('derives scalar and nested array values from the schema', () => {

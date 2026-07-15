@@ -28,6 +28,54 @@ describe('ConfigEditorPanel', () => {
     expect(inputs.some((input) => (input.element as HTMLInputElement).value === 'Alt')).toBe(true)
   })
 
+  it('keeps fields without a local value empty instead of showing a dash', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"voices":[1]},"3":{}}}',
+        ].join('\n'),
+        currentExtract: 3,
+        activeSection: 'basic_settings',
+      },
+    })
+
+    const voicesRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Stimmen'))
+    expect(voicesRow).toBeDefined()
+    if (voicesRow === undefined) return
+    expect((voicesRow.find('input').element as HTMLInputElement).value).toBe('')
+    expect(voicesRow.find('input').attributes('placeholder')).toBe('1')
+  })
+
+  it('explains that deleting a local value recalculates the effective value', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"title":"Basis"},"3":{"title":"Lokal"}}}',
+        ].join('\n'),
+        currentExtract: 3,
+        activeSection: 'basic_settings',
+      },
+    })
+
+    const titleRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Titel'))
+    expect(titleRow).toBeDefined()
+    if (titleRow === undefined) return
+    const deleteButton = titleRow.findAll('button').find((button) => button.attributes('aria-label')?.includes('neu ermittelt'))
+    expect(deleteButton?.attributes('aria-label')).toContain('Pfad oder Teilbaum loeschen')
+  })
+
   it('renders the legacy config edit menu entries and emits edit commands', async () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {
@@ -436,7 +484,9 @@ describe('ConfigEditorPanel', () => {
     expect(titleRow).toBeDefined()
     if (titleRow === undefined) return
 
-    const deleteButton = titleRow.find('button[aria-label="Pfad oder Teilbaum loeschen"]')
+    const deleteButton = titleRow.findAll('button').find((button) => button.attributes('aria-label')?.includes('neu ermittelt'))
+    expect(deleteButton).toBeDefined()
+    if (deleteButton === undefined) return
     await deleteButton.trigger('click')
 
     expect(wrapper.emitted('intent')).toContainEqual([
@@ -532,7 +582,7 @@ describe('ConfigEditorPanel', () => {
     if (produceRow === undefined) return
 
     const input = produceRow.find('input')
-    expect((input.element as HTMLInputElement).value).toBe('0')
+    expect((input.element as HTMLInputElement).value).toBe('')
     await input.setValue('0')
     await input.trigger('blur')
 
@@ -729,6 +779,22 @@ describe('ConfigEditorPanel', () => {
         extractId: 0,
       },
     ])
+  })
+
+  it('shows all descendants of dynamic entries in the all-parameters view', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n{"extract":{"0":{"lyrics":{"0":{"verses":[1],"pos":[1,2],"style":"regular"}}}}}',
+        currentExtract: 0,
+        activeSection: 'all_parameters',
+      },
+    })
+
+    const visiblePaths = wrapper.findAll('.config-row__name-copy').map((element) => element.attributes('title'))
+    expect(visiblePaths).toContain('extract.0.lyrics.0')
+    expect(visiblePaths).toContain('extract.0.lyrics.0.verses')
+    expect(visiblePaths).toContain('extract.0.lyrics.0.pos')
+    expect(visiblePaths).toContain('extract.0.lyrics.0.style')
   })
 
   it('expands a newly added configuration entry after the command succeeds', async () => {
