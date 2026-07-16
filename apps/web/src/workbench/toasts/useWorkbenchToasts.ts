@@ -57,6 +57,18 @@ export function useWorkbenchToasts() {
     }, TOAST_TTL_MS)
   }
 
+  function pushToast(toast: Omit<WorkbenchToast, 'id'>): void {
+    const nextToast: WorkbenchToast = {
+      ...toast,
+      id: nextToastId,
+    }
+    nextToastId += 1
+    toasts.value = [nextToast, ...toasts.value]
+    setTimeout(() => {
+      dismissToast(nextToast.id)
+    }, TOAST_TTL_MS)
+  }
+
   function syncDiagnostics(diagnostics: WorkbenchDiagnostic[]): void {
     const nextKeys = new Set(diagnostics.map((diagnostic) => workbenchDiagnosticKey(diagnostic)))
     for (const diagnostic of diagnostics) {
@@ -72,6 +84,7 @@ export function useWorkbenchToasts() {
 
   return {
     toasts: visibleToasts,
+    pushToast,
     syncDiagnostics,
     dismissToast,
   }
