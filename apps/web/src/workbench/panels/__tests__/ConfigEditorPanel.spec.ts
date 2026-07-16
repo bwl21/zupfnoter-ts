@@ -854,4 +854,48 @@ describe('ConfigEditorPanel', () => {
     expect(newEntryButton).toBeDefined()
     expect(newEntryButton?.attributes('disabled')).toBeDefined()
   })
+
+  it('uses localized quick-setting labels and closes the menu after selection', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'layout',
+      },
+    })
+
+    const menu = wrapper.find('.config-panel__quicksettings')
+    expect(menu.exists()).toBe(true)
+    const menuElement = menu.element as HTMLDetailsElement
+    menuElement.open = true
+
+    const smallNotes = menu.findAll('button').find((button) => button.text() === 'Noten klein')
+    expect(smallNotes).toBeDefined()
+    if (smallNotes === undefined) return
+
+    await smallNotes.trigger('click')
+
+    expect(menuElement.open).toBe(false)
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.quicksettings',
+        path: 'preset.layout.notes_small',
+        extractId: 0,
+      },
+    ])
+  })
+
+  it('disables quick settings when the active section has none', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'basic_settings',
+      },
+    })
+
+    const quickSettingsButton = wrapper.findAll('button').find((button) => button.text() === 'Schnelleinst.')
+    expect(quickSettingsButton?.attributes('disabled')).toBeDefined()
+    expect(wrapper.find('.config-panel__quicksettings').exists()).toBe(false)
+  })
 })

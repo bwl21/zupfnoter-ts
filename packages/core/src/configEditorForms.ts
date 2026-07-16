@@ -25,6 +25,7 @@ import {
   LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
   toExtractConfigPath,
 } from './configSchema.js'
+import { abc2svgTextrans } from './localization/de-de.js'
 
 export type ConfigEditorFormId =
   | 'extract_annotation'
@@ -364,6 +365,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'barnumbers_countnotes',
     scope: 'extract',
     supportsNewEntry: false,
+    quicksettingCommands: ['preset.barnumbers_countnotes'],
     keys: [...BARNUMBERS_COUNTNOTES_FORM_KEYS],
     sections: CONFIG_EDITOR_FORM_SECTIONS.barnumbers_countnotes,
   },
@@ -379,6 +381,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'notes',
     scope: 'extract',
     supportsNewEntry: true,
+    quicksettingCommands: ['preset.notes'],
     newEntryCommand: 'notes',
     keys: [...NOTES_FORM_KEYS],
     sections: CONFIG_EDITOR_FORM_SECTIONS.notes,
@@ -418,6 +421,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'layout',
     scope: 'extract',
     supportsNewEntry: false,
+    quicksettingCommands: ['preset.layout'],
     keys: [...LAYOUT_FORM_KEYS],
     sections: CONFIG_EDITOR_FORM_SECTIONS.layout,
   },
@@ -425,6 +429,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'printer',
     scope: 'extract',
     supportsNewEntry: false,
+    quicksettingCommands: ['preset.printer'],
     keys: [...PRINTER_FORM_KEYS],
     sections: CONFIG_EDITOR_FORM_SECTIONS.printer,
   },
@@ -449,6 +454,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     id: 'instrument_specific',
     scope: 'extract',
     supportsNewEntry: false,
+    quicksettingCommands: ['preset.instrument'],
     keys: [...INSTRUMENT_SPECIFIC_FORM_KEYS],
     sections: INSTRUMENT_SPECIFIC_FORM_SECTIONS,
   },
@@ -497,6 +503,20 @@ export function isConfigEditorFormId(formId: string): formId is ConfigEditorForm
 
 export function getConfigEditorFormSections(formId: string): ConfigEditorFormSection[] | undefined {
   return getConfigEditorFormSet(formId)?.sections
+}
+
+/**
+ * Liefert die fachliche Beschriftung einer Schnelleinstellung.
+ *
+ * Die Preset-IDs bleiben aus Kompatibilitätsgründen technisch; für die UI
+ * wird die vorhandene deutsche Fachübersetzung verwendet.
+ */
+export function getConfigEditorQuickSettingLabel(command: string): string {
+  const key = command.startsWith('preset.')
+    ? command.slice(command.lastIndexOf('.') + 1)
+    : command
+  const translations: Record<string, string> = abc2svgTextrans
+  return translations[key] ?? key
 }
 
 export function getConfigEditorNewEntryCommand(

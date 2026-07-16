@@ -553,6 +553,18 @@ function registerCreateAndConfigCommands(
     },
   })
 
+  stack.addCommand({
+    name: 'applyquicksetting',
+    help: 'apply a configuration quick setting',
+    undoable: false,
+    parameters: [{ name: 'preset', type: 'string', help: 'preset id' }],
+    perform: (args) => {
+      const preset = readString(args, 'preset')
+      applyQuickSetting(runtime, state, preset)
+      runtime.render()
+    },
+  })
+
   for (const name of [
     'editsnippet',
     'addsnippet',
@@ -721,6 +733,57 @@ function applyAddConfig(
   }
 
   patchConfig(runtime, state, entry.key, entry.value, `addconf ${addKey}`)
+}
+
+function applyQuickSetting(
+  runtime: WorkbenchCommandRuntime,
+  state: LegacyCommandState,
+  presetId: string,
+): void {
+  const [domain, name] = presetId.split('.', 2)
+  if (domain === undefined || name === undefined || presetId.split('.').length !== 2) {
+    throw new CommandError(`Invalid quick setting: ${presetId}`)
+  }
+
+  const defaults = getDefaultConfigValues()
+  const presets = readObjectValue(defaults, 'presets')
+  const families = readObjectValue(presets, domain)
+  const presetValue = families[name]
+  if (presetValue === undefined) {
+    throw new CommandError(`Unknown quick setting: ${presetId}`)
+  }
+
+  const extract = runtime.getCurrentExtract()
+  const target = domain === 'notes'
+    ? `extract.${extract}.notes`
+    : domain === 'layout'
+      ? `extract.${extract}.layout`
+      : domain === 'barnumbers_countnotes'
+        ? `extract.${extract}`
+        : domain === 'printer' || domain === 'instrument'
+          ? `extract.${extract}`
+          : undefined
+  if (target === undefined) {
+    throw new CommandError(`Unsupported quick setting family: ${domain}`)
+  }
+
+  const current = readConfig(runtime.getAbcText())
+  const nextValue = domain === 'notes'
+    ? mergeCommandValues(getConfigPath(current, target), presetValue)
+    : presetValue
+  patchConfig(runtime, state, target, nextValue, `applyquicksetting ${presetId}`)
+}
+
+function mergeCommandValues(
+  current: CommandArgumentValue | undefined,
+  incoming: CommandArgumentValue,
+): CommandArgumentValue {
+  if (!isPlainObject(current) || !isPlainObject(incoming)) return incoming
+  const merged: Record<string, CommandArgumentValue> = { ...current }
+  Object.entries(incoming).forEach(([key, value]) => {
+    merged[key] = mergeCommandValues(merged[key], value)
+  })
+  return merged
 }
 
 function readConfig(abcText: string): Record<string, CommandArgumentValue> {

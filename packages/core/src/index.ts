@@ -86,6 +86,7 @@ export {
   getConfigEditorFormSet,
   getConfigEditorNewEntryCommand,
   getConfigEditorFormSections,
+  getConfigEditorQuickSettingLabel,
   isConfigEditorFormId,
 } from './configEditorForms.js'
 export type {

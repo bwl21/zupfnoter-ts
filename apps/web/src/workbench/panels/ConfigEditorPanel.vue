@@ -14,6 +14,7 @@ import {
   findConfigEditorTreeDefinition,
   formatConfigEditorValue,
   getConfigEditorNewEntryCommand,
+  getConfigEditorQuickSettingLabel,
   getConfigPathActionProfile,
   getConfigEditorFormSet,
   initConf,
@@ -80,6 +81,12 @@ interface ConfigExtractOption {
   label: string
 }
 
+interface QuickSettingMenuItem {
+  type: 'command' | 'separator'
+  id: string
+  label?: string
+}
+
 const props = withDefaults(defineProps<{
   abcText: string
   currentExtract: number
@@ -102,6 +109,7 @@ const emit = defineEmits<{
 const searchText = ref('')
 const panelElement = ref<HTMLElement | null>(null)
 const configMenuElement = ref<HTMLDetailsElement | null>(null)
+const quickSettingsMenuElement = ref<HTMLDetailsElement | null>(null)
 const panelWidth = ref(1400)
 const expandedPaths = ref<string[]>([
   'extract',
@@ -165,6 +173,26 @@ const activeSectionSearch = computed(() => getConfigEditorFormSet(props.activeSe
 const effectiveSearch = computed(() => filteredSearch.value === '' ? activeSectionSearch.value : filteredSearch.value)
 const newEntryCommand = computed(() => getConfigEditorNewEntryCommand(props.activeSection, props.currentExtract))
 const canAddEntry = computed(() => newEntryCommand.value !== undefined)
+const quickSettings = computed<QuickSettingMenuItem[]>(() => {
+  const formSet = getConfigEditorFormSet(props.activeSection)
+  const presets = defaultConfig.value.presets as unknown as Record<string, unknown>
+  return (formSet?.quicksettingCommands ?? []).flatMap((command) => {
+    if (command === 'stdextract') {
+      return [{ type: 'command' as const, id: command, label: getConfigEditorQuickSettingLabel(command) }]
+    }
+    const prefix = 'preset.'
+    if (!command.startsWith(prefix)) return []
+    const domain = command.slice(prefix.length)
+    const family = presets[domain]
+    if (typeof family !== 'object' || family === null || Array.isArray(family)) return []
+    return Object.keys(family).map((name): QuickSettingMenuItem => {
+      const id = `${command}.${name}`
+      if (/^-+$/.test(name)) return { type: 'separator', id }
+      return { type: 'command', id, label: getConfigEditorQuickSettingLabel(id) }
+    })
+  })
+})
+const hasQuickSettings = computed(() => quickSettings.value.some((item) => item.type === 'command'))
 
 const visibleRows = computed(() => buildVisibleRows())
 const usesCompactShell = computed(() => visibleRows.value.length <= 4)
@@ -903,6 +931,18 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
   }
   emitIntent('config.editSection', item.id)
 }
+
+function selectQuickSetting(item: QuickSettingMenuItem): void {
+  if (item.type !== 'command') return
+  if (quickSettingsMenuElement.value !== null) {
+    quickSettingsMenuElement.value.open = false
+  }
+  emit('intent', {
+    action: 'config.quicksettings',
+    path: item.id,
+    extractId: props.currentExtract,
+  })
+}
 </script>
 
 <template>
@@ -941,7 +981,28 @@ function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
           >
         </div>
         <template #trailing>
-          <ZnButton variant="ghost" @click="emitIntent('config.quicksettings')">Schnelleinst.</ZnButton>
+          <details
+            v-if="hasQuickSettings"
+            ref="quickSettingsMenuElement"
+            class="config-panel__main-menu config-panel__quicksettings"
+          >
+            <summary class="config-panel__main-menu-summary">Schnelleinst.</summary>
+            <div class="config-panel__main-menu-list" role="menu" aria-label="Schnelleinstellungen">
+              <template v-for="setting in quickSettings" :key="setting.id">
+                <div v-if="setting.type === 'separator'" class="config-panel__main-menu-separator" role="separator" />
+                <button
+                v-else
+                class="config-panel__main-menu-item"
+                type="button"
+                role="menuitem"
+                @click="selectQuickSetting(setting)"
+              >
+                  {{ setting.label }}
+              </button>
+              </template>
+            </div>
+          </details>
+          <ZnButton v-else variant="ghost" disabled>Schnelleinst.</ZnButton>
           <ZnButton variant="ghost" :disabled="!canAddEntry" @click="handleAddEntry">Neuer Eintrag</ZnButton>
           <details ref="configMenuElement" class="config-panel__main-menu">
             <summary

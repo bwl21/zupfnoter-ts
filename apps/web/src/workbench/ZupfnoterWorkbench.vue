@@ -630,6 +630,13 @@ function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
     return
   }
 
+  if (intent.action === 'config.quicksettings' && intent.path !== undefined) {
+    void executeToolbarCommand(intent.path === 'stdextract'
+      ? intent.path
+      : `applyquicksetting ${intent.path.slice('preset.'.length)}`)
+    return
+  }
+
   appendConsoleLine(`config intent: ${intent.action}${intent.path ? ` ${intent.path}` : ''}`, 'info')
 }
 

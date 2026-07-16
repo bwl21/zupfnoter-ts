@@ -82,6 +82,21 @@ describe('parseCommandString', () => {
 })
 
 describe('legacy command registration', () => {
+  it('applies a schema-selected layout quick setting to the current extract', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('applyquicksetting layout.notes_with_beams')
+
+    const config = readRuntimeConfig(runtime)
+    const extract = (config.extract as Record<string, unknown>)['0'] as Record<string, unknown>
+    const layout = extract.layout as Record<string, unknown>
+    expect(layout.beams).toBe(true)
+    expect(log).toContain('render')
+  })
+
   it('lists public help entries in alphabetical order', async () => {
     const log: string[] = []
     const stack = new CommandStack({ log: (message) => log.push(message) })
