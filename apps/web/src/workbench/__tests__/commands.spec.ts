@@ -97,6 +97,105 @@ describe('legacy command registration', () => {
     expect(log).toContain('render')
   })
 
+  it('selects and lists saved storage connections', async () => {
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    const state = { system: 'dropbox', connectionId: undefined as string | undefined, path: '', loggedIn: false, pendingCandidates: [] as string[] }
+    registerStorageCommands(stack, state, {
+      providers: ['dropbox'],
+      connections: () => [{
+        id: 'dropbox-private',
+        providerId: 'dropbox',
+        label: 'Privat',
+        rootPath: 'Privat',
+        relativePath: '',
+        readOnly: false,
+        configuration: {},
+        status: 'connected',
+      }],
+      list: async () => [],
+      search: async () => [],
+      open: async () => undefined,
+      save: async () => undefined,
+      readDocument: () => '',
+      writeDocument: () => undefined,
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    await stack.runString('sconnection dropbox-private')
+    await stack.runString('sconnections')
+
+    expect(state.connectionId).toBe('dropbox-private')
+    expect(log).toContain('dropbox-private dropbox Privat root=Privat readonly=false connected *')
+  })
+
+  it('keeps relative paths inside a connection root and blocks read-only saves', async () => {
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    const connection = {
+      id: 'michael',
+      providerId: 'dropbox',
+      label: 'Michael',
+      rootPath: 'Freigaben/Michael',
+      relativePath: 'Entwuerfe',
+      readOnly: true,
+      configuration: {},
+      status: 'connected' as const,
+    }
+    const state = { system: 'dropbox', connectionId: undefined as string | undefined, rootPath: '', path: '', loggedIn: true, pendingCandidates: [] as string[] }
+    registerStorageCommands(stack, state, {
+      providers: ['dropbox'],
+      connections: () => [connection],
+      list: async () => [],
+      search: async () => [],
+      open: async () => undefined,
+      save: async () => undefined,
+      readDocument: () => 'X:1',
+      writeDocument: () => undefined,
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    await stack.runString('sconnection michael')
+    expect(state.rootPath).toBe('Freigaben/Michael')
+    expect(state.path).toBe('Entwuerfe')
+    await expect(stack.runString('scd ../Privat')).rejects.toThrow('inside the connection root')
+    await expect(stack.runString('ssave lied.abc')).rejects.toThrow('read-only')
+  })
+
+  it('disconnects the requested profile without changing the active connection', async () => {
+    const disconnected: string[] = []
+    const statuses: Array<[string, string]> = []
+    const stack = new CommandStack({ log: () => undefined })
+    const active = { id: 'private', providerId: 'dropbox', label: 'Privat', rootPath: 'Privat', relativePath: '', readOnly: false, configuration: {}, status: 'connected' as const }
+    const other = { id: 'michael', providerId: 'dropbox', label: 'Michael', rootPath: 'Freigaben/Michael', relativePath: '', readOnly: true, configuration: {}, status: 'connected' as const }
+    const state = { system: 'dropbox', connectionId: active.id, rootPath: active.rootPath, path: '', loggedIn: true, pendingCandidates: [] as string[] }
+    registerStorageCommands(stack, state, {
+      providers: ['dropbox'],
+      connections: () => [active, other],
+      list: async () => [],
+      search: async () => [],
+      open: async () => undefined,
+      save: async () => undefined,
+      readDocument: () => '',
+      writeDocument: () => undefined,
+      login: async () => undefined,
+      logout: async (target) => { disconnected.push(target.connectionId ?? '') },
+      cleanup: async () => undefined,
+      updateConnectionStatus: (id, status) => statuses.push([id, status]),
+    })
+
+    await stack.runString('sdisconnect michael')
+
+    expect(disconnected).toEqual(['michael'])
+    expect(statuses).toEqual([['michael', 'disconnected']])
+    expect(state.connectionId).toBe('private')
+    expect(state.loggedIn).toBe(true)
+  })
+
   it('lists public help entries in alphabetical order', async () => {
     const log: string[] = []
     const stack = new CommandStack({ log: (message) => log.push(message) })

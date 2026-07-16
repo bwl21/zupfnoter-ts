@@ -1,7 +1,13 @@
 import { CommandError, type CommandArguments, type CommandDefinition, type CommandResult, type CommandStack } from './commands.js'
+import type { StorageConnection, StorageConnectionStatus } from '@zupfnoter/types'
 
 export interface StorageCommandState {
   system: string
+  /** Aktive, persistierte Verbindungs-ID. */
+  connectionId?: string
+  /** Fester Anbieterpfad der aktiven Verbindungswurzel. */
+  rootPath?: string
+  /** Aktueller Pfad relativ zu rootPath. */
   path: string
   loggedIn: boolean
   pendingCandidates: string[]
@@ -18,6 +24,9 @@ export interface StorageCommandRuntime {
   login(path: StorageCommandState): Promise<void>
   logout(path: StorageCommandState): Promise<void>
   cleanup(path: StorageCommandState): Promise<void>
+  connections?: () => StorageConnection[]
+  updateConnectionPath?: (connectionId: string, relativePath: string) => void
+  updateConnectionStatus?: (connectionId: string, status: StorageConnectionStatus) => void
 }
 
 export function registerStorageCommands(
@@ -25,6 +34,40 @@ export function registerStorageCommands(
   state: StorageCommandState,
   runtime: StorageCommandRuntime,
 ): void {
+  stack.addCommand({
+    name: 'sconnections',
+    help: 'list saved storage connections',
+    undoable: false,
+    perform: (_args, context) => {
+      const connections = runtime.connections?.() ?? []
+      if (connections.length === 0) {
+        context.log('no saved storage connections')
+        return
+      }
+      connections.forEach((connection) => {
+        const active = connection.id === state.connectionId ? ' *' : ''
+        context.log(`${connection.id} ${connection.providerId} ${connection.label} root=${connection.rootPath || '/'} readonly=${connection.readOnly} ${connection.status}${active}`)
+      })
+    },
+  })
+
+  stack.addCommand({
+    name: 'sconnection',
+    help: 'select an active storage connection',
+    undoable: false,
+    parameters: [{ name: 'id', type: 'string', help: 'saved connection id' }],
+    perform: (args) => {
+      const id = String(args.id ?? '')
+      const connection = runtime.connections?.().find((entry) => entry.id === id)
+      if (connection === undefined) throw new CommandError(`Unknown storage connection: ${id}`)
+      state.connectionId = connection.id
+      state.system = connection.providerId
+      state.loggedIn = connection.status === 'connected'
+      state.rootPath = normalizeStoragePath(connection.rootPath)
+      state.path = normalizeRelativeStoragePath(connection.relativePath)
+    },
+  })
+
   stack.addCommand({
     name: 'sprovider',
     help: 'select active storage provider',
@@ -38,9 +81,9 @@ export function registerStorageCommands(
         throw new CommandError(`Unsupported storage system: ${system}`)
       }
       state.system = system
-      state.path = normalizeStoragePath(state.path)
-      state.loggedIn = true
+      state.path = normalizeRelativeStoragePath(state.path)
       await runtime.login(state)
+      state.loggedIn = true
     },
   })
 
@@ -49,7 +92,7 @@ export function registerStorageCommands(
     help: 'show active storage status',
     undoable: false,
     perform: (_args, context) => {
-      context.log(`storage=${state.system} path=${state.path} loggedIn=${state.loggedIn}`)
+      context.log(`storage=${state.system} connection=${state.connectionId ?? '-'} root=${state.rootPath || '/'} path=${state.path} loggedIn=${state.loggedIn}`)
     },
   })
 
@@ -59,7 +102,9 @@ export function registerStorageCommands(
     undoable: false,
     parameters: [{ name: 'path', type: 'string', help: 'storage path' }],
     perform: async (args) => {
-      state.path = normalizeStoragePath(String(args.path ?? ''))
+      const relativePath = normalizeRelativeStoragePath(String(args.path ?? ''))
+      state.path = relativePath
+      if (state.connectionId !== undefined) runtime.updateConnectionPath?.(state.connectionId, relativePath)
     },
   })
 
@@ -68,7 +113,7 @@ export function registerStorageCommands(
     help: 'print active storage path',
     undoable: false,
     perform: (_args, context) => {
-      context.log(`${state.system}//${state.path}`)
+      context.log(`${state.system}//${joinStoragePath(state.rootPath ?? '', state.path)}`)
     },
   })
 
@@ -83,12 +128,33 @@ export function registerStorageCommands(
   })
 
   stack.addCommand({
+    name: 'sdisconnect',
+    help: 'disconnect a saved storage connection',
+    undoable: false,
+    parameters: [{ name: 'id', type: 'string', help: 'saved connection id', defaultValue: '' }],
+    perform: async (args) => {
+      const id = String(args.id ?? '').trim() || state.connectionId
+      const connection = runtime.connections?.().find((entry) => entry.id === id)
+      if (connection === undefined) throw new CommandError('No saved storage connection selected')
+      await runtime.logout({
+        ...state,
+        connectionId: connection.id,
+        system: connection.providerId,
+        rootPath: connection.rootPath,
+        path: connection.relativePath,
+      })
+      runtime.updateConnectionStatus?.(connection.id, 'disconnected')
+      if (state.connectionId === connection.id) state.loggedIn = false
+    },
+  })
+
+  stack.addCommand({
     name: 'sreconnect',
     help: 'reconnect active storage provider',
     undoable: false,
     perform: async () => {
-      state.loggedIn = true
       await runtime.login(state)
+      state.loggedIn = true
     },
   })
 
@@ -224,7 +290,7 @@ export function registerStorageCommands(
     },
     invert: (args) => {
       state.system = String(args.system ?? state.system)
-      state.path = normalizeStoragePath(String(args.path ?? state.path))
+      state.path = normalizeRelativeStoragePath(String(args.path ?? state.path))
       state.loggedIn = Boolean(args.loggedIn ?? state.loggedIn)
       const documentText = args.documentText
       if (typeof documentText === 'string') {
@@ -238,14 +304,34 @@ export function registerStorageCommands(
     help: 'save current file to active storage path',
     undoable: false,
     parameters: [{ name: 'filename', type: 'string', help: 'filename', defaultValue: '' }],
-    perform: (args, context): void => {
-      context.log(`save ${state.system}//${state.path}/${String(args.filename ?? '')}`)
+    perform: async (args, context): Promise<void> => {
+      const connection = runtime.connections?.().find((entry) => entry.id === state.connectionId)
+      if (connection?.readOnly === true) {
+        throw new CommandError(`Storage connection is read-only: ${connection.label}`)
+      }
+      const filename = String(args.filename ?? '').trim()
+      if (filename === '') throw new CommandError('Missing filename')
+      await runtime.save(state, filename, runtime.readDocument())
+      context.log(`save ${state.system}//${joinStoragePath(state.rootPath ?? '', state.path)}/${filename}`)
     },
   })
 }
 
 function normalizeStoragePath(path: string): string {
   return path.replace(/^\/+/, '').replace(/\/+$/, '')
+}
+
+function normalizeRelativeStoragePath(path: string): string {
+  const normalized = normalizeStoragePath(path)
+  const parts = normalized.split('/').filter((part) => part !== '' && part !== '.')
+  if (parts.some((part) => part === '..')) throw new CommandError('Storage path must stay inside the connection root')
+  return parts.join('/')
+}
+
+function joinStoragePath(rootPath: string, relativePath: string): string {
+  const root = normalizeStoragePath(rootPath)
+  const relative = normalizeRelativeStoragePath(relativePath)
+  return root === '' ? relative : (relative === '' ? root : `${root}/${relative}`)
 }
 
 function filterStorageCandidates(entries: string[], query: string, recursive: boolean): string[] {

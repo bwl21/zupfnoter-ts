@@ -41,41 +41,44 @@ interface DropboxSearchV2Response {
 
 export interface DropboxProvider {
   system: string
-  login(): Promise<void>
-  logout(): Promise<void>
+  login(state?: StorageCommandState): Promise<void>
+  logout(state?: StorageCommandState): Promise<void>
   list(path: StorageCommandState, recursive?: boolean): Promise<string[]>
   search(path: StorageCommandState, query: string): Promise<string[]>
   open(path: StorageCommandState, filename: string): Promise<string | undefined>
   save(path: StorageCommandState, filename: string, content: string): Promise<void>
-  cleanup(): Promise<void>
+  cleanup(state?: StorageCommandState): Promise<void>
+  listFolders(state: StorageCommandState, path: string): Promise<Array<{ name: string; path: string }>>
 }
 
-const TOKEN_KEY = 'zupfnoter.dropbox.token'
-const AUTH_STATE_KEY = 'zupfnoter.dropbox.authstate'
+const TOKEN_KEY_PREFIX = 'zupfnoter.storage.dropbox.token.'
+const AUTH_STATE_KEY_PREFIX = 'zupfnoter.storage.dropbox.authstate.'
 const REDIRECT_URI = `${window.location.origin}${window.location.pathname}`
 const LEGACY_DROPBOX_APP_KEY = 'zwydv2vbgp30e05'
 
 export function createDropboxProvider(): DropboxProvider {
   return {
     system: 'dropbox',
-    async login(): Promise<void> {
+    async login(state?: StorageCommandState): Promise<void> {
+      const connectionId = connectionKey(state)
       const appKey = resolveDropboxAppKey()
-      const state = crypto.randomUUID()
+      const oauthState = crypto.randomUUID()
       const verifier = createCodeVerifier()
       const challenge = await createCodeChallenge(verifier)
-      localStorage.setItem(AUTH_STATE_KEY, JSON.stringify({ state, verifier }))
+      localStorage.setItem(authStateKey(connectionId), JSON.stringify({ state: oauthState, verifier }))
       const url = new URL('https://www.dropbox.com/oauth2/authorize')
       url.searchParams.set('client_id', appKey)
       url.searchParams.set('response_type', 'code')
       url.searchParams.set('redirect_uri', REDIRECT_URI)
       url.searchParams.set('token_access_type', 'offline')
-      url.searchParams.set('state', state)
+      url.searchParams.set('state', oauthState)
       url.searchParams.set('code_challenge', challenge)
       url.searchParams.set('code_challenge_method', 'S256')
       window.location.assign(url.toString())
     },
-    async logout(): Promise<void> {
-      const token = loadToken()
+    async logout(state?: StorageCommandState): Promise<void> {
+      const connectionId = connectionKey(state)
+      const token = loadToken(connectionId)
       if (token !== undefined) {
         await fetch('https://api.dropboxapi.com/2/auth/token/revoke', {
           method: 'POST',
@@ -84,12 +87,12 @@ export function createDropboxProvider(): DropboxProvider {
           },
         })
       }
-      localStorage.removeItem(TOKEN_KEY)
-      localStorage.removeItem(AUTH_STATE_KEY)
+      localStorage.removeItem(tokenKey(connectionId))
+      localStorage.removeItem(authStateKey(connectionId))
     },
     async list(path: StorageCommandState, recursive = false): Promise<string[]> {
-      const token = requireToken()
-      const folder = normalizeFolderPath(path.path)
+      const token = requireToken(connectionKey(path))
+      const folder = resolveStorageFolder(path)
       const entries = await listDropboxEntries(token.access_token, folder, recursive)
       return entries
         .filter((entry) => entry['.tag'] !== 'deleted')
@@ -99,8 +102,8 @@ export function createDropboxProvider(): DropboxProvider {
         .sort()
     },
     async search(path: StorageCommandState, query: string): Promise<string[]> {
-      const token = requireToken()
-      const folder = normalizeFolderPath(path.path)
+      const token = requireToken(connectionKey(path))
+      const folder = resolveStorageFolder(path)
       const response = await fetch('https://api.dropboxapi.com/2/files/search_v2', {
         method: 'POST',
         headers: {
@@ -129,8 +132,8 @@ export function createDropboxProvider(): DropboxProvider {
         .sort()
     },
     async open(path: StorageCommandState, filename: string): Promise<string | undefined> {
-      const token = requireToken()
-      const target = resolveDropboxTarget(path.path, filename)
+      const token = requireToken(connectionKey(path))
+      const target = resolveDropboxTarget(resolveStorageFolder(path), filename)
       const response = await fetch('https://content.dropboxapi.com/2/files/download', {
         method: 'POST',
         headers: {
@@ -144,8 +147,8 @@ export function createDropboxProvider(): DropboxProvider {
       return await response.text()
     },
     async save(path: StorageCommandState, filename: string, content: string): Promise<void> {
-      const token = requireToken()
-      const target = resolveDropboxTarget(path.path, filename)
+      const token = requireToken(connectionKey(path))
+      const target = resolveDropboxTarget(resolveStorageFolder(path), filename)
       const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
         method: 'POST',
         headers: {
@@ -165,27 +168,36 @@ export function createDropboxProvider(): DropboxProvider {
         throw new Error(`Dropbox save failed: ${response.status} ${await readDropboxErrorMessage(response)}`)
       }
     },
-    async cleanup(): Promise<void> {
-      localStorage.removeItem(AUTH_STATE_KEY)
+    async cleanup(state?: StorageCommandState): Promise<void> {
+      localStorage.removeItem(authStateKey(connectionKey(state)))
+    },
+    async listFolders(state: StorageCommandState, path: string): Promise<Array<{ name: string; path: string }>> {
+      const token = requireToken(connectionKey(state))
+      const folder = normalizeFolderPath(path)
+      const entries = await listDropboxEntries(token.access_token, folder, false)
+      return entries
+        .filter((entry) => entry['.tag'] === 'folder')
+        .map((entry) => ({ name: entry.name, path: normalizeFolderPath(entry.path_display ?? joinPath(folder, entry.name)) }))
+        .sort((left, right) => left.name.localeCompare(right.name))
     },
   }
 }
 
-export function resumeDropboxLoginFromRedirect(): boolean {
+export async function resumeDropboxLoginFromRedirect(connectionId: string): Promise<boolean> {
   const url = new URL(window.location.href)
   const code = url.searchParams.get('code')
   const state = url.searchParams.get('state')
   if (code === null || state === null) return false
-  const authState = loadAuthState()
+  const authState = loadAuthState(connectionId)
   if (authState === undefined || authState.state !== state) return false
-  void exchangeCodeForToken(code, authState.verifier)
+  await exchangeCodeForToken(code, authState.verifier, connectionId)
   url.searchParams.delete('code')
   url.searchParams.delete('state')
   window.history.replaceState({}, '', url.toString())
   return true
 }
 
-async function exchangeCodeForToken(code: string, verifier: string): Promise<void> {
+async function exchangeCodeForToken(code: string, verifier: string, connectionId: string): Promise<void> {
   const appKey = resolveDropboxAppKey()
   const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
     method: 'POST',
@@ -204,8 +216,8 @@ async function exchangeCodeForToken(code: string, verifier: string): Promise<voi
     throw new Error(`Dropbox token exchange failed: ${response.status}`)
   }
   const token = await response.json() as DropboxTokenResponse
-  localStorage.setItem(TOKEN_KEY, JSON.stringify(token))
-  localStorage.removeItem(AUTH_STATE_KEY)
+  localStorage.setItem(tokenKey(connectionId), JSON.stringify(token))
+  localStorage.removeItem(authStateKey(connectionId))
 }
 
 async function listDropboxEntries(accessToken: string, folder: string, recursive: boolean): Promise<DropboxEntry[]> {
@@ -259,8 +271,13 @@ function resolveDropboxAppKey(): string {
   return LEGACY_DROPBOX_APP_KEY
 }
 
-function loadToken(): DropboxTokenResponse | undefined {
-  const raw = localStorage.getItem(TOKEN_KEY)
+export function removeDropboxConnection(connectionId: string): void {
+  localStorage.removeItem(tokenKey(connectionId))
+  localStorage.removeItem(authStateKey(connectionId))
+}
+
+function loadToken(connectionId: string): DropboxTokenResponse | undefined {
+  const raw = localStorage.getItem(tokenKey(connectionId))
   if (raw === null) return undefined
   try {
     return JSON.parse(raw) as DropboxTokenResponse
@@ -269,16 +286,16 @@ function loadToken(): DropboxTokenResponse | undefined {
   }
 }
 
-function requireToken(): DropboxTokenResponse {
-  const token = loadToken()
+function requireToken(connectionId: string): DropboxTokenResponse {
+  const token = loadToken(connectionId)
   if (token === undefined) {
     throw new Error('Dropbox not logged in')
   }
   return token
 }
 
-function loadAuthState(): { state: string; verifier: string } | undefined {
-  const raw = localStorage.getItem(AUTH_STATE_KEY)
+function loadAuthState(connectionId: string): { state: string; verifier: string } | undefined {
+  const raw = localStorage.getItem(authStateKey(connectionId))
   if (raw === null) return undefined
   try {
     const parsed = JSON.parse(raw) as { state?: unknown; verifier?: unknown }
@@ -287,6 +304,18 @@ function loadAuthState(): { state: string; verifier: string } | undefined {
   } catch {
     return undefined
   }
+}
+
+function connectionKey(state?: StorageCommandState): string {
+  return state?.connectionId ?? 'default'
+}
+
+function tokenKey(connectionId: string): string {
+  return `${TOKEN_KEY_PREFIX}${connectionId}`
+}
+
+function authStateKey(connectionId: string): string {
+  return `${AUTH_STATE_KEY_PREFIX}${connectionId}`
 }
 
 function normalizeFolderPath(path: string): string {
@@ -305,6 +334,15 @@ function resolveDropboxTarget(folder: string, filename: string): string {
     return normalizedFilename
   }
   return joinPath(folder, normalizedFilename)
+}
+
+function resolveStorageFolder(state: StorageCommandState): string {
+  const root = normalizeFolderPath(state.rootPath ?? '')
+  const relative = normalizeFolderPath(state.path)
+  if (relative.split('/').some((part) => part === '..')) {
+    throw new Error('Storage path must stay inside the connection root')
+  }
+  return joinPath(root, relative)
 }
 
 function createCodeVerifier(): string {

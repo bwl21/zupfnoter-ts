@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const fetchMock = vi.fn()
 const localStorageMock = {
-  getItem: vi.fn((key: string) => (key === 'zupfnoter.dropbox.token'
+  getItem: vi.fn((key: string) => (key === 'zupfnoter.storage.dropbox.token.default'
     ? JSON.stringify({ access_token: 'token' })
     : null)),
   setItem: vi.fn(),
@@ -16,7 +16,7 @@ vi.stubGlobal('localStorage', localStorageMock)
 describe('dropboxProvider', () => {
   beforeEach(() => {
     fetchMock.mockReset()
-    localStorageMock.getItem.mockImplementation((key: string) => (key === 'zupfnoter.dropbox.token'
+    localStorageMock.getItem.mockImplementation((key: string) => (key === 'zupfnoter.storage.dropbox.token.default'
       ? JSON.stringify({ access_token: 'token' })
       : null))
   })
@@ -47,5 +47,15 @@ describe('dropboxProvider', () => {
       }),
     )
     expect(results).toEqual(['/A/abend1.abc', '/B/sub/abend2.abc'])
+  })
+
+  it('removes credentials only for the selected connection', async () => {
+    const { removeDropboxConnection } = await import('../dropboxProvider')
+
+    removeDropboxConnection('private')
+
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith('zupfnoter.storage.dropbox.token.private')
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith('zupfnoter.storage.dropbox.authstate.private')
+    expect(localStorageMock.removeItem).not.toHaveBeenCalledWith('zupfnoter.storage.dropbox.token.club')
   })
 })

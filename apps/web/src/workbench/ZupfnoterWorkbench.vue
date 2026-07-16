@@ -30,6 +30,8 @@ import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
 import WorkbenchToastStack from './toasts/WorkbenchToastStack.vue'
 import { useWorkbenchToasts } from './toasts/useWorkbenchToasts'
 import ToolbarFileIcon from './ToolbarFileIcon.vue'
+import StorageConnectionsDialog from './StorageConnectionsDialog.vue'
+import StorageRootPickerDialog from './StorageRootPickerDialog.vue'
 import {
   FILE_TOOLBAR_MENU_ITEMS,
   fileToolbarPlaceholderMessage,
@@ -44,6 +46,7 @@ import { useAudioPlayer, type PlaybackInstrument } from './useAudioPlayer'
 import { resolvePlaybackInstrument } from './sound'
 import type { PlaybackStep } from './playback'
 import type { SelectionOrigin } from '@zupfnoter/types'
+import type { StorageConnection, StorageProviderDescriptor } from '@zupfnoter/types'
 import { CommandError, CommandStack, registerLegacyCommands, registerStorageCommands } from '@zupfnoter/core'
 import type { CommandArgumentValue } from '@zupfnoter/core'
 import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
@@ -61,7 +64,9 @@ import {
 } from './selectionManager'
 import { workbenchDiagnosticKey, type WorkbenchDiagnostic as WebWorkbenchDiagnostic } from './diagnostics'
 import { createHarpMirrorChannel, postHarpMirrorSnapshot, type HarpMirrorSnapshot } from './multiWindow/harpMirrorChannel'
-import { createDropboxProvider, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
+import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
+import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
+import { createStorageProviderRegistry } from './storage/providerRegistry'
 
 interface ConfigEditorIntent {
   action: string
@@ -86,11 +91,35 @@ const configCanRedo = ref(false)
 const saveFormat = ref('A3-A4')
 const storageState = reactive({
   system: 'dropbox',
+  connectionId: undefined as string | undefined,
+  rootPath: '',
   path: '',
   loggedIn: false,
   pendingCandidates: [] as string[],
 })
 const dropboxProvider = createDropboxProvider()
+const storageConnections = ref<StorageConnection[]>(loadStorageConnections())
+const activeStorageConnection = computed(() => storageConnections.value.find((connection) => connection.id === storageState.connectionId))
+const hasStorageSaveTarget = computed(() => activeStorageConnection.value !== undefined && !activeStorageConnection.value.readOnly)
+const saveTooltip = computed(() => activeStorageConnection.value?.readOnly === true
+  ? `Speichern ist für „${activeStorageConnection.value.label}“ deaktiviert (nur lesen)`
+  : 'Speichern ist erst mit bekanntem Speicherziel möglich')
+const storageProviderRegistry = createStorageProviderRegistry([{
+  descriptor: { id: 'dropbox', label: 'Dropbox', availability: 'available' },
+  login: (state) => dropboxProvider.login(state),
+  logout: (state) => dropboxProvider.logout(state),
+  list: (state, recursive) => dropboxProvider.list(state, recursive),
+  search: (state, query) => dropboxProvider.search(state, query),
+  open: (state, filename) => dropboxProvider.open(state, filename),
+  save: (state, filename, content) => dropboxProvider.save(state, filename, content),
+  cleanup: (state) => dropboxProvider.cleanup(state),
+  listFolders: (state, path) => dropboxProvider.listFolders(state, path),
+  removeConnection: async (connectionId) => removeDropboxConnection(connectionId),
+}])
+const storageProviderDescriptors: StorageProviderDescriptor[] = [
+  ...storageProviderRegistry.descriptors,
+  { id: 'nextcloud', label: 'Nextcloud', availability: 'planned' },
+]
 const playbackInstrument = ref<PlaybackInstrument>('oscillator')
 const logLevel = ref('warning')
 const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
@@ -101,10 +130,16 @@ const runtimeSettings = ref<Record<string, string>>({
   validate: 'true',
 })
 const storageStateKey = 'zupfnoter.storage.context'
+const storageDialogResumeKey = 'zupfnoter.storage.connections-dialog.resume'
 const abcTextKey = 'zupfnoter.abc.current'
 const playbackInstrumentKey = 'zupfnoter.playback.instrument'
 const extractPickerOpen = ref(false)
 const aboutDialogOpen = ref(false)
+const storageConnectionsDialogOpen = ref(false)
+const rootPickerConnectionId = ref<string>()
+const rootPickerPath = ref('')
+const rootPickerFolders = ref<Array<{ name: string; path: string }>>([])
+const rootPickerLoading = ref(false)
 const fileMenuElement = ref<HTMLDetailsElement | null>(null)
 const fileToolbarTooltips = new Map<HTMLElement, TippyInstance>()
 let nextConsoleEntryId = 1
@@ -323,9 +358,11 @@ function restoreStorageContext(): void {
   const raw = localStorage.getItem(storageStateKey)
   if (raw === null) return
   try {
-    const parsed = JSON.parse(raw) as { system?: string; path?: string; loggedIn?: boolean }
+    const parsed = JSON.parse(raw) as { system?: string; connectionId?: string; rootPath?: string; path?: string; loggedIn?: boolean }
     if (typeof parsed.system !== 'string' || typeof parsed.path !== 'string' || typeof parsed.loggedIn !== 'boolean') return
     storageState.system = parsed.system
+    storageState.connectionId = parsed.connectionId
+    storageState.rootPath = typeof parsed.rootPath === 'string' ? parsed.rootPath : ''
     storageState.path = parsed.path
     storageState.loggedIn = parsed.loggedIn
     storageState.pendingCandidates = []
@@ -346,12 +383,20 @@ function restorePlaybackInstrument(): void {
   playbackInstrument.value = raw
 }
 
-watch(storageState, () => {
+function persistStorageContext(): void {
   localStorage.setItem(storageStateKey, JSON.stringify({
     system: storageState.system,
+    connectionId: storageState.connectionId,
+    rootPath: storageState.rootPath,
     path: storageState.path,
     loggedIn: storageState.loggedIn,
   }))
+}
+
+watch(storageState, persistStorageContext, { deep: true })
+
+watch(storageConnections, (connections) => {
+  saveStorageConnections(connections)
 }, { deep: true })
 
 watch(abcText, (value) => {
@@ -659,6 +704,10 @@ function closeFileMenu(): void {
 
 function handleFileToolbarAction(action: FileToolbarAction): void {
   closeFileMenu()
+  if (action === 'storage-connect') {
+    storageConnectionsDialogOpen.value = true
+    return
+  }
   const placeholderMessage = fileToolbarPlaceholderMessage(action)
   if (placeholderMessage !== undefined) {
     pushToast({
@@ -676,6 +725,127 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
   }
   if (action === 'download') {
     void executeToolbarCommand('download_abc')
+    return
+  }
+  if (action === 'save') {
+    void executeToolbarCommand(`ssave ${extractAbcId(abcText.value)}.abc`)
+  }
+}
+
+function updateStorageConnection(connectionId: string, update: Partial<StorageConnection>): void {
+  storageConnections.value = storageConnections.value.map((connection) => connection.id === connectionId
+    ? { ...connection, ...update }
+    : connection)
+}
+
+function activateStorageConnection(connectionId: string): void {
+  const connection = storageConnections.value.find((entry) => entry.id === connectionId)
+  if (connection?.status === 'disconnected') {
+    connectStorageConnection(connectionId)
+    return
+  }
+  void executeToolbarCommand(`sconnection ${connectionId}`)
+}
+
+function updateStorageConnectionRoot(connectionId: string, rootPath: string): void {
+  const connection = storageConnections.value.find((entry) => entry.id === connectionId)
+  if (connection === undefined || connection.rootPath === rootPath) return
+  if (connection.rootPath !== '' && !window.confirm(`Wurzel von „${connection.label}“ wirklich ändern?`)) return
+  updateStorageConnection(connectionId, { rootPath, relativePath: '' })
+  if (storageState.connectionId === connectionId) {
+    storageState.rootPath = rootPath
+    storageState.path = ''
+  }
+}
+
+function updateStorageConnectionReadOnly(connectionId: string, readOnly: boolean): void {
+  updateStorageConnection(connectionId, { readOnly })
+}
+
+async function openRootPicker(connectionId: string): Promise<void> {
+  const connection = storageConnections.value.find((entry) => entry.id === connectionId)
+  if (connection === undefined) return
+  const adapter = storageProviderRegistry.adapterForConnection(connection)
+  if (adapter === undefined) return
+  rootPickerConnectionId.value = connectionId
+  rootPickerPath.value = connection.rootPath
+  rootPickerLoading.value = true
+  try {
+    rootPickerFolders.value = await adapter.listFolders({ ...storageState, connectionId, system: connection.providerId, rootPath: '', path: '' }, rootPickerPath.value)
+  } catch (error) {
+    pushToast({ severity: 'warning', title: 'Speicherverbindung', message: error instanceof Error ? error.message : String(error) })
+    rootPickerConnectionId.value = undefined
+  } finally {
+    rootPickerLoading.value = false
+  }
+}
+
+async function browseRootPicker(path: string): Promise<void> {
+  const connectionId = rootPickerConnectionId.value
+  const connection = storageConnections.value.find((entry) => entry.id === connectionId)
+  if (connection === undefined) return
+  const adapter = storageProviderRegistry.adapterForConnection(connection)
+  if (adapter === undefined) return
+  rootPickerLoading.value = true
+  try {
+    rootPickerPath.value = path
+    rootPickerFolders.value = await adapter.listFolders({ ...storageState, connectionId, system: connection.providerId, rootPath: '', path: '' }, path)
+  } finally {
+    rootPickerLoading.value = false
+  }
+}
+
+function chooseRootPickerPath(path: string): void {
+  const connectionId = rootPickerConnectionId.value
+  if (connectionId !== undefined) updateStorageConnectionRoot(connectionId, path)
+  rootPickerConnectionId.value = undefined
+}
+
+function createAndConnectStorageConnection(providerId: string, label: string): void {
+  const descriptor = storageProviderDescriptors.find((provider) => provider.id === providerId)
+  if (descriptor === undefined || descriptor.availability !== 'available') return
+  const connection = createStorageConnection(providerId, label)
+  storageConnections.value = [...storageConnections.value, connection]
+  connectStorageConnection(connection.id)
+}
+
+function connectStorageConnection(connectionId: string): void {
+  const connection = storageConnections.value.find((entry) => entry.id === connectionId)
+  if (connection === undefined) return
+  const adapter = storageProviderRegistry.adapterForConnection(connection)
+  if (adapter === undefined) {
+    pushToast({ severity: 'warning', title: 'Speicherverbindung', message: `${connection.providerId} ist noch nicht verfügbar.` })
+    return
+  }
+  updateStorageConnection(connectionId, { status: 'connecting' })
+  storageState.connectionId = connectionId
+  storageState.system = connection.providerId
+  storageState.loggedIn = false
+  localStorage.setItem(storageDialogResumeKey, 'true')
+  persistStorageContext()
+  void executeToolbarCommand(`sprovider ${connection.providerId}`)
+}
+
+function disconnectStorageConnection(connectionId: string): void {
+  void executeToolbarCommand(`sdisconnect ${connectionId}`)
+}
+
+function renameStorageConnection(connectionId: string, label: string): void {
+  if (label.trim() === '') return
+  updateStorageConnection(connectionId, { label: label.trim() })
+}
+
+function removeStorageConnection(connectionId: string): void {
+  const connection = storageConnections.value.find((entry) => entry.id === connectionId)
+  if (connection === undefined) return
+  if (!window.confirm(`Verbindung „${connection.label}“ wirklich löschen?`)) return
+  const adapter = storageProviderRegistry.adapterForConnection(connection)
+  void adapter?.removeConnection(connectionId)
+  storageConnections.value = storageConnections.value.filter((entry) => entry.id !== connectionId)
+  if (storageState.connectionId === connectionId) {
+    storageState.connectionId = undefined
+    storageState.path = ''
+    storageState.loggedIn = false
   }
 }
 
@@ -781,46 +951,29 @@ commandStack = new CommandStack({
   log: appendConsoleLine,
 })
 
-void (async () => {
-  if (resumeDropboxLoginFromRedirect()) {
-    storageState.loggedIn = true
-  }
-})()
-
 registerStorageCommands(commandStack, storageState, {
-  providers: [dropboxProvider.system, 'nextcloud'],
-  list: async (path, recursive) => {
-    const results = await dropboxProvider.list(path, recursive)
-    return results
-  },
-  search: async (path, query) => {
-    const results = await dropboxProvider.search(path, query)
-    return results
-  },
+  providers: storageProviderDescriptors.map((provider) => provider.id),
+  connections: () => storageConnections.value,
+  list: async (path, recursive) => storageProviderRegistry.adapterFor(path, storageConnections.value).list(path, recursive),
+  search: async (path, query) => storageProviderRegistry.adapterFor(path, storageConnections.value).search(path, query),
   open: async (path, filename) => {
-    const loaded = await dropboxProvider.open(path, filename)
+    const loaded = await storageProviderRegistry.adapterFor(path, storageConnections.value).open(path, filename)
     if (loaded === undefined) return undefined
     abcText.value = loaded
     renderNow()
     return loaded
   },
-  save: async (path, filename, content) => {
-    await dropboxProvider.save(path, filename, content)
-  },
+  save: async (path, filename, content) => storageProviderRegistry.adapterFor(path, storageConnections.value).save(path, filename, content),
   readDocument: () => abcText.value,
   writeDocument: (content) => {
     abcText.value = content
     renderNow()
   },
-  login: async (path) => {
-    await dropboxProvider.login()
-  },
-  logout: async (path) => {
-    await dropboxProvider.logout()
-  },
-  cleanup: async (path) => {
-    await dropboxProvider.cleanup()
-  },
+  login: async (path) => storageProviderRegistry.adapterFor(path, storageConnections.value).login(path),
+  logout: async (path) => storageProviderRegistry.adapterFor(path, storageConnections.value).logout(path),
+  cleanup: async (path) => storageProviderRegistry.adapterFor(path, storageConnections.value).cleanup(path),
+  updateConnectionPath: (connectionId, relativePath) => updateStorageConnection(connectionId, { relativePath }),
+  updateConnectionStatus: (connectionId, status) => updateStorageConnection(connectionId, { status }),
 })
 
   registerLegacyCommands(commandStack, {
@@ -1012,6 +1165,23 @@ onMounted(() => {
   restoreCurrentAbcText()
   restorePlaybackInstrument()
   restoreStorageContext()
+  if (storageState.connectionId !== undefined && storageState.system === 'dropbox') {
+    void resumeDropboxLoginFromRedirect(storageState.connectionId).then((connected) => {
+      if (!connected) return
+      storageState.loggedIn = true
+      updateStorageConnection(storageState.connectionId as string, { status: 'connected' })
+      const connection = storageConnections.value.find((entry) => entry.id === storageState.connectionId)
+      const resumeStorageDialog = localStorage.getItem(storageDialogResumeKey) === 'true'
+      localStorage.removeItem(storageDialogResumeKey)
+      if (connection !== undefined && (connection.rootPath === '' || resumeStorageDialog)) {
+        storageConnectionsDialogOpen.value = true
+        if (connection.rootPath === '') void openRootPicker(connection.id)
+      }
+    }).catch((error) => {
+      const message = error instanceof Error ? error.message : String(error)
+      pushToast({ severity: 'danger', title: 'Dropbox', message })
+    })
+  }
   window.addEventListener('keydown', handleGlobalKeydown)
   window.addEventListener('message', handleMirrorMessage)
   try {
@@ -1098,9 +1268,9 @@ function handleMirrorMessage(event: MessageEvent): void {
                     type="button"
                     role="menuitem"
                     :data-testid="`file-action-${item.action}`"
-                    :disabled="isFileToolbarActionDisabled(item.action, false)"
-                    :title="item.action === 'save' ? 'Speichern ist erst mit bekanntem Speicherziel möglich' : item.tooltip"
-                    :data-file-toolbar-tooltip="item.action === 'save' ? 'Speichern ist erst mit bekanntem Speicherziel möglich' : item.tooltip"
+                    :disabled="isFileToolbarActionDisabled(item.action, hasStorageSaveTarget)"
+                    :title="item.action === 'save' ? saveTooltip : item.tooltip"
+                    :data-file-toolbar-tooltip="item.action === 'save' ? saveTooltip : item.tooltip"
                     @click="handleFileToolbarAction(item.action)"
                   >
                     <ToolbarFileIcon :name="item.icon" />
@@ -1131,10 +1301,10 @@ function handleMirrorMessage(event: MessageEvent): void {
             </ZnButton>
             <ZnButton
               variant="primary"
-              :disabled="isFileToolbarActionDisabled('save', false)"
-              title="Speichern ist erst mit bekanntem Speicherziel möglich"
+              :disabled="isFileToolbarActionDisabled('save', hasStorageSaveTarget)"
+              :title="saveTooltip"
               data-testid="file-shortcut-save"
-              data-file-toolbar-tooltip="Speichern ist erst mit bekanntem Speicherziel möglich"
+              :data-file-toolbar-tooltip="saveTooltip"
               @click="handleFileToolbarAction('save')"
             >
               <ToolbarFileIcon name="save" />
@@ -1332,6 +1502,31 @@ function handleMirrorMessage(event: MessageEvent): void {
     :commit-hash="buildInfo.commitHash"
     :build-time="buildInfo.buildTime"
     @close="closeAboutDialog"
+  />
+
+  <StorageConnectionsDialog
+    :open="storageConnectionsDialogOpen"
+    :connections="storageConnections"
+    :providers="storageProviderDescriptors"
+    :active-connection-id="storageState.connectionId"
+    @close="storageConnectionsDialogOpen = false"
+    @create="createAndConnectStorageConnection"
+    @activate="activateStorageConnection"
+    @update="renameStorageConnection"
+    @remove="removeStorageConnection"
+    @disconnect="disconnectStorageConnection"
+    @root="openRootPicker"
+    @readonly="updateStorageConnectionReadOnly"
+  />
+
+  <StorageRootPickerDialog
+    :open="rootPickerConnectionId !== undefined"
+    :path="rootPickerPath"
+    :folders="rootPickerFolders"
+    :loading="rootPickerLoading"
+    @close="rootPickerConnectionId = undefined"
+    @browse="browseRootPicker"
+    @choose="chooseRootPickerPath"
   />
 </template>
 

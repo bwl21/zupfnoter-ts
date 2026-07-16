@@ -93,3 +93,9 @@ export type {
   ExtractConfig,
   ZupfnoterConfig,
 } from './config.js'
+
+export type {
+  StorageConnectionStatus,
+  StorageConnection,
+  StorageProviderDescriptor,
+} from './storage.js'
