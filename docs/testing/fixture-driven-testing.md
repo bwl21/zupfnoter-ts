@@ -566,4 +566,19 @@ pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy
 - [x] Phase 2: Song-Fixtures bootstrap + Tests aktivieren
 - [x] Phase 3: Sheet-Fixtures bootstrap + Tests aktivieren  
 - [ ] Phase 4: SVG-Parität gegenüber `output.extract-<nr>.svg` schließen
-- [ ] Phase 4: PDF-Fixtures (nur "valides PDF", kein Byte-Vergleich) 
+- [x] Phase 4: fokussierter PDF-Paritätslauf für A3: Legacy- und TS-PDF werden
+  gerendert und als Bild verglichen; kein Byte-Vergleich.
+
+### PDF-Parität ausführen
+
+Der fokussierte PDF-Lauf nutzt die lokale Legacy-CLI als Referenz, rendert beide
+PDFs seitenweise mit Poppler und schreibt die Bilddifferenz nach
+`/private/tmp/zupfnoter-pdf-artifacts/`. Er ist bewusst kein Standard-Unit-Test,
+weil die Legacy-CLI nicht Teil der CI-Laufzeit ist.
+
+```bash
+pnpm --filter @zupfnoter/core run test:pdf-parity
+```
+
+Der Legacy-CLI exportiert aktuell nur A3-PDFs; A4 bleibt daher bis zu einem
+entsprechenden Legacy-Referenzexport außerhalb dieses visuellen Vergleichs.

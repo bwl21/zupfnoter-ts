@@ -12,6 +12,7 @@ import type { Song, Sheet, ZupfnoterConfig } from '@zupfnoter/types'
 import { AbcParser } from '../AbcParser.js'
 import { AbcToSong } from '../AbcToSong.js'
 import { HarpnotesLayout } from '../HarpnotesLayout.js'
+import { PdfEngine } from '../PdfEngine.js'
 import { SvgEngine } from '../SvgEngine.js'
 import { extractSongConfig, mergeSongConfig } from '../extractSongConfig.js'
 import { LegacyFixtureAnnotationTextMetrics } from './legacyAnnotationTextMetrics.js'
@@ -274,6 +275,24 @@ export function transformFixtureToSvg(
     annotationTextMetrics: new LegacyFixtureAnnotationTextMetrics(),
   }).layout(song, target.extractNr, target.pageFormat)
   return new SvgEngine().draw(sheet)
+}
+
+/** Erzeugt ein A3- oder A4-PDF aus einem Legacy-Fixture mit der TS-Pipeline. */
+export function transformFixtureToPdf(
+  fixture: PipelineFixture,
+  extractNr: number | string = 0,
+  pageFormat: 'A3' | 'A4' = 'A3',
+): Blob {
+  const model = new AbcParser().parse(fixture.input.abc)
+  const song = new AbcToSong().transform(model, fixture.config)
+  const target = resolveFixtureSheetRenderTarget(fixture.config, extractNr)
+  const sheet = new HarpnotesLayout(fixture.config, {
+    annotationTextMetrics: new LegacyFixtureAnnotationTextMetrics(),
+  }).layout(song, target.extractNr, pageFormat)
+  const engine = new PdfEngine()
+  return pageFormat === 'A3'
+    ? engine.draw(sheet)
+    : engine.drawInSegments(sheet, fixture.config.layout.X_SPACING)
 }
 
 export function saveFixtureOutput(fixture: PipelineFixture, stage: FixtureStage, data: unknown): void {

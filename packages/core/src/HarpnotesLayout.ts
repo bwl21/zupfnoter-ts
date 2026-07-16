@@ -551,6 +551,10 @@ export class HarpnotesLayout {
         )),
         activeVoices,
         printerConfig: renderPrinter,
+        layoutConfig: {
+          FONT_STYLE_DEF: renderLayout.FONT_STYLE_DEF,
+          MM_PER_POINT: renderLayout.MM_PER_POINT,
+        },
       }
     } finally {
       if (useBeams) {

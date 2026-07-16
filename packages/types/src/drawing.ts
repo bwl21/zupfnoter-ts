@@ -6,7 +6,7 @@
  */
 
 import type { Note, Pause, PlayableEntity } from './music.js'
-import type { PrinterConfig } from './config.js'
+import type { LayoutConfig, PrinterConfig } from './config.js'
 
 // ---------------------------------------------------------------------------
 // Basis
@@ -137,4 +137,6 @@ export interface Sheet {
   activeVoices: number[]
   /** Effektive Druckeinstellungen des Auszugs. */
   printerConfig?: PrinterConfig
+  /** Für die Ausgabe benötigte effektive Layoutwerte des Auszugs. */
+  layoutConfig?: Pick<LayoutConfig, 'FONT_STYLE_DEF' | 'MM_PER_POINT'>
 }
