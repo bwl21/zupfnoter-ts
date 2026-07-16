@@ -20,6 +20,7 @@ export interface StorageCommandRuntime {
   search(path: StorageCommandState, query: string): Promise<string[]>
   open(path: StorageCommandState, filename: string): Promise<string | undefined>
   save(path: StorageCommandState, filename: string, content: string): Promise<void>
+  saveArtifacts?(path: StorageCommandState, filebase: string, documentText: string): Promise<string[]>
   readDocument(): string
   writeDocument(content: string): void
   login(path: StorageCommandState): Promise<void>
@@ -311,8 +312,11 @@ export function registerStorageCommands(
       }
       const documentText = runtime.readDocument()
       const filename = storageFilenameFromDocument(documentText)
-      await runtime.save(state, filename, documentText)
-      context.log(`save ${state.system}//${joinStoragePath(state.rootPath ?? '', state.path)}/${filename}`)
+      const filebase = filename.replace(/\.abc$/i, '')
+      const saved = runtime.saveArtifacts === undefined
+        ? (await runtime.save(state, filename, documentText), [filename])
+        : await runtime.saveArtifacts(state, filebase, documentText)
+      saved.forEach((name) => context.log(`save ${state.system}//${joinStoragePath(state.rootPath ?? '', state.path)}/${name}`))
     },
   })
 }

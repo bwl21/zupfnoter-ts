@@ -8,7 +8,7 @@ export interface StorageProviderAdapter {
   list(state: StorageCommandState, recursive?: boolean): Promise<string[]>
   search(state: StorageCommandState, query: string): Promise<string[]>
   open(state: StorageCommandState, filename: string): Promise<string | undefined>
-  save(state: StorageCommandState, filename: string, content: string): Promise<void>
+  save(state: StorageCommandState, filename: string, content: string | Blob): Promise<void>
   cleanup(state: StorageCommandState): Promise<void>
   listFolders(state: StorageCommandState, path: string): Promise<Array<{ name: string; path: string }>>
   listDocuments?(state: StorageCommandState): Promise<StorageDocument[]>

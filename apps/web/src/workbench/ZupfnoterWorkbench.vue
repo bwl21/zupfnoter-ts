@@ -22,6 +22,9 @@ import {
   DEFAULT_ABC,
   type RenderIssue,
   renderWorkbenchPreviews,
+  renderHtmlExport,
+  renderPdfExport,
+  resolvePdfExportVariants,
   type WorkbenchRenderResult,
 } from './rendering/renderPipeline'
 import { extractSongConfig, extractSongFilebase, replaceSongDocumentAbc, splitSongDocument } from '@zupfnoter/core'
@@ -153,6 +156,8 @@ const storageOpenDocumentsLoaded = ref(false)
 const storagePreviewUrl = ref<string>()
 const storagePreviewLoading = ref(false)
 const storagePreviewError = ref('')
+const saveResultFiles = ref<string[]>([])
+const saveResultDialogOpen = ref(false)
 const rootPickerConnectionId = ref<string>()
 const rootPickerPath = ref('')
 const rootPickerFolders = ref<Array<{ name: string; path: string }>>([])
@@ -1068,6 +1073,31 @@ registerStorageCommands(commandStack, storageState, {
     return loaded
   },
   save: async (path, filename, content) => storageProviderRegistry.adapterFor(path, storageConnections.value).save(path, filename, content),
+  saveArtifacts: async (path, filebase, content) => {
+    const adapter = storageProviderRegistry.adapterFor(path, storageConnections.value)
+    const extracts = resolvePdfExportVariants(content, currentExtract.value)
+    const abcName = `${filebase}.abc`
+    const htmlName = `${filebase}.html`
+    const names = [abcName, htmlName]
+    await adapter.save(path, abcName, content)
+    await adapter.save(path, htmlName, renderHtmlExport(content))
+    for (const extract of extracts) {
+      const suffix = extract.filenamepart
+      if (saveFormat.value.includes('A3')) {
+        const name = `${filebase}_${suffix}_a3.pdf`
+        await adapter.save(path, name, await renderPdfExport(content, extract.extractNr, 'A3'))
+        names.push(name)
+      }
+      if (saveFormat.value.includes('A4')) {
+        const name = `${filebase}_${suffix}_a4.pdf`
+        await adapter.save(path, name, await renderPdfExport(content, extract.extractNr, 'A4'))
+        names.push(name)
+      }
+    }
+    saveResultFiles.value = names
+    saveResultDialogOpen.value = true
+    return names
+  },
   readDocument: () => documentText.value,
   writeDocument: (content) => {
     documentText.value = content
@@ -1607,6 +1637,16 @@ function handleMirrorMessage(event: MessageEvent): void {
     :build-time="buildInfo.buildTime"
     @close="closeAboutDialog"
   />
+  <Teleport to="body">
+    <div v-if="saveResultDialogOpen" class="save-result__backdrop">
+      <section class="save-result" role="dialog" aria-modal="true" aria-labelledby="save-result-title">
+        <header><h2 id="save-result-title">Dateien gespeichert</h2><ZnButton variant="ghost" aria-label="Dialog schließen" @click="saveResultDialogOpen = false">×</ZnButton></header>
+        <p>Folgende Dateien wurden gespeichert:</p>
+        <ul><li v-for="file in saveResultFiles" :key="file">{{ file }}</li></ul>
+        <footer><ZnButton variant="primary" @click="saveResultDialogOpen = false">Schließen</ZnButton></footer>
+      </section>
+    </div>
+  </Teleport>
 
   <StorageConnectionsDialog
     :open="storageConnectionsDialogOpen"
@@ -1921,4 +1961,44 @@ function handleMirrorMessage(event: MessageEvent): void {
   height: 100%;
   overflow: hidden;
 }
+
+.save-result__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1020;
+  display: grid;
+  place-items: center;
+  padding: 0.75rem;
+  background: rgb(15 23 42 / 0.45);
+}
+
+.save-result {
+  width: min(34rem, calc(100vw - 1.5rem));
+  border: 1px solid var(--zn-border-strong);
+  border-radius: 0.85rem;
+  background: var(--zn-bg-elevated);
+  color: var(--zn-text);
+  box-shadow: 0 16px 36px rgb(15 23 42 / 0.22);
+}
+
+.save-result header,
+.save-result footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid var(--zn-border);
+}
+
+.save-result h2,
+.save-result p,
+.save-result ul {
+  margin: 0;
+}
+
+.save-result h2 { font-size: 1rem; }
+.save-result p { padding: 0.85rem 0.9rem 0.35rem; color: var(--zn-text-soft); }
+.save-result ul { max-height: 16rem; overflow: auto; padding: 0.25rem 1.9rem 0.85rem; }
+.save-result li { padding-block: 0.16rem; font-family: var(--zn-font-mono, monospace); font-size: 0.86rem; }
+.save-result footer { justify-content: flex-end; border-top: 1px solid var(--zn-border); border-bottom: 0; }
 </style>

@@ -3,6 +3,7 @@ import {
   AbcToSong,
   Confstack,
   HarpnotesLayout,
+  PdfEngine,
   SvgEngine,
   createDefaultAnnotationTextMetrics,
   extractSongConfig,
@@ -47,7 +48,44 @@ export interface WorkbenchRenderResult {
   renderError?: string
 }
 
+/** Ein PDF-Ausgabeziel gemäß der effektiven Stückkonfiguration. */
+export interface PdfExportVariant {
+  extractNr: number
+  filenamepart: string
+}
+
 export const DEFAULT_ABC = referenceSheetAbc
+
+/** Erzeugt das PDF eines einzelnen Auszugs im gewünschten Seitenformat. */
+export async function renderPdfExport(abcText: string, extractNr: number, pageFormat: 'A3' | 'A4'): Promise<Blob> {
+  const config = buildConfig(abcText)
+  const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
+  const sheet = new HarpnotesLayout(config, { annotationTextMetrics: createDefaultAnnotationTextMetrics() }).layout(song, extractNr, pageFormat)
+  const engine = new PdfEngine()
+  return pageFormat === 'A3'
+    ? engine.draw(sheet)
+    : engine.drawInSegments(sheet, config.layout.X_SPACING)
+}
+
+/** Ermittelt die laut Konfiguration zu speichernden Auszüge samt Dateinamenzusatz. */
+export function resolvePdfExportVariants(abcText: string, fallbackExtract: number): PdfExportVariant[] {
+  const config = buildConfig(abcText)
+  const extracts = config.produce !== undefined && config.produce.length > 0
+    ? config.produce
+    : [fallbackExtract]
+
+  return extracts.map((extractNr) => {
+    const extract = config.extract[String(extractNr)]
+    const filenamepart = extract?.filenamepart?.trim() || extract?.title?.trim() || String(extractNr)
+    return { extractNr, filenamepart }
+  })
+}
+
+/** Erzeugt die HTML-Vorschau, die zusammen mit dem Stück gespeichert wird. */
+export function renderHtmlExport(abcText: string): string {
+  const svg = new AbcParser().renderSvg(abcText)
+  return `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Zupfnoter</title></head><body>${svg}</body></html>`
+}
 
 function parserIssueToRenderIssue(error: AbcParseError): RenderIssue {
   const location = error.line === undefined ? '' : `line ${error.line}: `

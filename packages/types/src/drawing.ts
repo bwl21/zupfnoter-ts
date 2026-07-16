@@ -6,6 +6,7 @@
  */
 
 import type { Note, Pause, PlayableEntity } from './music.js'
+import type { PrinterConfig } from './config.js'
 
 // ---------------------------------------------------------------------------
 // Basis
@@ -134,4 +135,6 @@ export type DrawableElement = Ellipse | FlowLine | Path | Annotation | Glyph | I
 export interface Sheet {
   children: DrawableElement[]
   activeVoices: number[]
+  /** Effektive Druckeinstellungen des Auszugs. */
+  printerConfig?: PrinterConfig
 }

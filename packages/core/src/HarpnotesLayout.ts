@@ -550,6 +550,7 @@ export class HarpnotesLayout {
             : child
         )),
         activeVoices,
+        printerConfig: renderPrinter,
       }
     } finally {
       if (useBeams) {

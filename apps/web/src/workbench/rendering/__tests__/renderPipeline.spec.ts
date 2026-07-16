@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { renderWorkbenchPreviews } from '../renderPipeline'
+import { renderWorkbenchPreviews, resolvePdfExportVariants } from '../renderPipeline'
 
 const amMoargoAbc = `X:799
 Z:
@@ -42,6 +42,21 @@ V:4
 `
 
 describe('renderWorkbenchPreviews', () => {
+  it('uses the effective produce list and filename additions for PDF exports', () => {
+    const variants = resolvePdfExportVariants(`X:1
+T:Ausgabe
+K:C
+C
+
+%%%%zupfnoter.config
+{"produce":[0,1],"extract":{"0":{"filenamepart":"gesamt"},"1":{"title":"Melodie","filenamepart":"melodie"}}}`, 3)
+
+    expect(variants).toEqual([
+      { extractNr: 0, filenamepart: 'gesamt' },
+      { extractNr: 1, filenamepart: 'melodie' },
+    ])
+  })
+
   it('surfaces translated abc2svg tie errors in the editor diagnostics', () => {
     const result = renderWorkbenchPreviews('X:1\nT:Demo\nK:C\ng-d')
 

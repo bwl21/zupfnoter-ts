@@ -48,7 +48,7 @@ export interface DropboxProvider {
   list(path: StorageCommandState, recursive?: boolean): Promise<string[]>
   search(path: StorageCommandState, query: string): Promise<string[]>
   open(path: StorageCommandState, filename: string): Promise<string | undefined>
-  save(path: StorageCommandState, filename: string, content: string): Promise<void>
+  save(path: StorageCommandState, filename: string, content: string | Blob): Promise<void>
   cleanup(state?: StorageCommandState): Promise<void>
   listFolders(state: StorageCommandState, path: string): Promise<Array<{ name: string; path: string }>>
   listDocuments(state: StorageCommandState): Promise<StorageDocument[]>
@@ -150,7 +150,7 @@ export function createDropboxProvider(): DropboxProvider {
       }
       return await response.text()
     },
-    async save(path: StorageCommandState, filename: string, content: string): Promise<void> {
+    async save(path: StorageCommandState, filename: string, content: string | Blob): Promise<void> {
       const token = requireToken(connectionKey(path))
       const target = resolveDropboxTarget(resolveStorageFolder(path), filename)
       const response = await fetch('https://content.dropboxapi.com/2/files/upload', {

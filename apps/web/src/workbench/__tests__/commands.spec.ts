@@ -206,6 +206,28 @@ describe('legacy command registration', () => {
     }])
   })
 
+  it('delegates complete storage artifact creation using the F: filebase', async () => {
+    const artifacts: string[] = []
+    const stack = new CommandStack({ log: () => undefined })
+    registerStorageCommands(stack, {
+      system: 'dropbox', path: '', loggedIn: true, pendingCandidates: [],
+    }, {
+      providers: ['dropbox'], list: async () => [], search: async () => [], open: async () => undefined,
+      save: async () => undefined,
+      saveArtifacts: async (_path, filebase, documentText) => {
+        expect(filebase).toBe('749_advent-is-a-leuchtn')
+        expect(documentText).toContain('%%%%zupfnoter.config')
+        artifacts.push('749_advent-is-a-leuchtn.abc', '749_advent-is-a-leuchtn.html', '749_advent-is-a-leuchtn_-_a3.pdf')
+        return artifacts
+      },
+      readDocument: () => 'X:749\nF:749_advent-is-a-leuchtn\nK:C\nC\n%%%%zupfnoter.config\n{}',
+      writeDocument: () => undefined, login: async () => undefined, logout: async () => undefined, cleanup: async () => undefined,
+    })
+
+    await stack.runString('ssave')
+    expect(artifacts).toHaveLength(3)
+  })
+
   it('requires an F: header when saving', async () => {
     const stack = new CommandStack({ log: () => undefined })
     registerStorageCommands(stack, {

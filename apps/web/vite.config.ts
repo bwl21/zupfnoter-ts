@@ -52,6 +52,9 @@ export default defineConfig({
     // Don't pre-bundle workspace packages — resolve them from source
     exclude: ['@zupfnoter/core', '@zupfnoter/types'],
   },
+  worker: {
+    format: 'es',
+  },
   server: {
     allowedHosts: true,
     fs: {

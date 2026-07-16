@@ -215,6 +215,8 @@ export interface SvgEngineOptions {
   height?: number
   /** Font size definitions per style name */
   fontStyles?: Record<string, { fontSize: number; fontStyle: string }>
+  /** Whether to draw the printable page border. */
+  showBorder?: boolean
 }
 
 interface ElementMeta {
@@ -238,9 +240,11 @@ export class SvgEngine {
   private _height: number
   private _fontStyles: Record<string, { fontSize: number; fontStyle: string }>
   private _useLegacyFrame: boolean
+  private _showBorder: boolean
 
   constructor(options: SvgEngineOptions = {}) {
     this._useLegacyFrame = options.width === undefined && options.height === undefined
+    this._showBorder = options.showBorder ?? true
     this._width = options.width ?? LEGACY_PAGE_WIDTH
     this._height = options.height ?? LEGACY_PAGE_HEIGHT
     this._fontStyles = options.fontStyles ?? {
@@ -260,7 +264,7 @@ export class SvgEngine {
    */
   draw(sheet: Sheet): string {
     const layers: string[] = []
-    if (this._useLegacyFrame) {
+    if (this._showBorder && this._useLegacyFrame) {
       layers.push(svgGroup(
         [
           svgRect(1, 1, this._width - 2, this._height - 2, 'none', 'black', 0.2, {
@@ -276,7 +280,7 @@ export class SvgEngine {
         ].join('\n'),
         { class: 'zupfnoter-layer zupfnoter-layer--border', 'data-layer': 'border' },
       ))
-    } else {
+    } else if (this._showBorder) {
       layers.push(svgGroup(
         svgRect(1, 1, this._width - 2, this._height - 2, 'none', 'black', 0.5, {
           class: 'zupfnoter-border',

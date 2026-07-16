@@ -35,7 +35,8 @@
     "lint": "oxlint --ignore-path .oxlintignore ."
   },
   "dependencies": {
-    "@zupfnoter/types": "workspace:*"
+    "@zupfnoter/types": "workspace:*",
+    "jspdf": "^4.2.1"
   },
   "devDependencies": {
     "@types/node": "^24.11.0",

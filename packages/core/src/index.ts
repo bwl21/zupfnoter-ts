@@ -30,6 +30,7 @@ export type { HarpnotesLayoutOptions, AnnotationTextMetrics, JsPdfConstructor } 
 
 export { SvgEngine } from './SvgEngine.js'
 export type { SvgEngineOptions } from './SvgEngine.js'
+export { PdfEngine } from './PdfEngine.js'
 
 export { expandPlaybackFlow } from './PlaybackFlow.js'
 
