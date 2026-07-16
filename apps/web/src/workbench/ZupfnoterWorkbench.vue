@@ -24,7 +24,7 @@ import {
   renderWorkbenchPreviews,
   type WorkbenchRenderResult,
 } from './rendering/renderPipeline'
-import { extractSongConfig } from '@zupfnoter/core'
+import { extractSongConfig, replaceSongDocumentAbc, splitSongDocument } from '@zupfnoter/core'
 import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
 import WorkbenchToastStack from './toasts/WorkbenchToastStack.vue'
@@ -83,7 +83,13 @@ const previewPaneSize = ref(62)
 const harpZoom = ref(100)
 const harpScrollLeft = ref(0)
 const harpScrollTop = ref(0)
-const abcText = ref(DEFAULT_ABC)
+const documentText = ref(DEFAULT_ABC)
+const abcText = computed({
+  get: () => splitSongDocument(documentText.value).abcText,
+  set: (value: string) => {
+    documentText.value = replaceSongDocumentAbc(documentText.value, value)
+  },
+})
 const currentExtract = ref(0)
 const activeConfigSection = ref('basic_settings')
 const configEntryMutationVersion = ref(0)
@@ -289,7 +295,7 @@ const previewErrorMessage = computed(() => {
 })
 
 const extractMenuItems = computed(() => {
-  const extractConfig = extractSongConfig(abcText.value).extract ?? {}
+  const extractConfig = extractSongConfig(documentText.value).extract ?? {}
   const extractNumbers = new Set<number>([currentExtract.value])
   Object.keys(extractConfig).forEach((key) => {
     const extractNumber = Number.parseInt(key, 10)
@@ -326,7 +332,7 @@ const currentExtractTooltip = computed(() => {
 })
 
 const produceExtracts = computed(() => {
-  const config = extractSongConfig(abcText.value)
+  const config = extractSongConfig(documentText.value)
   const produce = config.produce
   return Array.isArray(produce)
     ? new Set(produce.filter((value): value is number => typeof value === 'number'))
@@ -386,7 +392,7 @@ function restoreStorageContext(): void {
 function restoreCurrentAbcText(): void {
   const raw = localStorage.getItem(abcTextKey)
   if (raw === null) return
-  abcText.value = raw
+  documentText.value = raw
 }
 
 function restorePlaybackInstrument(): void {
@@ -411,7 +417,7 @@ watch(storageConnections, (connections) => {
   saveStorageConnections(connections)
 }, { deep: true })
 
-watch(abcText, (value) => {
+watch(documentText, (value) => {
   localStorage.setItem(abcTextKey, value)
 })
 
@@ -505,13 +511,13 @@ function renderNow(): void {
       pendingRenderRequestId = requestId
       renderWorker.postMessage({
         id: requestId,
-        abcText: abcText.value,
+        abcText: documentText.value,
         extractNr: currentExtract.value,
       })
       return
     }
     appendPipelineLine(`worker: render extract ${currentExtract.value}`)
-    const result = renderWorkbenchPreviews(abcText.value, currentExtract.value)
+    const result = renderWorkbenchPreviews(documentText.value, currentExtract.value)
     applyRenderResult(result)
     appendPipelineLine(`worker: render complete in 0.000 sec`)
   } catch (error) {
@@ -980,7 +986,7 @@ function resolveCommandSuggestion(command: string): { completed: string; didYouM
 }
 
 function setAbcFromCommand(value: string): void {
-  abcText.value = value
+  documentText.value = value
 }
 
 function playFromCommand(range: string): void {
@@ -1008,7 +1014,7 @@ function setPlaybackInstrumentFromCommand(value: string): void {
 }
 
 function downloadAbc(): void {
-  const blob = new Blob([abcText.value], { type: 'text/vnd.abc;charset=utf-8' })
+  const blob = new Blob([documentText.value], { type: 'text/vnd.abc;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
@@ -1023,7 +1029,7 @@ function localStoreKey(id: string): string {
 
 function saveToLocalStore(): void {
   const id = extractAbcId(abcText.value)
-  localStorage.setItem(localStoreKey(id), abcText.value)
+  localStorage.setItem(localStoreKey(id), documentText.value)
   appendConsoleLine(`saved ${id} to local storage`, 'info')
 }
 
@@ -1059,14 +1065,12 @@ registerStorageCommands(commandStack, storageState, {
   open: async (path, filename) => {
     const loaded = await storageProviderRegistry.adapterFor(path, storageConnections.value).open(path, filename)
     if (loaded === undefined) return undefined
-    abcText.value = loaded
-    renderNow()
     return loaded
   },
   save: async (path, filename, content) => storageProviderRegistry.adapterFor(path, storageConnections.value).save(path, filename, content),
-  readDocument: () => abcText.value,
+  readDocument: () => documentText.value,
   writeDocument: (content) => {
-    abcText.value = content
+    documentText.value = content
     renderNow()
   },
   login: async (path) => storageProviderRegistry.adapterFor(path, storageConnections.value).login(path),
@@ -1077,12 +1081,12 @@ registerStorageCommands(commandStack, storageState, {
 })
 
   registerLegacyCommands(commandStack, {
-    getAbcText: () => abcText.value,
+    getAbcText: () => documentText.value,
     setAbcText: setAbcFromCommand,
     getSound: () => playbackInstrument.value,
-    readDocument: () => abcText.value,
+    readDocument: () => documentText.value,
     writeDocument: (value) => {
-      abcText.value = value
+      documentText.value = value
     renderNow()
   },
   render: renderNow,
@@ -1161,7 +1165,7 @@ function handleSelectionVoiceScopeChange(voiceScope: 'single-voice' | 'extract-v
   selectionStore.dispatchSelectionEvent(createScopeChangedSelectionEvent(voiceScope))
 }
 
-watch(abcText, () => {
+watch(documentText, () => {
   playbackStore.markDocumentChanged()
   stopPlayback()
   if (autoRefresh.value === 'off') return
@@ -1233,7 +1237,7 @@ function handleGlobalKeydown(event: KeyboardEvent): void {
 }
 
 watch(
-  [abcText, currentExtract, harpSvg, renderError, harpZoom, harpScrollLeft, harpScrollTop, () => playbackStore.highlight, () => selectionStore.selection],
+  [documentText, currentExtract, harpSvg, renderError, harpZoom, harpScrollLeft, harpScrollTop, () => playbackStore.highlight, () => selectionStore.selection],
   publishHarpMirrorSnapshot,
   { deep: true },
 )
@@ -1504,7 +1508,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                 <LyricsPanel v-else-if="activeId === 'lyrics'" />
                 <ConfigEditorPanel
                   v-else-if="activeId === 'config'"
-                  :abc-text="abcText"
+                  :abc-text="documentText"
                   :current-extract="currentExtract"
                   :extract-options="extractMenuItems"
                   :active-section="activeConfigSection"

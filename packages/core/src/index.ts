@@ -112,7 +112,14 @@ export {
 } from './configEditorValue.js'
 export type { ConfigEditorValueParseResult } from './configEditorValue.js'
 
-export { extractSongConfig, mergeSongConfig, CONFIG_SEPARATOR } from './extractSongConfig.js'
+export {
+  extractSongConfig,
+  mergeSongConfig,
+  replaceSongDocumentAbc,
+  splitSongDocument,
+  CONFIG_SEPARATOR,
+} from './extractSongConfig.js'
+export type { SongDocumentParts } from './extractSongConfig.js'
 
 export {
   CommandError,

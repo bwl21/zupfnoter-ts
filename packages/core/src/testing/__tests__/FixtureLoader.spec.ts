@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { extractSongConfig } from '../../extractSongConfig.js'
+import { extractSongConfig, replaceSongDocumentAbc, splitSongDocument } from '../../extractSongConfig.js'
 import {
   fixtureConfigFromAbc,
   fixtureAbcPath,
@@ -52,6 +52,30 @@ describe('fixtureLoader', () => {
     expect(config.layout.SHORTEST_NOTE).toBe(32)
     expect(config.layout.ELLIPSE_SIZE).toEqual(defaultTestConfig.layout.ELLIPSE_SIZE)
     expect(config.extract['0']?.voices).toEqual([2])
+  })
+
+  it('separates embedded configuration from the ABC editor text and preserves it on edits', () => {
+    const documentText = [
+      'X:1',
+      'T:Inline Config',
+      'K:C',
+      'C',
+      '%%%%zupfnoter.config',
+      '{"extract":{"0":{"voices":[2]}}}',
+    ].join('\n')
+
+    expect(splitSongDocument(documentText)).toEqual({
+      abcText: 'X:1\nT:Inline Config\nK:C\nC\n',
+      zupfnoterSections: '%%%%zupfnoter.config\n{"extract":{"0":{"voices":[2]}}}',
+    })
+    expect(replaceSongDocumentAbc(documentText, 'X:2\nT:Edited\nK:G\nG\n')).toBe([
+      'X:2',
+      'T:Edited',
+      'K:G',
+      'G',
+      '%%%%zupfnoter.config',
+      '{"extract":{"0":{"voices":[2]}}}',
+    ].join('\n'))
   })
 
   it('keeps open embedded legacy overlay branches open during config extraction', () => {

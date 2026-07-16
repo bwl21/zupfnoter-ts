@@ -25,6 +25,43 @@ import { validateEmbeddedZupfnoterConfigShape } from './configSchema.js'
 /** Separator zwischen ABC-Text und Zupfnoter-Konfigurationsblöcken */
 export const CONFIG_SEPARATOR = '%%%%zupfnoter'
 
+/** Separierte Bestandteile eines gespeicherten Zupfnoter-Dokuments. */
+export interface SongDocumentParts {
+  /** ABC-Notation, die im Notationseditor bearbeitet wird. */
+  abcText: string
+  /** Eingebettete Zupfnoter-Abschnitte einschließlich ihres Markers. */
+  zupfnoterSections: string
+}
+
+/**
+ * Trennt die ABC-Notation von eingebetteten Zupfnoter-Abschnitten.
+ *
+ * Entspricht dem ersten Schritt von `TextPane#_split_parts` im Legacy-System:
+ * Der Editor erhält nur den ABC-Teil, während Konfiguration und spätere
+ * Zupfnoter-Abschnitte separat für Speichern und Konfigurationsbearbeitung
+ * erhalten bleiben.
+ */
+export function splitSongDocument(documentText: string): SongDocumentParts {
+  const separatorIndex = documentText.indexOf(CONFIG_SEPARATOR)
+  if (separatorIndex < 0) {
+    return { abcText: documentText, zupfnoterSections: '' }
+  }
+  return {
+    abcText: documentText.slice(0, separatorIndex),
+    zupfnoterSections: documentText.slice(separatorIndex),
+  }
+}
+
+/**
+ * Ersetzt ausschließlich die ABC-Notation eines Dokuments.
+ *
+ * Bereits geladene Konfiguration und weitere Zupfnoter-Abschnitte bleiben
+ * unverändert erhalten, obwohl sie im ABC-Editor nicht angezeigt werden.
+ */
+export function replaceSongDocumentAbc(documentText: string, abcText: string): string {
+  return `${abcText}${splitSongDocument(documentText).zupfnoterSections}`
+}
+
 /**
  * Parst die Song-Konfiguration aus dem ABC-Text.
  *
