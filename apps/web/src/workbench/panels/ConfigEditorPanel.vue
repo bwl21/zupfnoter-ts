@@ -199,6 +199,7 @@ const usesCompactShell = computed(() => visibleRows.value.length <= 4)
 let panelResizeObserver: ResizeObserver | undefined
 const helpTooltips = new Map<HTMLElement, TippyInstance>()
 const optionTooltips = new Map<HTMLElement, TippyInstance>()
+const toolbarTooltips = new Map<HTMLElement, TippyInstance>()
 const configHelpTexts = ref<ConfigHelpTexts>({})
 const activeSectionTreeDefinition = computed(() => buildActiveSectionTreeDefinition())
 const pendingNewEntryBranchPaths = ref<ReadonlySet<string> | undefined>(undefined)
@@ -229,6 +230,13 @@ watch(
     searchText.value = ''
   },
   { immediate: true },
+)
+
+watch(
+  hasQuickSettings,
+  () => {
+    void nextTick(() => syncToolbarTooltips())
+  },
 )
 
 watch(
@@ -273,6 +281,7 @@ onMounted(() => {
   void nextTick(() => {
     syncHelpTooltips()
     syncOptionTooltips()
+    syncToolbarTooltips()
   })
 })
 
@@ -281,6 +290,7 @@ onBeforeUnmount(() => {
   panelResizeObserver?.disconnect()
   destroyHelpTooltips()
   destroyOptionTooltips()
+  destroyToolbarTooltips()
 })
 
 function buildVisibleRows(): ConfigTreeRow[] {
@@ -794,6 +804,39 @@ function destroyOptionTooltips(): void {
   optionTooltips.clear()
 }
 
+function syncToolbarTooltips(): void {
+  if (panelElement.value === null) return
+  const elements = panelElement.value.querySelectorAll<HTMLElement>('[data-toolbar-tooltip]')
+
+  for (const element of elements) {
+    const content = element.dataset.toolbarTooltip
+    if (content === undefined || content === '') continue
+    const existing = toolbarTooltips.get(element)
+    if (existing !== undefined) {
+      existing.setContent(content)
+      continue
+    }
+    toolbarTooltips.set(element, tippy(element, {
+      content,
+      placement: 'top',
+      theme: 'zn-config-help',
+    }))
+  }
+
+  for (const [element, instance] of toolbarTooltips) {
+    if (panelElement.value.contains(element)) continue
+    instance.destroy()
+    toolbarTooltips.delete(element)
+  }
+}
+
+function destroyToolbarTooltips(): void {
+  for (const instance of toolbarTooltips.values()) {
+    instance.destroy()
+  }
+  toolbarTooltips.clear()
+}
+
 /** Erzeugt sichere Tooltip-Inhalte aus dem unterstützten Inline-Markdown. */
 function createMarkdownTooltipContent(markdown: string): HTMLElement {
   const container = document.createElement('div')
@@ -957,18 +1000,20 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
             label="Undo"
             variant="ghost"
             :disabled="!props.canUndo"
+            data-toolbar-tooltip="Letzte Konfigurationsänderung zurücknehmen"
             @click="emitIntent('config.undo')"
           >
-            ↺
+            <ZnIcon name="undo" />
           </ZnIconButton>
           <ZnIconButton
             class="config-panel__toolbar-icon"
             label="Redo"
             variant="ghost"
             :disabled="!props.canRedo"
+            data-toolbar-tooltip="Zurückgenommene Konfigurationsänderung wiederherstellen"
             @click="emitIntent('config.redo')"
           >
-            ↻
+            <ZnIcon name="redo" />
           </ZnIconButton>
         </template>
         <div class="config-panel__toolbar-search">
@@ -986,7 +1031,10 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
             ref="quickSettingsMenuElement"
             class="config-panel__main-menu config-panel__quicksettings"
           >
-            <summary class="config-panel__main-menu-summary">Schnelleinst.</summary>
+            <summary class="config-panel__main-menu-summary" data-toolbar-tooltip="Schnelleinstellung anwenden">
+              <ZnIcon name="quickSettings" />
+              <span>Schnelleinst.</span>
+            </summary>
             <div class="config-panel__main-menu-list" role="menu" aria-label="Schnelleinstellungen">
               <template v-for="setting in quickSettings" :key="setting.id">
                 <div v-if="setting.type === 'separator'" class="config-panel__main-menu-separator" role="separator" />
@@ -1002,14 +1050,28 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
               </template>
             </div>
           </details>
-          <ZnButton v-else variant="ghost" disabled>Schnelleinst.</ZnButton>
-          <ZnButton variant="ghost" :disabled="!canAddEntry" @click="handleAddEntry">Neuer Eintrag</ZnButton>
+          <span v-else class="config-panel__toolbar-disabled-control" data-toolbar-tooltip="Für diesen Bereich gibt es keine Schnelleinstellungen">
+            <ZnButton variant="ghost" disabled>
+              <ZnIcon name="quickSettings" />
+              <span>Schnelleinst.</span>
+            </ZnButton>
+          </span>
+          <ZnButton
+            variant="ghost"
+            :disabled="!canAddEntry"
+            data-toolbar-tooltip="Neuen Eintrag im aktuellen Bereich anlegen"
+            @click="handleAddEntry"
+          >
+            <ZnIcon name="newEntry" />
+            <span>Neuer Eintrag</span>
+          </ZnButton>
           <details ref="configMenuElement" class="config-panel__main-menu">
             <summary
-              class="config-panel__main-menu-summary"
-              aria-haspopup="menu"
-            >
-              <span class="config-panel__main-menu-icon" aria-hidden="true">✎</span>
+            class="config-panel__main-menu-summary"
+            aria-haspopup="menu"
+            data-toolbar-tooltip="Konfigurationsbereich auswählen"
+          >
+              <ZnIcon class="config-panel__main-menu-icon" name="edit" />
               <span>Konfig. bearb.</span>
               <span class="config-panel__main-menu-caret" aria-hidden="true">v</span>
             </summary>

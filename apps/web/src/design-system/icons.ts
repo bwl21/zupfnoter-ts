@@ -5,19 +5,24 @@ import {
   faChevronRight,
   faDownload,
   faEllipsis,
+  faPen,
   faRotateLeft,
   faRotateRight,
+  faSquarePlus,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
-import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons'
+import { faCircleQuestion, faStar } from '@fortawesome/free-regular-svg-icons'
 
 export type ZnIconName =
   | 'collapse'
   | 'delete'
+  | 'edit'
   | 'expand'
   | 'fill'
   | 'help'
+  | 'newEntry'
   | 'menu'
+  | 'quickSettings'
   | 'redo'
   | 'select'
   | 'undo'
@@ -26,10 +31,13 @@ export type ZnIconName =
 export const ZN_ICONS: Record<ZnIconName, IconDefinition> = {
   collapse: faChevronDown,
   delete: faTrash,
+  edit: faPen,
   expand: faChevronRight,
   fill: faDownload,
   help: faCircleQuestion,
   menu: faEllipsis,
+  newEntry: faSquarePlus,
+  quickSettings: faStar,
   redo: faRotateRight,
   select: faBullseye,
   undo: faRotateLeft,
