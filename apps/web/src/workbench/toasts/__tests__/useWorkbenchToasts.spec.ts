@@ -25,4 +25,21 @@ describe('useWorkbenchToasts', () => {
     syncDiagnostics([diagnostic])
     expect(toasts.value).toHaveLength(1)
   })
+
+  it('shows an explicit information toast', () => {
+    vi.useFakeTimers()
+    const { toasts, pushToast } = useWorkbenchToasts()
+
+    pushToast({
+      severity: 'info',
+      title: 'Datei',
+      message: 'Öffnen wird mit Phase 5.6 ergänzt.',
+    })
+
+    expect(toasts.value).toHaveLength(1)
+    expect(toasts.value[0]).toMatchObject({
+      severity: 'info',
+      title: 'Datei',
+    })
+  })
 })

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import tippy, { type Instance as TippyInstance } from 'tippy.js'
+import 'tippy.js/dist/tippy.css'
 
 import {
   ZnBadge,
@@ -27,6 +29,13 @@ import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
 import WorkbenchToastStack from './toasts/WorkbenchToastStack.vue'
 import { useWorkbenchToasts } from './toasts/useWorkbenchToasts'
+import ToolbarFileIcon from './ToolbarFileIcon.vue'
+import {
+  FILE_TOOLBAR_MENU_ITEMS,
+  fileToolbarPlaceholderMessage,
+  isFileToolbarActionDisabled,
+  type FileToolbarAction,
+} from './toolbarFileActions'
 import WorkbenchLayout from './WorkbenchLayout.vue'
 import { usePlaybackStore } from '../stores/playback'
 import { useSelectionStore } from '../stores/selection'
@@ -83,6 +92,8 @@ const abcTextKey = 'zupfnoter.abc.current'
 const playbackInstrumentKey = 'zupfnoter.playback.instrument'
 const extractPickerOpen = ref(false)
 const aboutDialogOpen = ref(false)
+const fileMenuElement = ref<HTMLDetailsElement | null>(null)
+const fileToolbarTooltips = new Map<HTMLElement, TippyInstance>()
 let nextConsoleEntryId = 1
 const consoleLines = ref<ConsoleLogEntry[]>([{
   id: nextConsoleEntryId,
@@ -102,7 +113,7 @@ const baseTempoFromQ = ref<number | undefined>(undefined)
 const activeVoiceIds = ref<string[]>([])
 const allVoiceIds = ref<string[]>([])
 const commandBusy = ref(false)
-const { toasts, syncDiagnostics, dismissToast } = useWorkbenchToasts()
+const { toasts, pushToast, syncDiagnostics, dismissToast } = useWorkbenchToasts()
 const playbackStore = usePlaybackStore()
 const selectionStore = useSelectionStore()
 const selectedHarpProjection = computed(() => resolveSelectionProjection(
@@ -549,6 +560,49 @@ async function executeToolbarCommand(command: string): Promise<void> {
   }
 }
 
+function closeFileMenu(): void {
+  if (fileMenuElement.value !== null) {
+    fileMenuElement.value.open = false
+  }
+}
+
+function handleFileToolbarAction(action: FileToolbarAction): void {
+  closeFileMenu()
+  const placeholderMessage = fileToolbarPlaceholderMessage(action)
+  if (placeholderMessage !== undefined) {
+    pushToast({
+      severity: 'info',
+      title: 'Datei',
+      message: placeholderMessage,
+    })
+    appendConsoleLine(placeholderMessage, 'info')
+    return
+  }
+
+  if (action === 'new') {
+    void executeToolbarCommand('c 1 untitled')
+    return
+  }
+  if (action === 'download') {
+    void executeToolbarCommand('download_abc')
+  }
+}
+
+function setupFileToolbarTooltips(): void {
+  for (const element of document.querySelectorAll<HTMLElement>('[data-file-toolbar-tooltip]')) {
+    if (fileToolbarTooltips.has(element)) continue
+    const content = element.dataset.fileToolbarTooltip
+    if (content === undefined || content === '') continue
+    fileToolbarTooltips.set(element, tippy(element, {
+      content,
+      animation: 'shift-away',
+      delay: [180, 0],
+      duration: [90, 60],
+      placement: 'bottom',
+    }) as TippyInstance)
+  }
+}
+
 function enrichCommandError(command: string, message: string): string {
   if (!message.startsWith('Unknown command: ')) {
     return message
@@ -862,6 +916,7 @@ onMounted(() => {
     appendPipelineLine(`worker: unavailable: ${error instanceof Error ? error.message : String(error)}`)
     renderWorker = undefined
   }
+  void nextTick().then(setupFileToolbarTooltips)
 })
 
 onBeforeUnmount(() => {
@@ -869,6 +924,10 @@ onBeforeUnmount(() => {
   window.removeEventListener('message', handleMirrorMessage)
   renderWorker?.terminate()
   renderWorker = undefined
+  for (const tooltip of fileToolbarTooltips.values()) {
+    tooltip.destroy()
+  }
+  fileToolbarTooltips.clear()
   if (renderTimer !== undefined) {
     clearTimeout(renderTimer)
   }
@@ -913,13 +972,69 @@ function handleMirrorMessage(event: MessageEvent): void {
             >
               i
             </ZnButton>
-            <ZnButton variant="ghost" @click="executeToolbarCommand('help')">Datei</ZnButton>
-            <ZnButton variant="ghost" @click="executeToolbarCommand('c 1 untitled')">Neu</ZnButton>
-            <ZnButton variant="ghost">DI abc</ZnButton>
-            <ZnButton variant="ghost">Dropbox</ZnButton>
-            <ZnButton variant="ghost" @click="executeToolbarCommand('dlogin')">Einloggen</ZnButton>
-            <ZnButton variant="ghost" @click="executeToolbarCommand('dchoose')">Öffnen</ZnButton>
-            <ZnButton variant="primary" @click="executeToolbarCommand('lsave')">Speichern</ZnButton>
+            <details ref="fileMenuElement" class="file-menu" data-testid="file-menu">
+              <summary
+                class="file-menu__summary"
+                aria-haspopup="menu"
+                title="Dateiaktionen"
+                data-testid="file-menu-toggle"
+                data-file-toolbar-tooltip="Dateiaktionen"
+              >
+                <ToolbarFileIcon name="file" />
+                <span>Datei</span>
+                <span class="file-menu__caret" aria-hidden="true">v</span>
+              </summary>
+              <div class="file-menu__list" role="menu" aria-label="Datei">
+                <template v-for="(item, index) in FILE_TOOLBAR_MENU_ITEMS" :key="item.type === 'action' ? item.action : `separator-${index}`">
+                  <div v-if="item.type === 'separator'" class="file-menu__separator" role="separator" />
+                  <button
+                    v-else
+                    class="file-menu__item"
+                    type="button"
+                    role="menuitem"
+                    :data-testid="`file-action-${item.action}`"
+                    :disabled="isFileToolbarActionDisabled(item.action, false)"
+                    :title="item.action === 'save' ? 'Speichern ist erst mit bekanntem Speicherziel möglich' : item.tooltip"
+                    :data-file-toolbar-tooltip="item.action === 'save' ? 'Speichern ist erst mit bekanntem Speicherziel möglich' : item.tooltip"
+                    @click="handleFileToolbarAction(item.action)"
+                  >
+                    <ToolbarFileIcon :name="item.icon" />
+                    <span>{{ item.label }}</span>
+                  </button>
+                </template>
+              </div>
+            </details>
+            <ZnButton
+              data-testid="file-shortcut-new"
+              variant="ghost"
+              title="Neues Dokument anlegen"
+              data-file-toolbar-tooltip="Neues Dokument anlegen"
+              @click="handleFileToolbarAction('new')"
+            >
+              <ToolbarFileIcon name="new" />
+              <span>Neu</span>
+            </ZnButton>
+            <ZnButton
+              data-testid="file-shortcut-open"
+              variant="ghost"
+              title="Dokument öffnen"
+              data-file-toolbar-tooltip="Dokument öffnen"
+              @click="handleFileToolbarAction('open')"
+            >
+              <ToolbarFileIcon name="open" />
+              <span>Öffnen</span>
+            </ZnButton>
+            <ZnButton
+              variant="primary"
+              :disabled="isFileToolbarActionDisabled('save', false)"
+              title="Speichern ist erst mit bekanntem Speicherziel möglich"
+              data-testid="file-shortcut-save"
+              data-file-toolbar-tooltip="Speichern ist erst mit bekanntem Speicherziel möglich"
+              @click="handleFileToolbarAction('save')"
+            >
+              <ToolbarFileIcon name="save" />
+              <span>Speichern</span>
+            </ZnButton>
             <ZnButton variant="ghost" @click="executeToolbarCommand('togglesetting flowconf')">Extras</ZnButton>
           </template>
           <template #default />
@@ -1122,6 +1237,87 @@ function handleMirrorMessage(event: MessageEvent): void {
   font-weight: 800;
   text-transform: none;
   border-radius: 999px;
+}
+
+.file-menu {
+  position: relative;
+}
+
+.file-menu__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-height: 2.1rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: var(--zn-radius-md);
+  color: var(--zn-text-soft);
+  cursor: pointer;
+  list-style: none;
+}
+
+.file-menu__summary:hover,
+.file-menu[open] .file-menu__summary {
+  border-color: var(--zn-border);
+  background: var(--zn-bg-surface-soft);
+}
+
+.file-menu__summary:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--zn-accent) 65%, white);
+  outline-offset: 2px;
+}
+
+.file-menu__summary::-webkit-details-marker {
+  display: none;
+}
+
+.file-menu__caret {
+  font-size: 0.7rem;
+}
+
+.file-menu__list {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  z-index: 30;
+  min-width: 17rem;
+  padding: 0.35rem;
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-md);
+  background: var(--zn-bg-surface);
+  box-shadow: var(--zn-shadow-soft);
+}
+
+.file-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 2rem;
+  padding: 0.45rem 0.55rem;
+  border: 0;
+  border-radius: var(--zn-radius-sm);
+  background: transparent;
+  color: var(--zn-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.file-menu__item:hover:not(:disabled),
+.file-menu__item:focus-visible {
+  background: var(--zn-bg-surface-soft);
+}
+
+.file-menu__item:disabled {
+  color: var(--zn-text-soft);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.file-menu__separator {
+  height: 1px;
+  margin: 0.32rem 0.2rem;
+  background: var(--zn-border);
 }
 
 .extract-picker {
