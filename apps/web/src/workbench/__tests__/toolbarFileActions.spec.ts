@@ -16,10 +16,7 @@ describe('file toolbar actions', () => {
       'import',
       'download',
       'separator',
-      'storage-select',
-      'storage-connect',
-      'storage-disconnect',
-      'storage-path',
+      'storage-connections',
     ])
   })
 
@@ -31,7 +28,7 @@ describe('file toolbar actions', () => {
 
   it('provides a visible status message for unfinished actions', () => {
     expect(fileToolbarPlaceholderMessage('open')).toContain('Phase 5.6')
-    expect(fileToolbarPlaceholderMessage('storage-select')).toContain('Speicherort')
+    expect(fileToolbarPlaceholderMessage('storage-connections')).toBeUndefined()
     expect(fileToolbarPlaceholderMessage('new')).toBeUndefined()
     expect(fileToolbarPlaceholderMessage('download')).toBeUndefined()
   })

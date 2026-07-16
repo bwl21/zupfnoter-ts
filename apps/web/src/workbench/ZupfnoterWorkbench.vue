@@ -140,6 +140,7 @@ const rootPickerConnectionId = ref<string>()
 const rootPickerPath = ref('')
 const rootPickerFolders = ref<Array<{ name: string; path: string }>>([])
 const rootPickerLoading = ref(false)
+const rootPickerCache = new Map<string, Array<{ name: string; path: string }>>()
 const fileMenuElement = ref<HTMLDetailsElement | null>(null)
 const fileToolbarTooltips = new Map<HTMLElement, TippyInstance>()
 let nextConsoleEntryId = 1
@@ -704,7 +705,7 @@ function closeFileMenu(): void {
 
 function handleFileToolbarAction(action: FileToolbarAction): void {
   closeFileMenu()
-  if (action === 'storage-connect') {
+  if (action === 'storage-connections') {
     storageConnectionsDialogOpen.value = true
     return
   }
@@ -763,15 +764,45 @@ function updateStorageConnectionReadOnly(connectionId: string, readOnly: boolean
 }
 
 async function openRootPicker(connectionId: string): Promise<void> {
+  rootPickerConnectionId.value = connectionId
+  const connection = storageConnections.value.find((entry) => entry.id === connectionId)
+  if (connection !== undefined) await loadRootPickerFolders(connectionId, connection.rootPath, false)
+}
+
+async function browseRootPicker(path: string): Promise<void> {
+  const connectionId = rootPickerConnectionId.value
+  if (connectionId === undefined) return
+  rootPickerCache.set(rootPickerCacheKey(connectionId, rootPickerPath.value), rootPickerFolders.value)
+  await loadRootPickerFolders(connectionId, path, false)
+}
+
+async function refreshRootPicker(): Promise<void> {
+  const connectionId = rootPickerConnectionId.value
+  if (connectionId === undefined) return
+  await loadRootPickerFolders(connectionId, rootPickerPath.value, true)
+}
+
+async function loadRootPickerFolders(connectionId: string, path: string, refresh: boolean): Promise<void> {
   const connection = storageConnections.value.find((entry) => entry.id === connectionId)
   if (connection === undefined) return
+  const normalizedPath = normalizeRootPickerPath(path)
+  const cacheKey = rootPickerCacheKey(connectionId, normalizedPath)
+  if (!refresh) {
+    const cached = rootPickerCache.get(cacheKey)
+    if (cached !== undefined) {
+      rootPickerPath.value = normalizedPath
+      rootPickerFolders.value = cached
+      return
+    }
+  }
   const adapter = storageProviderRegistry.adapterForConnection(connection)
   if (adapter === undefined) return
-  rootPickerConnectionId.value = connectionId
-  rootPickerPath.value = connection.rootPath
   rootPickerLoading.value = true
   try {
-    rootPickerFolders.value = await adapter.listFolders({ ...storageState, connectionId, system: connection.providerId, rootPath: '', path: '' }, rootPickerPath.value)
+    rootPickerPath.value = normalizedPath
+    const folders = await adapter.listFolders({ ...storageState, connectionId, system: connection.providerId, rootPath: '', path: '' }, normalizedPath)
+    rootPickerCache.set(cacheKey, folders)
+    rootPickerFolders.value = folders
   } catch (error) {
     pushToast({ severity: 'warning', title: 'Speicherverbindung', message: error instanceof Error ? error.message : String(error) })
     rootPickerConnectionId.value = undefined
@@ -780,19 +811,12 @@ async function openRootPicker(connectionId: string): Promise<void> {
   }
 }
 
-async function browseRootPicker(path: string): Promise<void> {
-  const connectionId = rootPickerConnectionId.value
-  const connection = storageConnections.value.find((entry) => entry.id === connectionId)
-  if (connection === undefined) return
-  const adapter = storageProviderRegistry.adapterForConnection(connection)
-  if (adapter === undefined) return
-  rootPickerLoading.value = true
-  try {
-    rootPickerPath.value = path
-    rootPickerFolders.value = await adapter.listFolders({ ...storageState, connectionId, system: connection.providerId, rootPath: '', path: '' }, path)
-  } finally {
-    rootPickerLoading.value = false
-  }
+function rootPickerCacheKey(connectionId: string, path: string): string {
+  return `${connectionId}:${normalizeRootPickerPath(path)}`
+}
+
+function normalizeRootPickerPath(path: string): string {
+  return path.replace(/^\/+/, '').replace(/\/+$/, '')
 }
 
 function chooseRootPickerPath(path: string): void {
@@ -842,6 +866,9 @@ function removeStorageConnection(connectionId: string): void {
   const adapter = storageProviderRegistry.adapterForConnection(connection)
   void adapter?.removeConnection(connectionId)
   storageConnections.value = storageConnections.value.filter((entry) => entry.id !== connectionId)
+  for (const cacheKey of rootPickerCache.keys()) {
+    if (cacheKey.startsWith(`${connectionId}:`)) rootPickerCache.delete(cacheKey)
+  }
   if (storageState.connectionId === connectionId) {
     storageState.connectionId = undefined
     storageState.path = ''
@@ -1526,6 +1553,7 @@ function handleMirrorMessage(event: MessageEvent): void {
     :loading="rootPickerLoading"
     @close="rootPickerConnectionId = undefined"
     @browse="browseRootPicker"
+    @refresh="refreshRootPicker"
     @choose="chooseRootPickerPath"
   />
 </template>

@@ -49,6 +49,30 @@ describe('dropboxProvider', () => {
     expect(results).toEqual(['/A/abend1.abc', '/B/sub/abend2.abc'])
   })
 
+  it('hides dot-prefixed folders from the root picker', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        entries: [
+          { '.tag': 'folder', name: '.cache', path_display: '/.cache' },
+          { '.tag': 'folder', name: 'Noten', path_display: '/Noten' },
+        ],
+        cursor: 'cursor',
+        has_more: false,
+      }),
+      headers: new Headers(),
+      status: 200,
+      statusText: 'OK',
+    } as Response)
+
+    const { createDropboxProvider } = await import('../dropboxProvider')
+    const provider = createDropboxProvider()
+
+    await expect(provider.listFolders({ system: 'dropbox', path: '', loggedIn: true, pendingCandidates: [] }, '')).resolves.toEqual([
+      { name: 'Noten', path: 'Noten' },
+    ])
+  })
+
   it('removes credentials only for the selected connection', async () => {
     const { removeDropboxConnection } = await import('../dropboxProvider')
 

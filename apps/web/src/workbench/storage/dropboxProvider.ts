@@ -177,6 +177,7 @@ export function createDropboxProvider(): DropboxProvider {
       const entries = await listDropboxEntries(token.access_token, folder, false)
       return entries
         .filter((entry) => entry['.tag'] === 'folder')
+        .filter((entry) => !entry.name.startsWith('.'))
         .map((entry) => ({ name: entry.name, path: normalizeFolderPath(entry.path_display ?? joinPath(folder, entry.name)) }))
         .sort((left, right) => left.name.localeCompare(right.name))
     },
