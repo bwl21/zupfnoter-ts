@@ -205,6 +205,16 @@ describe('configSchema', () => {
     })).toEqual([])
   })
 
+  it('accepts the legacy null value for an absent instrument shape', () => {
+    expect(validateEmbeddedZupfnoterConfigShape({
+      extract: {
+        '0': {
+          instrument_shape: null,
+        },
+      },
+    })).toEqual([])
+  })
+
   it('accepts labels and Markdown descriptions for dynamic font styles', () => {
     expect(validateEmbeddedZupfnoterConfigShape({
       layout: {

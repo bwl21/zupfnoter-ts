@@ -14,11 +14,12 @@ import type { Markdown } from '@zupfnoter/types'
  * Die Vollportierung des Legacy-Schemas erfolgt schrittweise.
  */
 
-type JsonSchemaType =
+export type JsonSchemaType =
   | 'array'
   | 'boolean'
   | 'integer'
   | 'number'
+  | 'null'
   | 'object'
   | 'string'
 
@@ -937,7 +938,7 @@ const EXTRACT_SCHEMA: JsonSchemaNode = {
       ...STRINGNAMES_SCHEMA,
       enforceRequired: false,
     },
-    instrument_shape: { type: 'string' },
+    instrument_shape: { type: ['string', 'null'] },
     sortmark: {
       ...SORTMARK_SCHEMA,
       enforceRequired: false,
@@ -1396,7 +1397,7 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
           marks: { type: 'object', required: ['vpos', 'hpos'], properties: { vpos: integerArraySchema({ type: 'integer' }, 0), hpos: integerArraySchema({ type: 'integer' }, 0) } },
         },
       },
-      instrument_shape: { type: 'string' },
+      instrument_shape: { type: ['string', 'null'] },
       sortmark: { type: 'object', properties: { show: { type: 'boolean' } } },
       printer: {
         type: 'object',
@@ -1919,6 +1920,8 @@ function matchesSingleSchemaType(value: unknown, schemaType: JsonSchemaType): bo
       return typeof value === 'number' && Number.isInteger(value)
     case 'number':
       return typeof value === 'number'
+    case 'null':
+      return value === null
     case 'object':
       return isPlainObject(value)
     case 'string':

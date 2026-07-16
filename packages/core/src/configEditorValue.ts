@@ -1,5 +1,5 @@
 import type { CommandArgumentValue } from './commands.js'
-import { resolveConfigSchemaPath, type JsonSchemaNode } from './configSchema.js'
+import { resolveConfigSchemaPath, type JsonSchemaNode, type JsonSchemaType } from './configSchema.js'
 
 /** Result of converting one editor field into its configuration value. */
 export type ConfigEditorValueParseResult =
@@ -156,7 +156,7 @@ function parseJson(input: string, message: string): CommandArgumentValue {
   }
 }
 
-function getSchemaType(schema: JsonSchemaNode): 'array' | 'boolean' | 'integer' | 'number' | 'object' | 'string' | undefined {
+function getSchemaType(schema: JsonSchemaNode): JsonSchemaType | undefined {
   if (typeof schema.type === 'string') return schema.type
   return schema.type?.[0]
 }
