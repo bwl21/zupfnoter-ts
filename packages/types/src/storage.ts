@@ -30,3 +30,17 @@ export interface StorageProviderDescriptor {
   /** Kennzeichnet implementierte und erst geplante Adapter. */
   availability: 'available' | 'planned'
 }
+
+/** Ein im aktuellen Speicherpfad auffindbares ABC-Dokument. */
+export interface StorageDocument {
+  /** Anbieterpfad der ABC-Datei. */
+  path: string
+  /** Sichtbarer Dateiname. */
+  name: string
+  /** Letzter Änderungszeitpunkt des Anbieters als ISO-Zeitstempel. */
+  modifiedAt?: string
+  /** Anbieterpfade der zu diesem Stück gehörenden PDF-Ausgaben. */
+  previewPdfPaths: string[]
+  /** Anbieterpfade der zu diesem Stück gehörenden HTML-Notenansichten. */
+  previewHtmlPaths: string[]
+}

@@ -1,4 +1,4 @@
-import type { StorageConnection, StorageProviderDescriptor } from '@zupfnoter/types'
+import type { StorageConnection, StorageDocument, StorageProviderDescriptor } from '@zupfnoter/types'
 import type { StorageCommandState } from '@zupfnoter/core'
 
 export interface StorageProviderAdapter {
@@ -11,6 +11,8 @@ export interface StorageProviderAdapter {
   save(state: StorageCommandState, filename: string, content: string): Promise<void>
   cleanup(state: StorageCommandState): Promise<void>
   listFolders(state: StorageCommandState, path: string): Promise<Array<{ name: string; path: string }>>
+  listDocuments?(state: StorageCommandState): Promise<StorageDocument[]>
+  openPreview?(state: StorageCommandState, path: string): Promise<Blob | undefined>
   removeConnection(connectionId: string): Promise<void>
 }
 

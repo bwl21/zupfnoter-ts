@@ -98,4 +98,5 @@ export type {
   StorageConnectionStatus,
   StorageConnection,
   StorageProviderDescriptor,
+  StorageDocument,
 } from './storage.js'

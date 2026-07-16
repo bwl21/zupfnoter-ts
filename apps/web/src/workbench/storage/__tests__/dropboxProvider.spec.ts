@@ -73,6 +73,27 @@ describe('dropboxProvider', () => {
     ])
   })
 
+  it('lists ABC documents with modification time and related PDF previews', async () => {
+    fetchMock.mockResolvedValueOnce({ ok: true, json: async () => ({ entries: [
+      { '.tag': 'file', name: 'Abendlied.abc', path_display: '/Noten/Abendlied.abc', server_modified: '2026-07-16T10:00:00Z' },
+      { '.tag': 'file', name: 'Abendlied-A4.pdf', path_display: '/Noten/Abendlied-A4.pdf' },
+      { '.tag': 'file', name: 'andere.pdf', path_display: '/Noten/andere.pdf' },
+    ], cursor: 'cursor', has_more: false }), headers: new Headers(), status: 200, statusText: 'OK' } as Response)
+    const { createDropboxProvider } = await import('../dropboxProvider')
+    await expect(createDropboxProvider().listDocuments({ system: 'dropbox', path: 'Noten', loggedIn: true, pendingCandidates: [] })).resolves.toEqual([{
+      path: '/Noten/Abendlied.abc', name: 'Abendlied.abc', modifiedAt: '2026-07-16T10:00:00Z', previewPdfPaths: ['/Noten/Abendlied-A4.pdf'], previewHtmlPaths: [],
+    }])
+  })
+
+  it('reads a PDF for the embedded viewer without triggering a browser download', async () => {
+    fetchMock.mockResolvedValueOnce({ ok: true, arrayBuffer: async () => new TextEncoder().encode('pdf').buffer, headers: new Headers(), status: 200, statusText: 'OK' } as Response)
+    const { createDropboxProvider } = await import('../dropboxProvider')
+    const preview = await createDropboxProvider().openPreview({ system: 'dropbox', path: '', loggedIn: true, pendingCandidates: [] }, '/abc.pdf')
+    expect(preview).toBeInstanceOf(Blob)
+    expect(preview?.type).toBe('application/pdf')
+    expect(fetchMock).toHaveBeenCalledWith('https://content.dropboxapi.com/2/files/download', expect.objectContaining({ method: 'POST' }))
+  })
+
   it('removes credentials only for the selected connection', async () => {
     const { removeDropboxConnection } = await import('../dropboxProvider')
 

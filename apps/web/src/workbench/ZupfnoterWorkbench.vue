@@ -32,6 +32,7 @@ import { useWorkbenchToasts } from './toasts/useWorkbenchToasts'
 import ToolbarFileIcon from './ToolbarFileIcon.vue'
 import StorageConnectionsDialog from './StorageConnectionsDialog.vue'
 import StorageRootPickerDialog from './StorageRootPickerDialog.vue'
+import StorageOpenDialog from './StorageOpenDialog.vue'
 import {
   FILE_TOOLBAR_MENU_ITEMS,
   fileToolbarPlaceholderMessage,
@@ -46,7 +47,7 @@ import { useAudioPlayer, type PlaybackInstrument } from './useAudioPlayer'
 import { resolvePlaybackInstrument } from './sound'
 import type { PlaybackStep } from './playback'
 import type { SelectionOrigin } from '@zupfnoter/types'
-import type { StorageConnection, StorageProviderDescriptor } from '@zupfnoter/types'
+import type { StorageConnection, StorageDocument, StorageProviderDescriptor } from '@zupfnoter/types'
 import { CommandError, CommandStack, registerLegacyCommands, registerStorageCommands } from '@zupfnoter/core'
 import type { CommandArgumentValue } from '@zupfnoter/core'
 import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
@@ -114,6 +115,8 @@ const storageProviderRegistry = createStorageProviderRegistry([{
   save: (state, filename, content) => dropboxProvider.save(state, filename, content),
   cleanup: (state) => dropboxProvider.cleanup(state),
   listFolders: (state, path) => dropboxProvider.listFolders(state, path),
+  listDocuments: (state) => dropboxProvider.listDocuments(state),
+  openPreview: (state, path) => dropboxProvider.openPreview(state, path),
   removeConnection: async (connectionId) => removeDropboxConnection(connectionId),
 }])
 const storageProviderDescriptors: StorageProviderDescriptor[] = [
@@ -136,6 +139,14 @@ const playbackInstrumentKey = 'zupfnoter.playback.instrument'
 const extractPickerOpen = ref(false)
 const aboutDialogOpen = ref(false)
 const storageConnectionsDialogOpen = ref(false)
+const returnToStorageOpenDialog = ref(false)
+const storageOpenDialogOpen = ref(false)
+const storageOpenDocuments = ref<StorageDocument[]>([])
+const storageOpenLoading = ref(false)
+const storageOpenDocumentsLoaded = ref(false)
+const storagePreviewUrl = ref<string>()
+const storagePreviewLoading = ref(false)
+const storagePreviewError = ref('')
 const rootPickerConnectionId = ref<string>()
 const rootPickerPath = ref('')
 const rootPickerFolders = ref<Array<{ name: string; path: string }>>([])
@@ -705,7 +716,14 @@ function closeFileMenu(): void {
 
 function handleFileToolbarAction(action: FileToolbarAction): void {
   closeFileMenu()
+  if (action === 'open') {
+    storageOpenDocuments.value = []
+    storageOpenDocumentsLoaded.value = false
+    storageOpenDialogOpen.value = true
+    return
+  }
   if (action === 'storage-connections') {
+    returnToStorageOpenDialog.value = false
     storageConnectionsDialogOpen.value = true
     return
   }
@@ -730,6 +748,61 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
   }
   if (action === 'save') {
     void executeToolbarCommand(`ssave ${extractAbcId(abcText.value)}.abc`)
+  }
+}
+
+async function searchStorageDocuments(query: string): Promise<void> {
+  if (query.trim() === '') return
+  if (storageOpenDocumentsLoaded.value || storageOpenLoading.value) return
+  const connection = activeStorageConnection.value
+  if (connection === undefined) return
+  const adapter = storageProviderRegistry.adapterFor(storageState, storageConnections.value)
+  if (adapter.listDocuments === undefined) return
+  storageOpenLoading.value = true
+  try {
+    storageOpenDocuments.value = await adapter.listDocuments(storageState)
+    storageOpenDocumentsLoaded.value = true
+  } catch (error) {
+    pushToast({ severity: 'warning', title: 'Öffnen', message: error instanceof Error ? error.message : String(error) })
+  } finally { storageOpenLoading.value = false }
+}
+
+async function openStorageDocument(document: StorageDocument): Promise<void> {
+  const opened = await executeParsedToolbarCommand(
+    `sopen ${JSON.stringify(document.path)}`,
+    'sopen',
+    ['', document.path],
+  )
+  if (opened) storageOpenDialogOpen.value = false
+}
+
+function openStorageConnectionsFromDialog(): void {
+  storageOpenDialogOpen.value = false
+  returnToStorageOpenDialog.value = true
+  storageConnectionsDialogOpen.value = true
+}
+
+function closeStorageConnectionsDialog(): void {
+  storageConnectionsDialogOpen.value = false
+  if (!returnToStorageOpenDialog.value) return
+  returnToStorageOpenDialog.value = false
+  storageOpenDialogOpen.value = true
+}
+
+async function previewStorageFile(path: string): Promise<void> {
+  const adapter = storageProviderRegistry.adapterFor(storageState, storageConnections.value)
+  if (adapter.openPreview === undefined) return
+  storagePreviewLoading.value = true
+  storagePreviewError.value = ''
+  try {
+    const preview = await adapter.openPreview(storageState, path)
+    if (preview === undefined) return
+    if (storagePreviewUrl.value !== undefined) URL.revokeObjectURL(storagePreviewUrl.value)
+    storagePreviewUrl.value = URL.createObjectURL(preview)
+  } catch (error) {
+    storagePreviewError.value = error instanceof Error ? error.message : String(error)
+  } finally {
+    storagePreviewLoading.value = false
   }
 }
 
@@ -1536,7 +1609,7 @@ function handleMirrorMessage(event: MessageEvent): void {
     :connections="storageConnections"
     :providers="storageProviderDescriptors"
     :active-connection-id="storageState.connectionId"
-    @close="storageConnectionsDialogOpen = false"
+    @close="closeStorageConnectionsDialog"
     @create="createAndConnectStorageConnection"
     @activate="activateStorageConnection"
     @update="renameStorageConnection"
@@ -1555,6 +1628,22 @@ function handleMirrorMessage(event: MessageEvent): void {
     @browse="browseRootPicker"
     @refresh="refreshRootPicker"
     @choose="chooseRootPickerPath"
+  />
+
+  <StorageOpenDialog
+    :open="storageOpenDialogOpen"
+    :location-label="activeStorageConnection?.label ?? 'Kein Speicherort'"
+    :path="storageState.path"
+    :documents="storageOpenDocuments"
+    :loading="storageOpenLoading"
+    :preview-url="storagePreviewUrl"
+    :preview-loading="storagePreviewLoading"
+    :preview-error="storagePreviewError"
+    @close="storageOpenDialogOpen = false"
+    @search="searchStorageDocuments"
+    @open="openStorageDocument"
+    @preview="previewStorageFile"
+    @connections="openStorageConnectionsFromDialog"
   />
 </template>
 

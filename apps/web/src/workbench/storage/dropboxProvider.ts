@@ -1,4 +1,5 @@
 import type { StorageCommandState } from '@zupfnoter/core'
+import type { StorageDocument } from '@zupfnoter/types'
 
 interface DropboxTokenResponse {
   access_token: string
@@ -12,6 +13,7 @@ interface DropboxEntry {
   '.tag': 'file' | 'folder' | 'deleted'
   name: string
   path_display?: string
+  server_modified?: string
 }
 
 interface DropboxListFolderResponse {
@@ -49,6 +51,8 @@ export interface DropboxProvider {
   save(path: StorageCommandState, filename: string, content: string): Promise<void>
   cleanup(state?: StorageCommandState): Promise<void>
   listFolders(state: StorageCommandState, path: string): Promise<Array<{ name: string; path: string }>>
+  listDocuments(state: StorageCommandState): Promise<StorageDocument[]>
+  openPreview(state: StorageCommandState, path: string): Promise<Blob | undefined>
 }
 
 const TOKEN_KEY_PREFIX = 'zupfnoter.storage.dropbox.token.'
@@ -181,7 +185,46 @@ export function createDropboxProvider(): DropboxProvider {
         .map((entry) => ({ name: entry.name, path: normalizeFolderPath(entry.path_display ?? joinPath(folder, entry.name)) }))
         .sort((left, right) => left.name.localeCompare(right.name))
     },
+    async listDocuments(state: StorageCommandState): Promise<StorageDocument[]> {
+      const token = requireToken(connectionKey(state))
+      const entries = await listDropboxEntries(token.access_token, resolveStorageFolder(state), false)
+      const files = entries.filter((entry) => entry['.tag'] === 'file' && !entry.name.startsWith('.'))
+      return files
+        .filter((entry) => entry.name.toLowerCase().endsWith('.abc'))
+        .map((entry) => ({
+          path: entry.path_display ?? entry.name,
+          name: entry.name,
+          modifiedAt: entry.server_modified,
+          previewPdfPaths: files
+            .filter((candidate) => candidate.name.toLowerCase().endsWith('.pdf'))
+            .filter((candidate) => isRelatedPreview(entry.name, candidate.name))
+            .map((candidate) => candidate.path_display ?? candidate.name),
+          previewHtmlPaths: files
+            .filter((candidate) => candidate.name.toLowerCase().endsWith('.html'))
+            .filter((candidate) => isRelatedPreview(entry.name, candidate.name))
+            .map((candidate) => candidate.path_display ?? candidate.name),
+        }))
+        .sort((left, right) => left.name.localeCompare(right.name))
+    },
+    async openPreview(state: StorageCommandState, path: string): Promise<Blob | undefined> {
+      const token = requireToken(connectionKey(state))
+      const target = resolveDropboxTarget(resolveStorageFolder(state), path)
+      const response = await fetch('https://content.dropboxapi.com/2/files/download', { method: 'POST', headers: { Authorization: `Bearer ${token.access_token}`, 'Dropbox-API-Arg': JSON.stringify({ path: `/${target}` }) } })
+      if (!response.ok) throw new Error(`Dropbox PDF preview failed: ${response.status} ${await readDropboxErrorMessage(response)}`)
+      const content = await response.arrayBuffer()
+      return new Blob([content], { type: previewContentType(path) })
+    },
   }
+}
+
+function previewContentType(path: string): string {
+  return path.toLocaleLowerCase().endsWith('.html') ? 'text/html;charset=utf-8' : 'application/pdf'
+}
+
+function isRelatedPreview(abcName: string, previewName: string): boolean {
+  const stem = abcName.replace(/\.abc$/i, '').toLocaleLowerCase()
+  const previewStem = previewName.replace(/\.(pdf|html)$/i, '').toLocaleLowerCase()
+  return previewStem === stem || previewStem.startsWith(`${stem}-`) || previewStem.startsWith(`${stem}_`) || previewStem.startsWith(`${stem}.`)
 }
 
 export async function resumeDropboxLoginFromRedirect(connectionId: string): Promise<boolean> {
