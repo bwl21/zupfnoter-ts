@@ -24,7 +24,7 @@ import {
   renderWorkbenchPreviews,
   type WorkbenchRenderResult,
 } from './rendering/renderPipeline'
-import { extractSongConfig, replaceSongDocumentAbc, splitSongDocument } from '@zupfnoter/core'
+import { extractSongConfig, extractSongFilebase, replaceSongDocumentAbc, splitSongDocument } from '@zupfnoter/core'
 import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
 import WorkbenchToastStack from './toasts/WorkbenchToastStack.vue'
@@ -753,7 +753,7 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
     return
   }
   if (action === 'save') {
-    void executeToolbarCommand(`ssave ${extractAbcId(abcText.value)}.abc`)
+    void executeToolbarCommand('ssave')
   }
 }
 
@@ -1018,7 +1018,7 @@ function downloadAbc(): void {
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = 'zupfnoter.abc'
+  link.download = `${extractSongFilebase(documentText.value) ?? 'zupfnoter'}.abc`
   link.click()
   URL.revokeObjectURL(url)
 }

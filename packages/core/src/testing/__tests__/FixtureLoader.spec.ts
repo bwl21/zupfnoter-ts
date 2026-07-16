@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { extractSongConfig, replaceSongDocumentAbc, splitSongDocument } from '../../extractSongConfig.js'
+import { extractSongConfig, extractSongFilebase, replaceSongDocumentAbc, splitSongDocument } from '../../extractSongConfig.js'
 import {
   fixtureConfigFromAbc,
   fixtureAbcPath,
@@ -76,6 +76,8 @@ describe('fixtureLoader', () => {
       '%%%%zupfnoter.config',
       '{"extract":{"0":{"voices":[2]}}}',
     ].join('\n'))
+    expect(extractSongFilebase('F:save-as-this\nC\n%%%%zupfnoter.config\n{}')).toBe('save-as-this')
+    expect(extractSongFilebase(documentText)).toBeUndefined()
   })
 
   it('keeps open embedded legacy overlay branches open during config extraction', () => {

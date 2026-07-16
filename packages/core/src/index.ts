@@ -114,6 +114,7 @@ export type { ConfigEditorValueParseResult } from './configEditorValue.js'
 
 export {
   extractSongConfig,
+  extractSongFilebase,
   mergeSongConfig,
   replaceSongDocumentAbc,
   splitSongDocument,

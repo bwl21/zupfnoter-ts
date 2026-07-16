@@ -1,4 +1,5 @@
 import { CommandError, type CommandArguments, type CommandDefinition, type CommandResult, type CommandStack } from './commands.js'
+import { extractSongFilebase } from './extractSongConfig.js'
 import type { StorageConnection, StorageConnectionStatus } from '@zupfnoter/types'
 
 export interface StorageCommandState {
@@ -301,20 +302,37 @@ export function registerStorageCommands(
 
   stack.addCommand({
     name: 'ssave',
-    help: 'save current file to active storage path',
+    help: 'save current file to active storage path using its F: header',
     undoable: false,
-    parameters: [{ name: 'filename', type: 'string', help: 'filename', defaultValue: '' }],
     perform: async (args, context): Promise<void> => {
       const connection = runtime.connections?.().find((entry) => entry.id === state.connectionId)
       if (connection?.readOnly === true) {
         throw new CommandError(`Storage connection is read-only: ${connection.label}`)
       }
-      const filename = String(args.filename ?? '').trim()
-      if (filename === '') throw new CommandError('Missing filename')
-      await runtime.save(state, filename, runtime.readDocument())
+      const documentText = runtime.readDocument()
+      const filename = storageFilenameFromDocument(documentText)
+      await runtime.save(state, filename, documentText)
       context.log(`save ${state.system}//${joinStoragePath(state.rootPath ?? '', state.path)}/${filename}`)
     },
   })
+}
+
+/**
+ * Ermittelt den ABC-Dateinamen aus der F:-Kopfzeile.
+ *
+ * Der Legacy-Befehl `dsave` verwendet ebenfalls den `F:`-Wert als Filebase
+ * und ergänzt beim Speichern die Endung `.abc`.
+ */
+function storageFilenameFromDocument(documentText: string): string {
+  const filebase = extractSongFilebase(documentText)
+
+  if (filebase === undefined || filebase === '') {
+    throw new CommandError('Filename not specified in song add an F: instruction')
+  }
+  if (!/^[a-zA-Z0-9_.-]+$/.test(filebase)) {
+    throw new CommandError(`bad characters in filename: ${filebase}`)
+  }
+  return `${filebase}.abc`
 }
 
 function normalizeStoragePath(path: string): string {

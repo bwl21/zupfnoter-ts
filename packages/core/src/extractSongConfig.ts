@@ -62,6 +62,15 @@ export function replaceSongDocumentAbc(documentText: string, abcText: string): s
   return `${abcText}${splitSongDocument(documentText).zupfnoterSections}`
 }
 
+/** Liest die Filebase aus der F:-Kopfzeile der ABC-Notation. */
+export function extractSongFilebase(documentText: string): string | undefined {
+  return splitSongDocument(documentText).abcText
+    .split('\n')
+    .find((line) => line.startsWith('F:'))
+    ?.slice(2)
+    .trim() || undefined
+}
+
 /**
  * Parst die Song-Konfiguration aus dem ABC-Text.
  *

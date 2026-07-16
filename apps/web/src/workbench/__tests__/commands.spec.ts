@@ -163,7 +163,70 @@ describe('legacy command registration', () => {
     expect(state.rootPath).toBe('Freigaben/Michael')
     expect(state.path).toBe('Entwuerfe')
     await expect(stack.runString('scd ../Privat')).rejects.toThrow('inside the connection root')
-    await expect(stack.runString('ssave lied.abc')).rejects.toThrow('read-only')
+    await expect(stack.runString('ssave')).rejects.toThrow('read-only')
+  })
+
+  it('saves the complete document under the filename from its F: header', async () => {
+    const saved: Array<{ filename: string; content: string }> = []
+    const documentText = [
+      'X:749',
+      'F:749_advent-is-a-leuchtn',
+      'T:Advent is a Leuchtn',
+      'K:C',
+      'C',
+      '%%%%zupfnoter.config',
+      '{"extract":{"0":{"instrument_shape":null}}}',
+    ].join('\n')
+    const stack = new CommandStack({ log: () => undefined })
+    registerStorageCommands(stack, {
+      system: 'dropbox',
+      path: 'Noten',
+      loggedIn: true,
+      pendingCandidates: [],
+    }, {
+      providers: ['dropbox'],
+      list: async () => [],
+      search: async () => [],
+      open: async () => undefined,
+      save: async (_path, filename, content) => {
+        saved.push({ filename, content })
+      },
+      readDocument: () => documentText,
+      writeDocument: () => undefined,
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    await stack.runString('ssave')
+
+    expect(saved).toEqual([{
+      filename: '749_advent-is-a-leuchtn.abc',
+      content: documentText,
+    }])
+  })
+
+  it('requires an F: header when saving', async () => {
+    const stack = new CommandStack({ log: () => undefined })
+    registerStorageCommands(stack, {
+      system: 'dropbox',
+      path: '',
+      loggedIn: true,
+      pendingCandidates: [],
+    }, {
+      providers: ['dropbox'],
+      list: async () => [],
+      search: async () => [],
+      open: async () => undefined,
+      save: async () => undefined,
+      readDocument: () => 'X:1\nT:Ohne Dateiname\nK:C\nC\n',
+      writeDocument: () => undefined,
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    await expect(stack.runString('ssave')).rejects.toThrow('Filename not specified in song')
   })
 
   it('disconnects the requested profile without changing the active connection', async () => {
