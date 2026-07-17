@@ -22,6 +22,16 @@ export interface FileToolbarMenuSeparator {
 
 export type FileToolbarMenuItem = FileToolbarMenuAction | FileToolbarMenuSeparator
 
+/** Der für die Speichern-Aktion relevante Teil einer Speicherverbindung. */
+export interface StorageSaveTarget {
+  /** Fachlicher Name der Verbindung. */
+  label: string
+  /** Fester Wurzelordner der Verbindung beim Anbieter. */
+  rootPath: string
+  /** Verhindert Speichern innerhalb dieser Verbindung. */
+  readOnly: boolean
+}
+
 /** Vollständige Dokument- und Speicherortaktionen der Haupttoolbar. */
 export const FILE_TOOLBAR_MENU_ITEMS: FileToolbarMenuItem[] = [
   { type: 'action', action: 'new', label: 'Neu', tooltip: 'Neues Dokument anlegen', icon: 'new' },
@@ -37,6 +47,18 @@ export const FILE_TOOLBAR_MENU_ITEMS: FileToolbarMenuItem[] = [
 /** Ein Speichern ist erst mit einem vollständigen Ziel aus Anbieter, Pfad und Dateiname möglich. */
 export function isFileToolbarActionDisabled(action: FileToolbarAction, hasSaveTarget: boolean): boolean {
   return action === 'save' && !hasSaveTarget
+}
+
+/** Beschreibt das aktuelle Speicherziel beziehungsweise den Grund für eine Sperre. */
+export function storageSaveTooltip(target: StorageSaveTarget | undefined, relativePath: string): string {
+  if (target === undefined) return 'Speichern ist erst mit bekanntem Speicherziel möglich'
+  if (target.readOnly) return `Speichern ist für „${target.label}“ deaktiviert (nur lesen)`
+
+  const pathParts = [target.rootPath, relativePath]
+    .map((path) => path.trim().replace(/^\/+|\/+$/g, ''))
+    .filter((path) => path !== '')
+  const targetPath = pathParts.length === 0 ? '/' : `/${pathParts.join('/')}`
+  return `In „${target.label}“ unter ${targetPath} speichern`
 }
 
 export function fileToolbarPlaceholderMessage(action: FileToolbarAction): string | undefined {

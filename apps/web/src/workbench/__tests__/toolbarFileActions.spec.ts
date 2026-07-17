@@ -4,6 +4,7 @@ import {
   FILE_TOOLBAR_MENU_ITEMS,
   fileToolbarPlaceholderMessage,
   isFileToolbarActionDisabled,
+  storageSaveTooltip,
 } from '../toolbarFileActions'
 
 describe('file toolbar actions', () => {
@@ -24,6 +25,16 @@ describe('file toolbar actions', () => {
     expect(isFileToolbarActionDisabled('save', false)).toBe(true)
     expect(isFileToolbarActionDisabled('save', true)).toBe(false)
     expect(isFileToolbarActionDisabled('open', false)).toBe(false)
+  })
+
+  it('describes the concrete save target and its access mode', () => {
+    expect(storageSaveTooltip(undefined, '')).toBe('Speichern ist erst mit bekanntem Speicherziel möglich')
+    expect(storageSaveTooltip({ label: 'Michael', rootPath: '/Freigabe', readOnly: true }, 'Noten')).toBe(
+      'Speichern ist für „Michael“ deaktiviert (nur lesen)',
+    )
+    expect(storageSaveTooltip({ label: 'Privat', rootPath: '/Zupfnoter', readOnly: false }, '/Neu/')).toBe(
+      'In „Privat“ unter /Zupfnoter/Neu speichern',
+    )
   })
 
   it('provides a visible status message for unfinished actions', () => {

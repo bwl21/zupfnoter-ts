@@ -16,6 +16,7 @@ vi.stubGlobal('localStorage', localStorageMock)
 describe('dropboxProvider', () => {
   beforeEach(() => {
     fetchMock.mockReset()
+    localStorageMock.setItem.mockReset()
     localStorageMock.getItem.mockImplementation((key: string) => (key === 'zupfnoter.storage.dropbox.token.default'
       ? JSON.stringify({ access_token: 'token' })
       : null))
@@ -47,6 +48,33 @@ describe('dropboxProvider', () => {
       }),
     )
     expect(results).toEqual(['/A/abend1.abc', '/B/sub/abend2.abc'])
+  })
+
+  it('refreshes an expired connection token and retries the upload', async () => {
+    localStorageMock.getItem.mockImplementation((key: string) => (key === 'zupfnoter.storage.dropbox.token.private'
+      ? JSON.stringify({ access_token: 'expired', refresh_token: 'refresh-token' })
+      : null))
+    fetchMock
+      .mockResolvedValueOnce({ ok: false, status: 401, statusText: 'Unauthorized', headers: new Headers(), text: async () => 'expired_access_token' } as Response)
+      .mockResolvedValueOnce({ ok: true, status: 200, statusText: 'OK', headers: new Headers(), json: async () => ({ access_token: 'fresh', expires_in: 14_400 }) } as Response)
+      .mockResolvedValueOnce({ ok: true, status: 200, statusText: 'OK', headers: new Headers() } as Response)
+
+    const { createDropboxProvider } = await import('../dropboxProvider')
+    await createDropboxProvider().save({ system: 'dropbox', connectionId: 'private', path: '', loggedIn: true, pendingCandidates: [] }, 'lied.abc', 'X:1')
+
+    expect(fetchMock).toHaveBeenNthCalledWith(2, 'https://api.dropboxapi.com/oauth2/token', expect.objectContaining({
+      method: 'POST',
+      body: expect.stringContaining('grant_type=refresh_token'),
+    }))
+    expect(fetchMock).toHaveBeenNthCalledWith(3, 'https://content.dropboxapi.com/2/files/upload', expect.objectContaining({
+      headers: expect.objectContaining({ get: expect.any(Function) }),
+    }))
+    const retryHeaders = fetchMock.mock.calls[2]?.[1] as RequestInit | undefined
+    expect(new Headers(retryHeaders?.headers).get('Authorization')).toBe('Bearer fresh')
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      'zupfnoter.storage.dropbox.token.private',
+      expect.stringContaining('"refresh_token":"refresh-token"'),
+    )
   })
 
   it('hides dot-prefixed folders from the root picker', async () => {

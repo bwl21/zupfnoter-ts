@@ -5,6 +5,7 @@ interface DropboxTokenResponse {
   access_token: string
   refresh_token?: string
   expires_in?: number
+  expiresAt?: number
   token_type?: string
   scope?: string
 }
@@ -95,9 +96,8 @@ export function createDropboxProvider(): DropboxProvider {
       localStorage.removeItem(authStateKey(connectionId))
     },
     async list(path: StorageCommandState, recursive = false): Promise<string[]> {
-      const token = requireToken(connectionKey(path))
       const folder = resolveStorageFolder(path)
-      const entries = await listDropboxEntries(token.access_token, folder, recursive)
+      const entries = await listDropboxEntries(connectionKey(path), folder, recursive)
       return entries
         .filter((entry) => entry['.tag'] !== 'deleted')
         .filter((entry) => entry['.tag'] === 'file')
@@ -106,12 +106,10 @@ export function createDropboxProvider(): DropboxProvider {
         .sort()
     },
     async search(path: StorageCommandState, query: string): Promise<string[]> {
-      const token = requireToken(connectionKey(path))
       const folder = resolveStorageFolder(path)
-      const response = await fetch('https://api.dropboxapi.com/2/files/search_v2', {
+      const response = await authenticatedDropboxFetch(connectionKey(path), 'https://api.dropboxapi.com/2/files/search_v2', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -136,12 +134,10 @@ export function createDropboxProvider(): DropboxProvider {
         .sort()
     },
     async open(path: StorageCommandState, filename: string): Promise<string | undefined> {
-      const token = requireToken(connectionKey(path))
       const target = resolveDropboxTarget(resolveStorageFolder(path), filename)
-      const response = await fetch('https://content.dropboxapi.com/2/files/download', {
+      const response = await authenticatedDropboxFetch(connectionKey(path), 'https://content.dropboxapi.com/2/files/download', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token.access_token}`,
           'Dropbox-API-Arg': JSON.stringify({ path: `/${target}` }),
         },
       })
@@ -151,12 +147,10 @@ export function createDropboxProvider(): DropboxProvider {
       return await response.text()
     },
     async save(path: StorageCommandState, filename: string, content: string | Blob): Promise<void> {
-      const token = requireToken(connectionKey(path))
       const target = resolveDropboxTarget(resolveStorageFolder(path), filename)
-      const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
+      const response = await authenticatedDropboxFetch(connectionKey(path), 'https://content.dropboxapi.com/2/files/upload', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token.access_token}`,
           'Content-Type': 'application/octet-stream',
           'Dropbox-API-Arg': JSON.stringify({
             path: `/${target}`,
@@ -176,9 +170,8 @@ export function createDropboxProvider(): DropboxProvider {
       localStorage.removeItem(authStateKey(connectionKey(state)))
     },
     async listFolders(state: StorageCommandState, path: string): Promise<Array<{ name: string; path: string }>> {
-      const token = requireToken(connectionKey(state))
       const folder = normalizeFolderPath(path)
-      const entries = await listDropboxEntries(token.access_token, folder, false)
+      const entries = await listDropboxEntries(connectionKey(state), folder, false)
       return entries
         .filter((entry) => entry['.tag'] === 'folder')
         .filter((entry) => !entry.name.startsWith('.'))
@@ -186,8 +179,7 @@ export function createDropboxProvider(): DropboxProvider {
         .sort((left, right) => left.name.localeCompare(right.name))
     },
     async listDocuments(state: StorageCommandState): Promise<StorageDocument[]> {
-      const token = requireToken(connectionKey(state))
-      const entries = await listDropboxEntries(token.access_token, resolveStorageFolder(state), false)
+      const entries = await listDropboxEntries(connectionKey(state), resolveStorageFolder(state), false)
       const files = entries.filter((entry) => entry['.tag'] === 'file' && !entry.name.startsWith('.'))
       return files
         .filter((entry) => entry.name.toLowerCase().endsWith('.abc'))
@@ -207,9 +199,8 @@ export function createDropboxProvider(): DropboxProvider {
         .sort((left, right) => left.name.localeCompare(right.name))
     },
     async openPreview(state: StorageCommandState, path: string): Promise<Blob | undefined> {
-      const token = requireToken(connectionKey(state))
       const target = resolveDropboxTarget(resolveStorageFolder(state), path)
-      const response = await fetch('https://content.dropboxapi.com/2/files/download', { method: 'POST', headers: { Authorization: `Bearer ${token.access_token}`, 'Dropbox-API-Arg': JSON.stringify({ path: `/${target}` }) } })
+      const response = await authenticatedDropboxFetch(connectionKey(state), 'https://content.dropboxapi.com/2/files/download', { method: 'POST', headers: { 'Dropbox-API-Arg': JSON.stringify({ path: `/${target}` }) } })
       if (!response.ok) throw new Error(`Dropbox PDF preview failed: ${response.status} ${await readDropboxErrorMessage(response)}`)
       const content = await response.arrayBuffer()
       return new Blob([content], { type: previewContentType(path) })
@@ -260,15 +251,14 @@ async function exchangeCodeForToken(code: string, verifier: string, connectionId
     throw new Error(`Dropbox token exchange failed: ${response.status}`)
   }
   const token = await response.json() as DropboxTokenResponse
-  localStorage.setItem(tokenKey(connectionId), JSON.stringify(token))
+  persistDropboxToken(connectionId, token)
   localStorage.removeItem(authStateKey(connectionId))
 }
 
-async function listDropboxEntries(accessToken: string, folder: string, recursive: boolean): Promise<DropboxEntry[]> {
-  const firstResponse = await fetch('https://api.dropboxapi.com/2/files/list_folder', {
+async function listDropboxEntries(connectionId: string, folder: string, recursive: boolean): Promise<DropboxEntry[]> {
+  const firstResponse = await authenticatedDropboxFetch(connectionId, 'https://api.dropboxapi.com/2/files/list_folder', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -288,10 +278,9 @@ async function listDropboxEntries(accessToken: string, folder: string, recursive
   let cursor = payload.cursor
   let hasMore = payload.has_more
   while (hasMore) {
-    const continueResponse = await fetch('https://api.dropboxapi.com/2/files/list_folder/continue', {
+    const continueResponse = await authenticatedDropboxFetch(connectionId, 'https://api.dropboxapi.com/2/files/list_folder/continue', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ cursor }),
@@ -330,12 +319,63 @@ function loadToken(connectionId: string): DropboxTokenResponse | undefined {
   }
 }
 
-function requireToken(connectionId: string): DropboxTokenResponse {
+async function authenticatedDropboxFetch(connectionId: string, url: string, init: RequestInit): Promise<Response> {
+  const token = await validDropboxToken(connectionId)
+  const response = await fetchWithDropboxToken(url, init, token.access_token)
+  if (response.status !== 401 || token.refresh_token === undefined) return response
+
+  const refreshedToken = await refreshDropboxToken(connectionId, token)
+  return fetchWithDropboxToken(url, init, refreshedToken.access_token)
+}
+
+async function validDropboxToken(connectionId: string): Promise<DropboxTokenResponse> {
   const token = loadToken(connectionId)
   if (token === undefined) {
     throw new Error('Dropbox not logged in')
   }
+  if (token.refresh_token !== undefined && token.expiresAt !== undefined && token.expiresAt <= Date.now() + 60_000) {
+    return refreshDropboxToken(connectionId, token)
+  }
   return token
+}
+
+async function refreshDropboxToken(connectionId: string, previousToken: DropboxTokenResponse): Promise<DropboxTokenResponse> {
+  const refreshToken = previousToken.refresh_token
+  if (refreshToken === undefined || refreshToken === '') {
+    throw new Error('Dropbox access token expired; please reconnect')
+  }
+  const response = await fetch('https://api.dropboxapi.com/oauth2/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+      client_id: resolveDropboxAppKey(),
+    }).toString(),
+  })
+  if (!response.ok) {
+    throw new Error(`Dropbox token refresh failed: ${response.status} ${await readDropboxErrorMessage(response)}`)
+  }
+  const refreshed = await response.json() as DropboxTokenResponse
+  const nextToken: DropboxTokenResponse = {
+    ...refreshed,
+    refresh_token: refreshed.refresh_token ?? refreshToken,
+  }
+  persistDropboxToken(connectionId, nextToken)
+  return nextToken
+}
+
+function persistDropboxToken(connectionId: string, token: DropboxTokenResponse): void {
+  const expiresAt = token.expires_in === undefined
+    ? token.expiresAt
+    : Date.now() + token.expires_in * 1000
+  localStorage.setItem(tokenKey(connectionId), JSON.stringify({ ...token, expiresAt }))
+}
+
+async function fetchWithDropboxToken(url: string, init: RequestInit, accessToken: string): Promise<Response> {
+  const headers = new Headers(init.headers)
+  headers.set('Authorization', `Bearer ${accessToken}`)
+  return fetch(url, { ...init, headers })
 }
 
 function loadAuthState(connectionId: string): { state: string; verifier: string } | undefined {

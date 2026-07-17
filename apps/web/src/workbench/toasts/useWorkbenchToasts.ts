@@ -14,6 +14,8 @@ export interface WorkbenchToast {
   message: string
   /** Optionale technische Quelle */
   source?: string
+  /** Fehler bleiben sichtbar, bis sie ausdrücklich geschlossen werden. */
+  persistent?: boolean
 }
 
 const TOAST_TTL_MS = 6000
@@ -52,9 +54,11 @@ export function useWorkbenchToasts() {
     nextToastId += 1
     toasts.value = [toast, ...toasts.value]
 
-    setTimeout(() => {
-      dismissToast(toast.id)
-    }, TOAST_TTL_MS)
+    if (!toast.persistent) {
+      setTimeout(() => {
+        dismissToast(toast.id)
+      }, TOAST_TTL_MS)
+    }
   }
 
   function pushToast(toast: Omit<WorkbenchToast, 'id'>): void {
@@ -64,9 +68,11 @@ export function useWorkbenchToasts() {
     }
     nextToastId += 1
     toasts.value = [nextToast, ...toasts.value]
-    setTimeout(() => {
-      dismissToast(nextToast.id)
-    }, TOAST_TTL_MS)
+    if (!nextToast.persistent) {
+      setTimeout(() => {
+        dismissToast(nextToast.id)
+      }, TOAST_TTL_MS)
+    }
   }
 
   function syncDiagnostics(diagnostics: WorkbenchDiagnostic[]): void {

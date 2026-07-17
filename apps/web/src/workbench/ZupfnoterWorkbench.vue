@@ -40,6 +40,7 @@ import {
   FILE_TOOLBAR_MENU_ITEMS,
   fileToolbarPlaceholderMessage,
   isFileToolbarActionDisabled,
+  storageSaveTooltip,
   type FileToolbarAction,
 } from './toolbarFileActions'
 import WorkbenchLayout from './WorkbenchLayout.vue'
@@ -111,9 +112,11 @@ const dropboxProvider = createDropboxProvider()
 const storageConnections = ref<StorageConnection[]>(loadStorageConnections())
 const activeStorageConnection = computed(() => storageConnections.value.find((connection) => connection.id === storageState.connectionId))
 const hasStorageSaveTarget = computed(() => activeStorageConnection.value !== undefined && !activeStorageConnection.value.readOnly)
-const saveTooltip = computed(() => activeStorageConnection.value?.readOnly === true
-  ? `Speichern ist für „${activeStorageConnection.value.label}“ deaktiviert (nur lesen)`
-  : 'Speichern ist erst mit bekanntem Speicherziel möglich')
+const saveInProgress = ref(false)
+const canSave = computed(() => hasStorageSaveTarget.value && !saveInProgress.value)
+const saveTooltip = computed(() => saveInProgress.value
+  ? 'Speichern läuft …'
+  : storageSaveTooltip(activeStorageConnection.value, storageState.path))
 const storageProviderRegistry = createStorageProviderRegistry([{
   descriptor: { id: 'dropbox', label: 'Dropbox', availability: 'available' },
   login: (state) => dropboxProvider.login(state),
@@ -422,6 +425,10 @@ watch(storageConnections, (connections) => {
   saveStorageConnections(connections)
 }, { deep: true })
 
+watch(saveTooltip, () => {
+  void nextTick().then(setupFileToolbarTooltips)
+})
+
 watch(documentText, (value) => {
   localStorage.setItem(abcTextKey, value)
 })
@@ -628,7 +635,7 @@ async function executeCommand(command: string): Promise<void> {
   }
 }
 
-async function executeToolbarCommand(command: string): Promise<boolean> {
+async function executeToolbarCommand(command: string, errorToastTitle?: string): Promise<boolean> {
   commandBusy.value = true
   appendConsoleLine(command, 'command')
   try {
@@ -636,7 +643,11 @@ async function executeToolbarCommand(command: string): Promise<boolean> {
     return true
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    appendConsoleLine(enrichCommandError(command, message), 'error')
+    const enrichedMessage = enrichCommandError(command, message)
+    appendConsoleLine(enrichedMessage, 'error')
+    if (errorToastTitle !== undefined) {
+      pushToast({ severity: 'danger', title: errorToastTitle, message: enrichedMessage, persistent: true })
+    }
     return false
   } finally {
     commandBusy.value = false
@@ -758,7 +769,17 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
     return
   }
   if (action === 'save') {
-    void executeToolbarCommand('ssave')
+    void saveDocument()
+  }
+}
+
+async function saveDocument(): Promise<void> {
+  if (saveInProgress.value) return
+  saveInProgress.value = true
+  try {
+    await executeToolbarCommand('ssave', 'Speichern nicht möglich')
+  } finally {
+    saveInProgress.value = false
   }
 }
 
@@ -962,9 +983,13 @@ function removeStorageConnection(connectionId: string): void {
 
 function setupFileToolbarTooltips(): void {
   for (const element of document.querySelectorAll<HTMLElement>('[data-file-toolbar-tooltip]')) {
-    if (fileToolbarTooltips.has(element)) continue
     const content = element.dataset.fileToolbarTooltip
     if (content === undefined || content === '') continue
+    const existing = fileToolbarTooltips.get(element)
+    if (existing !== undefined) {
+      existing.setContent(content)
+      continue
+    }
     fileToolbarTooltips.set(element, tippy(element, {
       content,
       animation: 'shift-away',
@@ -1385,7 +1410,6 @@ function handleMirrorMessage(event: MessageEvent): void {
               <summary
                 class="file-menu__summary"
                 aria-haspopup="menu"
-                title="Dateiaktionen"
                 data-testid="file-menu-toggle"
                 data-file-toolbar-tooltip="Dateiaktionen"
               >
@@ -1402,8 +1426,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                     type="button"
                     role="menuitem"
                     :data-testid="`file-action-${item.action}`"
-                    :disabled="isFileToolbarActionDisabled(item.action, hasStorageSaveTarget)"
-                    :title="item.action === 'save' ? saveTooltip : item.tooltip"
+                    :disabled="isFileToolbarActionDisabled(item.action, canSave)"
                     :data-file-toolbar-tooltip="item.action === 'save' ? saveTooltip : item.tooltip"
                     @click="handleFileToolbarAction(item.action)"
                   >
@@ -1416,7 +1439,6 @@ function handleMirrorMessage(event: MessageEvent): void {
             <ZnButton
               data-testid="file-shortcut-new"
               variant="ghost"
-              title="Neues Dokument anlegen"
               data-file-toolbar-tooltip="Neues Dokument anlegen"
               @click="handleFileToolbarAction('new')"
             >
@@ -1426,7 +1448,6 @@ function handleMirrorMessage(event: MessageEvent): void {
             <ZnButton
               data-testid="file-shortcut-open"
               variant="ghost"
-              title="Dokument öffnen"
               data-file-toolbar-tooltip="Dokument öffnen"
               @click="handleFileToolbarAction('open')"
             >
@@ -1435,8 +1456,7 @@ function handleMirrorMessage(event: MessageEvent): void {
             </ZnButton>
             <ZnButton
               variant="primary"
-              :disabled="isFileToolbarActionDisabled('save', hasStorageSaveTarget)"
-              :title="saveTooltip"
+              :disabled="isFileToolbarActionDisabled('save', canSave)"
               data-testid="file-shortcut-save"
               :data-file-toolbar-tooltip="saveTooltip"
               @click="handleFileToolbarAction('save')"

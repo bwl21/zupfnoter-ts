@@ -42,4 +42,20 @@ describe('useWorkbenchToasts', () => {
       title: 'Datei',
     })
   })
+
+  it('keeps persistent errors visible until they are dismissed', () => {
+    vi.useFakeTimers()
+    const { toasts, pushToast } = useWorkbenchToasts()
+
+    pushToast({
+      severity: 'danger',
+      title: 'Speichern nicht möglich',
+      message: 'Dropbox access token expired',
+      persistent: true,
+    })
+    vi.advanceTimersByTime(10_000)
+
+    expect(toasts.value).toHaveLength(1)
+    expect(toasts.value[0]?.persistent).toBe(true)
+  })
 })
