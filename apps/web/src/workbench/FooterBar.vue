@@ -75,14 +75,12 @@ function handleSelectionVoiceScopeChange(event: Event): void {
     <button
       ref="storageChipElement"
       class="footer-bar__storage-chip"
+      :class="storageReadOnly ? 'footer-bar__storage-chip--read-only' : 'footer-bar__storage-chip--writable'"
       type="button"
       @click="emit('storage-connections')"
     >
-      Speicher: {{ storageLocation }}
+      {{ storageLocation }}
     </button>
-    <ZnBadge v-if="storageReadOnly" tone="warning">
-      Nur lesen
-    </ZnBadge>
     <template #aside>
       <div class="footer-bar__selection">
         <span class="footer-bar__meta">Selection:</span>
@@ -147,6 +145,18 @@ function handleSelectionVoiceScopeChange(event: Event): void {
 .footer-bar__storage-chip:hover {
   border-color: var(--zn-border-strong);
   background: var(--zn-bg-surface);
+}
+
+.footer-bar__storage-chip--writable {
+  background: color-mix(in srgb, var(--zn-success) 16%, white);
+  border-color: color-mix(in srgb, var(--zn-success) 50%, transparent);
+  color: color-mix(in srgb, var(--zn-heading) 82%, var(--zn-success) 18%);
+}
+
+.footer-bar__storage-chip--read-only {
+  background: color-mix(in srgb, var(--zn-danger) 14%, white);
+  border-color: color-mix(in srgb, var(--zn-danger) 42%, transparent);
+  color: color-mix(in srgb, var(--zn-heading) 82%, var(--zn-danger) 18%);
 }
 
 .footer-bar__storage-chip:focus-visible {
