@@ -1158,6 +1158,7 @@ export class AbcToSong {
 
   private _extractMetaData(model: AbcModel): SongMetaData {
     const info = model.info
+    this._validateFilenameHeader()
     const writtenKey = info['K']?.split('\n')[0]?.trim().split(/\s+/)[0]
 
     // Effektive Tonart aus der ersten Stimme ermitteln (berücksichtigt shift=)
@@ -1188,6 +1189,35 @@ export class AbcToSong {
       tempo_display: tempoDisplay,
       checksum: model.checksum,
     }
+  }
+
+  /**
+   * Prüft die F:-Kopfzeile wie das Legacy bereits beim Einlesen der Metadaten.
+   *
+   * Platzhalter bleiben zulässig, weil sie erst beim konkreten Speichern
+   * aufgelöst werden.
+   */
+  private _validateFilenameHeader(): void {
+    const source = this._source
+    if (source === null) return
+
+    const lines = source.split(/\r?\n/)
+    const lineIndex = lines.findIndex((line) => /^F:\s*/.test(line))
+    if (lineIndex < 0) return
+
+    const line = lines[lineIndex]
+    if (line === undefined) return
+    const match = /^F:\s*(.*)$/.exec(line)
+    const filename = match?.[1]?.trim() ?? ''
+    if (filename.includes('{{') || /^[a-zA-Z0-9_.-]+$/.test(filename)) return
+
+    this._diagnostics.push({
+      severity: 'error',
+      message: `bad characters in filename: ${filename}`,
+      source: 'abc-to-song',
+      startPos: [lineIndex + 1, 1],
+      endPos: [lineIndex + 1, Math.max(1, line.length)],
+    })
   }
 
   private _extractHarpnoteOptions(model: AbcModel, config: ZupfnoterConfig): Record<string, unknown> {

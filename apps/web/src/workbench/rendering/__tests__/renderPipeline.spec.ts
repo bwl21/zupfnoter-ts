@@ -68,6 +68,18 @@ C
     expect(result.editorDiagnostics.some((diagnostic) => diagnostic.line === 4)).toBe(true)
   })
 
+  it('surfaces invalid F header characters directly in the editor diagnostics', () => {
+    const result = renderWorkbenchPreviews('X:1\nF:demo file\nT:Demo\nK:C\nC')
+
+    expect(result.editorDiagnostics).toContainEqual(expect.objectContaining({
+      severity: 'error',
+      message: 'bad characters in filename: demo file',
+      line: 2,
+      column: 1,
+      source: 'abc-to-song',
+    }))
+  })
+
   it('marks a missing key header instead of the following configuration block', () => {
     const result = renderWorkbenchPreviews(`X:1
 T:Ohne Tonart

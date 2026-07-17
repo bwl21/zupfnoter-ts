@@ -334,6 +334,24 @@ V:V1 clef=treble-8
     expect(song.metaData.title).toContain('Single Note')
   })
 
+  it('reports invalid characters in the F header at the header line', () => {
+    const song = transform('X:1\nF:demo file\nT:Demo\nK:C\nC')
+
+    expect(song.metaData.diagnostics).toContainEqual({
+      severity: 'error',
+      message: 'bad characters in filename: demo file',
+      source: 'abc-to-song',
+      startPos: [2, 1],
+      endPos: [2, 11],
+    })
+  })
+
+  it('permits an F header with a filename placeholder', () => {
+    const song = transform('X:1\nF:{{song_filename}}\nT:Demo\nK:C\nC')
+
+    expect(song.metaData.diagnostics ?? []).toEqual([])
+  })
+
   it('produces a BeatMap', () => {
     const song = transform(ABC)
     expect(song.beatMaps.length).toBeGreaterThanOrEqual(1)

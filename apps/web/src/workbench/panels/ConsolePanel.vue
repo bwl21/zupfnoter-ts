@@ -149,6 +149,7 @@ function handlePanelClick(event: MouseEvent): void {
 function entryPrefix(entry: ConsoleLogEntry): string {
   if (entry.kind === 'command') return '>'
   if (entry.kind === 'error') return '!'
+  if (entry.kind === 'warning') return '~'
   if (entry.kind === 'info') return '#'
   return ''
 }
@@ -284,6 +285,10 @@ onMounted(() => {
 
 .console-panel__line--error {
   color: rgb(255 139 123);
+}
+
+.console-panel__line--warning {
+  color: rgb(237 193 105);
 }
 
 .console-panel__line--output {

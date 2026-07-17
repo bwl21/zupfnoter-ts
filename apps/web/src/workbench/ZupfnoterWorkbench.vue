@@ -54,7 +54,7 @@ import type { SelectionOrigin } from '@zupfnoter/types'
 import type { StorageConnection, StorageDocument, StorageProviderDescriptor } from '@zupfnoter/types'
 import { CommandError, CommandStack, registerLegacyCommands, registerStorageCommands } from '@zupfnoter/core'
 import type { CommandArgumentValue } from '@zupfnoter/core'
-import type { ConsoleLogEntry, ConsoleLogKind } from './consoleLog'
+import { WorkbenchLogger, type ConsoleLogEntry } from './consoleLog'
 import {
   canTargetCreateSelection,
   createExtractChangedSelectionEvent,
@@ -127,7 +127,7 @@ const storageConnections = ref<StorageConnection[]>(loadStorageConnections())
 const dropboxProvider = createDropboxProvider({
   onTokenRefreshed: (connectionId) => {
     const connection = storageConnections.value.find((entry) => entry.id === connectionId)
-    appendConsoleLine(`storage access renewed: ${connection?.label ?? connectionId}`, 'info')
+    logger.info(`storage access renewed: ${connection?.label ?? connectionId}`)
   },
 })
 const activeStorageConnection = computed(() => storageConnections.value.find((connection) => connection.id === storageState.connectionId))
@@ -190,6 +190,7 @@ const storagePreviewUrl = ref<string>()
 const storagePreviewLoading = ref(false)
 const storagePreviewError = ref('')
 const saveResultDialogOpen = ref(false)
+const saveTargetMissing = ref(false)
 const saveResultComplete = ref(false)
 const saveProgressCompleted = ref(0)
 const saveProgressTotal = ref(0)
@@ -206,12 +207,11 @@ const rootPickerLoading = ref(false)
 const rootPickerCache = new Map<string, Array<{ name: string; path: string }>>()
 const fileMenuElement = ref<HTMLDetailsElement | null>(null)
 const fileToolbarTooltips = new Map<HTMLElement, TippyInstance>()
-let nextConsoleEntryId = 1
-const consoleLines = ref<ConsoleLogEntry[]>([{
-  id: nextConsoleEntryId,
-  kind: 'info',
-  message: 'command stack ready',
-}])
+const consoleLines = ref<ConsoleLogEntry[]>([])
+const logger = new WorkbenchLogger((entry) => {
+  consoleLines.value = [...consoleLines.value.slice(-199), entry]
+})
+logger.info('command stack ready')
 const scoreSvg = ref('')
 const harpSvg = ref('')
 const renderIssues = ref<RenderIssue[]>([])
@@ -394,28 +394,15 @@ let nextRenderRequestId = 0
 let pendingRenderRequestId: number | undefined
 let renderTimer: ReturnType<typeof setTimeout> | undefined
 
-function appendConsoleLine(message: string, kind: ConsoleLogKind = 'output'): void {
-  nextConsoleEntryId += 1
-  consoleLines.value = [...consoleLines.value.slice(-199), {
-    id: nextConsoleEntryId,
-    kind,
-    message,
-  }]
-}
-
-function timestampLabel(): string {
-  return new Date().toLocaleTimeString('de-DE', { hour12: false })
-}
-
-function appendPipelineLine(message: string): void {
-  appendConsoleLine(`${timestampLabel()}  ${message}`, 'info')
-}
-
 function appendDiagnosticLine(message: string, severity: 'warning' | 'error', source?: string): void {
   const prefix = source === undefined || source === ''
     ? ''
     : `${source}: `
-  appendConsoleLine(`${timestampLabel()}  ${prefix}${message}`, severity === 'error' ? 'error' : 'info')
+  if (severity === 'error') {
+    logger.error(`${prefix}${message}`)
+    return
+  }
+  logger.warning(`${prefix}${message}`)
 }
 
 function restoreStorageContext(): void {
@@ -491,11 +478,11 @@ function handleRenderWorkerMessage(event: MessageEvent): void {
   if (typeof data !== 'object' || data === null) return
   const record = data as { id?: number, kind?: string, message?: string, totalMs?: number, result?: WorkbenchRenderResult, error?: string }
   if (record.kind === 'progress' && typeof record.message === 'string') {
-    appendPipelineLine(record.message)
+    logger.info(record.message)
     return
   }
   if (record.kind === 'perf' && typeof record.totalMs === 'number') {
-    appendPipelineLine(`worker: perf total ${record.totalMs.toFixed(3)} ms`)
+    logger.info(`worker: perf total ${record.totalMs.toFixed(3)} ms`)
     return
   }
   if (record.kind === 'result') {
@@ -505,7 +492,7 @@ function handleRenderWorkerMessage(event: MessageEvent): void {
       applyRenderResult(record.result)
     }
     if (record.error !== undefined) {
-      appendPipelineLine(`worker: render failed: ${record.error}`)
+      logger.error(`worker: render failed: ${record.error}`)
       renderError.value = record.error
       renderSummary.value = 'render failed'
     }
@@ -566,12 +553,12 @@ function renderNow(): void {
       })
       return
     }
-    appendPipelineLine(`worker: render extract ${currentExtract.value}`)
+    logger.info(`worker: render extract ${currentExtract.value}`)
     const result = renderWorkbenchPreviews(documentText.value, currentExtract.value)
     applyRenderResult(result)
-    appendPipelineLine(`worker: render complete in 0.000 sec`)
+    logger.info('worker: render complete in 0.000 sec')
   } catch (error) {
-    appendPipelineLine(`worker: render failed: ${error instanceof Error ? error.message : String(error)}`)
+    logger.error(`worker: render failed: ${error instanceof Error ? error.message : String(error)}`)
     renderError.value = error instanceof Error ? error.message : String(error)
     renderSummary.value = 'render failed'
   }
@@ -662,12 +649,12 @@ function openNotesDuplicate(): void {
 
 async function executeCommand(command: string): Promise<void> {
   commandBusy.value = true
-  appendConsoleLine(command, 'command')
+  logger.command(command)
   try {
     await commandStack.runString(command)
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    appendConsoleLine(enrichCommandError(command, message), 'error')
+    logger.error(enrichCommandError(command, message))
   } finally {
     commandBusy.value = false
   }
@@ -675,14 +662,14 @@ async function executeCommand(command: string): Promise<void> {
 
 async function executeToolbarCommand(command: string, errorToastTitle?: string): Promise<boolean> {
   commandBusy.value = true
-  appendConsoleLine(command, 'command')
+  logger.command(command)
   try {
     await commandStack.runString(command)
     return true
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     const enrichedMessage = enrichCommandError(command, message)
-    appendConsoleLine(enrichedMessage, 'error')
+    logger.error(enrichedMessage)
     if (errorToastTitle !== undefined) {
       pushToast({ severity: 'danger', title: errorToastTitle, message: enrichedMessage, persistent: true })
     }
@@ -698,13 +685,13 @@ async function executeParsedToolbarCommand(
   values: CommandArgumentValue[],
 ): Promise<boolean> {
   commandBusy.value = true
-  appendConsoleLine(command, 'command')
+  logger.command(command)
   try {
     await commandStack.runParsedCommand(commandName, values)
     return true
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    appendConsoleLine(enrichCommandError(command, message), 'error')
+    logger.error(enrichCommandError(command, message))
     return false
   } finally {
     commandBusy.value = false
@@ -765,7 +752,7 @@ function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
     return
   }
 
-  appendConsoleLine(`config intent: ${intent.action}${intent.path ? ` ${intent.path}` : ''}`, 'info')
+  logger.info(`config intent: ${intent.action}${intent.path ? ` ${intent.path}` : ''}`)
 }
 
 function closeFileMenu(): void {
@@ -794,7 +781,7 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
       title: 'Datei',
       message: placeholderMessage,
     })
-    appendConsoleLine(placeholderMessage, 'info')
+    logger.info(placeholderMessage)
     return
   }
 
@@ -813,6 +800,13 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
 
 async function saveDocument(): Promise<void> {
   if (saveInProgress.value) return
+  if (!hasStorageSaveTarget.value) {
+    saveTargetMissing.value = true
+    saveResultComplete.value = false
+    saveResultDialogOpen.value = true
+    return
+  }
+  saveTargetMissing.value = false
   saveInProgress.value = true
   saveResultComplete.value = false
   saveProgressCompleted.value = 0
@@ -826,6 +820,11 @@ async function saveDocument(): Promise<void> {
   } finally {
     saveInProgress.value = false
   }
+}
+
+function openStorageConnectionsFromSaveResult(): void {
+  saveResultDialogOpen.value = false
+  storageConnectionsDialogOpen.value = true
 }
 
 async function searchStorageDocuments(query: string): Promise<void> {
@@ -1085,7 +1084,7 @@ function setPlaybackInstrumentFromCommand(value: string): void {
   if (sound !== undefined) {
     playbackInstrument.value = sound
     stopPlayback()
-    appendConsoleLine(`sound set to ${sound}`, 'info')
+    logger.info(`sound set to ${sound}`)
     return
   }
   throw new CommandError(`Unsupported sound: ${value}`)
@@ -1108,7 +1107,7 @@ function localStoreKey(id: string): string {
 function saveToLocalStore(): void {
   const id = extractAbcId(abcText.value)
   localStorage.setItem(localStoreKey(id), documentText.value)
-  appendConsoleLine(`saved ${id} to local storage`, 'info')
+  logger.info(`saved ${id} to local storage`)
 }
 
 function listLocalStore(): string[] {
@@ -1132,7 +1131,7 @@ function extractAbcId(value: string): string {
 }
 
 commandStack = new CommandStack({
-  log: appendConsoleLine,
+  log: (message) => logger.output(message),
 })
 
 registerStorageCommands(commandStack, storageState, {
@@ -1187,7 +1186,7 @@ registerStorageCommands(commandStack, storageState, {
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error)
         failedNames.push(plan.name)
-        appendConsoleLine(`save ${plan.name}: ${message}`, 'error')
+        logger.error(`save ${plan.name}: ${message}`)
         saveArtifactsProgress.value = saveArtifactsProgress.value.map((artifact, artifactIndex) => artifactIndex === index
           ? { ...artifact, status: 'failed', error: message }
           : artifact)
@@ -1343,6 +1342,11 @@ function handleScorePreviewSelection(payload: {
 
 function handleGlobalKeydown(event: KeyboardEvent): void {
   if (!event.ctrlKey && !event.metaKey) return
+  if (event.key === 's' || event.key === 'S') {
+    event.preventDefault()
+    void saveDocument()
+    return
+  }
   if (editorTab.value === 'config' && (event.key === 'z' || event.key === 'Z' || event.key === 'y' || event.key === 'Y')) {
     event.preventDefault()
     const isRedo = event.key === 'y' || event.key === 'Y' || event.shiftKey
@@ -1421,20 +1425,20 @@ onMounted(() => {
       pushToast({ severity: 'danger', title: 'Dropbox', message })
     })
   }
-  window.addEventListener('keydown', handleGlobalKeydown)
+  window.addEventListener('keydown', handleGlobalKeydown, true)
   window.addEventListener('message', handleMirrorMessage)
   try {
     renderWorker = new Worker(new URL('./rendering/renderWorker.ts', import.meta.url), { type: 'module' })
     renderWorker.onmessage = handleRenderWorkerMessage
   } catch (error) {
-    appendPipelineLine(`worker: unavailable: ${error instanceof Error ? error.message : String(error)}`)
+    logger.warning(`worker: unavailable: ${error instanceof Error ? error.message : String(error)}`)
     renderWorker = undefined
   }
   void nextTick().then(setupFileToolbarTooltips)
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleGlobalKeydown)
+  window.removeEventListener('keydown', handleGlobalKeydown, true)
   window.removeEventListener('message', handleMirrorMessage)
   renderWorker?.terminate()
   renderWorker = undefined
@@ -1660,7 +1664,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :resolve-command="resolveCommandSuggestion"
                   :get-command="(commandName) => commandStack.getCommand(commandName)"
                   @execute="executeCommand"
-                  @info="appendConsoleLine($event, 'info')"
+                  @info="logger.info($event)"
                 />
               </template>
             </ZnTabs>
@@ -1748,10 +1752,13 @@ function handleMirrorMessage(event: MessageEvent): void {
     <div v-if="saveResultDialogOpen" class="save-result__backdrop">
       <section class="save-result" role="dialog" aria-modal="true" aria-labelledby="save-result-title">
         <header>
-          <h2 id="save-result-title">{{ saveResultComplete ? (saveResultHasFailures ? 'Dateien mit Fehlern gespeichert' : 'Dateien gespeichert') : 'Dateien speichern' }}</h2>
-          <ZnButton v-if="saveResultComplete" variant="ghost" aria-label="Dialog schließen" @click="saveResultDialogOpen = false">×</ZnButton>
+          <h2 id="save-result-title">{{ saveTargetMissing ? 'Speicherziel fehlt' : saveResultComplete ? (saveResultHasFailures ? 'Dateien mit Fehlern gespeichert' : 'Dateien gespeichert') : 'Dateien speichern' }}</h2>
+          <ZnButton v-if="saveResultComplete || saveTargetMissing" variant="ghost" aria-label="Dialog schließen" @click="saveResultDialogOpen = false">×</ZnButton>
         </header>
-        <p v-if="saveResultComplete">
+        <p v-if="saveTargetMissing">
+          Zum Speichern wird eine aktive, beschreibbare Speicherverbindung benötigt.
+        </p>
+        <p v-else-if="saveResultComplete">
           {{ saveResultHasFailures ? 'Nicht alle Dateien konnten gespeichert werden.' : 'Alle Dateien wurden gespeichert.' }}
         </p>
         <template v-else>
@@ -1760,14 +1767,17 @@ function handleMirrorMessage(event: MessageEvent): void {
             <span :style="{ width: saveProgressTotal === 0 ? '0%' : `${saveProgressCompleted / saveProgressTotal * 100}%` }" />
           </div>
         </template>
-        <ul class="save-result__files">
+        <ul v-if="!saveTargetMissing" class="save-result__files">
           <li v-for="artifact in saveArtifactsProgress" :key="artifact.name" :data-status="artifact.status">
             <span class="save-result__file-status" aria-hidden="true">{{ artifact.status === 'saved' ? '✓' : artifact.status === 'failed' ? '!' : artifact.status === 'saving' ? '…' : '○' }}</span>
             <span>{{ artifact.name }}</span>
             <small v-if="artifact.error">{{ artifact.error }}</small>
           </li>
         </ul>
-        <footer v-if="saveResultComplete"><ZnButton variant="primary" @click="saveResultDialogOpen = false">Schließen</ZnButton></footer>
+        <footer v-if="saveTargetMissing || saveResultComplete">
+          <ZnButton v-if="saveTargetMissing" variant="primary" @click="openStorageConnectionsFromSaveResult">Speicherort wählen</ZnButton>
+          <ZnButton v-else variant="primary" @click="saveResultDialogOpen = false">Schließen</ZnButton>
+        </footer>
       </section>
     </div>
   </Teleport>
