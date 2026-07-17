@@ -78,4 +78,31 @@ describe('PdfEngine', () => {
 
     expect(text).toMatch(/\[(\d+\.\d+) \1\] \1 d/)
   })
+
+  it('fills a Legacy sheetmark path as one closed PDF path', async () => {
+    const text = await pdfText(new PdfEngine().draw({
+      ...sheet,
+      children: [{
+        type: 'Path',
+        path: [
+          [10, 10],
+          [11, 9],
+          [12, 10],
+          [12, 14],
+          [11, 15],
+          [10, 14],
+          [10, 10],
+        ],
+        pathData: 'M10 10l1 -1l1 1l0 4l-1 1l-1 -1l0 -4',
+        fill: true,
+        color: 'black',
+        lineWidth: 0.2,
+        visible: true,
+        more_conf_keys: [],
+      }],
+      printerConfig: undefined,
+    }))
+
+    expect((text.match(/\nB\n/g) ?? [])).toHaveLength(1)
+  })
 })

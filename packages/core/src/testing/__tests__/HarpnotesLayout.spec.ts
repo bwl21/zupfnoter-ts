@@ -801,6 +801,11 @@ V:V1 clef=treble-8
       expect(stringNames.length).toBe(37)
       expect(new Set(stringNames.map((entry) => entry.text))).toEqual(new Set(['string_a', 'string_b']))
       expect(sheetmarks.length).toBe(1)
+      const sheetmark = sheetmarks[0]
+      if (sheetmark === undefined) throw new Error('Expected one sheetmark')
+      const start = sheetmark.path[0]
+      if (start === undefined) throw new Error('Expected sheetmark start point')
+      expect(sheetmark.pathData).toBe(`M${start[0]} ${start[1]}l0.5 -1l0.5 1l0 5l-0.5 1l-0.5 -1l0 -5`)
       expect(cutmarks.some((entry) => entry.center[1] === 4)).toBe(true)
       expect(cutmarks.some((entry) => entry.center[1] === 290)).toBe(true)
     })

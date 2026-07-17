@@ -291,17 +291,29 @@ function parseStringNamesText(text: string | undefined): string[] {
     .filter((entry) => entry.length > 0)
 }
 
-function makeSheetmarkPath(center: [number, number]): [number, number][] {
+function makeSheetmarkPath(center: [number, number]): { path: [number, number][]; pathData: string } {
   const [x, y] = center
-  return [
-    [x - 0.5, y - 2.5],
-    [x, y - 3.5],
-    [x + 0.5, y - 2.5],
-    [x + 0.5, y + 2.5],
-    [x, y + 3.5],
-    [x - 0.5, y + 2.5],
-    [x - 0.5, y - 2.5],
+  const start: [number, number] = [x - 0.5, y - 2.5]
+  const segments: [number, number][] = [
+    [0.5, -1],
+    [0.5, 1],
+    [0, 5],
+    [-0.5, 1],
+    [-0.5, -1],
+    [0, -5],
   ]
+  const path: [number, number][] = [start]
+
+  for (const [dx, dy] of segments) {
+    const previous = path[path.length - 1]
+    if (previous === undefined) throw new Error('Sheetmark path has no start point')
+    path.push([previous[0] + dx, previous[1] + dy])
+  }
+
+  return {
+    path,
+    pathData: `M${start[0]} ${start[1]}${segments.map(([dx, dy]) => `l${dx} ${dy}`).join('')}`,
+  }
 }
 
 function rotatePoint(point: [number, number], angle: number): [number, number] {
@@ -1797,9 +1809,11 @@ export class HarpnotesLayout {
     for (const pitch of marks) {
       const x = pitchToX(pitch, layout)
       for (const y of markVpos) {
+        const sheetmarkPath = makeSheetmarkPath([x, y])
         result.push({
           type: 'Path',
-          path: makeSheetmarkPath([x, y]),
+          path: sheetmarkPath.path,
+          pathData: sheetmarkPath.pathData,
           fill: true,
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
