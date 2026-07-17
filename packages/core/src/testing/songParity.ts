@@ -11,7 +11,6 @@ import { transformFixtureToSong, loadFixture, scanFixtureCases, type FixtureCase
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '../../../..')
 const CONTRACT_PATH = resolve(REPO_ROOT, 'fixtures/contracts/song-field-contract.json')
-const CASES_ROOT = resolve(REPO_ROOT, 'fixtures/cases')
 const REPORTS_ROOT = resolve(REPO_ROOT, 'fixtures/reports')
 
 // ---------------------------------------------------------------------------
@@ -2530,7 +2529,7 @@ function renderGlobalReport(summary: SongParityRunSummary): string {
     '# Song Gap Report',
     '',
     'Global overview for case-based song parity.',
-    'The per-case artifacts live under `fixtures/cases/<case>/_parity/song/`.',
+    'The per-case artifacts live under `fixtures/cases/<area>/<case>/_parity/song/`.',
     '',
     '## Summary',
     '',
@@ -2580,20 +2579,16 @@ function writeText(path: string, content: string): void {
   writeFileSync(path, content, 'utf-8')
 }
 
-function caseDirFor(caseId: string): string {
-  return resolve(CASES_ROOT, caseId)
+function normalizedDirFor(caseDir: string): string {
+  return resolve(caseDir, '_parity/song/normalized')
 }
 
-function normalizedDirFor(caseId: string): string {
-  return resolve(caseDirFor(caseId), '_parity/song/normalized')
+function reportDirFor(caseDir: string): string {
+  return resolve(caseDir, '_parity/song/reports')
 }
 
-function reportDirFor(caseId: string): string {
-  return resolve(caseDirFor(caseId), '_parity/song/reports')
-}
-
-function debugDirFor(caseId: string): string {
-  return resolve(caseDirFor(caseId), '_parity/song/debug')
+function debugDirFor(caseDir: string): string {
+  return resolve(caseDir, '_parity/song/debug')
 }
 
 function loadTsSongDump(caseId: string): unknown {
@@ -2604,8 +2599,8 @@ function loadTsSongDump(caseId: string): unknown {
 
 export function runSongParityForCase(caseId: string): SongParityCaseReport {
   const contract = loadContract()
-  const caseDir = caseDirFor(caseId)
   const fixture = loadFixture(caseId)
+  const caseDir = fixture.dir
   const rawLegacy = fixture.song
   if (rawLegacy === null || rawLegacy === undefined) {
     throw new Error(`Missing legacy song fixture for case ${caseId}`)
@@ -2620,9 +2615,9 @@ export function runSongParityForCase(caseId: string): SongParityCaseReport {
   const tsNormalized = normalizeTsSong(tsSong, context)
   const result = compareNormalizedSongs(legacyNormalized, tsNormalized, contract, caseId)
 
-  const normalizedDir = normalizedDirFor(caseId)
-  const reportDir = reportDirFor(caseId)
-  const debugDir = debugDirFor(caseId)
+  const normalizedDir = normalizedDirFor(caseDir)
+  const reportDir = reportDirFor(caseDir)
+  const debugDir = debugDirFor(caseDir)
   ensureDir(normalizedDir)
   ensureDir(reportDir)
   ensureDir(debugDir)

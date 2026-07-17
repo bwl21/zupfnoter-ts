@@ -4,19 +4,13 @@
  *
  * Tests the full ABC → Song transformation for the minimal fixtures.
  */
-import { readFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
 import type { Goto, PlayableEntity, Song } from '@zupfnoter/types'
 import type { AbcModel, AbcSymbol } from '../../AbcModel.js'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { defaultTestConfig } from '../defaultConfig.js'
-import { fixtureConfigFromAbc, readFixtureAbc } from '../fixtureLoader.js'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const REPO_ROOT = resolve(__dirname, '../../../../..')
+import { fixtureConfigFromAbc, loadSongFixture, readFixtureAbc } from '../fixtureLoader.js'
 
 function transform(abcText: string) {
   const parser = new AbcParser()
@@ -256,8 +250,7 @@ function normalizeLegacySlurTupletParity(rawSong: unknown): SlurTupletParityEnti
 }
 
 function readLegacyRawSong(fixtureName: string): unknown {
-  const path = resolve(REPO_ROOT, 'fixtures/cases', fixtureName, 'song.legacy-raw.json')
-  return JSON.parse(readFileSync(path, 'utf-8')) as unknown
+  return loadSongFixture(fixtureName)
 }
 
 // ---------------------------------------------------------------------------

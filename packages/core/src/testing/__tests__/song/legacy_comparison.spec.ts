@@ -5,7 +5,7 @@
  * Each test:
  *   1. Loads an ABC fixture via the central fixture loader
  *   2. Runs the real AbcParser + AbcToSong pipeline with fixture config
- *   3. Compares the result against fixtures/cases/<name>/song.legacy-raw.json
+ *   3. Compares the result against fixtures/cases/<area>/<name>/song.legacy-raw.json
  *      (the raw `@music_model.to_json` dump from the legacy CLI) using
  *      semantic matching after `normalizeRawSongFixture` rewrites the raw
  *      shape into the SongFixture shape consumed by `matchSong`.

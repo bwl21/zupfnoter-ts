@@ -46,8 +46,12 @@ __screenshots__/
 *.timestamp-*-*.mjs
 
 # Generated fixture output (dev helper, not reference data)
-fixtures/cases/*/_ts_output/
-fixtures/cases/*/_parity/
+fixtures/cases/**/_ts_output/
+fixtures/cases/**/_parity/
+fixtures/cases/protected/
+# Legacy-PDFs bleiben lokale Testartefakte. Nur die freigegebene Referenz wird versioniert.
+fixtures/cases/**/output.extract-*_a3.pdf
+!fixtures/cases/public/3015_reference_sheet/output.extract-0_a3.pdf
 /docs/phase-5/000_raw/
 fixtures/openImplementations.js
 fixtures/openImplementations.d.ts

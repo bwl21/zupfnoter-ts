@@ -86,9 +86,9 @@ Die Testabdeckung ist bereits beachtlich:
 
 Fixtures sind pro Testfall organisiert:
 
-- `fixtures/cases/<name>/input.abc`
-- `fixtures/cases/<name>/song.json`
-- `fixtures/cases/<name>/sheet.json`
+- `fixtures/cases/<bereich>/<name>/input.abc`
+- `fixtures/cases/<bereich>/<name>/song.json`
+- `fixtures/cases/<bereich>/<name>/sheet.json`
 
 Die Tests scannen diese Verzeichnisse automatisch. Ein Testfall wird für Song-Tests
 aktiv, sobald `song.json` existiert, und für Sheet-Tests, sobald `sheet.json`

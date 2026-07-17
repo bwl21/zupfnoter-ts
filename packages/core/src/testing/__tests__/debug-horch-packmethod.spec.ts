@@ -1,31 +1,18 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'fs'
-import { resolve } from 'path'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { computeBeatCompression } from '../../BeatPacker.js'
 import { buildConfstack } from '../../buildConfstack.js'
-import { fixtureConfigFromAbc } from '../../testing/fixtureLoader.js'
+import { fixtureConfigFromAbc, hasFixtureCase, readFixtureAbc } from '../../testing/fixtureLoader.js'
 
 const CASE = '246_Horch-was-kommt-von-draussen-rein'
-const CASE_DIR = resolve(__dirname, '../../../../../fixtures/cases', CASE)
 
-describe('BeatPacker per-beat diagnostic', () => {
+describe.skipIf(!hasFixtureCase(CASE))('BeatPacker per-beat diagnostic', () => {
   it('dumps all intermediate values per beat', () => {
-    const abc = readFileSync(resolve(CASE_DIR, 'input.abc'), 'utf-8')
+    const abc = readFixtureAbc(CASE)
     const config = fixtureConfigFromAbc(abc)
     const model = new AbcParser().parse(abc)
     const song = new AbcToSong().transform(model, config)
-
-    // Find Song fixture for legacy comparison
-    let legacySong: Record<string, unknown> | null = null
-    try {
-      legacySong = JSON.parse(
-        readFileSync(resolve(CASE_DIR, 'fixture.song.json'), 'utf-8'),
-      )
-    } catch {
-      // no legacy song fixture
-    }
 
     // Test with different layout line sets: [1, 2] (1-based, as from config)
     // and [0, 1] (0-based, raw indices, for comparison)

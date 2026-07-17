@@ -740,7 +740,7 @@ onBeforeUnmount(() => {
           <p class="viewsvg-kicker">test:viewsvg</p>
           <h1>Legacy gegen TS</h1>
         </div>
-        <p class="viewsvg-subtitle">Direkter Vergleich der vorhandenen SVG-Fixtures aus `fixtures/cases`.</p>
+        <p class="viewsvg-subtitle">Direkter Vergleich der vorhandenen SVG-Fixtures aus `fixtures/cases/public` und dem lokalen Bereich `protected`.</p>
       </header>
 
       <section class="viewsvg-panel viewsvg-panel--prompt" :class="{ 'is-active': selectedElement !== null }">

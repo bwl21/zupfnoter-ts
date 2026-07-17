@@ -27,7 +27,7 @@ import {
   resolvePdfExportVariants,
   type WorkbenchRenderResult,
 } from './rendering/renderPipeline'
-import { extractSongConfig, extractSongFilebase, replaceSongDocumentAbc, splitSongDocument } from '@zupfnoter/core'
+import { extractSongConfig, extractSongFilebase, pdfOutputFilename, replaceSongDocumentAbc, splitSongDocument } from '@zupfnoter/core'
 import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
 import WorkbenchToastStack from './toasts/WorkbenchToastStack.vue'
@@ -1084,12 +1084,12 @@ registerStorageCommands(commandStack, storageState, {
     for (const extract of extracts) {
       const suffix = extract.filenamepart
       if (saveFormat.value.includes('A3')) {
-        const name = `${filebase}_${suffix}_a3.pdf`
+        const name = pdfOutputFilename(filebase, suffix, 'A3')
         await adapter.save(path, name, await renderPdfExport(content, extract.extractNr, 'A3'))
         names.push(name)
       }
       if (saveFormat.value.includes('A4')) {
-        const name = `${filebase}_${suffix}_a4.pdf`
+        const name = pdfOutputFilename(filebase, suffix, 'A4')
         await adapter.save(path, name, await renderPdfExport(content, extract.extractNr, 'A4'))
         names.push(name)
       }

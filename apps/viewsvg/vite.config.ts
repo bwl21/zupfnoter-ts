@@ -16,7 +16,15 @@ interface ViewSvgCaseSummary {
 }
 
 const repoRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)))
-const fixturesCasesRoot = resolve(repoRoot, 'fixtures/cases')
+const fixtureCaseRoots = [
+  resolve(repoRoot, 'fixtures/cases/public'),
+  resolve(repoRoot, 'fixtures/cases/protected'),
+]
+
+interface ViewSvgCaseDirectory {
+  id: string
+  dir: string
+}
 
 function listExtractNumbers(dir: string, prefix: string): number[] {
   if (!existsSync(dir)) return []
@@ -31,15 +39,27 @@ function listExtractNumbers(dir: string, prefix: string): number[] {
     .sort((left, right) => left - right)
 }
 
+function scanCaseDirectories(): ViewSvgCaseDirectory[] {
+  const casesById = new Map<string, ViewSvgCaseDirectory>()
+
+  for (const root of fixtureCaseRoots) {
+    if (!existsSync(root)) continue
+
+    for (const id of readdirSync(root)) {
+      const dir = resolve(root, id)
+      if (!statSync(dir).isDirectory() || !existsSync(resolve(dir, 'input.abc'))) continue
+      if (casesById.has(id)) {
+        throw new Error(`Fixture case "${id}" exists in both public and protected fixture roots.`)
+      }
+      casesById.set(id, { id, dir })
+    }
+  }
+
+  return [...casesById.values()].sort((left, right) => left.id.localeCompare(right.id))
+}
+
 function scanCases(): ViewSvgCaseSummary[] {
-  if (!existsSync(fixturesCasesRoot)) return []
-  return readdirSync(fixturesCasesRoot)
-    .map((id) => {
-      const dir = resolve(fixturesCasesRoot, id)
-      return { id, dir }
-    })
-    .filter(({ dir }) => statSync(dir).isDirectory())
-    .filter(({ dir }) => existsSync(resolve(dir, 'input.abc')))
+  return scanCaseDirectories()
     .map(({ id, dir }) => {
       const legacyExtracts = listExtractNumbers(dir, 'output')
       const tsDir = resolve(dir, '_ts_output')
@@ -52,11 +72,13 @@ function scanCases(): ViewSvgCaseSummary[] {
         tsSvgCount: tsExtracts.length,
       }
     })
-    .sort((left, right) => left.id.localeCompare(right.id))
 }
 
 function readSvg(caseId: string, source: ViewSvgSource, extractNr: number): string {
-  const baseDir = resolve(fixturesCasesRoot, caseId)
+  const fixtureCase = scanCaseDirectories().find((candidate) => candidate.id === caseId)
+  if (fixtureCase === undefined) throw new Error(`Unknown fixture case: ${caseId}`)
+
+  const baseDir = fixtureCase.dir
   const targetDir = source === 'legacy' ? baseDir : resolve(baseDir, '_ts_output')
   const preferredNames = extractNr === 0
     ? ['output.svg', 'output.extract-0.svg']

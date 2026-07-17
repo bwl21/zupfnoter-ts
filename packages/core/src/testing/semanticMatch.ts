@@ -14,7 +14,7 @@ const SIZE_TOLERANCE = 0.05     // size
 const CREATED_FOOTER_PATTERN = /^(.*) - created(?: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})? by Zupfnoter(?: .*)?$/
 
 // ---------------------------------------------------------------------------
-// Fixture types (shape of the JSON files in fixtures/cases/<name>/)
+// Fixture types (shape of the JSON files in fixtures/cases/<area>/<name>/)
 // ---------------------------------------------------------------------------
 
 export interface EntityFixture {

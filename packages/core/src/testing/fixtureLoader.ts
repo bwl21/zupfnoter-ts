@@ -22,7 +22,10 @@ import { defaultTestConfig } from './defaultConfig.js'
 // Resolve the repo root: packages/core/src/testing/ → ../../../../
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '../../../..')
-const FIXTURE_CASES_ROOT = resolve(REPO_ROOT, 'fixtures/cases')
+const FIXTURE_CASES_ROOTS = [
+  resolve(REPO_ROOT, 'fixtures/cases/public'),
+  resolve(REPO_ROOT, 'fixtures/cases/protected'),
+]
 
 export type FixtureStage = 'song' | 'sheet' | 'output_svg'
 
@@ -77,8 +80,26 @@ function safeLoadText(path: string): string | null {
   }
 }
 
-function fixtureCaseDir(name: string): string {
-  return resolve(FIXTURE_CASES_ROOT, name)
+function matchingFixtureCaseDirs(name: string): string[] {
+  return FIXTURE_CASES_ROOTS
+    .map((root) => resolve(root, name))
+    .filter((dir) => existsSync(dir) && statSync(dir).isDirectory())
+}
+
+export function hasFixtureCase(name: string): boolean {
+  return matchingFixtureCaseDirs(name).length > 0
+}
+
+export function fixtureCaseDir(name: string): string {
+  const matches = matchingFixtureCaseDirs(name)
+  const [match] = matches
+  if (matches.length === 1 && match !== undefined) return match
+
+  if (matches.length === 0) {
+    throw new Error(`Fixture case "${name}" was not found in fixtures/cases/public or fixtures/cases/protected.`)
+  }
+
+  throw new Error(`Fixture case "${name}" exists in both public and protected fixture roots.`)
 }
 
 function stripFixtureConfigBlock(abcText: string): string {
@@ -150,24 +171,30 @@ function toRepoRelativePath(path: string): string {
 }
 
 export function scanFixtureCases(): FixtureCase[] {
-  if (!existsSync(FIXTURE_CASES_ROOT)) return []
+  const casesById = new Map<string, FixtureCase>()
 
-  return readdirSync(FIXTURE_CASES_ROOT)
-    .map((name) => {
-      const dir = fixtureCaseDir(name)
-      return { name, dir }
-    })
-    .filter(({ dir }) => statSync(dir).isDirectory())
-    .filter(({ dir }) => existsSync(resolve(dir, 'input.abc')))
-    .map(({ name, dir }) => ({
-      name,
-      id: name,
-      dir,
-      hasSongFixture: existsSync(resolve(dir, 'song.legacy-raw.json')),
-      hasSheetFixture: listSheetExtractFiles(dir).length > 0,
-      hasOutputSvgFixture: listOutputSvgFiles(dir).length > 0,
-    }))
-    .sort((a, b) => a.id.localeCompare(b.id))
+  for (const root of FIXTURE_CASES_ROOTS) {
+    if (!existsSync(root)) continue
+
+    for (const name of readdirSync(root)) {
+      const dir = resolve(root, name)
+      if (!statSync(dir).isDirectory() || !existsSync(resolve(dir, 'input.abc'))) continue
+      if (casesById.has(name)) {
+        throw new Error(`Fixture case "${name}" exists in both public and protected fixture roots.`)
+      }
+
+      casesById.set(name, {
+        name,
+        id: name,
+        dir,
+        hasSongFixture: existsSync(resolve(dir, 'song.legacy-raw.json')),
+        hasSheetFixture: listSheetExtractFiles(dir).length > 0,
+        hasOutputSvgFixture: listOutputSvgFiles(dir).length > 0,
+      })
+    }
+  }
+
+  return [...casesById.values()].sort((a, b) => a.id.localeCompare(b.id))
 }
 
 export function fixtureAbcPath(name: string): string {

@@ -27,7 +27,9 @@ ABC-Datei + Config
 [Stufe 4: SvgEngine] → fixture: output.extract-<nr>.svg
 ```
 
-Alle Fixtures liegen unter `fixtures/` und sind **versioniert**.
+Alle Fixtures liegen unter `fixtures/cases/`: `public/` ist versioniert,
+`protected/` bleibt als lokaler, per `.gitignore` ausgeschlossener Bereich auf dem
+Entwicklungsrechner.
 
 ---
 
@@ -36,7 +38,8 @@ Alle Fixtures liegen unter `fixtures/` und sind **versioniert**.
 ```
 fixtures/
 └── cases/
-    ├── <test-case>/
+    ├── public/
+    │   └── <test-case>/
     │   ├── input.abc          # ABC-Notation + optionaler %%%%zupfnoter.config Block
     │   ├── song.legacy-raw.json # Stufe 2: Song-Modell (kanonische Song-Referenz)
     │   ├── sheet.extract-0.json
@@ -49,14 +52,15 @@ fixtures/
     │       ├── song.json
     │       ├── sheet.extract-0.json
     │       └── output.extract-0.svg
-    └── ...
+    └── protected/
+        └── <test-case>/  # gleiche Struktur, nicht versioniert
 ```
 
 **Konvention:**
-- Input: `fixtures/cases/<test-case>/input.abc`
+- Input: `fixtures/cases/<bereich>/<test-case>/input.abc`
 - Legacy Reference: `song.legacy-raw.json`, `sheet.extract-<nr>.json`, `output.extract-<nr>.svg`
 - TypeScript Output: `_ts_output/song.json`, `_ts_output/sheet.extract-<nr>.json`, `_ts_output/output.extract-<nr>.svg`
-- Discovery: Tests scannen `fixtures/cases/*/input.abc`.
+- Discovery: Tests scannen `fixtures/cases/public/*/input.abc` und lokal zusätzlich `fixtures/cases/protected/*/input.abc`.
 - Stage-Aktivierung: Song-Tests laufen für Testfälle mit `song.legacy-raw.json`; Sheet-Tests für Testfälle mit mindestens einer `sheet.extract-<nr>.json`; SVG-Tests für Testfälle mit mindestens einer `output.extract-<nr>.svg`.
 - Config: inline im ABC via `%%%%zupfnoter.config`; fehlt der Block, gelten `initConf()`-Defaults.
 - Keine separate `input.config.json`: Fixture-Tests verwenden genau dieselbe Config-Quelle wie die Pipeline.
@@ -68,7 +72,7 @@ fixtures/
 
 ### 1. Überblick über den Testablauf
 
-Die Vergleichstests werden generisch aus `fixtures/cases/*/input.abc` erzeugt.
+Die Vergleichstests werden generisch aus den ABC-Dateien in beiden Fixture-Wurzeln erzeugt.
 Sie enthalten keine fallweise handgeschriebenen Assertions. Stattdessen entscheidet
 der Fixture-Bestand, welche Song-, Sheet- und SVG-Vergleiche ausgeführt werden.
 
@@ -205,7 +209,7 @@ flowchart LR
 Der Legacy-CLI besitzt einen expliziten Exportmodus. Er liest ABC-Dateien, führt die
 produktive Legacy-Pipeline aus und schreibt pro Testfall `input.abc`,
 `song.legacy-raw.json`, `sheet.extract-<nr>.json` und
-`output.extract-<nr>.svg` in `fixtures/cases/<test-case>/`.
+`output.extract-<nr>.svg` in `fixtures/cases/<bereich>/<test-case>/`.
 
 Der Export ist ein fachlicher Vertrag: Alles, was eine nachfolgende Stufe liest
 oder für Editor-, Kontextmenü- oder Render-Verhalten nutzt, muss im Export
@@ -231,7 +235,12 @@ Legacy-CLI pro Datei einzeln in dieser Form auf:
 node zupfnoter-cli.min.js --export-fixtures <input.abc> <target-dir>
 ```
 
-Ohne Glob verwendet der Wrapper standardmäßig `fixtures/cases/*/input.abc`.
+Zusätzlich speichert der Wrapper für jeden in `produce` konfigurierten Auszug
+die Legacy-A3-Ausgabe als `output.extract-<nr>_a3.pdf` beim jeweiligen Fixture.
+Der PDF-Vergleich verwendet diese Datei direkt; er erzeugt die Legacy-Referenz
+nicht erneut.
+
+Ohne Glob verwendet der Wrapper standardmäßig die Fälle aus `public/` und dem lokalen Bereich `protected/`.
 Der Standardpfad zur Legacy-CLI ist im Wrapper relativ zum Repository hinterlegt.
 Details und Overrides stehen in `fixtures/README.md`.
 
@@ -241,7 +250,7 @@ Nach dem Export:
 
 ```bash
 cd zupfnoter-ts
-git add fixtures/*/
+git add fixtures/cases/public/
 git commit -m "docs(fixtures): export legacy references for Phase 2-4 tests"
 ```
 
@@ -257,7 +266,7 @@ pnpm test
 
 `pnpm test` ist der normale Entwicklungsmodus. Der Lauf berechnet die TS-Ausgabe
 frisch, führt die Vergleichstests aus und schreibt zusätzlich TS-Dumps nach
-`fixtures/cases/<name>/_ts_output/`.
+`fixtures/cases/<bereich>/<name>/_ts_output/`.
 
 Für gezielte Dump-Läufe gibt es zusätzlich:
 
@@ -265,7 +274,12 @@ Für gezielte Dump-Läufe gibt es zusätzlich:
 pnpm test:dump:song
 pnpm test:dump:sheet
 pnpm test:dump:svg
+pnpm test:dump:pdf
 ```
+
+Der PDF-Dump schreibt pro konfiguriertem `produce`-Auszug ein A3-PDF als
+`_ts_output/output.extract-<nr>_a3.pdf`. Diese Dateien dienen der
+Sichtprüfung und bleiben wie alle `_ts_output`-Artefakte unversioniert.
 
 ### 2. Nur den Gap-Report erzeugen
 
@@ -538,7 +552,7 @@ Deshalb gilt:
 
 Begründung:
 
-- Die aktuellen Vergleichstests werden generisch aus `fixtures/cases/*` erzeugt.
+- Die aktuellen Vergleichstests werden generisch aus den Fällen unter `fixtures/cases/public/` und lokal zusätzlich `fixtures/cases/protected/` erzeugt.
 - Es gibt bewusst **eine kanonische Referenz pro Fall**.
 - Sonderpfade wie `sheet.corrected.json` würden die Testlogik unnötig komplizieren und mehrere Wahrheiten einführen.
 
@@ -571,14 +585,20 @@ pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy
 
 ### PDF-Parität ausführen
 
-Der fokussierte PDF-Lauf nutzt die lokale Legacy-CLI als Referenz, rendert beide
-PDFs seitenweise mit Poppler und schreibt die Bilddifferenz nach
-`/private/tmp/zupfnoter-pdf-artifacts/`. Er ist bewusst kein Standard-Unit-Test,
-weil die Legacy-CLI nicht Teil der CI-Laufzeit ist.
+Der fokussierte PDF-Lauf verwendet die gespeicherte Legacy-Referenz
+`output.extract-0_a3.pdf`, rendert sie zusammen mit dem neu erzeugten TS-PDF
+seitenweise mit Poppler und schreibt die Bilddifferenz nach
+`/private/tmp/zupfnoter-pdf-artifacts/`. Damit braucht der Vergleich keine
+lokale Legacy-Codebasis.
+
+Der Test akzeptiert eine kleine, explizit begrenzte Pixelabweichung. Sie entsteht
+durch Standardfont- und Dash-Rasterung zwischen Legacy-jsPDF 1.5.2 und dem
+aktuellen jsPDF 4.x; sie ist kein Ersatz für den exakten Sheet-Vergleich, der die
+fachliche Zeichengeometrie absichert.
 
 ```bash
 pnpm --filter @zupfnoter/core run test:pdf-parity
 ```
 
-Der Legacy-CLI exportiert aktuell nur A3-PDFs; A4 bleibt daher bis zu einem
-entsprechenden Legacy-Referenzexport außerhalb dieses visuellen Vergleichs.
+Bis eine A4-Referenzdatei erfasst ist, bleibt A4 außerhalb dieses visuellen
+Vergleichs.

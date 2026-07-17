@@ -19,6 +19,8 @@ interface SvgPathCommand {
   values: number[]
 }
 
+type PdfLine = number[]
+
 /**
  * Direkte jsPDF-Ausgabe aus dem Sheet.
  *
@@ -31,14 +33,14 @@ export class PdfEngine {
   private yOffset = 0
 
   draw(sheet: Sheet): Blob {
-    this.pdf = new jsPDF('l', 'mm', 'a3')
+    this.pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a3', precision: 2 })
     ;[this.xOffset, this.yOffset] = sheet.printerConfig?.a3_offset ?? [0, 0]
     this.drawSheet(sheet)
     return this.document().output('blob')
   }
 
   drawInSegments(sheet: Sheet, xSpacing: number): Blob {
-    this.pdf = new jsPDF('p', 'mm', 'a4')
+    this.pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', precision: 2 })
     const [xOffset, yOffset] = sheet.printerConfig?.a4_offset ?? [0, 0]
     const pages = sheet.printerConfig?.a4_pages ?? [0, 1, 2]
 
@@ -89,7 +91,7 @@ export class PdfEngine {
 
     if (element.fill === 'empty') {
       pdf.setLineWidth(element.lineWidth)
-      this.drawEllipseShape(cx, cy, rx - element.lineWidth / 2, ry - element.lineWidth / 2, element.rect, 'S')
+      this.drawEllipseShape(cx, cy, rx - element.lineWidth / 2, ry - element.lineWidth / 2, element.rect, 'FD')
     }
     if (element.dotted) this.drawDot(element.center, element.size, element.lineWidth, color)
     if (element.hasbarover) {
@@ -123,9 +125,12 @@ export class PdfEngine {
   private drawFlowLine(element: FlowLine): void {
     const pdf = this.document()
     this.setDrawColor(this.color(element.color))
-    if (element.style === 'dashed') pdf.setLineDashPattern([3 / 2.84], 0)
-    if (element.style === 'dotted') pdf.setLineDashPattern([1.5 / 2.84], 0)
-    pdf.line(this.x(element.from[0]), this.y(element.from[1]), this.x(element.to[0]), this.y(element.to[1]))
+    if (element.style === 'dashed') pdf.setLineDashPattern([3 / 2.84, 3 / 2.84], 3 / 2.84)
+    if (element.style === 'dotted') pdf.setLineDashPattern([1.5 / 2.84, 1.5 / 2.84], 1.5 / 2.84)
+    pdf.lines([[
+      element.to[0] - element.from[0],
+      element.to[1] - element.from[1],
+    ]], this.x(element.from[0]), this.y(element.from[1]))
     pdf.setLineDashPattern([], 0)
   }
 
@@ -142,7 +147,8 @@ export class PdfEngine {
     this.drawEllipseShape(cx, cy, element.size[0], element.size[1], true, 'FD')
     this.setDrawColor(color)
     this.setFillColor(color)
-    this.drawSvgPath(glyph.d, cx, cy, scale, scale, true)
+    pdf.setLineWidth(0.0001)
+    this.drawGlyphPath(glyph.d, [cx, cy], [scale, scale])
     if (element.dotted) this.drawDot(element.center, element.size, element.lineWidth, color)
   }
 
@@ -154,7 +160,7 @@ export class PdfEngine {
     this.setDrawColor(color)
     this.setFillColor(element.fill ? color : this.color('white'))
     pdf.setLineCap('round')
-    this.drawSvgPath(pathData, 0, 0, 1, 1, element.fill)
+    this.drawPathData(pathData, element.fill)
   }
 
   private drawAnnotation(element: Annotation, sheet: Sheet): void {
@@ -174,64 +180,79 @@ export class PdfEngine {
   }
 
   private drawImage(element: Image): void {
-    this.document().addImage(element.url, this.x(element.position[0]), this.y(element.position[1] - element.height), element.height, element.height)
+    const format = element.url.startsWith('data:image/jpeg') ? 'jpeg'
+      : element.url.startsWith('data:image/png') ? 'png'
+        : undefined
+    if (format === undefined) throw new Error('PdfEngine: unsupported image format')
+    this.document().addImage(
+      element.url,
+      format,
+      this.x(element.position[0]),
+      this.y(element.position[1] - element.height),
+      0,
+      element.height,
+    )
   }
 
-  private drawSvgPath(pathData: string, originX: number, originY: number, scaleX: number, scaleY: number, filled: boolean): void {
-    const pdf = this.document()
-    let currentX = 0
-    let currentY = 0
-    let startX = 0
-    let startY = 0
+  private drawGlyphPath(pathData: string, center: [number, number], scale: [number, number]): void {
+    let lines: PdfLine[] = []
+    let start: [number, number] | undefined
     for (const command of this.parseSvgPath(pathData)) {
-      const relative = command.command === command.command.toLowerCase()
-      const values = command.values
-      if (command.command.toLowerCase() === 'z') {
-        pdf.lineTo(this.x(originX + startX * scaleX), this.y(originY + startY * scaleY))
-        currentX = startX
-        currentY = startY
-        continue
-      }
-      for (let index = 0; index < values.length;) {
-        if (command.command.toLowerCase() === 'm' || command.command.toLowerCase() === 'l') {
-          const nextX = values[index]
-          const nextY = values[index + 1]
-          if (nextX === undefined || nextY === undefined) break
-          const x = relative ? currentX + nextX : nextX
-          const y = relative ? currentY + nextY : nextY
-          if (command.command.toLowerCase() === 'm' && index === 0) {
-            pdf.moveTo(this.x(originX + x * scaleX), this.y(originY + y * scaleY))
-            startX = x
-            startY = y
-          } else {
-            pdf.lineTo(this.x(originX + x * scaleX), this.y(originY + y * scaleY))
-          }
-          currentX = x
-          currentY = y
-          index += 2
-          continue
-        }
-        const cp1x = values[index]
-        const cp1y = values[index + 1]
-        const cp2x = values[index + 2]
-        const cp2y = values[index + 3]
-        const nextX = values[index + 4]
-        const nextY = values[index + 5]
-        if (cp1x === undefined || cp1y === undefined || cp2x === undefined || cp2y === undefined || nextX === undefined || nextY === undefined) break
-        const x1 = relative ? currentX + cp1x : cp1x
-        const y1 = relative ? currentY + cp1y : cp1y
-        const x2 = relative ? currentX + cp2x : cp2x
-        const y2 = relative ? currentY + cp2y : cp2y
-        const x = relative ? currentX + nextX : nextX
-        const y = relative ? currentY + nextY : nextY
-        pdf.curveTo(this.x(originX + x1 * scaleX), this.y(originY + y1 * scaleY), this.x(originX + x2 * scaleX), this.y(originY + y2 * scaleY), this.x(originX + x * scaleX), this.y(originY + y * scaleY))
-        currentX = x
-        currentY = y
-        index += 6
+      if (command.command === 'M') {
+        this.drawLines(lines, start, scale, 'FD', false)
+        const x = command.values[0]
+        const y = command.values[1]
+        if (x !== undefined && y !== undefined) start = [center[0] + x * scale[0], center[1] + y * scale[1]]
+        lines = []
+      } else if (command.command === 'l' || command.command === 'm' || command.command === 'c') {
+        lines.push(command.values)
+      } else if (command.command === 'z') {
+        this.drawLines(lines, start, scale, 'FD', true)
+        lines = []
       }
     }
-    if (filled) pdf.fillStroke()
-    else pdf.stroke()
+  }
+
+  private drawPathData(pathData: string, filled: boolean): void {
+    const style = filled ? 'FD' : 'S'
+    let lines: PdfLine[] = []
+    let start: [number, number] | undefined
+    for (const command of this.parseSvgPath(pathData)) {
+      if (command.command === 'M') {
+        this.drawLines(lines, start, [1, 1], style, false)
+        const x = command.values[0]
+        const y = command.values[1]
+        if (x !== undefined && y !== undefined) start = [x, y]
+        lines = []
+      } else if (command.command === 'L') {
+        const x = command.values[0]
+        const y = command.values[1]
+        if (x === undefined || y === undefined || start === undefined) continue
+        const newStart = this.pathEnd(start, lines)
+        this.drawLines(lines, start, [1, 1], style, false)
+        start = newStart
+        lines = [[x - newStart[0], y - newStart[1]]]
+      } else if (command.command === 'l' || command.command === 'c') {
+        lines.push(command.values)
+      } else if (command.command === 'z') {
+        this.drawLines(lines, start, [1, 1], 'FD', true)
+        lines = []
+      }
+    }
+    this.drawLines(lines, start, [1, 1], style, false)
+  }
+
+  private pathEnd(start: [number, number], lines: PdfLine[]): [number, number] {
+    return lines.reduce<[number, number]>((end, line) => {
+      const x = line[line.length - 2]
+      const y = line[line.length - 1]
+      return x === undefined || y === undefined ? end : [end[0] + x, end[1] + y]
+    }, start)
+  }
+
+  private drawLines(lines: PdfLine[], start: [number, number] | undefined, scale: [number, number], style: 'FD' | 'S', close: boolean): void {
+    if (start === undefined || lines.length === 0) return
+    this.document().lines(lines, this.x(start[0]), this.y(start[1]), scale, style, close)
   }
 
   private parseSvgPath(pathData: string): SvgPathCommand[] {

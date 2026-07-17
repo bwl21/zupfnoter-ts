@@ -20,17 +20,25 @@ und den Gap-Workflow siehe
 ```
 fixtures/
 └── cases/
-    ├── single_note/
-    │   ├── input.abc       # ABC-Notation, optional mit %%%%zupfnoter.config
-    │   ├── song.legacy-raw.json # Stufe-2-Referenz: Rohdump aus Legacy-CLI (@music_model.to_json)
-    │   ├── sheet.extract-0.json # Stufe-3-Referenz für Extrakt 0
-    │   ├── output.extract-0.svg # Stufe-4-Referenz für Extrakt 0
-    │   └── _ts_output/     # generierte TS-Ausgabe, nicht Referenz
-    │   └── _parity/song/   # harte Song-Parity-Artefakte (normalisiert, Report, Debug)
-    └── ...
+    ├── public/
+    │   └── single_note/
+    │       ├── input.abc       # ABC-Notation, optional mit %%%%zupfnoter.config
+    │       ├── song.legacy-raw.json # Stufe-2-Referenz: Rohdump aus Legacy-CLI (@music_model.to_json)
+    │       ├── sheet.extract-0.json # Stufe-3-Referenz für Extrakt 0
+    │       ├── output.extract-0.svg # Stufe-4-Referenz für Extrakt 0
+    │       ├── _ts_output/     # generierte TS-Ausgabe, nicht Referenz
+    │       └── _parity/song/   # harte Song-Parity-Artefakte (normalisiert, Report, Debug)
+    └── protected/
+        └── <lokaler-test-case>/ # gleiche Struktur, nicht versioniert
 ```
 
-Die Tests scannen `fixtures/cases/*/input.abc` automatisch. Ein neuer Testfall wird
+`public/` enthält die zur Veröffentlichung freigegebenen Fälle und wird versioniert.
+`protected/` enthält lokale, urheberrechtlich geschützte Fälle und ist per `.gitignore`
+ausgeschlossen. Beide Bereiche werden lokal gleich behandelt. Ein Fallname darf nur in
+einem der beiden Bereiche vorkommen.
+
+Die Tests scannen `fixtures/cases/public/*/input.abc` und
+`fixtures/cases/protected/*/input.abc` automatisch. Ein neuer Testfall wird
 für Song-Vergleiche aufgenommen, sobald zusätzlich `song.legacy-raw.json` existiert; für
 Sheet-Vergleiche entsprechend mit mindestens einer `sheet.extract-<nr>.json`; für
 SVG-Vergleiche mit mindestens einer `output.extract-<nr>.svg`.
@@ -83,7 +91,8 @@ Standardmäßig verwendet der Wrapper den Legacy-CLI-Pfad
 `../200_zupfnoter/30_sources/SRC_Zupfnoter/src/zupfnoter-cli.js`
 relativ zum Repo-Root.
 
-Ohne Glob verwendet der Wrapper standardmäßig `fixtures/cases/*/input.abc`.
+Ohne Glob verwendet der Wrapper standardmäßig beide Bereiche:
+`fixtures/cases/public/*/input.abc` und `fixtures/cases/protected/*/input.abc`.
 Falls nötig kann der CLI-Pfad überschrieben werden, entweder per Environment oder
 als zweites Argument:
 
@@ -95,10 +104,13 @@ npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc"
 npm run test:loadsample -- "~/Dropbox/RuthVeehNoten/78*.abc" "/pfad/zu/zupfnoter-cli.min.js"
 ```
 
-Der Wrapper expandiert den Glob selbst und schreibt standardmäßig nach
-`fixtures/cases/`. Mit `ZUPFNOTER_FIXTURE_OUTDIR` kann das Ziel überschrieben werden.
+Der Wrapper expandiert den Glob selbst und schreibt standardmäßig zurück in die
+Wurzel der jeweiligen Eingabedatei (`public/` oder `protected/`). Mit
+`ZUPFNOTER_FIXTURE_OUTDIR` kann das Ziel überschrieben werden.
 Für jede aufgelöste ABC-Datei ruft er die Legacy-CLI einzeln auf als
 `node zupfnoter-cli.min.js --export-fixtures <input.abc> <target-dir>`.
+Zusätzlich erzeugt er für jeden in `produce` konfigurierten Auszug ein A3-PDF
+und legt es als `output.extract-<nr>_a3.pdf` im jeweiligen Fixture ab.
 
 ### 1. TS-Ausgabe als Referenz erzeugen (optional)
 
@@ -109,7 +121,7 @@ pnpm test
 ```
 
 `pnpm test` führt die normalen Workspace-Tests aus und schreibt dabei zusätzlich die
-TS-Dumps nach `fixtures/cases/<name>/_ts_output/`.
+TS-Dumps nach `fixtures/cases/<bereich>/<name>/_ts_output/`.
 
 Für gezielte Einzel-Dumps gibt es zusätzlich:
 
@@ -117,6 +129,7 @@ Für gezielte Einzel-Dumps gibt es zusätzlich:
 pnpm test:dump:song
 pnpm test:dump:sheet
 pnpm test:dump:svg
+pnpm test:dump:pdf
 ```
 
 Für harte Song-Parity-Vergleiche gibt es den dedizierten Runner:
@@ -127,7 +140,7 @@ pnpm parity:song --all
 ```
 
 Der Runner schreibt pro Case Artefakte nach
-`fixtures/cases/<name>/_parity/song/`:
+`fixtures/cases/<bereich>/<name>/_parity/song/`:
 
 - `normalized/legacy.normalized-song.json`
 - `normalized/ts.normalized-song.json`
@@ -149,27 +162,27 @@ Der Legacy-Exporter nimmt ABC-Dateien und erzeugt pro Datei ein Testfall-Verzeic
 cd ../200_zupfnoter/30_sources/SRC_Zupfnoter/src
 node --max_old_space_size=4096 zupfnoter-cli.js \
   --export-fixtures \
-  "/path/to/zupfnoter-ts/fixtures/cases/<test-case>/input.abc" \
-  /path/to/zupfnoter-ts/fixtures/cases
+  "/path/to/zupfnoter-ts/fixtures/cases/<bereich>/<test-case>/input.abc" \
+  /path/to/zupfnoter-ts/fixtures/cases/<bereich>
 ```
 
 Für jede Eingabedatei wird geschrieben:
 
 ```text
-fixtures/cases/<test-case>/input.abc
-fixtures/cases/<test-case>/song.legacy-raw.json
-fixtures/cases/<test-case>/sheet.extract-<nr>.json
-fixtures/cases/<test-case>/output.extract-<nr>.svg
+fixtures/cases/<bereich>/<test-case>/input.abc
+fixtures/cases/<bereich>/<test-case>/song.legacy-raw.json
+fixtures/cases/<bereich>/<test-case>/sheet.extract-<nr>.json
+fixtures/cases/<bereich>/<test-case>/output.extract-<nr>.svg
 ```
 
-Wenn die Eingabe `fixtures/cases/<name>/input.abc` heißt, verwendet der Exporter
+Wenn die Eingabe `fixtures/cases/<bereich>/<name>/input.abc` heißt, verwendet der Exporter
 `<name>` als Testfallnamen. Für andere ABC-Dateien wird der Dateiname ohne `.abc`
 als Testfallname verwendet.
 
 ### 3. Fixtures einchecken
 
 ```bash
-git add fixtures/cases/
+git add fixtures/cases/public/
 git commit -m "fixtures: populate legacy reference snapshots
 
 Reason: <Begründung der Änderung>"
@@ -213,15 +226,19 @@ nicht als Verifikation gegen das Legacy-System.
 ```bash
 # Song-Fixtures (Stufe 2):
 pnpm test:dump:song
-cp fixtures/cases/<name>/_ts_output/song.json fixtures/cases/<name>/song.legacy-raw.json
+cp fixtures/cases/<bereich>/<name>/_ts_output/song.json fixtures/cases/<bereich>/<name>/song.legacy-raw.json
 
 # Sheet-Fixtures (Stufe 3):
 pnpm test:dump:sheet
-cp fixtures/cases/<name>/_ts_output/sheet.extract-0.json fixtures/cases/<name>/sheet.extract-0.json
+cp fixtures/cases/<bereich>/<name>/_ts_output/sheet.extract-0.json fixtures/cases/<bereich>/<name>/sheet.extract-0.json
 
 # SVG-Fixtures (Stufe 4):
 pnpm test:dump:svg
-cp fixtures/cases/<name>/_ts_output/output.extract-0.svg fixtures/cases/<name>/output.extract-0.svg
+cp fixtures/cases/<bereich>/<name>/_ts_output/output.extract-0.svg fixtures/cases/<bereich>/<name>/output.extract-0.svg
+
+# A3-PDFs für alle konfigurierten `produce`-Auszüge (nur zur Sichtprüfung):
+pnpm test:dump:pdf
+# fixtures/cases/<bereich>/<name>/_ts_output/output.extract-<nr>_a3.pdf
 ```
 
 ## Fixture-Format

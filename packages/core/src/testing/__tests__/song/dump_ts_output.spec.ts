@@ -1,6 +1,6 @@
 /* oxlint-disable jest/expect-expect -- dev helper: tests write files, no assertions needed */
 /**
- * Dumps the TS pipeline output for all fixture cases to fixtures/cases/<name>/_ts_output/.
+ * Dumps the TS pipeline output for all fixture cases to fixtures/cases/<area>/<name>/_ts_output/.
  *
  * Development helper — not a regression test.
  * Run once to see what the TS pipeline currently produces:
@@ -8,9 +8,9 @@
  *   cd packages/core
  *   npx vitest run --reporter=verbose src/testing/__tests__/song/dump_ts_output.spec.ts
  *
- * Output: fixtures/cases/<name>/_ts_output/song.json
+ * Output: fixtures/cases/<area>/<name>/_ts_output/song.json
  * Compare with the legacy Ruby export to identify discrepancies before populating
- * the real fixtures in fixtures/cases/<name>/song.json.
+ * the real fixtures in fixtures/cases/<area>/<name>/song.json.
  */
 import { describe, it } from 'vitest'
 

@@ -13,7 +13,7 @@ import {
 import type { AbcParseError } from '@zupfnoter/core'
 import type { SheetObjectIndex, SongDiagnostic } from '@zupfnoter/types'
 import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
-import referenceSheetAbc from '../../../../../fixtures/cases/3015_reference_sheet/input.abc?raw'
+import referenceSheetAbc from '../../../../../fixtures/cases/public/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, type PlaybackStep } from '../playback'
 import { isUserVisibleVoice, resolveActiveVoiceIdsFromSheet, resolveUserVisibleVoiceIds } from '../songVoiceIdentity'

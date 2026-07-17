@@ -27,7 +27,7 @@ describe('fixtureLoader', () => {
   ]
 
   it('resolves fixture ABC paths by test case name', () => {
-    expect(fixtureAbcPath('single_note')).toBe('fixtures/cases/single_note/input.abc')
+    expect(fixtureAbcPath('single_note')).toBe('fixtures/cases/public/single_note/input.abc')
   })
 
   it('uses default config when ABC has no zupfnoter config block', () => {

@@ -49,4 +49,33 @@ describe('PdfEngine', () => {
     expect(text.startsWith('%PDF-')).toBe(true)
     expect((text.match(/\/Type \/Page\b/g) ?? [])).toHaveLength(2)
   })
+
+  it('keeps the Legacy fill-and-stroke sequence for empty ellipses', async () => {
+    const text = await pdfText(new PdfEngine().draw({
+      ...sheet,
+      children: [{
+        ...sheet.children[0],
+        fill: 'empty',
+      }],
+    }))
+
+    expect((text.match(/\nB\n/g) ?? [])).toHaveLength(2)
+  })
+
+  it('uses the Legacy dash sequence for dashed flow lines', async () => {
+    const text = await pdfText(new PdfEngine().draw({
+      ...sheet,
+      children: [{
+        type: 'FlowLine',
+        from: [10, 10],
+        to: [30, 10],
+        style: 'dashed',
+        color: 'black',
+        lineWidth: 0.2,
+        visible: true,
+      }],
+    }))
+
+    expect(text).toMatch(/\[(\d+\.\d+) \1\] \1 d/)
+  })
 })
