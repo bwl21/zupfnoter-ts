@@ -24,7 +24,7 @@
     "test:parity:config-schema": "pnpm exec tsx tools/compare-config-schema.ts --strict",
     "test:verify:legacy-config-schema": "pnpm exec tsx tools/compare-config-schema.ts --verify-legacy",
     "test:loadsample": "node ./tools/load-legacy-fixtures.mjs",
-    "test:viewsvg": "pnpm --filter @zupfnoter/viewsvg exec vite --host 127.0.0.1 --port 4173",
+    "test:view": "pnpm --filter @zupfnoter/viewsvg exec vite --host 127.0.0.1 --port 4173",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "playwright:install": "playwright install",

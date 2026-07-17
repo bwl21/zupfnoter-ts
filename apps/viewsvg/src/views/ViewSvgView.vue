@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
+import ComparisonLayout, { type ComparisonCase, type ComparisonViewMode } from '@/components/ComparisonLayout.vue'
 import {
   fetchViewSvg,
   fetchViewSvgCases,
@@ -9,7 +10,6 @@ import {
   type ViewSvgCaseDetails,
 } from '@/lib/viewSvgApi'
 
-type Mode = 'side-by-side' | 'swipe' | 'blink'
 type DeviationKind = 'position' | 'size' | 'style' | 'visibility' | 'order' | 'wrong-element' | 'other'
 
 interface LoadedSvg {
@@ -71,7 +71,7 @@ const deviationOptions: Array<{ kind: DeviationKind; label: string }> = [
 const cases = ref<ViewSvgCaseDetails[]>([])
 const selectedCaseId = ref('')
 const selectedExtract = ref(0)
-const selectedMode = ref<Mode>('blink')
+const selectedMode = ref<ComparisonViewMode>('blink')
 const swipePosition = ref(50)
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -86,8 +86,6 @@ const selectedHighlight = ref<SelectionHighlight | null>(null)
 const promptFeedback = ref<string | null>(null)
 const hoverInspectorEnabled = ref(true)
 const hoveredDomClassName = 'viewsvg-hovered-element'
-const sidebarWidth = ref(360)
-let removeSidebarResizeListeners: (() => void) | null = null
 const legacySurfaceRef = ref<HTMLElement | null>(null)
 const tsSurfaceRef = ref<HTMLElement | null>(null)
 const selectedDomElement = ref<Element | null>(null)
@@ -101,8 +99,6 @@ const availableExtracts = computed(() => {
   return [...new Set([...caseItem.legacyExtracts, ...caseItem.tsExtracts])].sort((a, b) => a - b)
 })
 
-const selectedExtractLabel = computed(() => `extract ${selectedExtract.value}`)
-
 const legacySvgMarkup = computed(() => decorateSvg(legacySvg.value?.svg ?? '', 'legacy'))
 const tsSvgMarkup = computed(() => decorateSvg(tsSvg.value?.svg ?? '', 'ts'))
 
@@ -112,7 +108,31 @@ const visibleBlinkLabel = computed(() => (blinkVisible.value === 'legacy' ? 'Leg
 const selectedElementCounterpart = computed(() => findCounterpartSelection(selectedElement.value?.semantic ?? null))
 const hoveredElementCounterpart = computed(() => findCounterpartSelection(hoveredElement.value?.semantic ?? null))
 const generatedPrompt = computed(() => buildPrompt(selectedElement.value, selectedElementCounterpart.value, selectedDeviation.value, promptNote.value))
-const sidebarStyle = computed(() => ({ '--viewsvg-sidebar-width': `${sidebarWidth.value}px` }))
+const sidebarCases = computed<ComparisonCase[]>(() => cases.value.map((caseItem) => ({
+  id: caseItem.id,
+  label: getCaseLabel(caseItem),
+})))
+const hoverTooltipContent = computed(() => {
+  if (hoverInspectorEnabled.value === false) return 'Hover-Inspector aktivieren'
+
+  const element = hoveredElement.value
+  if (element === null) return 'Über ein SVG-Element fahren, um Details zu sehen.'
+
+  const metadata = formatMetadataList(element)
+    .slice(0, 4)
+    .map((entry) => `${entry.label}: ${entry.value}`)
+  const counterpart = hoveredElementCounterpart.value
+  const counterpartText = counterpart === null
+    ? []
+    : [`Gegenstück: ${counterpart.source === 'legacy' ? 'Legacy' : 'TS'} · ${counterpart.role} · ${counterpart.type}`]
+
+  return [
+    `Quelle: ${element.source === 'legacy' ? 'Legacy' : 'TS'}`,
+    `Tag: ${element.tagName}`,
+    ...metadata,
+    ...counterpartText,
+  ].join('\n')
+})
 const selectedHighlightStyle = computed(() => {
   const highlight = selectedHighlight.value
   if (highlight === null) return {}
@@ -210,41 +230,6 @@ function toggleHoverInspector(): void {
   if (!hoverInspectorEnabled.value) {
     hoveredElement.value = null
   }
-}
-
-function startSidebarResize(event: PointerEvent): void {
-  if (removeSidebarResizeListeners !== null) return
-
-  event.preventDefault()
-  const startX = event.clientX
-  const startWidth = sidebarWidth.value
-  const minWidth = 280
-  const maxWidth = 720
-
-  const stopResize = (): void => {
-    if (removeSidebarResizeListeners === null) return
-    removeSidebarResizeListeners()
-  }
-
-  const handleMove = (moveEvent: PointerEvent): void => {
-    const nextWidth = startWidth + (moveEvent.clientX - startX)
-    sidebarWidth.value = Math.min(maxWidth, Math.max(minWidth, nextWidth))
-  }
-
-  const handleUp = (): void => {
-    stopResize()
-  }
-
-  removeSidebarResizeListeners = (): void => {
-    window.removeEventListener('pointermove', handleMove)
-    window.removeEventListener('pointerup', handleUp)
-    window.removeEventListener('pointercancel', handleUp)
-    removeSidebarResizeListeners = null
-  }
-
-  window.addEventListener('pointermove', handleMove)
-  window.addEventListener('pointerup', handleUp, { once: true })
-  window.addEventListener('pointercancel', handleUp, { once: true })
 }
 
 function toggleBlinkVisible(): void {
@@ -727,80 +712,45 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-  removeSidebarResizeListeners?.()
   window.removeEventListener('resize', refreshSelectionHighlight)
 })
 </script>
 
 <template>
-  <main class="viewsvg-app" :style="sidebarStyle">
-    <aside class="viewsvg-sidebar">
-      <header class="viewsvg-brand">
-        <div>
-          <p class="viewsvg-kicker">test:viewsvg</p>
-          <h1>Legacy gegen TS</h1>
+  <ComparisonLayout
+    format="SVG"
+    :case-items="sidebarCases"
+    :selected-case-id="selectedCaseId"
+    :selected-extract="selectedExtract"
+    :available-extracts="availableExtracts"
+    :selected-mode="selectedMode"
+    :swipe-position="swipePosition"
+    :has-legacy="hasLegacy"
+    :has-ts="hasTs"
+    :hover-available="true"
+    :hover-active="hoverInspectorEnabled"
+    :hover-tooltip="hoverTooltipContent"
+    :prompt-active="selectedElement !== null"
+    :loading="loading"
+    :error="error"
+    @select-case="selectCase"
+    @update:selected-extract="selectedExtract = $event"
+    @update:selected-mode="selectedMode = $event"
+    @update:swipe-position="swipePosition = $event"
+    @toggle-hover="toggleHoverInspector"
+  >
+    <template #prompt>
+
+      <p v-if="selectedElement === null" class="viewsvg-hint">SVG-Element übernehmen, um einen Korrektur-Prompt zu erzeugen.</p>
+
+      <template v-else>
+        <div class="viewsvg-prompt-meta">
+          <div><strong>Quelle:</strong> {{ selectedElement.source === 'legacy' ? 'Legacy' : 'TS' }}</div>
+          <div><strong>Tag:</strong> {{ selectedElement.tagName }}</div>
+          <div><strong>Knoten:</strong> {{ nodeCategoryLabel(selectedElement) }}</div>
+          <div><strong>ID:</strong> {{ selectedElement.elementId ?? '—' }}</div>
+          <div><strong>Klasse:</strong> {{ selectedElement.className ?? '—' }}</div>
         </div>
-        <p class="viewsvg-subtitle">Direkter Vergleich der vorhandenen SVG-Fixtures aus `fixtures/cases/public` und dem lokalen Bereich `protected`.</p>
-      </header>
-
-      <section class="viewsvg-panel viewsvg-panel--prompt" :class="{ 'is-active': selectedElement !== null }">
-        <div class="viewsvg-panel__header">
-          <h2>Prompt</h2>
-          <button type="button" class="viewsvg-panel__toggle" @click="toggleHoverInspector">
-            {{ hoverInspectorEnabled ? 'Hover an' : 'Hover aus' }}
-          </button>
-        </div>
-
-        <section class="viewsvg-hover-inspector" :class="{ 'is-enabled': hoverInspectorEnabled }">
-          <div class="viewsvg-panel__header viewsvg-panel__header--sub">
-            <h3>Hover</h3>
-          </div>
-
-          <p v-if="hoverInspectorEnabled === false" class="viewsvg-hint">Hover-Inspector ist ausgeschaltet.</p>
-          <p v-else-if="hoveredElement === null" class="viewsvg-hint">Über ein SVG-Element fahren, um seine Attribute zu sehen.</p>
-
-          <template v-else>
-            <div class="viewsvg-prompt-meta">
-              <div><strong>Quelle:</strong> {{ hoveredElement.source === 'legacy' ? 'Legacy' : 'TS' }}</div>
-              <div><strong>Tag:</strong> {{ hoveredElement.tagName }}</div>
-              <div><strong>Knoten:</strong> {{ nodeCategoryLabel(hoveredElement) }}</div>
-              <div><strong>ID:</strong> {{ hoveredElement.elementId ?? '—' }}</div>
-              <div><strong>Klasse:</strong> {{ hoveredElement.className ?? '—' }}</div>
-            </div>
-
-            <div v-if="hoveredElement.semantic !== null" class="viewsvg-prompt-meta">
-              <div><strong>Role:</strong> {{ hoveredElement.semantic.role }}</div>
-              <div><strong>Typ:</strong> {{ hoveredElement.semantic.type }}</div>
-              <div><strong>Anchor:</strong> {{ hoveredElement.semantic.anchorKey }}</div>
-            </div>
-
-            <div class="viewsvg-hover-list">
-              <div
-                v-for="entry in formatMetadataList(hoveredElement)"
-                :key="`${entry.label}-${entry.value}`"
-                class="viewsvg-hover-item"
-              >
-                <span class="viewsvg-hover-item__label">{{ entry.label }}</span>
-                <span class="viewsvg-hover-item__value">{{ entry.value }}</span>
-              </div>
-            </div>
-
-            <p v-if="hoveredElementCounterpart !== null" class="viewsvg-hint">
-              Gegenstück: {{ hoveredElementCounterpart.source === 'legacy' ? 'Legacy' : 'TS' }} · {{ hoveredElementCounterpart.role }} · {{ hoveredElementCounterpart.type }}
-            </p>
-          </template>
-        </section>
-
-        <p v-if="selectedElement === null" class="viewsvg-hint">SVG-Element übernehmen, um einen Korrektur-Prompt zu erzeugen.</p>
-
-        <template v-else>
-          <div class="viewsvg-prompt-meta">
-            <div><strong>Quelle:</strong> {{ selectedElement.source === 'legacy' ? 'Legacy' : 'TS' }}</div>
-            <div><strong>Tag:</strong> {{ selectedElement.tagName }}</div>
-            <div><strong>Knoten:</strong> {{ nodeCategoryLabel(selectedElement) }}</div>
-            <div><strong>ID:</strong> {{ selectedElement.elementId ?? '—' }}</div>
-            <div><strong>Klasse:</strong> {{ selectedElement.className ?? '—' }}</div>
-          </div>
 
           <div v-if="selectedElement.semantic !== null" class="viewsvg-prompt-meta">
             <div><strong>Role:</strong> {{ selectedElement.semantic.role }}</div>
@@ -840,76 +790,9 @@ onBeforeUnmount(() => {
             </button>
           </div>
 
-          <p v-if="promptFeedback !== null" class="viewsvg-hint">{{ promptFeedback }}</p>
-        </template>
-      </section>
-
-      <section class="viewsvg-panel">
-        <div class="viewsvg-panel__header">
-          <h2>Case-Liste</h2>
-          <span>{{ cases.length }}</span>
-        </div>
-
-        <div class="viewsvg-list" role="listbox" aria-label="SVG cases">
-          <button
-            v-for="caseItem in cases"
-            :key="caseItem.id"
-            type="button"
-            class="viewsvg-case"
-            :class="{ 'is-active': caseItem.id === selectedCaseId }"
-            @click="selectCase(caseItem.id)"
-          >
-            <span class="viewsvg-case__name">{{ getCaseLabel(caseItem) }}</span>
-            <span class="viewsvg-case__meta">{{ caseItem.id }}</span>
-          </button>
-        </div>
-      </section>
-
-      <section class="viewsvg-panel viewsvg-panel--controls">
-        <div class="viewsvg-panel__header">
-          <h2>Kontrollen</h2>
-        </div>
-
-        <label class="viewsvg-field">
-          <span>Vergleichsmodus</span>
-          <select v-model="selectedMode">
-            <option value="side-by-side">Side by side</option>
-            <option value="swipe">Swipe</option>
-            <option value="blink">Alternierend</option>
-          </select>
-        </label>
-
-        <label class="viewsvg-field">
-          <span>Extract</span>
-          <select v-model.number="selectedExtract">
-            <option v-for="extractNr in availableExtracts" :key="extractNr" :value="extractNr">
-              {{ extractNr }}
-            </option>
-          </select>
-        </label>
-
-        <label v-if="selectedMode === 'swipe'" class="viewsvg-field">
-          <span>Swipe</span>
-          <input v-model.number="swipePosition" type="range" min="0" max="100" step="1" />
-        </label>
-
-        <div class="viewsvg-status">
-          <div><strong>Case:</strong> {{ selectedCase?.id ?? 'n/a' }}</div>
-          <div><strong>Extract:</strong> {{ selectedExtractLabel }}</div>
-          <div><strong>Legacy:</strong> {{ hasLegacy ? 'da' : 'fehlt' }}</div>
-          <div><strong>TS:</strong> {{ hasTs ? 'da' : 'fehlt' }}</div>
-        </div>
-      </section>
-
-      <p v-if="loading" class="viewsvg-hint">Lade SVGs ...</p>
-      <p v-if="error !== null" class="viewsvg-error">{{ error }}</p>
-      <button
-        type="button"
-        class="viewsvg-sidebar__resizer"
-        aria-label="Sidebar breiter oder schmaler ziehen"
-        @pointerdown="startSidebarResize"
-      />
-    </aside>
+        <p v-if="promptFeedback !== null" class="viewsvg-hint">{{ promptFeedback }}</p>
+      </template>
+    </template>
 
     <section class="viewsvg-stage">
       <div class="viewsvg-stage__shell" :class="`viewsvg-stage__shell--${selectedMode}`">
@@ -1055,174 +938,10 @@ onBeforeUnmount(() => {
         </template>
       </div>
     </section>
-  </main>
+  </ComparisonLayout>
 </template>
 
 <style scoped>
-.viewsvg-app {
-  display: grid;
-  grid-template-columns: var(--viewsvg-sidebar-width, 360px) minmax(0, 1fr);
-  min-height: 100vh;
-}
-
-.viewsvg-sidebar {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  border-right: 1px solid var(--viewsvg-panel-border);
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(12px);
-  overflow: auto;
-}
-
-.viewsvg-brand {
-  display: grid;
-  gap: 0.75rem;
-  padding: 1rem;
-  border: 1px solid var(--viewsvg-panel-border);
-  border-radius: 20px;
-  background: var(--viewsvg-panel);
-  box-shadow: var(--viewsvg-shadow);
-}
-
-.viewsvg-kicker {
-  margin: 0 0 0.35rem;
-  color: var(--viewsvg-accent);
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.viewsvg-brand h1 {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-}
-
-.viewsvg-subtitle {
-  margin: 0;
-  color: var(--viewsvg-subtext);
-  font-size: 0.94rem;
-}
-
-.viewsvg-panel {
-  display: grid;
-  gap: 0.85rem;
-  padding: 1rem;
-  border: 1px solid var(--viewsvg-panel-border);
-  border-radius: 20px;
-  background: var(--viewsvg-panel);
-  box-shadow: var(--viewsvg-shadow);
-}
-
-.viewsvg-panel__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.viewsvg-panel__header--sub {
-  margin-top: 0.1rem;
-}
-
-.viewsvg-panel__header h2 {
-  margin: 0;
-  font-size: 0.92rem;
-  font-weight: 650;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.viewsvg-panel__header span {
-  color: var(--viewsvg-accent);
-  font-size: 0.9rem;
-}
-
-.viewsvg-panel__toggle {
-  padding: 0.28rem 0.65rem;
-  border: 1px solid rgba(15, 23, 42, 0.22);
-  border-radius: 999px;
-  background: #ffffff;
-  color: #000000;
-  font-size: 0.74rem;
-  font-weight: 650;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.viewsvg-panel__toggle:hover {
-  border-color: rgba(15, 23, 42, 0.42);
-}
-
-.viewsvg-list {
-  display: grid;
-  gap: 0.5rem;
-  max-height: 34vh;
-  overflow: auto;
-  padding-right: 0.15rem;
-}
-
-.viewsvg-case {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.75rem 0.85rem;
-  border: 1px solid transparent;
-  border-radius: 14px;
-  background: var(--viewsvg-panel-soft);
-  color: var(--viewsvg-text);
-  text-align: left;
-  transition:
-    border-color 0.2s ease,
-    transform 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.viewsvg-case:hover {
-  transform: translateY(-1px);
-  border-color: rgba(15, 23, 42, 0.25);
-}
-
-.viewsvg-case.is-active {
-  border-color: rgba(15, 23, 42, 0.6);
-  background: rgba(15, 23, 42, 0.08);
-}
-
-.viewsvg-case__name {
-  font-size: 0.92rem;
-  font-weight: 600;
-}
-
-.viewsvg-case__meta {
-  color: var(--viewsvg-subtext);
-  font-size: 0.78rem;
-  white-space: nowrap;
-}
-
-.viewsvg-panel--controls {
-  gap: 0.9rem;
-}
-
-.viewsvg-panel--prompt {
-  gap: 0.85rem;
-  position: sticky;
-  top: 1rem;
-  z-index: 2;
-}
-
-.viewsvg-panel--prompt.is-active {
-  border-color: rgba(15, 23, 42, 0.55);
-  box-shadow:
-    0 0 0 1px rgba(15, 23, 42, 0.08),
-    var(--viewsvg-shadow);
-}
-
 .viewsvg-field {
   display: grid;
   gap: 0.45rem;
@@ -1235,13 +954,8 @@ onBeforeUnmount(() => {
   letter-spacing: 0.08em;
 }
 
-.viewsvg-field select,
-.viewsvg-field input[type='range'] {
+.viewsvg-field select {
   width: 100%;
-}
-
-.viewsvg-field select,
-.viewsvg-field input[type='range'] {
   accent-color: var(--viewsvg-accent-strong);
 }
 
@@ -1253,28 +967,11 @@ onBeforeUnmount(() => {
   color: var(--viewsvg-text);
 }
 
-.viewsvg-status {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.45rem 0.75rem;
-  padding-top: 0.2rem;
-  color: var(--viewsvg-subtext);
-  font-size: 0.84rem;
-}
-
-.viewsvg-hint,
-.viewsvg-error {
+.viewsvg-hint {
   margin: 0;
   padding: 0 0.25rem;
   font-size: 0.9rem;
-}
-
-.viewsvg-hint {
   color: var(--viewsvg-accent);
-}
-
-.viewsvg-error {
-  color: var(--viewsvg-danger);
 }
 
 .viewsvg-stage {
@@ -1527,75 +1224,6 @@ onBeforeUnmount(() => {
   cursor: not-allowed;
 }
 
-.viewsvg-hover-inspector {
-  display: grid;
-  gap: 0.75rem;
-  padding: 0.85rem;
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  border-radius: 18px;
-  background: rgba(15, 23, 42, 0.025);
-}
-
-.viewsvg-hover-inspector.is-enabled {
-  border-color: rgba(29, 78, 216, 0.22);
-  background: rgba(29, 78, 216, 0.03);
-}
-
-.viewsvg-hover-list {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.viewsvg-hover-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.38rem 0.55rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.85);
-  color: var(--viewsvg-text);
-  font-size: 0.8rem;
-}
-
-.viewsvg-hover-item__label {
-  color: var(--viewsvg-subtext);
-  font-variant-numeric: tabular-nums;
-}
-
-.viewsvg-hover-item__value {
-  text-align: right;
-  word-break: break-word;
-}
-
-.viewsvg-sidebar__resizer {
-  position: absolute;
-  top: 0;
-  right: -6px;
-  bottom: 0;
-  width: 12px;
-  border: 0;
-  background: transparent;
-  cursor: col-resize;
-  touch-action: none;
-}
-
-.viewsvg-sidebar__resizer::before {
-  content: '';
-  position: absolute;
-  top: 1rem;
-  bottom: 1rem;
-  left: 5px;
-  width: 2px;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.16);
-  transition: background-color 0.2s ease;
-}
-
-.viewsvg-sidebar__resizer:hover::before,
-.viewsvg-sidebar__resizer:focus-visible::before {
-  background: rgba(15, 23, 42, 0.45);
-}
-
 :deep(.viewsvg-surface) {
   width: 100%;
   height: auto;
@@ -1633,22 +1261,4 @@ onBeforeUnmount(() => {
   filter: drop-shadow(0 0 0.2rem rgba(217, 119, 6, 0.25));
 }
 
-@media (max-width: 1180px) {
-  .viewsvg-app {
-    grid-template-columns: 1fr;
-  }
-
-  .viewsvg-sidebar {
-    border-right: 0;
-    border-bottom: 1px solid var(--viewsvg-panel-border);
-  }
-
-  .viewsvg-sidebar__resizer {
-    display: none;
-  }
-
-  .viewsvg-list {
-    max-height: 24vh;
-  }
-}
 </style>

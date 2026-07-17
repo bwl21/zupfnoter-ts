@@ -6,6 +6,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 type ViewSvgSource = 'legacy' | 'ts'
+type ViewPdfSource = 'legacy' | 'ts'
 
 interface ViewSvgCaseSummary {
   id: string
@@ -13,6 +14,14 @@ interface ViewSvgCaseSummary {
   tsExtracts: number[]
   legacySvgCount: number
   tsSvgCount: number
+}
+
+interface ViewPdfCaseSummary {
+  id: string
+  legacyExtracts: number[]
+  tsExtracts: number[]
+  legacyPdfCount: number
+  tsPdfCount: number
 }
 
 const repoRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)))
@@ -37,6 +46,17 @@ function listExtractNumbers(dir: string, prefix: string): number[] {
     .filter((value) => Number.isInteger(value))
   return [...new Set(values)]
     .sort((left, right) => left - right)
+}
+
+function listPdfExtractNumbers(dir: string): number[] {
+  if (!existsSync(dir)) return []
+  const values = readdirSync(dir)
+    .map((name) => {
+      const match = name.match(/^output\.extract-(\d+)_a3\.pdf$/)
+      return match?.[1] !== undefined ? Number.parseInt(match[1], 10) : Number.NaN
+    })
+    .filter((value) => Number.isInteger(value))
+  return [...new Set(values)].sort((left, right) => left - right)
 }
 
 function scanCaseDirectories(): ViewSvgCaseDirectory[] {
@@ -74,6 +94,22 @@ function scanCases(): ViewSvgCaseSummary[] {
     })
 }
 
+function scanPdfCases(): ViewPdfCaseSummary[] {
+  return scanCaseDirectories()
+    .map(({ id, dir }) => {
+      const legacyExtracts = listPdfExtractNumbers(dir)
+      const tsExtracts = listPdfExtractNumbers(resolve(dir, '_ts_output'))
+      return {
+        id,
+        legacyExtracts,
+        tsExtracts,
+        legacyPdfCount: legacyExtracts.length,
+        tsPdfCount: tsExtracts.length,
+      }
+    })
+    .filter((caseItem) => caseItem.legacyPdfCount > 0 || caseItem.tsPdfCount > 0)
+}
+
 function readSvg(caseId: string, source: ViewSvgSource, extractNr: number): string {
   const fixtureCase = scanCaseDirectories().find((candidate) => candidate.id === caseId)
   if (fixtureCase === undefined) throw new Error(`Unknown fixture case: ${caseId}`)
@@ -90,6 +126,18 @@ function readSvg(caseId: string, source: ViewSvgSource, extractNr: number): stri
   }
 
   throw new Error(`Missing ${source} SVG for ${caseId} [extract ${extractNr}]`)
+}
+
+function readPdf(caseId: string, source: ViewPdfSource, extractNr: number): Buffer {
+  const fixtureCase = scanCaseDirectories().find((candidate) => candidate.id === caseId)
+  if (fixtureCase === undefined) throw new Error(`Unknown fixture case: ${caseId}`)
+
+  const targetDir = source === 'legacy' ? fixtureCase.dir : resolve(fixtureCase.dir, '_ts_output')
+  const path = resolve(targetDir, `output.extract-${String(extractNr)}_a3.pdf`)
+  if (!existsSync(path)) {
+    throw new Error(`Missing ${source} PDF for ${caseId} [extract ${extractNr}]`)
+  }
+  return readFileSync(path)
 }
 
 function viewSvgPlugin() {
@@ -129,6 +177,47 @@ function viewSvgPlugin() {
           res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8')
           res.setHeader('Cache-Control', 'no-store')
           res.end(svg)
+        } catch (error) {
+          res.statusCode = 404
+          res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+          res.end(error instanceof Error ? error.message : String(error))
+        }
+      })
+
+      server.middlewares.use('/api/viewpdf/cases', (_req, res, next) => {
+        if (_req.method !== 'GET') {
+          next()
+          return
+        }
+        res.setHeader('Content-Type', 'application/json; charset=utf-8')
+        res.setHeader('Cache-Control', 'no-store')
+        res.end(JSON.stringify(scanPdfCases()))
+      })
+
+      server.middlewares.use('/api/viewpdf/pdf', (req, res, next) => {
+        if (req.method !== 'GET') {
+          next()
+          return
+        }
+
+        const requestUrl = new URL(req.url ?? '', 'http://localhost')
+        const caseId = requestUrl.searchParams.get('case')
+        const source = requestUrl.searchParams.get('source') as ViewPdfSource | null
+        const extractParam = requestUrl.searchParams.get('extract')
+        const extractNr = extractParam === null ? Number.NaN : Number.parseInt(extractParam, 10)
+
+        if (caseId === null || source === null || (source !== 'legacy' && source !== 'ts') || !Number.isInteger(extractNr)) {
+          res.statusCode = 400
+          res.end('Invalid viewpdf request.')
+          return
+        }
+
+        try {
+          const pdf = readPdf(caseId, source, extractNr)
+          res.setHeader('Content-Type', 'application/pdf')
+          res.setHeader('Content-Disposition', 'inline')
+          res.setHeader('Cache-Control', 'no-store')
+          res.end(pdf)
         } catch (error) {
           res.statusCode = 404
           res.setHeader('Content-Type', 'text/plain; charset=utf-8')
