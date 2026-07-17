@@ -58,7 +58,7 @@ defineEmits<{
 }
 
 .zn-button:disabled {
-  cursor: not-allowed;
+  cursor: default;
   opacity: 0.55;
   box-shadow: none;
 }

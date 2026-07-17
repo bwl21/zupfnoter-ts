@@ -110,6 +110,11 @@ function durationToKey(duration: number): DurationKey {
   return valid.includes(key) ? key : 'err'
 }
 
+function formatCreationTimestamp(value: Date): string {
+  const pad = (part: number): string => String(part).padStart(2, '0')
+  return `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())} ${pad(value.getHours())}:${pad(value.getMinutes())}:${pad(value.getSeconds())}`
+}
+
 /** Variant number → color string */
 function variantToColor(variant: 0 | 1 | 2, layout: LayoutConfig): string {
   if (variant === 1) return layout.color.color_variant1
@@ -481,12 +486,12 @@ function makeLegacySlurPath(p1: [number, number], p2: [number, number]): { path:
 export class HarpnotesLayout {
   private _config: ZupfnoterConfig
   private _annotationTextMetrics: AnnotationTextMetrics
-  private _applicationVersion: string
+  private _createdAt: Date
 
   constructor(config: ZupfnoterConfig, options: HarpnotesLayoutOptions = {}) {
     this._config = config
     this._annotationTextMetrics = options.annotationTextMetrics ?? createDefaultAnnotationTextMetrics()
-    this._applicationVersion = options.applicationVersion ?? '0.1.0'
+    this._createdAt = options.createdAt ?? new Date()
   }
 
   /**
@@ -1927,7 +1932,7 @@ export class HarpnotesLayout {
       {
         type: 'Annotation',
         center: [150, 289],
-        text: `${filename} - created by Zupfnoter v${this._applicationVersion}`,
+        text: `${filename} - created ${formatCreationTimestamp(this._createdAt)} by Zupfnoter-TS`,
         style: 'smaller',
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,

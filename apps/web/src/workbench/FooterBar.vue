@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import tippy, { type Instance as TippyInstance } from 'tippy.js'
+import 'tippy.js/dist/tippy.css'
 
 import ZnBadge from '../design-system/components/ZnBadge.vue'
 import ZnButton from '../design-system/components/ZnButton.vue'
@@ -8,6 +10,7 @@ import ZnStatusBar from '../design-system/components/ZnStatusBar.vue'
 const props = withDefaults(defineProps<{
   extractLabel: string
   storageLocation: string
+  storageReadOnly: boolean
   dirty: boolean
   saveFormat: string
   speedFactor: number
@@ -20,10 +23,28 @@ const emit = defineEmits<{
   (event: 'speed-up'): void
   (event: 'speed-down'): void
   (event: 'speed-reset'): void
+  (event: 'storage-connections'): void
   (event: 'selection-voice-scope-change', value: 'single-voice' | 'extract-voices' | 'all-voices'): void
 }>()
 
 const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
+const storageChipElement = ref<HTMLElement | null>(null)
+let storageChipTooltip: TippyInstance | undefined
+
+onMounted(() => {
+  if (storageChipElement.value === null) return
+  storageChipTooltip = tippy(storageChipElement.value, {
+    content: 'Speicherverbindungen verwalten',
+    animation: 'shift-away',
+    delay: [180, 0],
+    duration: [90, 60],
+    placement: 'top',
+  })
+})
+
+onBeforeUnmount(() => {
+  storageChipTooltip?.destroy()
+})
 
 function handleSelectionVoiceScopeChange(event: Event): void {
   const target = event.target
@@ -51,7 +72,17 @@ function handleSelectionVoiceScopeChange(event: Event): void {
     <ZnBadge tone="info">
       {{ saveFormat }}
     </ZnBadge>
-    <span class="footer-bar__meta">Speicher: {{ storageLocation }}</span>
+    <button
+      ref="storageChipElement"
+      class="footer-bar__storage-chip"
+      type="button"
+      @click="emit('storage-connections')"
+    >
+      Speicher: {{ storageLocation }}
+    </button>
+    <ZnBadge v-if="storageReadOnly" tone="warning">
+      Nur lesen
+    </ZnBadge>
     <template #aside>
       <div class="footer-bar__selection">
         <span class="footer-bar__meta">Selection:</span>
@@ -96,6 +127,31 @@ function handleSelectionVoiceScopeChange(event: Event): void {
   min-width: 5ch;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
+}
+
+.footer-bar__storage-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-pill);
+  background: var(--zn-bg-surface-soft);
+  color: var(--zn-heading);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.footer-bar__storage-chip:hover {
+  border-color: var(--zn-border-strong);
+  background: var(--zn-bg-surface);
+}
+
+.footer-bar__storage-chip:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--zn-accent) 65%, white);
+  outline-offset: 2px;
 }
 
 .footer-bar__playback {

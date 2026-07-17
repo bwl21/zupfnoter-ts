@@ -126,6 +126,7 @@ const storageState = reactive({
 const dropboxProvider = createDropboxProvider()
 const storageConnections = ref<StorageConnection[]>(loadStorageConnections())
 const activeStorageConnection = computed(() => storageConnections.value.find((connection) => connection.id === storageState.connectionId))
+const activeStorageReadOnly = computed(() => activeStorageConnection.value?.readOnly === true)
 const storageLocation = computed(() => {
   const connection = activeStorageConnection.value
   if (connection === undefined) return 'Kein Speicherziel'
@@ -1492,19 +1493,23 @@ function handleMirrorMessage(event: MessageEvent): void {
               <div class="file-menu__list" role="menu" aria-label="Datei">
                 <template v-for="(item, index) in FILE_TOOLBAR_MENU_ITEMS" :key="item.type === 'action' ? item.action : `separator-${index}`">
                   <div v-if="item.type === 'separator'" class="file-menu__separator" role="separator" />
-                  <button
+                  <span
                     v-else
-                    class="file-menu__item"
-                    type="button"
-                    role="menuitem"
-                    :data-testid="`file-action-${item.action}`"
-                    :disabled="isFileToolbarActionDisabled(item.action, canSave)"
+                    class="file-menu__item-tooltip-target"
                     :data-file-toolbar-tooltip="item.action === 'save' ? saveTooltip : item.tooltip"
-                    @click="handleFileToolbarAction(item.action)"
                   >
-                    <ToolbarFileIcon :name="item.icon" />
-                    <span>{{ item.label }}</span>
-                  </button>
+                    <button
+                      class="file-menu__item"
+                      type="button"
+                      role="menuitem"
+                      :data-testid="`file-action-${item.action}`"
+                      :disabled="isFileToolbarActionDisabled(item.action, canSave)"
+                      @click="handleFileToolbarAction(item.action)"
+                    >
+                      <ToolbarFileIcon :name="item.icon" />
+                      <span>{{ item.label }}</span>
+                    </button>
+                  </span>
                 </template>
               </div>
             </details>
@@ -1526,16 +1531,17 @@ function handleMirrorMessage(event: MessageEvent): void {
               <ToolbarFileIcon name="open" />
               <span>Öffnen</span>
             </ZnButton>
-            <ZnButton
-              :variant="documentDirty ? 'danger' : 'primary'"
-              :disabled="isFileToolbarActionDisabled('save', canSave)"
-              data-testid="file-shortcut-save"
-              :data-file-toolbar-tooltip="saveTooltip"
-              @click="handleFileToolbarAction('save')"
-            >
-              <ToolbarFileIcon name="save" />
-              <span>Speichern</span>
-            </ZnButton>
+            <span class="file-toolbar__tooltip-target" :data-file-toolbar-tooltip="saveTooltip">
+              <ZnButton
+                :variant="documentDirty ? 'danger' : 'primary'"
+                :disabled="isFileToolbarActionDisabled('save', canSave)"
+                data-testid="file-shortcut-save"
+                @click="handleFileToolbarAction('save')"
+              >
+                <ToolbarFileIcon name="save" />
+                <span>Speichern</span>
+              </ZnButton>
+            </span>
             <ZnButton variant="ghost" @click="executeToolbarCommand('togglesetting flowconf')">Extras</ZnButton>
           </template>
           <template #default />
@@ -1695,6 +1701,7 @@ function handleMirrorMessage(event: MessageEvent): void {
         <FooterBar
           :extract-label="`Extract ${currentExtractLabel}`"
           :storage-location="storageLocation"
+          :storage-read-only="activeStorageReadOnly"
           :dirty="documentDirty"
           :save-format="saveFormat"
           :cursor-position="editorCursor"
@@ -1704,6 +1711,7 @@ function handleMirrorMessage(event: MessageEvent): void {
           @speed-down="playbackStore.decreaseSpeed"
           @speed-reset="playbackStore.resetSpeed"
           @speed-up="playbackStore.increaseSpeed"
+          @storage-connections="handleFileToolbarAction('storage-connections')"
           @selection-voice-scope-change="handleSelectionVoiceScopeChange"
         />
         <div
@@ -1885,6 +1893,15 @@ function handleMirrorMessage(event: MessageEvent): void {
   text-align: left;
 }
 
+.file-menu__item-tooltip-target,
+.file-toolbar__tooltip-target {
+  display: inline-flex;
+}
+
+.file-menu__item-tooltip-target {
+  width: 100%;
+}
+
 .file-menu__item:hover:not(:disabled),
 .file-menu__item:focus-visible {
   background: var(--zn-bg-surface-soft);
@@ -1892,7 +1909,7 @@ function handleMirrorMessage(event: MessageEvent): void {
 
 .file-menu__item:disabled {
   color: var(--zn-text-soft);
-  cursor: not-allowed;
+  cursor: default;
   opacity: 0.6;
 }
 

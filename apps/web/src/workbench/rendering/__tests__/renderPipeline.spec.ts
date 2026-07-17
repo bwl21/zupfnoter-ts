@@ -97,10 +97,10 @@ C D
     expect(result.scoreSvg).toContain('class="zn-score-annotation zn-score-hitbox"')
   })
 
-  it('writes the executing Zupfnoter version into the sheet footer', () => {
+  it('writes the TypeScript implementation marker into the sheet footer', () => {
     const result = renderWorkbenchPreviews('X:1\nF:demo\nT:Demo\nK:C\nC')
 
-    expect(result.harpSvg).toContain('created by Zupfnoter v0.1.0')
+    expect(result.harpSvg).toMatch(/created \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} by Zupfnoter-TS/)
   })
 
   it('keeps user-visible voice ids stable when the song contains the legacy duplicate voice 0', () => {

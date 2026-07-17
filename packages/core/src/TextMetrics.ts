@@ -19,8 +19,8 @@ export interface AnnotationTextMetrics {
  */
 export interface HarpnotesLayoutOptions {
   annotationTextMetrics?: AnnotationTextMetrics
-  /** Version der ausführenden Zupfnoter-Anwendung für die Blattfußzeile. */
-  applicationVersion?: string
+  /** Zeitpunkt der Blatterzeugung für die Blattfußzeile. */
+  createdAt?: Date
 }
 
 type JsPdfOrientation = 'p' | 'l'
