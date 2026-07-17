@@ -148,6 +148,7 @@ export type { WorkbenchCommandRuntime } from './legacyCommands.js'
 
 export {
   registerStorageCommands,
+  StorageTargetUnavailableError,
 } from './storageCommands.js'
 export type {
   StorageCommandRuntime,

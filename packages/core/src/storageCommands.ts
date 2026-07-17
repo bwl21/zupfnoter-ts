@@ -2,6 +2,18 @@ import { CommandError, type CommandArguments, type CommandDefinition, type Comma
 import { extractSongFilebase } from './extractSongConfig.js'
 import type { StorageConnection, StorageConnectionStatus } from '@zupfnoter/types'
 
+/**
+ * Wird ausgegeben, wenn ein Speicherkommando kein beschreibbares Ziel hat.
+ * Web-Anwendungen können darauf den Speicherverbindungsdialog öffnen; andere
+ * Laufzeiten behandeln den Fehler wie jeden anderen Command-Fehler.
+ */
+export class StorageTargetUnavailableError extends CommandError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'StorageTargetUnavailableError'
+  }
+}
+
 export interface StorageCommandState {
   system: string
   /** Aktive, persistierte Verbindungs-ID. */
@@ -315,9 +327,13 @@ export function registerStorageCommands(
     help: 'save current file to active storage path using its F: header',
     undoable: false,
     perform: async (args, context): Promise<void> => {
-      const connection = runtime.connections?.().find((entry) => entry.id === state.connectionId)
+      const connections = runtime.connections?.()
+      const connection = connections?.find((entry) => entry.id === state.connectionId)
+      if (state.connectionId === undefined || (connections !== undefined && connection === undefined)) {
+        throw new StorageTargetUnavailableError('No writable storage connection selected')
+      }
       if (connection?.readOnly === true) {
-        throw new CommandError(`Storage connection is read-only: ${connection.label}`)
+        throw new StorageTargetUnavailableError(`Storage connection is read-only: ${connection.label}`)
       }
       const documentText = runtime.readDocument()
       const filename = storageFilenameFromDocument(documentText)

@@ -11,6 +11,7 @@ export interface CommandParameter {
 
 export interface CommandContext {
   log(message: string): void
+  shortcutHelp?: (filter?: string) => readonly string[]
 }
 
 export interface CommandSuggestion {

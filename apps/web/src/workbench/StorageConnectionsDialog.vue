@@ -50,12 +50,17 @@ function statusLabel(status: StorageConnection['status']): string {
   }
   return labels[status]
 }
+
+function handleDialogKeydown(event: KeyboardEvent): void {
+  if (event.key !== 'Enter') return
+  emit('close')
+}
 </script>
 
 <template>
   <Teleport to="body">
     <div v-if="props.open" class="storage-dialog__backdrop">
-      <section class="storage-dialog" role="dialog" aria-modal="true" aria-labelledby="storage-dialog-title">
+      <section class="storage-dialog" role="dialog" aria-modal="true" aria-labelledby="storage-dialog-title" tabindex="-1" @keydown="handleDialogKeydown">
         <header class="storage-dialog__header">
           <h2 id="storage-dialog-title">Speicherverbindungen</h2>
           <div class="storage-dialog__header-actions">

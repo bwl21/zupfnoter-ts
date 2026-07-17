@@ -52,9 +52,16 @@ import { resolvePlaybackInstrument } from './sound'
 import type { PlaybackStep } from './playback'
 import type { SelectionOrigin } from '@zupfnoter/types'
 import type { StorageConnection, StorageDocument, StorageProviderDescriptor } from '@zupfnoter/types'
-import { CommandError, CommandStack, registerLegacyCommands, registerStorageCommands } from '@zupfnoter/core'
+import {
+  CommandError,
+  CommandStack,
+  registerLegacyCommands,
+  registerStorageCommands,
+  StorageTargetUnavailableError,
+} from '@zupfnoter/core'
 import type { CommandArgumentValue } from '@zupfnoter/core'
 import { WorkbenchLogger, type ConsoleLogEntry } from './consoleLog'
+import { ShortcutManager } from './ShortcutManager'
 import {
   canTargetCreateSelection,
   createExtractChangedSelectionEvent,
@@ -190,7 +197,6 @@ const storagePreviewUrl = ref<string>()
 const storagePreviewLoading = ref(false)
 const storagePreviewError = ref('')
 const saveResultDialogOpen = ref(false)
-const saveTargetMissing = ref(false)
 const saveResultComplete = ref(false)
 const saveProgressCompleted = ref(0)
 const saveProgressTotal = ref(0)
@@ -210,6 +216,9 @@ const fileToolbarTooltips = new Map<HTMLElement, TippyInstance>()
 const consoleLines = ref<ConsoleLogEntry[]>([])
 const logger = new WorkbenchLogger((entry) => {
   consoleLines.value = [...consoleLines.value.slice(-199), entry]
+})
+const shortcutManager = new ShortcutManager((command) => {
+  void dispatchShortcutCommand(command)
 })
 logger.info('command stack ready')
 const scoreSvg = ref('')
@@ -647,14 +656,17 @@ function openNotesDuplicate(): void {
   publishHarpMirrorSnapshot()
 }
 
+async function dispatchShortcutCommand(command: string): Promise<void> {
+  await executeToolbarCommand(command)
+}
+
 async function executeCommand(command: string): Promise<void> {
   commandBusy.value = true
   logger.command(command)
   try {
     await commandStack.runString(command)
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    logger.error(enrichCommandError(command, message))
+    handleCommandError(command, error)
   } finally {
     commandBusy.value = false
   }
@@ -667,16 +679,28 @@ async function executeToolbarCommand(command: string, errorToastTitle?: string):
     await commandStack.runString(command)
     return true
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    const enrichedMessage = enrichCommandError(command, message)
-    logger.error(enrichedMessage)
-    if (errorToastTitle !== undefined) {
-      pushToast({ severity: 'danger', title: errorToastTitle, message: enrichedMessage, persistent: true })
-    }
-    return false
+    return !handleCommandError(command, error, errorToastTitle)
   } finally {
     commandBusy.value = false
   }
+}
+
+function handleCommandError(command: string, error: unknown, errorToastTitle?: string): boolean {
+  const message = error instanceof Error ? error.message : String(error)
+  const enrichedMessage = enrichCommandError(command, message)
+  logger.error(enrichedMessage)
+
+  if (error instanceof StorageTargetUnavailableError) {
+    saveResultDialogOpen.value = false
+    returnToStorageOpenDialog.value = false
+    storageConnectionsDialogOpen.value = true
+    return true
+  }
+
+  if (errorToastTitle !== undefined) {
+    pushToast({ severity: 'danger', title: errorToastTitle, message: enrichedMessage, persistent: true })
+  }
+  return false
 }
 
 async function executeParsedToolbarCommand(
@@ -800,13 +824,6 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
 
 async function saveDocument(): Promise<void> {
   if (saveInProgress.value) return
-  if (!hasStorageSaveTarget.value) {
-    saveTargetMissing.value = true
-    saveResultComplete.value = false
-    saveResultDialogOpen.value = true
-    return
-  }
-  saveTargetMissing.value = false
   saveInProgress.value = true
   saveResultComplete.value = false
   saveProgressCompleted.value = 0
@@ -820,11 +837,6 @@ async function saveDocument(): Promise<void> {
   } finally {
     saveInProgress.value = false
   }
-}
-
-function openStorageConnectionsFromSaveResult(): void {
-  saveResultDialogOpen.value = false
-  storageConnectionsDialogOpen.value = true
 }
 
 async function searchStorageDocuments(query: string): Promise<void> {
@@ -1073,6 +1085,18 @@ function playFromCommand(range: string): void {
   togglePlayback()
 }
 
+function toggleConsole(): void {
+  editorTab.value = editorTab.value === 'console' ? 'abc' : 'console'
+}
+
+async function toggleFullscreen(): Promise<void> {
+  if (document.fullscreenElement !== null) {
+    await document.exitFullscreen()
+    return
+  }
+  await document.documentElement.requestFullscreen()
+}
+
 function setCurrentExtractFromCommand(extract: number): void {
   currentExtract.value = Math.trunc(extract)
   playbackStore.setActiveExtract(currentExtract.value)
@@ -1132,6 +1156,7 @@ function extractAbcId(value: string): string {
 
 commandStack = new CommandStack({
   log: (message) => logger.output(message),
+  shortcutHelp: () => shortcutManager.help().map((binding) => shortcutManager.format(binding)),
 })
 
 registerStorageCommands(commandStack, storageState, {
@@ -1269,6 +1294,90 @@ registerStorageCommands(commandStack, storageState, {
   },
 })
 
+commandStack.addCommand({
+  name: 'toggleconsole',
+  help: 'show or hide the console',
+  undoable: false,
+  perform: () => toggleConsole(),
+})
+
+commandStack.addCommand({
+  name: 'togglefullscreen',
+  help: 'toggle fullscreen mode',
+  undoable: false,
+  perform: () => toggleFullscreen(),
+})
+
+shortcutManager.register({
+  id: 'save',
+  keys: ['Mod-S'],
+  command: 'ssave',
+  scope: 'global',
+  label: 'Speichern',
+  help: 'Aktuelles Dokument speichern',
+  enabled: () => !saveInProgress.value,
+})
+shortcutManager.register({
+  id: 'render',
+  keys: ['Mod-R', 'Mod-Enter'],
+  command: 'render',
+  scope: 'global',
+  label: 'Rendern',
+  help: 'Vorschau aktualisieren',
+})
+shortcutManager.register({
+  id: 'play',
+  keys: ['Mod-P'],
+  command: 'p auto',
+  scope: 'global',
+  label: 'Abspielen',
+  help: 'Aktuelles Stück abspielen',
+})
+shortcutManager.register({
+  id: 'console',
+  keys: ['Mod-K'],
+  command: 'toggleconsole',
+  scope: 'global',
+  label: 'Konsole',
+  help: 'Konsole ein- oder ausblenden',
+})
+shortcutManager.register({
+  id: 'fullscreen',
+  keys: ['Mod-L'],
+  command: 'togglefullscreen',
+  scope: 'global',
+  label: 'Vollbild',
+  help: 'Vollbildmodus umschalten',
+})
+for (const extractNumber of Array.from({ length: 10 }, (_, index) => index)) {
+  shortcutManager.register({
+    id: `view-${extractNumber}`,
+    keys: [`Mod-${extractNumber}`],
+    command: (event) => `view ${event.key}`,
+    scope: 'global',
+    label: `Auszug ${extractNumber}`,
+    help: `Auszug ${extractNumber} anzeigen`,
+  })
+}
+shortcutManager.register({
+  id: 'config-undo',
+  keys: ['Mod-Z'],
+  command: 'undoconfig',
+  scope: 'global',
+  label: 'Konfiguration zurücknehmen',
+  help: 'Letzte Konfigurationsänderung zurücknehmen',
+  enabled: () => editorTab.value === 'config',
+})
+shortcutManager.register({
+  id: 'config-redo',
+  keys: ['Mod-Y', 'Mod-Shift-Z'],
+  command: 'redoconfig',
+  scope: 'global',
+  label: 'Konfiguration wiederholen',
+  help: 'Zurückgenommene Konfigurationsänderung wiederholen',
+  enabled: () => editorTab.value === 'config',
+})
+
 
 function handleEditorCursorChange(position: { line: number, column: number }): void {
   const line = String(position.line).padStart(2, '0')
@@ -1341,37 +1450,7 @@ function handleScorePreviewSelection(payload: {
 }
 
 function handleGlobalKeydown(event: KeyboardEvent): void {
-  if (!event.ctrlKey && !event.metaKey) return
-  if (event.key === 's' || event.key === 'S') {
-    event.preventDefault()
-    void saveDocument()
-    return
-  }
-  if (editorTab.value === 'config' && (event.key === 'z' || event.key === 'Z' || event.key === 'y' || event.key === 'Y')) {
-    event.preventDefault()
-    const isRedo = event.key === 'y' || event.key === 'Y' || event.shiftKey
-    void executeToolbarCommand(isRedo ? 'redoconfig' : 'undoconfig')
-    return
-  }
-  if (event.key === 'r' || event.key === 'R' || event.key === 'Enter') {
-    event.preventDefault()
-    executeToolbarCommand('render')
-    return
-  }
-  if (event.key === 'p' || event.key === 'P') {
-    event.preventDefault()
-    executeToolbarCommand('p auto')
-    return
-  }
-  if (event.key === 'k' || event.key === 'K') {
-    event.preventDefault()
-    editorTab.value = editorTab.value === 'console' ? 'abc' : 'console'
-    return
-  }
-  if (/^\d$/.test(event.key)) {
-    event.preventDefault()
-    executeToolbarCommand(`view ${event.key}`)
-  }
+  shortcutManager.handle(event)
 }
 
 watch(
@@ -1752,13 +1831,10 @@ function handleMirrorMessage(event: MessageEvent): void {
     <div v-if="saveResultDialogOpen" class="save-result__backdrop">
       <section class="save-result" role="dialog" aria-modal="true" aria-labelledby="save-result-title">
         <header>
-          <h2 id="save-result-title">{{ saveTargetMissing ? 'Speicherziel fehlt' : saveResultComplete ? (saveResultHasFailures ? 'Dateien mit Fehlern gespeichert' : 'Dateien gespeichert') : 'Dateien speichern' }}</h2>
-          <ZnButton v-if="saveResultComplete || saveTargetMissing" variant="ghost" aria-label="Dialog schließen" @click="saveResultDialogOpen = false">×</ZnButton>
+        <h2 id="save-result-title">{{ saveResultComplete ? (saveResultHasFailures ? 'Dateien mit Fehlern gespeichert' : 'Dateien gespeichert') : 'Dateien speichern' }}</h2>
+          <ZnButton v-if="saveResultComplete" variant="ghost" aria-label="Dialog schließen" @click="saveResultDialogOpen = false">×</ZnButton>
         </header>
-        <p v-if="saveTargetMissing">
-          Zum Speichern wird eine aktive, beschreibbare Speicherverbindung benötigt.
-        </p>
-        <p v-else-if="saveResultComplete">
+        <p v-if="saveResultComplete">
           {{ saveResultHasFailures ? 'Nicht alle Dateien konnten gespeichert werden.' : 'Alle Dateien wurden gespeichert.' }}
         </p>
         <template v-else>
@@ -1767,16 +1843,15 @@ function handleMirrorMessage(event: MessageEvent): void {
             <span :style="{ width: saveProgressTotal === 0 ? '0%' : `${saveProgressCompleted / saveProgressTotal * 100}%` }" />
           </div>
         </template>
-        <ul v-if="!saveTargetMissing" class="save-result__files">
+        <ul v-if="!saveResultComplete" class="save-result__files">
           <li v-for="artifact in saveArtifactsProgress" :key="artifact.name" :data-status="artifact.status">
             <span class="save-result__file-status" aria-hidden="true">{{ artifact.status === 'saved' ? '✓' : artifact.status === 'failed' ? '!' : artifact.status === 'saving' ? '…' : '○' }}</span>
             <span>{{ artifact.name }}</span>
             <small v-if="artifact.error">{{ artifact.error }}</small>
           </li>
         </ul>
-        <footer v-if="saveTargetMissing || saveResultComplete">
-          <ZnButton v-if="saveTargetMissing" variant="primary" @click="openStorageConnectionsFromSaveResult">Speicherort wählen</ZnButton>
-          <ZnButton v-else variant="primary" @click="saveResultDialogOpen = false">Schließen</ZnButton>
+        <footer v-if="saveResultComplete">
+          <ZnButton variant="primary" @click="saveResultDialogOpen = false">Schließen</ZnButton>
         </footer>
       </section>
     </div>

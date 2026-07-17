@@ -89,6 +89,10 @@ function registerInternalCommands(stack: CommandStack, runtime: WorkbenchCommand
     parameters: [{ name: 'what', type: 'string', help: 'filter string', defaultValue: '' }],
     perform: (args, context) => {
       const filter = readString(args, 'what')
+      if (filter === 'shortcuts' && context.shortcutHelp !== undefined) {
+        context.shortcutHelp().forEach((line) => context.log(line))
+        return
+      }
       stack.help(filter).forEach((line) => context.log(line))
       if (filter === 'panel') {
         context.log('panel duplicate harp - duplicate the harp panel into a second window')

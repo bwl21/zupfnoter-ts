@@ -6,6 +6,7 @@ import {
   registerLegacyCommands,
   registerStorageCommands,
   serializeConfigEditorValue,
+  StorageTargetUnavailableError,
   type WorkbenchCommandRuntime,
 } from '@zupfnoter/core'
 
@@ -164,7 +165,31 @@ describe('legacy command registration', () => {
     expect(state.rootPath).toBe('Freigaben/Michael')
     expect(state.path).toBe('Entwuerfe')
     await expect(stack.runString('scd ../Privat')).rejects.toThrow('inside the connection root')
-    await expect(stack.runString('ssave')).rejects.toThrow('read-only')
+    await expect(stack.runString('ssave')).rejects.toBeInstanceOf(StorageTargetUnavailableError)
+  })
+
+  it('reports a missing storage target with a typed error', async () => {
+    const stack = new CommandStack({ log: () => undefined })
+    registerStorageCommands(stack, {
+      system: 'dropbox',
+      path: '',
+      loggedIn: false,
+      pendingCandidates: [],
+    }, {
+      providers: ['dropbox'],
+      connections: () => [],
+      list: async () => [],
+      search: async () => [],
+      open: async () => undefined,
+      save: async () => undefined,
+      readDocument: () => 'X:1\nF:sample\nK:C\nC\n',
+      writeDocument: () => undefined,
+      login: async () => undefined,
+      logout: async () => undefined,
+      cleanup: async () => undefined,
+    })
+
+    await expect(stack.runString('ssave')).rejects.toBeInstanceOf(StorageTargetUnavailableError)
   })
 
   it('saves the complete document under the filename from its F: header', async () => {
@@ -182,6 +207,7 @@ describe('legacy command registration', () => {
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerStorageCommands(stack, {
       system: 'dropbox',
+      connectionId: 'dropbox-cli',
       path: 'Noten',
       loggedIn: true,
       pendingCandidates: [],
@@ -213,7 +239,7 @@ describe('legacy command registration', () => {
     const log: string[] = []
     const stack = new CommandStack({ log: (message) => log.push(message) })
     registerStorageCommands(stack, {
-      system: 'dropbox', path: '', loggedIn: true, pendingCandidates: [],
+      system: 'dropbox', connectionId: 'dropbox-cli', path: '', loggedIn: true, pendingCandidates: [],
     }, {
       providers: ['dropbox'], list: async () => [], search: async () => [], open: async () => undefined,
       save: async () => undefined,
@@ -236,6 +262,7 @@ describe('legacy command registration', () => {
     const stack = new CommandStack({ log: () => undefined })
     registerStorageCommands(stack, {
       system: 'dropbox',
+      connectionId: 'dropbox-cli',
       path: '',
       loggedIn: true,
       pendingCandidates: [],
