@@ -7,7 +7,7 @@ import ZnStatusBar from '../design-system/components/ZnStatusBar.vue'
 
 const props = withDefaults(defineProps<{
   extractLabel: string
-  storagePath: string
+  storageLocation: string
   dirty: boolean
   saveFormat: string
   speedFactor: number
@@ -51,8 +51,7 @@ function handleSelectionVoiceScopeChange(event: Event): void {
     <ZnBadge tone="info">
       {{ saveFormat }}
     </ZnBadge>
-    <span class="footer-bar__meta">Storage: {{ storagePath }}</span>
-    <span class="footer-bar__meta">{{ saveFormat }}</span>
+    <span class="footer-bar__meta">Speicher: {{ storageLocation }}</span>
     <template #aside>
       <div class="footer-bar__selection">
         <span class="footer-bar__meta">Selection:</span>

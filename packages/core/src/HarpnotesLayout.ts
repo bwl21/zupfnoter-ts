@@ -481,10 +481,12 @@ function makeLegacySlurPath(p1: [number, number], p2: [number, number]): { path:
 export class HarpnotesLayout {
   private _config: ZupfnoterConfig
   private _annotationTextMetrics: AnnotationTextMetrics
+  private _applicationVersion: string
 
   constructor(config: ZupfnoterConfig, options: HarpnotesLayoutOptions = {}) {
     this._config = config
     this._annotationTextMetrics = options.annotationTextMetrics ?? createDefaultAnnotationTextMetrics()
+    this._applicationVersion = options.applicationVersion ?? '0.1.0'
   }
 
   /**
@@ -1925,7 +1927,7 @@ export class HarpnotesLayout {
       {
         type: 'Annotation',
         center: [150, 289],
-        text: `${filename} - created by Zupfnoter`,
+        text: `${filename} - created by Zupfnoter v${this._applicationVersion}`,
         style: 'smaller',
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,

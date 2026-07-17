@@ -81,6 +81,19 @@ interface ConfigEditorIntent {
   targetExtract?: number
 }
 
+type SaveArtifactStatus = 'pending' | 'saving' | 'saved' | 'failed'
+
+interface SaveArtifactProgress {
+  name: string
+  status: SaveArtifactStatus
+  error?: string
+}
+
+interface SaveArtifactPlan {
+  name: string
+  create(): Promise<string | Blob>
+}
+
 const editorTab = ref('abc')
 const editorPaneSize = ref(54)
 const previewPaneSize = ref(62)
@@ -88,6 +101,8 @@ const harpZoom = ref(100)
 const harpScrollLeft = ref(0)
 const harpScrollTop = ref(0)
 const documentText = ref(DEFAULT_ABC)
+const savedDocumentText = ref(documentText.value)
+const documentDirty = computed(() => documentText.value !== savedDocumentText.value)
 const abcText = computed({
   get: () => splitSongDocument(documentText.value).abcText,
   set: (value: string) => {
@@ -111,6 +126,15 @@ const storageState = reactive({
 const dropboxProvider = createDropboxProvider()
 const storageConnections = ref<StorageConnection[]>(loadStorageConnections())
 const activeStorageConnection = computed(() => storageConnections.value.find((connection) => connection.id === storageState.connectionId))
+const storageLocation = computed(() => {
+  const connection = activeStorageConnection.value
+  if (connection === undefined) return 'Kein Speicherziel'
+  const pathParts = [connection.rootPath, storageState.path]
+    .map((path) => path.replace(/^\/+|\/+$/g, ''))
+    .filter((path) => path !== '')
+  const path = pathParts.length === 0 ? '/' : `/${pathParts.join('/')}`
+  return `${connection.label} (${connection.providerId}) · ${path}`
+})
 const hasStorageSaveTarget = computed(() => activeStorageConnection.value !== undefined && !activeStorageConnection.value.readOnly)
 const saveInProgress = ref(false)
 const canSave = computed(() => hasStorageSaveTarget.value && !saveInProgress.value)
@@ -159,8 +183,16 @@ const storageOpenDocumentsLoaded = ref(false)
 const storagePreviewUrl = ref<string>()
 const storagePreviewLoading = ref(false)
 const storagePreviewError = ref('')
-const saveResultFiles = ref<string[]>([])
 const saveResultDialogOpen = ref(false)
+const saveResultComplete = ref(false)
+const saveProgressCompleted = ref(0)
+const saveProgressTotal = ref(0)
+const saveProgressFile = ref('')
+const saveArtifactsProgress = ref<SaveArtifactProgress[]>([])
+const saveResultHasFailures = computed(() => saveArtifactsProgress.value.some((artifact) => artifact.status === 'failed'))
+const saveProgressLabel = computed(() => saveProgressFile.value === ''
+  ? 'Speichervorgang wird vorbereitet …'
+  : `Speichere ${saveProgressFile.value} (${saveProgressCompleted.value} von ${saveProgressTotal.value})`)
 const rootPickerConnectionId = ref<string>()
 const rootPickerPath = ref('')
 const rootPickerFolders = ref<Array<{ name: string; path: string }>>([])
@@ -776,8 +808,15 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
 async function saveDocument(): Promise<void> {
   if (saveInProgress.value) return
   saveInProgress.value = true
+  saveResultComplete.value = false
+  saveProgressCompleted.value = 0
+  saveProgressTotal.value = 0
+  saveProgressFile.value = ''
+  saveArtifactsProgress.value = []
+  saveResultDialogOpen.value = true
   try {
-    await executeToolbarCommand('ssave', 'Speichern nicht möglich')
+    const saved = await executeToolbarCommand('ssave', 'Speichern nicht möglich')
+    if (!saved) saveResultDialogOpen.value = false
   } finally {
     saveInProgress.value = false
   }
@@ -805,7 +844,10 @@ async function openStorageDocument(document: StorageDocument): Promise<void> {
     'sopen',
     ['', document.path],
   )
-  if (opened) storageOpenDialogOpen.value = false
+  if (opened) {
+    savedDocumentText.value = documentText.value
+    storageOpenDialogOpen.value = false
+  }
 }
 
 function openStorageConnectionsFromDialog(): void {
@@ -1103,23 +1145,52 @@ registerStorageCommands(commandStack, storageState, {
     const extracts = resolvePdfExportVariants(content, currentExtract.value)
     const abcName = `${filebase}.abc`
     const htmlName = `${filebase}.html`
-    const names = [abcName, htmlName]
-    await adapter.save(path, abcName, content)
-    await adapter.save(path, htmlName, renderHtmlExport(content))
+    const plans: SaveArtifactPlan[] = [
+      { name: abcName, create: async () => content },
+      { name: htmlName, create: async () => renderHtmlExport(content) },
+    ]
     for (const extract of extracts) {
       const suffix = extract.filenamepart
       if (saveFormat.value.includes('A3')) {
         const name = pdfOutputFilename(filebase, suffix, 'A3')
-        await adapter.save(path, name, await renderPdfExport(content, extract.extractNr, 'A3'))
-        names.push(name)
+        plans.push({ name, create: async () => renderPdfExport(content, extract.extractNr, 'A3') })
       }
       if (saveFormat.value.includes('A4')) {
         const name = pdfOutputFilename(filebase, suffix, 'A4')
-        await adapter.save(path, name, await renderPdfExport(content, extract.extractNr, 'A4'))
-        names.push(name)
+        plans.push({ name, create: async () => renderPdfExport(content, extract.extractNr, 'A4') })
       }
     }
-    saveResultFiles.value = names
+    const names: string[] = []
+    saveResultDialogOpen.value = true
+    saveResultComplete.value = false
+    saveProgressCompleted.value = 0
+    saveProgressTotal.value = plans.length
+    saveArtifactsProgress.value = plans.map((plan) => ({ name: plan.name, status: 'pending' }))
+    const saveArtifact = async (plan: SaveArtifactPlan, index: number): Promise<void> => {
+      saveProgressFile.value = plan.name
+      saveArtifactsProgress.value = saveArtifactsProgress.value.map((artifact, artifactIndex) => artifactIndex === index
+        ? { ...artifact, status: 'saving' }
+        : artifact)
+      try {
+        await adapter.save(path, plan.name, await plan.create())
+        names.push(plan.name)
+        saveArtifactsProgress.value = saveArtifactsProgress.value.map((artifact, artifactIndex) => artifactIndex === index
+          ? { ...artifact, status: 'saved' }
+          : artifact)
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        appendConsoleLine(`save ${plan.name}: ${message}`, 'error')
+        saveArtifactsProgress.value = saveArtifactsProgress.value.map((artifact, artifactIndex) => artifactIndex === index
+          ? { ...artifact, status: 'failed', error: message }
+          : artifact)
+      }
+      saveProgressCompleted.value = saveArtifactsProgress.value.filter((artifact) => artifact.status === 'saved' || artifact.status === 'failed').length
+    }
+    for (const [index, plan] of plans.entries()) {
+      await saveArtifact(plan, index)
+    }
+    if (!saveResultHasFailures.value) savedDocumentText.value = content
+    saveResultComplete.value = true
     saveResultDialogOpen.value = true
     return names
   },
@@ -1322,6 +1393,7 @@ function isExtractProduced(extractNumber: number): boolean {
 
 onMounted(() => {
   restoreCurrentAbcText()
+  savedDocumentText.value = documentText.value
   restorePlaybackInstrument()
   restoreStorageContext()
   if (storageState.connectionId !== undefined && storageState.system === 'dropbox') {
@@ -1455,7 +1527,7 @@ function handleMirrorMessage(event: MessageEvent): void {
               <span>Öffnen</span>
             </ZnButton>
             <ZnButton
-              variant="primary"
+              :variant="documentDirty ? 'danger' : 'primary'"
               :disabled="isFileToolbarActionDisabled('save', canSave)"
               data-testid="file-shortcut-save"
               :data-file-toolbar-tooltip="saveTooltip"
@@ -1622,8 +1694,8 @@ function handleMirrorMessage(event: MessageEvent): void {
       <div class="workbench-footer">
         <FooterBar
           :extract-label="`Extract ${currentExtractLabel}`"
-          :storage-path="storageState.path"
-          :dirty="true"
+          :storage-location="storageLocation"
+          :dirty="documentDirty"
           :save-format="saveFormat"
           :cursor-position="editorCursor"
           :speed-factor="playbackStore.state.speedFactor"
@@ -1660,10 +1732,27 @@ function handleMirrorMessage(event: MessageEvent): void {
   <Teleport to="body">
     <div v-if="saveResultDialogOpen" class="save-result__backdrop">
       <section class="save-result" role="dialog" aria-modal="true" aria-labelledby="save-result-title">
-        <header><h2 id="save-result-title">Dateien gespeichert</h2><ZnButton variant="ghost" aria-label="Dialog schließen" @click="saveResultDialogOpen = false">×</ZnButton></header>
-        <p>Folgende Dateien wurden gespeichert:</p>
-        <ul><li v-for="file in saveResultFiles" :key="file">{{ file }}</li></ul>
-        <footer><ZnButton variant="primary" @click="saveResultDialogOpen = false">Schließen</ZnButton></footer>
+        <header>
+          <h2 id="save-result-title">{{ saveResultComplete ? (saveResultHasFailures ? 'Dateien mit Fehlern gespeichert' : 'Dateien gespeichert') : 'Dateien speichern' }}</h2>
+          <ZnButton v-if="saveResultComplete" variant="ghost" aria-label="Dialog schließen" @click="saveResultDialogOpen = false">×</ZnButton>
+        </header>
+        <p v-if="saveResultComplete">
+          {{ saveResultHasFailures ? 'Nicht alle Dateien konnten gespeichert werden.' : 'Alle Dateien wurden gespeichert.' }}
+        </p>
+        <template v-else>
+          <p>{{ saveProgressLabel }}</p>
+          <div class="save-result__progress" role="progressbar" :aria-valuemin="0" :aria-valuemax="saveProgressTotal" :aria-valuenow="saveProgressCompleted">
+            <span :style="{ width: saveProgressTotal === 0 ? '0%' : `${saveProgressCompleted / saveProgressTotal * 100}%` }" />
+          </div>
+        </template>
+        <ul class="save-result__files">
+          <li v-for="artifact in saveArtifactsProgress" :key="artifact.name" :data-status="artifact.status">
+            <span class="save-result__file-status" aria-hidden="true">{{ artifact.status === 'saved' ? '✓' : artifact.status === 'failed' ? '!' : artifact.status === 'saving' ? '…' : '○' }}</span>
+            <span>{{ artifact.name }}</span>
+            <small v-if="artifact.error">{{ artifact.error }}</small>
+          </li>
+        </ul>
+        <footer v-if="saveResultComplete"><ZnButton variant="primary" @click="saveResultDialogOpen = false">Schließen</ZnButton></footer>
       </section>
     </div>
   </Teleport>
@@ -2018,7 +2107,14 @@ function handleMirrorMessage(event: MessageEvent): void {
 
 .save-result h2 { font-size: 1rem; }
 .save-result p { padding: 0.85rem 0.9rem 0.35rem; color: var(--zn-text-soft); }
-.save-result ul { max-height: 16rem; overflow: auto; padding: 0.25rem 1.9rem 0.85rem; }
-.save-result li { padding-block: 0.16rem; font-family: var(--zn-font-mono, monospace); font-size: 0.86rem; }
+.save-result__files { max-height: 16rem; overflow: auto; padding: 0.25rem 1.15rem 0.85rem; list-style: none; }
+.save-result__files li { display: grid; grid-template-columns: 1.1rem minmax(0, 1fr); gap: 0.35rem; padding-block: 0.2rem; font-family: var(--zn-font-mono, monospace); font-size: 0.86rem; }
+.save-result__file-status { font-family: var(--zn-font); font-weight: 700; text-align: center; }
+.save-result__files li[data-status='saved'] .save-result__file-status { color: var(--zn-success); }
+.save-result__files li[data-status='failed'] .save-result__file-status { color: var(--zn-danger); }
+.save-result__files li[data-status='saving'] .save-result__file-status { color: var(--zn-accent); }
+.save-result__files small { grid-column: 2; color: var(--zn-danger); font-family: var(--zn-font); }
 .save-result footer { justify-content: flex-end; border-top: 1px solid var(--zn-border); border-bottom: 0; }
+.save-result__progress { height: 0.55rem; margin: 0.45rem 0.9rem 1rem; overflow: hidden; border-radius: 999px; background: var(--zn-bg-surface-soft); }
+.save-result__progress > span { display: block; height: 100%; border-radius: inherit; background: var(--zn-accent); transition: width 160ms ease; }
 </style>

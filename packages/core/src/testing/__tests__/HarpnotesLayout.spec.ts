@@ -639,7 +639,7 @@ V:V1 clef=treble-8
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
 
       expect(
-        annotations.some((a) => a.center[0] === 150 && a.center[1] === 289 && a.text === ' - created by Zupfnoter'),
+        annotations.some((a) => a.center[0] === 150 && a.center[1] === 289 && a.text === ' - created by Zupfnoter v0.1.0'),
       ).toBe(true)
       expect(
         annotations.some((a) => a.center[0] === 325 && a.center[1] === 289 && a.text === 'Zupfnoter: https://www.zupfnoter.de'),
