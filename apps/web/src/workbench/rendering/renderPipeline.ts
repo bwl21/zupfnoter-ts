@@ -21,6 +21,7 @@ import {
   parserErrorToWorkbenchDiagnostic,
   songDiagnosticToWorkbenchDiagnostic,
   workbenchDiagnosticHasPosition,
+  ABC_PARSER_DIAGNOSTIC_SOURCE,
   type WorkbenchDiagnostic,
 } from '../diagnostics'
 import { buildSheetObjectIndex } from '../selectionIndex'
@@ -28,6 +29,7 @@ import { buildSheetObjectIndex } from '../selectionIndex'
 export interface RenderIssue {
   severity: 'warning' | 'error'
   message: string
+  source?: string
   line?: number
   column?: number
 }
@@ -88,10 +90,10 @@ export function renderHtmlExport(abcText: string): string {
 }
 
 function parserIssueToRenderIssue(error: AbcParseError): RenderIssue {
-  const location = error.line === undefined ? '' : `line ${error.line}: `
   return {
     severity: 'error',
-    message: `${location}${error.message}`,
+    message: error.message,
+    source: ABC_PARSER_DIAGNOSTIC_SOURCE,
     line: error.line,
     column: error.column,
   }

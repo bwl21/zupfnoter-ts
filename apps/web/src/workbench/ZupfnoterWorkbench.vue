@@ -74,7 +74,7 @@ import {
   resolveSelectionEditorRange,
   resolveSelectionProjection,
 } from './selectionManager'
-import { workbenchDiagnosticKey, type WorkbenchDiagnostic as WebWorkbenchDiagnostic } from './diagnostics'
+import { ABC_PARSER_DIAGNOSTIC_SOURCE, workbenchDiagnosticKey, type WorkbenchDiagnostic as WebWorkbenchDiagnostic } from './diagnostics'
 import { createHarpMirrorChannel, postHarpMirrorSnapshot, type HarpMirrorSnapshot } from './multiWindow/harpMirrorChannel'
 import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
 import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
@@ -99,6 +99,14 @@ interface SaveArtifactProgress {
 interface SaveArtifactPlan {
   name: string
   create(): Promise<string | Blob>
+}
+
+/** Eine im Fehler-Chip sichtbare Diagnose aus der Renderpipeline. */
+interface RenderIssueChipItem {
+  severity: 'warning' | 'error'
+  message: string
+  source: string
+  location?: string
 }
 
 const editorTab = ref('abc')
@@ -291,26 +299,49 @@ const buildInfo = (globalThis as typeof globalThis & { __ZUPFNOTER_BUILD_INFO__?
 }
 
 const renderIssueLabel = computed(() => {
-  if (renderError.value) return 'Render error'
-  const warnings = [
-    ...renderIssues.value,
-    ...workbenchDiagnostics.value,
-  ].filter((issue) => issue.severity === 'warning').length
-  const errors = [
-    ...renderIssues.value,
-    ...workbenchDiagnostics.value,
-  ].filter((issue) => issue.severity === 'error').length
+  const warnings = renderIssueItems.value.filter((issue) => issue.severity === 'warning').length
+  const errors = renderIssueItems.value.filter((issue) => issue.severity === 'error').length
   if (errors > 0) return `${errors} error(s)`
   if (warnings > 0) return `${warnings} warning(s)`
   return 'Rendered'
 })
 
 const renderIssueTone = computed(() => {
-  if (renderError.value) return 'danger'
-  const issues = [...renderIssues.value, ...workbenchDiagnostics.value]
-  if (issues.some((issue) => issue.severity === 'error')) return 'danger'
-  if (issues.some((issue) => issue.severity === 'warning')) return 'warning'
+  if (renderIssueItems.value.some((issue) => issue.severity === 'error')) return 'danger'
+  if (renderIssueItems.value.some((issue) => issue.severity === 'warning')) return 'warning'
   return 'success'
+})
+
+const renderIssueItems = computed<RenderIssueChipItem[]>(() => {
+  const items: RenderIssueChipItem[] = [
+    ...(renderError.value === ''
+      ? []
+      : [{ severity: 'error' as const, message: renderError.value, source: 'Renderpipeline' }]),
+    ...renderIssues.value.map((issue) => ({
+      severity: issue.severity,
+      message: issue.message,
+      source: issue.source === ABC_PARSER_DIAGNOSTIC_SOURCE ? 'ABC-Parser' : issue.source ?? 'Renderpipeline',
+      location: issue.line === undefined
+        ? undefined
+        : `Zeile ${issue.line}${issue.column === undefined ? '' : `, Spalte ${issue.column}`}`,
+    })),
+    ...workbenchDiagnostics.value.map((diagnostic) => ({
+      severity: diagnostic.severity,
+      message: diagnostic.message,
+      source: diagnostic.source === ABC_PARSER_DIAGNOSTIC_SOURCE ? 'ABC-Parser' : diagnostic.source ?? 'Workbench',
+      location: diagnostic.startPos === undefined
+        ? undefined
+        : `Zeile ${diagnostic.startPos[0]}, Spalte ${diagnostic.startPos[1]}`,
+    })),
+  ]
+  const seen = new Set<string>()
+  return items.filter((item) => {
+    const comparableMessage = item.message.replace(/^line\s+\d+\s*:\s*/i, '').trim().toLocaleLowerCase()
+    const key = `${item.severity}|${comparableMessage}|${item.location ?? ''}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
 })
 
 const playbackStatusOverlay = computed(() => {
@@ -1680,7 +1711,20 @@ function handleMirrorMessage(event: MessageEvent): void {
             >
               {{ playbackStore.state.status === 'playing' ? 'Stop' : 'Play' }}
             </ZnButton>
-            <ZnBadge :tone="renderIssueTone">{{ renderIssueLabel }}</ZnBadge>
+            <details class="render-issue-picker" :class="{ 'render-issue-picker--empty': renderIssueItems.length === 0 }">
+              <summary
+                class="render-issue-picker__summary"
+                :aria-label="renderIssueItems.length === 0 ? 'Keine Fehler oder Warnungen' : 'Fehler und Warnungen anzeigen'"
+              >
+                <ZnBadge :tone="renderIssueTone">{{ renderIssueLabel }}</ZnBadge>
+              </summary>
+              <div v-if="renderIssueItems.length > 0" class="render-issue-picker__menu" role="status" aria-label="Fehler und Warnungen">
+                <p v-for="(issue, index) in renderIssueItems" :key="`${issue.source}-${issue.message}-${index}`" class="render-issue-picker__item" :data-severity="issue.severity">
+                  <strong>{{ issue.source }}<span v-if="issue.location"> · {{ issue.location }}</span></strong>
+                  <span>{{ issue.message }}</span>
+                </p>
+              </div>
+            </details>
             <ZnButton variant="ghost" @click="executeToolbarCommand('help')">Hilfe</ZnButton>
           </template>
         </ZnToolbar>
@@ -2105,6 +2149,65 @@ function handleMirrorMessage(event: MessageEvent): void {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.render-issue-picker {
+  position: relative;
+}
+
+.render-issue-picker__summary {
+  display: inline-flex;
+  list-style: none;
+  cursor: pointer;
+}
+
+.render-issue-picker__summary::-webkit-details-marker {
+  display: none;
+}
+
+.render-issue-picker--empty .render-issue-picker__summary {
+  cursor: default;
+}
+
+.render-issue-picker__menu {
+  position: absolute;
+  top: calc(100% + .35rem);
+  right: 0;
+  z-index: 30;
+  display: grid;
+  gap: .35rem;
+  width: min(28rem, calc(100vw - 1.5rem));
+  max-height: min(22rem, calc(100vh - 5rem));
+  overflow: auto;
+  padding: .55rem;
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-md);
+  background: var(--zn-bg-surface);
+  box-shadow: var(--zn-shadow-soft);
+}
+
+.render-issue-picker__item {
+  display: grid;
+  gap: .12rem;
+  margin: 0;
+  padding: .42rem .5rem;
+  border-radius: var(--zn-radius-sm);
+  color: var(--zn-text);
+  font-size: .78rem;
+}
+
+.render-issue-picker__item[data-severity='error'] {
+  background: color-mix(in srgb, var(--zn-danger) 10%, transparent);
+}
+
+.render-issue-picker__item[data-severity='warning'] {
+  background: color-mix(in srgb, var(--zn-warning) 12%, transparent);
+}
+
+.render-issue-picker__item strong {
+  color: var(--zn-text-soft);
+  font-size: .7rem;
+  font-weight: 700;
 }
 
 .editor-pane {

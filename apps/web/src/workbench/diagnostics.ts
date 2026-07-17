@@ -14,11 +14,14 @@ export interface WorkbenchDiagnostic {
   endPos?: [number, number]
 }
 
+/** Kanonischer technischer Quellenname für Parserdiagnosen. */
+export const ABC_PARSER_DIAGNOSTIC_SOURCE = 'abc-parser'
+
 export function parserErrorToWorkbenchDiagnostic(error: AbcParseError): WorkbenchDiagnostic {
   const diagnostic: WorkbenchDiagnostic = {
     severity: 'error',
     message: error.message,
-    source: 'abc-parser',
+    source: ABC_PARSER_DIAGNOSTIC_SOURCE,
   }
 
   if (error.line !== undefined) {
