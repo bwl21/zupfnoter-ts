@@ -20,7 +20,7 @@ export interface StorageCommandRuntime {
   search(path: StorageCommandState, query: string): Promise<string[]>
   open(path: StorageCommandState, filename: string): Promise<string | undefined>
   save(path: StorageCommandState, filename: string, content: string): Promise<void>
-  saveArtifacts?(path: StorageCommandState, filebase: string, documentText: string): Promise<string[]>
+  saveArtifacts?(path: StorageCommandState, filebase: string, documentText: string): Promise<StorageSaveArtifactResult>
   readDocument(): string
   writeDocument(content: string): void
   login(path: StorageCommandState): Promise<void>
@@ -29,6 +29,14 @@ export interface StorageCommandRuntime {
   connections?: () => StorageConnection[]
   updateConnectionPath?: (connectionId: string, relativePath: string) => void
   updateConnectionStatus?: (connectionId: string, status: StorageConnectionStatus) => void
+}
+
+/** Ergebnis einer Speicherung mit mehreren erzeugten Dateien. */
+export interface StorageSaveArtifactResult {
+  /** Erfolgreich gespeicherte Dateinamen. */
+  saved: string[]
+  /** Nicht gespeicherte Dateinamen. */
+  failed: string[]
 }
 
 export function registerStorageCommands(
@@ -58,7 +66,7 @@ export function registerStorageCommands(
     help: 'select an active storage connection',
     undoable: false,
     parameters: [{ name: 'id', type: 'string', help: 'saved connection id' }],
-    perform: (args) => {
+    perform: (args, context) => {
       const id = String(args.id ?? '')
       const connection = runtime.connections?.().find((entry) => entry.id === id)
       if (connection === undefined) throw new CommandError(`Unknown storage connection: ${id}`)
@@ -67,6 +75,7 @@ export function registerStorageCommands(
       state.loggedIn = connection.status === 'connected'
       state.rootPath = normalizeStoragePath(connection.rootPath)
       state.path = normalizeRelativeStoragePath(connection.relativePath)
+      context.log(`storage connection selected: ${connection.label} (${connection.providerId})`)
     },
   })
 
@@ -313,10 +322,16 @@ export function registerStorageCommands(
       const documentText = runtime.readDocument()
       const filename = storageFilenameFromDocument(documentText)
       const filebase = filename.replace(/\.abc$/i, '')
-      const saved = runtime.saveArtifacts === undefined
-        ? (await runtime.save(state, filename, documentText), [filename])
+      const result = runtime.saveArtifacts === undefined
+        ? (await runtime.save(state, filename, documentText), { saved: [filename], failed: [] })
         : await runtime.saveArtifacts(state, filebase, documentText)
-      saved.forEach((name) => context.log(`save ${state.system}//${joinStoragePath(state.rootPath ?? '', state.path)}/${name}`))
+      result.saved.forEach((name) => context.log(`save ${state.system}//${joinStoragePath(state.rootPath ?? '', state.path)}/${name}`))
+      const target = connection?.label ?? state.system
+      if (result.failed.length === 0) {
+        context.log(`storage save complete: ${target} (${result.saved.length} files)`)
+      } else {
+        context.log(`storage save incomplete: ${target} (${result.saved.length} saved, ${result.failed.length} failed)`)
+      }
     },
   })
 }

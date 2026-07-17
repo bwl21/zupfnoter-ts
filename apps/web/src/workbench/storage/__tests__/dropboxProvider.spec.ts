@@ -60,7 +60,8 @@ describe('dropboxProvider', () => {
       .mockResolvedValueOnce({ ok: true, status: 200, statusText: 'OK', headers: new Headers() } as Response)
 
     const { createDropboxProvider } = await import('../dropboxProvider')
-    await createDropboxProvider().save({ system: 'dropbox', connectionId: 'private', path: '', loggedIn: true, pendingCandidates: [] }, 'lied.abc', 'X:1')
+    const refreshedConnections: string[] = []
+    await createDropboxProvider({ onTokenRefreshed: (connectionId) => refreshedConnections.push(connectionId) }).save({ system: 'dropbox', connectionId: 'private', path: '', loggedIn: true, pendingCandidates: [] }, 'lied.abc', 'X:1')
 
     expect(fetchMock).toHaveBeenNthCalledWith(2, 'https://api.dropboxapi.com/oauth2/token', expect.objectContaining({
       method: 'POST',
@@ -75,6 +76,7 @@ describe('dropboxProvider', () => {
       'zupfnoter.storage.dropbox.token.private',
       expect.stringContaining('"refresh_token":"refresh-token"'),
     )
+    expect(refreshedConnections).toEqual(['private'])
   })
 
   it('hides dot-prefixed folders from the root picker', async () => {

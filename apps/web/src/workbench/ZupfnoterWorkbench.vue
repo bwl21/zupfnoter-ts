@@ -123,8 +123,13 @@ const storageState = reactive({
   loggedIn: false,
   pendingCandidates: [] as string[],
 })
-const dropboxProvider = createDropboxProvider()
 const storageConnections = ref<StorageConnection[]>(loadStorageConnections())
+const dropboxProvider = createDropboxProvider({
+  onTokenRefreshed: (connectionId) => {
+    const connection = storageConnections.value.find((entry) => entry.id === connectionId)
+    appendConsoleLine(`storage access renewed: ${connection?.label ?? connectionId}`, 'info')
+  },
+})
 const activeStorageConnection = computed(() => storageConnections.value.find((connection) => connection.id === storageState.connectionId))
 const activeStorageReadOnly = computed(() => activeStorageConnection.value?.readOnly === true)
 const storageLocation = computed(() => {
@@ -1162,6 +1167,7 @@ registerStorageCommands(commandStack, storageState, {
       }
     }
     const names: string[] = []
+    const failedNames: string[] = []
     saveResultDialogOpen.value = true
     saveResultComplete.value = false
     saveProgressCompleted.value = 0
@@ -1180,6 +1186,7 @@ registerStorageCommands(commandStack, storageState, {
           : artifact)
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error)
+        failedNames.push(plan.name)
         appendConsoleLine(`save ${plan.name}: ${message}`, 'error')
         saveArtifactsProgress.value = saveArtifactsProgress.value.map((artifact, artifactIndex) => artifactIndex === index
           ? { ...artifact, status: 'failed', error: message }
@@ -1193,7 +1200,7 @@ registerStorageCommands(commandStack, storageState, {
     if (!saveResultHasFailures.value) savedDocumentText.value = content
     saveResultComplete.value = true
     saveResultDialogOpen.value = true
-    return names
+    return { saved: names, failed: failedNames }
   },
   readDocument: () => documentText.value,
   writeDocument: (content) => {

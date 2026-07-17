@@ -128,6 +128,7 @@ describe('legacy command registration', () => {
     await stack.runString('sconnections')
 
     expect(state.connectionId).toBe('dropbox-private')
+    expect(log).toContain('storage connection selected: Privat (dropbox)')
     expect(log).toContain('dropbox-private dropbox Privat root=Privat readonly=false connected *')
   })
 
@@ -177,7 +178,8 @@ describe('legacy command registration', () => {
       '%%%%zupfnoter.config',
       '{"extract":{"0":{"instrument_shape":null}}}',
     ].join('\n')
-    const stack = new CommandStack({ log: () => undefined })
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
     registerStorageCommands(stack, {
       system: 'dropbox',
       path: 'Noten',
@@ -208,7 +210,8 @@ describe('legacy command registration', () => {
 
   it('delegates complete storage artifact creation using the F: filebase', async () => {
     const artifacts: string[] = []
-    const stack = new CommandStack({ log: () => undefined })
+    const log: string[] = []
+    const stack = new CommandStack({ log: (message) => log.push(message) })
     registerStorageCommands(stack, {
       system: 'dropbox', path: '', loggedIn: true, pendingCandidates: [],
     }, {
@@ -218,7 +221,7 @@ describe('legacy command registration', () => {
         expect(filebase).toBe('749_advent-is-a-leuchtn')
         expect(documentText).toContain('%%%%zupfnoter.config')
         artifacts.push('749_advent-is-a-leuchtn.abc', '749_advent-is-a-leuchtn.html', '749_advent-is-a-leuchtn_-_a3.pdf')
-        return artifacts
+        return { saved: artifacts, failed: [] }
       },
       readDocument: () => 'X:749\nF:749_advent-is-a-leuchtn\nK:C\nC\n%%%%zupfnoter.config\n{}',
       writeDocument: () => undefined, login: async () => undefined, logout: async () => undefined, cleanup: async () => undefined,
@@ -226,6 +229,7 @@ describe('legacy command registration', () => {
 
     await stack.runString('ssave')
     expect(artifacts).toHaveLength(3)
+    expect(log).toContain('storage save complete: dropbox (3 files)')
   })
 
   it('requires an F: header when saving', async () => {
