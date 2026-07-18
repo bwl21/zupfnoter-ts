@@ -132,6 +132,16 @@ const ABC2SVG_MESSAGE_PREFIXES = [
   { prefix: 'Internal bug: ', severity: 2 as const },
 ] as const
 
+/** Legacy abc2svg defaults applied before parsing and score preview rendering. */
+const ABC2SVG_ZUPFNOTER_DEFAULTS = `
+I:titletrim 0
+I:measurenb 1
+I:contbarnb 1
+I:linewarn 0
+I:staffnonote 2
+I:stretchlast 1
+`
+
 function countSlurStartsFromSource(source: string, startOffset: number): number[] {
   if (startOffset <= 0) return []
 
@@ -495,6 +505,7 @@ export class AbcParser {
       })
     }
 
+    abc.tosvg('my_parameters', ABC2SVG_ZUPFNOTER_DEFAULTS)
     abc.tosvg('zupfnoter', abcText)
 
     if (capturedModel !== null) {
@@ -564,6 +575,7 @@ export class AbcParser {
     }
 
     const abc = new _abc2svgModule.Abc(user)
+    abc.tosvg('my_parameters', ABC2SVG_ZUPFNOTER_DEFAULTS)
     abc.tosvg('zupfnoter', abcText)
 
     if (chunks.length === 0) {

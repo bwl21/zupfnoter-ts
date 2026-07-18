@@ -16,6 +16,14 @@ K:C
 C |]
 `
 
+const TWO_BAR_ABC = `X:1
+T:Two bars
+M:4/4
+L:1/4
+K:C
+C D E F | G A B c |
+`
+
 const TWO_VOICE_ABC = `X:1
 T:Test
 M:4/4
@@ -223,6 +231,13 @@ describe('AbcParser', () => {
       expect(svg).toContain('class="zn-score-annotation zn-score-hitbox"')
       expect(svg).toContain('data-start-char=')
       expect(svg).not.toContain('<g id="zn-score-')
+    })
+
+    it('applies the legacy measure-number preview default', () => {
+      const parser = new AbcParser()
+      const svg = parser.renderSvg(TWO_BAR_ABC)
+
+      expect(svg).toMatch(/>2<\/text>/)
     })
   })
 })
