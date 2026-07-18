@@ -54,6 +54,8 @@ export interface PlaybackFlowStep {
   flowIndex: number
   /** Sequential pass number in the expanded traversal. */
   passIndex: number
+  /** Canonical notated measure number for this playback step. */
+  measureNumber: number
   /** Volta number of this step when it belongs to a variant ending. */
   voltaNumber?: number
 }

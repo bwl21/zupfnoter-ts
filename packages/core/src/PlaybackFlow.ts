@@ -13,6 +13,7 @@ interface PlayableGroup {
   activeTextRanges: SelectionTextRange[]
   activeStartChar?: number
   voltaNumber?: number
+  measureNumber: number
 }
 
 function isPlayableEntity(entity: VoiceEntity): entity is PlayableEntity {
@@ -25,10 +26,18 @@ function isGotoEntity(entity: VoiceEntity): entity is Goto {
 
 function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
   const groups = new Map<number, PlayableGroup>()
+  const measureByTime = new Map<number, { voiceIndex: number; measureNumber: number }>()
 
-  for (const voice of song.voices) {
+  for (const [voiceIndex, voice] of song.voices.entries()) {
     for (const entity of voice.entities) {
       if (!isPlayableEntity(entity)) continue
+
+      if (voice.index > 0 && entity.measureCount > 0) {
+        const existingMeasure = measureByTime.get(entity.time)
+        if (existingMeasure === undefined || voiceIndex < existingMeasure.voiceIndex) {
+          measureByTime.set(entity.time, { voiceIndex, measureNumber: entity.measureCount })
+        }
+      }
 
       const existing = groups.get(entity.time)
       const textRange = entity.sourceOffsets === undefined
@@ -42,6 +51,7 @@ function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
           activeTextRanges: textRange === undefined ? [] : [textRange],
           activeStartChar: entity.sourceOffsets?.[0],
           voltaNumber: entity.variant > 0 ? entity.variant : undefined,
+          measureNumber: entity.measureCount > 0 ? entity.measureCount : 1,
         })
         continue
       }
@@ -64,6 +74,7 @@ function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
   }
 
   for (const group of groups.values()) {
+    group.measureNumber = measureByTime.get(group.sourceTime)?.measureNumber ?? group.measureNumber
     group.originZnIds = [...new Set(group.originZnIds)]
     group.activeTextRanges = [...new Map(
       group.activeTextRanges.map((range) => [`${range.startpos}:${range.endpos}`, range]),
@@ -255,6 +266,7 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
         activeStartChar: group.activeStartChar,
         flowIndex: flow.length,
         passIndex,
+        measureNumber: group.measureNumber,
         voltaNumber: group.voltaNumber,
       })
     }

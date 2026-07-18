@@ -14,6 +14,8 @@ export interface WorkbenchToast {
   message: string
   /** Optionale technische Quelle */
   source?: string
+  /** QR-Code als Data-URL für kurze, visuelle Hinweise. */
+  qrCodeDataUrl?: string
   /** Fehler bleiben sichtbar, bis sie ausdrücklich geschlossen werden. */
   persistent?: boolean
 }

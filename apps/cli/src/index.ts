@@ -2,9 +2,25 @@
 
 import { createInterface } from 'node:readline/promises'
 import { stdin as input, stdout as output } from 'node:process'
+import { readFile, writeFile } from 'node:fs/promises'
+import { deflateRaw, inflateRaw } from 'node:zlib'
+import { promisify } from 'node:util'
 
 import { createLegacyCommandStack, type WorkbenchCommandRuntime } from '@zupfnoter/core/legacyCommands'
 import type { CommandArgumentValue } from '@zupfnoter/core/commands'
+import { exportPlaybackLink, type PlaybackCompressionCodec, type PlaybackEvent } from '@zupfnoter/playback'
+
+const deflateRawAsync = promisify(deflateRaw)
+const inflateRawAsync = promisify(inflateRaw)
+
+const nodePlaybackCodec: PlaybackCompressionCodec = {
+  async compress(value) {
+    return new Uint8Array(await deflateRawAsync(Buffer.from(value)))
+  },
+  async decompress(value) {
+    return new Uint8Array(await inflateRawAsync(Buffer.from(value)))
+  },
+}
 
 interface CliState {
   abcText: string
@@ -146,6 +162,48 @@ function printUsage(): void {
   log('  zupfnoter --export-fixtures <sourcepattern> <targetfolder> [config.json]')
   log('  zupfnoter --command "view 2"')
   log('  zupfnoter --repl')
+  log('  zupfnoter playback-link --events timeline.json --player-url https://play.zupfnoter.de/')
+}
+
+function parseOption(args: readonly string[], name: string): string | undefined {
+  const index = args.indexOf(name)
+  return index < 0 ? undefined : args[index + 1]
+}
+
+function isPlaybackEvent(value: unknown): value is PlaybackEvent {
+  if (typeof value !== 'object' || value === null) return false
+  const record = value as Record<string, unknown>
+  const position = record.position
+  if (typeof position !== 'object' || position === null) return false
+  const positionRecord = position as Record<string, unknown>
+  return typeof record.startMs === 'number'
+    && typeof record.durationMs === 'number'
+    && typeof record.pitch === 'number'
+    && typeof positionRecord.measureNumber === 'number'
+    && typeof positionRecord.passIndex === 'number'
+}
+
+async function runPlaybackLink(args: string[]): Promise<number> {
+  const eventsFile = parseOption(args, '--events')
+  const playerUrl = parseOption(args, '--player-url')
+  if (eventsFile === undefined || playerUrl === undefined) {
+    printUsage()
+    return 1
+  }
+
+  const parsed: unknown = JSON.parse(await readFile(eventsFile, 'utf8'))
+  if (!Array.isArray(parsed) || !parsed.every(isPlaybackEvent)) {
+    throw new Error('timeline.json muss ein Array von Playback-Ereignissen enthalten')
+  }
+  const result = await exportPlaybackLink(parsed, { playerUrl }, nodePlaybackCodec)
+  const outputFile = parseOption(args, '--output')
+  if (outputFile === undefined) {
+    log(result.url)
+  } else {
+    await writeFile(outputFile, `${result.url}\n`, 'utf8')
+    log(`playback link written to ${outputFile}`)
+  }
+  return 0
 }
 
 function runLegacyBatch(args: string[]): number {
@@ -188,6 +246,10 @@ async function runCli(args: string[]): Promise<number> {
     }
     handleCommand(command)
     return 0
+  }
+
+  if (args[0] === 'playback-link') {
+    return runPlaybackLink(args.slice(1))
   }
 
   return runLegacyBatch(args)

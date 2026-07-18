@@ -82,6 +82,26 @@ Der Weg ist aktuell noch nicht „ein Prompt, ein Deploy“, weil mehrere Dinge 
 - Der Site-Name wurde für diesen Deploy manuell gewählt.
 - Die Site war nach dem ersten Publish auf `owner`-Schutz gesetzt, also nicht öffentlich frei zugänglich.
 
+## Playback-Player
+
+Der eigenständige Player wird aus `apps/player/dist` als eigene owner-only Site
+veröffentlicht:
+
+```bash
+pnpm --filter @zupfnoter/player build
+flink publish apps/player/dist \
+  --site zupfnoter-player \
+  --server https://csweichel.dev \
+  --tenant bwl21 \
+  --owner
+```
+
+Die aktuelle Site ist:
+
+```text
+https://bwl21--zupfnoter-player.csweichel.dev/
+```
+
 ## Was Flink verbessern muss
 
 Damit ein einfacher Prompt genügt, sollte Flink selbst mehr Abstraktion anbieten.

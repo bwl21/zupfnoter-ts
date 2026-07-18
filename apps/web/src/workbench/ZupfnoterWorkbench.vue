@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import tippy, { type Instance as TippyInstance } from 'tippy.js'
+import QRCode from 'qrcode'
 import 'tippy.js/dist/tippy.css'
 
 import {
@@ -50,6 +51,7 @@ import { usePlaybackDriver } from './usePlaybackDriver'
 import { useAudioPlayer, type PlaybackInstrument } from './useAudioPlayer'
 import { resolvePlaybackInstrument } from './sound'
 import type { PlaybackStep } from './playback'
+import { createPlaybackLinkFromTimeline } from './playbackLink'
 import type { SelectionOrigin } from '@zupfnoter/types'
 import type { StorageConnection, StorageDocument, StorageProviderDescriptor } from '@zupfnoter/types'
 import {
@@ -298,6 +300,62 @@ const buildInfo = (globalThis as typeof globalThis & { __ZUPFNOTER_BUILD_INFO__?
   buildTime: new Date(0).toISOString(),
 }
 
+function recordValue(value: unknown): Record<string, unknown> | undefined {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : undefined
+}
+
+function stringValue(value: unknown): string | undefined {
+  return typeof value === 'string' && value.trim() !== '' ? value.trim() : undefined
+}
+
+function annotationText(value: unknown): string | undefined {
+  const annotation = recordValue(value)
+  return stringValue(annotation?.text) ?? stringValue(recordValue(annotation?.value)?.text)
+}
+
+function abcHeaderValue(text: string, header: string): string | undefined {
+  return text.split('\n')
+    .find((line) => line.startsWith(`${header}:`))
+    ?.slice(header.length + 1)
+    .trim() || undefined
+}
+
+function resolvePlaybackIdentification(): string | undefined {
+  const songConfig = recordValue(extractSongConfig(documentText.value))
+  const extracts = recordValue(songConfig?.extract)
+  const currentConfig = recordValue(extracts?.[String(currentExtract.value)])
+  const defaultConfig = recordValue(extracts?.['0'])
+  const extractConfig = currentConfig ?? defaultConfig
+  const currentNotes = recordValue(currentConfig?.notes)
+  const defaultNotes = recordValue(defaultConfig?.notes)
+  const topLevelNotes = recordValue(songConfig?.notes)
+  const numberTemplate = annotationText(currentNotes?.T01_number)
+    ?? annotationText(defaultNotes?.T01_number)
+    ?? annotationText(topLevelNotes?.T01_number)
+  const extractTemplate = annotationText(currentNotes?.T01_number_extract)
+    ?? annotationText(defaultNotes?.T01_number_extract)
+    ?? annotationText(topLevelNotes?.T01_number_extract)
+  if (numberTemplate === undefined || extractTemplate === undefined) return undefined
+
+  const number = abcHeaderValue(documentText.value, 'X') ?? ''
+  const filenamePart = stringValue(extractConfig?.filenamepart) ?? String(currentExtract.value)
+  const extractTitle = stringValue(extractConfig?.title) ?? String(currentExtract.value)
+  const resolve = (template: string): string => template.replace(/\{\{([^}]+)\}\}/g, (match: string, key: string) => {
+    const values: Record<string, string> = {
+      number,
+      extract_filename: filenamePart,
+      extract_title: extractTitle,
+    }
+    return values[key] ?? match
+  })
+  const resolvedNumber = resolve(numberTemplate)
+  const resolvedExtractNumber = resolve(extractTemplate)
+  const identification = `${resolvedNumber}${resolvedExtractNumber}`.trim()
+  return identification === '' || identification.includes('{{') ? undefined : identification
+}
+
 const renderIssueLabel = computed(() => {
   const warnings = renderIssueItems.value.filter((issue) => issue.severity === 'warning').length
   const errors = renderIssueItems.value.filter((issue) => issue.severity === 'error').length
@@ -430,6 +488,7 @@ let renderWorker: Worker | undefined
 let harpMirrorWindow: Window | null = null
 const harpMirrorWindowName = 'zupfnoter-harp-duplicate'
 const harpMirrorChannel = createHarpMirrorChannel()
+const PLAYBACK_URL_WARNING_LENGTH = 1800
 let nextRenderRequestId = 0
 let pendingRenderRequestId: number | undefined
 let renderTimer: ReturnType<typeof setTimeout> | undefined
@@ -728,9 +787,12 @@ function handleCommandError(command: string, error: unknown, errorToastTitle?: s
     return true
   }
 
-  if (errorToastTitle !== undefined) {
-    pushToast({ severity: 'danger', title: errorToastTitle, message: enrichedMessage, persistent: true })
-  }
+  pushToast({
+    severity: 'danger',
+    title: errorToastTitle ?? 'Kommando fehlgeschlagen',
+    message: enrichedMessage,
+    persistent: true,
+  })
   return false
 }
 
@@ -1128,6 +1190,78 @@ async function toggleFullscreen(): Promise<void> {
   await document.documentElement.requestFullscreen()
 }
 
+async function copyTextToClipboard(value: string): Promise<boolean> {
+  if (navigator.clipboard !== undefined) {
+    try {
+      await navigator.clipboard.writeText(value)
+      return true
+    } catch {
+      // Fall through to the compatibility path below.
+    }
+  }
+
+  const input = document.createElement('textarea')
+  input.value = value
+  input.setAttribute('readonly', 'true')
+  input.style.position = 'fixed'
+  input.style.opacity = '0'
+  document.body.appendChild(input)
+  input.select()
+  let copied = false
+  try {
+    copied = document.execCommand('copy')
+  } finally {
+    input.remove()
+  }
+  return copied
+}
+
+async function exportPlaybackLinkCommand(): Promise<void> {
+  const playerUrl = new URL('https://bwl21--zupfnoter-player.csweichel.dev/')
+  const identification = resolvePlaybackIdentification()
+  if (identification !== undefined) playerUrl.searchParams.set('id', identification)
+  const result = await createPlaybackLinkFromTimeline(
+    playbackTimeline.value,
+    playerUrl.toString(),
+    activeVoiceIds.value.length > 0 ? new Set(activeVoiceIds.value) : undefined,
+  )
+  const qrCodeDataUrl = await QRCode.toDataURL(result.url, {
+    errorCorrectionLevel: 'L',
+    margin: 4,
+    width: 320,
+  })
+  const urlLength = result.url.length
+  const isLongUrl = urlLength > PLAYBACK_URL_WARNING_LENGTH
+  const analysis = result.analysis
+  const formatBytes = (value: number): string => `${value.toLocaleString('de-DE')} Byte`
+  const formatPercent = (value: number): string => `${Math.round(value)} %`
+  const analysisMessage = [
+    `Events:              ${analysis.eventCount.toLocaleString('de-DE')}`,
+    `Binär:               ${formatBytes(analysis.binaryBytes)}`,
+    `Nach Deflate:        ${formatBytes(analysis.compressedBytes)}`,
+    `Base64URL:           ${analysis.base64UrlChars.toLocaleString('de-DE')} Zeichen`,
+    '',
+    `Zeitdaten:           ${formatPercent(analysis.percentages.timeBytes)}`,
+    `Tonhöhen:            ${formatPercent(analysis.percentages.pitchBytes)}`,
+    `Dauern:              ${formatPercent(analysis.percentages.durationBytes)}`,
+    `Metadaten:           ${formatPercent(analysis.percentages.metadataBytes)}`,
+  ].join('\n')
+  const sizeMessage = `URL-Länge: ${urlLength.toLocaleString('de-DE')} Zeichen.`
+  const copied = await copyTextToClipboard(result.url)
+  if (copied) {
+    logger.info('playback link copied to clipboard')
+    const identityMessage = identification === undefined ? '' : ` (${identification})`
+    pushToast({ severity: isLongUrl ? 'warning' : 'info', title: 'Playback-Link', message: isLongUrl
+      ? `${analysisMessage}\n\n${sizeMessage} Der Link${identityMessage} ist lang und kann sich für QR-Code oder Messenger schlecht eignen.`
+      : `${analysisMessage}\n\n${sizeMessage} Der Playback-Link${identityMessage} wurde in die Zwischenablage kopiert.`, qrCodeDataUrl, persistent: true })
+    return
+  }
+
+  logger.error(`playback link could not be copied: ${result.url}`)
+  window.prompt('Playback-Link manuell kopieren:', result.url)
+  pushToast({ severity: 'warning', title: 'Playback-Link', message: `${analysisMessage}\n\n${sizeMessage} Das automatische Kopieren wurde vom Browser blockiert. Der Link wurde zur manuellen Übernahme angezeigt.`, qrCodeDataUrl, persistent: true })
+}
+
 function setCurrentExtractFromCommand(extract: number): void {
   currentExtract.value = Math.trunc(extract)
   playbackStore.setActiveExtract(currentExtract.value)
@@ -1337,6 +1471,13 @@ commandStack.addCommand({
   help: 'toggle fullscreen mode',
   undoable: false,
   perform: () => toggleFullscreen(),
+})
+
+commandStack.addCommand({
+  name: 'playbacklink',
+  help: 'create a playback link from the current timeline',
+  undoable: false,
+  perform: () => exportPlaybackLinkCommand(),
 })
 
 shortcutManager.register({
@@ -1704,6 +1845,11 @@ function handleMirrorMessage(event: MessageEvent): void {
               </div>
             </details>
             <ZnButton variant="ghost" @click="executeToolbarCommand('render')">Rendern</ZnButton>
+            <ZnButton
+              variant="ghost"
+              data-testid="playback-link"
+              @click="executeToolbarCommand('playbacklink', 'Playback-Link nicht möglich')"
+            >Playback-Link</ZnButton>
             <ZnButton
               :variant="playbackStore.state.status === 'playing' ? 'primary' : 'ghost'"
               :aria-pressed="playbackStore.state.status === 'playing'"

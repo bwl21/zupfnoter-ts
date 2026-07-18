@@ -1,5 +1,6 @@
 import type {
   PlaybackMode,
+  PlaybackPosition,
   PlaybackPlayerEvent,
   PlaybackHighlight,
   PlaybackFlowStep,
@@ -47,6 +48,7 @@ export interface PlaybackStep {
   playbackStartMs: number
   durationMs: number
   sourceTime: number
+  position?: PlaybackPosition
   flowIndex: number
   passIndex: number
   voltaNumber?: number
@@ -342,6 +344,7 @@ export function buildPlaybackTimeline(song: Song, activeVoices?: number[]): Play
         playbackStartMs: playbackCursorMs,
         durationMs: 120,
         sourceTime: flowStep.sourceTime,
+        position: { measureNumber: flowStep.measureNumber, passIndex: flowStep.passIndex },
         flowIndex: flowStep.flowIndex,
         passIndex: flowStep.passIndex,
         voltaNumber: flowStep.voltaNumber,
@@ -375,6 +378,7 @@ export function buildPlaybackTimeline(song: Song, activeVoices?: number[]): Play
       playbackStartMs: playbackCursorMs,
       durationMs: stepDurationMs,
       sourceTime: flowStep.sourceTime,
+      position: { measureNumber: flowStep.measureNumber, passIndex: flowStep.passIndex },
       flowIndex: flowStep.flowIndex,
       passIndex: flowStep.passIndex,
       voltaNumber: flowStep.voltaNumber,

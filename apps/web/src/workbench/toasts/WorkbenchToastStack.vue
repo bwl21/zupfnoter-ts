@@ -36,6 +36,12 @@ defineEmits<{
       <p class="workbench-toast__message">
         {{ toast.message }}
       </p>
+      <img
+        v-if="toast.qrCodeDataUrl !== undefined"
+        class="workbench-toast__qr"
+        :src="toast.qrCodeDataUrl"
+        alt="QR-Code für den Playback-Link"
+      >
     </article>
   </aside>
 </template>
@@ -84,5 +90,13 @@ defineEmits<{
   color: var(--zn-text-soft);
   white-space: pre-wrap;
   line-height: 1.45;
+}
+
+.workbench-toast__qr {
+  width: min(16rem, 100%);
+  height: auto;
+  align-self: center;
+  background: white;
+  image-rendering: pixelated;
 }
 </style>

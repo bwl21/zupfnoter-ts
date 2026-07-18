@@ -63,6 +63,13 @@ export type {
 } from './playback.js'
 
 export type {
+  PlaybackPosition,
+  PlaybackEvent,
+  PlaybackLinkOptions,
+  PlaybackLinkResult,
+} from './playbackLink.js'
+
+export type {
   FillStyle,
   Drawable,
   Ellipse,
