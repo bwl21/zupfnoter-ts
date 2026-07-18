@@ -50,6 +50,21 @@ interface SoundfontPitch {
   cents: number
 }
 
+interface WebkitAudioWindow extends Window {
+  webkitAudioContext?: typeof AudioContext
+}
+
+interface AudioSessionNavigator extends Navigator {
+  audioSession?: {
+    type: string
+  }
+}
+
+function configurePlaybackAudioSession(): void {
+  const audioSession = (navigator as AudioSessionNavigator).audioSession
+  if (audioSession !== undefined) audioSession.type = 'playback'
+}
+
 function resolveSoundfontPitch(midi: number): SoundfontPitch {
   const naturalPitches = [0, 2, 4, 5, 7, 9, 11]
   const octave = Math.floor(midi / 12)
@@ -447,12 +462,20 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
   async function playPlayback(): Promise<void> {
     if (selectedEvents.length === 0) return
     stopPlayback(false)
+    configurePlaybackAudioSession()
     const base = selectedStartMs
     const durationMs = (selectedEvents[selectedEvents.length - 1]?.startMs ?? base) - base
       + (selectedEvents[selectedEvents.length - 1]?.durationMs ?? 0)
     if (playbackOffsetMs >= durationMs) playbackOffsetMs = 0
     const AudioContextClass = window.AudioContext
+      ?? (window as WebkitAudioWindow).webkitAudioContext
+    if (AudioContextClass === undefined) {
+      if (error !== null) error.textContent = 'Dieser Browser unterstützt keine Audiowiedergabe.'
+      return
+    }
     audioContext = new AudioContextClass({ latencyHint: 'playback' })
+    // iOS requires resume to start while the play button's gesture is active.
+    void audioContext.resume().catch(() => undefined)
     const outputGain = audioContext.createGain()
     outputGain.gain.value = 2
     outputGain.connect(audioContext.destination)
@@ -462,6 +485,12 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     let harpPlayer: SoundfontPlayer
     try {
       harpPlayer = await loadHarpPlayer(playerContext, selectedEvents.map((event) => event.pitch), outputGain)
+      if (playerContext.state !== 'running') {
+        await playerContext.resume()
+      }
+      if (playerContext.state !== 'running') {
+        throw new Error(`AudioContext bleibt ${playerContext.state}`)
+      }
     } catch {
       setLoading(false)
       if (error !== null) error.textContent = 'Der Harfenklang konnte nicht geladen werden.'
