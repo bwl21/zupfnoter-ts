@@ -283,6 +283,20 @@ describe('configSchema', () => {
     })).toEqual([])
   })
 
+  it('accepts null minc factors as an inactive legacy override', () => {
+    expect(validateEmbeddedZupfnoterConfigShape({
+      extract: {
+        '2': {
+          notebound: {
+            minc: {
+              '45696': { minc_f: null },
+            },
+          },
+        },
+      },
+    })).toEqual([])
+  })
+
   it('rejects unknown keys inside strict deep notebound structures', () => {
     expect(validateEmbeddedZupfnoterConfigShape({
       extract: {

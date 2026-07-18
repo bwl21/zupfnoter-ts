@@ -119,19 +119,19 @@ function getSizeFactor(
 function getMincFactor(
   time: number,
   increment: number,
-  layoutMinc: Record<string, { minc_f?: number }>,
+  layoutMinc: Record<string, { minc_f?: number | null }>,
 ): number {
   const entry = layoutMinc[String(time)]
-  if (entry?.minc_f !== undefined) {
+  if (typeof entry?.minc_f === 'number') {
     return entry.minc_f * increment
   }
   return 0
 }
 
-function getLayoutMinc(conf: Confstack): Record<string, { minc_f?: number }> {
+function getLayoutMinc(conf: Confstack): Record<string, { minc_f?: number | null }> {
   return (
-    (conf.getSubtree('extract.notebound.minc') as Record<string, { minc_f?: number }> | undefined) ??
-    (conf.getSubtree('notebound.minc') as Record<string, { minc_f?: number }> | undefined) ??
+    (conf.getSubtree('extract.notebound.minc') as Record<string, { minc_f?: number | null }> | undefined) ??
+    (conf.getSubtree('notebound.minc') as Record<string, { minc_f?: number | null }> | undefined) ??
     {}
   )
 }

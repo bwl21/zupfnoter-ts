@@ -351,7 +351,7 @@ const MINC_ENTRY_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    minc_f: { type: 'number' },
+    minc_f: { type: ['number', 'null'] },
   },
 }
 
@@ -1196,7 +1196,7 @@ function legacyDefinitions(): Record<string, JsonSchemaNode> {
       type: 'object',
       required: ['minc_f'],
       additionalProperties: false,
-      properties: { minc_f: { type: 'number' } },
+      properties: { minc_f: { type: ['number', 'null'] } },
     },
     nconf_entry: {
       type: 'object',
