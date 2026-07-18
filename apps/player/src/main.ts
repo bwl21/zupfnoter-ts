@@ -9,6 +9,8 @@ import { deflateSync, inflateSync } from 'fflate'
 import './style.css'
 
 const PLAYER_VERSION = '0.1.5'
+const AUDIO_SCHEDULE_WINDOW_MS = 2000
+const AUDIO_SCHEDULE_REFILL_MS = 500
 
 const appElement = document.querySelector<HTMLDivElement>('#app')
 if (appElement === null) throw new Error('Player root is missing')
@@ -291,6 +293,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
   let speedFactor = 1
   let harpPlayerPromise: Promise<SoundfontPlayer> | undefined
   let metronomeOscillators: OscillatorNode[] = []
+  let scheduledMetronomeTimes = new Set<number>()
 
   interface SoundfontPlayer {
     schedule(startTime: number, notes: readonly SoundfontNote[]): void
@@ -319,6 +322,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       }
     }
     metronomeOscillators = []
+    scheduledMetronomeTimes = new Set<number>()
   }
 
   function updatePosition(elapsedMs: number): void {
@@ -394,6 +398,8 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     durationMs: number,
     audioStartAt: number,
     playbackOffsetMsForSchedule: number,
+    windowStartMs = 0,
+    windowEndMs = durationMs,
   ): void {
     if (metronomeToggle?.checked !== true) return
     for (let markerIndex = 0; markerIndex < positionMarkers.length; markerIndex += 1) {
@@ -415,10 +421,14 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       for (let beat = 0; beat < beatCount; beat += 1) {
         const clickTime = marker.timeMs + beat * beatDuration
         if (clickTime < selectedStartMs || clickTime > selectedStartMs + durationMs) continue
+        const relativeClickTime = clickTime - selectedStartMs
+        if (relativeClickTime < windowStartMs || relativeClickTime >= windowEndMs) continue
+        if (scheduledMetronomeTimes.has(clickTime)) continue
         const accent = beat === 0 || accentBeats.has(beat)
         const delaySec = (clickTime - selectedStartMs - playbackOffsetMsForSchedule) / 1000 / speedFactor
         if (delaySec < 0) continue
         playMetronomeClick(context, accent, audioStartAt + delaySec)
+        scheduledMetronomeTimes.add(clickTime)
       }
     }
   }
@@ -511,14 +521,45 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       const skippedMs = Math.max(0, playbackOffsetMs - eventOffset)
       const chordGain = Math.min(0.9, 0.9 / Math.sqrt(chordSizes.get(event.startMs) ?? 1))
       return {
+        eventOffset,
+        eventDuration: event.durationMs,
         ...resolveSoundfontPitch(event.pitch),
-        time: Math.max(0, eventOffset - playbackOffsetMs) / 1000 / speedFactor,
+        skippedMs,
         duration: Math.max(0.02, (event.durationMs - skippedMs) / 1000 / speedFactor),
         gain: (event.velocity ?? 127) / 127 * chordGain,
       }
     })
-    harpPlayer.schedule(audioStartAt, scheduledNotes)
-    scheduleMetronome(playerContext, durationMs, audioStartAt, playbackOffsetMs)
+    let nextWindowStartMs = playbackOffsetMs
+    const scheduleWindow = () => {
+      if (audioContext !== playerContext || nextWindowStartMs >= durationMs) return
+      const windowEndMs = Math.min(durationMs, nextWindowStartMs + AUDIO_SCHEDULE_WINDOW_MS)
+      const windowAudioStart = audioStartAt
+        + (nextWindowStartMs - playbackOffsetMs) / 1000 / speedFactor
+      const windowNotes = scheduledNotes
+        .filter((event) => event.eventOffset >= nextWindowStartMs && event.eventOffset < windowEndMs)
+        .map((event) => ({
+          note: event.note,
+          cents: event.cents,
+          time: (event.eventOffset - nextWindowStartMs) / 1000 / speedFactor,
+          duration: Math.max(0.02, (event.eventDuration - (event.eventOffset < playbackOffsetMs ? event.skippedMs : 0)) / 1000 / speedFactor),
+          gain: event.gain,
+        }))
+      if (windowNotes.length > 0) harpPlayer.schedule(windowAudioStart, windowNotes)
+      scheduleMetronome(
+        playerContext,
+        durationMs,
+        audioStartAt,
+        playbackOffsetMs,
+        nextWindowStartMs,
+        windowEndMs,
+      )
+      nextWindowStartMs = windowEndMs
+      if (nextWindowStartMs < durationMs) {
+        const timer = window.setTimeout(scheduleWindow, AUDIO_SCHEDULE_REFILL_MS)
+        playbackTimers.push(timer)
+      }
+    }
+    scheduleWindow()
     const finishTimer = window.setTimeout(() => stopPlayback(), Math.max(0, (durationMs - playbackOffsetMs) / speedFactor))
     playbackTimers.push(finishTimer)
     const update = () => {
@@ -544,7 +585,14 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     const elapsedMs = Math.max(0, (audioContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
     const durationMs = (selectedEvents[selectedEvents.length - 1]?.startMs ?? selectedStartMs) - selectedStartMs
       + (selectedEvents[selectedEvents.length - 1]?.durationMs ?? 0)
-    scheduleMetronome(audioContext, durationMs, audioContext.currentTime + 0.05, elapsedMs)
+    scheduleMetronome(
+      audioContext,
+      durationMs,
+      audioContext.currentTime + 0.05,
+      elapsedMs,
+      elapsedMs,
+      Math.min(durationMs, elapsedMs + AUDIO_SCHEDULE_WINDOW_MS),
+    )
   })
   resetButton?.addEventListener('click', () => {
     stopPlayback()
