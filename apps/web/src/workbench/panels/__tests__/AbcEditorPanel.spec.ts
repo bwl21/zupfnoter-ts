@@ -55,6 +55,37 @@ describe('AbcEditorPanel', () => {
     expect(wrapper.find('.cm-abc-gutter-marker--error').exists()).toBe(true)
   })
 
+  it('keeps diagnostics with columns beyond the line inside the document', async () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(AbcEditorPanel, {
+      props: {
+        modelValue: 'X:1\nT:Demo\nK:C\nC',
+        diagnostics: [
+          {
+            severity: 'error',
+            message: 'Invalid character',
+            line: 4,
+            column: 999,
+            source: 'abc-parser',
+          },
+          {
+            severity: 'warning',
+            message: 'Earlier warning',
+            line: 1,
+            column: 1,
+            source: 'abc-parser',
+          },
+        ],
+      },
+    })
+
+    await vi.advanceTimersByTimeAsync(100)
+    await nextTick()
+
+    expect(wrapper.find('.cm-abc-diagnostic-underline').exists()).toBe(true)
+  })
+
   it('opens the native CodeMirror search panel with Ctrl+F', async () => {
     const wrapper = mount(AbcEditorPanel, {
       props: { modelValue: 'X:1\nT:Demo\nK:C\nC D C' },

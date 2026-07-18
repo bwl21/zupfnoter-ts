@@ -7,6 +7,8 @@ import 'tippy.js/dist/tippy.css'
 import {
   ZnBadge,
   ZnButton,
+  ZnIcon,
+  ZnIconButton,
   ZnSplitPane,
   ZnTabs,
   ZnToolbar,
@@ -1217,7 +1219,7 @@ async function copyTextToClipboard(value: string): Promise<boolean> {
 }
 
 async function exportPlaybackLinkCommand(): Promise<void> {
-  const playerUrl = new URL('https://bwl21--zupfnoter-player.csweichel.dev/')
+  const playerUrl = new URL('https://zupfnoter-player.csweichel.dev/')
   const identification = resolvePlaybackIdentification()
   if (identification !== undefined) playerUrl.searchParams.set('id', identification)
   const result = await createPlaybackLinkFromTimeline(
@@ -1231,35 +1233,35 @@ async function exportPlaybackLinkCommand(): Promise<void> {
     width: 320,
   })
   const urlLength = result.url.length
-  const isLongUrl = urlLength > PLAYBACK_URL_WARNING_LENGTH
+  const qrAssessment = urlLength < 1500
+    ? { severity: 'info' as const, label: 'QR-Code: gut' }
+    : urlLength < 2000
+      ? { severity: 'warning' as const, label: 'QR-Code: dicht, aber brauchbar' }
+      : urlLength < 2500
+        ? { severity: 'warning' as const, label: 'QR-Code: kritisch' }
+        : { severity: 'danger' as const, label: 'QR-Code: eher ungeeignet' }
+  const isLongUrl = urlLength >= PLAYBACK_URL_WARNING_LENGTH
   const analysis = result.analysis
   const formatBytes = (value: number): string => `${value.toLocaleString('de-DE')} Byte`
-  const formatPercent = (value: number): string => `${Math.round(value)} %`
-  const analysisMessage = [
-    `Events:              ${analysis.eventCount.toLocaleString('de-DE')}`,
-    `Binär:               ${formatBytes(analysis.binaryBytes)}`,
-    `Nach Deflate:        ${formatBytes(analysis.compressedBytes)}`,
-    `Base64URL:           ${analysis.base64UrlChars.toLocaleString('de-DE')} Zeichen`,
-    '',
-    `Zeitdaten:           ${formatPercent(analysis.percentages.timeBytes)}`,
-    `Tonhöhen:            ${formatPercent(analysis.percentages.pitchBytes)}`,
-    `Dauern:              ${formatPercent(analysis.percentages.durationBytes)}`,
-    `Metadaten:           ${formatPercent(analysis.percentages.metadataBytes)}`,
+  const sizeMessage = `URL-Länge: ${urlLength.toLocaleString('de-DE')} Zeichen · ${qrAssessment.label}.`
+  const userSummary = [
+    `Ereignisse: ${analysis.eventCount.toLocaleString('de-DE')}`,
+    sizeMessage,
   ].join('\n')
-  const sizeMessage = `URL-Länge: ${urlLength.toLocaleString('de-DE')} Zeichen.`
+  logger.info(`playback link analysis: events=${analysis.eventCount}, binary=${formatBytes(analysis.binaryBytes)}, compressed=${formatBytes(analysis.compressedBytes)}, base64=${analysis.base64UrlChars} chars, bytes/event=${analysis.bytesPerEvent.toFixed(2)}`)
   const copied = await copyTextToClipboard(result.url)
   if (copied) {
     logger.info('playback link copied to clipboard')
     const identityMessage = identification === undefined ? '' : ` (${identification})`
-    pushToast({ severity: isLongUrl ? 'warning' : 'info', title: 'Playback-Link', message: isLongUrl
-      ? `${analysisMessage}\n\n${sizeMessage} Der Link${identityMessage} ist lang und kann sich für QR-Code oder Messenger schlecht eignen.`
-      : `${analysisMessage}\n\n${sizeMessage} Der Playback-Link${identityMessage} wurde in die Zwischenablage kopiert.`, qrCodeDataUrl, persistent: true })
+    pushToast({ severity: qrAssessment.severity, title: 'Playback-Link', message: isLongUrl
+      ? `${userSummary}\nDer Link${identityMessage} ist lang und kann sich für QR-Code oder Messenger schlecht eignen.`
+      : `${userSummary}\nDer Playback-Link${identityMessage} wurde in die Zwischenablage kopiert.`, qrCodeDataUrl, persistent: true })
     return
   }
 
   logger.error(`playback link could not be copied: ${result.url}`)
   window.prompt('Playback-Link manuell kopieren:', result.url)
-  pushToast({ severity: 'warning', title: 'Playback-Link', message: `${analysisMessage}\n\n${sizeMessage} Das automatische Kopieren wurde vom Browser blockiert. Der Link wurde zur manuellen Übernahme angezeigt.`, qrCodeDataUrl, persistent: true })
+  pushToast({ severity: 'warning', title: 'Playback-Link', message: `${userSummary}\nDas automatische Kopieren wurde vom Browser blockiert. Der Link wurde zur manuellen Übernahme angezeigt.`, qrCodeDataUrl, persistent: true })
 }
 
 function setCurrentExtractFromCommand(extract: number): void {
@@ -1845,11 +1847,14 @@ function handleMirrorMessage(event: MessageEvent): void {
               </div>
             </details>
             <ZnButton variant="ghost" @click="executeToolbarCommand('render')">Rendern</ZnButton>
-            <ZnButton
+            <ZnIconButton
+              label="Playback-Link teilen"
               variant="ghost"
               data-testid="playback-link"
               @click="executeToolbarCommand('playbacklink', 'Playback-Link nicht möglich')"
-            >Playback-Link</ZnButton>
+            >
+              <ZnIcon name="share" />
+            </ZnIconButton>
             <ZnButton
               :variant="playbackStore.state.status === 'playing' ? 'primary' : 'ghost'"
               :aria-pressed="playbackStore.state.status === 'playing'"
@@ -2097,6 +2102,23 @@ function handleMirrorMessage(event: MessageEvent): void {
   border-radius: var(--zn-radius-sm);
   background: var(--zn-bg-elevated);
   box-shadow: none;
+}
+
+@media (max-width: 64rem) {
+  .workbench-chrome:deep(.zn-toolbar) {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .workbench-chrome:deep(.zn-toolbar__group) {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .workbench-chrome:deep(.zn-toolbar__group--trailing) {
+    justify-content: flex-start;
+  }
 }
 
 .workbench-header__about-button {

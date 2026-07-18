@@ -74,6 +74,62 @@ describe('playback link format', () => {
     expect(result.analysis.breakdown.timeBytes).toBeGreaterThan(0)
     expect(result.analysis.breakdown.durationBytes).toBeGreaterThan(0)
     expect(result.analysis.breakdown.pitchBytes).toBe(3)
-    expect(result.analysis.percentages.metadataBytes).toBeGreaterThan(0)
+    expect(result.analysis.percentages.otherMetadataBytes).toBeGreaterThan(0)
+  })
+
+  it('decodes the compact format without default velocity and pass repetition', async () => {
+    const compactEvents: PlaybackEvent[] = [
+      { ...events[0], velocity: undefined, position: { measureNumber: 1, passIndex: 1 } },
+      { ...events[1], velocity: undefined, position: { measureNumber: 1, passIndex: 1 } },
+    ]
+    const result = await exportPlaybackLink(compactEvents, {
+      playerUrl: 'https://play.zupfnoter.de/',
+    }, identityCodec)
+    expect(result.analysis.breakdown.velocityBytes).toBe(0)
+    expect(result.analysis.breakdown.flagsBytes).toBe(2)
+    const decoded = decodePlaybackPayload(result.payload)
+    expect(decoded.events.map((event) => event.position)).toEqual([
+      { measureNumber: 1, passIndex: 1 },
+      { measureNumber: 1, passIndex: 1 },
+    ])
+  })
+
+  it('keeps decoding version 1 payloads', () => {
+    const legacyPayload = new Uint8Array([
+      0x5a, 0x4e, 0x50, 1, 1, 10, 1,
+      0, 12, 60, 127, 1, 1,
+    ])
+    expect(decodePlaybackPayload(legacyPayload).events).toEqual([{
+      startMs: 0,
+      durationMs: 120,
+      pitch: 60,
+      velocity: 127,
+      position: { measureNumber: 1, passIndex: 1 },
+    }])
+  })
+
+  it('handles long sequences with simultaneous events and velocity changes', async () => {
+    const longEvents: PlaybackEvent[] = Array.from({ length: 1200 }, (_, index) => ({
+      startMs: Math.floor(index / 6) * 80,
+      durationMs: 80,
+      pitch: 48 + (index % 36),
+      velocity: 80 + (index % 40),
+      position: { measureNumber: Math.floor(index / 24) + 1, passIndex: 1 },
+    }))
+    const result = await exportPlaybackLink(longEvents, {
+      playerUrl: 'https://play.zupfnoter.de/',
+    }, identityCodec)
+    expect(decodePlaybackPayload(result.payload).events).toHaveLength(longEvents.length)
+    expect(result.analysis.eventCount).toBe(1200)
+  })
+
+  it('rejects unknown versions and truncated payloads', async () => {
+    const result = await exportPlaybackLink(events, {
+      playerUrl: 'https://play.zupfnoter.de/',
+    }, identityCodec)
+    const unknownVersion = new Uint8Array(result.payload)
+    unknownVersion[3] = 99
+    expect(() => decodePlaybackPayload(unknownVersion)).toThrow('Unsupported playback format version')
+    expect(() => decodePlaybackPayload(result.payload.slice(0, -1))).toThrow()
   })
 })

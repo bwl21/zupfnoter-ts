@@ -82,7 +82,7 @@ Bedeutung:
 - `dt`: Zeit seit dem vorherigen Ereignisstart
 - `d`: Dauer
 - `p`: MIDI-Tonhöhe, 0–127
-- `v`: Velocity, Version 1 immer 127
+- `v`: Velocity, standardmäßig 127; Version 2 speichert Abweichungen optional
 - `m`: Taktnummer
 - `r`: Durchlaufnummer
 
@@ -90,14 +90,14 @@ Mehrere gleichzeitig startende Töne erhalten `dt = 0` und dieselben Werte für 
 
 Die Zeitwerte werden standardmäßig auf 10 ms quantisiert. Positive Dauern werden mindestens auf eine Zeiteinheit angehoben. Die Exportreihenfolge ist stabil: zuerst Startzeit, dann Pitch.
 
-## Binärformat Version 1
+## Binärformat Version 2
 
 Der Header ist unkomprimiert:
 
 ```text
 Magic             3 Bytes: ZNP
-Formatversion     1 Byte: 1
-Flags             1 Byte: Deflate Raw aktiviert
+Formatversion     1 Byte: 2
+Flags             1 Byte: Deflate Raw, optionale Velocity und Durchläufe
 Zeitauflösung     VarUInt, Millisekunden
 Event Count       VarUInt
 ```
@@ -108,10 +108,15 @@ Danach folgt die Deflate-Raw-Payload. Pro Ereignis werden geschrieben:
 Delta-Zeit        VarUInt
 Dauer             VarUInt
 MIDI-Pitch        1 Byte
-Velocity          1 Byte
-Taktnummer        VarUInt
-Durchlauf         VarUInt
+Event-Flags       1 Byte
+optionaler Takt   VarUInt, nur bei Änderung
+optionaler Durchlauf VarUInt, nur bei Änderung
+optionale Velocity  1 Byte, nur wenn nicht überall 127
 ```
+
+Version 1 wird weiterhin gelesen. Neue Links werden ausschließlich in Version 2
+geschrieben. Takt und Durchlauf werden als Zustand fortgeschrieben; unveränderte
+Werte werden nicht erneut gespeichert.
 
 Das Format enthält keine ABC-Daten, Zupfnoter-IDs, Stimmen, Konfiguration, Layoutdaten, Wiederholungsobjekte, Bindungen, Annotationen oder Editorpositionen.
 
@@ -252,7 +257,7 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 - VarUInt-Grenzwerte
 - Zeitquantisierung auf 10 ms
 - Pitch-/Velocity-Grenzen
-- Takt-/Durchlaufdaten an jedem Ereignis
+- Takt-/Durchlaufdaten bei Änderungen
 - Deflate-Raw-Roundtrip
 - deterministische Ausgabe
 - Base64URL ohne Padding
@@ -280,8 +285,9 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 ## Annahmen
 
 - `p` ist eine MIDI-Tonhöhe.
-- `v` ist in Version 1 immer 127.
-- Deflate Raw ist die einzige Kompression in Version 1.
+- `v` ist standardmäßig 127 und wird in Version 2 nur bei Bedarf gespeichert.
+- Deflate Raw ist die einzige Kompression in Version 2.
+- Version-1-Payloads bleiben abwärtskompatibel lesbar.
 - Der Player wird als `apps/player` im selben Monorepo angelegt.
 - Takt und Durchlauf stehen direkt an jedem Audioereignis.
 - Die Ablaufordnung wird durch die Ereignisreihenfolge bestimmt.

@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@zupfnoter/playback": "workspace:*",
-    "fflate": "^0.8.2"
+    "fflate": "^0.8.2",
+    "soundfont-player": "^0.12.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.4",

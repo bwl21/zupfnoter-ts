@@ -230,18 +230,23 @@ function buildDiagnosticDecorations(state: EditorState): DecorationSet {
     }
   }
 
-  for (const [lineNo, diagnostics] of linesWithDiagnostics) {
+  const sortedDiagnosticLines = [...linesWithDiagnostics.keys()].sort((left, right) => left - right)
+  for (const lineNo of sortedDiagnosticLines) {
+    const diagnostics = linesWithDiagnostics.get(lineNo)
+    if (diagnostics === undefined) continue
     if (lineNo < 1 || lineNo > state.doc.lines) {
       continue
     }
 
     const line = state.doc.line(lineNo)
+    if (line.from === line.to) continue
     const diagnostic = diagnostics.find((entry) => entry.severity === 'error') ?? diagnostics[0]
     if (diagnostic === undefined) continue
 
     const column = Math.max(1, diagnostic.column ?? 1)
-    const start = line.from + column - 1
-    const end = Math.min(line.to, line.from + findDiagnosticTokenEnd(line.text, column - 1))
+    const startIndex = Math.min(line.text.length - 1, column - 1)
+    const start = line.from + startIndex
+    const end = Math.min(line.to, line.from + findDiagnosticTokenEnd(line.text, startIndex))
     const severity = diagnostic.severity === 'error' ? 'error' : 'warning'
 
     builder.add(
@@ -292,7 +297,10 @@ function buildDiagnosticGutterMarkers(state: EditorState): import('@codemirror/s
     }
   }
 
-  for (const [lineNo, diagnostics] of linesWithDiagnostics) {
+  const sortedDiagnosticLines = [...linesWithDiagnostics.keys()].sort((left, right) => left - right)
+  for (const lineNo of sortedDiagnosticLines) {
+    const diagnostics = linesWithDiagnostics.get(lineNo)
+    if (diagnostics === undefined) continue
     if (lineNo < 1 || lineNo > state.doc.lines) {
       continue
     }

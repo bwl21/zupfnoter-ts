@@ -99,7 +99,7 @@ flink publish apps/player/dist \
 Die aktuelle Site ist:
 
 ```text
-https://bwl21--zupfnoter-player.csweichel.dev/
+https://zupfnoter-player.csweichel.dev/
 ```
 
 ## Was Flink verbessern muss

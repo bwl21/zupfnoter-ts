@@ -8,6 +8,7 @@ import {
   faPen,
   faRotateLeft,
   faRotateRight,
+  faShareNodes,
   faSquarePlus,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
@@ -25,6 +26,7 @@ export type ZnIconName =
   | 'quickSettings'
   | 'redo'
   | 'select'
+  | 'share'
   | 'undo'
 
 /** Zupfnoter-Schlüssel auf die zugehörige Font-Awesome-Definition. */
@@ -40,5 +42,6 @@ export const ZN_ICONS: Record<ZnIconName, IconDefinition> = {
   quickSettings: faStar,
   redo: faRotateRight,
   select: faBullseye,
+  share: faShareNodes,
   undo: faRotateLeft,
 }

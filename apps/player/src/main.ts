@@ -41,6 +41,27 @@ function eventPosition(event: PlaybackEvent | undefined): { measureNumber: numbe
   return event?.position ?? { measureNumber: 1, passIndex: 1 }
 }
 
+interface SoundfontPitch {
+  note: number
+  cents: number
+}
+
+function resolveSoundfontPitch(midi: number): SoundfontPitch {
+  const naturalPitches = [0, 2, 4, 5, 7, 9, 11]
+  const octave = Math.floor(midi / 12)
+  const candidates = naturalPitches.map((pitchClass) => octave * 12 + pitchClass)
+  const note = candidates.reduce((closest, candidate) => (
+    Math.abs(candidate - midi) < Math.abs(closest - midi) ? candidate : closest
+  ), candidates[0] ?? midi)
+  return { note, cents: (midi - note) * 100 }
+}
+
+function midiToSoundfontNote(midi: number): string {
+  const names = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+  const pitch = resolveSoundfontPitch(midi)
+  return `${names[[0, 2, 4, 5, 7, 9, 11].indexOf(pitch.note % 12)] ?? 'C'}${Math.floor(pitch.note / 12) - 1}`
+}
+
 function wheelField(name: string, label: string, value: number, maximum: number): string {
   if (maximum <= 1) return `<input type="hidden" name="${name}" value="1" />`
   const options = Array.from({ length: maximum }, (_, index) => {
@@ -85,25 +106,40 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
           ${wheelField('from-measure', 'Takt', firstPosition.measureNumber, maximumMeasure)}
           <span class="wheel-dot" aria-hidden="true">${maximumPass > 1 ? '.' : ''}</span>
           ${wheelField('from-pass', 'Durchlauf', firstPosition.passIndex, maximumPass)}
+          <div class="range-actions">
+            <button id="reset-range" type="button">Reset</button>
+          </div>
         </fieldset>
-        <button id="reset-range" type="button">Bereich zurücksetzen</button>
       </form>
-      <p id="range-error" class="error-text" aria-live="polite"></p>
+        <p id="range-error" class="error-text" aria-live="polite"></p>
+      <p id="loading-indicator" class="loading-indicator" role="status" aria-live="polite" hidden>
+        <span class="spinner" aria-hidden="true"></span> Harfenklang wird geladen …
+      </p>
+      <label class="speed-control" for="speed-range">
+        <input id="speed-range" type="range" min="0.5" max="1.5" step="0.05" value="1" aria-label="Wiedergabegeschwindigkeit" aria-valuemin="0.5" aria-valuemax="1.5" aria-valuenow="1">
+        <output id="speed-value" for="speed-range">1,00×</output>
+      </label>
       <section class="transport" aria-label="Wiedergabe">
-        <p class="position-label">Position</p>
-        <output id="current-position" class="position">${first}</output>
+        <div class="position-row">
+          <output id="current-position" class="position">${first}</output>
+          <button id="take-position-button" class="take-position" type="button" title="Position übernehmen" aria-label="Position übernehmen">
+            <span class="take-position__icon" aria-hidden="true">◎</span>
+          </button>
+        </div>
         <p id="playback-time" class="playback-time">0:00</p>
         <div class="transport-buttons">
           <button id="play-button" type="button" aria-label="Wiedergabe starten">▶</button>
           <button id="pause-button" type="button" aria-label="Wiedergabe pausieren">Ⅱ</button>
           <button id="stop-button" type="button" aria-label="Wiedergabe stoppen">■</button>
         </div>
-      <button id="take-position-button" class="take-position" type="button">Position übernehmen</button>
       </section>
     </section>`
 
   const form = document.querySelector<HTMLFormElement>('#range-form')
   const error = document.querySelector<HTMLParagraphElement>('#range-error')
+  const loadingIndicator = document.querySelector<HTMLParagraphElement>('#loading-indicator')
+  const speedRange = document.querySelector<HTMLInputElement>('#speed-range')
+  const speedValue = document.querySelector<HTMLOutputElement>('#speed-value')
   const position = document.querySelector<HTMLOutputElement>('#current-position')
   const playbackTime = document.querySelector<HTMLParagraphElement>('#playback-time')
   const playButton = document.querySelector<HTMLButtonElement>('#play-button')
@@ -174,6 +210,20 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
   let playbackStartedAtMs = 0
   let currentEvent: PlaybackEvent | undefined
   let isPaused = false
+  let speedFactor = 1
+  let harpPlayerPromise: Promise<SoundfontPlayer> | undefined
+
+  interface SoundfontPlayer {
+    schedule(startTime: number, notes: readonly SoundfontNote[]): void
+  }
+
+  interface SoundfontNote {
+    time: number
+    note: number
+    duration: number
+    gain?: number
+    cents?: number
+  }
 
   function clearPlaybackTimers(): void {
     for (const timer of playbackTimers) window.clearTimeout(timer)
@@ -185,12 +235,50 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
   function updatePosition(elapsedMs: number): void {
     currentEvent = selectedEvents.filter((event) => event.startMs - (selectedEvents[0]?.startMs ?? 0) <= elapsedMs).at(-1)
     if (position !== null) position.value = eventLabel(currentEvent)
-    if (takePositionButton !== null) {
-      takePositionButton.textContent = `Position übernehmen · ${eventLabel(currentEvent)}`
-    }
     if (playbackTime !== null) {
       const seconds = Math.floor(Math.max(0, elapsedMs) / 1000)
       playbackTime.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
+    }
+  }
+
+  function setLoading(loading: boolean): void {
+    if (loadingIndicator !== null) loadingIndicator.hidden = !loading
+    if (playButton !== null) {
+      playButton.disabled = loading
+      playButton.setAttribute('aria-busy', String(loading))
+    }
+  }
+
+  function setSpeed(value: string): void {
+    const parsed = Number(value)
+    if (!Number.isFinite(parsed) || parsed <= 0) return
+    speedFactor = parsed
+    if (speedValue !== null) speedValue.value = `${parsed.toFixed(2).replace('.', ',')}×`
+    speedRange?.setAttribute('aria-valuenow', String(parsed))
+  }
+
+  async function loadHarpPlayer(context: AudioContext, noteValues: readonly number[], destination: AudioNode): Promise<SoundfontPlayer> {
+    if (harpPlayerPromise !== undefined) return harpPlayerPromise
+    const loadPromise = import('soundfont-player').then((soundfont) => soundfont.instrument(
+      context,
+      'orchestral_harp',
+      {
+        soundfont: 'FluidR3_GM',
+        format: 'mp3',
+        gain: 1,
+        destination,
+        notes: [...new Set(noteValues.map(midiToSoundfontNote))],
+      },
+    ))
+    const timeoutPromise = new Promise<SoundfontPlayer>((_, reject) => {
+      window.setTimeout(() => reject(new Error('Harfenklang-Ladevorgang überschritten')), 15000)
+    })
+    harpPlayerPromise = Promise.race([loadPromise, timeoutPromise])
+    try {
+      return await harpPlayerPromise
+    } catch (loadError) {
+      harpPlayerPromise = undefined
+      throw loadError
     }
   }
 
@@ -198,41 +286,59 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
     clearPlaybackTimers()
     if (audioContext !== undefined) void audioContext.close()
     audioContext = undefined
+    harpPlayerPromise = undefined
+    setLoading(false)
     isPaused = false
     if (reset) playbackOffsetMs = 0
     updatePosition(playbackOffsetMs)
   }
 
-  function playPlayback(): void {
+  async function playPlayback(): Promise<void> {
     if (selectedEvents.length === 0) return
     stopPlayback(false)
     const base = selectedEvents[0]?.startMs ?? 0
-    const end = (selectedEvents[selectedEvents.length - 1]?.startMs ?? base) - base
+    const durationMs = (selectedEvents[selectedEvents.length - 1]?.startMs ?? base) - base
       + (selectedEvents[selectedEvents.length - 1]?.durationMs ?? 0)
-    if (playbackOffsetMs >= end) playbackOffsetMs = 0
+    if (playbackOffsetMs >= durationMs) playbackOffsetMs = 0
     const AudioContextClass = window.AudioContext
     audioContext = new AudioContextClass()
+    const outputGain = audioContext.createGain()
+    outputGain.gain.value = 6
+    outputGain.connect(audioContext.destination)
     isPaused = false
-    const startedAt = performance.now()
-    playbackStartedAtMs = startedAt - playbackOffsetMs
-    const elapsed = () => performance.now() - playbackStartedAtMs
-    for (const event of selectedEvents) {
-      const eventOffset = event.startMs - base
-      const delay = Math.max(0, eventOffset - playbackOffsetMs)
-      const timer = window.setTimeout(() => {
-        if (audioContext === undefined) return
-        const oscillator = audioContext.createOscillator()
-        const gain = audioContext.createGain()
-        const skippedMs = Math.max(0, playbackOffsetMs - eventOffset)
-        oscillator.frequency.value = 440 * 2 ** ((event.pitch - 69) / 12)
-        gain.gain.value = (event.velocity ?? 127) / 127 * 0.12
-        oscillator.connect(gain).connect(audioContext.destination)
-        oscillator.start()
-        oscillator.stop(audioContext.currentTime + Math.max(0.02, (event.durationMs - skippedMs) / 1000))
-      }, delay)
-      playbackTimers.push(timer)
+    setLoading(true)
+    const playerContext = audioContext
+    let harpPlayer: SoundfontPlayer
+    try {
+      harpPlayer = await loadHarpPlayer(playerContext, selectedEvents.map((event) => event.pitch), outputGain)
+    } catch {
+      setLoading(false)
+      if (error !== null) error.textContent = 'Der Harfenklang konnte nicht geladen werden.'
+      stopPlayback()
+      return
     }
-    const finishTimer = window.setTimeout(() => stopPlayback(), Math.max(0, end - playbackOffsetMs))
+    if (audioContext !== playerContext) return
+    setLoading(false)
+    const startedAt = performance.now()
+    playbackStartedAtMs = startedAt - playbackOffsetMs / speedFactor
+    const elapsed = () => (performance.now() - playbackStartedAtMs) * speedFactor
+    const chordSizes = new Map<number, number>()
+    for (const event of selectedEvents) {
+      chordSizes.set(event.startMs, (chordSizes.get(event.startMs) ?? 0) + 1)
+    }
+    const scheduledNotes = selectedEvents.map((event) => {
+      const eventOffset = event.startMs - base
+      const skippedMs = Math.max(0, playbackOffsetMs - eventOffset)
+      const chordGain = Math.min(0.9, 0.9 / Math.sqrt(chordSizes.get(event.startMs) ?? 1))
+      return {
+        ...resolveSoundfontPitch(event.pitch),
+        time: Math.max(0, eventOffset - playbackOffsetMs) / 1000 / speedFactor,
+        duration: Math.max(0.02, (event.durationMs - skippedMs) / 1000 / speedFactor),
+        gain: (event.velocity ?? 127) / 127 * chordGain,
+      }
+    })
+    harpPlayer.schedule(playerContext.currentTime + 0.05, scheduledNotes)
+    const finishTimer = window.setTimeout(() => stopPlayback(), Math.max(0, (durationMs - playbackOffsetMs) / speedFactor))
     playbackTimers.push(finishTimer)
     const animate = () => {
       updatePosition(elapsed())
@@ -243,11 +349,12 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
 
   function pausePlayback(): void {
     if (audioContext === undefined) return
-    playbackOffsetMs = Math.max(0, performance.now() - playbackStartedAtMs)
+    playbackOffsetMs = Math.max(0, (performance.now() - playbackStartedAtMs) * speedFactor)
     stopPlayback(false)
     isPaused = true
   }
 
+  speedRange?.addEventListener('input', () => setSpeed(speedRange.value))
   resetButton?.addEventListener('click', () => {
     stopPlayback()
     setWheelValue('from-measure', firstPosition.measureNumber)
@@ -257,7 +364,7 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
     updatePosition(0)
   })
   playButton?.addEventListener('click', () => {
-    if (readRange() !== undefined) playPlayback()
+    if (readRange() !== undefined) void playPlayback()
   })
   pauseButton?.addEventListener('click', pausePlayback)
   stopButton?.addEventListener('click', () => stopPlayback())
