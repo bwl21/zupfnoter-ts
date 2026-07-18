@@ -172,12 +172,12 @@ describe('useAudioPlayer', () => {
       }),
     )
     expect(leftScheduleMock).toHaveBeenCalledTimes(1)
-    expect(leftScheduleMock).toHaveBeenCalledWith(10.05, [
+    expect(leftScheduleMock).toHaveBeenCalledWith(10.2, [
       { time: 0, note: 60, duration: 1, gain: 0.9 },
       { time: 1, note: 60, duration: 0.25, gain: 0.6363961030678927 },
     ])
     expect(rightScheduleMock).toHaveBeenCalledTimes(1)
-    expect(rightScheduleMock).toHaveBeenCalledWith(10.05, [
+    expect(rightScheduleMock).toHaveBeenCalledWith(10.2, [
       { time: 1, note: 64, duration: 0.5, gain: 0.6363961030678927 },
     ])
   })
@@ -205,7 +205,7 @@ describe('useAudioPlayer', () => {
     ], 1)
 
     expect(leftScheduleMock).toHaveBeenCalledTimes(1)
-    expect(leftScheduleMock).toHaveBeenCalledWith(10.05, [
+    expect(leftScheduleMock).toHaveBeenCalledWith(10.2, [
       { time: 0, note: 60, duration: 1, gain: 0.6363961030678927 },
       { time: 0, note: 60, duration: 1, gain: 0.6363961030678927 },
     ])
@@ -224,6 +224,6 @@ describe('useAudioPlayer', () => {
     expect(gainConnectMock).toHaveBeenCalled()
     expect(createdPanners.some((panner) => panner.pan.value === -0.9)).toBe(true)
     expect(createdPanners.some((panner) => panner.pan.value === 0.9)).toBe(true)
-    expect(oscillatorFrequencySetValueAtTimeMock).toHaveBeenCalledWith(261.6255653005986, 10.05)
+    expect(oscillatorFrequencySetValueAtTimeMock).toHaveBeenCalledWith(261.6255653005986, 10.2)
   })
 })

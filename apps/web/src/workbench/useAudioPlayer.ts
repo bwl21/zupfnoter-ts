@@ -22,8 +22,8 @@ const MAX_CHORD_GAIN = 0.9
 const OSCILLATOR_GAIN = 0.3
 const OSCILLATOR_ATTACK_SEC = 0.01
 const OSCILLATOR_RELEASE_SEC = 0.2
-const SCHEDULE_LOOKAHEAD_SEC = 0.05
-const MASTER_OUTPUT_GAIN = 6
+const SCHEDULE_LOOKAHEAD_SEC = 0.2
+const MASTER_OUTPUT_GAIN = 2
 const STEREO_PAN_BY_SIDE: Record<StereoSide, number> = {
   left: -0.9,
   right: 0.9,
@@ -47,7 +47,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
 
   function getContext(): AudioContext {
     if (ctx === null || ctx.state === 'closed') {
-      ctx = new AudioContext()
+      ctx = new AudioContext({ latencyHint: 'playback' })
       masterGainNode = null
       stereoPannerNodes = null
     }

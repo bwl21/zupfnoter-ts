@@ -32,6 +32,7 @@ export type {
   BeatMap,
   SongMetaData,
   SongDiagnostic,
+  TimeSignature,
   Song,
 } from './music.js'
 

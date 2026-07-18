@@ -39,14 +39,32 @@ Nur `PlaybackNote`-Einträge mit `attack === true` werden exportiert. Gebundene 
 
 ## Ablaufposition
 
-Jedes Audioereignis trägt seine eigene Ablaufposition. Es gibt keinen separaten Positions- oder Marker-Stream.
+Die Ablaufposition wird als eigene zeitbasierte Spur exportiert. Dadurch bleibt
+der Taktwechsel auch dann erhalten, wenn eine gebundene Note über den
+Taktanfang hinweg klingt und dort kein neues Audioereignis startet.
 
 ```ts
 interface PlaybackPosition {
   measureNumber: number
   passIndex: number
 }
+
+interface PlaybackPositionMarker {
+  timeMs: number
+  position: PlaybackPosition
+  meter?: {
+    numerator: number
+    denominator: number
+    grouping?: readonly number[]
+  }
+}
 ```
+
+Die Marker werden aus allen positionierten `PlaybackStep`-Einträgen erzeugt,
+einschließlich stiller Schritte. Optional tragen sie die am Taktanfang geltende
+Taktart und deren Gruppierung, etwa `2+2+3` für `7/8`. Der Player verwendet den
+letzten Marker mit `timeMs <= aktuelle Wiedergabezeit` für die Positionsanzeige
+und kann daraus den Metronomschlag berechnen.
 
 Die Taktnummer stammt aus `VoiceEntity.measureCount` der bereits transformierten Song-Daten. Für eine gemeinsame `sourceTime` wird zuerst die erste sichtbare Stimme mit einer Taktnummer verwendet; fehlt sie, wird die kleinste positive Taktnummer der verfügbaren Stimmen verwendet. Fehlende Werte fallen auf Takt 1 zurück.
 
@@ -72,8 +90,6 @@ interface PortablePlaybackEvent {
   d: number
   p: number
   v: number
-  m: number
-  r: number
 }
 ```
 
@@ -82,24 +98,23 @@ Bedeutung:
 - `dt`: Zeit seit dem vorherigen Ereignisstart
 - `d`: Dauer
 - `p`: MIDI-Tonhöhe, 0–127
-- `v`: Velocity, standardmäßig 127; Version 2 speichert Abweichungen optional
-- `m`: Taktnummer
-- `r`: Durchlaufnummer
+- `v`: Velocity, standardmäßig 127; Version 3 speichert Abweichungen optional
 
-Mehrere gleichzeitig startende Töne erhalten `dt = 0` und dieselben Werte für `m` und `r`.
+Mehrere gleichzeitig startende Töne erhalten `dt = 0`.
 
 Die Zeitwerte werden standardmäßig auf 10 ms quantisiert. Positive Dauern werden mindestens auf eine Zeiteinheit angehoben. Die Exportreihenfolge ist stabil: zuerst Startzeit, dann Pitch.
 
-## Binärformat Version 2
+## Binärformat Version 3
 
 Der Header ist unkomprimiert:
 
 ```text
 Magic             3 Bytes: ZNP
-Formatversion     1 Byte: 2
-Flags             1 Byte: Deflate Raw, optionale Velocity und Durchläufe
+Formatversion     1 Byte: 3
+Flags             1 Byte: Deflate Raw, optionale Velocity, Positionsspur
 Zeitauflösung     VarUInt, Millisekunden
 Event Count       VarUInt
+Marker Count      VarUInt
 ```
 
 Danach folgt die Deflate-Raw-Payload. Pro Ereignis werden geschrieben:
@@ -109,14 +124,16 @@ Delta-Zeit        VarUInt
 Dauer             VarUInt
 MIDI-Pitch        1 Byte
 Event-Flags       1 Byte
-optionaler Takt   VarUInt, nur bei Änderung
-optionaler Durchlauf VarUInt, nur bei Änderung
 optionale Velocity  1 Byte, nur wenn nicht überall 127
 ```
 
-Version 1 wird weiterhin gelesen. Neue Links werden ausschließlich in Version 2
-geschrieben. Takt und Durchlauf werden als Zustand fortgeschrieben; unveränderte
-Werte werden nicht erneut gespeichert.
+Danach folgt die Positionsspur. Jeder Marker enthält Delta-Zeit seit dem
+vorherigen Marker, Taktnummer und Durchlaufnummer. Audio- und Markerbereiche
+werden gemeinsam mit Deflate Raw komprimiert.
+
+Version 1 und Version 2 werden weiterhin gelesen; neue Links werden in Version 3
+geschrieben. In Version 2 werden Takt und Durchlauf noch als Zustand an den
+Audioereignissen fortgeschrieben.
 
 Das Format enthält keine ABC-Daten, Zupfnoter-IDs, Stimmen, Konfiguration, Layoutdaten, Wiederholungsobjekte, Bindungen, Annotationen oder Editorpositionen.
 
@@ -153,6 +170,7 @@ interface PlaybackLinkOptions {
   playerUrl: string
   timeResolutionMs?: number
   compression?: 'deflate-raw'
+  positionMarkers?: readonly PlaybackPositionMarker[]
 }
 
 interface PlaybackLinkResult {
@@ -167,7 +185,9 @@ export function exportPlaybackLink(
 ): Promise<PlaybackLinkResult>
 ```
 
-Die Web-Anwendung stellt zusätzlich einen Adapter von `PlaybackStep[]` zu `PlaybackEvent[]` bereit. Der Adapter projiziert die bestehende Timeline pro Auszug und erzeugt keine neue Timeline.
+Die Web-Anwendung stellt zusätzlich Adapter von `PlaybackStep[]` zu
+`PlaybackEvent[]` und `PlaybackPositionMarker[]` bereit. Beide projizieren die
+bestehende Timeline pro Auszug und erzeugen keine neue Timeline.
 
 Deflate Raw wird im Browser über `CompressionStream`/`DecompressionStream` und im CLI über `node:zlib` bereitgestellt. Beide Implementierungen lesen und schreiben denselben Payload.
 
@@ -257,7 +277,7 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 - VarUInt-Grenzwerte
 - Zeitquantisierung auf 10 ms
 - Pitch-/Velocity-Grenzen
-- Takt-/Durchlaufdaten bei Änderungen
+- Positionsmarker unabhängig von Audioereignis-Starts
 - Deflate-Raw-Roundtrip
 - deterministische Ausgabe
 - Base64URL ohne Padding
@@ -266,7 +286,8 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 ### Player
 
 - gültiger Link wird geladen und abgespielt
-- Timeline zeigt `measure.pass`
+- Timeline zeigt `measure.pass` aus der Positionsspur
+- optionaler Metronommodus berechnet Schläge aus Taktart und Gruppierung
 - `27.1-3.2` wird korrekt ausgewählt
 - Wiederholungen bleiben in Playback-Reihenfolge sichtbar
 - mehrere Ereignisse mit `dt = 0` starten gemeinsam
@@ -285,11 +306,11 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 ## Annahmen
 
 - `p` ist eine MIDI-Tonhöhe.
-- `v` ist standardmäßig 127 und wird in Version 2 nur bei Bedarf gespeichert.
-- Deflate Raw ist die einzige Kompression in Version 2.
+- `v` ist standardmäßig 127 und wird in Version 3 nur bei Bedarf gespeichert.
+- Deflate Raw ist die einzige Kompression in Version 3.
 - Version-1-Payloads bleiben abwärtskompatibel lesbar.
 - Der Player wird als `apps/player` im selben Monorepo angelegt.
-- Takt und Durchlauf stehen direkt an jedem Audioereignis.
+- Takt und Durchlauf stehen in einer eigenen zeitbasierten Positionsspur.
 - Die Ablaufordnung wird durch die Ereignisreihenfolge bestimmt.
 - `27.1-3.2` ist inklusiv.
 - Es gibt keinen serverseitigen Kurzlink- oder Payload-Speicher in Version 1.

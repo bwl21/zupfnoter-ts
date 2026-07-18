@@ -2,9 +2,13 @@ import {
   decodePlaybackFragment,
   type PlaybackCompressionCodec,
   type PlaybackEvent,
+  type PlaybackPosition,
+  type PlaybackPositionMarker,
 } from '@zupfnoter/playback'
 import { deflateSync, inflateSync } from 'fflate'
 import './style.css'
+
+const PLAYER_VERSION = '0.1.5'
 
 const appElement = document.querySelector<HTMLDivElement>('#app')
 if (appElement === null) throw new Error('Player root is missing')
@@ -20,7 +24,7 @@ const browserPlaybackCodec: PlaybackCompressionCodec = {
 }
 
 function renderError(message: string): void {
-  app.innerHTML = `<section class="card error"><h1>Zupfnoter Playback</h1><p>${message}</p></section>`
+  app.innerHTML = `<section class="card error"><h1>Zupfnoter Player</h1><p>${message}</p></section>`
 }
 
 function eventLabel(event: PlaybackEvent | undefined): string {
@@ -68,7 +72,7 @@ function wheelField(name: string, label: string, value: number, maximum: number)
     const option = index + 1
     return `<span class="wheel-option" data-value="${option}">${option}</span>`
   }).join('')
-  return `<div class="wheel-control"><span class="wheel-label">${label}</span><div class="wheel" data-wheel="${name}" tabindex="0" role="spinbutton" aria-label="${label}" aria-valuemin="1" aria-valuemax="${maximum}" aria-valuenow="${value}"><div class="wheel-options">${options}</div></div><input type="hidden" name="${name}" value="${value}" /></div>`
+  return `<div class="wheel-control"><span class="wheel-label">${label}</span><div class="wheel" data-wheel="${name}" tabindex="0" role="spinbutton" aria-label="${label}" aria-valuemin="1" aria-valuemax="${maximum}" aria-valuenow="${value}"><div class="wheel-options">${options}</div><input class="wheel-entry" type="number" name="${name}" value="${value}" min="1" max="${maximum}" inputmode="numeric" aria-label="${label} eingeben" /></div></div>`
 }
 
 function parsePosition(value: string): { measureNumber: number; passIndex: number } | undefined {
@@ -79,26 +83,51 @@ function parsePosition(value: string): { measureNumber: number; passIndex: numbe
   return measureNumber > 0 && passIndex > 0 ? { measureNumber, passIndex } : undefined
 }
 
-function resolveRange(events: readonly PlaybackEvent[], from: string, to: string): [number, number] | undefined {
-  const start = parsePosition(from)
-  const end = parsePosition(to)
-  if (start === undefined || end === undefined) return undefined
-  const startIndex = events.findIndex((event) => event.position.measureNumber === start.measureNumber && event.position.passIndex === start.passIndex)
-  const endIndex = [...events].reverse().findIndex((event) => event.position.measureNumber === end.measureNumber && event.position.passIndex === end.passIndex)
-  if (startIndex < 0 || endIndex < 0) return undefined
-  const resolvedEnd = events.length - endIndex - 1
-  return startIndex <= resolvedEnd ? [startIndex, resolvedEnd] : undefined
+function findPositionMarker(markers: readonly PlaybackPositionMarker[], position: PlaybackPosition): PlaybackPositionMarker | undefined {
+  return markers.find((marker) => marker.position.measureNumber === position.measureNumber
+    && marker.position.passIndex === position.passIndex)
 }
 
-function renderPlayer(events: PlaybackEvent[], identification?: string): void {
+function positionAtTime(markers: readonly PlaybackPositionMarker[], timeMs: number): PlaybackPosition {
+  let current = markers[0]?.position ?? { measureNumber: 1, passIndex: 1 }
+  for (const marker of markers) {
+    if (marker.timeMs > timeMs) break
+    current = marker.position
+  }
+  return current
+}
+
+function nextDistinctPositionMarker(
+  markers: readonly PlaybackPositionMarker[],
+  markerIndex: number,
+): PlaybackPositionMarker | undefined {
+  const marker = markers[markerIndex]
+  if (marker === undefined) return undefined
+  return markers.slice(markerIndex + 1).find((candidate) => (
+    candidate.position.measureNumber !== marker.position.measureNumber
+    || candidate.position.passIndex !== marker.position.passIndex
+  ))
+}
+
+function resolveRange(events: readonly PlaybackEvent[], markers: readonly PlaybackPositionMarker[], from: string): { range: [number, number]; startMs: number } | undefined {
+  const start = parsePosition(from)
+  if (start === undefined) return undefined
+  const marker = findPositionMarker(markers, start)
+  if (marker === undefined) return undefined
+  const startIndex = events.findIndex((event) => event.startMs + event.durationMs > marker.timeMs)
+  if (startIndex < 0) return undefined
+  return { range: [startIndex, events.length - 1], startMs: marker.timeMs }
+}
+
+function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPositionMarker[], identification?: string): void {
   const first = eventLabel(events[0]) === '—' ? '1.1' : eventLabel(events[0])
-  const last = eventLabel(events[events.length - 1]) === '—' ? first : eventLabel(events[events.length - 1])
-  const firstPosition = eventPosition(events[0])
-  const maximumMeasure = Math.max(1, ...events.map((event) => event.position.measureNumber))
-  const maximumPass = Math.max(1, ...events.map((event) => event.position.passIndex))
+  const firstPosition = positionMarkers[0]?.position ?? eventPosition(events[0])
+  const maximumMeasure = Math.max(1, ...positionMarkers.map((marker) => marker.position.measureNumber))
+  const maximumPass = Math.max(1, ...positionMarkers.map((marker) => marker.position.passIndex))
   app.innerHTML = `
     <section class="card">
-      <h1>Zupfnoter Playback</h1>
+      <h1>Zupfnoter Player</h1>
+      <p class="player-version">Player v${PLAYER_VERSION}</p>
       ${identification === undefined ? '' : `<p class="identification" aria-label="Stücknummer">${escapeHtml(identification)}</p>`}
       <form id="range-form" class="range-form">
         <fieldset class="range-fieldset">
@@ -119,6 +148,14 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
         <input id="speed-range" type="range" min="0.5" max="1.5" step="0.05" value="1" aria-label="Wiedergabegeschwindigkeit" aria-valuemin="0.5" aria-valuemax="1.5" aria-valuenow="1">
         <output id="speed-value" for="speed-range">1,00×</output>
       </label>
+      <div class="metronome-row" aria-label="Metronom">
+        <label class="metronome-control" for="metronome-toggle">
+          <input id="metronome-toggle" type="checkbox" ${positionMarkers.some((marker) => marker.meter !== undefined) ? '' : 'disabled'}>
+          <span class="metronome-switch" aria-hidden="true"></span>
+          <span class="sr-only">Metronom</span>
+        </label>
+        <output id="metronome-status" class="metronome-status" aria-live="polite">${positionMarkers.some((marker) => marker.meter !== undefined) ? '<span class="metronome-beat" aria-hidden="true"></span><span>—</span><span>—</span>' : 'Metronomdaten fehlen in diesem Link'}</output>
+      </div>
       <section class="transport" aria-label="Wiedergabe">
         <div class="position-row">
           <output id="current-position" class="position">${first}</output>
@@ -140,6 +177,8 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
   const loadingIndicator = document.querySelector<HTMLParagraphElement>('#loading-indicator')
   const speedRange = document.querySelector<HTMLInputElement>('#speed-range')
   const speedValue = document.querySelector<HTMLOutputElement>('#speed-value')
+  const metronomeToggle = document.querySelector<HTMLInputElement>('#metronome-toggle')
+  const metronomeStatus = document.querySelector<HTMLOutputElement>('#metronome-status')
   const position = document.querySelector<HTMLOutputElement>('#current-position')
   const playbackTime = document.querySelector<HTMLParagraphElement>('#playback-time')
   const playButton = document.querySelector<HTMLButtonElement>('#play-button')
@@ -148,20 +187,21 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
   const takePositionButton = document.querySelector<HTMLButtonElement>('#take-position-button')
   const resetButton = document.querySelector<HTMLButtonElement>('#reset-range')
   let selectedEvents = events
+  let selectedStartMs = positionMarkers[0]?.timeMs ?? events[0]?.startMs ?? 0
 
   function readRange(): [number, number] | undefined {
     if (form === null) return undefined
     const data = new FormData(form)
     const from = `${String(data.get('from-measure') ?? '')}.${String(data.get('from-pass') ?? '')}`
-    const to = eventLabel(events[events.length - 1])
-    const range = resolveRange(events, from, to)
+    const range = resolveRange(events, positionMarkers, from)
     if (range === undefined) {
       if (error !== null) error.textContent = 'Der Bereich wurde im Playback nicht gefunden.'
       return undefined
     }
     if (error !== null) error.textContent = ''
-    selectedEvents = events.slice(range[0], range[1] + 1)
-    return range
+    selectedEvents = events.slice(range.range[0], range.range[1] + 1)
+    selectedStartMs = range.startMs
+    return range.range
   }
 
   function setWheelValue(name: string, value: number): void {
@@ -169,7 +209,8 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
     const wheel = document.querySelector<HTMLElement>(`[data-wheel="${name}"]`)
     if (hidden !== null && hidden !== undefined) hidden.value = String(value)
     if (wheel !== null) {
-      wheel.scrollTop = Math.max(0, value - 1) * 36
+      const option = [...wheel.querySelectorAll<HTMLElement>('.wheel-option')][value - 1]
+      wheel.scrollTop = option?.offsetTop ?? 0
       wheel.setAttribute('aria-valuenow', String(value))
     }
   }
@@ -181,10 +222,31 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
       : form?.querySelector<HTMLInputElement>(`input[name="${name}"]`) ?? undefined
     const options = [...wheel.querySelectorAll<HTMLElement>('.wheel-option')]
     const currentValue = Number(hidden?.value ?? 1)
-    wheel.scrollTop = Math.max(0, currentValue - 1) * 36
+    hidden?.addEventListener('input', () => {
+      const value = Number(hidden.value)
+      if (!Number.isInteger(value) || value < 1 || value > options.length) return
+      const option = options[value - 1]
+      wheel.scrollTo({ top: option?.offsetTop ?? 0, behavior: 'smooth' })
+      wheel.setAttribute('aria-valuenow', String(value))
+      readRange()
+    })
+    const initialOption = options[currentValue - 1]
+    wheel.scrollTop = initialOption?.offsetTop ?? 0
+    const nearestOptionIndex = (): number => {
+      let nearestIndex = 0
+      let nearestDistance = Number.POSITIVE_INFINITY
+      for (const [index, option] of options.entries()) {
+        const distance = Math.abs(wheel.scrollTop - option.offsetTop)
+        if (distance < nearestDistance) {
+          nearestIndex = index
+          nearestDistance = distance
+        }
+      }
+      return nearestIndex
+    }
     let snapTimer: number | undefined
     wheel.addEventListener('scroll', () => {
-      const index = Math.round(wheel.scrollTop / 36)
+      const index = nearestOptionIndex()
       const option = options[index]
       if (option === undefined || hidden === undefined) return
       hidden.value = option.dataset.value ?? '1'
@@ -192,8 +254,8 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
       readRange()
       if (snapTimer !== undefined) window.clearTimeout(snapTimer)
       snapTimer = window.setTimeout(() => {
-        const snappedIndex = Math.max(0, Math.min(options.length - 1, Math.round(wheel.scrollTop / 36)))
-        wheel.scrollTo({ top: snappedIndex * 36, behavior: 'smooth' })
+        const snappedIndex = Math.max(0, Math.min(options.length - 1, nearestOptionIndex()))
+        wheel.scrollTo({ top: options[snappedIndex]?.offsetTop ?? 0, behavior: 'smooth' })
         const snappedOption = options[snappedIndex]
         if (snappedOption !== undefined && hidden !== undefined) {
           hidden.value = snappedOption.dataset.value ?? '1'
@@ -206,12 +268,14 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
   let audioContext: AudioContext | undefined
   let playbackTimers: number[] = []
   let animationFrame: number | undefined
+  let positionTimer: number | undefined
   let playbackOffsetMs = 0
-  let playbackStartedAtMs = 0
+  let playbackStartedAtContextTime = 0
   let currentEvent: PlaybackEvent | undefined
   let isPaused = false
   let speedFactor = 1
   let harpPlayerPromise: Promise<SoundfontPlayer> | undefined
+  let metronomeOscillators: OscillatorNode[] = []
 
   interface SoundfontPlayer {
     schedule(startTime: number, notes: readonly SoundfontNote[]): void
@@ -230,11 +294,51 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
     playbackTimers = []
     if (animationFrame !== undefined) window.cancelAnimationFrame(animationFrame)
     animationFrame = undefined
+    if (positionTimer !== undefined) window.clearTimeout(positionTimer)
+    positionTimer = undefined
+    for (const oscillator of metronomeOscillators) {
+      try {
+        oscillator.stop()
+      } catch {
+        // Already stopped oscillators need no further cleanup.
+      }
+    }
+    metronomeOscillators = []
   }
 
   function updatePosition(elapsedMs: number): void {
-    currentEvent = selectedEvents.filter((event) => event.startMs - (selectedEvents[0]?.startMs ?? 0) <= elapsedMs).at(-1)
-    if (position !== null) position.value = eventLabel(currentEvent)
+    const absoluteTimeMs = selectedStartMs + elapsedMs
+    currentEvent = selectedEvents.filter((event) => event.startMs <= absoluteTimeMs).at(-1)
+    if (position !== null) {
+      const currentPosition = positionAtTime(positionMarkers, absoluteTimeMs)
+      position.value = `${currentPosition.measureNumber}.${currentPosition.passIndex}`
+    }
+    if (metronomeStatus !== null) {
+      let markerIndex = -1
+      for (const [index, marker] of positionMarkers.entries()) {
+        if (marker.timeMs <= absoluteTimeMs && marker.meter !== undefined) markerIndex = index
+      }
+      const marker = markerIndex >= 0 ? positionMarkers[markerIndex] : undefined
+      const nextMarker = markerIndex >= 0 ? nextDistinctPositionMarker(positionMarkers, markerIndex) : undefined
+      if (marker?.meter !== undefined) {
+        const measureDuration = (nextMarker?.timeMs ?? selectedStartMs + 1000) - marker.timeMs
+        const beatDuration = measureDuration / marker.meter.numerator
+        const beat = beatDuration > 0 ? Math.min(marker.meter.numerator, Math.floor((absoluteTimeMs - marker.timeMs) / beatDuration) + 1) : 1
+        const groupingStarts = new Set<number>()
+        let groupingOffset = 0
+        for (const group of marker.meter.grouping ?? []) {
+          groupingStarts.add(groupingOffset)
+          groupingOffset += group
+        }
+        const activeClass = metronomeToggle?.checked === true ? ' metronome-beat--active' : ''
+        const beatDots = Array.from({ length: marker.meter.numerator }, (_value, index) => {
+          const isActive = index + 1 === beat ? activeClass : ''
+          const isAccent = index === 0 || groupingStarts.has(index) ? ' metronome-beat--accent' : ''
+          return `<span class="metronome-beat${isAccent}${isActive}" aria-hidden="true"></span>`
+        }).join('')
+        metronomeStatus.innerHTML = `<span class="metronome-beats" aria-hidden="true">${beatDots}</span><span class="metronome-count">${beat}</span><span>${marker.meter.numerator}/${marker.meter.denominator}</span>`
+      }
+    }
     if (playbackTime !== null) {
       const seconds = Math.floor(Math.max(0, elapsedMs) / 1000)
       playbackTime.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
@@ -255,6 +359,53 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
     speedFactor = parsed
     if (speedValue !== null) speedValue.value = `${parsed.toFixed(2).replace('.', ',')}×`
     speedRange?.setAttribute('aria-valuenow', String(parsed))
+  }
+
+  function playMetronomeClick(context: AudioContext, accent: boolean, startTime: number): void {
+    const oscillator = context.createOscillator()
+    const gain = context.createGain()
+    oscillator.frequency.value = accent ? 1200 : 850
+    gain.gain.setValueAtTime(accent ? 0.18 : 0.1, startTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.055)
+    oscillator.connect(gain)
+    gain.connect(context.destination)
+    oscillator.start(startTime)
+    oscillator.stop(startTime + 0.06)
+    metronomeOscillators.push(oscillator)
+  }
+
+  function scheduleMetronome(
+    context: AudioContext,
+    durationMs: number,
+    audioStartAt: number,
+    playbackOffsetMsForSchedule: number,
+  ): void {
+    if (metronomeToggle?.checked !== true) return
+    for (let markerIndex = 0; markerIndex < positionMarkers.length; markerIndex += 1) {
+      const marker = positionMarkers[markerIndex]
+      if (marker === undefined || marker.meter === undefined) continue
+      const nextMarker = nextDistinctPositionMarker(positionMarkers, markerIndex)
+      const measureEnd = nextMarker?.timeMs ?? selectedStartMs + durationMs
+      const measureDuration = measureEnd - marker.timeMs
+      if (measureDuration <= 0 || marker.timeMs + measureDuration < selectedStartMs) continue
+      const beatCount = marker.meter.numerator
+      const beatDuration = measureDuration / beatCount
+      const grouping = marker.meter.grouping ?? []
+      const accentBeats = new Set<number>()
+      let groupingOffset = 0
+      for (const group of grouping) {
+        accentBeats.add(groupingOffset)
+        groupingOffset += group
+      }
+      for (let beat = 0; beat < beatCount; beat += 1) {
+        const clickTime = marker.timeMs + beat * beatDuration
+        if (clickTime < selectedStartMs || clickTime > selectedStartMs + durationMs) continue
+        const accent = beat === 0 || accentBeats.has(beat)
+        const delaySec = (clickTime - selectedStartMs - playbackOffsetMsForSchedule) / 1000 / speedFactor
+        if (delaySec < 0) continue
+        playMetronomeClick(context, accent, audioStartAt + delaySec)
+      }
+    }
   }
 
   async function loadHarpPlayer(context: AudioContext, noteValues: readonly number[], destination: AudioNode): Promise<SoundfontPlayer> {
@@ -296,14 +447,14 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
   async function playPlayback(): Promise<void> {
     if (selectedEvents.length === 0) return
     stopPlayback(false)
-    const base = selectedEvents[0]?.startMs ?? 0
+    const base = selectedStartMs
     const durationMs = (selectedEvents[selectedEvents.length - 1]?.startMs ?? base) - base
       + (selectedEvents[selectedEvents.length - 1]?.durationMs ?? 0)
     if (playbackOffsetMs >= durationMs) playbackOffsetMs = 0
     const AudioContextClass = window.AudioContext
-    audioContext = new AudioContextClass()
+    audioContext = new AudioContextClass({ latencyHint: 'playback' })
     const outputGain = audioContext.createGain()
-    outputGain.gain.value = 6
+    outputGain.gain.value = 2
     outputGain.connect(audioContext.destination)
     isPaused = false
     setLoading(true)
@@ -319,9 +470,9 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
     }
     if (audioContext !== playerContext) return
     setLoading(false)
-    const startedAt = performance.now()
-    playbackStartedAtMs = startedAt - playbackOffsetMs / speedFactor
-    const elapsed = () => (performance.now() - playbackStartedAtMs) * speedFactor
+    const audioStartAt = playerContext.currentTime + 0.2
+    playbackStartedAtContextTime = audioStartAt - playbackOffsetMs / 1000 / speedFactor
+    const elapsed = () => Math.max(0, (playerContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
     const chordSizes = new Map<number, number>()
     for (const event of selectedEvents) {
       chordSizes.set(event.startMs, (chordSizes.get(event.startMs) ?? 0) + 1)
@@ -337,24 +488,35 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
         gain: (event.velocity ?? 127) / 127 * chordGain,
       }
     })
-    harpPlayer.schedule(playerContext.currentTime + 0.05, scheduledNotes)
+    harpPlayer.schedule(audioStartAt, scheduledNotes)
+    scheduleMetronome(playerContext, durationMs, audioStartAt, playbackOffsetMs)
     const finishTimer = window.setTimeout(() => stopPlayback(), Math.max(0, (durationMs - playbackOffsetMs) / speedFactor))
     playbackTimers.push(finishTimer)
-    const animate = () => {
+    const update = () => {
       updatePosition(elapsed())
-      if (audioContext !== undefined) animationFrame = window.requestAnimationFrame(animate)
+      if (audioContext === playerContext) positionTimer = window.setTimeout(update, 25)
     }
-    animationFrame = window.requestAnimationFrame(animate)
+    update()
   }
 
   function pausePlayback(): void {
     if (audioContext === undefined) return
-    playbackOffsetMs = Math.max(0, (performance.now() - playbackStartedAtMs) * speedFactor)
+    if (audioContext !== undefined) {
+      playbackOffsetMs = Math.max(0, (audioContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
+    }
     stopPlayback(false)
     isPaused = true
   }
 
   speedRange?.addEventListener('input', () => setSpeed(speedRange.value))
+  metronomeToggle?.addEventListener('change', () => {
+    updatePosition(playbackOffsetMs)
+    if (metronomeToggle.checked !== true || audioContext === undefined) return
+    const elapsedMs = Math.max(0, (audioContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
+    const durationMs = (selectedEvents[selectedEvents.length - 1]?.startMs ?? selectedStartMs) - selectedStartMs
+      + (selectedEvents[selectedEvents.length - 1]?.durationMs ?? 0)
+    scheduleMetronome(audioContext, durationMs, audioContext.currentTime + 0.05, elapsedMs)
+  })
   resetButton?.addEventListener('click', () => {
     stopPlayback()
     setWheelValue('from-measure', firstPosition.measureNumber)
@@ -369,16 +531,16 @@ function renderPlayer(events: PlaybackEvent[], identification?: string): void {
   pauseButton?.addEventListener('click', pausePlayback)
   stopButton?.addEventListener('click', () => stopPlayback())
   takePositionButton?.addEventListener('click', () => {
-    const referenceEvent = currentEvent ?? selectedEvents[0] ?? events[0]
-    if (referenceEvent === undefined) return
-    const previousMeasure = Math.max(1, referenceEvent.position.measureNumber - 1)
-    const target = events.find((event) => (
-      event.position.measureNumber === previousMeasure
-      && event.position.passIndex === referenceEvent.position.passIndex
-    )) ?? referenceEvent
+    const currentPosition = positionAtTime(positionMarkers, selectedStartMs + playbackOffsetMs)
+    const previousMeasure = Math.max(1, currentPosition.measureNumber - 1)
+    const targetMarker = findPositionMarker(positionMarkers, {
+      measureNumber: previousMeasure,
+      passIndex: currentPosition.passIndex,
+    }) ?? positionMarkers[0]
+    if (targetMarker === undefined) return
     stopPlayback()
-    setWheelValue('from-measure', target.position.measureNumber)
-    setWheelValue('from-pass', target.position.passIndex)
+    setWheelValue('from-measure', targetMarker.position.measureNumber)
+    setWheelValue('from-pass', targetMarker.position.passIndex)
     readRange()
     updatePosition(0)
   })
@@ -394,7 +556,7 @@ async function main(): Promise<void> {
   }
   try {
     const decoded = await decodePlaybackFragment(value, browserPlaybackCodec)
-    renderPlayer(decoded.events, identification)
+    renderPlayer(decoded.events, decoded.positionMarkers, identification)
   } catch (error) {
     renderError(error instanceof Error ? error.message : String(error))
   }

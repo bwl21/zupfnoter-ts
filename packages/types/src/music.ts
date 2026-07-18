@@ -55,6 +55,8 @@ export interface Playable extends MusicEntity {
   measureStart: boolean
   /** Taktnummer (für Taktnummern-Anzeige) */
   measureCount: number
+  /** Taktart am Beginn dieses Taktes, falls sie explizit bekannt ist. */
+  meter?: TimeSignature
   jumpStarts: string[]
   jumpEnds: string[]
   slurStarts: number[]
@@ -88,6 +90,13 @@ export interface Playable extends MusicEntity {
    * Entspricht `next_first_in_part` im Legacy-System.
    */
   nextFirstInPart?: boolean
+}
+
+/** Taktart und optionale Gruppierung der Zählzeiten. */
+export interface TimeSignature {
+  numerator: number
+  denominator: number
+  grouping?: number[]
 }
 
 /**

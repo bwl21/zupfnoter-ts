@@ -3,6 +3,7 @@
  */
 
 import type { SelectionTextRange } from './selection.js'
+import type { TimeSignature } from './music.js'
 
 /**
  * Runtime status of playback.
@@ -56,6 +57,8 @@ export interface PlaybackFlowStep {
   passIndex: number
   /** Canonical notated measure number for this playback step. */
   measureNumber: number
+  /** Taktart am Beginn dieses Taktes. */
+  meter?: TimeSignature
   /** Volta number of this step when it belongs to a variant ending. */
   voltaNumber?: number
 }

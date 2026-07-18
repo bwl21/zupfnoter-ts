@@ -122,5 +122,23 @@ V:2
     expect(secondVoltaTimes).toEqual([3840, 4608, 4992, 5376, 5760])
   })
 
+  it('keeps the measure number stable at interior events of a voice with another L', () => {
+    const flow = expandFlow(`X:1
+T:Different voice lengths
+M:4/4
+L:1/4
+K:C
+V:1
+C D E F | G A B c |
+V:2
+L:1/8
+C2 D2 E2 F2 G2 A2 B2 c2 | d2 e2 f2 g2 a2 b2 c'2 d'2 |
+`)
+
+    const measureNumbers = flow.map((step) => step.measureNumber)
+    expect(measureNumbers).toEqual([...measureNumbers].sort((left, right) => left - right))
+    expect(new Set(measureNumbers)).toEqual(new Set([1, 2]))
+  })
+
 
 })

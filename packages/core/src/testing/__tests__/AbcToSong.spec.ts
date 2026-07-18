@@ -105,6 +105,21 @@ function transformSymbols(symbols: AbcSymbol[]) {
   return transformer.transform(model, defaultTestConfig)
 }
 
+describe('AbcToSong – playback meter', () => {
+  it('carries changing meter on measure-start playables', () => {
+    const song = transform(`X:1
+T:Meter
+M:3/4
+K:C
+C2 E2 G2 | [M:2/4] A2 c2 |`)
+    const playables = song.voices[0]?.entities.filter((entity) => (
+      entity.type === 'Note' || entity.type === 'Pause' || entity.type === 'SynchPoint'
+    ))
+    expect(playables?.map((entity) => entity.meter)).toContainEqual({ numerator: 3, denominator: 4 })
+    expect(playables?.map((entity) => entity.meter)).toContainEqual({ numerator: 2, denominator: 4 })
+  })
+})
+
 describe('AbcToSong – harpnote options', () => {
   it('includes the legacy template and print defaults', () => {
     const song = transform(`X:1

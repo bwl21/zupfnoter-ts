@@ -21,34 +21,37 @@ komprimiert und Base64URL-kodiert, aber nicht verschlüsselt oder absichtlich
 verschleiert. Das Format enthält weder ABC noch Zupfnoter-IDs, Voices,
 Instrumentnamen oder Layoutdaten.
 
-## Format v2
+## Format v3
 
 Der Header bleibt unkomprimiert:
 
 | Feld | Bedeutung |
 | --- | --- |
 | `ZNP` | Magic Value |
-| Version | `2` |
-| Flags | Deflate Raw, Velocity vorhanden, mehrere Durchläufe vorhanden |
+| Version | `3` |
+| Flags | Deflate Raw, Velocity vorhanden, Positionsspur vorhanden |
 | VarUInt | Zeitauflösung in Millisekunden |
 | VarUInt | Eventanzahl |
+| VarUInt | Anzahl Positionsmarker |
 
 Ein Event enthält:
 
 ```text
-delta time · duration · pitch · event flags · optionale Positionswerte · optionale Velocity
+delta time · duration · pitch · event flags · optionale Velocity
 ```
 
 Die Event-Flags bedeuten:
 
-- Bit 0: Taktnummer folgt; sonst bleibt die vorherige Taktnummer erhalten.
-- Bit 1: Durchlauf folgt; sonst bleibt der vorherige Durchlauf erhalten.
 - Bit 2: Velocity-Feld ist im gesamten Payload aktiv.
 
-Velocity `127` wird nicht mehr pro Event geschrieben. Das Positionsmodell ist
-zustandsbasiert: Wiederholte Takt- und Durchlaufwerte entfallen. Der Decoder
-unterstützt weiterhin Payloads der Version 1; neue Links werden in Version 2
-geschrieben.
+Velocity `127` wird nicht mehr pro Event geschrieben. Nach den Audioereignissen
+folgt je Positionsmarker `delta time · absolute measure number · absolute pass
+number`. Bei gesetztem Marker-Meter-Flag folgen zusätzlich Zähler, Nenner und
+Gruppierung. Die Marker werden aus allen positionierten Playback-Schritten
+erzeugt, nicht nur aus Schritten mit einem neuen Notenangriff.
+
+Der Decoder unterstützt weiterhin Payloads der Versionen 1 und 2; neue Links
+werden in Version 3 geschrieben.
 
 ## Byte-Statistik
 
@@ -110,8 +113,9 @@ Die URL-Länge wird im Toast nach diesen Schwellen bewertet:
 
 ## Verbleibende Optionen
 
-Die größte einfache Redundanz ist mit der v2-Positionskompression und dem
-Entfall der Default-Velocity entfernt. Weitere Änderungen sollten erst an
+Die größte einfache Redundanz ist mit der getrennten Positionsspur und dem
+Entfall der Default-Velocity entfernt. Die Positionsspur bleibt bewusst von
+Audioereignis-Starts unabhängig. Weitere Änderungen sollten erst an
 realen Timeline-Benchmarks gemessen werden. Mögliche nächste Schritte wären
 Delta-Kodierung der Taktwerte oder eine gemeinsame Dauer-Tabelle; beide können
 durch ihre zusätzlichen Zustands- oder Tabellenflags nach Deflate auch neutral

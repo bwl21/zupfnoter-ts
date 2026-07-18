@@ -25,6 +25,7 @@ import type {
   SongDiagnostic,
   RestPositionConfig,
   RestPositionMode,
+  TimeSignature,
 } from '@zupfnoter/types'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
 import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
@@ -94,9 +95,29 @@ interface VoiceState {
   deferredChords: Chordsymbol[]
   /** Ruby-compatible [r:] remark lookup by voice_element[:time]. */
   remarkTable: Record<number, string>
+  meter: TimeSignature
 }
 
-function createVoiceState(wmeasure: number, countBy: number | null): VoiceState {
+function timeSignatureFromAbcMeter(meter: { a_meter: Array<{ bot?: number | string; top?: number | string }> }): TimeSignature {
+  const first = meter.a_meter[0]
+  const numeratorText = String(first?.top ?? '4')
+  const numeratorParts = numeratorText.split('+').map((part) => Number.parseInt(part, 10))
+  const numerator = numeratorParts.length > 1
+    ? numeratorParts.reduce((sum, part) => sum + part, 0)
+    : Number.parseInt(numeratorText, 10)
+  const denominator = Number.parseInt(String(first?.bot ?? '4'), 10)
+  if (!Number.isSafeInteger(numerator) || numerator <= 0 || !Number.isSafeInteger(denominator) || denominator <= 0) {
+    return { numerator: 4, denominator: 4 }
+  }
+  const grouping = numeratorText.includes('+')
+    ? numeratorParts.filter((part) => Number.isSafeInteger(part) && part > 0)
+    : undefined
+  return grouping !== undefined && grouping.length > 0
+    ? { numerator, denominator, grouping }
+    : { numerator, denominator }
+}
+
+function createVoiceState(wmeasure: number, countBy: number | null, meter: TimeSignature): VoiceState {
   return {
     variantNo: 0,
     tieStarted: false,
@@ -130,6 +151,7 @@ function createVoiceState(wmeasure: number, countBy: number | null): VoiceState 
     deferredNoteboundAnnotations: [],
     deferredChords: [],
     remarkTable: {},
+    meter,
   }
 }
 
@@ -206,8 +228,9 @@ export class AbcToSong {
     restposition: RestPositionConfig,
   ): Voice {
     const wmeasure = voice.voice_properties.meter.wmeasure
-    const countBy = voice.voice_properties.meter.a_meter[0]?.bot ?? null
-    const state = createVoiceState(wmeasure, countBy)
+    const rawCountBy = voice.voice_properties.meter.a_meter[0]?.bot
+    const countBy = rawCountBy === undefined ? null : Number(rawCountBy)
+    const state = createVoiceState(wmeasure, countBy, timeSignatureFromAbcMeter(voice.voice_properties.meter))
     this._currentState = state
 
     this._investigateFirstBar(voice, state, model)
@@ -382,6 +405,9 @@ export class AbcToSong {
       case 'clef':
       case 'key':
       case 'meter':
+        if (typeName === 'meter' && sym.a_meter !== undefined) {
+          state.meter = timeSignatureFromAbcMeter({ a_meter: sym.a_meter })
+        }
       case 'staves':
       case 'yspace':
       case 'block':
@@ -445,6 +471,7 @@ export class AbcToSong {
       firstInPart: false,
       measureStart,
       measureCount: state.measureCount,
+      meter: measureStart ? { ...state.meter, grouping: state.meter.grouping === undefined ? undefined : [...state.meter.grouping] } : undefined,
       jumpStarts: [],
       jumpEnds: [],
       slurStarts: [],
@@ -486,6 +513,7 @@ export class AbcToSong {
         firstInPart: false,
         measureStart,
         measureCount: state.measureCount,
+        meter: measureStart ? { ...state.meter, grouping: state.meter.grouping === undefined ? undefined : [...state.meter.grouping] } : undefined,
         jumpStarts: [],
         jumpEnds: [],
         slurStarts: [],
@@ -590,6 +618,7 @@ export class AbcToSong {
       firstInPart: false,
       measureStart,
       measureCount: state.measureCount,
+      meter: measureStart ? { ...state.meter, grouping: state.meter.grouping === undefined ? undefined : [...state.meter.grouping] } : undefined,
       jumpStarts: [],
       jumpEnds: [],
       slurStarts: [],

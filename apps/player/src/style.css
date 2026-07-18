@@ -4,16 +4,19 @@ body { margin: 0; padding: .75rem; }
 h1 { margin: .25rem 0 1.25rem; font-size: clamp(1.6rem, 5vw, 2.25rem); }
 .summary { color: #627d98; }
 .identification { margin: -.5rem 0 1rem; color: #627d98; font-size: 1.35rem; font-weight: 600; letter-spacing: .03em; }
+.player-version { margin: -.9rem 0 1rem; color: #829ab1; font-size: .7rem; }
 .range-form { display: grid; grid-template-columns: minmax(0, 18rem); gap: .55rem; align-items: end; justify-content: center; }
 .range-fieldset { display: flex; flex-wrap: wrap; align-items: end; justify-content: center; gap: .2rem; min-width: 0; margin: 0; padding: .25rem .35rem .35rem; border: 1px solid #cbd5e1; border-radius: .4rem; }
 .range-fieldset { width: min(100%, 16rem); }
 .range-fieldset legend { padding: 0 .2rem; color: #627d98; font-size: .8rem; }
 .wheel-control { display: grid; flex: 1 1 4.5rem; width: 4.5rem; gap: .15rem; min-width: 0; text-align: center; }
 .wheel-label { color: #627d98; font-size: .65rem; }
-.wheel { height: 4.5rem; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; scroll-snap-type: y mandatory; scroll-behavior: smooth; border-radius: .35rem; background: #f0f4f8; }
+.wheel { position: relative; height: 2.75rem; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; scroll-snap-type: y mandatory; scroll-behavior: smooth; border-radius: .35rem; background: #f0f4f8; }
 .wheel::-webkit-scrollbar { display: none; }
-.wheel-options { padding: 1.1rem 0; }
-.wheel-option { display: block; height: 2.25rem; line-height: 2.25rem; scroll-snap-align: center; scroll-snap-stop: always; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.wheel-options { padding: 0; }
+.wheel-option { display: block; height: 2.75rem; line-height: 2.75rem; scroll-snap-align: center; scroll-snap-stop: always; font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+.wheel-entry { position: absolute; z-index: 1; inset: 0; width: 100%; min-height: 0; padding: 0; border: 0; border-radius: .35rem; background: #f0f4f8; color: #243b53; font-size: 1.4rem; font-variant-numeric: tabular-nums; text-align: center; }
+.wheel-entry::-webkit-inner-spin-button, .wheel-entry::-webkit-outer-spin-button { margin: 0; }
 .wheel-dot { padding-bottom: .75rem; font-size: 1.1rem; }
 .range-actions { flex: 0 0 100%; display: flex; justify-content: center; margin-top: .2rem; }
 .range-actions button { width: auto; min-height: 2.25rem; padding: .35rem .7rem; border-color: #cbd5e1; background: #f0f4f8; color: #486581; font-size: .8rem; }
@@ -37,6 +40,22 @@ button { background: #2f80ed; color: white; cursor: pointer; }
 .speed-control { display: grid; grid-template-columns: minmax(8rem, 16rem) auto; align-items: center; justify-content: center; gap: .6rem; margin: 1rem auto 0; color: #627d98; font-size: .85rem; }
 .speed-control input { width: 100%; min-height: auto; padding: 0; accent-color: #2f80ed; }
 .speed-control output { min-width: 3rem; color: #243b53; font-variant-numeric: tabular-nums; }
+.metronome-row { display: flex; align-items: center; justify-content: center; gap: .7rem; min-height: 1.9rem; margin: .65rem auto 0; color: #627d98; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.metronome-control { position: relative; display: inline-flex; flex: 0 0 auto; align-items: center; width: 2.2rem; height: 1.25rem; cursor: pointer; }
+.metronome-control input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.metronome-switch { display: block; width: 2.2rem; height: 1.25rem; border-radius: 1rem; background: #bcccdc; transition: background .15s ease; }
+.metronome-switch::after { display: block; width: .95rem; height: .95rem; margin: .15rem; border-radius: 50%; background: white; content: ''; transition: transform .15s ease; }
+.metronome-control input:checked + .metronome-switch { background: #2f80ed; }
+.metronome-control input:checked + .metronome-switch::after { transform: translateX(.95rem); }
+.metronome-control input:focus-visible + .metronome-switch { outline: 2px solid #2f80ed; outline-offset: 2px; }
+.metronome-control input:disabled + .metronome-switch { cursor: not-allowed; opacity: .55; }
+.metronome-status { display: inline-flex; align-items: center; gap: .5rem; min-height: 1.2rem; }
+.metronome-beats { display: inline-flex; align-items: center; gap: .2rem; }
+.metronome-beat { display: inline-block; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: #cbd5e1; vertical-align: middle; }
+.metronome-count { min-width: 1.1rem; color: #243b53; font-size: 1.05rem; font-weight: 600; text-align: center; }
+.metronome-beat--active { background: #2f80ed; box-shadow: 0 0 .35rem #2f80ed99; }
+.metronome-beat--accent { background: #e67e22; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 @media (min-width: 36rem) {
   body { padding: 2rem 1rem; }

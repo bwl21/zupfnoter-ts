@@ -11,10 +11,23 @@ export interface PlaybackEvent {
   position: PlaybackPosition
 }
 
+export interface PlaybackPositionMarker {
+  timeMs: number
+  position: PlaybackPosition
+  meter?: PlaybackMeter
+}
+
+export interface PlaybackMeter {
+  numerator: number
+  denominator: number
+  grouping?: readonly number[]
+}
+
 export interface PlaybackLinkOptions {
   playerUrl: string
   timeResolutionMs?: number
   compression?: 'deflate-raw'
+  positionMarkers?: readonly PlaybackPositionMarker[]
 }
 
 export interface PlaybackLinkResult {
@@ -50,10 +63,13 @@ export interface PlaybackLinkAnalysis {
 
 const MAGIC = new Uint8Array([0x5a, 0x4e, 0x50])
 const LEGACY_FORMAT_VERSION = 1
-const FORMAT_VERSION = 2
+const COMPACT_FORMAT_VERSION = 2
+const FORMAT_VERSION = 3
 const FLAG_DEFLATE_RAW = 1
 const FLAG_EVENTS_HAVE_VELOCITY = 2
 const FLAG_EVENTS_HAVE_PASS = 4
+const FLAG_HAS_POSITION_TRACK = 8
+const FLAG_POSITION_MARKERS_HAVE_METER = 16
 const DEFAULT_TIME_RESOLUTION_MS = 10
 
 /** Platform adapter for the one compression method supported by format v1. */
@@ -66,6 +82,7 @@ export interface PlaybackCompressionCodec {
 export interface PlaybackDecodedData {
   timeResolutionMs: number
   events: PlaybackEvent[]
+  positionMarkers: PlaybackPositionMarker[]
 }
 
 function writeVarUInt(target: number[], value: number): void {
@@ -129,10 +146,11 @@ function normalizeEvents(events: readonly PlaybackEvent[], resolutionMs: number)
   return normalized
 }
 
-function encodeHeader(eventCount: number, resolutionMs: number, formatFlags: number): Uint8Array {
+function encodeHeader(eventCount: number, markerCount: number, resolutionMs: number, formatFlags: number): Uint8Array {
   const output: number[] = [...MAGIC, FORMAT_VERSION, formatFlags]
   writeVarUInt(output, resolutionMs)
   writeVarUInt(output, eventCount)
+  writeVarUInt(output, markerCount)
   return new Uint8Array(output)
 }
 
@@ -152,7 +170,7 @@ function createEmptyBreakdown(): PlaybackByteBreakdown {
   }
 }
 
-function encodeEvents(events: readonly PlaybackEvent[], resolutionMs: number, formatFlags: number): { bytes: Uint8Array; breakdown: PlaybackByteBreakdown } {
+function encodeEvents(events: readonly PlaybackEvent[], resolutionMs: number, formatFlags: number, includeEventPositions: boolean): { bytes: Uint8Array; breakdown: PlaybackByteBreakdown } {
   const output: number[] = []
   const breakdown = createEmptyBreakdown()
   const hasVelocity = (formatFlags & FLAG_EVENTS_HAVE_VELOCITY) !== 0
@@ -173,8 +191,8 @@ function encodeEvents(events: readonly PlaybackEvent[], resolutionMs: number, fo
     breakdown.pitchBytes += 1
     const flagsStart = output.length
     let eventFlags = 0
-    if (event.position.measureNumber !== previousMeasure) eventFlags |= 1
-    if (hasPass && event.position.passIndex !== previousPass) eventFlags |= 2
+    if (includeEventPositions && event.position.measureNumber !== previousMeasure) eventFlags |= 1
+    if (includeEventPositions && hasPass && event.position.passIndex !== previousPass) eventFlags |= 2
     if (hasVelocity) eventFlags |= 4
     output.push(eventFlags)
     breakdown.flagsBytes += output.length - flagsStart
@@ -199,42 +217,110 @@ function encodeEvents(events: readonly PlaybackEvent[], resolutionMs: number, fo
   return { bytes: new Uint8Array(output), breakdown }
 }
 
-function resolveFormatFlags(events: readonly PlaybackEvent[]): number {
-  const hasVelocity = events.some((event) => (event.velocity ?? 127) !== 127)
-  const hasPass = events.some((event) => event.position.passIndex !== 1)
-  return FLAG_DEFLATE_RAW
-    | (hasVelocity ? FLAG_EVENTS_HAVE_VELOCITY : 0)
-    | (hasPass ? FLAG_EVENTS_HAVE_PASS : 0)
+function normalizePositionMarkers(
+  markers: readonly PlaybackPositionMarker[] | undefined,
+  events: readonly PlaybackEvent[],
+  resolutionMs: number,
+): PlaybackPositionMarker[] {
+  const source: readonly PlaybackPositionMarker[] = markers === undefined || markers.length === 0
+    ? events.map((event) => ({ timeMs: event.startMs, position: event.position }))
+    : markers
+  const normalized = source.map((marker) => {
+    validatePosition(marker.position)
+    if (marker.meter !== undefined) {
+      if (!Number.isSafeInteger(marker.meter.numerator) || marker.meter.numerator <= 0
+        || !Number.isSafeInteger(marker.meter.denominator) || marker.meter.denominator <= 0) {
+        throw new Error('Invalid playback meter')
+      }
+    }
+    return {
+      timeMs: quantize(marker.timeMs, resolutionMs) * resolutionMs,
+      position: { ...marker.position },
+      meter: marker.meter === undefined ? undefined : {
+        numerator: marker.meter.numerator,
+        denominator: marker.meter.denominator,
+        grouping: marker.meter.grouping === undefined ? undefined : [...marker.meter.grouping],
+      },
+    }
+  }).sort((left, right) => left.timeMs - right.timeMs)
+  const deduplicated: PlaybackPositionMarker[] = []
+  for (const marker of normalized) {
+    const previous = deduplicated[deduplicated.length - 1]
+    if (previous !== undefined && previous.position.measureNumber === marker.position.measureNumber
+      && previous.position.passIndex === marker.position.passIndex) {
+      if (previous.meter === undefined && marker.meter !== undefined) previous.meter = marker.meter
+      if (marker.meter === undefined && previous.meter !== undefined && marker.timeMs > previous.timeMs) {
+        deduplicated.push(marker)
+      }
+      continue
+    }
+    deduplicated.push(marker)
+  }
+  return deduplicated
+}
+
+function encodePositionMarkers(markers: readonly PlaybackPositionMarker[], resolutionMs: number, includeMeter: boolean): { bytes: Uint8Array; markerBytes: number } {
+  const output: number[] = []
+  let previousTime = 0
+  for (const marker of markers) {
+    const time = quantize(marker.timeMs, resolutionMs)
+    writeVarUInt(output, time - previousTime)
+    writeVarUInt(output, marker.position.measureNumber)
+    writeVarUInt(output, marker.position.passIndex)
+    if (includeMeter) {
+      const hasMeter = marker.meter !== undefined
+      output.push(hasMeter ? 1 : 0)
+      if (hasMeter) {
+        writeVarUInt(output, marker.meter?.numerator ?? 4)
+        writeVarUInt(output, marker.meter?.denominator ?? 4)
+        const grouping = marker.meter?.grouping ?? []
+        writeVarUInt(output, grouping.length)
+        for (const value of grouping) writeVarUInt(output, value)
+      }
+    }
+    previousTime = time
+  }
+  return { bytes: new Uint8Array(output), markerBytes: output.length }
 }
 
 interface EncodedPlaybackPayload {
   payload: Uint8Array
   normalized: PlaybackEvent[]
+  positionMarkers: PlaybackPositionMarker[]
   breakdown: PlaybackByteBreakdown
   compressedEvents: Uint8Array
 }
 
 async function encodePayloadParts(
   events: readonly PlaybackEvent[],
-  options: Pick<PlaybackLinkOptions, 'timeResolutionMs'>,
+  options: Pick<PlaybackLinkOptions, 'timeResolutionMs' | 'positionMarkers'>,
   codec: PlaybackCompressionCodec,
 ): Promise<EncodedPlaybackPayload> {
   const resolutionMs = options.timeResolutionMs ?? DEFAULT_TIME_RESOLUTION_MS
   if (!Number.isSafeInteger(resolutionMs) || resolutionMs <= 0) throw new Error(`Invalid playback resolution: ${resolutionMs}`)
   const normalized = normalizeEvents(events, resolutionMs)
-  const formatFlags = resolveFormatFlags(normalized)
-  const header = encodeHeader(normalized.length, resolutionMs, formatFlags)
-  const encodedEvents = encodeEvents(normalized, resolutionMs, formatFlags)
-  const compressedEvents = await codec.compress(encodedEvents.bytes)
+  const positionMarkers = normalizePositionMarkers(options.positionMarkers, normalized, resolutionMs)
+  const formatFlags = FLAG_DEFLATE_RAW | FLAG_HAS_POSITION_TRACK
+    | (normalized.some((event) => (event.velocity ?? 127) !== 127) ? FLAG_EVENTS_HAVE_VELOCITY : 0)
+    | (positionMarkers.some((marker) => marker.meter !== undefined) ? FLAG_POSITION_MARKERS_HAVE_METER : 0)
+  const header = encodeHeader(normalized.length, positionMarkers.length, resolutionMs, formatFlags)
+  const encodedEvents = encodeEvents(normalized, resolutionMs, formatFlags, false)
+  const encodedMarkers = encodePositionMarkers(positionMarkers, resolutionMs, (formatFlags & FLAG_POSITION_MARKERS_HAVE_METER) !== 0)
+  const eventAndMarkerBytes = new Uint8Array(encodedEvents.bytes.length + encodedMarkers.bytes.length)
+  eventAndMarkerBytes.set(encodedEvents.bytes)
+  eventAndMarkerBytes.set(encodedMarkers.bytes, encodedEvents.bytes.length)
+  const compressedEvents = await codec.compress(eventAndMarkerBytes)
   const payload = new Uint8Array(header.length + compressedEvents.length)
   payload.set(header)
   payload.set(compressedEvents, header.length)
   return {
     payload,
     normalized,
+    positionMarkers,
     breakdown: {
       ...encodedEvents.breakdown,
       headerBytes: header.length,
+      markerBytes: encodedMarkers.markerBytes,
     },
     compressedEvents,
   }
@@ -278,7 +364,7 @@ function fromBase64Url(value: string): Uint8Array {
 /** Encodes audio events into the versioned compressed playback payload. */
 export async function encodePlaybackPayload(
   events: readonly PlaybackEvent[],
-  options: Pick<PlaybackLinkOptions, 'timeResolutionMs'>,
+  options: Pick<PlaybackLinkOptions, 'timeResolutionMs' | 'positionMarkers'>,
   codec: PlaybackCompressionCodec,
 ): Promise<Uint8Array> {
   return (await encodePayloadParts(events, options, codec)).payload
@@ -309,7 +395,7 @@ export async function exportPlaybackLink(
     voiceBytes: 0,
     flagsBytes: binaryBytes === 0 ? 0 : breakdown.flagsBytes / binaryBytes * 100,
     idsBytes: 0,
-    markerBytes: 0,
+    markerBytes: binaryBytes === 0 ? 0 : breakdown.markerBytes / binaryBytes * 100,
     otherMetadataBytes: binaryBytes === 0 ? 0 : breakdown.otherMetadataBytes / binaryBytes * 100,
   }
   return {
@@ -332,22 +418,26 @@ export async function exportPlaybackLink(
 export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData {
   if (payload.length < 6 || !MAGIC.every((value, index) => payload[index] === value)) throw new Error('Invalid playback payload magic')
   const version = payload[3]
-  if (version !== LEGACY_FORMAT_VERSION && version !== FORMAT_VERSION) {
+  if (version !== LEGACY_FORMAT_VERSION && version !== COMPACT_FORMAT_VERSION && version !== FORMAT_VERSION) {
     throw new Error(`Unsupported playback format version: ${version}`)
   }
   const formatFlags = payload[4] ?? 0
   if (version === LEGACY_FORMAT_VERSION && formatFlags !== FLAG_DEFLATE_RAW) {
     throw new Error(`Unsupported playback compression flags: ${formatFlags}`)
   }
-  if (version === FORMAT_VERSION && (formatFlags & FLAG_DEFLATE_RAW) === 0) {
+  if (version !== LEGACY_FORMAT_VERSION && (formatFlags & FLAG_DEFLATE_RAW) === 0) {
     throw new Error(`Unsupported playback compression flags: ${formatFlags}`)
   }
-  if (version === FORMAT_VERSION && (formatFlags & ~(FLAG_DEFLATE_RAW | FLAG_EVENTS_HAVE_VELOCITY | FLAG_EVENTS_HAVE_PASS)) !== 0) {
+  if (version === COMPACT_FORMAT_VERSION && (formatFlags & ~(FLAG_DEFLATE_RAW | FLAG_EVENTS_HAVE_VELOCITY | FLAG_EVENTS_HAVE_PASS)) !== 0) {
+    throw new Error(`Unsupported playback format flags: ${formatFlags}`)
+  }
+  if (version === FORMAT_VERSION && (formatFlags & ~(FLAG_DEFLATE_RAW | FLAG_EVENTS_HAVE_VELOCITY | FLAG_HAS_POSITION_TRACK | FLAG_POSITION_MARKERS_HAVE_METER)) !== 0) {
     throw new Error(`Unsupported playback format flags: ${formatFlags}`)
   }
   const offset = { value: 5 }
   const timeResolutionMs = readVarUInt(payload, offset)
   const eventCount = readVarUInt(payload, offset)
+  const markerCount = version === FORMAT_VERSION ? readVarUInt(payload, offset) : 0
   if (eventCount > 1_000_000) throw new Error('Playback event count is too large')
   const events: PlaybackEvent[] = []
   let startUnits = 0
@@ -367,7 +457,7 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
       offset.value += 1
       measureNumber = readVarUInt(payload, offset)
       passIndex = readVarUInt(payload, offset)
-    } else {
+    } else if (version === COMPACT_FORMAT_VERSION) {
       const eventFlags = payload[offset.value]
       if (eventFlags === undefined) throw new Error('Playback payload ends inside an event')
       offset.value += 1
@@ -380,8 +470,21 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
         velocity = eventVelocity
         offset.value += 1
       }
+    } else {
+      const eventFlags = payload[offset.value]
+      if (eventFlags === undefined) throw new Error('Playback payload ends inside an event')
+      offset.value += 1
+      if ((eventFlags & ~4) !== 0) throw new Error(`Unsupported playback event flags: ${eventFlags}`)
+      if ((formatFlags & FLAG_EVENTS_HAVE_VELOCITY) !== 0) {
+        const eventVelocity = payload[offset.value]
+        if (eventVelocity === undefined) throw new Error('Playback payload ends inside an event')
+        velocity = eventVelocity
+        offset.value += 1
+      }
     }
-    const position = { measureNumber, passIndex }
+    const position = version === FORMAT_VERSION
+      ? { measureNumber: 1, passIndex: 1 }
+      : { measureNumber, passIndex }
     validatePosition(position)
     events.push({
       startMs: startUnits * timeResolutionMs,
@@ -391,7 +494,54 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
       position,
     })
   }
-  return { timeResolutionMs, events }
+  const positionMarkers: PlaybackPositionMarker[] = []
+  if (version === FORMAT_VERSION) {
+    if ((formatFlags & FLAG_HAS_POSITION_TRACK) === 0) throw new Error('Playback payload has no position track')
+    let markerTimeUnits = 0
+    for (let index = 0; index < markerCount; index += 1) {
+      markerTimeUnits += readVarUInt(payload, offset)
+      const measureNumber = readVarUInt(payload, offset)
+      const passIndex = readVarUInt(payload, offset)
+      const position = { measureNumber, passIndex }
+      validatePosition(position)
+      let meter: PlaybackMeter | undefined
+      if ((formatFlags & FLAG_POSITION_MARKERS_HAVE_METER) !== 0) {
+        const meterFlags = payload[offset.value]
+        if (meterFlags === undefined) throw new Error('Playback payload ends inside a position marker')
+        offset.value += 1
+        if ((meterFlags & 1) !== 0) {
+          const numerator = readVarUInt(payload, offset)
+          const denominator = readVarUInt(payload, offset)
+          const groupingCount = readVarUInt(payload, offset)
+          if (groupingCount > 32) throw new Error('Playback meter grouping is too large')
+          const grouping: number[] = []
+          for (let groupingIndex = 0; groupingIndex < groupingCount; groupingIndex += 1) {
+            grouping.push(readVarUInt(payload, offset))
+          }
+          meter = grouping.length > 0 ? { numerator, denominator, grouping } : { numerator, denominator }
+        }
+      }
+      positionMarkers.push({ timeMs: markerTimeUnits * timeResolutionMs, position, meter })
+    }
+    let markerIndex = 0
+    let currentPosition = positionMarkers[0]?.position ?? { measureNumber: 1, passIndex: 1 }
+    for (const event of events) {
+      while (markerIndex + 1 < positionMarkers.length
+        && (positionMarkers[markerIndex + 1]?.timeMs ?? Number.POSITIVE_INFINITY) <= event.startMs) {
+        markerIndex += 1
+        currentPosition = positionMarkers[markerIndex]?.position ?? currentPosition
+      }
+      event.position = { ...currentPosition }
+    }
+  } else {
+    const deduplicated = new Map<string, PlaybackPositionMarker>()
+    for (const event of events) {
+      const key = `${event.startMs}:${event.position.measureNumber}:${event.position.passIndex}`
+      deduplicated.set(key, { timeMs: event.startMs, position: { ...event.position } })
+    }
+    positionMarkers.push(...deduplicated.values())
+  }
+  return { timeResolutionMs, events, positionMarkers }
 }
 
 /** Decodes a complete Base64URL playback fragment using the platform codec. */
@@ -400,6 +550,7 @@ export async function decodePlaybackFragment(value: string, codec: PlaybackCompr
   const headerOffset = { value: 5 }
   readVarUInt(encoded, headerOffset)
   readVarUInt(encoded, headerOffset)
+  if (encoded[3] === FORMAT_VERSION) readVarUInt(encoded, headerOffset)
   if (headerOffset.value > encoded.length) throw new Error('Playback payload ends inside header')
   const decodedEvents = await codec.decompress(encoded.slice(headerOffset.value))
   const payload = new Uint8Array(headerOffset.value + decodedEvents.length)

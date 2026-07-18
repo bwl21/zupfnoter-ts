@@ -11,6 +11,7 @@ import type {
   Song,
   VoiceEntity,
   Note,
+  TimeSignature,
 } from '@zupfnoter/types'
 import { expandPlaybackFlow } from '@zupfnoter/core'
 import { textRangeKey, buildPlaybackIdentity, projectIndexesToEntries, resolveSelectedPlaybackIds } from './selectionIndex'
@@ -49,6 +50,8 @@ export interface PlaybackStep {
   durationMs: number
   sourceTime: number
   position?: PlaybackPosition
+  /** Taktart am Beginn des Taktes, für die Player-Metronomberechnung. */
+  meter?: TimeSignature
   flowIndex: number
   passIndex: number
   voltaNumber?: number
@@ -345,6 +348,7 @@ export function buildPlaybackTimeline(song: Song, activeVoices?: number[]): Play
         durationMs: 120,
         sourceTime: flowStep.sourceTime,
         position: { measureNumber: flowStep.measureNumber, passIndex: flowStep.passIndex },
+        meter: flowStep.meter,
         flowIndex: flowStep.flowIndex,
         passIndex: flowStep.passIndex,
         voltaNumber: flowStep.voltaNumber,
@@ -379,6 +383,7 @@ export function buildPlaybackTimeline(song: Song, activeVoices?: number[]): Play
       durationMs: stepDurationMs,
       sourceTime: flowStep.sourceTime,
       position: { measureNumber: flowStep.measureNumber, passIndex: flowStep.passIndex },
+      meter: flowStep.meter,
       flowIndex: flowStep.flowIndex,
       passIndex: flowStep.passIndex,
       voltaNumber: flowStep.voltaNumber,

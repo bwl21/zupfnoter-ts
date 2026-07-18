@@ -74,7 +74,7 @@ describe('playback link format', () => {
     expect(result.analysis.breakdown.timeBytes).toBeGreaterThan(0)
     expect(result.analysis.breakdown.durationBytes).toBeGreaterThan(0)
     expect(result.analysis.breakdown.pitchBytes).toBe(3)
-    expect(result.analysis.percentages.otherMetadataBytes).toBeGreaterThan(0)
+    expect(result.analysis.breakdown.markerBytes).toBeGreaterThan(0)
   })
 
   it('decodes the compact format without default velocity and pass repetition', async () => {
@@ -91,6 +91,56 @@ describe('playback link format', () => {
     expect(decoded.events.map((event) => event.position)).toEqual([
       { measureNumber: 1, passIndex: 1 },
       { measureNumber: 1, passIndex: 1 },
+    ])
+  })
+
+  it('keeps position changes independent from audio event starts', async () => {
+    const result = await exportPlaybackLink([
+      { ...events[0], startMs: 0, durationMs: 960, position: { measureNumber: 1, passIndex: 1 } },
+      { ...events[1], startMs: 960, durationMs: 120, position: { measureNumber: 2, passIndex: 1 } },
+    ], {
+      playerUrl: 'https://play.zupfnoter.de/',
+      positionMarkers: [
+        { timeMs: 0, position: { measureNumber: 1, passIndex: 1 } },
+        { timeMs: 480, position: { measureNumber: 2, passIndex: 1 } },
+      ],
+    }, identityCodec)
+
+    const decoded = decodePlaybackPayload(result.payload)
+    expect(decoded.positionMarkers).toEqual([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 } },
+      { timeMs: 480, position: { measureNumber: 2, passIndex: 1 } },
+    ])
+    expect(decoded.events[0]?.position).toEqual({ measureNumber: 1, passIndex: 1 })
+  })
+
+  it('round-trips changing meters and beat grouping in the position track', async () => {
+    const result = await exportPlaybackLink(events, {
+      playerUrl: 'https://play.zupfnoter.de/',
+      positionMarkers: [
+        { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 3, denominator: 4 } },
+        { timeMs: 480, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 7, denominator: 8, grouping: [2, 2, 3] } },
+      ],
+    }, identityCodec)
+
+    expect((await decodePlaybackFragment(new URL(result.url).hash.slice(3), identityCodec)).positionMarkers).toEqual([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 3, denominator: 4 } },
+      { timeMs: 480, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 7, denominator: 8, grouping: [2, 2, 3] } },
+    ])
+  })
+
+  it('preserves a terminal marker for the final measure', async () => {
+    const result = await exportPlaybackLink(events, {
+      playerUrl: 'https://play.zupfnoter.de/',
+      positionMarkers: [
+        { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+        { timeMs: 1920, position: { measureNumber: 1, passIndex: 1 } },
+      ],
+    }, identityCodec)
+
+    expect((await decodePlaybackFragment(new URL(result.url).hash.slice(3), identityCodec)).positionMarkers).toEqual([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 1920, position: { measureNumber: 1, passIndex: 1 }, meter: undefined },
     ])
   })
 

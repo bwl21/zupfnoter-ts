@@ -2,6 +2,7 @@ import {
   exportPlaybackLink,
   type PlaybackCompressionCodec,
   type PlaybackEvent,
+  type PlaybackPositionMarker,
   type PlaybackLinkOptions,
 } from '@zupfnoter/playback'
 import { deflateSync, inflateSync } from 'fflate'
@@ -38,6 +39,45 @@ export function playbackEventsFromTimeline(
   })
 }
 
+/** Extracts the complete time-based measure/pass track, including silent steps. */
+export function playbackPositionsFromTimeline(
+  timeline: readonly PlaybackStep[],
+): PlaybackPositionMarker[] {
+  const markers: PlaybackPositionMarker[] = []
+  for (const step of timeline) {
+    if (step.position === undefined) continue
+    const previous = markers[markers.length - 1]
+    const positionChanged = previous === undefined
+      || previous.position.measureNumber !== step.position.measureNumber
+      || previous.position.passIndex !== step.position.passIndex
+    if (positionChanged) {
+      markers.push({
+        timeMs: step.playbackStartMs,
+        position: step.position,
+        meter: step.meter,
+      })
+    } else if (previous !== undefined && previous.meter === undefined && step.meter !== undefined) {
+      previous.meter = step.meter
+    }
+  }
+  const finalPositionedStep = [...timeline]
+    .reverse()
+    .find((step): step is PlaybackStep & { position: NonNullable<PlaybackStep['position']> } => step.position !== undefined)
+  const playbackEndMs = timeline.reduce(
+    (endMs, step) => Math.max(endMs, step.playbackStartMs + step.durationMs),
+    0,
+  )
+  const lastMarker = markers[markers.length - 1]
+  if (finalPositionedStep !== undefined && lastMarker !== undefined && playbackEndMs > lastMarker.timeMs) {
+    markers.push({
+      timeMs: playbackEndMs,
+      position: finalPositionedStep.position,
+      meter: undefined,
+    })
+  }
+  return markers
+}
+
 /** Creates one compressed playback link from the existing workbench timeline. */
 export async function createPlaybackLinkFromTimeline(
   timeline: readonly PlaybackStep[],
@@ -47,7 +87,11 @@ export async function createPlaybackLinkFromTimeline(
 ) {
   return exportPlaybackLink(
     playbackEventsFromTimeline(timeline, activeVoiceIds),
-    { playerUrl, timeResolutionMs } satisfies PlaybackLinkOptions,
+    {
+      playerUrl,
+      timeResolutionMs,
+      positionMarkers: playbackPositionsFromTimeline(timeline),
+    } satisfies PlaybackLinkOptions,
     browserPlaybackCodec,
   )
 }

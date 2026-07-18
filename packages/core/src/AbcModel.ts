@@ -111,6 +111,9 @@ export interface AbcSymbol {
   invisible?: boolean
   /** abc2svg hidden-symbol flag */
   invis?: boolean
+  /** Taktartdaten eines inline-Taktartsymbols. */
+  wmeasure?: number
+  a_meter?: Array<{ bot?: number | string; top?: number | string }>
   /** Decorations attached to this symbol (abc2svg: a_dd[]) */
   a_dd?: Array<{ name?: string; [key: string]: unknown }>
   /** Chord symbols and annotations attached to this symbol (abc2svg: a_gch[]) */
@@ -125,7 +128,7 @@ export interface AbcSymbol {
 export interface AbcMeter {
   /** Total duration of one measure in abc2svg units */
   wmeasure: number
-  a_meter: Array<{ bot: number; top: number }>
+  a_meter: Array<{ bot: number | string; top: number | string }>
 }
 
 export interface AbcKey {

@@ -5,6 +5,7 @@ import type {
   SelectionTextRange,
   Song,
   VoiceEntity,
+  TimeSignature,
 } from '@zupfnoter/types'
 
 interface PlayableGroup {
@@ -14,6 +15,7 @@ interface PlayableGroup {
   activeStartChar?: number
   voltaNumber?: number
   measureNumber: number
+  meter?: TimeSignature
 }
 
 function isPlayableEntity(entity: VoiceEntity): entity is PlayableEntity {
@@ -27,14 +29,18 @@ function isGotoEntity(entity: VoiceEntity): entity is Goto {
 function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
   const groups = new Map<number, PlayableGroup>()
   const measureByTime = new Map<number, { voiceIndex: number; measureNumber: number }>()
+  let measureVoiceIndex: number | undefined
 
   for (const [voiceIndex, voice] of song.voices.entries()) {
     for (const entity of voice.entities) {
       if (!isPlayableEntity(entity)) continue
 
-      if (voice.index > 0 && entity.measureCount > 0) {
-        const existingMeasure = measureByTime.get(entity.time)
-        if (existingMeasure === undefined || voiceIndex < existingMeasure.voiceIndex) {
+      // Only a real measure start may update the shared time-to-measure map.
+      // Interior notes of a voice with a different L: must not move the
+      // position track backwards while the other voices remain in the same bar.
+      if (voice.index > 0 && entity.measureStart && entity.measureCount > 0) {
+        measureVoiceIndex ??= voiceIndex
+        if (voiceIndex === measureVoiceIndex) {
           measureByTime.set(entity.time, { voiceIndex, measureNumber: entity.measureCount })
         }
       }
@@ -51,6 +57,7 @@ function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
           activeTextRanges: textRange === undefined ? [] : [textRange],
           activeStartChar: entity.sourceOffsets?.[0],
           voltaNumber: entity.variant > 0 ? entity.variant : undefined,
+          meter: entity.meter,
           measureNumber: entity.measureCount > 0 ? entity.measureCount : 1,
         })
         continue
@@ -70,11 +77,21 @@ function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
           ? entity.variant
           : Math.max(existing.voltaNumber, entity.variant) as 1 | 2
       }
+      if (existing.meter === undefined && entity.meter !== undefined) existing.meter = entity.meter
     }
   }
 
-  for (const group of groups.values()) {
-    group.measureNumber = measureByTime.get(group.sourceTime)?.measureNumber ?? group.measureNumber
+  const measureStarts = [...measureByTime.entries()].sort(([left], [right]) => left - right)
+  let measureStartIndex = 0
+  let currentMeasureNumber: number | undefined
+  for (const group of [...groups.values()].sort((left, right) => left.sourceTime - right.sourceTime)) {
+    while (measureStartIndex < measureStarts.length) {
+      const measureStart = measureStarts[measureStartIndex]
+      if (measureStart === undefined || measureStart[0] > group.sourceTime) break
+      currentMeasureNumber = measureStart[1].measureNumber
+      measureStartIndex += 1
+    }
+    if (currentMeasureNumber !== undefined) group.measureNumber = currentMeasureNumber
     group.originZnIds = [...new Set(group.originZnIds)]
     group.activeTextRanges = [...new Map(
       group.activeTextRanges.map((range) => [`${range.startpos}:${range.endpos}`, range]),
@@ -267,6 +284,7 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
         flowIndex: flow.length,
         passIndex,
         measureNumber: group.measureNumber,
+        meter: group.meter,
         voltaNumber: group.voltaNumber,
       })
     }
