@@ -20,6 +20,7 @@ interface MockStereoPannerNode {
 }
 
 let createdPanners: MockStereoPannerNode[] = []
+let mockCurrentTime = 10
 
 const instrumentMock = vi.fn(async (_context: unknown, _instrument: string, options?: { destination?: { pan?: { value: number } } }) => ({
   schedule: options?.destination?.pan?.value === -0.9 ? leftScheduleMock : rightScheduleMock,
@@ -32,7 +33,9 @@ vi.mock('soundfont-player', () => ({
 import { useAudioPlayer } from '../useAudioPlayer'
 
 class MockAudioContext {
-  currentTime = 10
+  get currentTime(): number {
+    return mockCurrentTime
+  }
   state: 'running' | 'suspended' | 'closed' = 'running'
   destination = { kind: 'destination' }
 
@@ -131,6 +134,7 @@ describe('useAudioPlayer', () => {
     gainLinearRampToValueAtTimeMock.mockReset()
     stereoPannerConnectMock.mockReset()
     createdPanners = []
+    mockCurrentTime = 10
     Object.defineProperty(globalThis, 'AudioContext', {
       value: MockAudioContext,
       configurable: true,
@@ -225,5 +229,19 @@ describe('useAudioPlayer', () => {
     expect(createdPanners.some((panner) => panner.pan.value === -0.9)).toBe(true)
     expect(createdPanners.some((panner) => panner.pan.value === 0.9)).toBe(true)
     expect(oscillatorFrequencySetValueAtTimeMock).toHaveBeenCalledWith(261.6255653005986, 10.2)
+  })
+
+  it('derives visual callbacks from the scheduled audio clock', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const onStepStart = vi.fn<(step: PlaybackStep) => void>()
+
+    await player.schedule(steps, 1, { onStepStart })
+
+    vi.advanceTimersByTime(16)
+    expect(onStepStart).not.toHaveBeenCalled()
+
+    mockCurrentTime = 10.2
+    vi.advanceTimersByTime(16)
+    expect(onStepStart).toHaveBeenCalledWith(steps[0])
   })
 })

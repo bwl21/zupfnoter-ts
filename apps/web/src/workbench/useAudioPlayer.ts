@@ -44,6 +44,8 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   let playerPromise: Promise<SoundfontPlayerSet> | null = null
   let loadedInstrument: PlaybackInstrument | null = null
   let timers: ReturnType<typeof setTimeout>[] = []
+  let playbackFrame: number | undefined
+  let playbackFallbackTimer: ReturnType<typeof setTimeout> | undefined
 
   function getContext(): AudioContext {
     if (ctx === null || ctx.state === 'closed') {
@@ -121,6 +123,61 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       clearTimeout(timer)
     }
     timers = []
+    if (playbackFrame !== undefined && typeof cancelAnimationFrame === 'function') {
+      cancelAnimationFrame(playbackFrame)
+      playbackFrame = undefined
+    }
+    if (playbackFallbackTimer !== undefined) {
+      clearTimeout(playbackFallbackTimer)
+      playbackFallbackTimer = undefined
+    }
+  }
+
+  function scheduleStepCallbacks(
+    steps: PlaybackStep[],
+    speedFactor: number,
+    callbacks: PlaybackScheduleCallbacks,
+    context: AudioContext,
+    baseStartTime: number,
+  ): void {
+    if (callbacks.onStepStart === undefined && callbacks.onStepEnd === undefined) return
+    let nextStepIndex = 0
+    let activeStep: PlaybackStep | undefined
+
+    const tick = (): void => {
+      playbackFrame = undefined
+      playbackFallbackTimer = undefined
+      const elapsedMs = (context.currentTime - baseStartTime) * 1000 * speedFactor
+
+      if (activeStep !== undefined && elapsedMs >= activeStep.playbackStartMs + activeStep.durationMs) {
+        callbacks.onStepEnd?.(activeStep)
+        activeStep = undefined
+      }
+
+      const nextStep = steps[nextStepIndex]
+      if (activeStep === undefined && nextStep !== undefined && elapsedMs >= nextStep.playbackStartMs) {
+        callbacks.onStepStart?.(nextStep)
+        activeStep = nextStep
+        nextStepIndex += 1
+        if (nextStep.durationMs <= 0) {
+          callbacks.onStepEnd?.(nextStep)
+          activeStep = undefined
+        }
+      }
+
+      if (nextStepIndex >= steps.length && activeStep === undefined) return
+      if (typeof requestAnimationFrame === 'function') {
+        playbackFrame = requestAnimationFrame(tick)
+      } else {
+        playbackFallbackTimer = setTimeout(tick, 16)
+      }
+    }
+
+    if (typeof requestAnimationFrame === 'function') {
+      playbackFrame = requestAnimationFrame(tick)
+    } else {
+      playbackFallbackTimer = setTimeout(tick, 16)
+    }
   }
 
   async function ensureRunningContext(): Promise<AudioContext> {
@@ -144,16 +201,6 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     clearTimers()
     for (const step of steps) {
       const stepOffsetMs = step.playbackStartMs / speedFactor
-      if (callbacks.onStepStart !== undefined) {
-        timers.push(setTimeout(() => {
-          callbacks.onStepStart?.(step)
-        }, stepOffsetMs))
-      }
-      if (callbacks.onStepEnd !== undefined) {
-        timers.push(setTimeout(() => {
-          callbacks.onStepEnd?.(step)
-        }, stepOffsetMs + (step.durationMs / speedFactor)))
-      }
       const uniqueNotes = new Map<string, { pitch: number; duration: number; side: StereoSide }>()
       for (const note of step.activeNotes) {
         if (!note.attack) continue
@@ -180,10 +227,13 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         })
       }
     }
-    if (eventsBySide.left.length === 0 && eventsBySide.right.length === 0) return
+    const hasAudioEvents = eventsBySide.left.length > 0 || eventsBySide.right.length > 0
+    if (!hasAudioEvents && callbacks.onStepStart === undefined && callbacks.onStepEnd === undefined) return
     const context = await ensureRunningContext()
-    const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC
     if (instrument.value === 'oscillator') {
+      const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC
+      scheduleStepCallbacks(steps, speedFactor, callbacks, context, baseStartTime)
+      if (!hasAudioEvents) return
       const masterGain = getMasterGainNode()
       for (const side of ['left', 'right'] as StereoSide[]) {
         const events = eventsBySide[side]
@@ -213,7 +263,14 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       }
       return
     }
+    if (!hasAudioEvents) {
+      const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC
+      scheduleStepCallbacks(steps, speedFactor, callbacks, context, baseStartTime)
+      return
+    }
     const players = await loadPlayer()
+    const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC
+    scheduleStepCallbacks(steps, speedFactor, callbacks, context, baseStartTime)
     for (const side of ['left', 'right'] as StereoSide[]) {
       const events = eventsBySide[side]
       if (events.length === 0) continue

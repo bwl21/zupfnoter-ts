@@ -60,6 +60,7 @@ export function usePlaybackDriver(
 
     clearTimer()
     playbackStore.startPlayback(source.baseTempoFromQ, totalPassCount > 0 ? totalPassCount : undefined)
+    const lastStep = steps[steps.length - 1]
     const callbacks: PlaybackScheduleCallbacks = {
       onStepStart: (step) => {
         playbackStore.handlePlayerEvent({
@@ -71,11 +72,19 @@ export function usePlaybackDriver(
           voltaNumber: step.voltaNumber,
         })
       },
+      onStepEnd: (step) => {
+        if (lastStep === undefined || step !== lastStep) return
+        clearTimer()
+        playbackStore.handlePlayerEvent({ kind: 'stop' })
+        audioPlayer?.stop()
+      },
     }
     await audioPlayer?.schedule(steps, playbackStore.state.speedFactor, callbacks)
-    timer = setTimeout(() => {
-      stop()
-    }, steps.reduce((total, step) => total + (step.durationMs / playbackStore.state.speedFactor), 0))
+    if (audioPlayer === undefined) {
+      timer = setTimeout(() => {
+        stop()
+      }, steps.reduce((total, step) => total + (step.durationMs / playbackStore.state.speedFactor), 0))
+    }
   }
 
   function toggle(): void {
