@@ -12,6 +12,7 @@ import '@zupfnoter/player-ui/style.css'
 const PLAYER_VERSION = '0.1.5'
 const AUDIO_SCHEDULE_WINDOW_MS = 2000
 const AUDIO_SCHEDULE_REFILL_MS = 500
+const AUDIO_START_LEAD_MS = 200
 
 const appElement = document.querySelector<HTMLDivElement>('#app')
 if (appElement === null) throw new Error('Player root is missing')
@@ -105,6 +106,7 @@ function nextDistinctPositionMarker(
   return markers.slice(markerIndex + 1).find((candidate) => (
     candidate.position.measureNumber !== marker.position.measureNumber
     || candidate.position.passIndex !== marker.position.passIndex
+    || candidate.meter === undefined
   ))
 }
 
@@ -124,6 +126,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
   const maximumPass = Math.max(1, ...positionMarkers.map((marker) => marker.position.passIndex))
   let selectedEvents = events
   let selectedStartMs = positionMarkers[0]?.timeMs ?? events[0]?.startMs ?? 0
+  let selectedRangePosition = firstPosition
 
   function readRange(fromPosition: PlaybackPosition = firstPosition): [number, number] | undefined {
     const from = `${fromPosition.measureNumber}.${fromPosition.passIndex}`
@@ -135,6 +138,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     ui.setRangeError('')
     selectedEvents = events.slice(range.range[0], range.range[1] + 1)
     selectedStartMs = range.startMs
+    selectedRangePosition = fromPosition
     return range.range
   }
   let ui: PlayerUiController
@@ -157,7 +161,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       },
       onSpeedChange: (speed) => { setSpeed(speed) },
       onMetronomeChange: (enabled) => { handleMetronomeChange(enabled) },
-      onPlay: () => { if (readRange() !== undefined) void playPlayback() },
+      onPlay: () => { if (readRange(selectedRangePosition) !== undefined) void playPlayback() },
       onPause: pausePlayback,
       onStop: () => { stopPlayback() },
       onTakePosition: takePosition,
@@ -363,7 +367,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     }
     if (audioContext !== playerContext) return
     setLoading(false)
-    const audioStartAt = playerContext.currentTime + 0.2
+    const audioStartAt = playerContext.currentTime + AUDIO_START_LEAD_MS / 1000
     playbackStartedAtContextTime = audioStartAt - playbackOffsetMs / 1000 / speedFactor
     const elapsed = () => Math.max(0, (playerContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
     const chordSizes = new Map<number, number>()
@@ -414,11 +418,16 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       }
     }
     scheduleWindow()
-    const finishTimer = window.setTimeout(() => stopPlayback(), Math.max(0, (durationMs - playbackOffsetMs) / speedFactor))
-    playbackTimers.push(finishTimer)
     const update = () => {
-      updatePosition(elapsed())
-      if (audioContext === playerContext) positionTimer = window.setTimeout(update, 25)
+      if (audioContext !== playerContext) return
+      const elapsedMs = elapsed()
+      if (elapsedMs >= durationMs) {
+        updatePosition(durationMs)
+        stopPlayback()
+        return
+      }
+      updatePosition(elapsedMs)
+      positionTimer = window.setTimeout(update, 25)
     }
     update()
   }
