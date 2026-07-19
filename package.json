@@ -9,6 +9,8 @@
     "dev": "pnpm --filter @zupfnoter/demo dev",
     "dev:web": "pnpm --filter @zupfnoter/web dev",
     "dev:player": "pnpm --filter @zupfnoter/player dev",
+    "storybook": "pnpm --filter @zupfnoter/web storybook",
+    "build-storybook": "pnpm --filter @zupfnoter/web build-storybook",
     "serve:web": "pnpm --filter @zupfnoter/web run servedeploy",
     "dev:demo": "pnpm --filter @zupfnoter/demo dev",
     "dev:all": "pnpm -r --parallel --filter @zupfnoter/web --filter @zupfnoter/demo dev",
