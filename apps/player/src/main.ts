@@ -8,6 +8,13 @@ import {
 import { mountPlayerUi, type PlayerUiController } from '@zupfnoter/player-ui'
 import { deflateSync, inflateSync } from 'fflate'
 import '@zupfnoter/player-ui/style.css'
+import {
+  findPositionMarker,
+  nextPositionBoundaryMarker,
+  parsePosition,
+  positionAtTime,
+  resolveRange,
+} from './playerLogic'
 
 const PLAYER_VERSION = '0.1.5'
 const AUDIO_SCHEDULE_WINDOW_MS = 2000
@@ -73,51 +80,6 @@ function midiToSoundfontNote(midi: number): string {
   const names = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
   const pitch = resolveSoundfontPitch(midi)
   return `${names[[0, 2, 4, 5, 7, 9, 11].indexOf(pitch.note % 12)] ?? 'C'}${Math.floor(pitch.note / 12) - 1}`
-}
-
-function parsePosition(value: string): { measureNumber: number; passIndex: number } | undefined {
-  const match = value.trim().match(/^(\d+)\.(\d+)$/)
-  if (match === null) return undefined
-  const measureNumber = Number(match[1])
-  const passIndex = Number(match[2])
-  return measureNumber > 0 && passIndex > 0 ? { measureNumber, passIndex } : undefined
-}
-
-function findPositionMarker(markers: readonly PlaybackPositionMarker[], position: PlaybackPosition): PlaybackPositionMarker | undefined {
-  return markers.find((marker) => marker.position.measureNumber === position.measureNumber
-    && marker.position.passIndex === position.passIndex)
-}
-
-function positionAtTime(markers: readonly PlaybackPositionMarker[], timeMs: number): PlaybackPosition {
-  let current = markers[0]?.position ?? { measureNumber: 1, passIndex: 1 }
-  for (const marker of markers) {
-    if (marker.timeMs > timeMs) break
-    current = marker.position
-  }
-  return current
-}
-
-function nextDistinctPositionMarker(
-  markers: readonly PlaybackPositionMarker[],
-  markerIndex: number,
-): PlaybackPositionMarker | undefined {
-  const marker = markers[markerIndex]
-  if (marker === undefined) return undefined
-  return markers.slice(markerIndex + 1).find((candidate) => (
-    candidate.position.measureNumber !== marker.position.measureNumber
-    || candidate.position.passIndex !== marker.position.passIndex
-    || candidate.meter === undefined
-  ))
-}
-
-function resolveRange(events: readonly PlaybackEvent[], markers: readonly PlaybackPositionMarker[], from: string): { range: [number, number]; startMs: number } | undefined {
-  const start = parsePosition(from)
-  if (start === undefined) return undefined
-  const marker = findPositionMarker(markers, start)
-  if (marker === undefined) return undefined
-  const startIndex = events.findIndex((event) => event.startMs + event.durationMs > marker.timeMs)
-  if (startIndex < 0) return undefined
-  return { range: [startIndex, events.length - 1], startMs: marker.timeMs }
 }
 
 function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPositionMarker[], identification?: string): void {
@@ -219,7 +181,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       if (marker.timeMs <= absoluteTimeMs && marker.meter !== undefined) markerIndex = index
     }
     const marker = markerIndex >= 0 ? positionMarkers[markerIndex] : undefined
-    const nextMarker = markerIndex >= 0 ? nextDistinctPositionMarker(positionMarkers, markerIndex) : undefined
+    const nextMarker = markerIndex >= 0 ? nextPositionBoundaryMarker(positionMarkers, markerIndex) : undefined
     if (marker?.meter !== undefined) {
       const measureDuration = (nextMarker?.timeMs ?? selectedStartMs + 1000) - marker.timeMs
       const beatDuration = measureDuration / marker.meter.numerator
@@ -263,7 +225,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     for (let markerIndex = 0; markerIndex < positionMarkers.length; markerIndex += 1) {
       const marker = positionMarkers[markerIndex]
       if (marker === undefined || marker.meter === undefined) continue
-      const nextMarker = nextDistinctPositionMarker(positionMarkers, markerIndex)
+      const nextMarker = nextPositionBoundaryMarker(positionMarkers, markerIndex)
       const measureEnd = nextMarker?.timeMs ?? selectedStartMs + durationMs
       const measureDuration = measureEnd - marker.timeMs
       if (measureDuration <= 0 || marker.timeMs + measureDuration < selectedStartMs) continue
