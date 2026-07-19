@@ -184,7 +184,7 @@ const storageProviderDescriptors: StorageProviderDescriptor[] = [
   ...storageProviderRegistry.descriptors,
   { id: 'nextcloud', label: 'Nextcloud', availability: 'planned' },
 ]
-const playbackInstrument = ref<PlaybackInstrument>('oscillator')
+const playbackInstrument = ref<PlaybackInstrument>('harp')
 const logLevel = ref('warning')
 const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
 const runtimeSettings = ref<Record<string, string>>({

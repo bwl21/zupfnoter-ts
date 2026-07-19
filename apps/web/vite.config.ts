@@ -35,7 +35,7 @@ const buildInfo = readBuildMetadata()
 // https://vite.dev/config/
 export default defineConfig({
   define: {
-    __ZUPFNOTER_BUILD_INFO__: JSON.stringify(buildInfo),
+    'globalThis.__ZUPFNOTER_BUILD_INFO__': JSON.stringify(buildInfo),
   },
   plugins: [
     vue(),
