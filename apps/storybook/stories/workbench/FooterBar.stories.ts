@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import FooterBar from '../../src/workbench/FooterBar.vue'
+import FooterBar from '../../../web/src/workbench/FooterBar.vue'
 
 const meta = { title: 'Workbench/FooterBar', component: FooterBar, tags: ['autodocs'] } satisfies Meta<typeof FooterBar>
 export default meta

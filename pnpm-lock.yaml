@@ -108,6 +108,109 @@ importers:
         specifier: ^3.2.5
         version: 3.2.7(typescript@5.9.3)
 
+  apps/storybook:
+    dependencies:
+      '@codemirror/commands':
+        specifier: ^6.10.3
+        version: 6.10.3
+      '@codemirror/search':
+        specifier: ^6.7.1
+        version: 6.7.1
+      '@codemirror/state':
+        specifier: ^6.6.0
+        version: 6.6.0
+      '@codemirror/view':
+        specifier: ^6.43.0
+        version: 6.43.0
+      '@fortawesome/fontawesome-svg-core':
+        specifier: ^7.3.0
+        version: 7.3.0
+      '@fortawesome/free-regular-svg-icons':
+        specifier: ^7.3.0
+        version: 7.3.0
+      '@fortawesome/free-solid-svg-icons':
+        specifier: ^7.3.0
+        version: 7.3.0
+      '@fortawesome/vue-fontawesome':
+        specifier: ^3.3.2
+        version: 3.3.2(@fortawesome/fontawesome-svg-core@7.3.0)(vue@3.5.33(typescript@5.9.3))
+      '@zupfnoter/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@zupfnoter/playback':
+        specifier: workspace:*
+        version: link:../../packages/playback
+      '@zupfnoter/player-ui':
+        specifier: workspace:*
+        version: link:../../packages/player-ui
+      '@zupfnoter/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      fflate:
+        specifier: ^0.8.2
+        version: 0.8.3
+      jspdf:
+        specifier: ^4.2.1
+        version: 4.2.1
+      pinia:
+        specifier: ^3.0.4
+        version: 3.0.4(typescript@5.9.3)(vue@3.5.33(typescript@5.9.3))
+      qrcode:
+        specifier: ^1.5.4
+        version: 1.5.4
+      soundfont-player:
+        specifier: ^0.12.0
+        version: 0.12.0
+      tippy.js:
+        specifier: ^6.3.7
+        version: 6.3.7
+      vue:
+        specifier: ^3.5.29
+        version: 3.5.33(typescript@5.9.3)
+      vue-router:
+        specifier: ^5.0.3
+        version: 5.0.6(@vue/compiler-sfc@3.5.33)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.33(typescript@5.9.3)))(vue@3.5.33(typescript@5.9.3))
+    devDependencies:
+      '@storybook/addon-a11y':
+        specifier: 10.5.2
+        version: 10.5.2(storybook@10.5.2(@types/react@19.2.17)(prettier@3.8.1)(react@19.2.7))
+      '@storybook/addon-docs':
+        specifier: 10.5.2
+        version: 10.5.2(@types/react@19.2.17)(esbuild@0.27.7)(rollup@4.60.2)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.8.1)(react@19.2.7))(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))
+      '@storybook/vue3-vite':
+        specifier: 10.5.2
+        version: 10.5.2(esbuild@0.27.7)(rollup@4.60.2)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.8.1)(react@19.2.7))(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(vue@3.5.33(typescript@5.9.3))
+      '@types/jsdom':
+        specifier: ^28.0.0
+        version: 28.0.1
+      '@types/node':
+        specifier: ^24.12.2
+        version: 24.12.2
+      '@types/qrcode':
+        specifier: ^1.5.5
+        version: 1.5.6
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.4
+        version: 6.0.6(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(vue@3.5.33(typescript@5.9.3))
+      '@vue/tsconfig':
+        specifier: ^0.8.1
+        version: 0.8.1(typescript@5.9.3)(vue@3.5.33(typescript@5.9.3))
+      storybook:
+        specifier: 10.5.2
+        version: 10.5.2(@types/react@19.2.17)(prettier@3.8.1)(react@19.2.7)
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.2(@types/node@24.12.2)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3)
+      vite-plugin-vue-devtools:
+        specifier: ^8.0.6
+        version: 8.1.1(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(vue@3.5.33(typescript@5.9.3))
+      vue-tsc:
+        specifier: ^3.2.5
+        version: 3.2.7(typescript@5.9.3)
+
   apps/viewsvg:
     dependencies:
       '@zupfnoter/core':
@@ -228,9 +331,6 @@ importers:
       '@zupfnoter/playback':
         specifier: workspace:*
         version: link:../../packages/playback
-      '@zupfnoter/player-ui':
-        specifier: workspace:*
-        version: link:../../packages/player-ui
       '@zupfnoter/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -259,15 +359,6 @@ importers:
         specifier: ^5.0.3
         version: 5.0.6(@vue/compiler-sfc@3.5.33)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.33(typescript@5.9.3)))(vue@3.5.33(typescript@5.9.3))
     devDependencies:
-      '@storybook/addon-a11y':
-        specifier: 10.5.2
-        version: 10.5.2(storybook@10.5.2(@types/react@19.2.17)(prettier@3.8.1)(react@19.2.7))
-      '@storybook/addon-docs':
-        specifier: 10.5.2
-        version: 10.5.2(@types/react@19.2.17)(esbuild@0.27.7)(rollup@4.60.2)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.8.1)(react@19.2.7))(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))
-      '@storybook/vue3-vite':
-        specifier: 10.5.2
-        version: 10.5.2(esbuild@0.27.7)(rollup@4.60.2)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.8.1)(react@19.2.7))(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(vue@3.5.33(typescript@5.9.3))
       '@tsconfig/node24':
         specifier: ^24.0.4
         version: 24.0.4
@@ -322,9 +413,6 @@ importers:
       prettier:
         specifier: 3.8.1
         version: 3.8.1
-      storybook:
-        specifier: 10.5.2
-        version: 10.5.2(@types/react@19.2.17)(prettier@3.8.1)(react@19.2.7)
       typescript:
         specifier: ~5.9.3
         version: 5.9.3

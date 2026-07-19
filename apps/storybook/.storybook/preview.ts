@@ -2,7 +2,7 @@ import { setup } from '@storybook/vue3-vite'
 import type { Preview } from '@storybook/vue3-vite'
 import { createPinia } from 'pinia'
 
-import '../src/assets/main.css'
+import '../../web/src/assets/main.css'
 
 setup((app) => {
   app.use(createPinia())

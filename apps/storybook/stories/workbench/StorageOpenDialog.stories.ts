@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import StorageOpenDialog from '../../src/workbench/StorageOpenDialog.vue'
+import StorageOpenDialog from '../../../web/src/workbench/StorageOpenDialog.vue'
 
 const meta = { title: 'Workbench/Dialog/StorageOpenDialog', component: StorageOpenDialog, tags: ['autodocs'] } satisfies Meta<typeof StorageOpenDialog>
 export default meta

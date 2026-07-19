@@ -1,6 +1,7 @@
 import type { StorybookConfig } from '@storybook/vue3-vite'
 import { mergeConfig } from 'vite'
-import viteConfig from '../vite.config.ts'
+import vue from '@vitejs/plugin-vue'
+import viteConfig from '../../web/vite.config.ts'
 
 const config: StorybookConfig = {
   stories: [
@@ -15,15 +16,13 @@ const config: StorybookConfig = {
     options: {
       docgen: {
         plugin: 'vue-component-meta',
-        tsconfig: 'tsconfig.app.json',
+      tsconfig: '../web/tsconfig.app.json',
       },
     },
   },
-  docs: {
-    autodocs: 'tag',
-  },
   async viteFinal(config) {
     return mergeConfig(config, {
+      plugins: [vue()],
       define: viteConfig.define,
       resolve: viteConfig.resolve,
       optimizeDeps: viteConfig.optimizeDeps,

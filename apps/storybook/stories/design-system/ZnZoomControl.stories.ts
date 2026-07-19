@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnZoomControl from '../../src/design-system/components/ZnZoomControl.vue'
+import ZnZoomControl from '../../../web/src/design-system/components/ZnZoomControl.vue'
 
 const meta = {
   title: 'Design System/ZnZoomControl',
@@ -36,4 +36,3 @@ export const NarrowRange: Story = {
     step: 5,
   },
 }
-

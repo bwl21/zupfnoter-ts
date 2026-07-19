@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import StorageRootPickerDialog from '../../src/workbench/StorageRootPickerDialog.vue'
+import StorageRootPickerDialog from '../../../web/src/workbench/StorageRootPickerDialog.vue'
 
 const meta = { title: 'Workbench/Dialog/StorageRootPickerDialog', component: StorageRootPickerDialog, tags: ['autodocs'] } satisfies Meta<typeof StorageRootPickerDialog>
 export default meta

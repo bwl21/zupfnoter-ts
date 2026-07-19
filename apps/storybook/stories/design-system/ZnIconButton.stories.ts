@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnIcon from '../../src/design-system/components/ZnIcon.vue'
-import ZnIconButton from '../../src/design-system/components/ZnIconButton.vue'
+import ZnIcon from '../../../web/src/design-system/components/ZnIcon.vue'
+import ZnIconButton from '../../../web/src/design-system/components/ZnIconButton.vue'
 
 const meta = {
   title: 'Design System/ZnIconButton',
@@ -15,4 +15,3 @@ type Story = StoryObj<typeof meta>
 
 export const Secondary: Story = { render: (args) => ({ components: { ZnIcon, ZnIconButton }, setup: () => ({ args }), template: '<ZnIconButton v-bind="args"><ZnIcon name="edit" /></ZnIconButton>' }), args: { label: 'Bearbeiten' } }
 export const Disabled: Story = { render: (args) => ({ components: { ZnIcon, ZnIconButton }, setup: () => ({ args }), template: '<ZnIconButton v-bind="args"><ZnIcon name="delete" /></ZnIconButton>' }), args: { label: 'Löschen', disabled: true } }
-

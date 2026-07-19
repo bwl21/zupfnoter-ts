@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnBadge from '../../src/design-system/components/ZnBadge.vue'
-import ZnPanel from '../../src/design-system/components/ZnPanel.vue'
+import ZnBadge from '../../../web/src/design-system/components/ZnBadge.vue'
+import ZnPanel from '../../../web/src/design-system/components/ZnPanel.vue'
 
 const meta = {
   title: 'Design System/ZnPanel',
@@ -58,4 +58,3 @@ export const EmptyState: Story = {
     `,
   }),
 }
-

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnButton from '../../src/design-system/components/ZnButton.vue'
+import ZnButton from '../../../web/src/design-system/components/ZnButton.vue'
 
 const meta = {
   title: 'Design System/ZnButton',
@@ -39,4 +39,3 @@ export const Danger: Story = {
     default: 'Löschen',
   },
 }
-

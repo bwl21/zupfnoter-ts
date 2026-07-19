@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import WorkbenchToastStack from '../../src/workbench/toasts/WorkbenchToastStack.vue'
+import WorkbenchToastStack from '../../../web/src/workbench/toasts/WorkbenchToastStack.vue'
 
 const meta = { title: 'Workbench/WorkbenchToastStack', component: WorkbenchToastStack, tags: ['autodocs'] } satisfies Meta<typeof WorkbenchToastStack>
 export default meta

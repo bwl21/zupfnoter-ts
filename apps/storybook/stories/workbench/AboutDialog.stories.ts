@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import AboutDialog from '../../src/workbench/AboutDialog.vue'
+import AboutDialog from '../../../web/src/workbench/AboutDialog.vue'
 
 const meta = { title: 'Workbench/Dialog/AboutDialog', component: AboutDialog, tags: ['autodocs'] } satisfies Meta<typeof AboutDialog>
 export default meta
