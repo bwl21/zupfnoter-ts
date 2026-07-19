@@ -191,6 +191,7 @@ F
       pan: 'left',
     }))
     expect(result.playbackTimeline[1]?.activeNotes).toEqual([])
+    expect(result.playbackTimeline[1]?.endedPlaybackIds).toHaveLength(1)
     expect(result.playbackTimeline[2]?.activeNotes).toContainEqual(expect.objectContaining({
       originVoiceId: '1',
       pitch: 62,
@@ -198,6 +199,18 @@ F
       attack: true,
       pan: 'left',
     }))
+  })
+
+  it('merges tied chord durations into a single playback attack per pitch', () => {
+    const result = renderWorkbenchPreviews('X:1\nT:Tied chord\nL:1/4\nK:C\nV:1\n[CE]-[CE] D')
+
+    expect(result.playbackTimeline).toHaveLength(3)
+    expect(result.playbackTimeline[0]?.activeNotes).toEqual(expect.arrayContaining([
+      expect.objectContaining({ pitch: 60, durationMs: 1000, attack: true }),
+      expect.objectContaining({ pitch: 64, durationMs: 1000, attack: true }),
+    ]))
+    expect(result.playbackTimeline[1]?.activeNotes).toEqual([])
+    expect(result.playbackTimeline[1]?.endedPlaybackIds).toHaveLength(1)
   })
 
   it('keeps all song voices in the playback timeline even when an extract narrows the rendered sheet', () => {

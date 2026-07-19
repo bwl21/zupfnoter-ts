@@ -1,12 +1,14 @@
 import { onBeforeUnmount, type Ref } from 'vue'
 
-import type { SelectionState, SheetObjectIndex } from '@zupfnoter/types'
+import type { SelectionState, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
 import { usePlaybackStore } from '../stores/playback'
 import {
   resolvePlaybackSteps,
+  updateActivePlaybackRanges,
   type PlaybackStep,
 } from './playback'
+import { textRangeKey } from './selectionIndex'
 import type { AudioPlayer, PlaybackScheduleCallbacks } from './useAudioPlayer'
 
 interface PlaybackDriverSource {
@@ -23,6 +25,7 @@ export function usePlaybackDriver(
   audioPlayer?: AudioPlayer,
 ) {
   let timer: ReturnType<typeof setTimeout> | undefined
+  let activePlaybackRanges = new Map<string, { textRange: SelectionTextRange, endTimeMs: number }>()
 
   function clearTimer(): void {
     if (timer === undefined) return
@@ -32,6 +35,7 @@ export function usePlaybackDriver(
 
   function stop(immediateAudioStop = true): void {
     clearTimer()
+    activePlaybackRanges = new Map()
     if (immediateAudioStop) {
       audioPlayer?.stop()
     }
@@ -59,13 +63,21 @@ export function usePlaybackDriver(
     ), 0)
 
     clearTimer()
+    activePlaybackRanges = new Map()
     playbackStore.startPlayback(source.baseTempoFromQ, totalPassCount > 0 ? totalPassCount : undefined)
     const lastStep = steps[steps.length - 1]
     const callbacks: PlaybackScheduleCallbacks = {
       onStepStart: (step) => {
+        activePlaybackRanges = updateActivePlaybackRanges(activePlaybackRanges, step)
+        const activeTextRanges = [...new Map(
+          [...activePlaybackRanges.values()].map((range) => [
+            textRangeKey(range.textRange),
+            range.textRange,
+          ] as const),
+        ).values()]
         playbackStore.handlePlayerEvent({
           kind: 'current-notes',
-          activeTextRanges: step.activeTextRanges,
+          activeTextRanges,
           activeStartChar: step.activeStartChar,
           activeTime: step.activeTime,
           passIndex: step.passIndex,
@@ -73,7 +85,7 @@ export function usePlaybackDriver(
         })
       },
       onStepEnd: (step) => {
-        if (lastStep === undefined || step !== lastStep) return
+        if (lastStep !== undefined && step !== lastStep) return
         clearTimer()
         playbackStore.handlePlayerEvent({ kind: 'stop' })
         audioPlayer?.stop()

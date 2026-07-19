@@ -234,8 +234,9 @@ describe('useAudioPlayer', () => {
   it('derives visual callbacks from the scheduled audio clock', async () => {
     const player = useAudioPlayer({ value: 'harp' })
     const onStepStart = vi.fn<(step: PlaybackStep) => void>()
+    const onStepEnd = vi.fn<(step: PlaybackStep) => void>()
 
-    await player.schedule(steps, 1, { onStepStart })
+    await player.schedule(steps, 1, { onStepStart, onStepEnd })
 
     vi.advanceTimersByTime(16)
     expect(onStepStart).not.toHaveBeenCalled()
@@ -243,5 +244,9 @@ describe('useAudioPlayer', () => {
     mockCurrentTime = 10.2
     vi.advanceTimersByTime(16)
     expect(onStepStart).toHaveBeenCalledWith(steps[0])
+
+    mockCurrentTime = 11.2
+    vi.advanceTimersByTime(16)
+    expect(onStepEnd).toHaveBeenCalledWith(steps[0])
   })
 })

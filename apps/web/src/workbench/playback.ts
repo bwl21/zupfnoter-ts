@@ -27,9 +27,7 @@ export interface PlaybackNote {
   pan: 'left' | 'right'
 }
 
-interface TiedPlaybackNote {
-  durationMs: number
-}
+type TiedPlaybackNote = PlaybackNote
 
 interface PlaybackStepTextRange {
   playbackId: string
@@ -43,6 +41,8 @@ export interface PlaybackStep {
   originZnIds: string[]
   activeTextRanges: SelectionTextRange[]
   activePlaybackTextRanges?: PlaybackStepTextRange[]
+  /** Playback identities whose visual highlight ends at this step. */
+  endedPlaybackIds?: string[]
   activeNotes: PlaybackNote[]
   activeStartChar?: number
   activeTime: string
@@ -55,6 +55,59 @@ export interface PlaybackStep {
   flowIndex: number
   passIndex: number
   voltaNumber?: number
+}
+
+interface ActivePlaybackRangeState {
+  textRange: SelectionTextRange
+  endTimeMs: number
+}
+
+/**
+ * Carries note highlights across shared timeline steps when voices overlap.
+ * A timeline step ends at the next global event, not necessarily when every
+ * note from the step has ended.
+ */
+export function updateActivePlaybackRanges(
+  activeRanges: ReadonlyMap<string, ActivePlaybackRangeState>,
+  step: PlaybackStep,
+): Map<string, ActivePlaybackRangeState> {
+  const nextRanges = new Map(activeRanges)
+  for (const [key, range] of nextRanges) {
+    if (range.endTimeMs <= step.playbackStartMs) nextRanges.delete(key)
+  }
+  for (const playbackId of step.endedPlaybackIds ?? []) {
+    for (const key of nextRanges.keys()) {
+      if (key.startsWith(`${playbackId}:`)) nextRanges.delete(key)
+    }
+  }
+
+  const durationByPlaybackId = new Map<string, number>()
+  for (const note of step.activeNotes) {
+    const currentDuration = durationByPlaybackId.get(note.originPlaybackId) ?? 0
+    durationByPlaybackId.set(note.originPlaybackId, Math.max(currentDuration, note.durationMs))
+  }
+
+  const playbackRanges = step.activePlaybackTextRanges ?? []
+  if (playbackRanges.length > 0) {
+    for (const entry of playbackRanges) {
+      const key = `${entry.playbackId}:${textRangeKey(entry.textRange)}`
+      const durationMs = durationByPlaybackId.get(entry.playbackId) ?? step.durationMs
+      nextRanges.set(key, {
+        textRange: { ...entry.textRange },
+        endTimeMs: step.playbackStartMs + durationMs,
+      })
+    }
+  } else {
+    for (const textRange of step.activeTextRanges) {
+      const key = `range:${textRangeKey(textRange)}`
+      nextRanges.set(key, {
+        textRange: { ...textRange },
+        endTimeMs: step.playbackStartMs + step.durationMs,
+      })
+    }
+  }
+
+  return nextRanges
 }
 
 export interface PlaybackResolutionOptions {
@@ -128,6 +181,7 @@ export function resolveBaseTempoFromSong(song: Song): number {
 function appendPlaybackNote(
   notes: PlaybackNote[],
   pendingTies: Map<string, TiedPlaybackNote>,
+  endedPlaybackIds: string[],
   originVoiceId: string,
   originPlaybackId: string,
   originZnId: string,
@@ -144,6 +198,7 @@ function appendPlaybackNote(
     pending.durationMs += durationMs
     if (!tieStart) {
       pendingTies.delete(tieKey)
+      endedPlaybackIds.push(pending.originPlaybackId)
     }
     return
   }
@@ -172,6 +227,7 @@ function collectActiveNotes(
   voiceIndex: number,
   originVoiceId: string,
   pendingTies: Map<string, TiedPlaybackNote>,
+  endedPlaybackIds: string[],
 ): PlaybackNote[] {
   const notes: PlaybackNote[] = []
   const originPlaybackId = buildPlaybackIdentity(originVoiceId, entity.znId)
@@ -183,6 +239,7 @@ function collectActiveNotes(
       appendPlaybackNote(
         notes,
         pendingTies,
+        endedPlaybackIds,
         originVoiceId,
         originPlaybackId,
         entity.znId,
@@ -198,14 +255,17 @@ function collectActiveNotes(
         appendPlaybackNote(
           notes,
           pendingTies,
+          endedPlaybackIds,
           originVoiceId,
           originPlaybackId,
           entity.znId,
           voiceIndex,
           note.pitch,
           computeStepDurationMs(song, note.duration),
-          note.tieStart,
-          note.tieEnd,
+          // abc2svg stores a tie on the common SynchPoint. The contained
+          // notes do not repeat that flag.
+          entity.tieStart,
+          entity.tieEnd,
         )
       }
       return notes
@@ -218,6 +278,7 @@ interface PlaybackStepGroup {
   originZnIds: string[]
   activeTextRanges: SelectionTextRange[]
   activePlaybackTextRanges: PlaybackStepTextRange[]
+  endedPlaybackIds: string[]
   activeNotes: PlaybackNote[]
   activeStartChar?: number
   maxEntityTimeDuration: number
@@ -234,6 +295,7 @@ function collectPlaybackStepGroups(song: Song, activeVoices?: number[]): Map<num
     if (!isUserVisibleVoice(voice) || originVoiceId === undefined) continue
     if (allowedVoiceIndexes !== undefined && !allowedVoiceIndexes.has(voice.index)) continue
     const pendingTies = new Map<string, TiedPlaybackNote>()
+    const endedPlaybackIds: string[] = []
     for (const entity of voice.entities) {
       if (!isPlayableEntity(entity)) continue
 
@@ -242,7 +304,9 @@ function collectPlaybackStepGroups(song: Song, activeVoices?: number[]): Map<num
       const textRange = entity.sourceOffsets
         ? { startpos: entity.sourceOffsets[0], endpos: entity.sourceOffsets[1] }
         : undefined
-      const notes = collectActiveNotes(entity, song, voiceIndex, originVoiceId, pendingTies)
+      const endedPlaybackIdsBefore = endedPlaybackIds.length
+      const notes = collectActiveNotes(entity, song, voiceIndex, originVoiceId, pendingTies, endedPlaybackIds)
+      const entityEndedPlaybackIds = endedPlaybackIds.slice(endedPlaybackIdsBefore)
       const originPlaybackId = buildPlaybackIdentity(originVoiceId, entity.znId)
       if (existing === undefined) {
         grouped.set(entity.time, {
@@ -255,6 +319,7 @@ function collectPlaybackStepGroups(song: Song, activeVoices?: number[]): Map<num
             voiceId: originVoiceId,
             textRange,
           }] : [],
+          endedPlaybackIds: entityEndedPlaybackIds,
           activeNotes: notes,
           activeStartChar: startChar,
           maxEntityTimeDuration: entity.duration,
@@ -276,6 +341,7 @@ function collectPlaybackStepGroups(song: Song, activeVoices?: number[]): Map<num
       if (notes.length > 0) {
         existing.activeNotes.push(...notes)
       }
+      existing.endedPlaybackIds.push(...entityEndedPlaybackIds)
       existing.activeStartChar = existing.activeStartChar === undefined
         ? startChar
         : startChar === undefined
@@ -301,6 +367,7 @@ function collectPlaybackStepGroups(song: Song, activeVoices?: number[]): Map<num
     group.activeNotes = [...new Map(
       group.activeNotes.map((note) => [`${note.originPlaybackId}:${note.pitch}:${note.attack ? 1 : 0}:${note.pan}`, note] as const),
     ).values()]
+    group.endedPlaybackIds = [...new Set(group.endedPlaybackIds)]
   }
 
   return grouped
@@ -341,6 +408,7 @@ export function buildPlaybackTimeline(song: Song, activeVoices?: number[]): Play
         originZnIds: [...flowStep.originZnIds],
         activeTextRanges: flowStep.activeTextRanges.map((range) => ({ ...range })),
         activePlaybackTextRanges: [],
+        endedPlaybackIds: [],
         activeNotes: [],
         activeStartChar: flowStep.activeStartChar,
         activeTime: `${flowStep.sourceTime}`,
@@ -376,6 +444,7 @@ export function buildPlaybackTimeline(song: Song, activeVoices?: number[]): Play
         voiceId: entry.voiceId,
         textRange: { ...entry.textRange },
       })),
+      endedPlaybackIds: [...group.endedPlaybackIds],
       activeNotes: [...group.activeNotes],
       activeStartChar: group.activeStartChar,
       activeTime: `${flowStep.sourceTime}`,

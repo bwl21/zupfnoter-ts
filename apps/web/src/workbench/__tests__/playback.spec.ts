@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { SelectionState, SheetObjectIndex } from '@zupfnoter/types'
 
-import { buildPlaybackTimeline, resolvePlaybackSteps, type PlaybackStep } from '../playback'
+import { buildPlaybackTimeline, resolvePlaybackSteps, type PlaybackStep, updateActivePlaybackRanges } from '../playback'
 
 const timeline: PlaybackStep[] = [
   {
@@ -116,6 +116,40 @@ const sheetObjectIndex: SheetObjectIndex = {
 }
 
 describe('resolvePlaybackSteps', () => {
+  it('keeps overlapping voice highlights until each note duration ends', () => {
+    const firstVoiceRange = { startpos: 10, endpos: 12 }
+    const secondVoiceRange = { startpos: 20, endpos: 22 }
+    const firstTemplate = timeline.find((step) => step.playbackStartMs === 0)
+    const secondTemplate = timeline.find((step) => step.playbackStartMs === 120)
+    if (firstTemplate === undefined || secondTemplate === undefined) {
+      throw new Error('Playback test timeline is incomplete')
+    }
+    const firstStep: PlaybackStep = {
+      ...firstTemplate,
+      activeTextRanges: [firstVoiceRange],
+      activePlaybackTextRanges: [{ playbackId: '1::long', voiceId: '1', textRange: firstVoiceRange }],
+      activeNotes: [{ originVoiceId: '1', originPlaybackId: '1::long', originZnId: 'long', pitch: 60, durationMs: 500, attack: true, pan: 'left' }],
+      playbackStartMs: 0,
+      durationMs: 120,
+    }
+    const secondStep: PlaybackStep = {
+      ...secondTemplate,
+      activeTextRanges: [secondVoiceRange],
+      activePlaybackTextRanges: [{ playbackId: '2::short', voiceId: '2', textRange: secondVoiceRange }],
+      activeNotes: [{ originVoiceId: '2', originPlaybackId: '2::short', originZnId: 'short', pitch: 64, durationMs: 120, attack: true, pan: 'right' }],
+      playbackStartMs: 120,
+      durationMs: 120,
+    }
+
+    const afterFirst = updateActivePlaybackRanges(new Map(), firstStep)
+    const afterSecond = updateActivePlaybackRanges(afterFirst, secondStep)
+
+    expect([...afterSecond.values()].map((range) => range.textRange)).toEqual([
+      firstVoiceRange,
+      secondVoiceRange,
+    ])
+  })
+
   it('limits the playback timeline to the active extract voices', () => {
     const song = {
       metaData: {},
