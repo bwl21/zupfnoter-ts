@@ -29,6 +29,7 @@
     "@fortawesome/vue-fontawesome": "^3.3.2",
     "@zupfnoter/core": "workspace:*",
     "@zupfnoter/playback": "workspace:*",
+    "@zupfnoter/player-ui": "workspace:*",
     "@zupfnoter/types": "workspace:*",
     "fflate": "^0.8.2",
     "jspdf": "^4.2.1",

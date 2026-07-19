@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@zupfnoter/playback": "workspace:*",
+    "@zupfnoter/player-ui": "workspace:*",
     "fflate": "^0.8.2",
     "soundfont-player": "^0.12.0"
   },
