@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
 import { ZnPanel, ZnSplitPane } from '@zupfnoter/design-system'
 
-const meta = { title: 'Design System/ZnSplitPane', component: ZnSplitPane, tags: ['autodocs'], argTypes: { orientation: { control: 'select', options: ['horizontal', 'vertical'] }, primarySize: { control: { type: 'number', min: 10, max: 90 } } } } satisfies Meta<typeof ZnSplitPane>
+const meta = { title: 'Design System/ZnSplitPane', component: ZnSplitPane, tags: ['autodocs'], parameters: { docs: { description: { component: 'Teilt einen verfügbaren Bereich in zwei unabhängig befüllbare Bereiche. `primarySize` ist ein Prozentwert und wird zwischen `minPrimarySize` und `maxPrimarySize` begrenzt. Der Parent bestimmt damit den verfügbaren Raum; die eingefügten Panels und Inhalte bestimmen nur innerhalb ihres Bereichs ihre natürliche Größe. Der Splitter ist per Maus, Touch und Tastatur bedienbar.' } } }, argTypes: { orientation: { control: 'select', options: ['horizontal', 'vertical'] }, primarySize: { control: { type: 'number', min: 10, max: 90 } }, minPrimarySize: { control: { type: 'number', min: 0, max: 90 } }, maxPrimarySize: { control: { type: 'number', min: 10, max: 100 } }, handleSize: { control: { type: 'number', min: 1, max: 32 } } } } satisfies Meta<typeof ZnSplitPane>
 export default meta
 type Story = StoryObj<typeof meta>
 

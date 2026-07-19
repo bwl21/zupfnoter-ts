@@ -1,5 +1,13 @@
+<script setup lang="ts">
+const props = withDefaults(defineProps<{
+  label?: string
+}>(), {
+  label: 'Toolbar',
+})
+</script>
+
 <template>
-  <div class="zn-toolbar">
+  <div class="zn-toolbar" role="toolbar" :aria-label="props.label">
     <div class="zn-toolbar__group">
       <slot name="leading" />
     </div>

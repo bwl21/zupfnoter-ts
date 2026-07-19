@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
 import { ZnBadge, ZnButton, ZnToolbar } from '@zupfnoter/design-system'
 
-const meta = { title: 'Design System/ZnToolbar', component: ZnToolbar, tags: ['autodocs'] } satisfies Meta<typeof ZnToolbar>
+const meta = { title: 'Design System/ZnToolbar', component: ZnToolbar, tags: ['autodocs'], parameters: { docs: { description: { component: 'Semantische Aktionsleiste mit getrennten Bereichen für führende und nachlaufende Inhalte. Nutze `label`, wenn mehrere Toolbars auf einer Seite vorkommen.' } } } } satisfies Meta<typeof ZnToolbar>
 export default meta
 type Story = StoryObj<typeof meta>
 

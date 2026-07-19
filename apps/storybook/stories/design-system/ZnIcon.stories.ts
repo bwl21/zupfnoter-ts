@@ -7,6 +7,7 @@ const meta = {
   title: 'Design System/ZnIcon',
   component: ZnIcon,
   tags: ['autodocs'],
+  parameters: { docs: { description: { component: 'Einheitliche Darstellung eines registrierten Font-Awesome-Symbols. Die Symbolauswahl ist über `name` auf die zentrale Icon-Palette begrenzt.' } } },
   args: { name: 'edit' },
   argTypes: { name: { control: 'select', options: iconNames } },
 } satisfies Meta<typeof ZnIcon>

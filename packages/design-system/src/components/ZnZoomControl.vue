@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 const props = withDefaults(defineProps<{
   modelValue: number
   min?: number
@@ -17,6 +19,8 @@ const emit = defineEmits<{
 function clamp(value: number): number {
   return Math.min(props.max, Math.max(props.min, value))
 }
+
+const displayValue = computed(() => clamp(props.modelValue))
 
 function update(value: number): void {
   emit('update:modelValue', clamp(value))
@@ -40,13 +44,13 @@ function onSliderInput(event: Event): void {
       :max="props.max"
       :min="props.min"
       :step="props.step"
-      :value="props.modelValue"
+      :value="displayValue"
       aria-label="Zoom"
       type="range"
       @input="onSliderInput"
     >
     <button class="zn-zoom-control__value" type="button" @click="update(100)">
-      {{ props.modelValue }}%
+      {{ displayValue }}%
     </button>
   </div>
 </template>

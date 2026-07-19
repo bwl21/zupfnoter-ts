@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
 import { ZnButton, ZnPanelHeader } from '@zupfnoter/design-system'
 
-const meta = { title: 'Design System/ZnPanelHeader', component: ZnPanelHeader, tags: ['autodocs'] } satisfies Meta<typeof ZnPanelHeader>
+const meta = { title: 'Design System/ZnPanelHeader', component: ZnPanelHeader, tags: ['autodocs'], parameters: { docs: { description: { component: 'Wiederverwendbarer Panel-Kopf mit Eyebrow, Titel, Untertitel und optionalen Aktionen im `actions`-Slot.' } } } } satisfies Meta<typeof ZnPanelHeader>
 export default meta
 type Story = StoryObj<typeof meta>
 

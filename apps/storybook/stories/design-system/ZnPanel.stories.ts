@@ -7,6 +7,7 @@ const meta = {
   component: ZnPanel,
   subcomponents: { ZnBadge },
   tags: ['autodocs'],
+  parameters: { docs: { description: { component: 'Rahmen für eigenständige Inhaltsbereiche mit optionalem Eyebrow, Titel, Untertitel und Footer. `fillHeight` entscheidet, ob das Panel den verfügbaren Raum ausfüllt. Das Panel gibt seinen Kindern bei `fillHeight: false` ihre natürliche Größe; bei `fillHeight: true` füllt es den vom Parent bereitgestellten Raum.' } } },
   argTypes: {
     tone: {
       control: 'select',

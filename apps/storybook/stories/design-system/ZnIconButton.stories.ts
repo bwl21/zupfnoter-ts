@@ -6,6 +6,7 @@ const meta = {
   title: 'Design System/ZnIconButton',
   component: ZnIconButton,
   tags: ['autodocs'],
+  parameters: { docs: { description: { component: 'Button für kompakte Icon-Aktionen. `label` ist der zugängliche Name und muss die Aktion beschreiben; das sichtbare Icon allein ersetzt keinen zugänglichen Namen.' } } },
   argTypes: { variant: { control: 'select', options: ['primary', 'secondary', 'ghost'] } },
 } satisfies Meta<typeof ZnIconButton>
 

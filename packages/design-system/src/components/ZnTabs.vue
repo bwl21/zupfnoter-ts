@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useId } from 'vue'
+
 export interface ZnTabItem {
   id: string
   label: string
@@ -14,19 +16,31 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
+
+const instanceId = useId()
+
+function tabId(itemId: string): string {
+  return `${instanceId}-tab-${encodeURIComponent(itemId)}`
+}
+
+function panelId(): string {
+  return `${instanceId}-panel`
+}
 </script>
 
 <template>
   <div class="zn-tabs" :data-fill-height="props.fillHeight !== false">
-    <div class="zn-tabs__bar" role="tablist" aria-label="Workbench tabs">
+    <div class="zn-tabs__bar" role="tablist" aria-label="Tabs">
       <button
         v-for="item in props.items"
         :key="item.id"
+        :id="tabId(item.id)"
         class="zn-tabs__tab"
         :class="{ 'zn-tabs__tab--active': item.id === props.modelValue }"
         type="button"
         role="tab"
         :aria-selected="item.id === props.modelValue"
+        :aria-controls="panelId()"
         @click="emit('update:modelValue', item.id)"
       >
         <span>{{ item.label }}</span>
@@ -35,7 +49,13 @@ const emit = defineEmits<{
         </span>
       </button>
     </div>
-    <div class="zn-tabs__panel" role="tabpanel">
+    <div
+      :id="panelId()"
+      class="zn-tabs__panel"
+      role="tabpanel"
+      :aria-labelledby="tabId(props.modelValue)"
+      tabindex="0"
+    >
       <slot :active-id="props.modelValue" :active-item="props.items.find((item) => item.id === props.modelValue)" />
     </div>
   </div>

@@ -6,6 +6,7 @@ const meta = {
   title: 'Design System/ZnBadge',
   component: ZnBadge,
   tags: ['autodocs'],
+  parameters: { docs: { description: { component: 'Kompakter Status- oder Kennzeichnungs-Chip. Verwende `tone`, um die fachliche Bedeutung sichtbar zu machen; der Inhalt kommt über den Default-Slot.' } } },
   argTypes: {
     tone: { control: 'select', options: ['neutral', 'accent', 'success', 'warning', 'danger', 'info'] },
   },

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
 import { ZnBadge, ZnStatusBar } from '@zupfnoter/design-system'
 
-const meta = { title: 'Design System/ZnStatusBar', component: ZnStatusBar, tags: ['autodocs'] } satisfies Meta<typeof ZnStatusBar>
+const meta = { title: 'Design System/ZnStatusBar', component: ZnStatusBar, tags: ['autodocs'], parameters: { docs: { description: { component: 'Horizontale Statusleiste für dauerhafte Kontextinformationen. Der Hauptinhalt liegt im Default-Slot, zusätzliche Angaben kommen in den `aside`-Slot.' } } } } satisfies Meta<typeof ZnStatusBar>
 export default meta
 type Story = StoryObj<typeof meta>
 

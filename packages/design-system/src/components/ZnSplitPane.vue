@@ -24,12 +24,17 @@ const emit = defineEmits<{
 const root = ref<HTMLElement | null>(null)
 const divider = ref<HTMLButtonElement | null>(null)
 const dragging = ref(false)
-const currentPrimarySize = ref(props.primarySize)
+
+function clampSize(value: number): number {
+  return Math.min(props.maxPrimarySize, Math.max(props.minPrimarySize, value))
+}
+
+const currentPrimarySize = ref(clampSize(props.primarySize))
 
 watch(
-  () => props.primarySize,
-  (value) => {
-    currentPrimarySize.value = value
+  () => [props.primarySize, props.minPrimarySize, props.maxPrimarySize] as const,
+  ([value]) => {
+    currentPrimarySize.value = clampSize(value)
   },
 )
 
@@ -37,10 +42,6 @@ const splitStyle = computed(() => ({
   '--zn-split-primary': `${currentPrimarySize.value}%`,
   '--zn-split-handle-size': `${props.handleSize}px`,
 }))
-
-function clampSize(value: number): number {
-  return Math.min(props.maxPrimarySize, Math.max(props.minPrimarySize, value))
-}
 
 function commitSize(nextSize: number): void {
   const clampedSize = clampSize(nextSize)
@@ -151,8 +152,13 @@ onBeforeUnmount(() => {
       ref="divider"
       class="zn-split-pane__divider"
       type="button"
+      role="separator"
       :aria-label="orientation === 'horizontal' ? 'Spalte anpassen' : 'Zeilen anpassen'"
       :aria-orientation="orientation"
+      :aria-valuenow="currentPrimarySize"
+      :aria-valuemin="minPrimarySize"
+      :aria-valuemax="maxPrimarySize"
+      tabindex="0"
       @pointerdown="startDragging"
       @keydown="onDividerKeydown"
     />
@@ -217,13 +223,6 @@ onBeforeUnmount(() => {
   z-index: 3;
 }
 
-.zn-split-pane--vertical .zn-split-pane__divider {
-  width: 100%;
-  min-height: 14px;
-  height: 100%;
-  cursor: row-resize;
-}
-
 .zn-split-pane__divider:hover,
 .zn-split-pane--dragging .zn-split-pane__divider {
   background: color-mix(in srgb, var(--zn-accent) 28%, var(--zn-border-strong));
@@ -242,14 +241,14 @@ onBeforeUnmount(() => {
 }
 
 .zn-split-pane--horizontal .zn-split-pane__divider {
-  width: 10px;
+  width: var(--zn-split-handle-size);
   height: 100%;
   cursor: col-resize;
 }
 
 .zn-split-pane--vertical .zn-split-pane__divider {
   width: 100%;
-  min-height: 14px;
+  min-height: var(--zn-split-handle-size);
   height: 100%;
   cursor: row-resize;
 }
