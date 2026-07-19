@@ -9,7 +9,7 @@ If a gap is really fixed, remove it from `fixtures/openImplementations.ts`.
 
 - Open implementations: 0
 - Known-covered failures: 0
-- New unclassified failures: 4
+- New unclassified failures: 0
 
 ## Open Gaps
 
@@ -17,40 +17,5 @@ No open gaps.
 
 ## New Unclassified Failures
 
-- [ ] sheet.02-twostaff [extract 0]
-  - Fixture: 02_twoStaff
-  - Extract: 0
-  - Prompt: Investigate the sheet legacy comparison failure for fixture 02_twoStaff extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t "02_twoStaff [extract 0]" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
-  - Mismatch Summary:
-      children.length:
-        expected: 237
-        actual:   234
-
-- [ ] sheet.repeat [extract 0]
-  - Fixture: repeat
-  - Extract: 0
-  - znId: goto-0-9216
-  - Prompt: Investigate the sheet legacy comparison failure for fixture repeat extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t "repeat [extract 0]" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
-  - Mismatch Summary:
-      children[83].draginfo:
-        expected: {"handler":"jumpline","jumpline":{"from":{"center":[382.3,282],"size":[2.625,1.275],"anchor":"after"},"to":{"center":[221.3,18.698060941828256],"size":[2.625,1.275],"anchor":"before"},"vertical":17.25,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
-        actual:   {"handler":"jumpline","jumpline":{"from":{"center":[382.3,282],"size":[2.625,1.275],"anchor":"after"},"to":{"center":[336.3,206.55955678670364],"size":[2.625,1.275],"anchor":"before"},"vertical":17.25,"vertical_anchor":"from","padding":null,"xspacing":11.5,"jumpline_anchor":[3,1],"verticalcut":0},"xspacing":11.5}
-
-- [ ] sheet.twostaff [extract 0]
-  - Fixture: Twostaff
-  - Extract: 0
-  - Prompt: Investigate the sheet legacy comparison failure for fixture Twostaff extract 0. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t "Twostaff [extract 0]" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
-  - Mismatch Summary:
-      children.length:
-        expected: 361
-        actual:   358
-
-- [ ] sheet.twostaff [extract 2]
-  - Fixture: Twostaff
-  - Extract: 2
-  - Prompt: Investigate the sheet legacy comparison failure for fixture Twostaff extract 2. Reproduce with: pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/sheet/legacy_comparison.spec.ts -t "Twostaff [extract 2]" Implement legacy parity, then either attach this failure to an existing entry in fixtures/openImplementations.ts or promote the template entry if it is a genuinely new gap.
-  - Mismatch Summary:
-      children.length:
-        expected: 320
-        actual:   317
+None.
 

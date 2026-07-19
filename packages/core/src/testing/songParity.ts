@@ -119,6 +119,7 @@ export interface NormalizedEvent {
   sourceOffsets?: [number, number]
   abcExcerpt?: string
   abcText?: string
+  confKey?: string
   pitch?: number
   octave?: number
   string?: number
@@ -408,6 +409,7 @@ const LEGACY_EVENT_KNOWN_KEYS = new Set([
   '@from',
   '@to',
   '@policy',
+  '@conf_key',
   'beat',
   'time',
   'duration',
@@ -935,7 +937,14 @@ function normalizeLegacyEvent(
   }
 
   const text = readString(entity['@text']) ?? readString(entity.text)
+  const annotationText = isRecord(entity['@annotations'])
+    ? readString(entity['@annotations'].text)
+    : undefined
   if (text !== undefined) event.abcText = text
+  else if (annotationText !== undefined) event.abcText = annotationText
+
+  const confKey = readString(entity['@conf_key']) ?? readString(entity.confKey)
+  if (confKey !== undefined) event.confKey = confKey
 
   const pitch = readNumber(entity['@pitch']) ?? readNumber(entity.pitch)
   if (pitch !== undefined) event.pitch = pitch
@@ -1102,6 +1111,9 @@ function normalizeTsEvent(
 
   const text = readString(entity.text)
   if (text !== undefined) event.abcText = text
+
+  const confKey = readString(entity.confKey)
+  if (confKey !== undefined) event.confKey = confKey
 
   const pitch = readNumber(entity.pitch)
   if (pitch !== undefined) event.pitch = pitch
@@ -1449,6 +1461,12 @@ function exactSourceKey(event: NormalizedEvent): string | null {
     event.abcStart.join(':'),
     event.abcEnd.join(':'),
   ].join('|')
+}
+
+function barBoundVariantAnnotationKey(event: NormalizedEvent): string | null {
+  if (event.kind !== 'NoteBoundAnnotation') return null
+  if (event.confKey?.startsWith('notebound.variantend.') !== true) return null
+  return [event.voiceIndex, event.kind, event.confKey, event.abcText ?? '-'].join('|')
 }
 
 function exactPositionKey(event: NormalizedEvent): string | null {
@@ -1841,23 +1859,34 @@ function compareFieldValue(
 
 function compareEvents(caseId: string, legacy: NormalizedEvent, ts: NormalizedEvent): SongGap[] {
   const gaps: SongGap[] = []
-  const fields: Array<[string, unknown, unknown, ContractSection]> = [
-    ['kind', legacy.kind, ts.kind, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['voiceId', legacy.voiceId, ts.voiceId, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['voiceIndex', legacy.voiceIndex, ts.voiceIndex, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['indexInVoice', legacy.indexInVoice, ts.indexInVoice, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['measure', legacy.measure, ts.measure, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['beat', legacy.beat, ts.beat, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['absBeat', legacy.absBeat, ts.absBeat, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['duration', legacy.duration, ts.duration, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['abcStart', legacy.abcStart, ts.abcStart, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['abcEnd', legacy.abcEnd, ts.abcEnd, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['abcText', legacy.abcText, ts.abcText, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['pitch', legacy.pitch, ts.pitch, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['decorations', legacy.decorations, ts.decorations, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['lyrics', legacy.lyrics, ts.lyrics, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-    ['variant', legacy.variant, ts.variant, { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }],
-  ]
+  const isBarBoundVariantAnnotation = barBoundVariantAnnotationKey(legacy) !== null
+  const contractField: ContractSection = { required: [], optional: [], ignored: [], aliases: {}, tolerances: {} }
+  const fields: Array<[string, unknown, unknown, ContractSection]> = isBarBoundVariantAnnotation
+    ? [
+        ['kind', legacy.kind, ts.kind, contractField],
+        ['voiceId', legacy.voiceId, ts.voiceId, contractField],
+        ['voiceIndex', legacy.voiceIndex, ts.voiceIndex, contractField],
+        ['indexInVoice', legacy.indexInVoice, ts.indexInVoice, contractField],
+        ['abcText', legacy.abcText, ts.abcText, contractField],
+        ['confKey', legacy.confKey, ts.confKey, contractField],
+      ]
+    : [
+        ['kind', legacy.kind, ts.kind, contractField],
+        ['voiceId', legacy.voiceId, ts.voiceId, contractField],
+        ['voiceIndex', legacy.voiceIndex, ts.voiceIndex, contractField],
+        ['indexInVoice', legacy.indexInVoice, ts.indexInVoice, contractField],
+        ['measure', legacy.measure, ts.measure, contractField],
+        ['beat', legacy.beat, ts.beat, contractField],
+        ['absBeat', legacy.absBeat, ts.absBeat, contractField],
+        ['duration', legacy.duration, ts.duration, contractField],
+        ['abcStart', legacy.abcStart, ts.abcStart, contractField],
+        ['abcEnd', legacy.abcEnd, ts.abcEnd, contractField],
+        ['abcText', legacy.abcText, ts.abcText, contractField],
+        ['pitch', legacy.pitch, ts.pitch, contractField],
+        ['decorations', legacy.decorations, ts.decorations, contractField],
+        ['lyrics', legacy.lyrics, ts.lyrics, contractField],
+        ['variant', legacy.variant, ts.variant, contractField],
+      ]
 
   for (const [fieldPath, legacyValue, tsValue, contractField] of fields) {
     const gap = compareFieldValue(caseId, legacy, ts, fieldPath, legacyValue, tsValue, contractField)
@@ -2255,6 +2284,7 @@ export function compareNormalizedSongs(
   }
 
   const matches: Array<{ legacyIndex: number; tsIndex: number; quality: MatchQuality; reason: string }> = []
+  matches.push(...alignByKey(legacyEvents, tsEvents, legacyUsed, tsUsed, barBoundVariantAnnotationKey, 'exact-position', traceMap))
   matches.push(...alignByKey(legacyEvents, tsEvents, legacyUsed, tsUsed, exactSourceKey, 'exact-source', traceMap))
   matches.push(...alignByKey(legacyEvents, tsEvents, legacyUsed, tsUsed, gotoMatchKey, 'exact-position', traceMap))
   matches.push(...alignByKey(legacyEvents, tsEvents, legacyUsed, tsUsed, exactPositionKey, 'exact-position', traceMap))
