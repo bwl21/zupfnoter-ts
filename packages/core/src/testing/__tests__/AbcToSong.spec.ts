@@ -5,7 +5,7 @@
  * Tests the full ABC → Song transformation for the minimal fixtures.
  */
 import { describe, it, expect } from 'vitest'
-import type { Goto, PlayableEntity, Song } from '@zupfnoter/types'
+import type { Goto, NoteBoundAnnotation, PlayableEntity, Song } from '@zupfnoter/types'
 import type { AbcModel, AbcSymbol } from '../../AbcModel.js'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
@@ -612,6 +612,37 @@ V:V1 clef=treble-8
       && goto.policy.toAnchor === 'before',
     )).toBe(true)
 
+  })
+
+  it('creates bar-bound variant annotations for the reference sheet', () => {
+    const song = transformFixture('3015_reference_sheet')
+    const annotations = song.voices
+      .flatMap((voice) => voice.entities)
+      .filter((entity): entity is NoteBoundAnnotation => (
+        entity.type === 'NoteBoundAnnotation'
+        && entity.confKey?.startsWith('notebound.variantend.') === true
+      ))
+
+    expect(annotations).toHaveLength(2)
+    expect(annotations.map((annotation) => ({
+      text: annotation.text,
+      confKey: annotation.confKey,
+      time: annotation.time,
+      companionTime: annotation.companion.time,
+    }))).toEqual([
+      {
+        text: '1',
+        confKey: 'notebound.variantend.v_3.3072',
+        time: 3072,
+        companionTime: 3072,
+      },
+      {
+        text: '2',
+        confKey: 'notebound.variantend.v_3.4608',
+        time: 4608,
+        companionTime: 4608,
+      },
+    ])
   })
 
 })
