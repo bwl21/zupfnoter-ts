@@ -17,7 +17,7 @@ Deflate Raw
         ↓
 Base64URL
         ↓
-https://play.zupfnoter.de/#p=...
+https://zupfnoter-player.csweichel.dev/#p=...
 ```
 
 Der Player stellt eine Timeline mit Taktnummer und Durchlauf dar. Ein Bereich wie `27.1-3.2` kann direkt zur Wiedergabe ausgewählt werden. Die zweite Zahl ist die Durchlaufnummer.
@@ -139,17 +139,17 @@ Das Format enthält keine ABC-Daten, Zupfnoter-IDs, Stimmen, Konfiguration, Layo
 
 Der Decoder validiert Magic, Version, Flags, VarUInt-Grenzen, Event-Anzahl, Pitch-/Velocity-Bereiche und eine maximale entpackte Payload-Größe.
 
-Die CLI bietet in der ersten Umsetzung den Befehl `playback-link` für eine bereits
-materialisierte Timeline-Datei an. Die JSON-Datei enthält ausschließlich ein Array
-von `PlaybackEvent`-Objekten; die Erzeugung der Timeline bleibt Aufgabe der
-Anwendungspipeline. Damit kann die CLI denselben Binary-Encoder und denselben
-Deflate-Raw-Codec verwenden, ohne eine zweite ABC-/Song-/Playback-Transformation
-zu implementieren:
+Die gemeinsame Encoder-API ist implementiert und wird von der Web-Workbench
+verwendet. `apps/cli` enthält den Workspace und die Playback-Abhängigkeit, der
+fachliche CLI-Befehl `playback-link` ist jedoch noch nicht fertig verdrahtet.
+Er soll später eine bereits materialisierte Timeline-Datei übernehmen. Die
+Erzeugung der Timeline bleibt Aufgabe der Anwendungspipeline; die CLI darf keine
+zweite ABC-/Song-/Playback-Transformation einführen:
 
 ```text
 zupfnoter playback-link \
   --events timeline.json \
-  --player-url https://play.zupfnoter.de/ \
+  --player-url https://zupfnoter-player.csweichel.dev/ \
   --output playback-url.txt
 ```
 
@@ -227,9 +227,11 @@ Nicht vorhandene Positionen, ungültige Durchlaufnummern und ein Bereich mit Sta
 
 Die Bereichswiedergabe startet zeitlich bei 0 ms, auch wenn der Bereich später in der Gesamttimeline liegt.
 
-## Web- und CLI-Export
+## Web-Export und geplanter CLI-Export
 
-Für ein Dokument mit `produce` werden standardmäßig alle Auszüge exportiert. Mit einer expliziten Auszugsnummer wird genau dieser Auszug exportiert.
+Für ein Dokument mit `produce` werden in der Web-Workbench standardmäßig alle
+konfigurierten Auszüge exportiert. Mit einer expliziten Auszugsnummer wird genau
+dieser Auszug exportiert.
 
 Web und CLI erzeugen je Auszug:
 
@@ -237,11 +239,11 @@ Web und CLI erzeugen je Auszug:
 stück-extract-0.playback.url
 ```
 
-Der CLI-Befehl lautet:
+Der geplante CLI-Befehl lautet:
 
 ```text
 zupfnoter playback-link <input.abc> \\
-  --player-url https://play.zupfnoter.de/ \\
+  --player-url https://zupfnoter-player.csweichel.dev/ \\
   --output <target-folder> \\
   [--extract <number>] \\
   [--qr svg|png|pdf]
@@ -255,7 +257,8 @@ stück-extract-0.playback.qr.png
 stück-extract-0.playback.qr.pdf
 ```
 
-Die Web-Anwendung bietet QR-SVG und QR-PDF an. Das CLI unterstützt zusätzlich PNG. Der QR-Code enthält exakt denselben Playback-Link wie die URL-Datei.
+Die Web-Anwendung bietet QR-SVG und QR-PDF an. CLI-QR-Ausgaben sind noch offen.
+Der QR-Code muss später exakt denselben Playback-Link wie die URL-Datei enthalten.
 
 Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält einen konkreten Kapazitätsfehler. Ein serverseitiger Kurzlink ist in Version 1 nicht vorgesehen.
 
@@ -294,14 +297,14 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 - ungültige Links und ungültige Bereiche werden angezeigt
 - Player benötigt keine ABC- oder Konfigurationsdaten
 
-### QR und CLI
+### QR und CLI (CLI teilweise offen)
 
-- Links und QR-Artefakte werden pro Auszug erzeugt
-- SVG, PNG und PDF enthalten denselben Link
+- Web-Links und QR-Artefakte werden pro Auszug erzeugt
+- Web-SVG und Web-PDF enthalten denselben Link
 - Dateinamen verwenden die Auszugsnummer
 - `produce`-Fallback auf Auszug 0
 - expliziter Einzelauszug
-- Fehler eines Auszugs werden gemeldet und führen zu einem passenden CLI-Exit-Code
+- CLI-Fehler und Exit-Codes sind noch zu implementieren
 
 ## Annahmen
 

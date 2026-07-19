@@ -1,5 +1,8 @@
 # Spec: Phase 1 – `@zupfnoter/types`
 
+**Status: umgesetzt.** Die Abweichungsliste unten beschreibt weiterhin die
+bewussten Unterschiede zwischen ursprünglichem Entwurf und aktuellem Code.
+
 > **Abweichungen (Stand 2026-06):**
 > - `Playable.slurStarts`/`slurEnds`: Spec sagt `string[]`, Code hat `number[]`
 > - `LayoutConfig.packer.pack_method`: Spec sagt `0 | 1 | 2 | 10`, Code hat `0 | 1 | 2 | 3 | 10`
@@ -7,9 +10,9 @@
 > - `DurationStyle` hat kein `hasbarover?`-Feld (Spec-Zeile 241 nicht implementiert)
 > - Spec wurde vor Implementation als Entwurf geschrieben, nie nachgezogen
 
-## Problem
+## Ursprüngliches Problem
 
-`packages/types/src/index.ts` ist ein leerer Platzhalter. Phase 1 definiert alle
+`packages/types/src/index.ts` war ein leerer Platzhalter. Phase 1 definiert alle
 TypeScript-Interfaces und -Typen für die gesamte Transformationskette — ohne Logik.
 Diese Typen werden von `@zupfnoter/core`, `@zupfnoter/web` und `@zupfnoter/cli` importiert.
 

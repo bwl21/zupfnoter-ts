@@ -1,25 +1,33 @@
 # Spec: Phase 0 – Monorepo-Setup
 
+**Status: umgesetzt.**
+
+Dieses Dokument bewahrt die ursprünglichen Anforderungen. Der aktuelle
+Repository-Stand ist in [`docs/architecture/current-state.md`](../architecture/current-state.md)
+zusammengefasst.
+
 ## Problem
 
-Das Projekt ist aktuell ein einzelner Vue-Scaffold (`src/`, `package.json` mit npm).
-Für den Zupfnoter-TS-Rewrite wird eine Monorepo-Struktur mit PNPM Workspaces benötigt,
-damit `@zupfnoter/core`, `@zupfnoter/types`, `@zupfnoter/web` und `@zupfnoter/cli`
-als eigenständige Pakete entwickelt und lokal verknüpft werden können.
+Das Projekt benötigte ursprünglich eine Monorepo-Struktur mit PNPM Workspaces,
+damit die Kern-, App- und UI-Pakete eigenständig entwickelt und lokal verknüpft
+werden können. Die Struktur ist inzwischen vorhanden und wurde um Playback,
+Player-UI, Design-System, ViewSvg und Storybook erweitert.
 
 ## Ist-Zustand
 
 | Element | Status |
 |---------|--------|
-| `packages/core/` | ✅ existiert (nur `src/testing/`) |
-| `packages/types/` | ❌ fehlt |
-| `apps/web/` | ❌ fehlt |
-| `apps/cli/` | ❌ fehlt |
-| `src/` (Vue-Scaffold) | noch am Root, muss nach `apps/web/` |
-| `pnpm-workspace.yaml` | ❌ fehlt |
-| `tsconfig.base.json` | ❌ fehlt |
-| Devcontainer mit Node.js | ❌ nur Ubuntu-Basis |
-| `package.json` Name | `my-vue-app` → `zupfnoter-ts` |
+| `packages/core/` | ✅ vorhanden und implementiert |
+| `packages/types/` | ✅ vorhanden |
+| `apps/web/` | ✅ vorhanden und aktiv |
+| `apps/cli/` | ✅ Workspace vorhanden, fachlicher Ausbau offen |
+| `apps/storybook/` | ✅ eigene Storybook-App |
+| `apps/player/` | ✅ eigenständiger Player |
+| `src/` (Vue-Scaffold) | ✅ aus dem Root entfernt |
+| `pnpm-workspace.yaml` | ✅ vorhanden |
+| `tsconfig.base.json` | ✅ vorhanden |
+| Devcontainer mit Node.js | ⚠️ nicht maßgeblicher Entwicklungsweg |
+| `package.json` Name | ✅ `zupfnoter-ts` |
 
 ## Anforderungen
 
@@ -105,4 +113,3 @@ Alle Paket-`tsconfig.json`-Dateien erweitern diese Basis.
 13. `pnpm install` ausführen und verifizieren
 
 ---
-

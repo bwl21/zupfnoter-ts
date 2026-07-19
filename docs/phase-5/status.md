@@ -1,148 +1,89 @@
 # Phase 5 – Status
 
-## Zweck
+Stand: 2026-07-19
 
-Dieses Dokument beschreibt den aktuellen Ist-Stand von Phase 5 (`apps/web`).
+Phase 5 ist funktional weit fortgeschritten. Die verbleibende Arbeit betrifft
+vor allem Konsolidierung, lokale Datei-Integration und Produktpolitur.
 
-Es ist keine Zielspezifikation, sondern eine knappe Arbeitsgrundlage:
+## 5.1 Layout und Haupttoolbar
 
-- Was ist funktional bereits weit?
-- Was ist nur teilweise umgesetzt?
-- Was ist noch offen?
-- Welche Architekturthemen sind bewusst als Restschuld markiert?
+Status: `weitgehend umgesetzt`
 
-## Gesamtbild
+Vorhanden sind Workbench-Layout, Haupttoolbar, Datei-Menü, Status-/Fußzeile,
+About-, Console-, Storage-, Open-, Save-, PDF- und Mirror-Ansichten. Aktionen
+sind über Commands, Menü und Toolbar verbunden; Tooltips und Icons sind Teil
+der produktiven Oberfläche.
 
-Phase 5 ist funktional bereits weit fortgeschritten.
+## 5.2 ABC-Editor
 
-Insbesondere vorhanden sind:
+Status: `funktional`
 
-- laufende Workbench mit Editor und Vorschauen
-- Selection-System mit zentralem Store und Scope-Konzept
-- Playback mit Highlighting, Scope-Auswertung und Instrumentpfaden
-- Command- und Console-Grundlage
-- Dropbox-Anbindung
+Vorhanden sind CodeMirror, ABC-Diagnosen, externe Textselektion, Undo/Redo-
+Anbindung und Playback-Highlighting. Selection-Projektionen und echte
+bearbeitbare Mehrfachselektionen bleiben ein Konsolidierungsthema.
 
-Offen ist vor allem nicht mehr die bloße Funktion, sondern die systematische
-Fertigstellung und architektonische Bereinigung.
+## 5.3 Vorschauen
 
-## Status nach Teilbereichen
+Status: `weitgehend umgesetzt`
 
-### 5.1 Layout-Grundstruktur
+Score- und Harfennoten-Vorschau unterstützen Zoom, Pan, Lupe, Auswahl,
+Playback-Highlighting, Takt-/Positionsbezug sowie Mirror-/Mehrfensteransichten.
 
-Status: `weit fortgeschritten`
+## 5.4 Konfigurationseditor
 
-Vorhanden:
+Status: `funktional, Ausbau offen`
 
-- Workbench-Layout
-- Footer/Statusbereich
-- Panel-Struktur
-- About-/Console-/PDF-/Mirror-Ansichten
+Der Editor bearbeitet die Konfiguration text- und baumorientiert, kennt
+fachliche Namen, Auswahlwerte, Diagnosen und Undo/Redo. Formular- und
+Bedienungspolitur für häufige Einstellungen bleibt offen.
 
-### 5.2 ABC-Editor
+## 5.5 Command-System und Shortcuts
 
-Status: `funktional gut, architektonisch noch nicht fertig`
+Status: `weitgehend umgesetzt`
 
-Vorhanden:
+CommandStack, Console, Toolbar-/Menübindung, zentraler ShortcutManager,
+Logger, Undo/Redo und typisierte Fehlerbehandlung sind vorhanden. Weitere
+Vereinheitlichung von Projektionen und UI-Kommandos ist möglich.
 
-- CodeMirror-Integration
-- Syntax-Highlighting
-- Cursor-/Selection-Sync
-- Playback-Highlight im Editor
+## 5.6 Datei- und Storage-Integration
 
-Offen:
+Status: `Dropbox produktiv, lokal noch offen`
 
-- echte bearbeitbare Mehrbereichsselektion
-- sauberere Trennung zwischen fachlicher Selection und Editor-Projektion
+Vorhanden sind:
 
-### 5.3 Vorschau-Panel
+- persistente Verbindungsprofile
+- mehrere Profile pro Anbieter
+- Dropbox-OAuth pro Verbindung
+- Root-Pfad und umschaltbarer Schreibschutz
+- Verbindungsdialog als Tabelle mit Aktivieren, Bearbeiten, Löschen und
+  Ordnerbrowser
+- Öffnen-Dialog mit ABC-Dateien und Vorschauen
+- Speichern mit Konfigurationsanhang, PDF-/HTML-/ABC-Ausgaben und Fortschritt
 
-Status: `weit fortgeschritten`
+Offen bleiben lokales Öffnen/Speichern als gleichwertiger Provider und die
+abschließende Dateinamens-/Pfadpolitur.
 
-Vorhanden:
+## 5.7 Playback
 
-- Score-Preview
-- Harp-Preview
-- Zoom/Pan
-- Harfen-Lupe
-- Selection- und Playback-Highlighting
-- Mirror-/Multi-Window-Grundlage
+Status: `weitgehend umgesetzt`
 
-### 5.4 Konfigurationseditor
+Vorhanden sind expandierte Timeline, Repeat-/Volta-Flow, Auswahl- und
+Stimmenscopes, Stereo-Panning, Harfe/Piano/Gitarre/Oszillator, Soundfont-
+Ladezustand, Playback-Highlighting, Takt-/Durchlaufspur, Metronom und
+Playback-Link-Export. Gebundene Noten werden für Audio verlängert; ihr
+Highlight-Lebenszyklus bleibt getrennt von Takt- und Audioereignissen.
 
-Status: `teilweise umgesetzt`
+Offen sind weitere Tests auf mobilen Geräten und die abschließende
+Konsolidierung der Selection-/Playback-Projektionen.
 
-Vorhanden:
+## 5.8 Stores und Komponenten
 
-- Konfigurationspanel
-- textbasierte Bearbeitung
+Status: `teilweise konsolidiert`
 
-Offen:
-
-- formularbasierte Bearbeitung häufiger Einstellungen
-
-### 5.5 Command-System
-
-Status: `weit fortgeschritten`
-
-Vorhanden:
-
-- Command-Stack
-- Legacy-Command-Anbindung
-- Console-Integration
-- Undo/Redo-Grundlage
-
-Offen:
-
-- Phase-5-Endform der UI-Bindung
-- bewusste Abschlussentscheidung für globale Undo-/Redo-Bedienung
-
-### 5.6 Datei-Integration
-
-Status: `teilweise umgesetzt`
-
-Vorhanden:
-
-- Dropbox-Provider
-- Login/Open/Save
-
-Offen:
-
-- lokales Dateiöffnen/-speichern als gleichwertiger Pfad
-- klares Speicherpfad-/Dateinamemodell
-- Auto-Save
-
-### 5.7 Playback
-
-Status: `weit fortgeschritten`
-
-Vorhanden:
-
-- expandierte Playback-Timeline
-- Repeat-/Volta-Flow
-- Selection-gesteuertes Playback
-- Scope-gesteuertes Playback
-- Stereo-Panning
-- Oszillator- und Soundfont-Wiedergabe
-
-Offen:
-
-- weitere Konsolidierung der Architekturgrenzen zwischen Selection,
-  Projektionen und Playback
-
-### 5.8 Stores
-
-Status: `teilweise umgesetzt`
-
-Vorhanden:
-
-- `selection` Store
-- `playback` Store
-
-Offen:
-
-- geplante Endstruktur für Editor-/Config-/Render-/Player-Zustände
-- Entlastung von `ZupfnoterWorkbench.vue`
+Selection- und Playback-Stores sind vorhanden. Weitere Zustände liegen noch in
+der Workbench und sollen bei Bedarf in klar geschnittene Stores überführt
+werden. Das Design-System liegt in `packages/design-system`; Storybook ist als
+eigene App unter `apps/storybook` eingerichtet.
 
 ## Bekannte Architekturthemen
 
@@ -150,32 +91,19 @@ Offen:
 
 Issue: [#36](https://github.com/bwl21/zupfnoter-ts/issues/36)
 
-Aktuell kennt der `selectionManager` noch konkrete Perspektiven und übernimmt
-neben Event-/State-Logik auch Projektionsaufgaben.
-
-Ziel ist:
-
-- `selectionManager` für fachliche Selection begrenzen
-- Editor-/Score-/Playback-Projektionen in eigene Module ziehen
+`selectionManager` kennt noch konkrete Perspektiven und übernimmt neben der
+fachlichen Selection auch Projektionsaufgaben. Diese Aufgaben sollen bei einer
+gezielten Überarbeitung in eigene Module verschoben werden.
 
 ### Stabile Stimmenidentität
 
-Referenz:
+Die Stimmenidentität ist implementiert und durch
+`docs/adr/stabile-stimmenidentitaet.md` dokumentiert. Sie bleibt eine
+Querschnittsinvariante für Core, Web, Player und CLI.
 
-- [docs/adr/stabile-stimmenidentitaet.md](../adr/stabile-stimmenidentitaet.md)
-
-Das Thema ist deutlich stabiler als zuvor, bleibt aber weiterhin eine
-Querschnittsinvariante über Core, Web und CLI.
-
-## Nicht-Ziele innerhalb des aktuellen Phase-5-Abschlusses
+## Bewusst außerhalb des aktuellen Abschlusses
 
 - Voice Styles
-- echte Mehrbereichsselektion im Editor
-- größere Folgephasen wie CLI-/PDF-Endausbau
-
-## Verwandte Dokumente
-
-- [roadmap.md](./roadmap.md)
-- [architektur_selection_perspektiven.md](./architektur_selection_perspektiven.md)
-- [spec-selection.md](./spec-selection.md)
-- [spec-playback-selection.md](./spec-playback-selection.md)
+- vollständige lokale Datei-Provider-Integration
+- vollständiger CLI-Exportweg für alle Web-Funktionen
+- Worker-Architektur ohne nachgewiesenen Bedarf

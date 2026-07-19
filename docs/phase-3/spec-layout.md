@@ -1,5 +1,9 @@
 # Spec: Phase 3.3 – HarpnotesLayout (Song → Sheet)
 
+**Status: weitgehend umgesetzt.** Die Abweichungsliste dokumentiert den
+aktuellen Unterschied zwischen ursprünglichem Plan und implementiertem
+`HarpnotesLayout`.
+
 > **Abweichungen (Stand 2026-06):**
 > - **Constructor:** Code hat `constructor(config, options?)` mit zus. `HarpnotesLayoutOptions`
 > - **Methoden:** Spec listet 17, Code hat **~40+** (Slurs, Ties, Decorations, ZnAnnotations, RepeatSigns, NoteboundAnnotations, MeasureBarover, Countnotes, PlayableVisibility u.v.m.)
@@ -10,9 +14,10 @@
 > - Siehe auch: [#29 – BeatPacker: measureStart-Inkrement durch Geometrie ersetzen](https://github.com/bwl21/zupfnoter-ts/issues/29)
 > - **Spec wurde vor Implementation als reiner Plan geschrieben**, Code hat sich frei weiterentwickelt
 
-## Problem
+## Ursprüngliches Problem
 
-Stufe 2 der Transformationskette (`Song → Sheet`) ist noch nicht implementiert.
+Stufe 2 der Transformationskette (`Song → Sheet`) war zum Zeitpunkt dieses
+Entwurfs noch nicht implementiert.
 `HarpnotesLayout` ist der Port von `Harpnotes::Layout::Default` aus `harpnotes.rb`
 (ab Zeile 1302). Die Klasse nimmt ein `Song`-Objekt und eine `ZupfnoterConfig`
 entgegen und erzeugt ein `Sheet`-Objekt mit allen zeichenbaren Elementen.
@@ -264,8 +269,11 @@ function transformAbcToSheet(abcText: string): SheetFixture {
 }
 ```
 
-Sheet-Fixtures sind noch Platzhalter (`children: []`) → Tests laufen als `it.skip`
-bis Fixtures aus Legacy-System exportiert werden.
+Sheet-Fixtures und TS-Ausgaben liegen inzwischen unter `fixtures/cases/**` vor.
+Die Legacy-/TS-Vergleichstests, Gap-Reports und Ausgabe-Dumps sind in
+`packages/core/src/testing/__tests__/sheet/` gebündelt. Abweichungen werden als
+Vergleichsbefund dokumentiert; sie sind nicht automatisch ein Beleg für fachliche
+Parität.
 
 ---
 

@@ -1,7 +1,7 @@
 # Spec: BeatPacker (Phase 3.2)
 
 > **Abweichungen (Stand 2026-06):**
-> - Spec sagt „106 Tests grün", real: **14 Tests** (Testanzahl wurde beim Port nie hochgezogen)
+> - Spec sagt „106 Tests grün", real: **28 Tests** in der aktuellen BeatPacker-Testdatei (die Testabdeckung wurde seit dem ursprünglichen Port erweitert, erreicht aber weiterhin nicht 106)
 > - Architektur und alle 5 Methoden stimmen mit Code überein – kein inhaltlicher Fehler
 > - Siehe auch: [#30 – BeatPacker: Testabdeckung auf 106+ Tests ausbauen](https://github.com/bwl21/zupfnoter-ts/issues/30)
 

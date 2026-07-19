@@ -1,190 +1,112 @@
-# Current State
+# Aktueller Projektstand
 
-Stand: 2026-06-29
+Stand: 2026-07-19
 
-Dieses Dokument beschreibt den aktuellen Zustand von `zupfnoter-ts` als technisches
-Arbeits- und Architektur-Snapshot.
+Dieses Dokument beschreibt den tatsächlich vorhandenen Stand des Monorepos. Es
+ist ein Ist-Bericht und ersetzt keine Fachspezifikation.
 
 ## Kurzfassung
 
-`zupfnoter-ts` ist bereits ein funktionsfähiges PNPM-Monorepo mit klarer Trennung
-zwischen Typen, Kernlogik und App-Shells. Die zentrale Transformationskette ist
-weitgehend umgesetzt:
+`zupfnoter-ts` ist ein PNPM-Monorepo mit einer weitgehend implementierten
+Transformationskette:
 
-`ABC -> Song -> Sheet -> SVG`
+```text
+ABC → Song → Sheet → SVG/PDF
+             ↘ Playback-Timeline → Playback-Link → apps/player
+```
 
-Der Kern ist testbar und durch Unit-, Snapshot- und Fixture-Tests abgesichert. Neben
-`apps/demo` existiert inzwischen auch in `apps/web` eine fachlich nutzbare Workbench
-mit Editor-, Preview-, Selection-, Command- und Playback-Grundfunktionen. Eine
-PDF-Ausgabe, vollständige Datei-Integration und einige größere Produktbausteine sind
-noch nicht fertig.
+Die Vue-Workbench ist die aktive Produktanwendung. Der eigenständige Player,
+das gemeinsame Design-System und Storybook sind vorhanden und werden separat
+gebaut bzw. deployed.
 
 ## Repository-Struktur
 
-Das Repository ist als Monorepo aufgebaut:
-
-- `packages/types` enthält die gemeinsamen TypeScript-Typen für Musik, Drawing und
-  Konfiguration.
-- `packages/core` enthält Parser, Transformation, Layout, Beat-Packing und SVG-Export.
-- `apps/demo` ist die derzeit nutzbare Demo-Oberfläche.
-- `apps/web` ist die aktive Produkt-App in Phase 5 mit Workbench, Editor, mehreren
-  Preview-Panels, Selection-Orchestrierung, Command-Anbindung und Playback.
-- `apps/cli` ist die geplante CLI, derzeit nur ein Platzhalter.
-- `fixtures/` enthält versionsierte Testfälle für die fixture-driven Tests.
-- `docs/` enthält Phasen-Dokumentation, Architektur-Notizen und Testkonzepte.
-
-Root-Skripte orchestrieren die Arbeitsabläufe über PNPM:
-
-- `pnpm dev` startet die Demo-App.
-- `pnpm build` baut alle Workspaces.
-- `pnpm test:unit` führt die Workspace-Tests aus.
-- `pnpm type-check` und `pnpm lint` laufen workspace-weit.
-
-Bekannter Tooling-Gap:
-
-- `pnpm --filter @zupfnoter/core run type-check` scheitert derzeit mit `TS6059`,
-  weil Core-Testdateien `fixtures/openImplementations.ts` über
-  `fixtures/openImplementations.js` importieren. Die Datei liegt außerhalb von
-  `packages/core/src`, während `packages/core/tsconfig.json` `rootDir: "src"`
-  setzt. Das ist ein Projektstruktur-/TSConfig-Thema und kein Hinweis auf einen
-  fachlichen Layout- oder Fixture-Paritätsfehler.
+- `packages/types`: gemeinsame Datenmodelle ohne Laufzeitlogik
+- `packages/core`: ABC-Parser, Song-/Layout-Pipeline, SVG/PDF und Konfiguration
+- `packages/playback`: versioniertes Binärformat für Playback-Links
+- `packages/player-ui`: gemeinsame imperative Player-Oberfläche und Styles
+- `packages/design-system`: wiederverwendbare `Zn*`-Vue-Komponenten
+- `apps/web`: Workbench mit Editor, Vorschauen, Commands, Storage und Playback
+- `apps/player`: mobile Playback-Link-Anwendung
+- `apps/viewsvg`: eigenständige SVG-/Vergleichsansicht
+- `apps/demo`: kleinere Pipeline-Demo
+- `apps/cli`: CLI-Grundlage; der geplante Endausbau ist noch offen
+- `apps/storybook`: Storybook für Design-System, Web- und Player-Stories
 
 ## Implementierter Kern
 
-### `packages/types`
+`packages/core` implementiert:
 
-Dieses Paket definiert die zentralen Verträge ohne Logik. Es enthält die Modelle für:
+1. `AbcParser` über die vendorte `abc2svg`-Bibliothek
+2. `AbcToSong` für ABC → Song
+3. `Confstack` und hierarchische Konfigurationsauflösung
+4. `BeatPacker` und vertikale Layoutberechnung
+5. `HarpnotesLayout` für Song → Sheet
+6. `SvgEngine` und `PdfEngine` für SVG-, A3- und segmentierte A4-Ausgabe
 
-- Musikmodell
-- Drawing-Modell
-- Zupfnoter-Konfiguration
+Die Kernpipeline wird durch Unit-, Snapshot-, Fixture-, SVG- und PDF-
+Vergleichstests geprüft. Fixtures mit Copyright-Schutz bleiben außerhalb des
+öffentlichen Git-Repositories.
 
-Die Typen bilden die Grundlage für alle weiteren Stufen und halten die Pipeline
-entkoppelt von UI- und Laufzeitdetails.
+## Web-Workbench
 
-### `packages/core`
+In `apps/web` sind vorhanden:
 
-Der Kern ist der wichtigste technische Teil des Repos und implementiert die
-fachliche Pipeline:
+- Workbench-Layout mit ABC-Editor, Score- und Harfennoten-Vorschau
+- zentrale Selection mit Scope für Einzelstimme, Auszug und alle Stimmen
+- Zoom, Pan, Lupe, Mirror-/Mehrfensteransichten und Highlighting
+- CodeMirror-Editor mit Diagnose- und Shortcut-Anbindung
+- CommandStack, Konsole, Undo/Redo-Grundlage und zentraler Logger
+- Datei-Menü mit Öffnen, Speichern, Storage-Verbindungsdialog und Dropbox-
+  Verbindungen
+- dauerhafte Storage-Profile mit Wurzelpfad und Schreibschutz
+- Playback-Timeline mit Repeat-/Volta-Flow, Takt-/Durchlauf-Positionsspur,
+  Metronom, Stereo-Panning und Soundfont-/Oszillator-Ausgabe
+- Playback-Link-Export einschließlich optionalem QR-Code
+- About-Dialog mit Build-Metadaten
 
-1. `AbcParser` bindet die vendorte `abc2svg`-Bibliothek ein.
-2. `AbcToSong` transformiert ABC in das interne Musikmodell `Song`.
-3. `Confstack` und `buildConfstack` lösen Konfigurationen hierarchisch auf.
-4. `BeatPacker` berechnet die vertikale Kompression.
-5. `HarpnotesLayout` erzeugt das Layout-Modell `Sheet`.
-6. `SvgEngine` rendert das `Sheet` als SVG.
+Noch nicht vollständig konsolidiert sind insbesondere die Trennung der
+Selection-Projektionen, der weitere Ausbau des Konfigurationseditors und die
+vollständige lokale Datei-Integration.
 
-Die Testabdeckung ist bereits beachtlich:
+## Playback und Player
 
-- Parser- und Transformer-Tests
-- Confstack-Tests
-- BeatPacker-Tests
-- Snapshot-Tests für Layout und SVG
-- fixture-basierte Vergleichstests für Song und Sheet
+`packages/playback` kodiert die bereits erzeugte Timeline in ein versioniertes,
+komprimiertes URL-Fragment. Der Payload enthält Audioereignisse und eine
+separate zeitbasierte Positionsspur für Takt, Durchlauf und Metrum.
 
-### `fixtures/`
+`apps/player` decodiert diese Links ohne ABC- oder Serverzugriff. Die produktive
+Player-UI kommt aus `packages/player-ui`; Storybook verwendet dieselbe UI-
+Renderfunktion und dasselbe CSS. Der Player ist öffentlich über FLink deploybar.
 
-Fixtures sind pro Testfall organisiert:
+Offen bleiben vor allem die weitere Audio-/Mobile-Politur und ein vollständiger
+CLI-Exportweg für Playback-Links.
 
-- `fixtures/cases/<bereich>/<name>/input.abc`
-- `fixtures/cases/<bereich>/<name>/song.json`
-- `fixtures/cases/<bereich>/<name>/sheet.json`
+## Storybook und Design-System
 
-Die Tests scannen diese Verzeichnisse automatisch. Ein Testfall wird für Song-Tests
-aktiv, sobald `song.json` existiert, und für Sheet-Tests, sobald `sheet.json`
-vorhanden ist. Zusätzlich kann die TS-Pipeline Vergleichsausgaben unter
-`_ts_output/` erzeugen.
-
-Ein Legacy-Exportmodus im alten Repository kann die Fixtures jetzt direkt in diese
-Verzeichnisstruktur schreiben.
-
-## Apps
-
-### `apps/demo`
-
-Die Demo-App ist aktuell die produktiv nutzbare Oberfläche im Repository. Sie dient
-zum Testen und zur Visualisierung der Pipeline, nicht als vollständige Endanwender-UI.
-
-### `apps/web`
-
-Die Web-App ist nicht mehr nur vorbereitet, sondern der aktuelle Schwerpunkt der
-Produktentwicklung. Der bisherige Ausbau umfasst insbesondere:
-
-- Workbench-Struktur mit Editor-, Harp- und Score-Preview
-- gemeinsame Selection über die beteiligten Sichten
-- Playback-Highlight getrennt von der Benutzerselektion
-- Command-System mit Legacy-orientierten Kommandos
-- Mehrfenster-/Mirror-Anbindung für Preview-Panels
-- Playback mit expandiertem Ablauf, Volten-/Repeat-Berücksichtigung, aktiven
-  Extract-Stimmen und Stereo-Panning
-
-Offen bleiben in `apps/web` unter anderem:
-
-- vollständige Datei-Integration
-- ausgebauter Konfigurationseditor
-- finalisierte Playback-Scopes auf Basis der zentralen Selection
-- Browser-validierte Produktpolitur
-
-### `apps/cli`
-
-Die CLI ist im TS-Monorepo angelegt, aber noch nicht als echte Render-CLI fertig
-implementiert. Sie markiert den Zielort für SVG- und PDF-Export ohne Browser.
-
-## Dokumentationsstand
-
-Die Architektur- und Migrationsdokumentation ist bereits breit angelegt:
-
-- Phasen-Dokumente liegen unter `docs/phase-*`
-- Architektur- und Analyse-Notizen liegen unter `docs/architecture`
-- Die fortschreibbare SVG-/Konfigurations-Paritätstabelle liegt unter `docs/architecture/svg-parity-table.md`
-- Fixture-Strategien sind unter `docs/fixtures` und `docs/testing` beschrieben
-- Voice-Styles sind dokumentiert, aber noch nicht implementiert
-
-`AGENTS.md` beschreibt zusätzlich den geplanten Ausbaupfad für das Monorepo.
+`apps/storybook` ist eine eigene Workspace-App. Stories liegen unter
+`apps/storybook/stories/` und verwenden die produktiven Komponenten bzw. die
+gemeinsame Player-UI. Storybook dient als isolierte Darstellung, Accessibility-
+Prüfung und Grundlage für visuelle Regressionstests; es enthält keine zweite
+Produktionsdarstellung.
 
 ## Phasenstand
 
-Die grobe Projektlage entlang der offiziellen Phasen ist derzeit:
+- Phase 0: Monorepo-Setup umgesetzt
+- Phase 1: gemeinsame Typen umgesetzt
+- Phase 2: ABC → Song umgesetzt und getestet
+- Phase 3: Song → Sheet, Konfiguration und Layout weitgehend umgesetzt
+- Phase 4: SVG- und PDF-Ausgabe umgesetzt; Paritätsausbau läuft weiter
+- Phase 5: aktive Produktphase; Workbench und Storage sind weit fortgeschritten
+- Phase 5/Storybook: Design-System- und Player-Stories eingerichtet
+- Phase 6: Playback-Link, Player und FLink-Deployment umgesetzt; CLI-Ausbau offen
+- Phase 7: Worker-Architektur weiterhin offen
 
-- Phase 0: praktisch umgesetzt, auch wenn die Checkboxen im Plan nicht laufend
-  gepflegt wurden
-- Phase 1: umgesetzt
-- Phase 2: fachlich umgesetzt und testseitig verankert
-- Phase 3: fachlich weitgehend umgesetzt
-- Phase 4: SVG-Ausgabe umgesetzt, PDF-Ausgabe noch offen
-- Phase 5: aktiv in Arbeit; `apps/web` ist hier der aktuelle Schwerpunkt
-- Phase 6: angelegt, aber noch nicht als echte CLI ausgebaut
-- Phase 7: noch offen
+## Verbindliche offene Themen
 
-Der aktuelle Arbeitsfokus liegt innerhalb von Phase 5 vor allem auf:
-
-- Selection und Selection-Projektionen
-- Preview-Kopplung zwischen Harfennoten, Score und Editor
-- Command-Verhalten
-- Playback inklusive Ablaufmodell, Highlighting und Audio-Ausgabe
-
-## Offene Punkte
-
-Folgende Bereiche sind noch offen oder unvollständig:
-
-- PDF-Export fehlt
-- die `apps/web`-Produktoberfläche ist begonnen, aber noch nicht vollständig
-- CLI-Funktionalität ist noch nicht vollständig ausgebaut
-- Worker-Architektur ist noch nicht vorhanden
-- Voice Styles sind dokumentiert, aber noch nicht als Feature umgesetzt
-- weitere technische Integrationen wie File Handling und Teile des
-  Command-/Playback-Umfangs sind noch nicht fertig
-
-## Praktische Einordnung
-
-Der aktuelle Zustand ist damit nicht mehr ein reiner Scaffold, sondern ein
-fachlich brauchbares Transformations- und Workbench-System mit:
-
-- sauber getrennten Typen und Kernmodulen
-- implementierter ABC-zu-SVG-Pipeline
-- versionsierten Fixtures
-- ausgebauter Web-Workbench in Phase 5
-- stabiler Testbasis
-
-Was noch fehlt, ist vor allem die Vollständigkeit und Konsolidierung der
-Produktoberfläche um diesen Kern herum.
+- Selection-Projektionen und Mehrfachauswahl weiter konsolidieren
+- lokale Datei-Integration abschließen
+- Konfigurationseditor und globale Stores weiter entkoppeln
+- CLI-Export und gemeinsame Browser-/CLI-Pipeline vervollständigen
+- Audio-/Mobile-Playback weiter gegen reale Geräte prüfen
+- Worker-Architektur nur bei nachgewiesenem UI-Thread-Bedarf einführen

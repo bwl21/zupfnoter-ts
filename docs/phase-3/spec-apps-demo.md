@@ -1,8 +1,11 @@
 # Spec: `apps/demo` – Pipeline-Demo-App (Phase 3)
 
-## Problem
+**Status: umgesetzt.** `apps/demo` ist als eigenes Vite-/Vue-Paket vorhanden und
+enthält die eigenständige ABC-/SVG-Pipeline-Demo.
 
-Die `DemoView` (ABC-Editor + SVG-Vorschau) lebt aktuell in `apps/web`. Das ist
+## Ursprüngliches Problem
+
+Die `DemoView` (ABC-Editor + SVG-Vorschau) lebte ursprünglich in `apps/web`. Das ist
 problematisch, weil `apps/web` der Platzhalter für die spätere vollständige
 Zupfnoter-Web-App (Phase 5) ist. Die Demo dient als Entwicklungswerkzeug für Phase 3
 (Pipeline-Verifikation) und soll nicht mit dem zukünftigen Web-App-Scaffold vermischt werden.
@@ -11,7 +14,7 @@ Zupfnoter-Web-App (Phase 5) ist. Die Demo dient als Entwicklungswerkzeug für Ph
 
 `apps/demo` wird ein eigenständiges Vite/Vue-3-Paket (`@zupfnoter/demo`) im Monorepo,
 das ausschließlich die Demo-Funktionalität enthält (ABC-Editor + SVG-Vorschau).
-`apps/web` wird auf einen leeren Scaffold zurückgesetzt und dient als Basis für Phase 5.
+`apps/web` wurde anschließend als Basis für Phase 5 weiterentwickelt.
 
 ## Zielstruktur
 
@@ -27,9 +30,7 @@ apps/
 │       ├── App.vue
 │       └── DemoView.vue     # verschoben aus apps/web/src/views/
 └── web/                     # BLEIBT: @zupfnoter/web (leerer Scaffold für Phase 5)
-    └── src/
-        └── views/
-            └── (DemoView.vue entfernt)
+    └── src/                    # Workbench und Web-spezifische UI
 ```
 
 ## Anforderungen
@@ -45,11 +46,16 @@ apps/
 
 ### R2 – `DemoView.vue` nach `apps/demo/src/` verschieben
 
+Erledigt: `apps/demo/src/DemoView.vue` ist die eigenständige Demo-Ansicht.
+
 - `apps/web/src/views/DemoView.vue` → `apps/demo/src/DemoView.vue`
 - Inhalt unverändert (kein Refactoring der Demo-Logik)
 - `apps/demo/src/App.vue` bindet `DemoView` direkt ein (kein Router)
 
 ### R3 – `apps/web` bereinigen
+
+Erledigt: Die Demo ist aus der produktiven Web-App herausgelöst; `apps/web`
+enthält inzwischen die Workbench statt eines leeren Scaffolds.
 
 - `DemoView.vue` aus `apps/web/src/views/` entfernen
 - Router-Eintrag für `DemoView` entfernen
