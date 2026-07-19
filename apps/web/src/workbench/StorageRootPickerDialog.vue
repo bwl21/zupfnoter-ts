@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { ZnButton, ZnIconButton } from '../design-system/index'
+import { ZnButton, ZnIconButton } from '@zupfnoter/design-system'
 
 const props = defineProps<{
   open: boolean

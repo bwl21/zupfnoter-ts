@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ZnButton from '../design-system/components/ZnButton.vue'
+import { ZnButton } from '@zupfnoter/design-system'
 
 const props = defineProps<{
   open: boolean

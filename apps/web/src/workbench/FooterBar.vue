@@ -3,9 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 
-import ZnBadge from '../design-system/components/ZnBadge.vue'
-import ZnButton from '../design-system/components/ZnButton.vue'
-import ZnStatusBar from '../design-system/components/ZnStatusBar.vue'
+import { ZnBadge, ZnButton, ZnStatusBar } from '@zupfnoter/design-system'
 
 const props = withDefaults(defineProps<{
   extractLabel: string

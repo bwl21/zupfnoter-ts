@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnBadge from '../../../web/src/design-system/components/ZnBadge.vue'
-import ZnButton from '../../../web/src/design-system/components/ZnButton.vue'
-import ZnToolbar from '../../../web/src/design-system/components/ZnToolbar.vue'
+import { ZnBadge, ZnButton, ZnToolbar } from '@zupfnoter/design-system'
 
 const meta = { title: 'Design System/ZnToolbar', component: ZnToolbar, tags: ['autodocs'] } satisfies Meta<typeof ZnToolbar>
 export default meta

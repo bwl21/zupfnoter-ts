@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import ZnPanel from '../../design-system/components/ZnPanel.vue'
-import ZnToolbar from '../../design-system/components/ZnToolbar.vue'
+import { ZnPanel, ZnToolbar } from '@zupfnoter/design-system'
 
 const lyrics = [
   { label: 'Verse 1', text: 'Hands on the strings, eyes on the line.' },

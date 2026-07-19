@@ -5,7 +5,7 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import type { SelectionTextRange } from '@zupfnoter/types'
 
-import ZnPanel from '../../design-system/components/ZnPanel.vue'
+import { ZnPanel } from '@zupfnoter/design-system'
 import {
   createAbcEditorExtensions,
   syncEditorDiagnostics,

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnPanelBody from '../../../web/src/design-system/components/ZnPanelBody.vue'
+import { ZnPanelBody } from '@zupfnoter/design-system'
 
 const meta = { title: 'Design System/ZnPanelBody', component: ZnPanelBody, tags: ['autodocs'] } satisfies Meta<typeof ZnPanelBody>
 export default meta

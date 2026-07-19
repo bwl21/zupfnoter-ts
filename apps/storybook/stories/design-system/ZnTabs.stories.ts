@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnTabs from '../../../web/src/design-system/components/ZnTabs.vue'
+import { ZnTabs } from '@zupfnoter/design-system'
 
 const items = [{ id: 'abc', label: 'ABC-Notation' }, { id: 'lyrics', label: 'Liedtexte', badge: '3' }, { id: 'config', label: 'Konfiguration' }]
-const meta = { title: 'Design System/ZnTabs', component: ZnTabs, tags: ['autodocs'], argTypes: { modelValue: { control: 'select', options: items.map((item) => item.id) } } } satisfies Meta<typeof ZnTabs>
+const meta: Meta<typeof ZnTabs> = { title: 'Design System/ZnTabs', component: ZnTabs, tags: ['autodocs'], argTypes: { modelValue: { control: 'select', options: items.map((item) => item.id) } } }
 export default meta
 type Story = StoryObj<typeof meta>
 

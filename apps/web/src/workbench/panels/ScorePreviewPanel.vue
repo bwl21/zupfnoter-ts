@@ -3,7 +3,7 @@ import { ref, toRef } from 'vue'
 
 import type { SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
-import ZnPanel from '../../design-system/components/ZnPanel.vue'
+import { ZnPanel } from '@zupfnoter/design-system'
 import { resolveSelectionOriginByTextRange } from '../selectionIndex'
 import { useTextRangeSvgHighlight } from './useTextRangeSvgHighlight'
 

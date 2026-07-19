@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import ZnButton from '../../design-system/components/ZnButton.vue'
-import ZnPanel from '../../design-system/components/ZnPanel.vue'
-import ZnPanelHeader from '../../design-system/components/ZnPanelHeader.vue'
+import { ZnButton, ZnPanel, ZnPanelHeader } from '@zupfnoter/design-system'
 </script>
 
 <template>

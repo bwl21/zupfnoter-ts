@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, toRef, watch } from 'vue'
 
-import ZnButton from '../../design-system/components/ZnButton.vue'
-import ZnZoomControl from '../../design-system/components/ZnZoomControl.vue'
+import { ZnButton, ZnZoomControl } from '@zupfnoter/design-system'
 import { useZoomableSvgPreview } from './useZoomableSvgPreview'
 
 interface Point {

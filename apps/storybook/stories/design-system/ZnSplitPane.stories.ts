@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnPanel from '../../../web/src/design-system/components/ZnPanel.vue'
-import ZnSplitPane from '../../../web/src/design-system/components/ZnSplitPane.vue'
+import { ZnPanel, ZnSplitPane } from '@zupfnoter/design-system'
 
 const meta = { title: 'Design System/ZnSplitPane', component: ZnSplitPane, tags: ['autodocs'], argTypes: { orientation: { control: 'select', options: ['horizontal', 'vertical'] }, primarySize: { control: { type: 'number', min: 10, max: 90 } } } } satisfies Meta<typeof ZnSplitPane>
 export default meta

@@ -1,4 +1,4 @@
-@import '../design-system/tokens.css';
+@import '@zupfnoter/design-system/tokens.css';
 
 a {
   color: var(--zn-accent-strong);

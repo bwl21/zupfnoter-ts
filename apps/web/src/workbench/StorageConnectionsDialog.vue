@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { StorageConnection, StorageProviderDescriptor } from '@zupfnoter/types'
-import { ZnButton, ZnIconButton } from '../design-system/index'
+import { ZnButton, ZnIconButton } from '@zupfnoter/design-system'
 
 const props = defineProps<{
   open: boolean

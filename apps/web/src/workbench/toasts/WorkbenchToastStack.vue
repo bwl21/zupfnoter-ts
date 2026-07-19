@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ZnIconButton, ZnProblemMarker } from '../../design-system/index'
+import { ZnIconButton, ZnProblemMarker } from '@zupfnoter/design-system'
 import type { WorkbenchToast } from './useWorkbenchToasts'
 
 defineProps<{

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnIcon from '../../../web/src/design-system/components/ZnIcon.vue'
-import { ZN_ICONS, type ZnIconName } from '../../../web/src/design-system/icons'
+import { ZnIcon, ZN_ICONS, type ZnIconName } from '@zupfnoter/design-system'
 
 const iconNames = Object.keys(ZN_ICONS) as ZnIconName[]
 const meta = {

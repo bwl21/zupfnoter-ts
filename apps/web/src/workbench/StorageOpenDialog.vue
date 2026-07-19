@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import type { StorageDocument } from '@zupfnoter/types'
-import { ZnButton, ZnIconButton } from '../design-system/index'
+import { ZnButton, ZnIconButton } from '@zupfnoter/design-system'
 import { matchesStorageDocumentQuery } from './storage/documentSearch'
 
 const props = defineProps<{ open: boolean; locationLabel: string; path: string; documents: StorageDocument[]; loading: boolean; previewUrl?: string; previewLoading: boolean; previewError: string }>()

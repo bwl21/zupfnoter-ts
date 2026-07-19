@@ -3,9 +3,7 @@ import { computed, ref, toRef } from 'vue'
 
 import type { PlaybackHighlight, SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
-import ZnZoomControl from '../../design-system/components/ZnZoomControl.vue'
-import ZnTabs from '../../design-system/components/ZnTabs.vue'
-import ZnPanel from '../../design-system/components/ZnPanel.vue'
+import { ZnPanel, ZnTabs, ZnZoomControl } from '@zupfnoter/design-system'
 import { resolveSelectionOriginByZnId } from '../selectionIndex'
 import HarpMagnifierPopover from './HarpMagnifierPopover.vue'
 import { useZoomableSvgPreview } from './useZoomableSvgPreview'

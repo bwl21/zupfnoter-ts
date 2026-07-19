@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref, watch } from 'vue'
 
-import ZnPanel from '../../design-system/components/ZnPanel.vue'
-import ZnBadge from '../../design-system/components/ZnBadge.vue'
-import ZnPanelHeader from '../../design-system/components/ZnPanelHeader.vue'
+import { ZnBadge, ZnPanel, ZnPanelHeader } from '@zupfnoter/design-system'
 import type { CommandDefinition } from '@zupfnoter/core'
 import type { ConsoleLogEntry } from '../consoleLog'
 

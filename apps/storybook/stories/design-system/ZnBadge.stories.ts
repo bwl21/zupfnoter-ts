@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnBadge from '../../../web/src/design-system/components/ZnBadge.vue'
+import { ZnBadge } from '@zupfnoter/design-system'
 
 const meta = {
   title: 'Design System/ZnBadge',

@@ -12,7 +12,7 @@ import {
   ZnSplitPane,
   ZnTabs,
   ZnToolbar,
-} from '../design-system/index'
+} from '@zupfnoter/design-system'
 import AbcEditorPanel from './panels/AbcEditorPanel.vue'
 import ConfigEditorPanel from './panels/ConfigEditorPanel.vue'
 import ConsolePanel from './panels/ConsolePanel.vue'

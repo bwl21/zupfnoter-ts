@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ZnZoomControl from '../../../web/src/design-system/components/ZnZoomControl.vue'
+import { ZnZoomControl } from '@zupfnoter/design-system'
 
 const meta = {
   title: 'Design System/ZnZoomControl',

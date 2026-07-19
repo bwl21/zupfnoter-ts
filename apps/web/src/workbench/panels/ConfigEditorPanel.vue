@@ -28,12 +28,7 @@ import {
   type ConfigEditorTreeDefinition,
 } from '@zupfnoter/core'
 
-import ZnBadge from '../../design-system/components/ZnBadge.vue'
-import ZnButton from '../../design-system/components/ZnButton.vue'
-import ZnIconButton from '../../design-system/components/ZnIconButton.vue'
-import ZnIcon from '../../design-system/components/ZnIcon.vue'
-import ZnPanel from '../../design-system/components/ZnPanel.vue'
-import ZnToolbar from '../../design-system/components/ZnToolbar.vue'
+import { ZnBadge, ZnButton, ZnIconButton, ZnIcon, ZnPanel, ZnToolbar } from '@zupfnoter/design-system'
 import { loadConfigHelpTexts, resolveConfigHelpHtml, type ConfigHelpTexts } from './configHelp'
 
 interface ConfigIntent {
