@@ -31,7 +31,8 @@ Konkret:
 pnpm --filter @zupfnoter/web build
 curl -L -o flink.tar.gz https://github.com/csweichel/flink/releases/download/v0.8/flink_darwin_arm64.tar.gz
 tar -xzf flink.tar.gz
-./flink publish ./dist --site zupfnoter-ts --server https://csweichel.dev --tenant bwl21 --password <password>
+cd apps/web
+../../flink publish dist --public
 ```
 
 Das veröffentlichte Ziel war anschließend:
@@ -89,11 +90,8 @@ veröffentlicht:
 
 ```bash
 pnpm --filter @zupfnoter/player build
-flink publish apps/player/dist \
-  --site zupfnoter-player \
-  --server https://csweichel.dev \
-  --tenant bwl21 \
-  --owner
+cd apps/player
+flink publish dist --public
 ```
 
 Die aktuelle Site ist:
@@ -101,6 +99,27 @@ Die aktuelle Site ist:
 ```text
 https://zupfnoter-player.csweichel.dev/
 ```
+
+Die Flink-Konfiguration liegt pro deploybarer App unter `.flink/site.json`:
+
+```text
+apps/web/.flink/site.json
+apps/player/.flink/site.json
+```
+
+Der Publish wird aus dem jeweiligen App-Verzeichnis ausgeführt. Dadurch kann die
+Konfiguration nicht mehr versehentlich auf das Ziel einer anderen App zeigen.
+
+Vom Repository-Root stehen dafür Kurzbefehle zur Verfügung:
+
+```bash
+pnpm deploy:flink:web
+pnpm deploy:flink:player
+```
+
+Das gemeinsame Script liest die passende App-Konfiguration und die Zugangsdaten
+aus der Root-`.env`. Das Flink-CLI wird über `FLINK_BIN`, `.flink/bin/flink` oder
+den `PATH` gefunden.
 
 ## Was Flink verbessern muss
 

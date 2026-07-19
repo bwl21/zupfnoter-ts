@@ -284,14 +284,23 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     audioContext = undefined
     harpPlayerPromise = undefined
     setLoading(false)
+    ui.setRangeEnabled(true)
+    ui.setSpeedEnabled(true)
+    ui.setPlaying(false)
     isPaused = false
     if (reset) playbackOffsetMs = 0
     updatePosition(playbackOffsetMs)
   }
 
   async function playPlayback(): Promise<void> {
-    if (selectedEvents.length === 0) return
+    if (selectedEvents.length === 0) {
+      ui.setRangeEnabled(true)
+      return
+    }
     stopPlayback(false)
+    ui.setRangeEnabled(false)
+    ui.setSpeedEnabled(false)
+    ui.setPlaying(true)
     configurePlaybackAudioSession()
     const base = selectedStartMs
     const durationMs = (selectedEvents[selectedEvents.length - 1]?.startMs ?? base) - base
@@ -301,6 +310,9 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       ?? (window as WebkitAudioWindow).webkitAudioContext
     if (AudioContextClass === undefined) {
       ui.setRangeError('Dieser Browser unterstützt keine Audiowiedergabe.')
+      ui.setRangeEnabled(true)
+      ui.setSpeedEnabled(true)
+      ui.setPlaying(false)
       return
     }
     audioContext = new AudioContextClass({ latencyHint: 'playback' })

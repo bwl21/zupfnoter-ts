@@ -9,6 +9,8 @@
     "dev": "pnpm --filter @zupfnoter/demo dev",
     "dev:web": "pnpm --filter @zupfnoter/web dev",
     "dev:player": "pnpm --filter @zupfnoter/player dev",
+    "deploy:flink:web": "pnpm --filter @zupfnoter/web build && node tools/flink-deploy.mjs web",
+    "deploy:flink:player": "pnpm --filter @zupfnoter/player build && node tools/flink-deploy.mjs player",
     "storybook": "pnpm --filter @zupfnoter/storybook storybook",
     "build-storybook": "pnpm --filter @zupfnoter/storybook build-storybook",
     "serve:web": "pnpm --filter @zupfnoter/web run servedeploy",

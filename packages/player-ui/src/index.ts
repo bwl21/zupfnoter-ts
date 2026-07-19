@@ -24,6 +24,9 @@ export interface PlayerUiOptions {
 
 export interface PlayerUiController {
   setLoading(loading: boolean): void
+  setRangeEnabled(enabled: boolean): void
+  setSpeedEnabled(enabled: boolean): void
+  setPlaying(playing: boolean): void
   setRangeError(message: string): void
   setRangePosition(position: PlaybackPosition): void
   setPosition(position: PlaybackPosition): void
@@ -119,14 +122,14 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
         </div>
         <p id="playback-time" class="playback-time">0:00</p>
         <div class="transport-buttons">
-          <button id="play-button" type="button" aria-label="Wiedergabe starten">▶</button>
-          <button id="pause-button" type="button" aria-label="Wiedergabe pausieren">Ⅱ</button>
+          <button id="play-pause-button" type="button" aria-label="Wiedergabe starten">▶</button>
           <button id="stop-button" type="button" aria-label="Wiedergabe stoppen">■</button>
         </div>
       </section>
     </section>`
 
   const form = container.querySelector<HTMLFormElement>('#range-form')
+  const rangeFieldset = container.querySelector<HTMLFieldSetElement>('.range-fieldset')
   const error = container.querySelector<HTMLParagraphElement>('#range-error')
   const loadingIndicator = container.querySelector<HTMLParagraphElement>('#loading-indicator')
   const speedRange = container.querySelector<HTMLInputElement>('#speed-range')
@@ -135,10 +138,11 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const metronomeStatus = container.querySelector<HTMLOutputElement>('#metronome-status')
   const position = container.querySelector<HTMLOutputElement>('#current-position')
   const playbackTime = container.querySelector<HTMLParagraphElement>('#playback-time')
-  const playButton = container.querySelector<HTMLButtonElement>('#play-button')
+  const playPauseButton = container.querySelector<HTMLButtonElement>('#play-pause-button')
   const resetButton = container.querySelector<HTMLButtonElement>('#reset-range')
   const takePositionButton = container.querySelector<HTMLButtonElement>('#take-position-button')
   const listeners: Array<() => void> = []
+  let playing = false
 
   const emitRange = (): void => {
     if (form === null) return
@@ -215,17 +219,37 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
     listeners.push(() => element.removeEventListener('click', callback))
   }
   bindClick(resetButton, callbacks.onReset)
-  bindClick(playButton, callbacks.onPlay)
-  bindClick(container.querySelector<HTMLButtonElement>('#pause-button'), callbacks.onPause)
+  bindClick(playPauseButton, () => {
+    if (playing) callbacks.onPause()
+    else callbacks.onPlay()
+  })
   bindClick(container.querySelector<HTMLButtonElement>('#stop-button'), callbacks.onStop)
   bindClick(takePositionButton, callbacks.onTakePosition)
 
   return {
     setLoading(loading) {
       if (loadingIndicator !== null) loadingIndicator.hidden = !loading
-      if (playButton !== null) {
-        playButton.disabled = loading
-        playButton.setAttribute('aria-busy', String(loading))
+      if (playPauseButton !== null) {
+        playPauseButton.disabled = loading
+        playPauseButton.setAttribute('aria-busy', String(loading))
+      }
+    },
+    setRangeEnabled(enabled) {
+      if (rangeFieldset !== null) rangeFieldset.disabled = !enabled
+      if (form !== null) form.classList.toggle('range-form--disabled', !enabled)
+      for (const wheel of container.querySelectorAll<HTMLElement>('[data-wheel]')) {
+        wheel.tabIndex = enabled ? 0 : -1
+        wheel.setAttribute('aria-disabled', String(!enabled))
+      }
+    },
+    setSpeedEnabled(enabled) {
+      if (speedRange !== null) speedRange.disabled = !enabled
+    },
+    setPlaying(nextPlaying) {
+      playing = nextPlaying
+      if (playPauseButton !== null) {
+        playPauseButton.textContent = nextPlaying ? 'Ⅱ' : '▶'
+        playPauseButton.setAttribute('aria-label', nextPlaying ? 'Wiedergabe pausieren' : 'Wiedergabe starten')
       }
     },
     setRangeError(message) {
