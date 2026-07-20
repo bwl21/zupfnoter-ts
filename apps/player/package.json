@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "type-check": "pnpm --filter @zupfnoter/playback build && tsc --noEmit",
+    "type-check": "pnpm --filter @zupfnoter/playback build && pnpm --filter @zupfnoter/player-ui build && tsc --noEmit",
     "test:unit": "vitest run"
   },
   "dependencies": {
     "@zupfnoter/playback": "workspace:*",
     "@zupfnoter/player-ui": "workspace:*",
+    "@zxing/browser": "^0.2.1",
     "fflate": "^0.8.2",
     "soundfont-player": "^0.12.0"
   },
@@ -20,8 +21,8 @@
     "@vue/tsconfig": "^0.8.1",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
+    "vitest": "^4.0.18",
     "vue": "^3.5.29",
-    "vue-tsc": "^3.2.5",
-    "vitest": "^4.0.18"
+    "vue-tsc": "^3.2.5"
   }
 }

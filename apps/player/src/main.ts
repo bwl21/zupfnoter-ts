@@ -6,6 +6,7 @@ import {
   type PlaybackPositionMarker,
 } from '@zupfnoter/playback'
 import { mountPlayerUi, type PlayerUiController } from '@zupfnoter/player-ui'
+import { BrowserQRCodeReader, type IScannerControls } from '@zxing/browser'
 import { deflateSync, inflateSync } from 'fflate'
 import '@zupfnoter/player-ui/style.css'
 import {
@@ -17,13 +18,16 @@ import {
 } from './playerLogic'
 
 const PLAYER_VERSION = '0.1.5'
-const AUDIO_SCHEDULE_WINDOW_MS = 2000
-const AUDIO_SCHEDULE_REFILL_MS = 500
+const AUDIO_SCHEDULE_WINDOW_MS = 750
+const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
+const AUDIO_SCHEDULE_REFILL_MS = 150
 const AUDIO_START_LEAD_MS = 200
 
 const appElement = document.querySelector<HTMLDivElement>('#app')
 if (appElement === null) throw new Error('Player root is missing')
 const app = appElement
+let destroyCurrentPlayer: () => void = () => undefined
+let closeQrScanner: (() => void) | undefined
 
 const browserPlaybackCodec: PlaybackCompressionCodec = {
   async compress(value) {
@@ -35,7 +39,86 @@ const browserPlaybackCodec: PlaybackCompressionCodec = {
 }
 
 function renderError(message: string): void {
+  destroyCurrentPlayer()
   app.innerHTML = `<section class="card error"><h1>Zupfnoter Player</h1><p>${message}</p></section>`
+}
+
+function openQrScanner(): void {
+  closeQrScanner?.()
+
+  if (!window.isSecureContext && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    renderError('Der QR-Scanner benötigt eine sichere HTTPS-Verbindung.')
+    return
+  }
+
+  const overlay = document.createElement('section')
+  overlay.className = 'qr-scanner-overlay'
+  overlay.innerHTML = `
+    <div class="qr-scanner-dialog" role="dialog" aria-modal="true" aria-labelledby="qr-scanner-title">
+      <div class="qr-scanner-header">
+        <h2 id="qr-scanner-title">Player-QR-Code scannen</h2>
+        <button class="qr-scanner-close" type="button" aria-label="Scanner schließen">×</button>
+      </div>
+      <video class="qr-scanner-video" autoplay muted playsinline></video>
+      <p class="qr-scanner-status" role="status">Kamera wird geöffnet …</p>
+    </div>`
+  app.appendChild(overlay)
+
+  const video = overlay.querySelector<HTMLVideoElement>('.qr-scanner-video')
+  const status = overlay.querySelector<HTMLParagraphElement>('.qr-scanner-status')
+  const closeButton = overlay.querySelector<HTMLButtonElement>('.qr-scanner-close')
+  if (video === null || status === null || closeButton === null) {
+    overlay.remove()
+    return
+  }
+
+  let controls: IScannerControls | undefined
+  let closed = false
+  const close = (): void => {
+    if (closed) return
+    closed = true
+    controls?.stop()
+    const stream = video.srcObject
+    if (stream instanceof MediaStream) {
+      for (const track of stream.getTracks()) track.stop()
+    }
+    video.srcObject = null
+    overlay.remove()
+    closeQrScanner = undefined
+  }
+  closeQrScanner = close
+  closeButton.addEventListener('click', close, { once: true })
+
+  const reader = new BrowserQRCodeReader()
+  void reader.decodeFromConstraints(
+    { audio: false, video: { facingMode: { ideal: 'environment' } } },
+    video,
+    (result, error) => {
+      if (closed) return
+      if (result !== undefined) {
+        close()
+        void loadPlaybackUrl(result.getText()).catch((error: unknown) => {
+          renderError(error instanceof Error ? error.message : String(error))
+        })
+        return
+      }
+      if (error !== undefined && status.textContent === 'Kamera wird geöffnet …') {
+        status.textContent = 'QR-Code vor die Kamera halten …'
+      }
+    },
+  ).then((nextControls) => {
+    if (closed) {
+      nextControls.stop()
+      return
+    }
+    controls = nextControls
+    status.textContent = 'QR-Code vor die Kamera halten …'
+  }).catch((error: unknown) => {
+    if (closed) return
+    status.textContent = error instanceof Error && error.name === 'NotAllowedError'
+      ? 'Kamerazugriff wurde nicht erlaubt.'
+      : 'Die Kamera konnte nicht geöffnet werden.'
+  })
 }
 
 function eventLabel(event: PlaybackEvent | undefined): string {
@@ -83,6 +166,7 @@ function midiToSoundfontNote(midi: number): string {
 }
 
 function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPositionMarker[], identification?: string): void {
+  destroyCurrentPlayer()
   const firstPosition = positionMarkers[0]?.position ?? eventPosition(events[0])
   const maximumMeasure = Math.max(1, ...positionMarkers.map((marker) => marker.position.measureNumber))
   const maximumPass = Math.max(1, ...positionMarkers.map((marker) => marker.position.passIndex))
@@ -127,6 +211,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       onPause: pausePlayback,
       onStop: () => { stopPlayback() },
       onTakePosition: takePosition,
+      onScan: openQrScanner,
     },
   })
   let audioContext: AudioContext | undefined
@@ -364,7 +449,17 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     let nextWindowStartMs = playbackOffsetMs
     const scheduleWindow = () => {
       if (audioContext !== playerContext || nextWindowStartMs >= durationMs) return
-      const windowEndMs = Math.min(durationMs, nextWindowStartMs + AUDIO_SCHEDULE_WINDOW_MS)
+      // Keep a rolling audio-context lookahead. Android can delay timers while
+      // rendering, so the target is based on the audio clock, not wall time.
+      const currentElapsedMs = Math.max(playbackOffsetMs, elapsed())
+      const targetEndMs = Math.min(durationMs, currentElapsedMs + AUDIO_SCHEDULE_LOOKAHEAD_MS)
+      if (nextWindowStartMs < currentElapsedMs) nextWindowStartMs = currentElapsedMs
+      if (nextWindowStartMs >= targetEndMs) {
+        const timer = window.setTimeout(scheduleWindow, AUDIO_SCHEDULE_REFILL_MS)
+        playbackTimers.push(timer)
+        return
+      }
+      const windowEndMs = Math.min(targetEndMs, nextWindowStartMs + AUDIO_SCHEDULE_WINDOW_MS)
       const windowAudioStart = audioStartAt
         + (nextWindowStartMs - playbackOffsetMs) / 1000 / speedFactor
       const windowNotes = scheduledNotes
@@ -445,19 +540,30 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     readRange(targetMarker.position)
     updatePosition(0)
   }
+
+  const destroy = (): void => {
+    stopPlayback()
+    ui.destroy()
+    if (destroyCurrentPlayer === destroy) destroyCurrentPlayer = () => undefined
+  }
+  destroyCurrentPlayer = destroy
+}
+
+async function loadPlaybackUrl(rawUrl: string): Promise<void> {
+  const pageUrl = new URL(rawUrl, window.location.href)
+  const value = pageUrl.hash.match(/^#p=(.+)$/)?.[1]
+  if (value === undefined) {
+    throw new Error('Kein Playback-Link gefunden.')
+  }
+  const identification = pageUrl.searchParams.get('id') ?? undefined
+  const decoded = await decodePlaybackFragment(value, browserPlaybackCodec)
+  history.replaceState(null, '', `${window.location.pathname}${pageUrl.search}${pageUrl.hash}`)
+  renderPlayer(decoded.events, decoded.positionMarkers, identification)
 }
 
 async function main(): Promise<void> {
-  const pageUrl = new URL(window.location.href)
-  const value = pageUrl.hash.match(/^#p=(.+)$/)?.[1]
-  const identification = pageUrl.searchParams.get('id') ?? undefined
-  if (value === undefined) {
-    renderError('Kein Playback-Link gefunden.')
-    return
-  }
   try {
-    const decoded = await decodePlaybackFragment(value, browserPlaybackCodec)
-    renderPlayer(decoded.events, decoded.positionMarkers, identification)
+    await loadPlaybackUrl(window.location.href)
   } catch (error) {
     renderError(error instanceof Error ? error.message : String(error))
   }

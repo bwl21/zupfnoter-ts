@@ -1,6 +1,7 @@
 import type { PlaybackMeter, PlaybackPosition } from '@zupfnoter/playback'
 
 export interface PlayerUiCallbacks {
+  onScan: () => void
   onRangeChange: (position: PlaybackPosition) => void
   onReset: () => void
   onSpeedChange: (speed: number) => void
@@ -45,6 +46,10 @@ function escapeHtml(value: string): string {
   })[character] ?? character)
 }
 
+function formatPosition(position: PlaybackPosition): string {
+  return `${position.measureNumber} [${position.passIndex}]`
+}
+
 function wheelField(name: string, label: string, value: number, maximum: number): string {
   if (maximum <= 1) return `<input type="hidden" name="${name}" value="1" />`
   const options = Array.from({ length: maximum }, (_value, index) => {
@@ -77,8 +82,9 @@ function renderBeatStatus(status: HTMLOutputElement, meter: PlaybackMeter | unde
     groupingOffset += group
   }
   const beatDots = Array.from({ length: meter.numerator }, (_value, index) => {
-    const activeClass = enabled && index + 1 === beat ? ' metronome-beat--active' : ''
-    const accentClass = index === 0 || groupingStarts.has(index) ? ' metronome-beat--accent' : ''
+    const active = enabled && index + 1 === beat
+    const activeClass = active ? ' metronome-beat--active' : ''
+    const accentClass = active && (index === 0 || groupingStarts.has(index)) ? ' metronome-beat--accent' : ''
     return `<span class="metronome-beat${accentClass}${activeClass}" aria-hidden="true"></span>`
   }).join('')
   status.innerHTML = `<span class="metronome-beats" aria-hidden="true">${beatDots}</span><span class="metronome-count">${beat}</span><span>${meter.numerator}/${meter.denominator}</span>`
@@ -86,10 +92,16 @@ function renderBeatStatus(status: HTMLOutputElement, meter: PlaybackMeter | unde
 
 export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const { container, callbacks } = options
-  const first = `${options.firstPosition.measureNumber}.${options.firstPosition.passIndex}`
+  const first = formatPosition(options.firstPosition)
   container.innerHTML = `
     <section class="card">
-      <h1>Zupfnoter Player</h1>
+      <div class="player-title-row">
+        <h1>Zupfnoter Übung</h1>
+        <button id="scan-button" class="scan-button" type="button" aria-label="Player-QR-Code scannen">
+          <svg class="scan-button__icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4h6v2H6v4H4V4Zm10 0h6v6h-2V6h-4V4ZM4 14h2v4h4v2H4v-6Zm14 0h2v6h-6v-2h4v-4ZM8 8h3v3H8V8Zm5 0h3v3h-3V8Zm-5 5h3v3H8v-3Zm5 0h3v3h-3v-3Z"/></svg>
+          <span>Scan</span>
+        </button>
+      </div>
       <p class="player-version">Player v${escapeHtml(options.playerVersion)}</p>
       ${options.identification === undefined ? '' : `<p class="identification" aria-label="Stücknummer">${escapeHtml(options.identification)}</p>`}
       <form id="range-form" class="range-form">
@@ -141,6 +153,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const playPauseButton = container.querySelector<HTMLButtonElement>('#play-pause-button')
   const resetButton = container.querySelector<HTMLButtonElement>('#reset-range')
   const takePositionButton = container.querySelector<HTMLButtonElement>('#take-position-button')
+  const scanButton = container.querySelector<HTMLButtonElement>('#scan-button')
   const listeners: Array<() => void> = []
   let playing = false
 
@@ -225,6 +238,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   })
   bindClick(container.querySelector<HTMLButtonElement>('#stop-button'), callbacks.onStop)
   bindClick(takePositionButton, callbacks.onTakePosition)
+  bindClick(scanButton, callbacks.onScan)
 
   return {
     setLoading(loading) {
@@ -261,7 +275,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       setWheelValue(form, 'from-pass', nextPosition.passIndex)
     },
     setPosition(nextPosition) {
-      if (position !== null) position.value = `${nextPosition.measureNumber}.${nextPosition.passIndex}`
+      if (position !== null) position.value = formatPosition(nextPosition)
     },
     setPlaybackTime(elapsedMs) {
       if (playbackTime === null) return
