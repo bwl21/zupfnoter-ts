@@ -366,3 +366,9 @@ export interface ZupfnoterConfig {
   /** Preset-Schnelleinstellungen für den Konfigurations-Editor (addconf). */
   presets?: Record<string, Record<string, unknown>>
 }
+
+/**
+ * Im Dokument separat gespeicherte Binärressourcen, insbesondere Bilder.
+ * Die Arrays enthalten die in 60-Zeichen-Stücke aufgeteilte Data-URI.
+ */
+export type SongResources = Record<string, readonly string[]>

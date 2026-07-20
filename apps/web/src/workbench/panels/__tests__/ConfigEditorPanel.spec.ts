@@ -498,6 +498,67 @@ describe('ConfigEditorPanel', () => {
     ])
   })
 
+  it('enables deletion for a dynamically added notes subtree', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"notes":{"0":{"text":"Übung"}}}}}',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'notes',
+      },
+    })
+
+    const entryRow = wrapper.findAll('.config-row').find((row) => row.text().includes('0'))
+    console.log('DEBUG_ENTRY', entryRow?.html())
+    expect(entryRow).toBeDefined()
+    if (entryRow === undefined) return
+
+    const deleteButton = entryRow.findAll('button').find((button) => button.attributes('aria-label')?.includes('Pfad oder Teilbaum'))
+    expect(deleteButton).toBeDefined()
+    expect(deleteButton?.attributes('disabled')).toBeUndefined()
+    if (deleteButton === undefined) return
+
+    await deleteButton.trigger('click')
+    expect(wrapper.emitted('intent')).toContainEqual([
+      {
+        action: 'config.deletePath',
+        path: 'extract.0.notes.0',
+        extractId: 0,
+      },
+    ])
+  })
+
+  it('enables deletion for a dynamically added lyrics subtree', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"lyrics":{"0":{"verses":[1]}}}}}',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'lyrics',
+      },
+    })
+
+    const entryRow = wrapper.findAll('.config-row').find((row) => row.text().includes('0'))
+    expect(entryRow).toBeDefined()
+    if (entryRow === undefined) return
+    const deleteButton = entryRow.findAll('button').find((button) => button.attributes('aria-label')?.includes('Pfad oder Teilbaum'))
+    expect(deleteButton?.attributes('disabled')).toBeUndefined()
+  })
+
   it('emits config undo and redo intents from the toolbar', async () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {
@@ -883,6 +944,20 @@ describe('ConfigEditorPanel', () => {
         extractId: 0,
       },
     ])
+  })
+
+  it('offers the player QR image as an images quick setting', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'images',
+      },
+    })
+
+    const menu = wrapper.find('.config-panel__quicksettings')
+    expect(menu.exists()).toBe(true)
+    expect(menu.findAll('button').map((button) => button.text())).toContain('Übungs-QR-Code')
   })
 
   it('disables quick settings when the active section has none', () => {

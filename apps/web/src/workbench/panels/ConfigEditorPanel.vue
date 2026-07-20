@@ -27,6 +27,7 @@ import {
   type ConfigEditorMenuCommand,
   type ConfigEditorTreeDefinition,
 } from '@zupfnoter/core'
+import type { SongResources } from '@zupfnoter/types'
 
 import { ZnBadge, ZnButton, ZnIconButton, ZnIcon, ZnPanel, ZnToolbar } from '@zupfnoter/design-system'
 import { loadConfigHelpTexts, resolveConfigHelpHtml, type ConfigHelpTexts } from './configHelp'
@@ -84,6 +85,7 @@ interface QuickSettingMenuItem {
 
 const props = withDefaults(defineProps<{
   abcText: string
+  resources?: SongResources
   currentExtract: number
   activeSection: string
   canUndo?: boolean
@@ -148,7 +150,7 @@ const fallbackSectionVisiblePaths: Record<string, string[]> = {
 const parsedSongConfig = computed(() => {
   try {
     return {
-      config: extractSongConfig(props.abcText),
+      config: { ...extractSongConfig(props.abcText), $resources: props.resources ?? {} } as ReturnType<typeof extractSongConfig>,
       parseError: '',
     }
   } catch (error) {

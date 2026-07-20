@@ -180,10 +180,11 @@ export class PdfEngine {
   }
 
   private drawImage(element: Image): void {
-    const format = element.url.startsWith('data:image/jpeg') ? 'jpeg'
-      : element.url.startsWith('data:image/png') ? 'png'
+    const mimeHeader = element.url.slice(0, element.url.indexOf(',')).trim().toLowerCase()
+    const format = /^data:image\/(?:jpeg|jpg)(?:;|$)/.test(mimeHeader) ? 'jpeg'
+      : /^data:image\/png(?:;|$)/.test(mimeHeader) ? 'png'
         : undefined
-    if (format === undefined) throw new Error('PdfEngine: unsupported image format')
+    if (format === undefined) throw new Error(`PdfEngine: unsupported image format (${mimeHeader || 'unknown'})`)
     this.document().addImage(
       element.url,
       format,

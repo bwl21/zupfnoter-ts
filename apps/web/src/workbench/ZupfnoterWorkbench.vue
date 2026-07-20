@@ -33,11 +33,14 @@ import {
 import {
   extractSongConfig,
   extractSongFilebase,
+  extractSongResources,
   pdfOutputFilename,
   PLAYER_QR_IMAGE_NAME,
   replaceSongDocumentAbc,
+  replaceSongDocumentResources,
   splitSongDocument,
 } from '@zupfnoter/core'
+import type { SongResources } from '@zupfnoter/types'
 import { createPlayerQrJpeg } from './playbackLink'
 import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
@@ -128,6 +131,7 @@ const harpZoom = ref(100)
 const harpScrollLeft = ref(0)
 const harpScrollTop = ref(0)
 const documentText = ref(DEFAULT_ABC)
+const documentResources = computed<SongResources>(() => extractSongResources(documentText.value))
 const savedDocumentText = ref(documentText.value)
 const documentDirty = computed(() => documentText.value !== savedDocumentText.value)
 const abcText = computed({
@@ -686,12 +690,14 @@ function renderNow(): void {
         abcText: documentText.value,
         extractNr: currentExtract.value,
         playerQrJpegUrl: playerQrJpegUrl.value,
+        resources: documentResources.value,
       })
       return
     }
     logger.info(`worker: render extract ${currentExtract.value}`)
     const result = renderWorkbenchPreviews(documentText.value, currentExtract.value, {
       playerQrJpegUrl: playerQrJpegUrl.value,
+      resources: documentResources.value,
     })
     applyRenderResult(result)
     logger.info('worker: render complete in 0.000 sec')
@@ -1425,6 +1431,12 @@ registerStorageCommands(commandStack, storageState, {
         const message = error instanceof Error ? error.message : String(error)
         failedNames.push(plan.name)
         logger.error(`save ${plan.name}: ${message}`)
+        pushToast({
+          severity: 'danger',
+          title: 'Speichern fehlgeschlagen',
+          message: `${plan.name}\nSpeicherziel: ${activeStorageConnection.value?.label ?? storageState.system}\n${message}`,
+          persistent: true,
+        })
         saveArtifactsProgress.value = saveArtifactsProgress.value.map((artifact, artifactIndex) => artifactIndex === index
           ? { ...artifact, status: 'failed', error: message }
           : artifact)
@@ -1454,6 +1466,15 @@ registerStorageCommands(commandStack, storageState, {
   registerLegacyCommands(commandStack, {
     getAbcText: () => documentText.value,
     setAbcText: setAbcFromCommand,
+    setResource: (key, value) => {
+      const parts = Array.from({ length: Math.ceil(value.length / 60) }, (_entry, index) => value.slice(index * 60, (index + 1) * 60))
+      documentText.value = replaceSongDocumentResources(documentText.value, { ...documentResources.value, [key]: parts })
+    },
+    deleteResource: (key) => {
+      const resources = { ...documentResources.value }
+      delete resources[key]
+      documentText.value = replaceSongDocumentResources(documentText.value, resources)
+    },
     getSound: () => playbackInstrument.value,
     readDocument: () => documentText.value,
     writeDocument: (value) => {
@@ -1969,6 +1990,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                 <ConfigEditorPanel
                   v-else-if="activeId === 'config'"
                   :abc-text="documentText"
+                  :resources="documentResources"
                   :current-extract="currentExtract"
                   :extract-options="extractMenuItems"
                   :active-section="activeConfigSection"

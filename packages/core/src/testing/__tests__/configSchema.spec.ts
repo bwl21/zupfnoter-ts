@@ -331,11 +331,13 @@ describe('configSchema', () => {
     const layoutPresets = presets.layout as Record<string, unknown>
     const notesPresets = presets.notes as Record<string, unknown>
     const printerPresets = presets.printer as Record<string, unknown>
+    const imagePresets = presets.images as Record<string, unknown>
 
     expect(Object.keys(presets)).toEqual([
       'barnumbers_countnotes',
       'stdextract',
       'layout',
+      'images',
       'instrument',
       'notes',
       'printer',
@@ -347,5 +349,6 @@ describe('configSchema', () => {
     expect(notesPresets).toHaveProperty('T01_number')
     expect(notesPresets).toHaveProperty('T06_legend')
     expect(printerPresets).toHaveProperty('printer_centric')
+    expect(imagePresets).toHaveProperty('player_qr')
   })
 })

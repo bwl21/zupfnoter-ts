@@ -21,9 +21,11 @@ import {
   createPlayerQrJpeg,
   extractSongConfig,
   extractSongFilebase,
+  extractSongResources,
   initConf,
   mergeSongConfig,
   pdfOutputFilename,
+  replaceSongDocumentResources,
 } from '@zupfnoter/core'
 import { exportPlaybackLink, type PlaybackCompressionCodec, type PlaybackEvent } from '@zupfnoter/playback'
 
@@ -72,6 +74,17 @@ const state: CliState = {
   localStore: new Map(),
 }
 
+function setCliResource(key: string, value: string): void {
+  const parts = Array.from({ length: Math.ceil(value.length / 60) }, (_entry, index) => value.slice(index * 60, (index + 1) * 60))
+  state.abcText = replaceSongDocumentResources(state.abcText, { ...extractSongResources(state.abcText), [key]: parts })
+}
+
+function deleteCliResource(key: string): void {
+  const resources = { ...extractSongResources(state.abcText) }
+  delete resources[key]
+  state.abcText = replaceSongDocumentResources(state.abcText, resources)
+}
+
 function log(message: string): void {
   output.write(`${message}\n`)
 }
@@ -92,6 +105,8 @@ const runtime: WorkbenchCommandRuntime = {
     state.abcText = value
   },
   readDocument: () => state.abcText,
+  setResource: setCliResource,
+  deleteResource: deleteCliResource,
   writeDocument: (content) => {
     state.abcText = content
   },
@@ -300,6 +315,7 @@ async function renderBatchFile(
   const abcText = await readFile(inputFile, 'utf8')
   const conf = new Confstack()
   const config = mergeSongConfig(initConf(conf), extractSongConfig(abcText))
+  const resources = extractSongResources(abcText)
   const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
   const filebase = extractSongFilebase(abcText) ?? basename(inputFile, extname(inputFile))
   const formats: Array<'A3' | 'A4'> = format === 'A3-A4' ? ['A3', 'A4'] : [format]
@@ -329,9 +345,10 @@ async function renderBatchFile(
     }
 
     for (const pageFormat of formats) {
-      const imageResolver = playerLink === undefined
-        ? undefined
-        : () => dataUrlFromJpeg(createPlayerQrJpeg(playerLink))
+      const imageResolver = (imageName: string): string | undefined => {
+        if (imageName === PLAYER_QR_IMAGE_NAME && playerLink !== undefined) return dataUrlFromJpeg(createPlayerQrJpeg(playerLink))
+        return resources[imageName]?.join('')
+      }
       sheet = new HarpnotesLayout(config, { imageResolver }).layout(song, extractNr, pageFormat)
       const svgName = `${filebase}_${filenamePart}_${pageFormat.toLowerCase()}.svg`
       await writeFile(join(targetFolder, svgName), new SvgEngine().draw(sheet), 'utf8')

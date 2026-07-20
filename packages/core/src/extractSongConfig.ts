@@ -19,11 +19,12 @@
  * ```
  */
 
-import type { ZupfnoterConfig } from '@zupfnoter/types'
+import type { SongResources, ZupfnoterConfig } from '@zupfnoter/types'
 import { validateEmbeddedZupfnoterConfigShape } from './configSchema.js'
 
 /** Separator zwischen ABC-Text und Zupfnoter-Konfigurationsblöcken */
 export const CONFIG_SEPARATOR = '%%%%zupfnoter'
+export const RESOURCES_SECTION = '.resources'
 
 /** Separierte Bestandteile eines gespeicherten Zupfnoter-Dokuments. */
 export interface SongDocumentParts {
@@ -109,6 +110,39 @@ export function extractSongConfig(abcText: string): Partial<ZupfnoterConfig> {
       `extractSongConfig: invalid JSON in %%%%zupfnoter.config block: ${err instanceof Error ? err.message : String(err)}`
     )
   }
+}
+
+/** Liest die separat gespeicherten Ressourcen eines Zupfnoter-Dokuments. */
+export function extractSongResources(documentText: string): SongResources {
+  const resourcePart = documentText.split(CONFIG_SEPARATOR).find((part) => part.startsWith(RESOURCES_SECTION))
+  if (resourcePart === undefined) return {}
+  const json = resourcePart.slice(RESOURCES_SECTION.length).trim()
+  if (json === '') return {}
+  try {
+    const parsed = JSON.parse(json) as unknown
+    if (!isPlainObject(parsed)) throw new Error('zupfnoter resources block must contain a JSON object')
+    const resources: SongResources = {}
+    for (const [key, value] of Object.entries(parsed)) {
+      if (Array.isArray(value) && value.every((part): part is string => typeof part === 'string')) {
+        resources[key] = value
+      } else if (typeof value === 'string') {
+        resources[key] = [value]
+      } else {
+        throw new Error(`resource ${key} must contain string data`)
+      }
+    }
+    return resources
+  } catch (error) {
+    throw new Error(`extractSongResources: invalid JSON in %%%%zupfnoter.resources block: ${error instanceof Error ? error.message : String(error)}`)
+  }
+}
+
+/** Fügt den Ressourcenabschnitt hinzu oder ersetzt ihn, ohne den JSON-Block zu verändern. */
+export function replaceSongDocumentResources(documentText: string, resources: SongResources): string {
+  const parts = documentText.split(CONFIG_SEPARATOR).filter((part) => !part.startsWith(RESOURCES_SECTION))
+  const base = parts.join(CONFIG_SEPARATOR).trimEnd()
+  if (Object.keys(resources).length === 0) return `${base}\n`
+  return `${base}\n\n${CONFIG_SEPARATOR}${RESOURCES_SECTION}\n\n${JSON.stringify(resources, null, 2)}\n`
 }
 
 /**

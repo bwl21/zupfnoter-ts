@@ -98,6 +98,45 @@ describe('legacy command registration', () => {
     expect(log).toContain('render')
   })
 
+  it('inserts the player QR image through the images quick setting', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('applyquicksetting images.player_qr')
+
+    const config = readRuntimeConfig(runtime)
+    const extract = (config.extract as Record<string, unknown>)['0'] as Record<string, unknown>
+    const images = extract.images as Record<string, Record<string, unknown>>
+    expect(images.player_qr).toEqual({
+      imagename: '$player_qr',
+      show: true,
+      pos: [10, 10],
+      height: 100,
+    })
+    expect(log).toContain('render')
+  })
+
+  it('preserves image resources when changing the configuration', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    runtime.setAbcText([
+      runtime.getAbcText().trimEnd(),
+      '%%%%zupfnoter.resources',
+      '{"00_logo_jpg":["data:image/jpeg;base64,abc"]}',
+      '',
+    ].join('\n'))
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('applyquicksetting images.player_qr')
+
+    expect(runtime.getAbcText()).toContain('%%%%zupfnoter.resources')
+    expect(runtime.getAbcText()).toContain('00_logo_jpg')
+    expect(runtime.getAbcText()).toContain('$player_qr')
+  })
+
   it('selects and lists saved storage connections', async () => {
     const log: string[] = []
     const stack = new CommandStack({ log: (message) => log.push(message) })

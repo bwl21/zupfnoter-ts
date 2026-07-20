@@ -452,8 +452,9 @@ function buildSectionChildren(
 
 function resolveSectionAncestor(formId: string, sectionPaths: readonly string[]): string {
   if (formId === 'lyrics') {
-    const collectionRoot = 'extract.current.lyrics'
-    if (sectionPaths.some((path) => path.startsWith(`${collectionRoot}.`))) {
+    const collectionRoots = ['extract.current.lyrics', 'extract.0.lyrics']
+    const collectionRoot = collectionRoots.find((root) => sectionPaths.some((path) => path.startsWith(`${root}.`)))
+    if (collectionRoot !== undefined) {
       return collectionRoot
     }
   }
@@ -477,9 +478,9 @@ function expandConfigEditorKeyToTreePaths(
       break
     }
     case 'lyrics':
-      return expandLegacyExtractZeroWildcardPaths(key, currentConfig, extractId, 'lyrics')
+      return expandLegacyExtractZeroWildcardPaths(key, currentConfig, 'lyrics')
     case 'images':
-      return expandImagePaths(key, currentConfig, extractId)
+      return expandImagePaths(key, currentConfig)
     case 'notes': {
       const notesPaths = expandNotesCollectionPaths(key, currentConfig, extractId)
       if (notesPaths !== undefined) return notesPaths
@@ -568,7 +569,6 @@ function expandExtractAnnotationPaths(
 function expandLegacyExtractZeroWildcardPaths(
   key: string,
   currentConfig: Record<string, CommandArgumentValue>,
-  extractId: number,
   collectionName: 'lyrics',
 ): string[] {
   const wildcardToken = `extract.{extract}.${collectionName}.*.`
@@ -580,13 +580,15 @@ function expandLegacyExtractZeroWildcardPaths(
 
   return Object.keys(wildcardParent)
     .sort(compareConfigKeys)
-    .map((entryKey) => `extract.current.${collectionName}.${entryKey}.${suffix}`)
+    // Lyrics are, like images, configured once in extract 0 and shared by
+    // the extract views. Keep the editor bound to the source path so values
+    // remain visible when another extract is active.
+    .map((entryKey) => `extract.0.${collectionName}.${entryKey}.${suffix}`)
 }
 
 function expandImagePaths(
   key: string,
   currentConfig: Record<string, CommandArgumentValue>,
-  extractId: number,
 ): string[] {
   if (key === '$resources.*') {
     const resources = getPathValue(currentConfig, '$resources')
@@ -603,7 +605,10 @@ function expandImagePaths(
 
   return Object.keys(wildcardParent)
     .sort(compareConfigKeys)
-    .map((entryKey) => `extract.${extractId}.images.${entryKey}.${suffix}`)
+    // Image entries are created in extract 0 and are shared by the
+    // workbench's extract views. Keep the editor bound to that source path;
+    // otherwise the fields appear empty as soon as another extract is active.
+    .map((entryKey) => `extract.0.images.${entryKey}.${suffix}`)
 }
 
 function expandNotesCollectionPaths(
@@ -809,7 +814,10 @@ function insertSectionPath(
     if (index < parts.length - 1) {
       definition.children ??= []
       currentDefinitions = definition.children
-      definition.configPath = undefined
+      // Keep the concrete path on dynamic branches (for example
+      // `notes.0`). The section wrapper itself is synthetic, but the
+      // generated entry branch must remain deletable as a subtree.
+      if (currentPath.startsWith('section:')) definition.configPath = undefined
     }
   }
 }
@@ -841,6 +849,12 @@ function normalizeTreeDefinitionPath(path: string): string {
 function buildFullConfigPath(fullPath: string, relativePath: string): string {
   const fullParts = fullPath.split('.')
   const relativeParts = relativePath.split('.')
+  const startIndex = fullParts.findIndex((_, index) => relativeParts.every(
+    (part, offset) => fullParts[index + offset] === part,
+  ))
+  if (startIndex >= 0) {
+    return fullParts.slice(0, startIndex + relativeParts.length).join('.')
+  }
   return fullParts.slice(0, fullParts.length - relativeParts.length).concat(relativeParts).join('.')
 }
 

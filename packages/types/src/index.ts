@@ -101,6 +101,7 @@ export type {
   ExtractConfig,
   ZupfnoterConfig,
 } from './config.js'
+export type { SongResources } from './config.js'
 
 export type {
   StorageConnectionStatus,

@@ -6,19 +6,19 @@ import {
   PdfEngine,
   SvgEngine,
   createDefaultAnnotationTextMetrics,
-  buildPlaybackExportData,
   extractSongConfig,
+  extractSongResources,
   initConf,
   mergeSongConfig,
   PLAYER_QR_IMAGE_NAME,
 } from '@zupfnoter/core'
 import type { AbcParseError } from '@zupfnoter/core'
-import type { SheetObjectIndex, SongDiagnostic } from '@zupfnoter/types'
+import type { SheetObjectIndex, SongDiagnostic, SongResources } from '@zupfnoter/types'
 import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/public/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, type PlaybackStep } from '../playback'
-import { createPlaybackLinkFromExportData, createPlayerQrJpeg } from '../playbackLink'
+import { createPlaybackLinkFromTimeline, createPlayerQrJpeg } from '../playbackLink'
 import { isUserVisibleVoice, resolveActiveVoiceIdsFromSheet, resolveUserVisibleVoiceIds } from '../songVoiceIdentity'
 import {
   parserErrorToWorkbenchDiagnostic,
@@ -54,10 +54,17 @@ export interface WorkbenchRenderResult {
 }
 
 export interface WorkbenchRenderOptions {
+  /** Separat vom Konfigurations-JSON gespeicherte Bildressourcen. */
+  resources?: SongResources
   /** Temporär erzeugtes JPG für das reservierte Player-QR-Bild. */
   playerQrJpegUrl?: string
   /** Basis-URL des Players; wird beim PDF-Export pro Auszug aufgelöst. */
   playerUrl?: string
+}
+
+function resolveResourceUrl(resources: SongResources | undefined, imageName: string): string | undefined {
+  const parts = resources?.[imageName]
+  return parts === undefined ? undefined : parts.join('')
 }
 
 /** Ein PDF-Ausgabeziel gemäß der effektiven Stückkonfiguration. */
@@ -76,19 +83,26 @@ export async function renderPdfExport(
   options: WorkbenchRenderOptions = {},
 ): Promise<Blob> {
   const config = buildConfig(abcText)
+  const resources = options.resources ?? extractSongResources(abcText)
   const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
   let sheet = new HarpnotesLayout(config, {
     annotationTextMetrics: createDefaultAnnotationTextMetrics(),
-    imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME ? options.playerQrJpegUrl : undefined,
+    imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME
+      ? options.playerQrJpegUrl
+      : resolveResourceUrl(resources, imageName),
   }).layout(song, extractNr, pageFormat)
   let playerQrJpegUrl = options.playerQrJpegUrl
   if (playerQrJpegUrl === undefined && options.playerUrl !== undefined && abcText.includes(PLAYER_QR_IMAGE_NAME)) {
-    const exportData = buildPlaybackExportData(song, sheet.activeVoices)
-    const playbackLink = await createPlaybackLinkFromExportData(exportData, options.playerUrl)
+    // Use the same web timeline as the Share/Playback-Link command. A second
+    // export calculation can differ for ties, repeats and extract voice sets.
+    const playbackTimeline = buildPlaybackTimeline(song, sheet.activeVoices)
+    const playbackLink = await createPlaybackLinkFromTimeline(playbackTimeline, options.playerUrl)
     playerQrJpegUrl = await createPlayerQrJpeg(playbackLink.url)
     sheet = new HarpnotesLayout(config, {
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
-      imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME ? playerQrJpegUrl : undefined,
+      imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME
+        ? playerQrJpegUrl
+        : resolveResourceUrl(resources, imageName),
     }).layout(song, extractNr, pageFormat)
   }
   const engine = new PdfEngine()
@@ -178,6 +192,7 @@ export function renderWorkbenchPreviews(
   options: WorkbenchRenderOptions = {},
 ): WorkbenchRenderResult {
   const config = buildConfig(abcText)
+  const resources = options.resources ?? extractSongResources(abcText)
   const keyHeaderDiagnostic = findInitialKeyHeaderDiagnostic(abcText)
   const scoreParser = new AbcParser()
   let scoreSvg = ''
@@ -203,7 +218,9 @@ export function renderWorkbenchPreviews(
     allVoiceIds = resolveUserVisibleVoiceIds(transformedSong)
     const layoutOptions: ConstructorParameters<typeof HarpnotesLayout>[1] = {
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
-      imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME ? options.playerQrJpegUrl : undefined,
+      imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME
+        ? options.playerQrJpegUrl
+        : resolveResourceUrl(resources, imageName),
     }
     const sheet = new HarpnotesLayout(config, layoutOptions).layout(transformedSong, extractNr, 'A3')
     activeVoiceIds = resolveActiveVoiceIdsFromSheet(sheet)

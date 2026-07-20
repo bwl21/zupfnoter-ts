@@ -454,6 +454,16 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
         jumpline_open: { jumpline_vcut: 3 },
         jumpline_close: { jumpline_vcut: 0 },
       },
+      images: {
+        player_qr: {
+          player_qr: {
+            imagename: '$player_qr',
+            show: true,
+            pos: [10, 10],
+            height: 100,
+          },
+        },
+      },
       instrument: {
         '37-strings-g-g': {
           layout: {

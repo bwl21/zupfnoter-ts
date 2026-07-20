@@ -11,6 +11,8 @@ import { initConf } from './initConf.js'
 export interface WorkbenchCommandRuntime {
   getAbcText(): string
   setAbcText(value: string): void
+  setResource?(key: string, value: string): void
+  deleteResource?(key: string): void
   readDocument(): string
   writeDocument(value: string): void
   getCurrentExtract(): number
@@ -295,7 +297,9 @@ function registerCreateAndConfigCommands(
     ],
     perform: (args) => {
       const key = sanitizeResourceKey(readString(args, 'key'))
-      patchConfig(runtime, state, `$resources.${key}`, readString(args, 'value'), `pasteDatauri ${key}`)
+      if (runtime.setResource === undefined) throw new CommandError('Resources are not supported in this command context')
+      runtime.setResource(key, readString(args, 'value'))
+      runtime.render()
     },
   })
 
@@ -493,6 +497,12 @@ function registerCreateAndConfigCommands(
       if (value === undefined) {
         throw new CommandError('Argument <value> is required')
       }
+      if (key.startsWith('$resources.')) {
+        if (runtime.setResource === undefined) throw new CommandError('Resources are not supported in this command context')
+        runtime.setResource(key.slice('$resources.'.length), readString(args, 'value'))
+        runtime.render()
+        return
+      }
       patchConfig(runtime, state, key, value, `cconf ${key}`)
       runtime.render()
     },
@@ -505,6 +515,12 @@ function registerCreateAndConfigCommands(
     parameters: [{ name: 'key', type: 'string', help: 'configuration key' }],
     perform: (args) => {
       const key = readString(args, 'key')
+      if (key.startsWith('$resources.')) {
+        if (runtime.deleteResource === undefined) throw new CommandError('Resources are not supported in this command context')
+        runtime.deleteResource(key.slice('$resources.'.length))
+        runtime.render()
+        return
+      }
       deleteConfig(runtime, state, key, `delconfig ${key}`)
       runtime.render()
     },
@@ -764,6 +780,8 @@ function applyQuickSetting(
       ? `extract.${extract}.layout`
       : domain === 'barnumbers_countnotes'
         ? `extract.${extract}`
+        : domain === 'images'
+          ? `extract.${extract}.images`
         : domain === 'printer' || domain === 'instrument'
           ? `extract.${extract}`
           : undefined
@@ -772,7 +790,7 @@ function applyQuickSetting(
   }
 
   const current = readConfig(runtime.getAbcText())
-  const nextValue = domain === 'notes'
+  const nextValue = domain === 'notes' || domain === 'images'
     ? mergeCommandValues(getConfigPath(current, target), presetValue)
     : presetValue
   patchConfig(runtime, state, target, nextValue, `applyquicksetting ${presetId}`)
@@ -804,14 +822,28 @@ function readConfigText(abcText: string): string | undefined {
   const marker = '%%%%zupfnoter.config'
   const markerIndex = abcText.indexOf(marker)
   if (markerIndex < 0) return undefined
-  return abcText.slice(markerIndex + marker.length).trim()
+  const section = abcText.slice(markerIndex + marker.length)
+  const nextSection = section.indexOf('%%%%zupfnoter')
+  return (nextSection < 0 ? section : section.slice(0, nextSection)).trim()
 }
 
 function writeConfig(abcText: string, config: Record<string, CommandArgumentValue>): string {
   const marker = '%%%%zupfnoter.config'
   const markerIndex = abcText.indexOf(marker)
-  const musicText = markerIndex < 0 ? abcText.trimEnd() : abcText.slice(0, markerIndex).trimEnd()
-  return `${musicText}\n\n${marker}\n\n${JSON.stringify(config, null, 2)}\n`
+  if (markerIndex < 0) {
+    return `${abcText.trimEnd()}\n\n${marker}\n\n${JSON.stringify(config, null, 2)}\n`
+  }
+
+  const section = abcText.slice(markerIndex + marker.length)
+  const nextSectionIndex = section.indexOf('%%%%zupfnoter')
+  const followingSections = nextSectionIndex < 0
+    ? ''
+    : section.slice(nextSectionIndex).trim()
+  const musicText = abcText.slice(0, markerIndex).trimEnd()
+  const configBlock = `${marker}\n\n${JSON.stringify(config, null, 2)}`
+  return followingSections === ''
+    ? `${musicText}\n\n${configBlock}\n`
+    : `${musicText}\n\n${configBlock}\n\n${followingSections}\n`
 }
 
 function patchConfig(

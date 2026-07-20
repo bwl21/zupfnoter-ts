@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { extractSongConfig, extractSongFilebase, replaceSongDocumentAbc, splitSongDocument } from '../../extractSongConfig.js'
+import { extractSongConfig, extractSongFilebase, extractSongResources, replaceSongDocumentAbc, replaceSongDocumentResources, splitSongDocument } from '../../extractSongConfig.js'
 import {
   fixtureConfigFromAbc,
   fixtureAbcPath,
@@ -91,6 +91,23 @@ describe('fixtureLoader', () => {
         '{"extract":{"0":{"printer":{"showBorder":false}}}}',
       ].join('\n'),
     )).not.toThrow()
+  })
+
+  it('stores image resources in a separate document section', () => {
+    const documentText = [
+      'X:1',
+      'K:C',
+      'C',
+      '%%%%zupfnoter.config',
+      '{"extract":{"0":{"voices":[1]}}}',
+    ].join('\n')
+    const resources = { 'cover.jpg': ['data:image/jpeg;base64,', 'abc'] as const }
+    const withResources = replaceSongDocumentResources(documentText, resources)
+
+    expect(extractSongConfig(withResources)).toEqual({ extract: { '0': { voices: [1] } } })
+    expect(extractSongResources(withResources)).toEqual(resources)
+    expect(withResources).toContain('%%%%zupfnoter.resources')
+    expect(withResources).not.toContain('"$resources"')
   })
 
   it('loads input, effective config, and stage references as one fixture set', () => {

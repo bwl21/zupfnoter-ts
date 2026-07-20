@@ -105,4 +105,17 @@ describe('PdfEngine', () => {
 
     expect((text.match(/\nB\n/g) ?? [])).toHaveLength(1)
   })
+
+  it('accepts JPEG data URLs with standard MIME parameters', () => {
+    expect(() => new PdfEngine().draw({
+      ...sheet,
+      children: [{
+        type: 'Image',
+        url: 'data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD',
+        position: [10, 10],
+        height: 20,
+        visible: true,
+      }],
+    })).not.toThrow(/unsupported image format/)
+  })
 })

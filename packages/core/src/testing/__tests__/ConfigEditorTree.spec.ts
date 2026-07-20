@@ -112,9 +112,9 @@ describe('buildConfigEditorSectionTree', () => {
     expect(tree).toBeDefined()
 
     const configPaths = flattenConfigPaths(tree ?? [])
-    expect(configPaths).toContain('extract.current.lyrics.0.verses')
-    expect(configPaths).toContain('extract.current.lyrics.0.pos')
-    expect(configPaths).toContain('extract.current.lyrics.0.style')
+    expect(configPaths).toContain('extract.0.lyrics.0.verses')
+    expect(configPaths).toContain('extract.0.lyrics.0.pos')
+    expect(configPaths).toContain('extract.0.lyrics.0.style')
   })
 
   it('expands image resources and image entries from extract 0', () => {
@@ -136,8 +136,8 @@ describe('buildConfigEditorSectionTree', () => {
 
     const configPaths = flattenConfigPaths(tree ?? [])
     expect(configPaths).toContain('$resources.logo')
-    expect(configPaths).toContain('extract.2.images.0.imagename')
-    expect(configPaths).toContain('extract.2.images.0.pos')
+    expect(configPaths).toContain('extract.0.images.0.imagename')
+    expect(configPaths).toContain('extract.0.images.0.pos')
   })
 
   it('expands stringnames from effective extract 0 keys', () => {

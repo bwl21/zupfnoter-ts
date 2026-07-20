@@ -401,6 +401,7 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
     supportsNewEntry: true,
     newEntryCommand: 'images',
     newEntryExtractZeroOnly: true,
+    quicksettingCommands: ['preset.images'],
     keys: [
       '$resources.*',
       'extract.{extract}.images.*.imagename',
