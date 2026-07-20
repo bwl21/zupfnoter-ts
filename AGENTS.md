@@ -57,6 +57,19 @@ berechnete Timeline; es wird keine zweite Timeline aus dem Export erzeugt.
 Konfigurationswerte werden über `Confstack` aufgelöst, nicht durch lokale
 Merges in Layout- oder UI-Code.
 
+### Bestehende Fachlogik wiederverwenden
+
+Bevor neue fachliche Verarbeitung implementiert wird, muss geprüft werden, ob
+die benötigte Pipeline bereits existiert. Web, CLI, Export, Vorschau und Tests
+müssen dieselbe zentrale Implementierung verwenden. Für dieselbe Semantik
+dürfen keine parallelen Berechnungen, Parser, Konverter oder Exportpfade
+entstehen.
+
+Wenn eine bestehende Funktion nicht direkt wiederverwendbar ist, wird zuerst
+die gemeinsame Funktion erweitert oder in das zuständige gemeinsame Paket
+verschoben. Eine abweichende Implementierung muss vorher begründet und durch
+Paritäts- oder Konsistenztests abgesichert werden.
+
 Externe Stimmennummern sind 1-basiert, interne Array-Indizes 0-basiert.
 `Sheet.activeVoices` und `extract.*.voices` verwenden die externe 1-basierte
 Konvention.
