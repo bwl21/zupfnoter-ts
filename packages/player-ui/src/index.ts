@@ -47,7 +47,7 @@ function escapeHtml(value: string): string {
 }
 
 function formatPosition(position: PlaybackPosition): string {
-  return `${position.measureNumber} [${position.passIndex}]`
+  return `${position.measureNumber} : ${position.passIndex}`
 }
 
 function wheelField(name: string, label: string, value: number, maximum: number): string {

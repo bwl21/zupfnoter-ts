@@ -528,16 +528,22 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
   }
 
   function takePosition(): void {
-    const currentPosition = positionAtTime(positionMarkers, selectedStartMs + playbackOffsetMs)
+    const elapsedMs = audioContext !== undefined && playbackStartedAtContextTime > 0
+      ? Math.max(0, (audioContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
+      : playbackOffsetMs
+    const currentPosition = positionAtTime(positionMarkers, selectedStartMs + elapsedMs)
     const previousMeasure = Math.max(1, currentPosition.measureNumber - 1)
     const targetMarker = findPositionMarker(positionMarkers, {
       measureNumber: previousMeasure,
       passIndex: currentPosition.passIndex,
     }) ?? positionMarkers[0]
     if (targetMarker === undefined) return
-    stopPlayback()
+    // A paused player has already released its AudioContext. Do not run the
+    // full stop path again, because it briefly restores the old start state.
+    if (audioContext !== undefined) stopPlayback(false)
     ui.setRangePosition(targetMarker.position)
     readRange(targetMarker.position)
+    playbackOffsetMs = 0
     updatePosition(0)
   }
 
