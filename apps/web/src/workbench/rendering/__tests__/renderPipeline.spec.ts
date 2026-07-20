@@ -115,6 +115,28 @@ C D
     expect(result.harpSvg).toMatch(/created \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} by Zupfnoter-TS/)
   })
 
+  it('resolves the reserved player QR image through the normal image configuration', () => {
+    const result = renderWorkbenchPreviews(`X:1
+F:qr-test
+T:QR
+K:C
+C
+
+%%%%zupfnoter.config
+{
+  "extract": {
+    "0": {
+      "images": {
+        "0": { "imagename": "$player_qr", "show": true, "pos": [10, 10], "height": 30 }
+      }
+    }
+  }
+}`, 0, { playerQrJpegUrl: 'data:image/jpeg;base64,qr-test' })
+
+    expect(result.harpSvg).toContain('data:image/jpeg;base64,qr-test')
+    expect(result.harpSvg).toContain('zupfnoter-shape--image')
+  })
+
   it('keeps user-visible voice ids stable when the song contains the legacy duplicate voice 0', () => {
     const result = renderWorkbenchPreviews(`X:1
 T:Voice Ids

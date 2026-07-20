@@ -2,12 +2,29 @@
 
 import { createInterface } from 'node:readline/promises'
 import { stdin as input, stdout as output } from 'node:process'
-import { readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises'
+import { basename, dirname, extname, join, relative, resolve } from 'node:path'
 import { deflateRaw, inflateRaw } from 'node:zlib'
 import { promisify } from 'node:util'
 
 import { createLegacyCommandStack, type WorkbenchCommandRuntime } from '@zupfnoter/core/legacyCommands'
 import type { CommandArgumentValue } from '@zupfnoter/core/commands'
+import {
+  AbcParser,
+  AbcToSong,
+  Confstack,
+  HarpnotesLayout,
+  PdfEngine,
+  SvgEngine,
+  PLAYER_QR_IMAGE_NAME,
+  buildPlaybackExportData,
+  createPlayerQrJpeg,
+  extractSongConfig,
+  extractSongFilebase,
+  initConf,
+  mergeSongConfig,
+  pdfOutputFilename,
+} from '@zupfnoter/core'
 import { exportPlaybackLink, type PlaybackCompressionCodec, type PlaybackEvent } from '@zupfnoter/playback'
 
 const deflateRawAsync = promisify(deflateRaw)
@@ -163,6 +180,7 @@ function printUsage(): void {
   log('  zupfnoter --command "view 2"')
   log('  zupfnoter --repl')
   log('  zupfnoter playback-link --events timeline.json --player-url https://play.zupfnoter.de/')
+  log('  zupfnoter <sourcepattern> <targetfolder> [config.json] [--player-url <url>] [--format A3|A4|A3-A4]')
 }
 
 function parseOption(args: readonly string[], name: string): string | undefined {
@@ -206,25 +224,169 @@ async function runPlaybackLink(args: string[]): Promise<number> {
   return 0
 }
 
-function runLegacyBatch(args: string[]): number {
+function globToRegExp(pattern: string): RegExp {
+  let source = '^'
+  for (let index = 0; index < pattern.length; index += 1) {
+    const character = pattern[index]
+    if (character === '*') {
+      if (pattern[index + 1] === '*') {
+        source += '.*'
+        index += 1
+      } else {
+        source += '[^/]*'
+      }
+    } else if (character === '?') {
+      source += '[^/]'
+    } else {
+      source += character?.replace(/[.+^${}()|[\]\\]/g, '\\$&') ?? ''
+    }
+  }
+  return new RegExp(`${source}$`)
+}
+
+async function expandSourcePattern(sourcePattern: string): Promise<string[]> {
+  const absolutePattern = resolve(sourcePattern)
+  const wildcardIndex = absolutePattern.search(/[?*[]/)
+  if (wildcardIndex < 0) {
+    const fileInfo = await stat(absolutePattern).catch(() => undefined)
+    return fileInfo?.isFile() ? [absolutePattern] : []
+  }
+
+  const prefix = absolutePattern.slice(0, wildcardIndex)
+  const root = dirname(prefix.endsWith('/') ? prefix.slice(0, -1) : prefix)
+  const matcher = globToRegExp(relative(root, absolutePattern))
+  const matches: string[] = []
+
+  async function visit(directory: string): Promise<void> {
+    const entries = await readdir(directory, { withFileTypes: true })
+    for (const entry of entries) {
+      const entryPath = join(directory, entry.name)
+      if (entry.isDirectory()) {
+        await visit(entryPath)
+      } else if (entry.isFile() && matcher.test(relative(root, entryPath))) {
+        matches.push(entryPath)
+      }
+    }
+  }
+
+  await visit(root)
+  return matches.sort()
+}
+
+function dataUrlFromJpeg(bytes: Uint8Array): string {
+  return `data:image/jpeg;base64,${Buffer.from(bytes).toString('base64')}`
+}
+
+function resolveBatchExtracts(config: ReturnType<typeof mergeSongConfig>): number[] {
+  const extracts = config.produce !== undefined && config.produce.length > 0 ? config.produce : [0]
+  return [...new Set(extracts)]
+}
+
+function extractFilenamePart(config: ReturnType<typeof mergeSongConfig>, extractNr: number): string {
+  const extract = config.extract[String(extractNr)]
+  return extract?.filenamepart?.trim() || extract?.title?.trim() || String(extractNr)
+}
+
+function containsPlayerQr(config: ReturnType<typeof mergeSongConfig>): boolean {
+  return JSON.stringify(config).includes(PLAYER_QR_IMAGE_NAME)
+}
+
+async function renderBatchFile(
+  inputFile: string,
+  targetFolder: string,
+  playerUrl: string | undefined,
+  format: 'A3' | 'A4' | 'A3-A4',
+): Promise<void> {
+  const abcText = await readFile(inputFile, 'utf8')
+  const conf = new Confstack()
+  const config = mergeSongConfig(initConf(conf), extractSongConfig(abcText))
+  const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
+  const filebase = extractSongFilebase(abcText) ?? basename(inputFile, extname(inputFile))
+  const formats: Array<'A3' | 'A4'> = format === 'A3-A4' ? ['A3', 'A4'] : [format]
+  await mkdir(targetFolder, { recursive: true })
+
+  for (const extractNr of resolveBatchExtracts(config)) {
+    const filenamePart = extractFilenamePart(config, extractNr)
+    let sheet = new HarpnotesLayout(config).layout(song, extractNr, formats[0] ?? 'A3')
+    let playerLink: string | undefined
+
+    if (containsPlayerQr(config) && playerUrl !== undefined) {
+      const exportData = buildPlaybackExportData(song, sheet.activeVoices)
+      const events: PlaybackEvent[] = exportData.events.map((event) => ({
+        startMs: event.startMs,
+        durationMs: event.durationMs,
+        pitch: event.pitch,
+        velocity: event.velocity,
+        position: event.position,
+      }))
+      const link = await exportPlaybackLink(events, {
+        playerUrl,
+        positionMarkers: exportData.positionMarkers,
+      }, nodePlaybackCodec)
+      playerLink = link.url
+    } else if (containsPlayerQr(config)) {
+      log(`${inputFile}: $player_qr übersprungen, --player-url fehlt`)
+    }
+
+    for (const pageFormat of formats) {
+      const imageResolver = playerLink === undefined
+        ? undefined
+        : () => dataUrlFromJpeg(createPlayerQrJpeg(playerLink))
+      sheet = new HarpnotesLayout(config, { imageResolver }).layout(song, extractNr, pageFormat)
+      const svgName = `${filebase}_${filenamePart}_${pageFormat.toLowerCase()}.svg`
+      await writeFile(join(targetFolder, svgName), new SvgEngine().draw(sheet), 'utf8')
+      const pdf = pageFormat === 'A3'
+        ? new PdfEngine().draw(sheet)
+        : new PdfEngine().drawInSegments(sheet, config.layout.X_SPACING)
+      const pdfBytes = new Uint8Array(await pdf.arrayBuffer())
+      await writeFile(join(targetFolder, pdfOutputFilename(filebase, filenamePart, pageFormat)), pdfBytes)
+    }
+  }
+}
+
+async function runLegacyBatch(args: string[]): Promise<number> {
   const fixtureExport = args[0] === '--export-fixtures'
   const batchArgs = fixtureExport ? args.slice(1) : args
-  const [sourcepattern, targetfolder, configfile] = batchArgs
+  const positional: string[] = []
+  for (let index = 0; index < batchArgs.length; index += 1) {
+    const argument = batchArgs[index]
+    if (argument === undefined) continue
+    if (argument.startsWith('--')) {
+      index += 1
+      continue
+    }
+    positional.push(argument)
+  }
+  const [sourcepattern, targetfolder, configfile] = positional
 
   if (sourcepattern === undefined || targetfolder === undefined) {
     printUsage()
     return 1
   }
 
-  log(`processing ${sourcepattern} to ${targetfolder}`)
+  const playerUrl = parseOption(args, '--player-url')
+  const requestedFormat = parseOption(args, '--format') ?? 'A3-A4'
+  if (requestedFormat !== 'A3' && requestedFormat !== 'A4' && requestedFormat !== 'A3-A4') {
+    throw new Error(`Ungültiges Batch-Format: ${requestedFormat}`)
+  }
+
+  const files = await expandSourcePattern(sourcepattern)
+  if (files.length === 0) {
+    throw new Error(`Keine ABC-Dateien für ${sourcepattern} gefunden`)
+  }
+
+  log(`processing ${files.length} file(s) to ${targetfolder}`)
   if (configfile !== undefined) {
     log(`using config ${configfile}`)
   }
   if (fixtureExport) {
     log('fixture export mode requested')
   }
-  log('legacy batch rendering is not ported in this CLI yet')
-  return 2
+  for (const file of files) {
+    await renderBatchFile(file, targetfolder, playerUrl, requestedFormat)
+    log(`rendered ${file}`)
+  }
+  return 0
 }
 
 async function runCli(args: string[]): Promise<number> {

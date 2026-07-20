@@ -11,12 +11,12 @@ import { ABC_TYPE } from './AbcModel.js'
 import { abc2svgTextrans } from './localization/de-de.js'
 
 // ---------------------------------------------------------------------------
-// Load abc2svg via browser-compatible ESM wrapper (vendored)
-// abc2svg-1.js is executed inside a Function scope that provides a fake
-// module/exports object — works in both browser and Node.js (no vm/fs needed).
+// Load the vendored abc2svg module directly. The vendor file exposes ESM
+// bindings as well as its original CommonJS-compatible globals, so the same
+// parser module can be used by Vite and by the Node CLI.
 // ---------------------------------------------------------------------------
 
-import abc2svgSource from '../vendor/abc2svg-1.js?raw'
+import * as abc2svgModule from '../vendor/abc2svg-1.js'
 
 // ---------------------------------------------------------------------------
 // Minimal abc2svg type shims (not exported)
@@ -367,23 +367,10 @@ function buildLineStarts(source: string): number[] {
   return lineStarts
 }
 
-function loadAbc2svg(): Abc2svgExports {
-  const mod = { exports: {} as Record<string, unknown> }
-  const fn = new Function('module', 'exports', abc2svgSource)
-  fn(mod, mod.exports)
-
-  if (!mod.exports['Abc'] || !mod.exports['abc2svg']) {
-    const g = globalThis as unknown as Record<string, unknown>
-    if (g['Abc'] && g['abc2svg']) {
-      return { Abc: g['Abc'] as Abc2svgExports['Abc'], abc2svg: g['abc2svg'] as Abc2svgExports['abc2svg'] }
-    }
-    throw new Error('abc2svg failed to load: neither CJS exports nor globals found')
-  }
-
-  return mod.exports as unknown as Abc2svgExports
+const _abc2svgModule: Abc2svgExports = {
+  Abc: abc2svgModule.Abc as Abc2svgExports['Abc'],
+  abc2svg: abc2svgModule.abc2svg as Abc2svgExports['abc2svg'],
 }
-
-const _abc2svgModule = loadAbc2svg()
 
 function normalizeAbc2svgErrmsg(message: string): { severity: 0 | 1 | 2, message: string } {
   for (const entry of ABC2SVG_MESSAGE_PREFIXES) {

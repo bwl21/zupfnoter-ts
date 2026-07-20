@@ -8,6 +8,7 @@ const fs = require('fs')
 const path = require('path')
 
 const src = fs.readFileSync(path.join(__dirname, 'abc2svg-1.js'), 'utf8')
+  .replace(/\nexport\s+\{[^}]+\}\s*;?\s*$/, '')
 const ctx = { module: { exports: {} }, exports: {}, require, console }
 ctx.module.exports = ctx.exports
 vm.runInNewContext(src, ctx)

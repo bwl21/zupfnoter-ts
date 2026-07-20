@@ -21,6 +21,8 @@ export interface HarpnotesLayoutOptions {
   annotationTextMetrics?: AnnotationTextMetrics
   /** Zeitpunkt der Blatterzeugung für die Blattfußzeile. */
   createdAt?: Date
+  /** Löst einen fachlichen Bildnamen in eine exportierbare Daten-URL auf. */
+  imageResolver?: (imageName: string) => string | undefined
 }
 
 type JsPdfOrientation = 'p' | 'l'

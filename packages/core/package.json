@@ -38,10 +38,14 @@
   },
   "dependencies": {
     "@zupfnoter/types": "workspace:*",
-    "jspdf": "^4.2.1"
+    "jpeg-js": "^0.4.4",
+    "jspdf": "^4.2.1",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@types/node": "^24.11.0",
+    "@types/jpeg-js": "^0.3.7",
+    "@types/qrcode": "^1.5.5",
     "oxlint": "~1.50.0",
     "typescript": "~5.9.3",
     "vitest": "^4.0.18"

@@ -24,7 +24,8 @@ function loadAbc2svg(): Abc2svgExports {
   const mod = { exports: {} as Record<string, unknown> }
   // Execute abc2svg in a scope where module/exports exist so the CJS branch fires.
   // eslint-disable-next-line no-new-func
-  const fn = new Function('module', 'exports', abc2svgSource)
+  const executableSource = abc2svgSource.replace(/\nexport\s+\{[^}]+\}\s*;?\s*$/, '')
+  const fn = new Function('module', 'exports', executableSource)
   fn(mod, mod.exports)
 
   // Verify the exports are present

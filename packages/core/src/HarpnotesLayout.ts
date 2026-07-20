@@ -44,6 +44,7 @@ import { buildConfstack } from './buildConfstack.js'
 import { computeBeatCompression, type BeatCompressionMap } from './BeatPacker.js'
 import type { Confstack } from './Confstack.js'
 import { requireDefined } from './requireDefined.js'
+import { isPlayerQrImageName } from './imageResources.js'
 import { getSongVoiceByVoiceNumber } from './voiceIdentity.js'
 import {
   createDefaultAnnotationTextMetrics,
@@ -484,11 +485,13 @@ function makeLegacySlurPath(p1: [number, number], p2: [number, number]): { path:
 // ---------------------------------------------------------------------------
 
 export class HarpnotesLayout {
+  private readonly _imageResolver: HarpnotesLayoutOptions['imageResolver']
   private _config: ZupfnoterConfig
   private _annotationTextMetrics: AnnotationTextMetrics
   private _createdAt: Date
 
   constructor(config: ZupfnoterConfig, options: HarpnotesLayoutOptions = {}) {
+    this._imageResolver = options.imageResolver
     this._config = config
     this._annotationTextMetrics = options.annotationTextMetrics ?? createDefaultAnnotationTextMetrics()
     this._createdAt = options.createdAt ?? new Date()
@@ -2391,10 +2394,13 @@ export class HarpnotesLayout {
     for (const [nr, entry] of Object.entries(images)) {
       const img = entry as { show?: boolean; imagename?: string; pos?: [number, number]; height?: number }
       if (!img.show || !img.imagename || !img.pos || !img.height) continue
+      const imageUrl = this._imageResolver?.(img.imagename)
+        ?? (isPlayerQrImageName(img.imagename) ? undefined : img.imagename)
+      if (imageUrl === undefined) continue
 
       result.push({
         type: 'Image',
-        url: img.imagename,
+        url: imageUrl,
         position: img.pos,
         height: img.height,
         color: 'black',

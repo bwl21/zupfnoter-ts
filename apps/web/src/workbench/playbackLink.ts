@@ -6,6 +6,8 @@ import {
   type PlaybackLinkOptions,
 } from '@zupfnoter/playback'
 import { deflateSync, inflateSync } from 'fflate'
+import { playerQrJpegDataUrl } from '@zupfnoter/core'
+import type { PlaybackExportData } from '@zupfnoter/core'
 
 import type { PlaybackStep } from './playback'
 
@@ -17,6 +19,11 @@ export const browserPlaybackCodec: PlaybackCompressionCodec = {
   async decompress(value) {
     return new Uint8Array(inflateSync(new Uint8Array(value)))
   },
+}
+
+/** Erzeugt das virtuelle Player-Bild als JPG-Daten-URL für SVG/PDF-Exporte. */
+export async function createPlayerQrJpeg(playbackUrl: string): Promise<string> {
+  return playerQrJpegDataUrl(playbackUrl)
 }
 
 /** Converts the existing complete workbench timeline into portable note events. */
@@ -91,6 +98,29 @@ export async function createPlaybackLinkFromTimeline(
       playerUrl,
       timeResolutionMs,
       positionMarkers: playbackPositionsFromTimeline(timeline),
+    } satisfies PlaybackLinkOptions,
+    browserPlaybackCodec,
+  )
+}
+
+/** Erzeugt denselben Auszugs-Link wie der Node-CLI-Renderer aus Core-Daten. */
+export async function createPlaybackLinkFromExportData(
+  exportData: PlaybackExportData,
+  playerUrl: string,
+  timeResolutionMs = 10,
+) {
+  return exportPlaybackLink(
+    exportData.events.map((event) => ({
+      startMs: event.startMs,
+      durationMs: event.durationMs,
+      pitch: event.pitch,
+      velocity: event.velocity,
+      position: event.position,
+    })),
+    {
+      playerUrl,
+      timeResolutionMs,
+      positionMarkers: exportData.positionMarkers,
     } satisfies PlaybackLinkOptions,
     browserPlaybackCodec,
   )

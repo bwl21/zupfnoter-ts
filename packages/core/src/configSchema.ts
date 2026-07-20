@@ -570,7 +570,18 @@ const IMAGE_ENTRY_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    imagename: { type: 'string' },
+    imagename: {
+      type: 'string',
+      'x-zupfnoter-editor': {
+        options: [
+          {
+            value: '$player_qr',
+            label: 'Player-QR-Code',
+            description: 'Erzeugt beim SVG- oder PDF-Export einen JPG-QR-Code für den aktuellen Player-Link.',
+          },
+        ],
+      },
+    },
     show: { type: 'boolean' },
     pos: POSITION_SCHEMA,
     height: { type: 'number' },

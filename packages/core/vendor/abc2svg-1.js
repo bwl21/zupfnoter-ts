@@ -10293,3 +10293,4 @@ abc2svg.loadjs(fn+"-1.js",load_end,function(){abc2svg.modules.errmsg('Error load
 load_end()})}
 return this.nreq==nreq_i}}
 abc2svg.version="v1.23.1";abc2svg.vdate="2026-04-18"
+export { abc2svg, Abc }

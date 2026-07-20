@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { playbackPositionsFromTimeline } from '../playbackLink'
+import { createPlayerQrJpeg, playbackPositionsFromTimeline } from '../playbackLink'
 import type { PlaybackStep } from '../playback'
 
 function step(
@@ -41,5 +41,19 @@ describe('playback position export', () => {
       { timeMs: 3000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
       { timeMs: 6000, position: { measureNumber: 2, passIndex: 1 }, meter: undefined },
     ])
+  })
+})
+
+describe('player QR export', () => {
+  it('creates a JPG data URL from the complete player link', async () => {
+    if (typeof HTMLCanvasElement === 'undefined' || typeof HTMLCanvasElement.prototype.toDataURL !== 'function') return
+    let dataUrl: string
+    try {
+      dataUrl = await createPlayerQrJpeg('https://zupfnoter-player.example/#p=test')
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('ohne Canvas')) return
+      throw error
+    }
+    expect(dataUrl.startsWith('data:image/jpeg;base64,')).toBe(true)
   })
 })

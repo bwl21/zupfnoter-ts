@@ -31,10 +31,14 @@ export type { HarpnotesLayoutOptions, AnnotationTextMetrics, JsPdfConstructor } 
 export { SvgEngine } from './SvgEngine.js'
 export type { SvgEngineOptions } from './SvgEngine.js'
 export { PdfEngine } from './PdfEngine.js'
+export { PLAYER_QR_IMAGE_NAME, isPlayerQrImageName } from './imageResources.js'
+export { createPlayerQrJpeg, playerQrJpegDataUrl } from './playerQr.js'
 export { pdfOutputFilename } from './PdfOutputName.js'
 export type { PdfPageFormat } from './PdfOutputName.js'
 
 export { expandPlaybackFlow } from './PlaybackFlow.js'
+export { buildPlaybackExportData } from './PlaybackExport.js'
+export type { PlaybackExportData, PlaybackExportEvent, PlaybackExportMarker } from './PlaybackExport.js'
 
 export { GLYPHS } from './glyphs.js'
 export type { GlyphDef } from './glyphs.js'

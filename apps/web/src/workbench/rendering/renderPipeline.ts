@@ -6,9 +6,11 @@ import {
   PdfEngine,
   SvgEngine,
   createDefaultAnnotationTextMetrics,
+  buildPlaybackExportData,
   extractSongConfig,
   initConf,
   mergeSongConfig,
+  PLAYER_QR_IMAGE_NAME,
 } from '@zupfnoter/core'
 import type { AbcParseError } from '@zupfnoter/core'
 import type { SheetObjectIndex, SongDiagnostic } from '@zupfnoter/types'
@@ -16,6 +18,7 @@ import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/public/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, type PlaybackStep } from '../playback'
+import { createPlaybackLinkFromExportData, createPlayerQrJpeg } from '../playbackLink'
 import { isUserVisibleVoice, resolveActiveVoiceIdsFromSheet, resolveUserVisibleVoiceIds } from '../songVoiceIdentity'
 import {
   parserErrorToWorkbenchDiagnostic,
@@ -50,6 +53,13 @@ export interface WorkbenchRenderResult {
   renderError?: string
 }
 
+export interface WorkbenchRenderOptions {
+  /** Temporär erzeugtes JPG für das reservierte Player-QR-Bild. */
+  playerQrJpegUrl?: string
+  /** Basis-URL des Players; wird beim PDF-Export pro Auszug aufgelöst. */
+  playerUrl?: string
+}
+
 /** Ein PDF-Ausgabeziel gemäß der effektiven Stückkonfiguration. */
 export interface PdfExportVariant {
   extractNr: number
@@ -59,10 +69,28 @@ export interface PdfExportVariant {
 export const DEFAULT_ABC = referenceSheetAbc
 
 /** Erzeugt das PDF eines einzelnen Auszugs im gewünschten Seitenformat. */
-export async function renderPdfExport(abcText: string, extractNr: number, pageFormat: 'A3' | 'A4'): Promise<Blob> {
+export async function renderPdfExport(
+  abcText: string,
+  extractNr: number,
+  pageFormat: 'A3' | 'A4',
+  options: WorkbenchRenderOptions = {},
+): Promise<Blob> {
   const config = buildConfig(abcText)
   const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
-  const sheet = new HarpnotesLayout(config, { annotationTextMetrics: createDefaultAnnotationTextMetrics() }).layout(song, extractNr, pageFormat)
+  let sheet = new HarpnotesLayout(config, {
+    annotationTextMetrics: createDefaultAnnotationTextMetrics(),
+    imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME ? options.playerQrJpegUrl : undefined,
+  }).layout(song, extractNr, pageFormat)
+  let playerQrJpegUrl = options.playerQrJpegUrl
+  if (playerQrJpegUrl === undefined && options.playerUrl !== undefined && abcText.includes(PLAYER_QR_IMAGE_NAME)) {
+    const exportData = buildPlaybackExportData(song, sheet.activeVoices)
+    const playbackLink = await createPlaybackLinkFromExportData(exportData, options.playerUrl)
+    playerQrJpegUrl = await createPlayerQrJpeg(playbackLink.url)
+    sheet = new HarpnotesLayout(config, {
+      annotationTextMetrics: createDefaultAnnotationTextMetrics(),
+      imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME ? playerQrJpegUrl : undefined,
+    }).layout(song, extractNr, pageFormat)
+  }
   const engine = new PdfEngine()
   return pageFormat === 'A3'
     ? engine.draw(sheet)
@@ -147,6 +175,7 @@ function findInitialKeyHeaderDiagnostic(abcText: string): WorkbenchDiagnostic | 
 export function renderWorkbenchPreviews(
   abcText: string,
   extractNr: number = 0,
+  options: WorkbenchRenderOptions = {},
 ): WorkbenchRenderResult {
   const config = buildConfig(abcText)
   const keyHeaderDiagnostic = findInitialKeyHeaderDiagnostic(abcText)
@@ -174,6 +203,7 @@ export function renderWorkbenchPreviews(
     allVoiceIds = resolveUserVisibleVoiceIds(transformedSong)
     const layoutOptions: ConstructorParameters<typeof HarpnotesLayout>[1] = {
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
+      imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME ? options.playerQrJpegUrl : undefined,
     }
     const sheet = new HarpnotesLayout(config, layoutOptions).layout(transformedSong, extractNr, 'A3')
     activeVoiceIds = resolveActiveVoiceIdsFromSheet(sheet)

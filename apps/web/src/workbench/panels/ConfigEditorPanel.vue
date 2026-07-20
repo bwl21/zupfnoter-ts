@@ -568,7 +568,17 @@ function hasEditorOptions(row: ConfigTreeRow): boolean {
 }
 
 function getEditorOptions(row: ConfigTreeRow): readonly ConfigEditorOption[] {
-  if (row.editorOptions !== undefined) return row.editorOptions
+  if (row.editorOptions !== undefined) {
+    if (!(row.localPath?.endsWith('.imagename') ?? false)) return row.editorOptions
+    const resources = getPathValue(effectiveConfig.value, '$resources')
+    if (!isRecord(resources)) return row.editorOptions
+    const resourceOptions = Object.keys(resources).sort().map((value) => ({
+      value,
+      label: value,
+      description: 'Vorhandene Bildressource',
+    } satisfies ConfigEditorOption))
+    return [...row.editorOptions, ...resourceOptions.filter((option) => !row.editorOptions?.some((entry) => entry.value === option.value))]
+  }
   if (row.editorStrategy !== 'font-style-select') return []
 
   const styles = getPathValue(effectiveConfig.value, 'layout.FONT_STYLE_DEF')

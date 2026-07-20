@@ -30,7 +30,15 @@ import {
   resolvePdfExportVariants,
   type WorkbenchRenderResult,
 } from './rendering/renderPipeline'
-import { extractSongConfig, extractSongFilebase, pdfOutputFilename, replaceSongDocumentAbc, splitSongDocument } from '@zupfnoter/core'
+import {
+  extractSongConfig,
+  extractSongFilebase,
+  pdfOutputFilename,
+  PLAYER_QR_IMAGE_NAME,
+  replaceSongDocumentAbc,
+  splitSongDocument,
+} from '@zupfnoter/core'
+import { createPlayerQrJpeg } from './playbackLink'
 import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
 import WorkbenchToastStack from './toasts/WorkbenchToastStack.vue'
@@ -242,6 +250,7 @@ const editorCursor = ref('01:01')
 const renderError = ref('')
 const renderSummary = ref('not rendered')
 const playbackTimeline = ref<PlaybackStep[]>([])
+const playerQrJpegUrl = ref<string | undefined>()
 const baseTempoFromQ = ref<number | undefined>(undefined)
 const activeVoiceIds = ref<string[]>([])
 const allVoiceIds = ref<string[]>([])
@@ -640,6 +649,31 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   renderSummary.value = result.summary
   renderError.value = result.renderError ?? ''
   publishHarpMirrorSnapshot()
+  void ensurePlayerQrForRenderedExtract(result)
+}
+
+async function ensurePlayerQrForRenderedExtract(result: WorkbenchRenderResult): Promise<void> {
+  if (playerQrJpegUrl.value !== undefined || !documentText.value.includes(PLAYER_QR_IMAGE_NAME)) return
+
+  const sourceDocument = documentText.value
+  const sourceExtract = currentExtract.value
+  const playerUrl = new URL('https://zupfnoter-player.csweichel.dev/')
+  const identification = resolvePlaybackIdentification()
+  if (identification !== undefined) playerUrl.searchParams.set('id', identification)
+
+  try {
+    const playbackLink = await createPlaybackLinkFromTimeline(
+      result.playbackTimeline,
+      playerUrl.toString(),
+      result.activeVoiceIds.length > 0 ? new Set(result.activeVoiceIds) : undefined,
+    )
+    const qrJpegUrl = await createPlayerQrJpeg(playbackLink.url)
+    if (documentText.value !== sourceDocument || currentExtract.value !== sourceExtract) return
+    playerQrJpegUrl.value = qrJpegUrl
+    renderNow()
+  } catch (error) {
+    logger.error(`player QR render skipped: ${error instanceof Error ? error.message : String(error)}`)
+  }
 }
 
 function renderNow(): void {
@@ -651,11 +685,14 @@ function renderNow(): void {
         id: requestId,
         abcText: documentText.value,
         extractNr: currentExtract.value,
+        playerQrJpegUrl: playerQrJpegUrl.value,
       })
       return
     }
     logger.info(`worker: render extract ${currentExtract.value}`)
-    const result = renderWorkbenchPreviews(documentText.value, currentExtract.value)
+    const result = renderWorkbenchPreviews(documentText.value, currentExtract.value, {
+      playerQrJpegUrl: playerQrJpegUrl.value,
+    })
     applyRenderResult(result)
     logger.info('worker: render complete in 0.000 sec')
   } catch (error) {
@@ -1232,6 +1269,8 @@ async function exportPlaybackLinkCommand(): Promise<void> {
     margin: 4,
     width: 320,
   })
+  playerQrJpegUrl.value = await createPlayerQrJpeg(result.url)
+  renderNow()
   const urlLength = result.url.length
   const qrAssessment = urlLength < 1500
     ? { severity: 'info' as const, label: 'QR-Code: gut' }
@@ -1340,6 +1379,9 @@ registerStorageCommands(commandStack, storageState, {
   saveArtifacts: async (path, filebase, content) => {
     const adapter = storageProviderRegistry.adapterFor(path, storageConnections.value)
     const extracts = resolvePdfExportVariants(content, currentExtract.value)
+    const playerUrl = new URL('https://zupfnoter-player.csweichel.dev/')
+    const identification = resolvePlaybackIdentification()
+    if (identification !== undefined) playerUrl.searchParams.set('id', identification)
     const abcName = `${filebase}.abc`
     const htmlName = `${filebase}.html`
     const plans: SaveArtifactPlan[] = [
@@ -1350,11 +1392,15 @@ registerStorageCommands(commandStack, storageState, {
       const suffix = extract.filenamepart
       if (saveFormat.value.includes('A3')) {
         const name = pdfOutputFilename(filebase, suffix, 'A3')
-        plans.push({ name, create: async () => renderPdfExport(content, extract.extractNr, 'A3') })
+        plans.push({ name, create: async () => renderPdfExport(content, extract.extractNr, 'A3', {
+          playerUrl: playerUrl.toString(),
+        }) })
       }
       if (saveFormat.value.includes('A4')) {
         const name = pdfOutputFilename(filebase, suffix, 'A4')
-        plans.push({ name, create: async () => renderPdfExport(content, extract.extractNr, 'A4') })
+        plans.push({ name, create: async () => renderPdfExport(content, extract.extractNr, 'A4', {
+          playerUrl: playerUrl.toString(),
+        }) })
       }
     }
     const names: string[] = []
@@ -1581,7 +1627,8 @@ function handleSelectionVoiceScopeChange(voiceScope: 'single-voice' | 'extract-v
   selectionStore.dispatchSelectionEvent(createScopeChangedSelectionEvent(voiceScope))
 }
 
-watch(documentText, () => {
+watch([documentText, currentExtract], () => {
+  playerQrJpegUrl.value = undefined
   playbackStore.markDocumentChanged()
   stopPlayback()
   if (autoRefresh.value === 'off') return
