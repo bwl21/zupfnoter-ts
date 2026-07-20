@@ -21,6 +21,7 @@ import type {
   NoteBoundAnnotation,
   NewPart,
 } from '@zupfnoter/types'
+import { makeJumplinePathData } from './jumplinePath.js'
 import type {
   Sheet,
   DrawableElement,
@@ -539,7 +540,7 @@ export class HarpnotesLayout {
       const resZnAnnotations = this._layoutZnAnnotations(song.metaData, conf)
 
       // 6. Lyrics
-      const resLyrics = this._layoutLyrics(song, conf)
+      const resLyrics = this._layoutLyrics(song, conf, extractNr)
 
       // 7. Sheet annotations
       const resAnnotations = this._layoutAnnotations(song.metaData, conf, extractNr)
@@ -1168,7 +1169,7 @@ export class HarpnotesLayout {
           lineWidth: layout.LINE_THIN,
           visible: true,
           more_conf_keys: [],
-          draginfo: this._annotationDraginfo(),
+          draginfo: this._annotationDraginfo(offset),
           znId: playable.znId,
           origin: playable,
         }
@@ -1187,7 +1188,7 @@ export class HarpnotesLayout {
           visible: true,
           confKey: `${overrideKey}.pos`,
           more_conf_keys: [],
-          draginfo: this._annotationDraginfo(),
+          draginfo: this._annotationDraginfo(offset),
           znId: playable.znId,
         })
       }
@@ -1244,8 +1245,10 @@ export class HarpnotesLayout {
     ]
   }
 
-  private _annotationDraginfo(): Record<string, unknown> {
-    return { handler: 'annotation' }
+  private _annotationDraginfo(value?: [number, number]): Record<string, unknown> {
+    return value === undefined
+      ? { handler: 'annotation' }
+      : { handler: 'annotation', value }
   }
 
   private _layoutMeasureBarover(root: Ellipse | Glyph, layout: LayoutConfig): Ellipse {
@@ -1531,14 +1534,14 @@ export class HarpnotesLayout {
     const arrow2 = addPoint(p4, [2.5 * endOrientation, -1])
     const vcutArrow1 = addPoint(vcp2, [0.5, 1.5 * verticalOrientation])
     const vcutArrow2 = addPoint(vcp2, [-0.5, 1.5 * verticalOrientation])
-    const outlinePathData = [
-      `M${p1[0]} ${p1[1]}`,
-      `l${p2[0] - p1[0]} ${p2[1] - p1[1]}`,
-      `l${lineCutEnd[0] - p2[0]} ${lineCutEnd[1] - p2[1]}`,
-      `M${vcp3[0]} ${vcp3[1]}`,
-      `L${p3[0]} ${p3[1]}`,
-      `L${p4Line[0]} ${p4Line[1]}`,
-    ].join('')
+    const outlinePathData = makeJumplinePathData({
+      from: { center: fromCenter, size: fromSize, anchor: fromAnchor },
+      to: { center: toCenter, size: toSize, anchor: toAnchor },
+      vertical: verticalOffset,
+      vertical_anchor: verticalAnchor,
+      jumpline_anchor: anchor,
+      verticalcut: verticalCut,
+    }).outlinePathData
     const arrowPathData = [
       `M${p4[0]} ${p4[1]}`,
       `l${arrow1[0] - p4[0]} ${arrow1[1] - p4[1]}`,
@@ -1574,12 +1577,12 @@ export class HarpnotesLayout {
             from: {
               center: fromCenter,
               size: fromSize,
-              anchor: 'after',
+              anchor: fromAnchor,
             },
             to: {
               center: toCenter,
               size: toSize,
-              anchor: 'before',
+              anchor: toAnchor,
             },
             vertical: verticalOffset,
             vertical_anchor: verticalAnchor,
@@ -1897,7 +1900,7 @@ export class HarpnotesLayout {
         lineWidth: layout.LINE_THIN,
         visible: true,
         more_conf_keys: [],
-        draginfo: this._annotationDraginfo(),
+        draginfo: this._annotationDraginfo(titlePos),
       })
     }
 
@@ -1973,6 +1976,7 @@ export class HarpnotesLayout {
   private _layoutLyrics(
     song: Song,
     conf: Confstack,
+    extractNr: number | string,
   ): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
@@ -2001,11 +2005,12 @@ export class HarpnotesLayout {
           center: entry.pos,
           text,
           style: entry.style ?? 'regular',
+          confKey: `extract.${extractNr}.lyrics.${key}.pos`,
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
           more_conf_keys: [],
-          draginfo: this._annotationDraginfo(),
+          draginfo: this._annotationDraginfo(entry.pos),
         })
       }
 
@@ -2031,7 +2036,7 @@ export class HarpnotesLayout {
 
     if (!notes) return result
 
-    for (const [, entry] of this._sortSheetAnnotationEntries(notes)) {
+    for (const [key, entry] of this._sortSheetAnnotationEntries(notes)) {
       const ann = entry as { pos?: [number, number]; text?: string; style?: string; align?: string }
       if (!ann.pos || ann.text === undefined) continue
       const align: 'left' | 'right' | 'center' = ann.align === 'l'
@@ -2046,11 +2051,12 @@ export class HarpnotesLayout {
         text: this._normalizeAnnotationText(this._resolveAnnotationPlaceholders(ann.text, metaData, extractOptions, extractNr)),
         style: ann.style ?? 'regular',
         align,
+        confKey: `extract.${extractNr}.notes.${key}.pos`,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: true,
         more_conf_keys: [],
-        draginfo: this._annotationDraginfo(),
+        draginfo: this._annotationDraginfo(ann.pos),
       })
     }
 
@@ -2408,6 +2414,7 @@ export class HarpnotesLayout {
         visible: true,
         confKey: `extract.${extractNr}.images.${nr}.pos`,
         more_conf_keys: [],
+        draginfo: { handler: 'image' },
       })
     }
 
@@ -2670,7 +2677,8 @@ export class HarpnotesLayout {
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
         visible: companion.visible,
-        draginfo: this._annotationDraginfo(),
+        confKey: `${confBase}.pos`,
+        draginfo: this._annotationDraginfo(configuredOffset ?? offset),
         more_conf_keys: [],
       })
     }

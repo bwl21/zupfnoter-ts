@@ -30,6 +30,8 @@ export type { HarpnotesLayoutOptions, AnnotationTextMetrics, JsPdfConstructor } 
 
 export { SvgEngine } from './SvgEngine.js'
 export type { SvgEngineOptions } from './SvgEngine.js'
+export { makeJumplinePathData } from './jumplinePath.js'
+export type { JumplinePathData, JumplinePathInfo } from './jumplinePath.js'
 export { PdfEngine } from './PdfEngine.js'
 export { PLAYER_QR_IMAGE_NAME, isPlayerQrImageName } from './imageResources.js'
 export { createPlayerQrJpeg, playerQrJpegDataUrl } from './playerQr.js'

@@ -90,7 +90,12 @@ import {
   resolveSelectionProjection,
 } from './selectionManager'
 import { ABC_PARSER_DIAGNOSTIC_SOURCE, workbenchDiagnosticKey, type WorkbenchDiagnostic as WebWorkbenchDiagnostic } from './diagnostics'
-import { createHarpMirrorChannel, postHarpMirrorSnapshot, type HarpMirrorSnapshot } from './multiWindow/harpMirrorChannel'
+import {
+  createHarpMirrorChannel,
+  postHarpMirrorSnapshot,
+  type HarpMirrorSnapshot,
+  type HarpPreviewDragEnd,
+} from './multiWindow/harpMirrorChannel'
 import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
 import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
 import { createStorageProviderRegistry } from './storage/providerRegistry'
@@ -1672,6 +1677,18 @@ function handleHarpPreviewSelection(payload: {
   )
 }
 
+function handleHarpPreviewDragEnd(payload: HarpPreviewDragEnd): void {
+  if (payload.value === undefined) {
+    logger.warning(`dragend ${payload.handler}: kein konfigurierbarer Zielwert für ${payload.confKey}`)
+    return
+  }
+  void executeParsedToolbarCommand(
+    `cconf ${payload.confKey} ${JSON.stringify(payload.value)}`,
+    'cconf',
+    [payload.confKey, payload.value],
+  )
+}
+
 function handleHarpPreviewScroll(payload: { scrollLeft: number; scrollTop: number }): void {
   harpScrollLeft.value = payload.scrollLeft
   harpScrollTop.value = payload.scrollTop
@@ -1783,16 +1800,25 @@ function handleMirrorMessage(event: MessageEvent): void {
   if (event.origin !== window.location.origin) return
   const data: unknown = event.data
   if (typeof data !== 'object' || data === null) return
-  const record = data as { kind?: string, target?: string, zoom?: number }
+  const record = data as {
+    kind?: string
+    target?: string
+    zoom?: number
+    payload?: HarpPreviewDragEnd
+  }
+  if (record.kind === 'mirror-drag-end' && record.payload !== undefined) {
+    handleHarpPreviewDragEnd(record.payload)
+    return
+  }
   const source = event.source
-  if (!(source instanceof Window)) return
+  if (source === null || typeof source !== 'object' || !('postMessage' in source)) return
   if (record.kind === 'mirror-request') {
     if (record.target !== 'harp' && record.target !== 'notes') return
-    sendHarpMirrorSnapshotToWindow(source)
+    sendHarpMirrorSnapshotToWindow(source as Window)
     return
   }
   if (record.kind !== 'mirror-ready') return
-  sendHarpMirrorSnapshotToWindow(source)
+  sendHarpMirrorSnapshotToWindow(source as Window)
 }
 </script>
 
@@ -2042,6 +2068,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :sheet-object-index="selectionStore.sheetObjectIndex"
                   :svg="harpSvg"
                   @select-text-range="handleHarpPreviewSelection"
+                  @drag-end="handleHarpPreviewDragEnd"
                 />
               </template>
             </ZnSplitPane>

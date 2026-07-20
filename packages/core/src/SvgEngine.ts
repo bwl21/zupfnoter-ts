@@ -217,6 +217,8 @@ export interface SvgEngineOptions {
   fontStyles?: Record<string, { fontSize: number; fontStyle: string }>
   /** Whether to draw the printable page border. */
   showBorder?: boolean
+  /** Include interaction metadata for the interactive web preview. */
+  interactive?: boolean
 }
 
 interface ElementMeta {
@@ -229,6 +231,10 @@ interface ElementMeta {
   dataIndex: number
   znId?: string
   confKey?: string
+  dragHandler?: string
+  dragValue?: number | [number, number]
+  dragGrid?: number
+  dragJumpline?: unknown
   /** ABC-Quelltext-Offset (startChar) für Rückverweis auf Editor-Position */
   startChar?: number
   /** ABC-Quelltext-Offset (endChar) für Rückverweis auf Editor-Position */
@@ -241,10 +247,12 @@ export class SvgEngine {
   private _fontStyles: Record<string, { fontSize: number; fontStyle: string }>
   private _useLegacyFrame: boolean
   private _showBorder: boolean
+  private _interactive: boolean
 
   constructor(options: SvgEngineOptions = {}) {
     this._useLegacyFrame = options.width === undefined && options.height === undefined
     this._showBorder = options.showBorder ?? true
+    this._interactive = options.interactive ?? false
     this._width = options.width ?? LEGACY_PAGE_WIDTH
     this._height = options.height ?? LEGACY_PAGE_HEIGHT
     this._fontStyles = options.fontStyles ?? {
@@ -338,6 +346,10 @@ export class SvgEngine {
     confKey?: string,
     znId?: string,
     sourceOffsets?: [number, number],
+    draginfo?: unknown,
+    dragValue?: number | [number, number],
+    dragGrid?: number,
+    dragJumpline?: unknown,
   ): ElementMeta {
     const normalizedAnchorKey = anchorKey.trim().length > 0 ? anchorKey : `${kind}:${index}`
     const normalizedZnId = znId?.trim()
@@ -363,9 +375,53 @@ export class SvgEngine {
       dataIndex: index,
       znId: normalizedZnId && normalizedZnId.length > 0 ? normalizedZnId : undefined,
       confKey,
+      dragHandler: this._dragHandler(draginfo),
+      dragValue,
+      dragGrid,
+      dragJumpline,
       startChar: sourceOffsets?.[0],
       endChar: sourceOffsets?.[1],
     }
+  }
+
+  private _dragHandler(draginfo: unknown): string | undefined {
+    if (typeof draginfo !== 'object' || draginfo === null || Array.isArray(draginfo)) return undefined
+    const handler = (draginfo as Record<string, unknown>).handler
+    return typeof handler === 'string' && handler.length > 0 ? handler : undefined
+  }
+
+  private _jumplineDragValue(draginfo: unknown): number | undefined {
+    if (typeof draginfo !== 'object' || draginfo === null || Array.isArray(draginfo)) return undefined
+    const info = draginfo as Record<string, unknown>
+    if (info.handler !== 'jumpline' || typeof info.jumpline !== 'object' || info.jumpline === null) return undefined
+    const vertical = (info.jumpline as Record<string, unknown>).vertical
+    return typeof vertical === 'number' ? vertical : undefined
+  }
+
+  private _jumplineDragGrid(draginfo: unknown): number | undefined {
+    if (typeof draginfo !== 'object' || draginfo === null || Array.isArray(draginfo)) return undefined
+    const info = draginfo as Record<string, unknown>
+    if (info.handler !== 'jumpline') return undefined
+    const grid = info.xspacing
+    return typeof grid === 'number' && grid > 0 ? grid : undefined
+  }
+
+  private _jumplineDragInfo(draginfo: unknown): unknown {
+    if (typeof draginfo !== 'object' || draginfo === null || Array.isArray(draginfo)) return undefined
+    const info = draginfo as Record<string, unknown>
+    return info.handler === 'jumpline' ? info.jumpline : undefined
+  }
+
+  private _dragValue(draginfo: unknown): number | [number, number] | undefined {
+    if (typeof draginfo !== 'object' || draginfo === null || Array.isArray(draginfo)) return undefined
+    const value = (draginfo as Record<string, unknown>).value
+    if (typeof value === 'number') return value
+    if (Array.isArray(value) && value.length === 2) {
+      const first = value[0]
+      const second = value[1]
+      if (typeof first === 'number' && typeof second === 'number') return [first, second]
+    }
+    return undefined
   }
 
   private _wrapElement(meta: ElementMeta, content: string, hitbox?: string): string {
@@ -380,6 +436,13 @@ export class SvgEngine {
       'data-zn-id': meta.znId,
     }
     if (meta.confKey !== undefined) groupAttrs['data-conf-key'] = meta.confKey
+    if (this._interactive && meta.dragHandler !== undefined && meta.confKey !== undefined) {
+      groupAttrs['data-drag-enabled'] = 'true'
+      groupAttrs['data-drag-handler'] = meta.dragHandler
+      if (meta.dragValue !== undefined) groupAttrs['data-drag-value'] = JSON.stringify(meta.dragValue)
+      if (meta.dragGrid !== undefined) groupAttrs['data-drag-grid'] = meta.dragGrid
+      if (meta.dragJumpline !== undefined) groupAttrs['data-drag-jumpline'] = JSON.stringify(meta.dragJumpline)
+    }
     const inner = [content, hitbox].filter((part): part is string => part !== undefined && part.length > 0).join('\n')
     return svgGroup(inner, groupAttrs)
   }
@@ -435,6 +498,8 @@ export class SvgEngine {
       el.confKey,
       el.znId,
       el.origin?.sourceOffsets,
+      el.draginfo,
+      this._dragValue(el.draginfo) ?? el.center,
     )
 
     const parts: string[] = []
@@ -506,6 +571,8 @@ export class SvgEngine {
       el.confKey,
       el.znId,
       el.origin?.sourceOffsets,
+      el.draginfo,
+      this._dragValue(el.draginfo) ?? el.center,
     )
 
     const scaleFactor = (sh * 2) / glyphDef.h
@@ -561,6 +628,11 @@ export class SvgEngine {
       el.confKey ?? `flowline:${formatNumber(x1)}:${formatNumber(y1)}:${formatNumber(x2)}:${formatNumber(y2)}:${el.style}:${formatNumber(el.lineWidth)}`,
       el.confKey,
       el.znId,
+      undefined,
+      el.draginfo,
+      this._jumplineDragValue(el.draginfo),
+      this._jumplineDragGrid(el.draginfo),
+      this._jumplineDragInfo(el.draginfo),
     )
     if (this._useLegacyFrame) {
       const legacyId = `ZN_${index + 3}`
@@ -570,7 +642,8 @@ export class SvgEngine {
       }
       if (dash !== undefined) pathAttrs['stroke-dasharray'] = dash
       pathAttrs['stroke-width'] = el.lineWidth
-      return `<g id="${legacyId}" fill="" stroke="black" ><path ${attrs(pathAttrs)} /></g>`
+      const legacyContent = `<g id="${legacyId}" fill="" stroke="black" ><path ${attrs(pathAttrs)} /></g>`
+      return this._interactive ? this._wrapElement(meta, legacyContent) : legacyContent
     }
 
     const content = svgLine(x1, y1, x2, y2, el.color, el.lineWidth, dash, {
@@ -594,7 +667,24 @@ export class SvgEngine {
       el.confKey ?? `path:${el.path.map(([x, y]) => `${formatNumber(x)},${formatNumber(y)}`).join('|')}:${el.fill ? 'filled' : 'empty'}:${formatNumber(el.lineWidth)}`,
       el.confKey,
       el.znId,
+      undefined,
+      el.draginfo,
+      this._jumplineDragValue(el.draginfo),
+      this._jumplineDragGrid(el.draginfo),
+      this._jumplineDragInfo(el.draginfo),
     )
+    const dragHitbox = this._interactive && meta.dragHandler === 'jumpline'
+      // The SVG layout uses millimetres as coordinate units: five millimetres
+      // on either side of the visible line make the drag target forgiving.
+      ? svgPath(d, '#d44', el.lineWidth + 10, 'none', {
+        'data-drag-hitbox': 'true',
+        // The diagnostic path must not cover neighbouring notation elements.
+        // HarpPreviewPanel performs the forgiving geometric hit test instead.
+        'pointer-events': 'none',
+        'stroke-opacity': 0,
+        'vector-effect': 'non-scaling-stroke',
+      })
+      : undefined
     if (this._useLegacyFrame) {
       const legacyId = `ZN_${index + 3}`
       const groupFill = el.fill ? el.color : 'none'
@@ -604,7 +694,8 @@ export class SvgEngine {
         'stroke-linecap': 'round',
         'stroke-width': el.lineWidth,
       }
-      return `<g id="${legacyId}" fill="${groupFill}" stroke="black" ><path ${attrs(pathAttrs)} /></g>`
+      const legacyContent = `<g id="${legacyId}" fill="${groupFill}" stroke="black" ><path ${attrs(pathAttrs)} /></g>`
+      return this._interactive ? this._wrapElement(meta, legacyContent, dragHitbox) : legacyContent
     }
 
     const fill = el.fill ? el.color : 'none'
@@ -612,7 +703,7 @@ export class SvgEngine {
       class: 'zupfnoter-shape zupfnoter-shape--path',
       'data-filled': el.fill ? 'true' : 'false',
     })
-    return this._wrapElement(meta, content)
+    return this._wrapElement(meta, content, dragHitbox)
   }
 
   // ---------------------------------------------------------------------------
@@ -632,6 +723,9 @@ export class SvgEngine {
       el.confKey ?? `annotation:${formatNumber(x)}:${formatNumber(y)}:${el.style}:${el.text}`,
       el.confKey,
       el.znId,
+      undefined,
+      el.draginfo,
+      this._dragValue(el.draginfo) ?? el.center,
     )
     const anchor = el.align === 'center'
       ? 'middle'
@@ -660,6 +754,9 @@ export class SvgEngine {
       el.confKey ?? `image:${el.url}:${formatNumber(x)}:${formatNumber(y)}:${formatNumber(el.height)}`,
       el.confKey,
       el.znId,
+      undefined,
+      el.draginfo,
+      el.position,
     )
     const content = `<image ${attrs({
       href: el.url,

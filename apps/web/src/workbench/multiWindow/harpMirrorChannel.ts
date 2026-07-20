@@ -17,9 +17,22 @@ export interface HarpMirrorSnapshot {
   scrollTop: number
 }
 
+export interface HarpPreviewDragEnd {
+  confKey: string
+  handler: string
+  delta: [number, number]
+  value?: number | [number, number]
+  source: 'harp-preview'
+}
+
 export interface HarpMirrorMessage {
   kind: 'snapshot'
   snapshot: HarpMirrorSnapshot
+}
+
+export interface HarpMirrorDragEndMessage {
+  kind: 'mirror-drag-end'
+  payload: HarpPreviewDragEnd
 }
 
 const CHANNEL_NAME = 'zupfnoter-view-duplication'

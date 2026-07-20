@@ -226,7 +226,7 @@ export function renderWorkbenchPreviews(
     activeVoiceIds = resolveActiveVoiceIdsFromSheet(sheet)
     sheetObjectIndex = buildSheetObjectIndex(transformedSong, sheet as Sheet, abcText, scoreSvg)
     sheetChildCount = sheet.children.length
-    harpSvg = scaleSvgForPreview(new SvgEngine().draw(sheet))
+    harpSvg = scaleSvgForPreview(new SvgEngine({ interactive: true }).draw(sheet))
   } catch (error) {
     modelError = error instanceof Error ? error.message : String(error)
   }

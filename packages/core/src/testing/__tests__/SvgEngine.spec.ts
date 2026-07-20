@@ -121,6 +121,47 @@ describe('SvgEngine', () => {
       // Only the border rect should be present, no ellipse
       expect(svg.match(/<ellipse/g)?.length ?? 0).toBe(0)
     })
+
+    it('marks only explicitly draggable elements in interactive mode', () => {
+      const interactive = new SvgEngine({ width: 400, height: 282, interactive: true })
+      const svg = interactive.draw(makeSheet([
+        annotation({
+          confKey: 'extract.images.0.pos',
+          draginfo: { handler: 'annotation' },
+        }),
+        annotation({ confKey: 'extract.images.1.pos' }),
+      ]))
+
+      expect(svg).toContain('data-drag-enabled="true"')
+      expect(svg).toContain('data-drag-handler="annotation"')
+      expect(svg).toContain('data-drag-value="[20,30]"')
+      expect(svg.match(/data-drag-enabled="true"/g)?.length ?? 0).toBe(1)
+    })
+
+    it('adds a wide diagnostic hitbox for interactive jumplines', () => {
+      const interactive = new SvgEngine({ width: 400, height: 282, interactive: true })
+      const svg = interactive.draw(makeSheet([
+        pathEl({
+          confKey: 'extract.0.jumpline.test',
+          draginfo: {
+            handler: 'jumpline',
+            xspacing: 10,
+            jumpline: {
+              from: { center: [10, 20], size: [2, 1], anchor: 'after' },
+              to: { center: [30, 60], size: [2, 1], anchor: 'before' },
+              vertical: 10,
+              vertical_anchor: 'from',
+              jumpline_anchor: [1, 1],
+              verticalcut: 0,
+            },
+          },
+        }),
+      ]))
+
+      expect(svg).toContain('data-drag-handler="jumpline"')
+      expect(svg).toContain('data-drag-hitbox="true"')
+      expect(svg).toContain('stroke-width="20.3"')
+    })
   })
 
   describe('Ellipse', () => {

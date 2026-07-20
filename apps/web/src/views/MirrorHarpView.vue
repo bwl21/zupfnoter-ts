@@ -4,7 +4,11 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { PlaybackHighlight, SelectionProjection } from '@zupfnoter/types'
 
 import HarpPreviewPanel from '../workbench/panels/HarpPreviewPanel.vue'
-import { createHarpMirrorChannel, type HarpMirrorSnapshot } from '../workbench/multiWindow/harpMirrorChannel'
+import {
+  createHarpMirrorChannel,
+  type HarpMirrorSnapshot,
+  type HarpPreviewDragEnd,
+} from '../workbench/multiWindow/harpMirrorChannel'
 
 const channel = createHarpMirrorChannel()
 const snapshot = ref<HarpMirrorSnapshot | undefined>(undefined)
@@ -35,6 +39,10 @@ function handleMessage(event: MessageEvent): void {
   const record = data as { kind?: string, snapshot?: HarpMirrorSnapshot }
   if (record.kind !== 'snapshot' || record.snapshot === undefined) return
   applySnapshot(record.snapshot)
+}
+
+function handleDragEnd(payload: HarpPreviewDragEnd): void {
+  window.opener?.postMessage({ kind: 'mirror-drag-end', payload }, window.location.origin)
 }
 
 onMounted(() => {
@@ -68,6 +76,7 @@ onBeforeUnmount(() => {
       :selection="selection"
       v-model:zoom="harpZoom"
       :svg="harpSvg"
+      @drag-end="handleDragEnd"
     />
   </main>
 </template>
