@@ -61,6 +61,9 @@ export type {
   PlaybackHighlight,
   PlaybackFlowStep,
   PlaybackPlayerEvent,
+  PlaybackNote,
+  PlaybackStepTextRange,
+  PlaybackStep,
 } from './playback.js'
 
 export type {

@@ -6,7 +6,10 @@ import {
   type PlaybackLinkOptions,
 } from '@zupfnoter/playback'
 import { deflateSync, inflateSync } from 'fflate'
-import { playerQrJpegDataUrl } from '@zupfnoter/core'
+import {
+  buildPlaybackExportDataFromTimeline,
+  playerQrJpegDataUrl,
+} from '@zupfnoter/core'
 import type { PlaybackExportData } from '@zupfnoter/core'
 
 import type { PlaybackStep } from './playback'
@@ -31,58 +34,24 @@ export function playbackEventsFromTimeline(
   timeline: readonly PlaybackStep[],
   activeVoiceIds?: ReadonlySet<string>,
 ): PlaybackEvent[] {
-  return timeline.flatMap((step) => {
-    const position = step.position ?? { measureNumber: 1, passIndex: step.passIndex }
-    return step.activeNotes
-      .filter((note) => note.attack)
-      .filter((note) => activeVoiceIds === undefined || activeVoiceIds.has(note.originVoiceId))
-      .map((note) => ({
-        startMs: step.playbackStartMs,
-        durationMs: note.durationMs,
-        pitch: note.pitch,
-        velocity: 127,
-        position,
-      }))
-  })
+  return buildPlaybackExportDataFromTimeline(timeline, activeVoiceIds).events.map((event) => ({
+    startMs: event.startMs,
+    durationMs: event.durationMs,
+    pitch: event.pitch,
+    velocity: event.velocity,
+    position: event.position,
+  }))
 }
 
 /** Extracts the complete time-based measure/pass track, including silent steps. */
 export function playbackPositionsFromTimeline(
   timeline: readonly PlaybackStep[],
 ): PlaybackPositionMarker[] {
-  const markers: PlaybackPositionMarker[] = []
-  for (const step of timeline) {
-    if (step.position === undefined) continue
-    const previous = markers[markers.length - 1]
-    const positionChanged = previous === undefined
-      || previous.position.measureNumber !== step.position.measureNumber
-      || previous.position.passIndex !== step.position.passIndex
-    if (positionChanged) {
-      markers.push({
-        timeMs: step.playbackStartMs,
-        position: step.position,
-        meter: step.meter,
-      })
-    } else if (previous !== undefined && previous.meter === undefined && step.meter !== undefined) {
-      previous.meter = step.meter
-    }
-  }
-  const finalPositionedStep = [...timeline]
-    .reverse()
-    .find((step): step is PlaybackStep & { position: NonNullable<PlaybackStep['position']> } => step.position !== undefined)
-  const playbackEndMs = timeline.reduce(
-    (endMs, step) => Math.max(endMs, step.playbackStartMs + step.durationMs),
-    0,
-  )
-  const lastMarker = markers[markers.length - 1]
-  if (finalPositionedStep !== undefined && lastMarker !== undefined && playbackEndMs > lastMarker.timeMs) {
-    markers.push({
-      timeMs: playbackEndMs,
-      position: finalPositionedStep.position,
-      meter: undefined,
-    })
-  }
-  return markers
+  return buildPlaybackExportDataFromTimeline(timeline).positionMarkers.map((marker) => ({
+    timeMs: marker.timeMs,
+    position: marker.position,
+    meter: marker.meter,
+  }))
 }
 
 /** Creates one compressed playback link from the existing workbench timeline. */

@@ -1,6 +1,6 @@
 # Aktueller Projektstand
 
-Stand: 2026-07-19
+Stand: 2026-07-20
 
 Dieses Dokument beschreibt den tatsächlich vorhandenen Stand des Monorepos. Es
 ist ein Ist-Bericht und ersetzt keine Fachspezifikation.
@@ -62,7 +62,8 @@ In `apps/web` sind vorhanden:
 - dauerhafte Storage-Profile mit Wurzelpfad und Schreibschutz
 - Playback-Timeline mit Repeat-/Volta-Flow, Takt-/Durchlauf-Positionsspur,
   Metronom, Stereo-Panning und Soundfont-/Oszillator-Ausgabe
-- Playback-Link-Export einschließlich optionalem QR-Code
+- Playback-Link-Export einschließlich optionalem, temporär erzeugtem
+  Übungs-QR-Code als JPG in SVG/PDF
 - About-Dialog mit Build-Metadaten
 
 Noch nicht vollständig konsolidiert sind insbesondere die Trennung der
@@ -77,7 +78,13 @@ separate zeitbasierte Positionsspur für Takt, Durchlauf und Metrum.
 
 `apps/player` decodiert diese Links ohne ABC- oder Serverzugriff. Die produktive
 Player-UI kommt aus `packages/player-ui`; Storybook verwendet dieselbe UI-
-Renderfunktion und dasselbe CSS. Der Player ist öffentlich über FLink deploybar.
+Renderfunktion und dasselbe CSS. Die Positionsübernahme funktioniert auch
+während der Wiedergabe und nach einer Pause. Der Player ist öffentlich über
+FLink deploybar.
+
+Die Workbench verwendet für Teilen und PDF-QR-Erzeugung dieselbe Web-
+Playback-Timeline. Der QR-Code wird beim Export erzeugt und nicht als
+Ressource persistiert.
 
 Offen bleiben vor allem die weitere Audio-/Mobile-Politur und ein vollständiger
 CLI-Exportweg für Playback-Links.

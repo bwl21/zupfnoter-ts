@@ -129,6 +129,25 @@ function eventPosition(event: PlaybackEvent | undefined): { measureNumber: numbe
   return event?.position ?? { measureNumber: 1, passIndex: 1 }
 }
 
+function playbackDurationForSelection(
+  events: readonly PlaybackEvent[],
+  positionMarkers: readonly PlaybackPositionMarker[],
+  selectedStartMs: number,
+): number {
+  const lastEvent = events[events.length - 1]
+  if (lastEvent === undefined) return 0
+
+  let durationMs = lastEvent.startMs - selectedStartMs + lastEvent.durationMs
+  const lastPosition = lastEvent.position
+  const endMarker = positionMarkers.find((marker) => marker.timeMs > lastEvent.startMs
+    && marker.position.measureNumber === lastPosition.measureNumber
+    && marker.position.passIndex === lastPosition.passIndex)
+  if (endMarker !== undefined) {
+    durationMs = Math.max(durationMs, endMarker.timeMs - selectedStartMs)
+  }
+  return Math.max(0, durationMs)
+}
+
 interface SoundfontPitch {
   note: number
   cents: number
@@ -268,7 +287,9 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     const marker = markerIndex >= 0 ? positionMarkers[markerIndex] : undefined
     const nextMarker = markerIndex >= 0 ? nextPositionBoundaryMarker(positionMarkers, markerIndex) : undefined
     if (marker?.meter !== undefined) {
-      const measureDuration = (nextMarker?.timeMs ?? selectedStartMs + 1000) - marker.timeMs
+      const selectedDurationMs = playbackDurationForSelection(selectedEvents, positionMarkers, selectedStartMs)
+      const playbackEndMs = selectedStartMs + selectedDurationMs
+      const measureDuration = (nextMarker?.timeMs ?? playbackEndMs) - marker.timeMs
       const beatDuration = measureDuration / marker.meter.numerator
       const beat = beatDuration > 0 ? Math.min(marker.meter.numerator, Math.floor((absoluteTimeMs - marker.timeMs) / beatDuration) + 1) : 1
       ui.setMetronome(marker.meter, beat, metronomeEnabled)
@@ -388,8 +409,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     ui.setPlaying(true)
     configurePlaybackAudioSession()
     const base = selectedStartMs
-    const durationMs = (selectedEvents[selectedEvents.length - 1]?.startMs ?? base) - base
-      + (selectedEvents[selectedEvents.length - 1]?.durationMs ?? 0)
+    const durationMs = playbackDurationForSelection(selectedEvents, positionMarkers, base)
     if (playbackOffsetMs >= durationMs) playbackOffsetMs = 0
     const AudioContextClass = window.AudioContext
       ?? (window as WebkitAudioWindow).webkitAudioContext
@@ -491,8 +511,10 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       if (audioContext !== playerContext) return
       const elapsedMs = elapsed()
       if (elapsedMs >= durationMs) {
-        updatePosition(durationMs)
-        stopPlayback()
+        // Keep the final visual beat/measure visible after the scheduled audio
+        // has reached the end. Manual Stop still resets to the range start.
+        playbackOffsetMs = durationMs
+        stopPlayback(false)
         return
       }
       updatePosition(elapsedMs)
@@ -515,8 +537,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     updatePosition(playbackOffsetMs)
     if (!enabled || audioContext === undefined) return
     const elapsedMs = Math.max(0, (audioContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
-    const durationMs = (selectedEvents[selectedEvents.length - 1]?.startMs ?? selectedStartMs) - selectedStartMs
-      + (selectedEvents[selectedEvents.length - 1]?.durationMs ?? 0)
+    const durationMs = playbackDurationForSelection(selectedEvents, positionMarkers, selectedStartMs)
     scheduleMetronome(
       audioContext,
       durationMs,

@@ -37,7 +37,8 @@ export { pdfOutputFilename } from './PdfOutputName.js'
 export type { PdfPageFormat } from './PdfOutputName.js'
 
 export { expandPlaybackFlow } from './PlaybackFlow.js'
-export { buildPlaybackExportData } from './PlaybackExport.js'
+export { buildPlaybackTimeline, resolveBaseTempoFromSong } from './PlaybackTimeline.js'
+export { buildPlaybackExportData, buildPlaybackExportDataFromTimeline } from './PlaybackExport.js'
 export type { PlaybackExportData, PlaybackExportEvent, PlaybackExportMarker } from './PlaybackExport.js'
 
 export { GLYPHS } from './glyphs.js'

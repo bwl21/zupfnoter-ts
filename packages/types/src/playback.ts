@@ -4,6 +4,7 @@
 
 import type { SelectionTextRange } from './selection.js'
 import type { TimeSignature } from './music.js'
+import type { PlaybackPosition } from './playbackLink.js'
 
 /**
  * Runtime status of playback.
@@ -84,3 +85,43 @@ export type PlaybackPlayerEvent =
   | {
       kind: 'stop'
     }
+
+/** A note on the shared, expanded playback timeline. */
+export interface PlaybackNote {
+  originVoiceId: string
+  originPlaybackId: string
+  originZnId: string
+  pitch: number
+  durationMs: number
+  attack: boolean
+  pan: 'left' | 'right'
+}
+
+export interface PlaybackStepTextRange {
+  playbackId: string
+  voiceId: string
+  textRange: SelectionTextRange
+}
+
+/** One time-based step of the expanded playback flow. */
+export interface PlaybackStep {
+  originVoiceIds: string[]
+  originPlaybackIds: string[]
+  originZnIds: string[]
+  activeTextRanges: SelectionTextRange[]
+  activePlaybackTextRanges?: PlaybackStepTextRange[]
+  /** Playback identities whose visual highlight ends at this step. */
+  endedPlaybackIds?: string[]
+  activeNotes: PlaybackNote[]
+  activeStartChar?: number
+  activeTime: string
+  playbackStartMs: number
+  durationMs: number
+  sourceTime: number
+  position?: PlaybackPosition
+  /** Time signature at the beginning of the measure. */
+  meter?: TimeSignature
+  flowIndex: number
+  passIndex: number
+  voltaNumber?: number
+}

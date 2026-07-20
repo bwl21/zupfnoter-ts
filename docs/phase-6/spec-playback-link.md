@@ -1,5 +1,10 @@
 # Phase 6 – Playback-Link für Zupfnoter-TS
 
+**Status: weitgehend umgesetzt.** Web-Workbench, Player, Positionsspur,
+Metronomdaten, QR-Einbettung und öffentliche FLink-Bereitstellung sind
+implementiert. Offen bleibt die vollständige Konsolidierung des eigenständigen
+CLI-Playback-Link-Exports.
+
 ## Ziel
 
 Zupfnoter-TS erzeugt einen kompakten, versionierten Datensatz für eine eigenständige Player-Webanwendung. Der Datensatz dient ausschließlich der Wiedergabe. Er ist kein Austauschformat für ABC, MIDI oder Zupfnoter-Dokumente.
@@ -20,7 +25,9 @@ Base64URL
 https://zupfnoter-player.csweichel.dev/#p=...
 ```
 
-Der Player stellt eine Timeline mit Taktnummer und Durchlauf dar. Ein Bereich wie `27.1-3.2` kann direkt zur Wiedergabe ausgewählt werden. Die zweite Zahl ist die Durchlaufnummer.
+Der Player stellt eine Timeline mit Taktnummer und Durchlauf dar. Die Anzeige
+verwendet beispielsweise `27 : 1`; ein Bereich wie `27.1-3.2` kann direkt zur
+Wiedergabe ausgewählt werden. Die zweite Zahl ist die Durchlaufnummer.
 
 ## Bestehende Quelle und Auszugsbildung
 
@@ -227,7 +234,7 @@ Nicht vorhandene Positionen, ungültige Durchlaufnummern und ein Bereich mit Sta
 
 Die Bereichswiedergabe startet zeitlich bei 0 ms, auch wenn der Bereich später in der Gesamttimeline liegt.
 
-## Web-Export und geplanter CLI-Export
+## Web-Export und CLI-Stand
 
 Für ein Dokument mit `produce` werden in der Web-Workbench standardmäßig alle
 konfigurierten Auszüge exportiert. Mit einer expliziten Auszugsnummer wird genau
@@ -239,7 +246,7 @@ Web und CLI erzeugen je Auszug:
 stück-extract-0.playback.url
 ```
 
-Der geplante CLI-Befehl lautet:
+Der CLI-Befehl für einen eigenständigen Playback-Link lautet:
 
 ```text
 zupfnoter playback-link <input.abc> \\
@@ -257,8 +264,14 @@ stück-extract-0.playback.qr.png
 stück-extract-0.playback.qr.pdf
 ```
 
-Die Web-Anwendung bietet QR-SVG und QR-PDF an. CLI-QR-Ausgaben sind noch offen.
-Der QR-Code muss später exakt denselben Playback-Link wie die URL-Datei enthalten.
+In der Web-Workbench wird der QR-Code beim Export aus dem aktuellen
+Playback-Link erzeugt und als JPG über die bestehende Bildpipeline in SVG/PDF
+eingebettet. Teilen und PDF verwenden dabei dieselbe Web-Timeline. Der QR-Code
+wird nicht als Ressource gespeichert oder hochgeladen.
+
+Der CLI-Batch-Export kann einen `$player_qr` mit `--player-url` ebenfalls
+temporär erzeugen. Der eigenständige `playback-link`-Befehl schreibt derzeit
+noch keinen separaten QR-Artefakt-Export; dieser Ausbau bleibt offen.
 
 Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält einen konkreten Kapazitätsfehler. Ein serverseitiger Kurzlink ist in Version 1 nicht vorgesehen.
 
@@ -297,14 +310,16 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 - ungültige Links und ungültige Bereiche werden angezeigt
 - Player benötigt keine ABC- oder Konfigurationsdaten
 
-### QR und CLI (CLI teilweise offen)
+### QR und CLI
 
-- Web-Links und QR-Artefakte werden pro Auszug erzeugt
+- Web-Links und QR-JPGs werden pro Auszug erzeugt
 - Web-SVG und Web-PDF enthalten denselben Link
+- `$player_qr` wird temporär über die normale Bildpipeline eingebettet
 - Dateinamen verwenden die Auszugsnummer
 - `produce`-Fallback auf Auszug 0
 - expliziter Einzelauszug
-- CLI-Fehler und Exit-Codes sind noch zu implementieren
+- eigenständige CLI-QR-Artefakte und vollständige Web-/CLI-Pipeline-Parität sind
+  noch offen
 
 ## Annahmen
 
