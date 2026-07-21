@@ -39,6 +39,7 @@ export { pdfOutputFilename } from './PdfOutputName.js'
 export type { PdfPageFormat } from './PdfOutputName.js'
 
 export { expandPlaybackFlow } from './PlaybackFlow.js'
+export { extractLyricsText, replaceLyricsText } from './lyrics.js'
 export { buildPlaybackTimeline, resolveBaseTempoFromSong } from './PlaybackTimeline.js'
 export { buildPlaybackExportData, buildPlaybackExportDataFromTimeline } from './PlaybackExport.js'
 export type { PlaybackExportData, PlaybackExportEvent, PlaybackExportMarker } from './PlaybackExport.js'

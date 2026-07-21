@@ -1360,7 +1360,20 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
         required: ['spos', 'pos'],
         properties: { spos: legacyPosRef(), pos: legacyPosRef(), tstyle: fontStyleSchema(), align: legacyAlignRef(), style: fontStyleSchema(), salign: legacyAlignRef() },
       },
-      lyrics: { type: 'object', patternProperties: { '.*': { type: 'object', required: ['verses', 'pos'] } } },
+      lyrics: {
+        type: 'object',
+        patternProperties: {
+          '.*': {
+            type: 'object',
+            required: ['verses', 'pos'],
+            properties: {
+              verses: integerArraySchema({ type: 'integer' }, 1),
+              pos: legacyPosRef(),
+              style: fontStyleSchema(),
+            },
+          },
+        },
+      },
       layout: refTo('#/definitions/extract_layout'),
       nonflowrest: { type: 'boolean' },
       notes: { patternProperties: { '.*': refTo('#/definitions/notes_entry') } },

@@ -2031,7 +2031,11 @@ function handleMirrorMessage(event: MessageEvent): void {
                     </ZnToolbar>
                   </template>
                 </AbcEditorPanel>
-                <LyricsPanel v-else-if="activeId === 'lyrics'" />
+                <LyricsPanel
+                  v-else-if="activeId === 'lyrics'"
+                  :document-text="documentText"
+                  @update:document-text="documentText = $event"
+                />
                 <ConfigEditorPanel
                   v-else-if="activeId === 'config'"
                   :abc-text="documentText"

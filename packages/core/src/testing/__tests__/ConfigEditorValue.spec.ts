@@ -20,11 +20,15 @@ describe('config editor value conversion', () => {
     expect(formatConfigEditorValue('extract.0.voices', [1, 3])).toBe('1, 3')
     expect(formatConfigEditorValue('extract.0.synchlines', [[1, 2], [3, 4]])).toBe('1-2, 3-4')
     expect(formatConfigEditorValue('extract.0.notebound.annotation.v_1.1.pos', [10, 20])).toBe('10, 20')
+    expect(formatConfigEditorValue('extract.0.lyrics.0.verses', [3])).toBe('3')
+    expect(formatConfigEditorValue('extract.0.lyrics.0.pos', [10, 20])).toBe('10, 20')
   })
 
   it('derives scalar and nested array values from the schema', () => {
     expect(parseConfigEditorValue('produce', '0, 2')).toEqual({ value: [0, 2] })
     expect(parseConfigEditorValue('extract.0.synchlines', '1-2, 2-3')).toEqual({ value: [[1, 2], [2, 3]] })
+    expect(parseConfigEditorValue('extract.0.lyrics.0.verses', '1, 3')).toEqual({ value: [1, 3] })
+    expect(parseConfigEditorValue('extract.0.lyrics.0.pos', '10, 20')).toEqual({ value: [10, 20] })
   })
 
   it('rejects malformed values instead of coercing them', () => {
