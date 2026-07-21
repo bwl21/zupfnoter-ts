@@ -2,6 +2,7 @@ import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
 import { search, searchKeymap } from '@codemirror/search'
 import {
   type EditorState,
+  Compartment,
   StateEffect,
   StateField,
   type Extension,
@@ -18,13 +19,96 @@ import {
   drawSelection,
   highlightActiveLine,
   highlightActiveLineGutter,
+  highlightSpecialChars,
+  highlightTrailingWhitespace,
+  highlightWhitespace,
   gutter,
   keymap,
   lineNumbers,
+  MatchDecorator,
+  WidgetType,
 } from '@codemirror/view'
 import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 import type { PlaybackHighlight } from '@zupfnoter/types'
+
+const invisibleCharacters = /[\u0009\u00a0\u00ad\u202f\u200b\u200c\u200d\u2060\ufeff]/g
+
+function renderInvisibleCharacter(code: number, description: string | null, placeholder: string): HTMLElement {
+  const element = document.createElement('span')
+  element.className = 'cm-abc-invisible-character'
+  element.textContent = invisibleCharacterSymbol(code, placeholder)
+  element.title = description ?? placeholder
+  element.setAttribute('aria-label', description ?? placeholder)
+  element.setAttribute('aria-hidden', 'true')
+  return element
+}
+
+function invisibleCharacterSymbol(code: number, fallback: string): string {
+  const symbols: Record<number, string> = {
+    0x0009: '→',
+    0x00a0: '⍽',
+    0x00ad: '¬',
+    0x202f: '␣',
+    0x200b: 'ZWSP',
+    0x200c: 'ZWNJ',
+    0x200d: 'ZWJ',
+    0x2060: 'WJ',
+    0xfeff: 'BOM',
+  }
+  return symbols[code] ?? fallback
+}
+
+export function createInvisibleCharactersCompartment(): Compartment {
+  return new Compartment()
+}
+
+export function createInvisibleCharactersExtension(enabled: boolean): Extension {
+  return enabled
+    ? [
+      highlightSpecialChars({
+        specialChars: invisibleCharacters,
+        render: renderInvisibleCharacter,
+      }),
+      highlightWhitespace(),
+      highlightTrailingWhitespace(),
+      tabCharacterHighlight,
+    ]
+    : []
+}
+
+class TabCharacterWidget extends WidgetType {
+  eq(other: TabCharacterWidget): boolean {
+    return other instanceof TabCharacterWidget
+  }
+
+  toDOM(): HTMLElement {
+    const element = document.createElement('span')
+    element.className = 'cm-abc-invisible-tab'
+    element.textContent = '→'
+    element.setAttribute('aria-label', 'Tabulator')
+    element.setAttribute('aria-hidden', 'true')
+    return element
+  }
+}
+
+const tabCharacterHighlight = ViewPlugin.fromClass(class {
+  private readonly decorator = new MatchDecorator({
+    regexp: /\t/g,
+    decoration: Decoration.replace({ widget: new TabCharacterWidget() }),
+  })
+  decorations: DecorationSet
+
+  constructor(view: EditorView) {
+    this.decorations = this.decorator.createDeco(view)
+  }
+
+  update(update: ViewUpdate): void {
+    this.decorations = this.decorator.updateDeco(update, this.decorations)
+  }
+}, {
+  decorations: (value) => value.decorations,
+})
 
 export interface EditorDiagnostic {
   severity: 'warning' | 'error'
@@ -543,6 +627,88 @@ export function createAbcEditorExtensions(): Extension[] {
         backgroundColor: 'color-mix(in srgb, var(--zn-accent) 16%, transparent)',
         boxShadow: 'inset 0 -2px 0 color-mix(in srgb, var(--zn-accent-strong) 55%, transparent)',
         borderRadius: '0.14rem',
+      },
+      '.cm-abc-invisible-character': {
+        position: 'relative',
+        display: 'inline-block',
+        minWidth: '0.55em',
+        color: 'var(--zn-accent-strong)',
+        backgroundColor: 'color-mix(in srgb, var(--zn-accent) 22%, white)',
+        border: '1px solid color-mix(in srgb, var(--zn-accent) 48%, transparent)',
+        borderRadius: '0.16rem',
+        fontWeight: '700',
+        lineHeight: '1',
+        textAlign: 'center',
+        pointerEvents: 'none',
+      },
+      '.cm-specialChar': {
+        color: 'var(--zn-accent-strong)',
+        backgroundColor: 'color-mix(in srgb, var(--zn-accent) 22%, white)',
+        border: '1px solid color-mix(in srgb, var(--zn-accent) 48%, transparent)',
+        borderRadius: '0.16rem',
+        fontWeight: '700',
+      },
+      '.cm-highlightSpace': {
+        backgroundImage: 'none',
+      },
+      '.cm-highlightTab': {
+        backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='20' viewBox='0 0 200 20'%3E%3Cpath stroke='%234477aa' stroke-width='1.5' fill='none' d='M1 10H196L190 5M190 15L196 10M197 4V16'/%3E%3C/svg%3E\")",
+        backgroundSize: 'auto 100%',
+        backgroundPosition: 'right 90%',
+        backgroundRepeat: 'no-repeat',
+      },
+      '.cm-abc-invisible-tab': {
+        display: 'inline-block',
+        minWidth: '1.1em',
+        color: 'var(--zn-accent-strong)',
+        backgroundColor: 'color-mix(in srgb, var(--zn-accent) 22%, white)',
+        border: '1px solid color-mix(in srgb, var(--zn-accent) 48%, transparent)',
+        borderRadius: '0.16rem',
+        fontWeight: '700',
+        lineHeight: '1',
+        textAlign: 'center',
+        pointerEvents: 'none',
+      },
+      '.cm-abc-invisible-character::after': {
+        position: 'absolute',
+        inset: '0',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '0.76em',
+        lineHeight: '1',
+        pointerEvents: 'none',
+      },
+      '.cm-abc-invisible-character--nbsp::after': {
+        content: '"⍽"',
+      },
+      '.cm-abc-invisible-character--nnbsp::after': {
+        content: '"␣"',
+      },
+      '.cm-abc-invisible-character--tab::after': {
+        content: '"→"',
+      },
+      '.cm-abc-invisible-character--soft-hyphen::after': {
+        content: '"¬"',
+      },
+      '.cm-abc-invisible-character--zwsp::after': {
+        content: '"ZWSP"',
+      },
+      '.cm-abc-invisible-character--zwnj::after': {
+        content: '"ZWNJ"',
+      },
+      '.cm-abc-invisible-character--zwj::after': {
+        content: '"ZWJ"',
+      },
+      '.cm-abc-invisible-character--wj::after': {
+        content: '"WJ"',
+      },
+      '.cm-abc-invisible-character--bom::after': {
+        content: '"BOM"',
+      },
+      '.cm-trailingSpace': {
+        backgroundColor: 'color-mix(in srgb, var(--zn-accent) 18%, transparent)',
+        boxShadow: 'inset 0 -1px 0 color-mix(in srgb, var(--zn-accent) 55%, transparent)',
       },
       '.tippy-box[data-theme~="zn-diagnostic"]': {
         backgroundColor: 'var(--zn-bg-elevated)',

@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
   saveFormat: string
   speedFactor: number
   cursorPosition: string
+  cursorUnicode?: string
   selectionVoiceScope: 'single-voice' | 'extract-voices' | 'all-voices'
   selectionVoiceScopeSummary: string
 }>(), {})
@@ -60,7 +61,10 @@ function handleSelectionVoiceScopeChange(event: Event): void {
 
 <template>
   <ZnStatusBar>
-    <span class="footer-bar__meta footer-bar__cursor">{{ cursorPosition }}</span>
+    <span class="footer-bar__meta footer-bar__cursor">
+      {{ cursorPosition }}
+      <span class="footer-bar__unicode">{{ cursorUnicode ?? '—' }}</span>
+    </span>
     <ZnBadge tone="accent">
       {{ extractLabel }}
     </ZnBadge>
@@ -120,9 +124,18 @@ function handleSelectionVoiceScopeChange(event: Event): void {
 }
 
 .footer-bar__cursor {
-  min-width: 5ch;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  min-width: 11ch;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
+}
+
+.footer-bar__unicode {
+  color: var(--zn-text-muted);
+  font-family: var(--zn-font-mono, monospace);
+  font-size: 0.9em;
 }
 
 .footer-bar__storage-chip {

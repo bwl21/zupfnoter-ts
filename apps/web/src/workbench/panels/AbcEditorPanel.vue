@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { EditorState } from '@codemirror/state'
+import { Compartment, EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
@@ -8,22 +8,29 @@ import type { SelectionTextRange } from '@zupfnoter/types'
 import { ZnPanel } from '@zupfnoter/design-system'
 import {
   createAbcEditorExtensions,
+  createInvisibleCharactersCompartment,
+  createInvisibleCharactersExtension,
   syncEditorDiagnostics,
   syncEditorPlaybackHighlight,
   type EditorDiagnostic,
 } from './abcEditorCodeMirror'
 import type { PlaybackHighlight } from '@zupfnoter/types'
 
-interface CursorPosition {
+interface LineColumn {
   line: number
   column: number
+}
+
+interface CursorPosition extends LineColumn {
+  offset: number
+  unicode: string | undefined
 }
 
 interface EditorSelectionRange {
   startpos: number
   endpos: number
-  start: CursorPosition
-  end: CursorPosition
+  start: LineColumn
+  end: LineColumn
 }
 
 const abcText = defineModel<string>({
@@ -34,8 +41,11 @@ const props = withDefaults(defineProps<{
   diagnostics?: EditorDiagnostic[]
   playbackHighlight?: PlaybackHighlight
   selectedTextRange?: SelectionTextRange
+  showInvisibleCharacters?: boolean
+  cursorOffset?: number
 }>(), {
   diagnostics: () => [],
+  showInvisibleCharacters: false,
 })
 
 const emit = defineEmits<{
@@ -46,6 +56,7 @@ const emit = defineEmits<{
 const editorHost = ref<HTMLDivElement | null>(null)
 let editorView: EditorView | null = null
 let isApplyingExternalSelection = false
+const invisibleCharactersCompartment: Compartment = createInvisibleCharactersCompartment()
 const editorUpdateListener = EditorView.updateListener.of((update) => {
   if (!update.docChanged) return
   const nextValue = update.state.doc.toString()
@@ -91,9 +102,23 @@ function syncExternalSelection(nextSelection: SelectionTextRange | undefined): v
 function emitCursorPosition(view: EditorView): void {
   const head = view.state.selection.main.head
   const line = view.state.doc.lineAt(head)
+  const text = view.state.doc.toString()
+  const previousOffset = head - 1
+  const previousCodeUnit = previousOffset >= 0 ? text.charCodeAt(previousOffset) : undefined
+  const codePointOffset = previousCodeUnit !== undefined
+    && previousCodeUnit >= 0xdc00
+    && previousCodeUnit <= 0xdfff
+    && previousOffset > 0
+    ? previousOffset - 1
+    : previousOffset
+  const codePoint = codePointOffset >= 0 ? text.codePointAt(codePointOffset) : undefined
   emit('cursor-change', {
+    offset: head,
     line: line.number,
     column: head - line.from + 1,
+    unicode: codePoint === undefined
+      ? undefined
+      : `U+${codePoint.toString(16).toUpperCase().padStart(codePoint <= 0xffff ? 4 : 6, '0')}`,
   })
 }
 
@@ -121,8 +146,12 @@ onMounted(() => {
   editorView = new EditorView({
     state: EditorState.create({
       doc: abcText.value,
+      selection: {
+        anchor: Math.max(0, Math.min(props.cursorOffset ?? 0, abcText.value.length)),
+      },
       extensions: [
         ...createAbcEditorExtensions(),
+        invisibleCharactersCompartment.of(createInvisibleCharactersExtension(props.showInvisibleCharacters)),
         editorUpdateListener,
         EditorView.updateListener.of((update) => {
           if (isApplyingExternalSelection) return
@@ -169,6 +198,18 @@ watch(
     syncExternalSelection(selectedTextRange)
   },
   { immediate: true, deep: true },
+)
+
+watch(
+  () => props.showInvisibleCharacters,
+  (showInvisibleCharacters) => {
+    if (editorView === null) return
+    editorView.dispatch({
+      effects: invisibleCharactersCompartment.reconfigure(
+        createInvisibleCharactersExtension(showInvisibleCharacters),
+      ),
+    })
+  },
 )
 
 onBeforeUnmount(() => {

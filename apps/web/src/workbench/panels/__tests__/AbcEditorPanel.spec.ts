@@ -32,8 +32,10 @@ describe('AbcEditorPanel', () => {
 
     expect(wrapper.find('.cm-editor').exists()).toBe(true)
     expect(wrapper.emitted('cursor-change')?.[0]?.[0]).toEqual({
+      offset: 0,
       line: 1,
       column: 1,
+      unicode: undefined,
     })
     expect(wrapper.emitted('selection-change')?.[0]?.[0]).toEqual({
       startpos: 0,
@@ -105,5 +107,56 @@ describe('AbcEditorPanel', () => {
     const searchPanel = wrapper.find('.cm-search')
     expect(searchPanel.findAll('input').length).toBeGreaterThanOrEqual(1)
     expect(searchPanel.findAll('button').length).toBeGreaterThan(2)
+  })
+
+  it('shows invisible characters without changing the ABC document', async () => {
+    const source = 'X:1\nT:De\tmo  \nC:\u00a0\u00ad\u202f\u200b\u200c\u200d\u2060\ufeff'
+    const wrapper = mount(AbcEditorPanel, {
+      props: {
+        modelValue: source,
+        showInvisibleCharacters: true,
+      },
+    })
+
+    await nextTick()
+
+    expect(wrapper.findAll('.cm-abc-invisible-character').length).toBe(8)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+
+    await wrapper.setProps({ showInvisibleCharacters: false })
+    await nextTick()
+
+    expect(wrapper.findAll('.cm-abc-invisible-character')).toHaveLength(0)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+  })
+
+  it('keeps invisible character markers disabled by default', async () => {
+    const wrapper = mount(AbcEditorPanel, {
+      props: {
+        modelValue: 'X:1\nT:Demo\t  ',
+      },
+    })
+
+    await nextTick()
+
+    expect(wrapper.find('.cm-abc-invisible-character').exists()).toBe(false)
+  })
+
+  it('restores the requested cursor offset when the editor is mounted again', async () => {
+    const wrapper = mount(AbcEditorPanel, {
+      props: {
+        modelValue: 'X:1\nT:Demo\nK:C\nC D E',
+        cursorOffset: 17,
+      },
+    })
+
+    await nextTick()
+
+    expect(wrapper.emitted('cursor-change')?.[0]?.[0]).toMatchObject({
+      offset: 17,
+      line: 4,
+      column: 3,
+      unicode: 'U+0020',
+    })
   })
 })

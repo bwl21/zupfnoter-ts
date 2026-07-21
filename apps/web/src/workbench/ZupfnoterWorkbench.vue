@@ -130,6 +130,7 @@ interface RenderIssueChipItem {
 }
 
 const editorTab = ref('abc')
+const showInvisibleCharacters = ref(false)
 const editorPaneSize = ref(54)
 const previewPaneSize = ref(62)
 const harpZoom = ref(100)
@@ -256,6 +257,8 @@ const renderIssues = ref<RenderIssue[]>([])
 const workbenchDiagnostics = ref<WorkbenchDiagnostic[]>([])
 const editorDiagnostics = ref<EditorDiagnostic[]>([])
 const editorCursor = ref('01:01')
+const editorCursorUnicode = ref<string | undefined>(undefined)
+const editorCursorOffset = ref(0)
 const renderError = ref('')
 const renderSummary = ref('not rendered')
 const playbackTimeline = ref<PlaybackStep[]>([])
@@ -1625,7 +1628,9 @@ shortcutManager.register({
 })
 
 
-function handleEditorCursorChange(position: { line: number, column: number }): void {
+function handleEditorCursorChange(position: { offset: number, line: number, column: number, unicode: string | undefined }): void {
+  editorCursorOffset.value = position.offset
+  editorCursorUnicode.value = position.unicode
   const line = String(position.line).padStart(2, '0')
   const column = String(position.column).padStart(2, '0')
   editorCursor.value = `${line}:${column}`
@@ -1997,6 +2002,8 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :diagnostics="editorDiagnostics"
                   :playback-highlight="projectedPlaybackHighlight"
                   :selected-text-range="selectedEditorTextRange"
+                  :show-invisible-characters="showInvisibleCharacters"
+                  :cursor-offset="editorCursorOffset"
                   @cursor-change="handleEditorCursorChange"
                   @selection-change="handleEditorSelectionChange"
                 >
@@ -2008,6 +2015,18 @@ function handleMirrorMessage(event: MessageEvent): void {
                         <ZnButton variant="ghost" @click="executeToolbarCommand('addsnippet note')">Zusatz einfügen</ZnButton>
                         <ZnButton variant="ghost" @click="executeToolbarCommand('editsnippet')">Zusatz bearbeiten</ZnButton>
                         <ZnButton variant="ghost" @click="executeToolbarCommand('editconf basic_settings')">Konfig. bearb.</ZnButton>
+                        <button
+                          class="abc-editor-toolbar__invisible-toggle"
+                          :class="{ 'abc-editor-toolbar__invisible-toggle--on': showInvisibleCharacters }"
+                          type="button"
+                          role="switch"
+                          :aria-checked="showInvisibleCharacters"
+                          aria-label="Unsichtbare Zeichen anzeigen oder ausblenden"
+                          @click="showInvisibleCharacters = !showInvisibleCharacters"
+                        >
+                          <span class="abc-editor-toolbar__invisible-toggle-thumb" aria-hidden="true" />
+                          <span>Unsichtbare Zeichen</span>
+                        </button>
                       </template>
                     </ZnToolbar>
                   </template>
@@ -2086,6 +2105,7 @@ function handleMirrorMessage(event: MessageEvent): void {
           :dirty="documentDirty"
           :save-format="saveFormat"
           :cursor-position="editorCursor"
+          :cursor-unicode="editorCursorUnicode"
           :speed-factor="playbackStore.state.speedFactor"
           :selection-voice-scope="selectionStore.selection.voiceScope"
           :selection-voice-scope-summary="selectionVoiceScopeSummary"
@@ -2495,6 +2515,70 @@ function handleMirrorMessage(event: MessageEvent): void {
   min-height: 1.52rem;
   padding: 0.12rem 0.48rem;
   font-size: 0.78rem;
+}
+
+.abc-editor-toolbar__invisible-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 1.52rem;
+  padding: 0.12rem 0.48rem 0.12rem 0.18rem;
+  border: 1px solid var(--zn-border);
+  border-radius: 999px;
+  background: var(--zn-bg-surface);
+  color: var(--zn-text-soft);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.abc-editor-toolbar__invisible-toggle:hover {
+  border-color: var(--zn-border-strong);
+  background: var(--zn-bg-surface-soft);
+}
+
+.abc-editor-toolbar__invisible-toggle:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--zn-accent) 65%, white);
+  outline-offset: 2px;
+}
+
+.abc-editor-toolbar__invisible-toggle--on {
+  background: color-mix(in srgb, var(--zn-accent) 16%, var(--zn-bg-surface));
+  border-color: color-mix(in srgb, var(--zn-accent) 55%, var(--zn-border));
+  color: var(--zn-accent-strong);
+}
+
+.abc-editor-toolbar__invisible-toggle-thumb {
+  position: relative;
+  width: 1.55rem;
+  height: 0.82rem;
+  border: 1px solid var(--zn-border-strong);
+  border-radius: 999px;
+  background: var(--zn-bg-surface-soft);
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.abc-editor-toolbar__invisible-toggle-thumb::after {
+  position: absolute;
+  top: 0.08rem;
+  left: 0.08rem;
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  background: var(--zn-text-muted);
+  content: '';
+  transition: transform 140ms ease, background-color 140ms ease;
+}
+
+.abc-editor-toolbar__invisible-toggle--on .abc-editor-toolbar__invisible-toggle-thumb {
+  background: var(--zn-accent);
+  border-color: var(--zn-accent-strong);
+}
+
+.abc-editor-toolbar__invisible-toggle--on .abc-editor-toolbar__invisible-toggle-thumb::after {
+  background: white;
+  transform: translateX(0.72rem);
 }
 
 .preview-pane {
