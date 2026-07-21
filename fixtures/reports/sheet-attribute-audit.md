@@ -6,7 +6,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 246_Horch-was-kommt-von-draussen-rein [extract 0]
 
-- Issues: 3003
+- Issues: 3034
 - children[0].from (extra)
   - expected: undefined
   - actual: [415.2,16.826431959139]
@@ -3784,60 +3784,90 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[550].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[550].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[551].center (mismatch)
   - expected: [306.8,43.7084]
   - actual: [306.8,43.70840933965706]
 - children[551].znId (extra)
   - expected: undefined
   - actual: "3264"
+- children[551].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-2]}
 - children[552].center (mismatch)
   - expected: [295.3,44.8773]
   - actual: [295.3,44.87732579350602]
 - children[552].znId (extra)
   - expected: undefined
   - actual: "3456"
+- children[552].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-2]}
 - children[553].center (mismatch)
   - expected: [270.3,49.4069]
   - actual: [270.3,49.406877052170735]
 - children[553].znId (extra)
   - expected: undefined
   - actual: "4224"
+- children[553].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-2]}
 - children[554].center (mismatch)
   - expected: [278.8,63.6437]
   - actual: [278.8,63.643743159430855]
 - children[554].znId (extra)
   - expected: undefined
   - actual: "6144"
+- children[554].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[555].center (mismatch)
   - expected: [362.3,85.3998]
   - actual: [362.3,85.39976286026996]
 - children[555].znId (extra)
   - expected: undefined
   - actual: "8448"
+- children[555].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-2]}
 - children[556].center (mismatch)
   - expected: [316.3,102.8848]
   - actual: [316.3,102.88480481576065]
 - children[556].znId (extra)
   - expected: undefined
   - actual: "11520"
+- children[556].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-2]}
 - children[557].center (mismatch)
   - expected: [304.8,134.6525]
   - actual: [304.8,134.65254469171833]
 - children[557].znId (extra)
   - expected: undefined
   - actual: "16320"
+- children[557].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-2]}
 - children[558].center (mismatch)
   - expected: [339.3,227.8599]
   - actual: [339.3,227.859905144108]
 - children[558].znId (extra)
   - expected: undefined
   - actual: "30720"
+- children[558].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[559].center (mismatch)
   - expected: [350.8,253.5517]
   - actual: [350.8,253.55171470266328]
 - children[559].znId (extra)
   - expected: undefined
   - actual: "33792"
+- children[559].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[560].fill (extra)
   - expected: undefined
   - actual: false
@@ -3991,9 +4021,21 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[574].center (mismatch)
   - expected: [297.8,203.5135]
   - actual: [297.8,203.51345311929953]
+- children[574].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.variantend.v_1.27648.pos"
+- children[574].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-4,-7]}
 - children[575].center (mismatch)
   - expected: [332.3,223.8599]
   - actual: [332.3,223.859905144108]
+- children[575].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.variantend.v_1.30720.pos"
+- children[575].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-4,-7]}
 - children[576].from (extra)
   - expected: undefined
   - actual: [278.8,16.826431959139]
@@ -8860,18 +8902,69 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1233].center (mismatch)
   - expected: [56.3,203.5135]
   - actual: [56.3,203.51345311929953]
+- children[1233].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.variantend.v_2.27648.pos"
+- children[1233].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-4,-7]}
 - children[1234].center (mismatch)
   - expected: [76.3,223.8599]
   - actual: [76.3,223.859905144108]
+- children[1234].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.variantend.v_2.30720.pos"
+- children[1234].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-7,-7]}
 - children[1235].center (mismatch)
   - expected: [111.3,194.5274]
   - actual: [111.3,194.52740788033566]
+- children[1235].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_2.26496.pos"
+- children[1235].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-7]}
 - children[1236].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[1236].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[289,9]}
 - children[1237].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
+- children[1238].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T01_number.pos"
+- children[1238].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[391,27]}
+- children[1239].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T01_number_extract.pos"
+- children[1239].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[409,27]}
+- children[1240].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T02_copyright_music.pos"
+- children[1240].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[370,262]}
+- children[1241].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T03_copyright_harpnotes.pos"
+- children[1241].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[357,270]}
+- children[1242].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T99_do_not_copy.pos"
+- children[1242].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
 - children[1243].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -9019,7 +9112,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 3015_reference_sheet [extract 0]
 
-- Issues: 556
+- Issues: 686
 - children[0].from (extra)
   - expected: undefined
   - actual: [278.8,20]
@@ -9623,27 +9716,129 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[81].center (mismatch)
   - expected: [287.8,112.6]
   - actual: [287.8,112.59999999999998]
+- children[81].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.partname.v_1.5376.pos"
+- children[81].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-14,-7]}
+- children[82].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.0.pos"
+- children[82].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
+- children[83].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.0.1.pos"
+- children[83].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,5]}
+- children[84].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.1536.pos"
+- children[84].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
+- children[85].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.2304.pos"
+- children[85].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
+- children[86].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.2688.pos"
+- children[86].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
 - children[87].center (mismatch)
   - expected: [306.8,60.7]
   - actual: [306.8,60.699999999999996]
+- children[87].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.2880.pos"
+- children[87].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
+- children[88].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.3072.pos"
+- children[88].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-7]}
+- children[89].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.4224.pos"
+- children[89].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[20,-5]}
+- children[90].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.4608.pos"
+- children[90].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
 - children[91].center (mismatch)
   - expected: [306.8,117.6]
   - actual: [306.8,117.59999999999998]
+- children[91].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.5376.pos"
+- children[91].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
 - children[92].center (mismatch)
   - expected: [306.8,148.6]
   - actual: [306.8,148.59999999999997]
+- children[92].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.6912.pos"
+- children[92].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
 - children[93].center (mismatch)
   - expected: [306.8,154.6]
   - actual: [306.8,154.59999999999997]
+- children[93].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.7680.pos"
+- children[93].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
 - children[94].center (mismatch)
   - expected: [306.8,159.6]
   - actual: [306.8,159.59999999999997]
+- children[94].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.8064.pos"
+- children[94].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
 - children[95].center (mismatch)
   - expected: [306.8,162.8]
   - actual: [306.8,162.79999999999998]
+- children[95].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.8256.pos"
+- children[95].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
+- children[96].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.8448.pos"
+- children[96].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
 - children[97].center (mismatch)
   - expected: [306.8,183.95]
   - actual: [306.8,183.94999999999996]
+- children[97].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.9984.pos"
+- children[97].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-2]}
 - children[98].from (extra)
   - expected: undefined
   - actual: [232.8,20]
@@ -9995,9 +10190,57 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[145].center (mismatch)
   - expected: [220.8,112.6]
   - actual: [220.8,112.59999999999998]
+- children[145].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.partname.v_2.5376.pos"
+- children[145].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-12,-7]}
+- children[146].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_2.0.pos"
+- children[146].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-7]}
+- children[147].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_2.768.pos"
+- children[147].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-10,-5]}
+- children[148].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_2.1536.pos"
+- children[148].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[8,5]}
+- children[149].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_2.2304.pos"
+- children[149].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,1]}
+- children[150].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_2.4224.pos"
+- children[150].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[10,2]}
+- children[151].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_2.4608.pos"
+- children[151].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-31,1]}
 - children[152].center (mismatch)
   - expected: [237.8,112.6]
   - actual: [237.8,112.59999999999998]
+- children[152].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_2.5376.pos"
+- children[152].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-7]}
 - children[155].from (extra)
   - expected: undefined
   - actual: [163.8,20]
@@ -10334,6 +10577,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[218].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.decoration.v_3.t_6912.0.pos"
+- children[218].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[219].fill (extra)
   - expected: undefined
   - actual: false
@@ -10526,30 +10772,267 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[240].size (mismatch)
   - expected: [12.438,2.7392]
   - actual: [12.445937499999998,2.7391874999999994]
+- children[241].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.variantend.v_3.3072.pos"
+- children[241].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-4,-7]}
+- children[242].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.variantend.v_3.4608.pos"
+- children[242].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-4,-7]}
+- children[243].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_3.0.pos"
+- children[243].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[10,0]}
+- children[244].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_3.1536.pos"
+- children[244].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[10,-5]}
+- children[245].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_3.3072.pos"
+- children[245].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[10,-2]}
 - children[246].center (mismatch)
   - expected: [123.8,81.6]
   - actual: [123.80000000000001,81.6]
+- children[246].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_3.4224.pos"
+- children[246].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-40,0]}
+- children[247].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_3.4608.pos"
+- children[247].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-15,-10]}
 - children[248].center (mismatch)
   - expected: [123.8,112.6]
   - actual: [123.80000000000001,112.59999999999998]
+- children[248].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_3.4992.pos"
+- children[248].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-40,10]}
 - children[249].center (mismatch)
   - expected: [164.8,112.6]
   - actual: [164.8,112.59999999999998]
+- children[249].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_3.4992.1.pos"
+- children[249].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[1,10]}
 - children[250].center (mismatch)
   - expected: [168.8,143.6]
   - actual: [168.8,143.59999999999997]
+- children[250].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_3.6912.pos"
+- children[250].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[5,-7]}
 - children[251].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[251].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,8]}
 - children[252].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
+- children[253].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.32.pos"
+- children[253].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[254,36]}
+- children[254].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.34.pos"
+- children[254].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[326,15]}
+- children[255].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.35.pos"
+- children[255].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[371,29]}
+- children[256].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.36.pos"
+- children[256].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[102,200]}
+- children[257].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.37.pos"
+- children[257].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[190,10]}
+- children[258].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.38.pos"
+- children[258].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[130,16]}
+- children[259].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.39.pos"
+- children[259].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[145,8]}
+- children[260].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.70.pos"
+- children[260].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[150,283]}
+- children[261].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.71.pos"
+- children[261].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[194,283]}
+- children[262].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.72.pos"
+- children[262].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[290,288]}
+- children[263].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.73.pos"
+- children[263].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[350,286]}
+- children[264].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.74.pos"
+- children[264].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[293,242]}
+- children[265].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.75.pos"
+- children[265].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[293,251]}
+- children[266].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.76.pos"
+- children[266].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[293,260]}
+- children[267].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.77.pos"
+- children[267].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[370,278]}
+- children[268].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.78.pos"
+- children[268].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[366,16]}
+- children[269].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.79.pos"
+- children[269].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[374,19]}
+- children[270].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T01_number.pos"
+- children[270].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[393,15]}
+- children[271].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T01_number_extract.pos"
+- children[271].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[411,15]}
+- children[272].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T02_copyright_music.pos"
+- children[272].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[340,251]}
+- children[273].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T03_copyright_harpnotes.pos"
+- children[273].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[340,260]}
+- children[274].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T04_to_order.pos"
+- children[274].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[340,242]}
+- children[275].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T99_do_not_copy.pos"
+- children[275].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
+- children[276].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.39-1.pos"
+- children[276].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[285,8]}
 - children[277].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
 - children[278].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
+- children[280].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.lyrics.1.pos"
+- children[280].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[50,30]}
+- children[281].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.lyrics.2.pos"
+- children[281].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[110,225]}
+- children[282].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.lyrics.4.pos"
+- children[282].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[161,225]}
+- children[283].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.lyrics.5.pos"
+- children[283].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[50,225]}
+- children[284].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.lyrics.6.pos"
+- children[284].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[217,225]}
 - children[285].fill (extra)
   - expected: undefined
   - actual: true
@@ -10691,7 +11174,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 694_Sheep-may-safely-graze [extract 0]
 
-- Issues: 3825
+- Issues: 3842
 - children[0].from (extra)
   - expected: undefined
   - actual: [301.8,194.19384057971018]
@@ -22023,6 +22506,57 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1680].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[1680].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,8]}
+- children[1681].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T01_number.pos"
+- children[1681].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,17]}
+- children[1682].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T01_number_extract.pos"
+- children[1682].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[411,17]}
+- children[1683].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T02_copyright_music.pos"
+- children[1683].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,280]}
+- children[1684].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T03_copyright_harpnotes.pos"
+- children[1684].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,284]}
+- children[1685].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T04_to_order.pos"
+- children[1685].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,279]}
+- children[1686].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T05_printed_extracts.pos"
+- children[1686].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,22]}
+- children[1687].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T06_legend.pos"
+- children[1687].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[344,19]}
+- children[1688].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T99_do_not_copy.pos"
+- children[1688].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
 - children[1689].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -22170,7 +22704,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 694_Sheep-may-safely-graze [extract 1]
 
-- Issues: 1861
+- Issues: 1878
 - children[0].from (extra)
   - expected: undefined
   - actual: [301.8,193.55598580187169]
@@ -27619,6 +28153,57 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[799].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
+- children[799].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,8]}
+- children[800].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T01_number.pos"
+- children[800].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,17]}
+- children[801].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T01_number_extract.pos"
+- children[801].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[411,17]}
+- children[802].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T02_copyright_music.pos"
+- children[802].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,280]}
+- children[803].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T03_copyright_harpnotes.pos"
+- children[803].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,284]}
+- children[804].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T04_to_order.pos"
+- children[804].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,279]}
+- children[805].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T05_printed_extracts.pos"
+- children[805].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,22]}
+- children[806].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T06_legend.pos"
+- children[806].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[344,19]}
+- children[807].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T99_do_not_copy.pos"
+- children[807].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
 - children[808].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -27757,7 +28342,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 694_Sheep-may-safely-graze [extract 2]
 
-- Issues: 3813
+- Issues: 3830
 - children[0].from (extra)
   - expected: undefined
   - actual: [83.3,16.85920125853624]
@@ -39062,6 +39647,57 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1673].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
+- children[1673].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,8]}
+- children[1674].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T01_number.pos"
+- children[1674].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,17]}
+- children[1675].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T01_number_extract.pos"
+- children[1675].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[411,17]}
+- children[1676].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T02_copyright_music.pos"
+- children[1676].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,280]}
+- children[1677].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T03_copyright_harpnotes.pos"
+- children[1677].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,284]}
+- children[1678].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T04_to_order.pos"
+- children[1678].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,279]}
+- children[1679].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T05_printed_extracts.pos"
+- children[1679].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,22]}
+- children[1680].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T06_legend.pos"
+- children[1680].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[344,19]}
+- children[1681].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T99_do_not_copy.pos"
+- children[1681].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
 - children[1682].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -39200,7 +39836,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 757_Andante-grazioso-Mozart [extract 0]
 
-- Issues: 2604
+- Issues: 2623
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,19.305110939397284]
@@ -42597,6 +43233,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[506].znId (extra)
   - expected: undefined
   - actual: "18432"
+- children[506].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[507].size (mismatch)
   - expected: [2.1,0.78]
   - actual: [2.1,0.7800000000000001]
@@ -42609,6 +43248,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[507].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.decoration.v_1.t_20736.0.pos"
+- children[507].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[508].fill (extra)
   - expected: undefined
   - actual: false
@@ -46869,6 +47511,57 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1132].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[1132].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,8]}
+- children[1133].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T01_number.pos"
+- children[1133].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,17]}
+- children[1134].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T01_number_extract.pos"
+- children[1134].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[411,17]}
+- children[1135].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T02_copyright_music.pos"
+- children[1135].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,280]}
+- children[1136].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T03_copyright_harpnotes.pos"
+- children[1136].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,284]}
+- children[1137].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T04_to_order.pos"
+- children[1137].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[150,284]}
+- children[1138].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T05_printed_extracts.pos"
+- children[1138].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,22]}
+- children[1139].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T06_legend.pos"
+- children[1139].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[350,40]}
+- children[1140].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T99_do_not_copy.pos"
+- children[1140].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
 - children[1141].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -47016,7 +47709,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 757_Andante-grazioso-Mozart [extract 1]
 
-- Issues: 1110
+- Issues: 1129
 - children[0].from (extra)
   - expected: undefined
   - actual: [324.8,18.222607833415964]
@@ -50119,6 +50812,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[457].znId (extra)
   - expected: undefined
   - actual: "18432"
+- children[457].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[458].size (mismatch)
   - expected: [2.1,0.78]
   - actual: [2.1,0.7800000000000001]
@@ -50131,6 +50827,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[458].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.decoration.v_1.t_20736.0.pos"
+- children[458].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[459].fill (extra)
   - expected: undefined
   - actual: false
@@ -50212,6 +50911,57 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[465].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
+- children[465].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,8]}
+- children[466].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T01_number.pos"
+- children[466].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,17]}
+- children[467].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T01_number_extract.pos"
+- children[467].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[411,17]}
+- children[468].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T02_copyright_music.pos"
+- children[468].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,280]}
+- children[469].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T03_copyright_harpnotes.pos"
+- children[469].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,284]}
+- children[470].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T04_to_order.pos"
+- children[470].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[150,284]}
+- children[471].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T05_printed_extracts.pos"
+- children[471].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,22]}
+- children[472].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T06_legend.pos"
+- children[472].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[350,40]}
+- children[473].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T99_do_not_copy.pos"
+- children[473].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
 - children[474].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -50350,7 +51100,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 757_Andante-grazioso-Mozart [extract 2]
 
-- Issues: 2605
+- Issues: 2624
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,19.305110939397284]
@@ -53747,6 +54497,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[506].znId (extra)
   - expected: undefined
   - actual: "18432"
+- children[506].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[507].size (mismatch)
   - expected: [2.1,0.78]
   - actual: [2.1,0.7800000000000001]
@@ -53759,6 +54512,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[507].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.decoration.v_1.t_20736.0.pos"
+- children[507].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[508].fill (extra)
   - expected: undefined
   - actual: false
@@ -58031,6 +58787,57 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1132].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
+- children[1132].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,8]}
+- children[1133].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T01_number.pos"
+- children[1133].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,17]}
+- children[1134].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T01_number_extract.pos"
+- children[1134].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[411,17]}
+- children[1135].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T02_copyright_music.pos"
+- children[1135].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,280]}
+- children[1136].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T03_copyright_harpnotes.pos"
+- children[1136].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,284]}
+- children[1137].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T04_to_order.pos"
+- children[1137].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[150,284]}
+- children[1138].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T05_printed_extracts.pos"
+- children[1138].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,22]}
+- children[1139].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T06_legend.pos"
+- children[1139].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[350,40]}
+- children[1140].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notes.T99_do_not_copy.pos"
+- children[1140].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
 - children[1141].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
@@ -58169,7 +58976,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 783_einsiedler-kreuzweg [extract 0]
 
-- Issues: 1100
+- Issues: 1123
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,17.424242424242422]
@@ -61326,12 +62133,81 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[464].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[464].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,8]}
+- children[465].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T01_number.pos"
+- children[465].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,17]}
+- children[466].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T01_number_extract.pos"
+- children[466].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[411,17]}
+- children[467].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T02_copyright_music.pos"
+- children[467].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[150,281]}
+- children[468].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T03_copyright_harpnotes.pos"
+- children[468].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,284]}
+- children[469].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T04_to_order.pos"
+- children[469].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,274]}
+- children[470].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T05_printed_extracts.pos"
+- children[470].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,22]}
+- children[471].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T06_legend.pos"
+- children[471].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[352,21]}
+- children[472].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notes.T99_do_not_copy.pos"
+- children[472].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
 - children[473].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
 - children[474].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
+- children[476].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.lyrics.1.pos"
+- children[476].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[335,38]}
+- children[477].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.lyrics.2.pos"
+- children[477].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[337,230]}
+- children[478].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.lyrics.3.pos"
+- children[478].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[161,229]}
 - children[479].fill (extra)
   - expected: undefined
   - actual: true
@@ -61473,7 +62349,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 783_einsiedler-kreuzweg [extract 1]
 
-- Issues: 1101
+- Issues: 1124
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,17.424242424242422]
@@ -64642,12 +65518,81 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[464].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
+- children[464].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,8]}
+- children[465].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T01_number.pos"
+- children[465].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,17]}
+- children[466].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T01_number_extract.pos"
+- children[466].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[411,17]}
+- children[467].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T02_copyright_music.pos"
+- children[467].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[150,281]}
+- children[468].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T03_copyright_harpnotes.pos"
+- children[468].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,284]}
+- children[469].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T04_to_order.pos"
+- children[469].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,274]}
+- children[470].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T05_printed_extracts.pos"
+- children[470].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,22]}
+- children[471].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T06_legend.pos"
+- children[471].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[352,21]}
+- children[472].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notes.T99_do_not_copy.pos"
+- children[472].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
 - children[473].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
 - children[474].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
+- children[476].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.lyrics.1.pos"
+- children[476].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[335,38]}
+- children[477].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.lyrics.2.pos"
+- children[477].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[337,230]}
+- children[478].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.lyrics.3.pos"
+- children[478].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[161,229]}
 - children[479].fill (extra)
   - expected: undefined
   - actual: true
@@ -64780,7 +65725,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 783_einsiedler-kreuzweg [extract 3]
 
-- Issues: 596
+- Issues: 619
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,17.476190476190474]
@@ -66434,12 +67379,81 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[238].confKey (extra)
   - expected: undefined
   - actual: "extract.3.legend.pos"
+- children[238].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,8]}
+- children[239].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notes.T01_number.pos"
+- children[239].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,17]}
+- children[240].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notes.T01_number_extract.pos"
+- children[240].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[411,17]}
+- children[241].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notes.T02_copyright_music.pos"
+- children[241].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[150,281]}
+- children[242].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notes.T03_copyright_harpnotes.pos"
+- children[242].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,284]}
+- children[243].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notes.T04_to_order.pos"
+- children[243].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,274]}
+- children[244].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notes.T05_printed_extracts.pos"
+- children[244].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[410,22]}
+- children[245].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notes.T06_legend.pos"
+- children[245].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[352,21]}
+- children[246].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.notes.T99_do_not_copy.pos"
+- children[246].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[380,284]}
 - children[247].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
 - children[248].draginfo (extra)
   - expected: undefined
   - actual: {"handler":"annotation"}
+- children[250].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.lyrics.1.pos"
+- children[250].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[335,38]}
+- children[251].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.lyrics.2.pos"
+- children[251].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[337,230]}
+- children[252].confKey (extra)
+  - expected: undefined
+  - actual: "extract.3.lyrics.3.pos"
+- children[252].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[161,229]}
 - children[253].fill (extra)
   - expected: undefined
   - actual: true
@@ -66572,7 +67586,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## abc-to-song-slur-tuplet-parity [extract 0]
 
-- Issues: 46
+- Issues: 47
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -66675,6 +67689,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[13].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[13].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[320,7]}
 - children[14].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
@@ -66714,7 +67731,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## decoration [extract 0]
 
-- Issues: 39
+- Issues: 43
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -66787,15 +67804,27 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[10].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.decoration.v_1.t_0.0.pos"
+- children[10].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-4]}
 - children[11].znId (extra)
   - expected: undefined
   - actual: "768"
+- children[11].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[12].znId (extra)
   - expected: undefined
   - actual: "1152"
+- children[12].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3]}
 - children[13].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[13].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[320,7]}
 - children[14].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
@@ -66835,7 +67864,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## lyrics [extract 0]
 
-- Issues: 31
+- Issues: 32
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -66893,6 +67922,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[8].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[8].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[320,7]}
 - children[9].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
@@ -66932,7 +67964,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## pause [extract 0]
 
-- Issues: 46
+- Issues: 47
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,16.2]
@@ -67035,6 +68067,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[11].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[11].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[320,7]}
 - children[12].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
@@ -67074,7 +68109,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## repeat [extract 0]
 
-- Issues: 308
+- Issues: 309
 - children[0].from (extra)
   - expected: undefined
   - actual: [221.3,18.698060941828256]
@@ -67852,6 +68887,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[86].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[86].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[325,8]}
 - children[87].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
@@ -68002,7 +69040,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## single_note [extract 0]
 
-- Issues: 15
+- Issues: 16
 - children[0].znId (extra)
   - expected: undefined
   - actual: "0"
@@ -68012,6 +69050,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[1].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[1].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[320,7]}
 - children[2].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
@@ -68051,7 +69092,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## tie [extract 0]
 
-- Issues: 34
+- Issues: 35
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -68118,6 +69159,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[9].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[9].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[320,7]}
 - children[10].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
@@ -68157,7 +69201,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## tuplet [extract 0]
 
-- Issues: 42
+- Issues: 43
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,17]
@@ -68248,6 +69292,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[11].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[11].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[320,7]}
 - children[12].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"
@@ -68287,7 +69334,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## two_voices [extract 0]
 
-- Issues: 48
+- Issues: 49
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -68396,6 +69443,9 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[17].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
+- children[17].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[320,7]}
 - children[18].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.spos"

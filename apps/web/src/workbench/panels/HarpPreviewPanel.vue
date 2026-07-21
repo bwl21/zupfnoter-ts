@@ -121,10 +121,7 @@ function findJumplineAtEvent(event: PointerEvent): HTMLElement | null {
   const canvas = canvasRef.value
   if (canvas === null) return null
   const target = event.target
-  if (
-    !(target instanceof Element)
-    || target.closest('.zupfnoter-element[data-drag-enabled="true"][data-conf-key]') !== null
-  ) return null
+  if (!(target instanceof Element)) return null
 
   const candidates = canvas.querySelectorAll<HTMLElement>('.zupfnoter-element[data-drag-handler="jumpline"][data-conf-key]')
   for (const candidate of candidates) {
