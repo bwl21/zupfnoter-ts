@@ -245,17 +245,7 @@ export function registerStorageCommands(
       const recursive = flag === '-r' || flag === '--recursive'
       const rawFilename = String(args.filename ?? '').trim()
       const filename = recursive && rawFilename === '' ? '*' : (recursive && rawFilename !== '' ? rawFilename : (flag === '' ? rawFilename : flag))
-      const numericSelection = Number.parseInt(filename, 10)
-      if (
-        state.pendingCandidates.length > 0
-        && Number.isInteger(numericSelection)
-        && numericSelection >= 1
-        && numericSelection <= state.pendingCandidates.length
-      ) {
-        const selectedName = state.pendingCandidates[numericSelection - 1]
-        if (selectedName === undefined) {
-          throw new CommandError(`Candidate not found: ${numericSelection}`)
-        }
+      const openSelected = async (selectedName: string): Promise<CommandResult> => {
         const oldState = { ...state }
         const previousDocument = runtime.readDocument()
         const loaded = await runtime.open(state, selectedName)
@@ -273,9 +263,25 @@ export function registerStorageCommands(
           pendingCandidates: [...oldState.pendingCandidates],
           documentText: previousDocument,
         }
-        return { undoArguments } as CommandResult
+        return { undoArguments }
+      }
+      const numericSelection = Number.parseInt(filename, 10)
+      if (
+        state.pendingCandidates.length > 0
+        && Number.isInteger(numericSelection)
+        && numericSelection >= 1
+        && numericSelection <= state.pendingCandidates.length
+      ) {
+        const selectedName = state.pendingCandidates[numericSelection - 1]
+        if (selectedName === undefined) {
+          throw new CommandError(`Candidate not found: ${numericSelection}`)
+        }
+        return openSelected(selectedName)
       }
       const query = recursive ? rawFilename : (flag === '' ? rawFilename : flag)
+      if (!recursive && query.startsWith('/')) {
+        return openSelected(query)
+      }
       const candidates = recursive
         ? await runtime.search(state, query)
         : filterStorageCandidates(await runtime.list(state, false), query, false)
@@ -288,28 +294,11 @@ export function registerStorageCommands(
         state.pendingCandidates = candidates
         return
       }
-      const oldState = { ...state }
       const selectedName = candidates[0]
       if (selectedName === undefined) {
         throw new CommandError(`No matches for: ${query}`)
       }
-      const previousDocument = runtime.readDocument()
-      const loaded = await runtime.open(state, selectedName)
-      if (loaded === undefined) {
-        throw new CommandError(`Unable to open: ${selectedName}`)
-      }
-      runtime.writeDocument(loaded)
-      context.log(`open ${state.system}//${state.path}/${selectedName}`)
-      state.loggedIn = true
-      state.pendingCandidates = []
-      const undoArguments: CommandArguments = {
-        system: oldState.system,
-        path: oldState.path,
-        loggedIn: oldState.loggedIn,
-        pendingCandidates: [...oldState.pendingCandidates],
-        documentText: previousDocument,
-      }
-      return { undoArguments } as CommandResult
+      return openSelected(selectedName)
     },
     invert: (args) => {
       state.system = String(args.system ?? state.system)

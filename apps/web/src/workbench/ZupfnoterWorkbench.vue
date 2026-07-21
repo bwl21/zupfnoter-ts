@@ -222,7 +222,9 @@ const returnToStorageOpenDialog = ref(false)
 const storageOpenDialogOpen = ref(false)
 const storageOpenDocuments = ref<StorageDocument[]>([])
 const storageOpenLoading = ref(false)
+const storageOpenOpening = ref(false)
 const storageOpenDocumentsLoaded = ref(false)
+const storageOpenDocumentCache = new Map<string, StorageDocument[]>()
 const storagePreviewUrl = ref<string>()
 const storagePreviewLoading = ref(false)
 const storagePreviewError = ref('')
@@ -934,8 +936,7 @@ function closeFileMenu(): void {
 function handleFileToolbarAction(action: FileToolbarAction): void {
   closeFileMenu()
   if (action === 'open') {
-    storageOpenDocuments.value = []
-    storageOpenDocumentsLoaded.value = false
+    prepareStorageOpenDocuments()
     storageOpenDialogOpen.value = true
     return
   }
@@ -992,24 +993,55 @@ async function searchStorageDocuments(query: string): Promise<void> {
   if (connection === undefined) return
   const adapter = storageProviderRegistry.adapterFor(storageState, storageConnections.value)
   if (adapter.listDocuments === undefined) return
+  const cacheKey = storageOpenDocumentCacheKey()
+  const cachedDocuments = storageOpenDocumentCache.get(cacheKey)
+  if (cachedDocuments !== undefined) {
+    storageOpenDocuments.value = cachedDocuments
+    storageOpenDocumentsLoaded.value = true
+    return
+  }
   storageOpenLoading.value = true
   try {
-    storageOpenDocuments.value = await adapter.listDocuments(storageState)
+    const documents = await adapter.listDocuments(storageState)
+    storageOpenDocumentCache.set(cacheKey, documents)
+    storageOpenDocuments.value = documents
     storageOpenDocumentsLoaded.value = true
   } catch (error) {
     pushToast({ severity: 'warning', title: 'Öffnen', message: error instanceof Error ? error.message : String(error) })
   } finally { storageOpenLoading.value = false }
 }
 
+function storageOpenDocumentCacheKey(): string {
+  return `${storageState.connectionId ?? '-'}:${storageState.rootPath}:${storageState.path}`
+}
+
+function prepareStorageOpenDocuments(): void {
+  const cachedDocuments = storageOpenDocumentCache.get(storageOpenDocumentCacheKey())
+  storageOpenDocuments.value = cachedDocuments ?? []
+  storageOpenDocumentsLoaded.value = cachedDocuments !== undefined
+}
+
+function refreshStorageDocuments(query: string): void {
+  storageOpenDocumentCache.delete(storageOpenDocumentCacheKey())
+  storageOpenDocuments.value = []
+  storageOpenDocumentsLoaded.value = false
+  void searchStorageDocuments(query)
+}
+
 async function openStorageDocument(document: StorageDocument): Promise<void> {
-  const opened = await executeParsedToolbarCommand(
-    `sopen ${JSON.stringify(document.path)}`,
-    'sopen',
-    ['', document.path],
-  )
-  if (opened) {
-    savedDocumentText.value = documentText.value
-    storageOpenDialogOpen.value = false
+  storageOpenOpening.value = true
+  try {
+    const opened = await executeParsedToolbarCommand(
+      `sopen ${JSON.stringify(document.path)}`,
+      'sopen',
+      ['', document.path],
+    )
+    if (opened) {
+      savedDocumentText.value = documentText.value
+      storageOpenDialogOpen.value = false
+    }
+  } finally {
+    storageOpenOpening.value = false
   }
 }
 
@@ -1049,13 +1081,14 @@ function updateStorageConnection(connectionId: string, update: Partial<StorageCo
     : connection)
 }
 
-function activateStorageConnection(connectionId: string): void {
+async function activateStorageConnection(connectionId: string): Promise<void> {
   const connection = storageConnections.value.find((entry) => entry.id === connectionId)
   if (connection?.status === 'disconnected') {
     connectStorageConnection(connectionId)
     return
   }
-  void executeToolbarCommand(`sconnection ${connectionId}`)
+  const activated = await executeToolbarCommand(`sconnection ${connectionId}`)
+  if (activated) closeStorageConnectionsDialog()
 }
 
 function updateStorageConnectionRoot(connectionId: string, rootPath: string): void {
@@ -2204,11 +2237,13 @@ function handleMirrorMessage(event: MessageEvent): void {
     :path="storageState.path"
     :documents="storageOpenDocuments"
     :loading="storageOpenLoading"
+    :opening="storageOpenOpening"
     :preview-url="storagePreviewUrl"
     :preview-loading="storagePreviewLoading"
     :preview-error="storagePreviewError"
     @close="storageOpenDialogOpen = false"
     @search="searchStorageDocuments"
+    @refresh="refreshStorageDocuments"
     @open="openStorageDocument"
     @preview="previewStorageFile"
     @connections="openStorageConnectionsFromDialog"

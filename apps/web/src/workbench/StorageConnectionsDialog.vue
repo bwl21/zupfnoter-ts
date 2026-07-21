@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import type { StorageConnection, StorageProviderDescriptor } from '@zupfnoter/types'
-import { ZnButton, ZnIconButton } from '@zupfnoter/design-system'
+import { ZnButton, ZnIcon, ZnIconButton } from '@zupfnoter/design-system'
 
 const props = defineProps<{
   open: boolean
@@ -53,8 +53,19 @@ function statusLabel(status: StorageConnection['status']): string {
 
 function handleDialogKeydown(event: KeyboardEvent): void {
   if (event.key !== 'Enter') return
+  event.preventDefault()
   emit('close')
 }
+
+function handleWindowKeydown(event: KeyboardEvent): void {
+  if (!props.open || event.key !== 'Escape') return
+  event.preventDefault()
+  event.stopPropagation()
+  emit('close')
+}
+
+onMounted(() => window.addEventListener('keydown', handleWindowKeydown, true))
+onBeforeUnmount(() => window.removeEventListener('keydown', handleWindowKeydown, true))
 </script>
 
 <template>
@@ -64,6 +75,7 @@ function handleDialogKeydown(event: KeyboardEvent): void {
         <header class="storage-dialog__header">
           <h2 id="storage-dialog-title">Speicherverbindungen</h2>
           <div class="storage-dialog__header-actions">
+            <ZnButton class="storage-dialog__new-button" variant="primary" @click="startNewConnection">Neue Verbindung</ZnButton>
             <span class="storage-dialog__hint">Verbindungen werden auf diesem Gerät gespeichert.</span>
             <ZnButton variant="ghost" aria-label="Speicherverbindungen schließen" @click="emit('close')">×</ZnButton>
           </div>
@@ -120,7 +132,14 @@ function handleDialogKeydown(event: KeyboardEvent): void {
                   <td class="storage-dialog__actions">
                     <span v-if="connection.id === props.activeConnectionId" class="storage-dialog__active-label">Aktiv</span>
                     <ZnButton v-else variant="ghost" @click="emit('activate', connection.id)">Aktivieren</ZnButton>
-                    <ZnButton variant="danger" @click="emit('remove', connection.id)">Löschen</ZnButton>
+                    <ZnIconButton
+                      class="storage-dialog__delete-action"
+                      :label="`Verbindung ${connection.label} löschen`"
+                      variant="ghost"
+                      @click="emit('remove', connection.id)"
+                    >
+                      <ZnIcon name="delete" />
+                    </ZnIconButton>
                   </td>
                 </tr>
                 <tr v-if="newConnectionVisible" class="storage-dialog__new-row">
@@ -144,10 +163,6 @@ function handleDialogKeydown(event: KeyboardEvent): void {
             </div>
           </form>
         </div>
-        <footer class="storage-dialog__footer">
-          <ZnButton variant="primary" @click="startNewConnection">Neue Verbindung</ZnButton>
-          <ZnButton variant="ghost" @click="emit('close')">Schließen</ZnButton>
-        </footer>
       </section>
     </div>
   </Teleport>
@@ -158,9 +173,9 @@ function handleDialogKeydown(event: KeyboardEvent): void {
 .storage-dialog { width: min(70rem, calc(100vw - 1.5rem)); border: 1px solid var(--zn-border-strong); border-radius: .85rem; background: var(--zn-bg-elevated); color: var(--zn-text); box-shadow: 0 16px 36px rgb(15 23 42 / .22); }
 .storage-dialog__header { display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:.65rem .75rem; border-bottom:1px solid var(--zn-border); }
 .storage-dialog__header-actions { display:flex; align-items:center; gap:.4rem; }
+.storage-dialog__new-button { min-height:1.8rem; padding:.2rem .55rem; font-size:.78rem; }
 .storage-dialog__hint { color:var(--zn-text-soft); font-size:.78rem; white-space:nowrap; }
 .storage-dialog__body { display:grid; gap:.55rem; padding:.65rem .75rem .75rem; }
-.storage-dialog__footer { display:flex; align-items:center; justify-content:space-between; padding:.55rem .75rem; border-top:1px solid var(--zn-border); }
 .storage-dialog__table-wrap { overflow-x:auto; }
 .storage-dialog__table { width:100%; min-width:50rem; border-collapse:collapse; font-size:.82rem; }
 .storage-dialog__table th,.storage-dialog__table td { padding:.32rem .4rem; border-bottom:1px solid var(--zn-border); text-align:left; vertical-align:middle; }
@@ -169,6 +184,8 @@ function handleDialogKeydown(event: KeyboardEvent): void {
 .storage-dialog__new-row { background:var(--zn-bg-surface-soft); }
 .storage-dialog__actions { display:flex; align-items:center; gap:.2rem; min-width:12.2rem; }
 .storage-dialog__actions > * { inline-size:5.8rem; justify-content:center; }
+.storage-dialog__actions > .storage-dialog__delete-action { inline-size:2.1rem; margin-inline-start:.55rem; }
+.storage-dialog__delete-action { color:color-mix(in srgb, var(--zn-danger) 82%, white); }
 .storage-dialog__active-label { display:inline-flex; align-items:center; min-height:1.8rem; padding:.22rem .55rem; border-radius:var(--zn-radius-sm); background:var(--zn-accent); color:var(--zn-bg-elevated); font-weight:700; }
 .storage-dialog__root { display:flex; align-items:center; gap:.25rem; min-width:15rem; max-width:28rem; white-space:nowrap; }
 .storage-dialog__root > span { overflow:hidden; text-overflow:ellipsis; }
