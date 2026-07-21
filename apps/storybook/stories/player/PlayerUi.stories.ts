@@ -37,10 +37,12 @@ function renderPlayerUi(args: PlayerUiArgs) {
           maximumPass: args.maximumPass,
           hasMetronomeData: true,
           callbacks: {
+            onScan: () => undefined,
             onRangeChange: () => undefined,
             onReset: () => undefined,
             onSpeedChange: () => undefined,
             onMetronomeChange: (enabled) => controller?.setMetronome({ numerator: 4, denominator: 4 }, 1, enabled),
+            onCountInStyleChange: () => undefined,
             onPlay: () => undefined,
             onPause: () => undefined,
             onStop: () => undefined,

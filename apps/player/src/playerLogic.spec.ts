@@ -6,7 +6,9 @@ import {
   nextPositionBoundaryMarker,
   parsePosition,
   positionAtTime,
+  resolveCountIn,
   resolveRange,
+  tempoBpmAtTime,
 } from './playerLogic'
 
 const markers: PlaybackPositionMarker[] = [
@@ -27,6 +29,35 @@ describe('player logic', () => {
 
   it('uses a terminal marker with the same position as the last measure boundary', () => {
     expect(nextPositionBoundaryMarker(markers, 1)).toEqual(markers[2])
+  })
+
+  it('resolves one count-in measure from the position track', () => {
+    expect(resolveCountIn(markers, 0)).toEqual({
+      durationMs: 4000,
+      beatDurationMs: 1000,
+      meter: { numerator: 4, denominator: 4 },
+      beats: [0, 1, 2, 3],
+    })
+    expect(resolveCountIn(markers, 4000)).toEqual({
+      durationMs: 4000,
+      beatDurationMs: 1000,
+      meter: { numerator: 4, denominator: 4 },
+      beats: [0, 1, 2, 3],
+    })
+  })
+
+  it('calculates the selectable count-in styles from one measure', () => {
+    expect(resolveCountIn(markers, 0, 'band')?.beats).toEqual([0, 1, 0, 1, 2, 3])
+    expect(resolveCountIn(markers, 0, 'last-beats')?.beats).toEqual([2, 3])
+    expect(resolveCountIn(markers, 0, 'pickup')?.beats).toEqual([0])
+  })
+
+  it('derives quarter-note BPM from the timed meter', () => {
+    expect(tempoBpmAtTime(markers, 0)).toBe(60)
+    expect(tempoBpmAtTime([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 6, denominator: 8 } },
+      { timeMs: 2250, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 6, denominator: 8 } },
+    ], 100)).toBe(80)
   })
 
   it('projects time to the selected measure and pass', () => {

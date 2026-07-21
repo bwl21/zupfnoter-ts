@@ -14,7 +14,10 @@ import {
   nextPositionBoundaryMarker,
   parsePosition,
   positionAtTime,
+  type PlaybackCountInStyle,
+  resolveCountIn,
   resolveRange,
+  tempoBpmAtTime,
 } from './playerLogic'
 
 const PLAYER_VERSION = '0.1.5'
@@ -192,6 +195,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
   let selectedEvents = events
   let selectedStartMs = positionMarkers[0]?.timeMs ?? events[0]?.startMs ?? 0
   let selectedRangePosition = firstPosition
+  let countInStyle: PlaybackCountInStyle = 'classic'
 
   function readRange(fromPosition: PlaybackPosition = firstPosition): [number, number] | undefined {
     const from = `${fromPosition.measureNumber}.${fromPosition.passIndex}`
@@ -215,6 +219,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     maximumMeasure,
     maximumPass,
     hasMetronomeData: positionMarkers.some((marker) => marker.meter !== undefined),
+    baseTempoBpm: tempoBpmAtTime(positionMarkers, selectedStartMs),
     callbacks: {
       onRangeChange: (position) => { readRange(position) },
       onReset: () => {
@@ -226,6 +231,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       },
       onSpeedChange: (speed) => { setSpeed(speed) },
       onMetronomeChange: (enabled) => { handleMetronomeChange(enabled) },
+      onCountInStyleChange: (style) => { countInStyle = style },
       onPlay: () => { if (readRange(selectedRangePosition) !== undefined) void playPlayback() },
       onPause: pausePlayback,
       onStop: () => { stopPlayback() },
@@ -280,6 +286,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     const absoluteTimeMs = selectedStartMs + elapsedMs
     const currentPosition = positionAtTime(positionMarkers, absoluteTimeMs)
     ui.setPosition(currentPosition)
+    ui.setTempoBpm(tempoBpmAtTime(positionMarkers, absoluteTimeMs))
     let markerIndex = -1
     for (const [index, marker] of positionMarkers.entries()) {
       if (marker.timeMs <= absoluteTimeMs && marker.meter !== undefined) markerIndex = index
@@ -317,6 +324,27 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     oscillator.start(startTime)
     oscillator.stop(startTime + 0.06)
     metronomeOscillators.push(oscillator)
+  }
+
+  function scheduleCountIn(
+    context: AudioContext,
+    audioStartAt: number,
+    countIn: ReturnType<typeof resolveCountIn>,
+  ): number {
+    if (countIn === undefined) return audioStartAt
+    const countInStartAt = audioStartAt - countIn.durationMs / 1000 / speedFactor
+    const groupingStarts = new Set<number>()
+    let groupingOffset = 0
+    for (const group of countIn.meter.grouping ?? []) {
+      groupingStarts.add(groupingOffset)
+      groupingOffset += group
+    }
+    for (const [index, beat] of countIn.beats.entries()) {
+      const accent = index === 0 || groupingStarts.has(beat)
+      const clickAt = countInStartAt + index * countIn.beatDurationMs / 1000 / speedFactor
+      playMetronomeClick(context, accent, clickAt)
+    }
+    return countInStartAt
   }
 
   function scheduleMetronome(
@@ -446,9 +474,17 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     }
     if (audioContext !== playerContext) return
     setLoading(false)
-    const audioStartAt = playerContext.currentTime + AUDIO_START_LEAD_MS / 1000
+    const countIn = metronomeEnabled && playbackOffsetMs === 0
+      ? resolveCountIn(positionMarkers, selectedStartMs)
+      : undefined
+    const audioStartAt = playerContext.currentTime
+      + AUDIO_START_LEAD_MS / 1000
+      + (countIn?.durationMs ?? 0) / 1000 / speedFactor
     playbackStartedAtContextTime = audioStartAt - playbackOffsetMs / 1000 / speedFactor
     const elapsed = () => Math.max(0, (playerContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
+    const countInStartAt = countIn === undefined
+      ? audioStartAt
+      : scheduleCountIn(playerContext, audioStartAt, countIn)
     const chordSizes = new Map<number, number>()
     for (const event of selectedEvents) {
       chordSizes.set(event.startMs, (chordSizes.get(event.startMs) ?? 0) + 1)
@@ -509,6 +545,18 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     scheduleWindow()
     const update = () => {
       if (audioContext !== playerContext) return
+      if (playerContext.currentTime < audioStartAt) {
+        if (countIn !== undefined) {
+          const countInElapsedMs = Math.max(0, (playerContext.currentTime - countInStartAt) * 1000 * speedFactor)
+          const countInBeatIndex = Math.min(countIn.beats.length - 1, Math.floor(countInElapsedMs / countIn.beatDurationMs))
+          const beat = (countIn.beats[countInBeatIndex] ?? 0) + 1
+          ui.setPosition(selectedRangePosition)
+          ui.setMetronome(countIn.meter, beat, true)
+          ui.setPlaybackTime(0)
+        }
+        positionTimer = window.setTimeout(update, 25)
+        return
+      }
       const elapsedMs = elapsed()
       if (elapsedMs >= durationMs) {
         // Keep the final visual beat/measure visible after the scheduled audio

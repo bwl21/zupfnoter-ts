@@ -6,11 +6,14 @@ export interface PlayerUiCallbacks {
   onReset: () => void
   onSpeedChange: (speed: number) => void
   onMetronomeChange: (enabled: boolean) => void
+  onCountInStyleChange: (style: CountInStyle) => void
   onPlay: () => void
   onPause: () => void
   onStop: () => void
   onTakePosition: () => void
 }
+
+export type CountInStyle = 'classic' | 'band' | 'last-beats' | 'pickup'
 
 export interface PlayerUiOptions {
   container: HTMLElement
@@ -20,6 +23,8 @@ export interface PlayerUiOptions {
   maximumMeasure: number
   maximumPass: number
   hasMetronomeData: boolean
+  countInStyle?: CountInStyle
+  baseTempoBpm?: number
   callbacks: PlayerUiCallbacks
 }
 
@@ -33,6 +38,7 @@ export interface PlayerUiController {
   setPosition(position: PlaybackPosition): void
   setPlaybackTime(elapsedMs: number): void
   setMetronome(meter: PlaybackMeter | undefined, beat: number, enabled: boolean): void
+  setTempoBpm(bpm: number | undefined): void
   destroy(): void
 }
 
@@ -117,7 +123,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       <p id="loading-indicator" class="loading-indicator" role="status" aria-live="polite" hidden><span class="spinner" aria-hidden="true"></span> Harfenklang wird geladen …</p>
       <label class="speed-control" for="speed-range">
         <input id="speed-range" type="range" min="0.5" max="1.5" step="0.05" value="1" aria-label="Wiedergabegeschwindigkeit" aria-valuemin="0.5" aria-valuemax="1.5" aria-valuenow="1">
-        <output id="speed-value" for="speed-range">1,00×</output>
+        <output id="speed-value" for="speed-range">${options.baseTempoBpm === undefined ? '— BPM' : `${Math.round(options.baseTempoBpm)} BPM`}</output>
       </label>
       <div class="metronome-row" aria-label="Metronom">
         <label class="metronome-control" for="metronome-toggle">
@@ -127,6 +133,14 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
         </label>
         <output id="metronome-status" class="metronome-status" aria-live="polite">${options.hasMetronomeData ? '<span class="metronome-beat" aria-hidden="true"></span><span>—</span><span>—</span>' : 'Metronomdaten fehlen in diesem Link'}</output>
       </div>
+      <label class="count-in-control" for="count-in-style">Einzählen
+        <select id="count-in-style" aria-label="Einzählstil" ${options.hasMetronomeData ? '' : 'disabled'}>
+          <option value="classic" ${options.countInStyle === 'classic' || options.countInStyle === undefined ? 'selected' : ''}>Klassisch: 1 2 3 4</option>
+          <option value="band" ${options.countInStyle === 'band' ? 'selected' : ''}>Band: 1 2 | 1 2 3 4</option>
+          <option value="last-beats" ${options.countInStyle === 'last-beats' ? 'selected' : ''}>Nur letzter Schlag: 3 4</option>
+          <option value="pickup" ${options.countInStyle === 'pickup' ? 'selected' : ''}>Nur Auftakt</option>
+        </select>
+      </label>
       <section class="transport" aria-label="Wiedergabe">
         <div class="position-row">
           <output id="current-position" class="position">${first}</output>
@@ -147,6 +161,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const speedRange = container.querySelector<HTMLInputElement>('#speed-range')
   const speedValue = container.querySelector<HTMLOutputElement>('#speed-value')
   const metronomeToggle = container.querySelector<HTMLInputElement>('#metronome-toggle')
+  const countInStyle = container.querySelector<HTMLSelectElement>('#count-in-style')
   const metronomeStatus = container.querySelector<HTMLOutputElement>('#metronome-status')
   const position = container.querySelector<HTMLOutputElement>('#current-position')
   const playbackTime = container.querySelector<HTMLParagraphElement>('#playback-time')
@@ -156,6 +171,11 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const scanButton = container.querySelector<HTMLButtonElement>('#scan-button')
   const listeners: Array<() => void> = []
   let playing = false
+  let tempoBpm = options.baseTempoBpm
+
+  const formatTempo = (speed: number): string => tempoBpm === undefined
+    ? '— BPM'
+    : `${Math.round(tempoBpm * speed)} BPM`
 
   const emitRange = (): void => {
     if (form === null) return
@@ -217,7 +237,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
 
   const onSpeed = (): void => {
     const speed = Number(speedRange?.value ?? 1)
-    if (speedValue !== null) speedValue.value = `${speed.toFixed(2).replace('.', ',')}×`
+    if (speedValue !== null) speedValue.value = formatTempo(speed)
     speedRange?.setAttribute('aria-valuenow', String(speed))
     callbacks.onSpeedChange(speed)
   }
@@ -226,6 +246,14 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const onMetronome = (): void => callbacks.onMetronomeChange(metronomeToggle?.checked === true)
   metronomeToggle?.addEventListener('change', onMetronome)
   if (metronomeToggle !== null) listeners.push(() => metronomeToggle.removeEventListener('change', onMetronome))
+  const onCountInStyle = (): void => {
+    const style = countInStyle?.value
+    if (style === 'classic' || style === 'band' || style === 'last-beats' || style === 'pickup') {
+      callbacks.onCountInStyleChange(style)
+    }
+  }
+  countInStyle?.addEventListener('change', onCountInStyle)
+  if (countInStyle !== null) listeners.push(() => countInStyle.removeEventListener('change', onCountInStyle))
   const bindClick = (element: HTMLButtonElement | null, callback: () => void): void => {
     if (element === null) return
     element.addEventListener('click', callback)
@@ -258,6 +286,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
     },
     setSpeedEnabled(enabled) {
       if (speedRange !== null) speedRange.disabled = !enabled
+      if (countInStyle !== null) countInStyle.disabled = !enabled || !options.hasMetronomeData
     },
     setPlaying(nextPlaying) {
       playing = nextPlaying
@@ -284,6 +313,11 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
     },
     setMetronome(meter, beat, enabled) {
       if (metronomeStatus !== null) renderBeatStatus(metronomeStatus, meter, beat, enabled)
+    },
+    setTempoBpm(bpm) {
+      tempoBpm = bpm
+      const speed = Number(speedRange?.value ?? 1)
+      if (speedValue !== null) speedValue.value = formatTempo(speed)
     },
     destroy() {
       for (const removeListener of listeners) removeListener()

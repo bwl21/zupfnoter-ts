@@ -1,4 +1,13 @@
-import type { PlaybackEvent, PlaybackPosition, PlaybackPositionMarker } from '@zupfnoter/playback'
+import type { PlaybackEvent, PlaybackMeter, PlaybackPosition, PlaybackPositionMarker } from '@zupfnoter/playback'
+
+export interface PlaybackCountIn {
+  durationMs: number
+  beatDurationMs: number
+  meter: PlaybackMeter
+  beats: readonly number[]
+}
+
+export type PlaybackCountInStyle = 'classic' | 'band' | 'last-beats' | 'pickup'
 
 export function parsePosition(value: string): PlaybackPosition | undefined {
   const match = value.trim().match(/^(\d+)\.(\d+)$/)
@@ -40,6 +49,57 @@ export function nextPositionBoundaryMarker(
     || candidate.position.passIndex !== marker.position.passIndex
     || candidate.meter === undefined
   ))
+}
+
+/** Resolves one complete count-in measure at an exact playback start marker. */
+export function resolveCountIn(
+  markers: readonly PlaybackPositionMarker[],
+  startMs: number,
+  style: PlaybackCountInStyle = 'classic',
+): PlaybackCountIn | undefined {
+  const markerIndex = markers.findIndex((marker) => marker.timeMs === startMs && marker.meter !== undefined)
+  if (markerIndex < 0) return undefined
+  const marker = markers[markerIndex]
+  if (marker === undefined || marker.meter === undefined) return undefined
+  const nextMarker = nextPositionBoundaryMarker(markers, markerIndex)
+  if (nextMarker === undefined) return undefined
+  const durationMs = nextMarker.timeMs - marker.timeMs
+  if (durationMs <= 0 || marker.meter.numerator <= 0) return undefined
+  const beatCount = marker.meter.numerator
+  const beats = style === 'band'
+    ? [...Array.from({ length: Math.min(2, beatCount) }, (_value, index) => index), ...Array.from({ length: beatCount }, (_value, index) => index)]
+    : style === 'last-beats'
+      ? Array.from({ length: Math.min(2, beatCount) }, (_value, index) => beatCount - Math.min(2, beatCount) + index)
+      : style === 'pickup'
+        ? [0]
+        : Array.from({ length: beatCount }, (_value, index) => index)
+  return {
+    durationMs: beats.length * (durationMs / beatCount),
+    beatDurationMs: durationMs / marker.meter.numerator,
+    meter: marker.meter,
+    beats,
+  }
+}
+
+/** Resolves the quarter-note tempo from the time-based meter track. */
+export function tempoBpmAtTime(
+  markers: readonly PlaybackPositionMarker[],
+  timeMs: number,
+): number | undefined {
+  let markerIndex = -1
+  for (const [index, marker] of markers.entries()) {
+    if (marker.timeMs <= timeMs && marker.meter !== undefined) markerIndex = index
+  }
+  if (markerIndex < 0) return undefined
+  const marker = markers[markerIndex]
+  if (marker === undefined || marker.meter === undefined) return undefined
+  const nextMarker = nextPositionBoundaryMarker(markers, markerIndex)
+  if (nextMarker === undefined) return undefined
+  const measureDurationMs = nextMarker.timeMs - marker.timeMs
+  const beatDurationMs = measureDurationMs / marker.meter.numerator
+  const quarterDurationMs = beatDurationMs * marker.meter.denominator / 4
+  if (quarterDurationMs <= 0) return undefined
+  return 60000 / quarterDurationMs
 }
 
 export function resolveRange(
