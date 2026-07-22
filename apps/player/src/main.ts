@@ -10,6 +10,7 @@ import { BrowserQRCodeReader, type IScannerControls } from '@zxing/browser'
 import { deflateSync, inflateSync } from 'fflate'
 import '@zupfnoter/player-ui/style.css'
 import {
+  countInBeatIndexAtTime,
   findPositionMarker,
   nextPositionBoundaryMarker,
   parsePosition,
@@ -20,7 +21,7 @@ import {
   tempoBpmAtTime,
 } from './playerLogic'
 
-const PLAYER_VERSION = '0.1.5'
+const PLAYER_VERSION = '0.1.6'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -348,7 +349,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     }
     for (const [index, beat] of countIn.beats.entries()) {
       const accent = index === 0 || groupingStarts.has(beat)
-      const clickAt = countInStartAt + index * countIn.beatDurationMs / 1000 / speedFactor
+      const clickAt = countInStartAt + (countIn.beatOffsetsMs[index] ?? 0) / 1000 / speedFactor
       playMetronomeClick(context, accent, clickAt, index < countIn.leadBeatCount)
     }
     return countInStartAt
@@ -471,8 +472,10 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     masterCompressor.connect(audioContext.destination)
     metronomeDestination = outputGain
     isPaused = false
-    setLoading(true)
     const playerContext = audioContext
+    const loadingTimer = window.setTimeout(() => {
+      if (audioContext === playerContext) setLoading(true)
+    }, 150)
     let harpPlayer: SoundfontPlayer
     try {
       harpPlayer = await loadHarpPlayer(playerContext, selectedEvents.map((event) => event.pitch), outputGain)
@@ -483,11 +486,13 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
         throw new Error(`AudioContext bleibt ${playerContext.state}`)
       }
     } catch {
+      window.clearTimeout(loadingTimer)
       setLoading(false)
       ui.setRangeError('Der Harfenklang konnte nicht geladen werden.')
       stopPlayback()
       return
     }
+    window.clearTimeout(loadingTimer)
     if (audioContext !== playerContext) return
     setLoading(false)
     const countIn = metronomeEnabled && playbackOffsetMs === 0
@@ -564,7 +569,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       if (playerContext.currentTime < audioStartAt) {
         if (countIn !== undefined) {
           const countInElapsedMs = Math.max(0, (playerContext.currentTime - countInStartAt) * 1000 * speedFactor)
-          const countInBeatIndex = Math.min(countIn.beats.length - 1, Math.floor(countInElapsedMs / countIn.beatDurationMs))
+          const countInBeatIndex = countInBeatIndexAtTime(countIn, countInElapsedMs)
           const beat = (countIn.beats[countInBeatIndex] ?? 0) + 1
           ui.setPosition(selectedRangePosition)
           ui.setMetronome(countIn.meter, beat, true)

@@ -3,6 +3,7 @@ import type { PlaybackEvent, PlaybackMeter, PlaybackPosition, PlaybackPositionMa
 export interface PlaybackCountIn {
   durationMs: number
   beatDurationMs: number
+  beatOffsetsMs: readonly number[]
   meter: PlaybackMeter
   beats: readonly number[]
   leadBeatCount: number
@@ -95,13 +96,29 @@ export function resolveCountIn(
       : style === 'pickup' && hasPickup
         ? Array.from({ length: pickupBeatCount }, (_value, index) => index)
         : Array.from({ length: beatCount }, (_value, index) => index)
+  const leadBeatCount = style === 'band' ? Math.min(2, beatCount) : 0
+  const beatOffsetsMs = beats.map((_beat, index) => {
+    if (leadBeatCount > 0 && index < leadBeatCount) return index * beatDurationMs * 2
+    return (leadBeatCount * 2 + index - leadBeatCount) * beatDurationMs
+  })
+  const lastBeatOffsetMs = beatOffsetsMs[beatOffsetsMs.length - 1] ?? 0
   return {
-    durationMs: beats.length * beatDurationMs,
+    durationMs: lastBeatOffsetMs + beatDurationMs,
     beatDurationMs,
+    beatOffsetsMs,
     meter: marker.meter,
     beats,
-    leadBeatCount: style === 'band' ? Math.min(2, beatCount) : 0,
+    leadBeatCount,
   }
+}
+
+export function countInBeatIndexAtTime(countIn: PlaybackCountIn, elapsedMs: number): number {
+  let index = 0
+  for (const [candidateIndex, offsetMs] of countIn.beatOffsetsMs.entries()) {
+    if (offsetMs > elapsedMs) break
+    index = candidateIndex
+  }
+  return Math.min(index, countIn.beats.length - 1)
 }
 
 /** Resolves the quarter-note tempo from the time-based meter track. */

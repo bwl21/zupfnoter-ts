@@ -35,6 +35,7 @@ describe('player logic', () => {
     expect(resolveCountIn(markers, 0)).toEqual({
       durationMs: 4000,
       beatDurationMs: 1000,
+      beatOffsetsMs: [0, 1000, 2000, 3000],
       meter: { numerator: 4, denominator: 4 },
       beats: [0, 1, 2, 3],
       leadBeatCount: 0,
@@ -42,6 +43,7 @@ describe('player logic', () => {
     expect(resolveCountIn(markers, 4000)).toEqual({
       durationMs: 4000,
       beatDurationMs: 1000,
+      beatOffsetsMs: [0, 1000, 2000, 3000],
       meter: { numerator: 4, denominator: 4 },
       beats: [0, 1, 2, 3],
       leadBeatCount: 0,
@@ -51,6 +53,8 @@ describe('player logic', () => {
   it('calculates the selectable count-in styles from one measure', () => {
     expect(resolveCountIn(markers, 0, 'none')).toBeUndefined()
     expect(resolveCountIn(markers, 0, 'band')).toMatchObject({
+      durationMs: 8000,
+      beatOffsetsMs: [0, 2000, 4000, 5000, 6000, 7000],
       beats: [0, 1, 0, 1, 2, 3],
       leadBeatCount: 2,
     })
