@@ -25,6 +25,7 @@ const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
 const AUDIO_START_LEAD_MS = 200
+const INVALID_PLAYBACK_MESSAGE = 'Die Daten sind fehlerhaft, bitte wende dich an den Herausgeber.'
 
 const appElement = document.querySelector<HTMLDivElement>('#app')
 if (appElement === null) throw new Error('Player root is missing')
@@ -43,7 +44,12 @@ const browserPlaybackCodec: PlaybackCompressionCodec = {
 
 function renderError(message: string): void {
   destroyCurrentPlayer()
-  app.innerHTML = `<section class="card error"><h1>Zupfnoter Player</h1><p>${message}</p></section>`
+  app.innerHTML = `<section class="card error"><h1>Zupfnoter Übung</h1><p>${message}</p></section>`
+}
+
+function renderPlaybackDataError(error: unknown): void {
+  console.error('Playback-Daten konnten nicht geladen werden.', error)
+  renderError(INVALID_PLAYBACK_MESSAGE)
 }
 
 function openQrScanner(): void {
@@ -101,7 +107,7 @@ function openQrScanner(): void {
       if (result !== undefined) {
         close()
         void loadPlaybackUrl(result.getText()).catch((error: unknown) => {
-          renderError(error instanceof Error ? error.message : String(error))
+          renderPlaybackDataError(error)
         })
         return
       }
@@ -251,6 +257,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
   let harpPlayerPromise: Promise<SoundfontPlayer> | undefined
   let metronomeOscillators: OscillatorNode[] = []
   let scheduledMetronomeTimes = new Set<number>()
+  let metronomeDestination: AudioNode | undefined
 
   interface SoundfontPlayer {
     schedule(startTime: number, notes: readonly SoundfontNote[]): void
@@ -313,14 +320,14 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     speedFactor = value
   }
 
-  function playMetronomeClick(context: AudioContext, accent: boolean, startTime: number): void {
+  function playMetronomeClick(context: AudioContext, accent: boolean, startTime: number, lead = false): void {
     const oscillator = context.createOscillator()
     const gain = context.createGain()
-    oscillator.frequency.value = accent ? 1200 : 850
-    gain.gain.setValueAtTime(accent ? 0.18 : 0.1, startTime)
+    oscillator.frequency.value = lead ? 620 : accent ? 1200 : 850
+    gain.gain.setValueAtTime(lead ? 0.07 : accent ? 0.18 : 0.1, startTime)
     gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.055)
     oscillator.connect(gain)
-    gain.connect(context.destination)
+    gain.connect(metronomeDestination ?? context.destination)
     oscillator.start(startTime)
     oscillator.stop(startTime + 0.06)
     metronomeOscillators.push(oscillator)
@@ -342,7 +349,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     for (const [index, beat] of countIn.beats.entries()) {
       const accent = index === 0 || groupingStarts.has(beat)
       const clickAt = countInStartAt + index * countIn.beatDurationMs / 1000 / speedFactor
-      playMetronomeClick(context, accent, clickAt)
+      playMetronomeClick(context, accent, clickAt, index < countIn.leadBeatCount)
     }
     return countInStartAt
   }
@@ -416,6 +423,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     clearPlaybackTimers()
     if (audioContext !== undefined) void audioContext.close()
     audioContext = undefined
+    metronomeDestination = undefined
     harpPlayerPromise = undefined
     setLoading(false)
     ui.setRangeEnabled(true)
@@ -452,8 +460,16 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     // iOS requires resume to start while the play button's gesture is active.
     void audioContext.resume().catch(() => undefined)
     const outputGain = audioContext.createGain()
-    outputGain.gain.value = 2
-    outputGain.connect(audioContext.destination)
+    outputGain.gain.value = 3.2
+    const masterCompressor = audioContext.createDynamicsCompressor()
+    masterCompressor.threshold.value = -18
+    masterCompressor.knee.value = 18
+    masterCompressor.ratio.value = 6
+    masterCompressor.attack.value = 0.003
+    masterCompressor.release.value = 0.2
+    outputGain.connect(masterCompressor)
+    masterCompressor.connect(audioContext.destination)
+    metronomeDestination = outputGain
     isPaused = false
     setLoading(true)
     const playerContext = audioContext
@@ -475,7 +491,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     if (audioContext !== playerContext) return
     setLoading(false)
     const countIn = metronomeEnabled && playbackOffsetMs === 0
-      ? resolveCountIn(positionMarkers, selectedStartMs)
+      ? resolveCountIn(positionMarkers, selectedStartMs, countInStyle)
       : undefined
     const audioStartAt = playerContext.currentTime
       + AUDIO_START_LEAD_MS / 1000
@@ -640,7 +656,7 @@ async function main(): Promise<void> {
   try {
     await loadPlaybackUrl(window.location.href)
   } catch (error) {
-    renderError(error instanceof Error ? error.message : String(error))
+    renderPlaybackDataError(error)
   }
 }
 

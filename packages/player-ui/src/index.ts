@@ -13,7 +13,7 @@ export interface PlayerUiCallbacks {
   onTakePosition: () => void
 }
 
-export type CountInStyle = 'classic' | 'band' | 'last-beats' | 'pickup'
+export type CountInStyle = 'none' | 'classic' | 'band' | 'last-beats' | 'pickup'
 
 export interface PlayerUiOptions {
   container: HTMLElement
@@ -54,6 +54,14 @@ function escapeHtml(value: string): string {
 
 function formatPosition(position: PlaybackPosition): string {
   return `${position.measureNumber} : ${position.passIndex}`
+}
+
+const countInStyleLabels: Record<CountInStyle, string> = {
+  none: 'Kein Einzählen',
+  classic: 'Klassisch: 1 2 3 4',
+  band: 'Band: 1 2 | 1 2 3 4',
+  'last-beats': 'Nur letzter Schlag: 3 4',
+  pickup: 'Nur Auftakt',
 }
 
 function wheelField(name: string, label: string, value: number, maximum: number): string {
@@ -133,14 +141,13 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
         </label>
         <output id="metronome-status" class="metronome-status" aria-live="polite">${options.hasMetronomeData ? '<span class="metronome-beat" aria-hidden="true"></span><span>—</span><span>—</span>' : 'Metronomdaten fehlen in diesem Link'}</output>
       </div>
-      <label class="count-in-control" for="count-in-style">Einzählen
-        <select id="count-in-style" aria-label="Einzählstil" ${options.hasMetronomeData ? '' : 'disabled'}>
-          <option value="classic" ${options.countInStyle === 'classic' || options.countInStyle === undefined ? 'selected' : ''}>Klassisch: 1 2 3 4</option>
-          <option value="band" ${options.countInStyle === 'band' ? 'selected' : ''}>Band: 1 2 | 1 2 3 4</option>
-          <option value="last-beats" ${options.countInStyle === 'last-beats' ? 'selected' : ''}>Nur letzter Schlag: 3 4</option>
-          <option value="pickup" ${options.countInStyle === 'pickup' ? 'selected' : ''}>Nur Auftakt</option>
-        </select>
-      </label>
+      <div class="count-in-control">
+        <span class="count-in-label">Einzählen</span>
+        <button id="count-in-style" class="count-in-select" type="button" aria-label="Einzählstil" aria-haspopup="listbox" aria-expanded="false" ${options.hasMetronomeData ? '' : 'disabled'}><span class="count-in-select__label">${countInStyleLabels[options.countInStyle ?? 'classic']}</span><span aria-hidden="true">⌄</span></button>
+        <div id="count-in-menu" class="count-in-menu" role="listbox" aria-label="Einzählstil" hidden>
+          ${Object.entries(countInStyleLabels).map(([value, label]) => `<button type="button" role="option" data-count-in-style="${value}" aria-selected="${value === (options.countInStyle ?? 'classic')}">${label}</button>`).join('')}
+        </div>
+      </div>
       <section class="transport" aria-label="Wiedergabe">
         <div class="position-row">
           <output id="current-position" class="position">${first}</output>
@@ -161,7 +168,9 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const speedRange = container.querySelector<HTMLInputElement>('#speed-range')
   const speedValue = container.querySelector<HTMLOutputElement>('#speed-value')
   const metronomeToggle = container.querySelector<HTMLInputElement>('#metronome-toggle')
-  const countInStyle = container.querySelector<HTMLSelectElement>('#count-in-style')
+  const countInStyle = container.querySelector<HTMLButtonElement>('#count-in-style')
+  const countInLabel = container.querySelector<HTMLSpanElement>('.count-in-select__label')
+  const countInMenu = container.querySelector<HTMLDivElement>('#count-in-menu')
   const metronomeStatus = container.querySelector<HTMLOutputElement>('#metronome-status')
   const position = container.querySelector<HTMLOutputElement>('#current-position')
   const playbackTime = container.querySelector<HTMLParagraphElement>('#playback-time')
@@ -246,14 +255,32 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const onMetronome = (): void => callbacks.onMetronomeChange(metronomeToggle?.checked === true)
   metronomeToggle?.addEventListener('change', onMetronome)
   if (metronomeToggle !== null) listeners.push(() => metronomeToggle.removeEventListener('change', onMetronome))
-  const onCountInStyle = (): void => {
-    const style = countInStyle?.value
-    if (style === 'classic' || style === 'band' || style === 'last-beats' || style === 'pickup') {
+  const closeCountInMenu = (): void => {
+    if (countInMenu !== null) countInMenu.hidden = true
+    countInStyle?.setAttribute('aria-expanded', 'false')
+  }
+  const onCountInButton = (): void => {
+    const button = countInStyle
+    if (countInMenu === null || button === null || button.disabled) return
+    countInMenu.hidden = !countInMenu.hidden
+    button.setAttribute('aria-expanded', String(!countInMenu.hidden))
+  }
+  countInStyle?.addEventListener('click', onCountInButton)
+  if (countInStyle !== null) listeners.push(() => countInStyle.removeEventListener('click', onCountInButton))
+  for (const option of countInMenu?.querySelectorAll<HTMLButtonElement>('[data-count-in-style]') ?? []) {
+    const onOption = (): void => {
+      const style = option.dataset.countInStyle
+      if (style !== 'none' && style !== 'classic' && style !== 'band' && style !== 'last-beats' && style !== 'pickup') return
+      if (countInLabel !== null) countInLabel.textContent = countInStyleLabels[style]
+      for (const sibling of countInMenu?.querySelectorAll<HTMLButtonElement>('[data-count-in-style]') ?? []) {
+        sibling.setAttribute('aria-selected', String(sibling === option))
+      }
+      closeCountInMenu()
       callbacks.onCountInStyleChange(style)
     }
+    option.addEventListener('click', onOption)
+    listeners.push(() => option.removeEventListener('click', onOption))
   }
-  countInStyle?.addEventListener('change', onCountInStyle)
-  if (countInStyle !== null) listeners.push(() => countInStyle.removeEventListener('change', onCountInStyle))
   const bindClick = (element: HTMLButtonElement | null, callback: () => void): void => {
     if (element === null) return
     element.addEventListener('click', callback)
@@ -286,7 +313,10 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
     },
     setSpeedEnabled(enabled) {
       if (speedRange !== null) speedRange.disabled = !enabled
-      if (countInStyle !== null) countInStyle.disabled = !enabled || !options.hasMetronomeData
+      if (countInStyle !== null) {
+        countInStyle.disabled = !enabled || !options.hasMetronomeData
+        if (countInStyle.disabled) closeCountInMenu()
+      }
     },
     setPlaying(nextPlaying) {
       playing = nextPlaying

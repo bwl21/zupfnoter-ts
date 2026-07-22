@@ -37,19 +37,30 @@ describe('player logic', () => {
       beatDurationMs: 1000,
       meter: { numerator: 4, denominator: 4 },
       beats: [0, 1, 2, 3],
+      leadBeatCount: 0,
     })
     expect(resolveCountIn(markers, 4000)).toEqual({
       durationMs: 4000,
       beatDurationMs: 1000,
       meter: { numerator: 4, denominator: 4 },
       beats: [0, 1, 2, 3],
+      leadBeatCount: 0,
     })
   })
 
   it('calculates the selectable count-in styles from one measure', () => {
-    expect(resolveCountIn(markers, 0, 'band')?.beats).toEqual([0, 1, 0, 1, 2, 3])
+    expect(resolveCountIn(markers, 0, 'none')).toBeUndefined()
+    expect(resolveCountIn(markers, 0, 'band')).toMatchObject({
+      beats: [0, 1, 0, 1, 2, 3],
+      leadBeatCount: 2,
+    })
     expect(resolveCountIn(markers, 0, 'last-beats')?.beats).toEqual([2, 3])
-    expect(resolveCountIn(markers, 0, 'pickup')?.beats).toEqual([0])
+    expect(resolveCountIn(markers, 0, 'pickup')?.beats).toEqual([0, 1, 2, 3])
+    expect(resolveCountIn([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 2000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 6000, position: { measureNumber: 3, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+    ], 0, 'pickup')?.beats).toEqual([0, 1])
   })
 
   it('derives quarter-note BPM from the timed meter', () => {

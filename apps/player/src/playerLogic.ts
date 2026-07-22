@@ -5,9 +5,10 @@ export interface PlaybackCountIn {
   beatDurationMs: number
   meter: PlaybackMeter
   beats: readonly number[]
+  leadBeatCount: number
 }
 
-export type PlaybackCountInStyle = 'classic' | 'band' | 'last-beats' | 'pickup'
+export type PlaybackCountInStyle = 'none' | 'classic' | 'band' | 'last-beats' | 'pickup'
 
 export function parsePosition(value: string): PlaybackPosition | undefined {
   const match = value.trim().match(/^(\d+)\.(\d+)$/)
@@ -57,6 +58,7 @@ export function resolveCountIn(
   startMs: number,
   style: PlaybackCountInStyle = 'classic',
 ): PlaybackCountIn | undefined {
+  if (style === 'none') return undefined
   const markerIndex = markers.findIndex((marker) => marker.timeMs === startMs && marker.meter !== undefined)
   if (markerIndex < 0) return undefined
   const marker = markers[markerIndex]
@@ -66,18 +68,39 @@ export function resolveCountIn(
   const durationMs = nextMarker.timeMs - marker.timeMs
   if (durationMs <= 0 || marker.meter.numerator <= 0) return undefined
   const beatCount = marker.meter.numerator
+  let beatDurationMs = durationMs / beatCount
+  let hasPickup = false
+  let pickupBeatCount = beatCount
+  if (style === 'pickup' && markerIndex === 0) {
+    for (let candidateIndex = markerIndex + 1; candidateIndex < markers.length; candidateIndex += 1) {
+      const candidate = markers[candidateIndex]
+      if (candidate?.meter === undefined) continue
+      if (candidate.meter.numerator !== marker.meter.numerator
+        || candidate.meter.denominator !== marker.meter.denominator) continue
+      const candidateEnd = nextPositionBoundaryMarker(markers, candidateIndex)
+      if (candidateEnd === undefined) continue
+      const fullMeasureDurationMs = candidateEnd.timeMs - candidate.timeMs
+      hasPickup = durationMs < fullMeasureDurationMs
+      if (hasPickup) {
+        beatDurationMs = fullMeasureDurationMs / beatCount
+        pickupBeatCount = Math.max(1, Math.min(beatCount, Math.round(durationMs / (fullMeasureDurationMs / beatCount))))
+      }
+      break
+    }
+  }
   const beats = style === 'band'
     ? [...Array.from({ length: Math.min(2, beatCount) }, (_value, index) => index), ...Array.from({ length: beatCount }, (_value, index) => index)]
     : style === 'last-beats'
       ? Array.from({ length: Math.min(2, beatCount) }, (_value, index) => beatCount - Math.min(2, beatCount) + index)
-      : style === 'pickup'
-        ? [0]
+      : style === 'pickup' && hasPickup
+        ? Array.from({ length: pickupBeatCount }, (_value, index) => index)
         : Array.from({ length: beatCount }, (_value, index) => index)
   return {
-    durationMs: beats.length * (durationMs / beatCount),
-    beatDurationMs: durationMs / marker.meter.numerator,
+    durationMs: beats.length * beatDurationMs,
+    beatDurationMs,
     meter: marker.meter,
     beats,
+    leadBeatCount: style === 'band' ? Math.min(2, beatCount) : 0,
   }
 }
 
