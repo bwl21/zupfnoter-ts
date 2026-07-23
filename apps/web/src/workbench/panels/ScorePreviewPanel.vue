@@ -3,7 +3,7 @@ import { ref, toRef } from 'vue'
 
 import type { SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
-import { ZnPanel } from '@zupfnoter/design-system'
+import { ZnMaximizeButton, ZnPanel } from '@zupfnoter/design-system'
 import { resolveSelectionOriginByTextRange } from '../selectionIndex'
 import { useTextRangeSvgHighlight } from './useTextRangeSvgHighlight'
 
@@ -13,6 +13,7 @@ const props = defineProps<{
   selectedTextRanges?: SelectionTextRange[]
   playbackTextRanges?: SelectionTextRange[]
   sheetObjectIndex?: SheetObjectIndex
+  maximized?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -23,6 +24,7 @@ const emit = defineEmits<{
     origin?: SelectionOrigin
     source: 'score-preview'
   }): void
+  (event: 'toggle-maximize'): void
 }>()
 
 const svgFrame = ref<HTMLElement | null>(null)
@@ -66,6 +68,13 @@ function handleSvgClick(event: MouseEvent): void {
           <input aria-label="enter chord" class="preview-stage__input" placeholder="enter chord" type="text">
           <input aria-label="enter notes" class="preview-stage__input preview-stage__input--wide" placeholder="enter notes" type="text">
         </div>
+        <ZnMaximizeButton
+          class="preview-stage__maximize"
+          :maximized="props.maximized"
+          maximize-label="Notenpanel maximieren"
+          restore-label="Notenpanel wiederherstellen"
+          @toggle="emit('toggle-maximize')"
+        />
       </div>
       <div class="preview-stage__frame">
         <div v-if="errorMessage" class="preview-stage__error">
@@ -95,6 +104,7 @@ function handleSvgClick(event: MouseEvent): void {
 .preview-stage__controls {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--zn-space-3);
   flex: 0 0 auto;
 }

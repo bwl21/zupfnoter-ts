@@ -4,7 +4,7 @@ import { computed, ref, toRef, watch } from 'vue'
 import { makeJumplinePathData, type JumplinePathInfo } from '@zupfnoter/core'
 import type { PlaybackHighlight, SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
-import { ZnPanel, ZnTabs, ZnZoomControl } from '@zupfnoter/design-system'
+import { ZnMaximizeButton, ZnPanel, ZnTabs, ZnZoomControl } from '@zupfnoter/design-system'
 import { resolveSelectionOriginByZnId } from '../selectionIndex'
 import type { HarpPreviewDragEnd } from '../multiWindow/harpMirrorChannel'
 import HarpMagnifierPopover from './HarpMagnifierPopover.vue'
@@ -29,6 +29,7 @@ const props = defineProps<{
   }
   sheetObjectIndex?: SheetObjectIndex
   allowWheelZoomWithoutModifier?: boolean
+  maximized?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -41,6 +42,7 @@ const emit = defineEmits<{
   }): void
   (event: 'scroll', payload: { scrollLeft: number; scrollTop: number }): void
   (event: 'drag-end', payload: HarpPreviewDragEnd): void
+  (event: 'toggle-maximize'): void
 }>()
 
 type HarpPreviewMode = 'gross' | 'normal' | 'klein' | 'eingepasst' | 'pdf'
@@ -484,6 +486,12 @@ const magnifierPopupStyle = computed(() => {
         />
         <div class="harp-preview__controls">
           <ZnZoomControl :model-value="zoom" @update:model-value="setZoom" />
+          <ZnMaximizeButton
+            :maximized="props.maximized"
+            maximize-label="Harfenpanel maximieren"
+            restore-label="Harfenpanel wiederherstellen"
+            @toggle="emit('toggle-maximize')"
+          />
         </div>
       </div>
       <div

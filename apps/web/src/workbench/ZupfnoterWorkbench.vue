@@ -9,6 +9,7 @@ import {
   ZnButton,
   ZnIcon,
   ZnIconButton,
+  ZnMaximizeButton,
   ZnSplitPane,
   ZnTabs,
   ZnToolbar,
@@ -110,6 +111,23 @@ interface ConfigEditorIntent {
 
 type SaveArtifactStatus = 'pending' | 'saving' | 'saved' | 'failed'
 
+type ViewPerspective = 'all' | 'notes-input' | 'harp-input' | 'notes' | 'harp'
+type MaximizedPanel = 'editor' | 'score' | 'harp'
+
+interface SavedViewLayout {
+  perspective: ViewPerspective
+  editorPaneSize: number
+  previewPaneSize: number
+}
+
+const viewPerspectiveItems: Array<{ id: ViewPerspective; label: string; icon: string }> = [
+  { id: 'all', label: 'Alle Fenster', icon: '▦' },
+  { id: 'notes-input', label: 'Noteneingabe', icon: '♫' },
+  { id: 'harp-input', label: 'Harfeneingabe', icon: '▧' },
+  { id: 'notes', label: 'Noten', icon: '♫' },
+  { id: 'harp', label: 'Harfennoten', icon: '⤢' },
+]
+
 interface SaveArtifactProgress {
   name: string
   status: SaveArtifactStatus
@@ -133,6 +151,10 @@ const editorTab = ref('abc')
 const showInvisibleCharacters = ref(false)
 const editorPaneSize = ref(54)
 const previewPaneSize = ref(62)
+const viewPerspective = ref<ViewPerspective>('all')
+const viewMenuElement = ref<HTMLDetailsElement | null>(null)
+const maximizedPanel = ref<MaximizedPanel | null>(null)
+const savedViewLayout = ref<SavedViewLayout | null>(null)
 const harpZoom = ref(100)
 const harpPreviewMode = ref<'gross' | 'normal' | 'klein' | 'eingepasst' | 'pdf'>('normal')
 const harpPdfPreviewUrl = ref<string>()
@@ -1624,6 +1646,13 @@ commandStack.addCommand({
 })
 
 commandStack.addCommand({
+  name: 'toggleharpfullscreen',
+  help: 'show or restore harp notes in the full workbench area',
+  undoable: false,
+  perform: () => togglePanelMaximize('harp'),
+})
+
+commandStack.addCommand({
   name: 'playbacklink',
   help: 'create a playback link from the current timeline',
   undoable: false,
@@ -1664,12 +1693,12 @@ shortcutManager.register({
   help: 'Konsole ein- oder ausblenden',
 })
 shortcutManager.register({
-  id: 'fullscreen',
+  id: 'harp-fullscreen',
   keys: ['Mod-L'],
-  command: 'togglefullscreen',
+  command: 'toggleharpfullscreen',
   scope: 'global',
-  label: 'Vollbild',
-  help: 'Vollbildmodus umschalten',
+  label: 'Harfennoten-Vollbild',
+  help: 'Harfennoten im gesamten Workbench-Bereich anzeigen oder Ansicht wiederherstellen',
 })
 for (const extractNumber of Array.from({ length: 10 }, (_, index) => index)) {
   shortcutManager.register({
@@ -1807,6 +1836,43 @@ watch([documentText, currentExtract, playerQrJpegUrl], () => {
 function chooseExtract(extractNumber: number): void {
   executeToolbarCommand(`view ${extractNumber}`)
   extractPickerOpen.value = false
+}
+
+function chooseViewPerspective(perspective: ViewPerspective): void {
+  maximizedPanel.value = null
+  savedViewLayout.value = null
+  viewPerspective.value = perspective
+  if (viewMenuElement.value !== null) {
+    viewMenuElement.value.open = false
+  }
+}
+
+const editorPanelVisible = computed(() => maximizedPanel.value === 'editor' || (maximizedPanel.value === null && (viewPerspective.value === 'all' || viewPerspective.value === 'notes-input' || viewPerspective.value === 'harp-input')))
+const previewPanelVisible = computed(() => maximizedPanel.value !== 'editor')
+const scorePanelVisible = computed(() => maximizedPanel.value === 'score' || (maximizedPanel.value === null && (viewPerspective.value === 'all' || viewPerspective.value === 'notes-input' || viewPerspective.value === 'notes')))
+const harpPanelVisible = computed(() => maximizedPanel.value === 'harp' || (maximizedPanel.value === null && (viewPerspective.value === 'all' || viewPerspective.value === 'harp-input' || viewPerspective.value === 'harp')))
+
+function togglePanelMaximize(panel: MaximizedPanel): void {
+  if (maximizedPanel.value === panel) {
+    const layout = savedViewLayout.value
+    maximizedPanel.value = null
+    savedViewLayout.value = null
+    if (layout !== null) {
+      viewPerspective.value = layout.perspective
+      editorPaneSize.value = layout.editorPaneSize
+      previewPaneSize.value = layout.previewPaneSize
+    }
+    return
+  }
+
+  if (maximizedPanel.value === null) {
+    savedViewLayout.value = {
+      perspective: viewPerspective.value,
+      editorPaneSize: editorPaneSize.value,
+      previewPaneSize: previewPaneSize.value,
+    }
+  }
+  maximizedPanel.value = panel
 }
 
 function handleExtractPickerToggle(event: Event): void {
@@ -1993,7 +2059,27 @@ function handleMirrorMessage(event: MessageEvent): void {
           <template #default />
           <template #trailing>
             <ZnButton variant="ghost">Drucken</ZnButton>
-            <ZnButton variant="ghost">Ansicht</ZnButton>
+            <details ref="viewMenuElement" class="view-picker" data-testid="view-menu">
+              <summary class="view-picker__summary" aria-haspopup="menu" data-testid="view-menu-toggle">
+                <span class="view-picker__icon" aria-hidden="true">◈</span>
+                <span>Ansicht</span>
+                <span class="view-picker__caret" aria-hidden="true">▾</span>
+              </summary>
+              <div class="view-picker__menu" role="menu" aria-label="Ansicht">
+                <button
+                  v-for="item in viewPerspectiveItems"
+                  :key="item.id"
+                  type="button"
+                  class="view-picker__item"
+                  :class="{ 'view-picker__item--active': viewPerspective === item.id }"
+                  role="menuitem"
+                  @click="chooseViewPerspective(item.id)"
+                >
+                  <span class="view-picker__item-icon" aria-hidden="true">{{ item.icon }}</span>
+                  <span>{{ item.label }}</span>
+                </button>
+              </div>
+            </details>
             <details class="extract-picker" :open="extractPickerOpen" @toggle="handleExtractPickerToggle">
               <summary
                 class="extract-picker__summary"
@@ -2069,9 +2155,19 @@ function handleMirrorMessage(event: MessageEvent): void {
         v-model:primary-size="editorPaneSize"
         :min-primary-size="12"
         :max-primary-size="88"
+        :primary-visible="editorPanelVisible"
+        :secondary-visible="previewPanelVisible"
       >
         <template #primary>
           <div class="editor-pane">
+            <div class="workbench-panel-action">
+              <ZnMaximizeButton
+                :maximized="maximizedPanel === 'editor'"
+                maximize-label="Editor maximieren"
+                restore-label="Editor wiederherstellen"
+                @toggle="togglePanelMaximize('editor')"
+              />
+            </div>
             <ZnTabs v-model="editorTab" :items="[
               { id: 'abc', label: 'ABC-Notation' },
               { id: 'lyrics', label: 'Liedtexte' },
@@ -2154,19 +2250,25 @@ function handleMirrorMessage(event: MessageEvent): void {
               :min-primary-size="12"
               :max-primary-size="88"
               :handle-size="14"
+              :primary-visible="scorePanelVisible"
+              :secondary-visible="harpPanelVisible"
             >
               <template #primary>
                 <ScorePreviewPanel
+                  v-if="viewPerspective === 'all' || viewPerspective === 'notes-input' || viewPerspective === 'notes'"
                   :error-message="previewErrorMessage"
                   :playback-text-ranges="playbackScoreTextRanges"
                   :selected-text-ranges="selectedScoreTextRanges"
                   :sheet-object-index="selectionStore.sheetObjectIndex"
                   :svg="scoreSvg"
+                  :maximized="maximizedPanel === 'score'"
                   @select-text-range="handleScorePreviewSelection"
+                  @toggle-maximize="togglePanelMaximize('score')"
                 />
               </template>
               <template #secondary>
                 <HarpPreviewPanel
+                  v-if="viewPerspective === 'all' || viewPerspective === 'harp-input' || viewPerspective === 'harp'"
                   v-model:mode="harpPreviewMode"
                   v-model:zoom="harpZoom"
                   :error-message="previewErrorMessage"
@@ -2177,8 +2279,10 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :selection="selectedHarpProjection"
                   :sheet-object-index="selectionStore.sheetObjectIndex"
                   :svg="harpSvg"
+                  :maximized="maximizedPanel === 'harp'"
                   @select-text-range="handleHarpPreviewSelection"
                   @drag-end="handleHarpPreviewDragEnd"
+                  @toggle-maximize="togglePanelMaximize('harp')"
                 />
               </template>
             </ZnSplitPane>
@@ -2436,6 +2540,85 @@ function handleMirrorMessage(event: MessageEvent): void {
   position: relative;
 }
 
+.view-picker {
+  position: relative;
+}
+
+.view-picker__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.1rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--zn-radius-md);
+  color: var(--zn-text-soft);
+  cursor: pointer;
+  list-style: none;
+}
+
+.view-picker__summary:hover,
+.view-picker[open] .view-picker__summary {
+  border-color: var(--zn-border);
+  background: var(--zn-bg-surface-soft);
+}
+
+.view-picker__summary::-webkit-details-marker {
+  display: none;
+}
+
+.view-picker__icon {
+  color: var(--zn-text-muted);
+  font-size: 1.05rem;
+}
+
+.view-picker__caret {
+  color: var(--zn-text-muted);
+  font-size: 0.75rem;
+}
+
+.view-picker__menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  z-index: 30;
+  min-width: 13rem;
+  padding: 0.35rem;
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-md);
+  background: var(--zn-bg-surface);
+  box-shadow: var(--zn-shadow-soft);
+}
+
+.view-picker__item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  min-height: 2.25rem;
+  padding: 0.45rem 0.6rem;
+  border: 0;
+  border-radius: var(--zn-radius-sm);
+  background: transparent;
+  color: var(--zn-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.view-picker__item:hover,
+.view-picker__item:focus-visible,
+.view-picker__item--active {
+  background: var(--zn-bg-surface-soft);
+}
+
+.view-picker__item-icon {
+  display: inline-flex;
+  width: 1.25rem;
+  justify-content: center;
+  color: var(--zn-text-muted);
+  font-size: 1.05rem;
+}
+
 .extract-picker__summary {
   display: inline-flex;
   align-items: center;
@@ -2588,11 +2771,19 @@ function handleMirrorMessage(event: MessageEvent): void {
 }
 
 .editor-pane {
+  position: relative;
   display: grid;
   grid-template-rows: minmax(0, 1fr);
   min-height: 0;
   height: 100%;
   overflow: hidden;
+}
+
+.workbench-panel-action {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.35rem;
+  z-index: 4;
 }
 
 .abc-editor-toolbar:deep(.zn-toolbar) {

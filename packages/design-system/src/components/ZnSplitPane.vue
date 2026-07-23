@@ -9,12 +9,16 @@ const props = withDefaults(defineProps<{
   minPrimarySize?: number
   maxPrimarySize?: number
   handleSize?: number
+  primaryVisible?: boolean
+  secondaryVisible?: boolean
 }>(), {
   orientation: 'horizontal',
   primarySize: 58,
   minPrimarySize: 8,
   maxPrimarySize: 92,
   handleSize: 10,
+  primaryVisible: true,
+  secondaryVisible: true,
 })
 
 const emit = defineEmits<{
@@ -42,6 +46,8 @@ const splitStyle = computed(() => ({
   '--zn-split-primary': `${currentPrimarySize.value}%`,
   '--zn-split-handle-size': `${props.handleSize}px`,
 }))
+
+const showDivider = computed(() => props.primaryVisible && props.secondaryVisible)
 
 function commitSize(nextSize: number): void {
   const clampedSize = clampSize(nextSize)
@@ -140,15 +146,20 @@ onBeforeUnmount(() => {
     class="zn-split-pane"
     :class="[
       `zn-split-pane--${orientation}`,
+      {
+        'zn-split-pane--single-primary': primaryVisible && !secondaryVisible,
+        'zn-split-pane--single-secondary': !primaryVisible && secondaryVisible,
+      },
       { 'zn-split-pane--dragging': dragging },
     ]"
     :style="splitStyle"
   >
-    <section class="zn-split-pane__primary">
+    <section v-if="primaryVisible" class="zn-split-pane__primary">
       <slot name="primary" />
     </section>
 
     <button
+      v-if="showDivider"
       ref="divider"
       class="zn-split-pane__divider"
       type="button"
@@ -163,7 +174,7 @@ onBeforeUnmount(() => {
       @keydown="onDividerKeydown"
     />
 
-    <section class="zn-split-pane__secondary">
+    <section v-if="secondaryVisible" class="zn-split-pane__secondary">
       <slot name="secondary" />
     </section>
   </div>
@@ -182,9 +193,19 @@ onBeforeUnmount(() => {
   grid-template-columns: minmax(0, var(--zn-split-primary)) var(--zn-split-handle-size) minmax(0, 1fr);
 }
 
+.zn-split-pane--horizontal.zn-split-pane--single-primary,
+.zn-split-pane--horizontal.zn-split-pane--single-secondary {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .zn-split-pane--vertical {
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, var(--zn-split-primary)) var(--zn-split-handle-size) minmax(0, 1fr);
+}
+
+.zn-split-pane--vertical.zn-split-pane--single-primary,
+.zn-split-pane--vertical.zn-split-pane--single-secondary {
+  grid-template-rows: minmax(0, 1fr);
 }
 
 .zn-split-pane--vertical > * {
