@@ -249,7 +249,6 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
   let audioContext: AudioContext | undefined
   let playbackTimers: number[] = []
   let animationFrame: number | undefined
-  let positionTimer: number | undefined
   let playbackOffsetMs = 0
   let playbackStartedAtContextTime = 0
   let isPaused = false
@@ -277,8 +276,6 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     playbackTimers = []
     if (animationFrame !== undefined) window.cancelAnimationFrame(animationFrame)
     animationFrame = undefined
-    if (positionTimer !== undefined) window.clearTimeout(positionTimer)
-    positionTimer = undefined
     for (const oscillator of metronomeOscillators) {
       try {
         oscillator.stop()
@@ -575,7 +572,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
           ui.setMetronome(countIn.meter, beat, true)
           ui.setPlaybackTime(0)
         }
-        positionTimer = window.setTimeout(update, 25)
+        animationFrame = window.requestAnimationFrame(update)
         return
       }
       const elapsedMs = elapsed()
@@ -587,7 +584,10 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
         return
       }
       updatePosition(elapsedMs)
-      positionTimer = window.setTimeout(update, 25)
+      // Der AudioContext bleibt die Zeitquelle. requestAnimationFrame sorgt
+      // dafür, dass der sichtbare Schlag im Renderzyklus aktualisiert wird,
+      // statt von einem ungenauen JavaScript-Timer abzuhängen.
+      animationFrame = window.requestAnimationFrame(update)
     }
     update()
   }
