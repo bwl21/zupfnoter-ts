@@ -114,6 +114,10 @@ export class PdfEngine {
     const x = center[0] + size[0] + DOTTED_SIZE + lineWidth
     const y = center[1]
     const surround = DOTTED_SIZE + lineWidth
+    // The dot is a filled mark, not an outlined continuation of the notehead.
+    // Empty noteheads leave their line width active here; resetting it keeps
+    // PDF output consistent with SVG and the legacy PDF engine.
+    pdf.setLineWidth(0)
     this.setDrawColor(this.color('white'))
     this.setFillColor(this.color('white'))
     pdf.ellipse(this.x(x), this.y(y), surround, surround, 'FD')

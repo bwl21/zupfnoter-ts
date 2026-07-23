@@ -160,7 +160,7 @@ describe('SvgEngine', () => {
 
       expect(svg).toContain('data-drag-handler="jumpline"')
       expect(svg).toContain('data-drag-hitbox="true"')
-      expect(svg).toContain('stroke-width="20.3"')
+      expect(svg).toContain('stroke-width="10.3"')
     })
   })
 
