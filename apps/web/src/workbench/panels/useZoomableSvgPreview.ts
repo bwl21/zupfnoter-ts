@@ -29,6 +29,8 @@ interface PanState {
 
 interface ZoomableSvgPreviewOptions {
   fitToWidth?: boolean
+  fitToViewport?: Ref<boolean>
+  allowWheelZoomWithoutModifier?: boolean
   maxZoom?: number
 }
 
@@ -47,7 +49,8 @@ export function useZoomableSvgPreview(
     ? { fitToWidth: true, allowWheelZoomWithoutModifier: optionsOrAllowWheelZoomWithoutModifier, maxZoom: 400 }
     : {
         fitToWidth: optionsOrAllowWheelZoomWithoutModifier.fitToWidth ?? true,
-        allowWheelZoomWithoutModifier: false,
+        fitToViewport: optionsOrAllowWheelZoomWithoutModifier.fitToViewport,
+        allowWheelZoomWithoutModifier: optionsOrAllowWheelZoomWithoutModifier.allowWheelZoomWithoutModifier ?? false,
         maxZoom: optionsOrAllowWheelZoomWithoutModifier.maxZoom ?? 400,
       }
   const frameRef = ref<HTMLElement | null>(null)
@@ -134,11 +137,20 @@ export function useZoomableSvgPreview(
 
     const metrics = frameMetrics.value
     const content = contentSize.value
-    if (metrics === null || content === null || metrics.viewportWidth <= 0 || content.width <= 0) {
+    if (
+      metrics === null
+      || content === null
+      || metrics.viewportWidth <= 0
+      || metrics.viewportHeight <= 0
+      || content.width <= 0
+      || content.height <= 0
+    ) {
       return 1
     }
 
-    return metrics.viewportWidth / content.width
+    const widthScale = metrics.viewportWidth / content.width
+    if (options.fitToViewport?.value !== true) return widthScale
+    return Math.min(widthScale, metrics.viewportHeight / content.height)
   })
 
   const displayScale = computed(() => fitScale.value * (zoom.value / 100))

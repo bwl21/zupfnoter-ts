@@ -535,6 +535,22 @@ V:V1 clef=treble-8
     }
   })
 
+  it('applies a part marker placed immediately before a bar to the next note', () => {
+    const song = transform(`X:1
+T:Part at bar boundary
+M:4/4
+L:1/4
+K:C
+C D E F [P:part]| G A B c |]`)
+    const notes = song.voices[0]?.entities.filter((entity) => entity.type === 'Note') ?? []
+    const partAnnotations = song.voices[0]?.entities.filter((entity) => entity.type === 'NoteBoundAnnotation') ?? []
+
+    expect(notes).toHaveLength(8)
+    expect(notes[4]?.firstInPart).toBe(true)
+    expect(partAnnotations).toHaveLength(1)
+    expect((partAnnotations[0] as { text?: string } | undefined)?.text).toBe('part')
+  })
+
   it('shares inline part markers across voices via a transformer-global part table', () => {
     const song = transform(`X:1
 T:Inline Part Shared Across Voices

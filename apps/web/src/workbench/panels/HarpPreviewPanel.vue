@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue'
+import { computed, ref, toRef, watch } from 'vue'
 
 import { makeJumplinePathData, type JumplinePathInfo } from '@zupfnoter/core'
 import type { PlaybackHighlight, SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
@@ -18,6 +18,9 @@ const DRAG_GRID_MM = 1
 const props = defineProps<{
   svg: string
   errorMessage?: string
+  pdfUrl?: string
+  pdfLoading?: boolean
+  pdfError?: string
   playbackHighlight?: PlaybackHighlight
   selection?: {
     znIds: string[]
@@ -40,7 +43,16 @@ const emit = defineEmits<{
   (event: 'drag-end', payload: HarpPreviewDragEnd): void
 }>()
 
-const mode = ref('normal')
+type HarpPreviewMode = 'gross' | 'normal' | 'klein' | 'eingepasst' | 'pdf'
+
+const mode = defineModel<HarpPreviewMode>('mode', {
+  default: 'normal',
+})
+const fitToViewport = computed(() => mode.value === 'eingepasst')
+const pdfDocumentStyle = computed(() => ({
+  width: `${zoom.value}%`,
+  height: `${zoom.value}%`,
+}))
 const magnifierOpen = ref(false)
 const magnifierSession = ref(0)
 const magnifierAnchor = ref<{ x: number; y: number } | null>(null)
@@ -70,8 +82,13 @@ const zoom = defineModel<number>('zoom', {
 const preview = useZoomableSvgPreview(
   toRef(props, 'svg'),
   zoom,
-  props.allowWheelZoomWithoutModifier === true,
+  {
+    fitToWidth: true,
+    fitToViewport,
+    allowWheelZoomWithoutModifier: props.allowWheelZoomWithoutModifier === true,
+  },
 )
+
 const {
   canvasRef,
   canvasStyle,
@@ -86,6 +103,16 @@ const {
   onWheel,
   setZoom,
 } = preview
+
+watch(mode, (value) => {
+  const presetZoom: Record<Exclude<HarpPreviewMode, 'pdf'>, number> = {
+    gross: 130,
+    normal: 100,
+    klein: 70,
+    eingepasst: 100,
+  }
+  if (value !== 'pdf') setZoom(presetZoom[value])
+})
 usePlaybackSvgHighlight(
   canvasRef,
   toRef(props, 'svg'),
@@ -462,6 +489,7 @@ const magnifierPopupStyle = computed(() => {
       <div
         ref="frameRef"
         class="harp-preview__frame"
+        :class="{ 'harp-preview__frame--pdf': mode === 'pdf' }"
         @scroll="handleScroll"
         @pointercancel="handlePointerCancel"
         @pointerdown="handlePointerDown"
@@ -470,7 +498,19 @@ const magnifierPopupStyle = computed(() => {
         @pointerleave="clearJumplineHover"
         @wheel="onWheel"
       >
-        <div v-if="errorMessage" class="harp-preview__error">
+        <div v-if="mode === 'pdf'" class="harp-preview__pdf">
+          <p v-if="pdfLoading" class="harp-preview__pdf-status" role="status">PDF-Vorschau wird geladen …</p>
+          <p v-else-if="pdfError" class="harp-preview__error">{{ pdfError }}</p>
+          <iframe
+            v-else-if="pdfUrl"
+            class="harp-preview__pdf-document"
+            :style="pdfDocumentStyle"
+            :src="pdfUrl"
+            title="PDF-Vorschau der Harfennoten"
+          />
+          <p v-else class="harp-preview__pdf-status">Keine PDF-Vorschau verfügbar.</p>
+        </div>
+        <div v-else-if="errorMessage" class="harp-preview__error">
           {{ errorMessage }}
         </div>
         <div
@@ -535,6 +575,32 @@ const magnifierPopupStyle = computed(() => {
   /* Der Pfeil lässt die schmale Drag-Zielfläche sichtbar. */
   cursor: default;
   user-select: none;
+}
+
+.harp-preview__frame--pdf {
+  overflow: auto;
+}
+
+.harp-preview__pdf {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: var(--zn-bg-surface);
+}
+
+.harp-preview__pdf-document {
+  display: block;
+  min-width: 100%;
+  min-height: 100%;
+  border: 0;
+  background: white;
+}
+
+.harp-preview__pdf-status {
+  margin: var(--zn-space-4);
+  color: var(--zn-muted);
 }
 
 .harp-preview__frame--jumpline-hover {

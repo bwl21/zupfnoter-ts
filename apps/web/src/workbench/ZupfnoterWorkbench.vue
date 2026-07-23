@@ -134,6 +134,10 @@ const showInvisibleCharacters = ref(false)
 const editorPaneSize = ref(54)
 const previewPaneSize = ref(62)
 const harpZoom = ref(100)
+const harpPreviewMode = ref<'gross' | 'normal' | 'klein' | 'eingepasst' | 'pdf'>('normal')
+const harpPdfPreviewUrl = ref<string>()
+const harpPdfPreviewLoading = ref(false)
+const harpPdfPreviewError = ref('')
 const harpScrollLeft = ref(0)
 const harpScrollTop = ref(0)
 const documentText = ref(DEFAULT_ABC)
@@ -517,6 +521,7 @@ const PLAYBACK_URL_WARNING_LENGTH = 1800
 let nextRenderRequestId = 0
 let pendingRenderRequestId: number | undefined
 let renderTimer: ReturnType<typeof setTimeout> | undefined
+let pdfPreviewRequestId = 0
 
 function appendDiagnosticLine(message: string, severity: 'warning' | 'error', source?: string): void {
   const prefix = source === undefined || source === ''
@@ -687,6 +692,37 @@ async function ensurePlayerQrForRenderedExtract(result: WorkbenchRenderResult): 
     renderNow()
   } catch (error) {
     logger.error(`player QR render skipped: ${error instanceof Error ? error.message : String(error)}`)
+  }
+}
+
+async function refreshHarpPdfPreview(): Promise<void> {
+  if (harpPreviewMode.value !== 'pdf') return
+
+  const requestId = ++pdfPreviewRequestId
+  harpPdfPreviewLoading.value = true
+  harpPdfPreviewError.value = ''
+  const previousUrl = harpPdfPreviewUrl.value
+  harpPdfPreviewUrl.value = undefined
+
+  if (previousUrl !== undefined) URL.revokeObjectURL(previousUrl)
+
+  const playerUrl = new URL('https://zupfnoter-player.csweichel.dev/')
+  const identification = resolvePlaybackIdentification()
+  if (identification !== undefined) playerUrl.searchParams.set('id', identification)
+
+  try {
+    const pdf = await renderPdfExport(documentText.value, currentExtract.value, 'A3', {
+      resources: documentResources.value,
+      playerQrJpegUrl: playerQrJpegUrl.value,
+      playerUrl: playerUrl.toString(),
+    })
+    if (requestId !== pdfPreviewRequestId) return
+    harpPdfPreviewUrl.value = URL.createObjectURL(pdf)
+  } catch (error) {
+    if (requestId !== pdfPreviewRequestId) return
+    harpPdfPreviewError.value = error instanceof Error ? error.message : String(error)
+  } finally {
+    if (requestId === pdfPreviewRequestId) harpPdfPreviewLoading.value = false
   }
 }
 
@@ -1760,6 +1796,14 @@ watch(
   { deep: true },
 )
 
+watch(harpPreviewMode, (mode) => {
+  if (mode === 'pdf') void refreshHarpPdfPreview()
+})
+
+watch([documentText, currentExtract, playerQrJpegUrl], () => {
+  if (harpPreviewMode.value === 'pdf') void refreshHarpPdfPreview()
+})
+
 function chooseExtract(extractNumber: number): void {
   executeToolbarCommand(`view ${extractNumber}`)
   extractPickerOpen.value = false
@@ -1818,6 +1862,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  pdfPreviewRequestId += 1
+  if (harpPdfPreviewUrl.value !== undefined) URL.revokeObjectURL(harpPdfPreviewUrl.value)
   window.removeEventListener('keydown', handleGlobalKeydown, true)
   window.removeEventListener('message', handleMirrorMessage)
   renderWorker?.terminate()
@@ -2121,8 +2167,12 @@ function handleMirrorMessage(event: MessageEvent): void {
               </template>
               <template #secondary>
                 <HarpPreviewPanel
+                  v-model:mode="harpPreviewMode"
                   v-model:zoom="harpZoom"
                   :error-message="previewErrorMessage"
+                  :pdf-error="harpPdfPreviewError"
+                  :pdf-loading="harpPdfPreviewLoading"
+                  :pdf-url="harpPdfPreviewUrl"
                   :playback-highlight="projectedPlaybackHighlight"
                   :selection="selectedHarpProjection"
                   :sheet-object-index="selectionStore.sheetObjectIndex"

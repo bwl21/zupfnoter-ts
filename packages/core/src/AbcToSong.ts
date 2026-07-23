@@ -671,6 +671,11 @@ export class AbcToSong {
     const result: VoiceEntity[] = []
     this._registerPendingGotoDistances(sym, state)
 
+    // abc2svg attaches a part marker immediately before a bar to the bar
+    // symbol itself. Register it here so the following playable receives the
+    // marker at the start of the next measure.
+    this._registerInlinePart(sym)
+
     if (!(sym.invisible ?? false)) {
       state.nextMeasure = true
     }
@@ -902,16 +907,27 @@ export class AbcToSong {
   }
 
   private _transformInlinePart(sym: AbcSymbol, companion: PlayableEntity): void {
-    const part = sym.part
-    if (!part || typeof part !== 'object') return
-    const partText = (part as { text?: unknown }).text
-    if (typeof partText !== 'string' || partText.length === 0) return
+    this._registerInlinePart(sym)
+    const partText = this._readInlinePartText(sym)
+    if (partText === undefined) return
 
     if (companion.prevPlayable) {
       companion.prevPlayable.nextFirstInPart = true
     }
     companion.firstInPart = true
     this._partTable[companion.time] = partText
+  }
+
+  private _registerInlinePart(sym: AbcSymbol): void {
+    const partText = this._readInlinePartText(sym)
+    if (partText !== undefined) this._partTable[sym.time] = partText
+  }
+
+  private _readInlinePartText(sym: AbcSymbol): string | undefined {
+    const part = sym.part
+    if (!part || typeof part !== 'object') return
+    const partText = (part as { text?: unknown }).text
+    return typeof partText === 'string' && partText.length > 0 ? partText : undefined
   }
 
   private _resolvePendingVariantGotos(

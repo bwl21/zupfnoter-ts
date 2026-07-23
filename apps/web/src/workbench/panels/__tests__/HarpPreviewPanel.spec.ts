@@ -78,4 +78,24 @@ describe('HarpPreviewPanel', () => {
 
     expect(document.body.querySelector('.harp-magnifier')).toBeNull()
   })
+
+  it('shows the real PDF preview when the PDF tab is selected', async () => {
+    const wrapper = mount(HarpPreviewPanel, {
+      props: {
+        svg: '<svg width="200" height="100" viewBox="0 0 200 100"></svg>',
+        pdfUrl: 'blob:test-pdf',
+        zoom: 140,
+      },
+    })
+
+    await wrapper.findAll('.zn-tabs__tab')[4]?.trigger('click')
+    await nextTick()
+
+    const pdfFrame = wrapper.find('.harp-preview__pdf-document')
+    expect(pdfFrame.exists()).toBe(true)
+    expect(pdfFrame.attributes('src')).toBe('blob:test-pdf')
+    expect(pdfFrame.attributes('style')).toContain('width: 140%;')
+    expect(pdfFrame.attributes('style')).toContain('height: 140%;')
+    expect(wrapper.find('.harp-preview__svg').exists()).toBe(false)
+  })
 })
