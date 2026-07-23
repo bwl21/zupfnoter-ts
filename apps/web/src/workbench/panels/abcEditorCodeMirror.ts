@@ -199,7 +199,7 @@ function createMark(className: string): Decoration {
   return Decoration.mark({ class: className, inclusive: true })
 }
 
-function buildSyntaxDecorations(state: EditorState): DecorationSet {
+export function buildSyntaxDecorations(state: EditorState): DecorationSet {
   const builder = new RangeSetBuilder<Decoration>()
   let insideConfig = false
   let configBraceDepth = 0
@@ -239,6 +239,21 @@ function buildSyntaxDecorations(state: EditorState): DecorationSet {
     }
 
     if (!insideConfig && !text.startsWith('%%%%zupfnoter.config') && !trimmed.startsWith('%') && !/^[A-Za-z]:/.test(text)) {
+      const inlineAnnotationRanges: Array<{ from: number; to: number }> = []
+      for (const match of text.matchAll(/\[[A-Za-z]:[^\]]*\]/g)) {
+        const from = match.index ?? 0
+        inlineAnnotationRanges.push({ from, to: from + match[0].length })
+        ranges.push({
+          from: lineOffset + from,
+          to: lineOffset + from + match[0].length,
+          decoration: createMark('cm-abc-inline-header'),
+        })
+      }
+
+      const notationText = inlineAnnotationRanges.reduce((value, range) => (
+        `${value.slice(0, range.from)}${' '.repeat(range.to - range.from)}${value.slice(range.to)}`
+      ), text)
+
       for (const match of text.matchAll(/"(?:[^"\\]|\\.)*"/g)) {
         const from = lineOffset + (match.index ?? 0)
         ranges.push({ from, to: from + match[0].length, decoration: createMark('cm-abc-annotation') })
@@ -249,12 +264,12 @@ function buildSyntaxDecorations(state: EditorState): DecorationSet {
         ranges.push({ from, to: from + match[0].length, decoration: createMark('cm-abc-decoration') })
       }
 
-      for (const match of text.matchAll(/\|\:|\:\||\|\||\|/g)) {
+      for (const match of text.matchAll(/:\|\]|\|\]|\|:|:\||\|\||\[\||\|/g)) {
         const from = lineOffset + (match.index ?? 0)
         ranges.push({ from, to: from + match[0].length, decoration: createMark('cm-abc-bar') })
       }
 
-      for (const match of text.matchAll(/[_^=]*[A-Ga-gz][,']*(?:\d+|\/\d+|\/|\/\/)?/g)) {
+      for (const match of notationText.matchAll(/[_^=]*[A-Ga-gz][,']*(?:\d+|\/\d+|\/|\/\/)?/g)) {
         const from = lineOffset + (match.index ?? 0)
         const token = match[0]
         const className = token.toLowerCase().includes('z') ? 'cm-abc-rest' : 'cm-abc-note'
@@ -764,67 +779,11 @@ export function createAbcEditorExtensions(): Extension[] {
         backgroundColor: 'color-mix(in srgb, var(--zn-accent) 8%, transparent)',
       },
       '.cm-abc-header-prefix, .cm-abc-header-value': {
+        color: 'var(--zn-accent)',
         fontWeight: '700',
       },
-      '.cm-abc-header-prefix, .cm-abc-directive-line': {
+      '.cm-abc-directive-line': {
         color: 'var(--zn-danger)',
-      },
-      '.cm-abc-header-prefix--title': {
-        color: 'var(--zn-danger)',
-      },
-      '.cm-abc-header-prefix--extract': {
-        color: 'var(--zn-danger)',
-      },
-      '.cm-abc-header-prefix--file': {
-        color: 'var(--zn-danger)',
-      },
-      '.cm-abc-header-prefix--voice': {
-        color: 'var(--zn-danger)',
-      },
-      '.cm-abc-header-prefix--lyrics': {
-        color: 'var(--zn-danger)',
-      },
-      '.cm-abc-header-prefix--metadata': {
-        color: 'var(--zn-danger)',
-      },
-      '.cm-abc-header-value': {
-        color: 'var(--zn-accent)',
-      },
-      '.cm-abc-header-value--title': {
-        color: 'var(--zn-accent-strong)',
-      },
-      '.cm-abc-header-value--extract': {
-        color: 'color-mix(in srgb, var(--zn-accent) 92%, white 8%)',
-      },
-      '.cm-abc-header-value--file': {
-        color: 'color-mix(in srgb, var(--zn-accent) 84%, white 16%)',
-      },
-      '.cm-abc-header-value--voice': {
-        color: 'color-mix(in srgb, var(--zn-heading) 80%, white 20%)',
-      },
-      '.cm-abc-header-value--lyrics': {
-        color: 'color-mix(in srgb, var(--zn-accent) 88%, white 12%)',
-      },
-      '.cm-abc-header-value--composer': {
-        color: 'color-mix(in srgb, var(--zn-danger) 78%, white 22%)',
-      },
-      '.cm-abc-header-value--source': {
-        color: 'color-mix(in srgb, var(--zn-accent) 82%, white 18%)',
-      },
-      '.cm-abc-header-value--meter': {
-        color: 'color-mix(in srgb, var(--zn-danger) 70%, white 30%)',
-      },
-      '.cm-abc-header-value--key': {
-        color: 'color-mix(in srgb, var(--zn-accent) 76%, white 24%)',
-      },
-      '.cm-abc-header-value--length': {
-        color: 'color-mix(in srgb, var(--zn-accent) 88%, white 12%)',
-      },
-      '.cm-abc-header-value--tempo': {
-        color: 'color-mix(in srgb, var(--zn-warning) 82%, white 18%)',
-      },
-      '.cm-abc-header-value--metadata': {
-        color: 'color-mix(in srgb, var(--zn-accent) 88%, white 12%)',
       },
       '.cm-abc-comment, .cm-abc-comment-line': {
         color: 'var(--zn-success)',
@@ -835,6 +794,10 @@ export function createAbcEditorExtensions(): Extension[] {
       },
       '.cm-abc-annotation': {
         color: 'var(--zn-danger)',
+      },
+      '.cm-abc-inline-header': {
+        color: 'var(--zn-accent)',
+        fontWeight: '700',
       },
       '.cm-abc-decoration': {
         color: 'var(--zn-danger)',
@@ -851,7 +814,7 @@ export function createAbcEditorExtensions(): Extension[] {
         color: 'var(--zn-accent)',
       },
       '.cm-abc-bar': {
-        color: 'var(--zn-danger)',
+        color: 'var(--zn-accent-strong)',
         fontWeight: '700',
       },
       '.cm-abc-config-string': {
