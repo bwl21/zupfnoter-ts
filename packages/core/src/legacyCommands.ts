@@ -40,14 +40,21 @@ export interface WorkbenchCommandRuntime {
   setConfigHistoryState?(state: { canUndo: boolean; canRedo: boolean }): void
 }
 
-export function registerLegacyCommands(stack: CommandStack, runtime: WorkbenchCommandRuntime): void {
+export interface LegacyCommandController {
+  resetConfigHistory(): void
+}
+
+export function registerLegacyCommands(stack: CommandStack, runtime: WorkbenchCommandRuntime): LegacyCommandController {
   registerInternalCommands(stack, runtime)
   registerPlaybackCommands(stack, runtime)
   const state = createCommandState(runtime)
   registerCreateAndConfigCommands(stack, runtime, state)
   notifyConfigHistoryState(runtime, state)
-  registerLocalStoreCommands(stack, runtime)
+  registerLocalStoreCommands(stack, runtime, state)
   registerDropboxCommands(stack)
+  return {
+    resetConfigHistory: () => clearConfigHistory(runtime, state),
+  }
 }
 
 interface LegacyCommandState {
@@ -267,6 +274,7 @@ function registerCreateAndConfigCommands(
       const id = readString(args, 'id')
       const title = readString(args, 'title')
       runtime.setAbcText(createNewSongAbc(id, title))
+      clearConfigHistory(runtime, state)
       runtime.render()
       return { undoArguments: { oldValue } }
     },
@@ -280,6 +288,7 @@ function registerCreateAndConfigCommands(
       const oldValue = runtime.getAbcText()
       const value = readString(args, 'value')
       runtime.setAbcText(value)
+      clearConfigHistory(runtime, state)
       runtime.render()
       return { undoArguments: { oldValue } }
     },
@@ -594,7 +603,7 @@ function registerCreateAndConfigCommands(
   }
 }
 
-function registerLocalStoreCommands(stack: CommandStack, runtime: WorkbenchCommandRuntime): void {
+function registerLocalStoreCommands(stack: CommandStack, runtime: WorkbenchCommandRuntime, state: LegacyCommandState): void {
   stack.addCommand({
     name: 'lsave',
     help: 'save to local storage',
@@ -627,6 +636,7 @@ function registerLocalStoreCommands(stack: CommandStack, runtime: WorkbenchComma
         throw new CommandError(`Song not found: ${readString(args, 'id')}`)
       }
       runtime.setAbcText(loadedValue)
+      clearConfigHistory(runtime, state)
       runtime.render()
       return { undoArguments: { oldValue } }
     },
@@ -910,6 +920,12 @@ function notifyConfigHistoryState(runtime: WorkbenchCommandRuntime, state: Legac
     canUndo: state.configUndoStack.length > 0,
     canRedo: state.configRedoStack.length > 0,
   })
+}
+
+function clearConfigHistory(runtime: WorkbenchCommandRuntime, state: LegacyCommandState): void {
+  state.configUndoStack.length = 0
+  state.configRedoStack.length = 0
+  notifyConfigHistoryState(runtime, state)
 }
 
 function getConfigPath(config: Record<string, CommandArgumentValue>, path: string): CommandArgumentValue | undefined {

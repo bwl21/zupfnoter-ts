@@ -1412,6 +1412,8 @@ commandStack = new CommandStack({
   shortcutHelp: () => shortcutManager.help().map((binding) => shortcutManager.format(binding)),
 })
 
+let resetConfigHistory = (): void => undefined
+
 registerStorageCommands(commandStack, storageState, {
   providers: storageProviderDescriptors.map((provider) => provider.id),
   connections: () => storageConnections.value,
@@ -1422,6 +1424,7 @@ registerStorageCommands(commandStack, storageState, {
     if (loaded === undefined) return undefined
     return loaded
   },
+  resetConfigHistory: () => resetConfigHistory(),
   save: async (path, filename, content) => storageProviderRegistry.adapterFor(path, storageConnections.value).save(path, filename, content),
   saveArtifacts: async (path, filebase, content) => {
     const adapter = storageProviderRegistry.adapterFor(path, storageConnections.value)
@@ -1504,7 +1507,7 @@ registerStorageCommands(commandStack, storageState, {
   updateConnectionStatus: (connectionId, status) => updateStorageConnection(connectionId, { status }),
 })
 
-  registerLegacyCommands(commandStack, {
+const legacyCommandController = registerLegacyCommands(commandStack, {
     getAbcText: () => documentText.value,
     setAbcText: setAbcFromCommand,
     setResource: (key, value) => {
@@ -1568,6 +1571,7 @@ registerStorageCommands(commandStack, storageState, {
       configCanRedo.value = canRedo
   },
 })
+resetConfigHistory = legacyCommandController.resetConfigHistory
 
 commandStack.addCommand({
   name: 'toggleconsole',

@@ -35,6 +35,7 @@ export interface StorageCommandRuntime {
   saveArtifacts?(path: StorageCommandState, filebase: string, documentText: string): Promise<StorageSaveArtifactResult>
   readDocument(): string
   writeDocument(content: string): void
+  resetConfigHistory?(): void
   login(path: StorageCommandState): Promise<void>
   logout(path: StorageCommandState): Promise<void>
   cleanup(path: StorageCommandState): Promise<void>
@@ -253,6 +254,7 @@ export function registerStorageCommands(
           throw new CommandError(`Unable to open: ${selectedName}`)
         }
         runtime.writeDocument(loaded)
+        runtime.resetConfigHistory?.()
         context.log(`open ${state.system}//${state.path}/${selectedName}`)
         state.loggedIn = true
         state.pendingCandidates = []

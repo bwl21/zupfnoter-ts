@@ -33,6 +33,9 @@ export interface WorkbenchCommandRuntime {
         canRedo: boolean;
     }): void;
 }
-export declare function registerLegacyCommands(stack: CommandStack, runtime: WorkbenchCommandRuntime): void;
+export interface LegacyCommandController {
+    resetConfigHistory(): void;
+}
+export declare function registerLegacyCommands(stack: CommandStack, runtime: WorkbenchCommandRuntime): LegacyCommandController;
 export declare function createLegacyCommandStack(runtime: WorkbenchCommandRuntime, log: (message: string) => void): CommandStack;
 //# sourceMappingURL=legacyCommands.d.ts.map
