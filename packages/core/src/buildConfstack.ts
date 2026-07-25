@@ -51,19 +51,6 @@ export function buildConfstack(
 
   // Schicht 3: Ziel-Extrakt (ohne layout/printer-Overrides)
   if (targetExtract) {
-    const targetNotebound = targetExtract.notebound as ConfigObject | undefined
-    const targetFlowline = targetNotebound?.['flowline'] as ConfigObject | undefined
-    if (targetFlowline !== undefined) {
-      // Legacy overlays configured voices, but drops inherited flowline
-      // overrides for voices absent from the target extract.
-      const baseNotebound = baseExtract?.notebound as ConfigObject | undefined
-      const baseFlowline = baseNotebound?.['flowline'] as ConfigObject | undefined
-      for (const voiceKey of Object.keys(baseFlowline ?? {})) {
-        if (targetFlowline[voiceKey] === undefined) {
-          stack.delete(`extract.notebound.flowline.${voiceKey}`)
-        }
-      }
-    }
     stack.push(extractToLayer(targetExtract))
   }
 
