@@ -315,8 +315,10 @@ function _packMethod1(song: Song, layoutLines: number[], conf: Confstack): BeatC
 
     // Inversions-Erkennung: Melodielinie die nicht monoton ist
     const inversions = notes.filter(note => {
-      const prev = note.prevPlayable?.pitch ?? note.prevPitch ?? note.pitch
-      const next = note.nextPlayable?.pitch ?? note.nextPitch ?? note.pitch
+      // Legacy's collision packer uses the serialized pitch neighbours here,
+      // not the object-link neighbours. The latter can cross a SynchPoint.
+      const prev = note.prevPitch ?? note.pitch
+      const next = note.nextPitch ?? note.pitch
       const a = [prev, note.pitch, next]
       const left = requireDefined(a[0], 'BeatPacker._packMethod10(): missing inversion pitch value')
       const middle = requireDefined(a[1], 'BeatPacker._packMethod10(): missing inversion pitch value')
