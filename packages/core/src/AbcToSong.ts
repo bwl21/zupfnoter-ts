@@ -880,7 +880,7 @@ export class AbcToSong {
   ): NoteBoundAnnotation[] {
     if (!Object.prototype.hasOwnProperty.call(this._partTable, sym.time)) return []
     const partText = this._partTable[sym.time]
-    if (typeof partText !== 'string' || partText.length === 0) return []
+    if (typeof partText !== 'string') return []
 
     if (companion.prevPlayable) {
       companion.prevPlayable.nextFirstInPart = true
@@ -927,7 +927,7 @@ export class AbcToSong {
     const part = sym.part
     if (!part || typeof part !== 'object') return
     const partText = (part as { text?: unknown }).text
-    return typeof partText === 'string' && partText.length > 0 ? partText : undefined
+    return typeof partText === 'string' ? partText : undefined
   }
 
   private _resolvePendingVariantGotos(
@@ -1116,7 +1116,7 @@ export class AbcToSong {
       }
 
       const hasExplicitAnnotationMarker = /^[!#]/.test(trimmedText) || trimmedText.startsWith('@@')
-      if (extra.type === '^' && companion.type !== 'Pause' && !hasExplicitAnnotationMarker && !/\s/.test(trimmedText)) {
+      if (extra.type === '^' && companion.type !== 'Pause' && !hasExplicitAnnotationMarker) {
         const chord: Chordsymbol = {
           type: 'Chordsymbol' as const,
           beat: this._timeToBeat(sym.time),
@@ -1201,20 +1201,45 @@ export class AbcToSong {
     return FLAT_KEYS[Math.abs(kSf)] ?? 'C'
   }
 
+  private static _keyToName(kSf: number, kMode: number | undefined): string {
+    if (kMode !== 5) return AbcToSong._keySfToName(kSf)
+
+    const SHARP_MINOR_KEYS = ['Am', 'Em', 'Bm', 'F#m', 'C#m', 'G#m', 'D#m', 'A#m']
+    const FLAT_MINOR_KEYS = ['Am', 'Dm', 'Gm', 'Cm', 'Fm', 'Bbm', 'Ebm', 'Abm']
+    if (kSf >= 0 && kSf < SHARP_MINOR_KEYS.length) return SHARP_MINOR_KEYS[kSf] ?? 'Am'
+    return FLAT_MINOR_KEYS[Math.abs(kSf)] ?? 'Am'
+  }
+
   private _extractMetaData(model: AbcModel): SongMetaData {
     const info = model.info
     this._validateFilenameHeader()
     const writtenKey = info['K']?.split('\n')[0]?.trim().split(/\s+/)[0]
+    const firstVoiceDeclaration = model.source.search(/^V:1\b/m)
+    const lastVoiceOne = [...model.source.matchAll(/^V:1\b/gm)].at(-1)?.index ?? firstVoiceDeclaration
+    const nextVoiceAfterVoiceOne = lastVoiceOne >= 0
+      ? model.source.slice(lastVoiceOne + 1).search(/^V:\d+\b/m)
+      : -1
+    const voiceOneEnd = nextVoiceAfterVoiceOne >= 0
+      ? lastVoiceOne + 1 + nextVoiceAfterVoiceOne
+      : model.source.length
+    const metadataSource = firstVoiceDeclaration >= 0
+      ? `${model.source.slice(0, firstVoiceDeclaration)}${model.source.slice(lastVoiceOne, voiceOneEnd)}`
+      : model.source
+    const sourceKeys = [...metadataSource.matchAll(/(?:^|\[)K:\s*([A-G](?:#|b)?m?)/gm)]
+      .map((match) => match[1])
+      .filter((key): key is string => key !== undefined)
+    const lastSourceKey = sourceKeys.length > 1 ? sourceKeys[sourceKeys.length - 1] : undefined
 
     // Effektive Tonart aus der ersten Stimme ermitteln (berücksichtigt shift=)
     const firstVoice = model.voices[0]
     const effectiveKeySf = firstVoice?.voice_properties.key?.k_sf
     const effectiveKey = effectiveKeySf !== undefined
-      ? AbcToSong._keySfToName(effectiveKeySf)
+      ? AbcToSong._keyToName(effectiveKeySf, firstVoice?.voice_properties.key?.k_mode)
       : writtenKey
 
     // o_key: Nur setzen, wenn die geschriebene Tonart von der effektiven abweicht
-    const oKey = (writtenKey && writtenKey !== effectiveKey) ? `(Original in ${writtenKey})` : ''
+    const originalKey = lastSourceKey ?? (writtenKey && writtenKey !== effectiveKey ? writtenKey : undefined)
+    const oKey = originalKey && originalKey !== effectiveKey ? `(Original in ${originalKey})` : ''
 
     const rawQ = info['Q']?.split('\n')[0]
     const tempo = rawQ ? this._parseTempo(rawQ) : { duration: [0.25], bpm: 120 }
@@ -1222,7 +1247,7 @@ export class AbcToSong {
     const tempoDisplay = parsedBpm ? rawQ : (rawQ ? `${rawQ}=${tempo.bpm}` : '1/4=120')
 
     return {
-      title: info['T']?.split('\n').join('\n'),
+      title: info['T']?.split('\n').join('\n') ?? '',
       composer: info['C']?.split('\n').join('\n') ?? '',
       number: info['X']?.split('\n')[0],
       filename: info['F']?.split('\n').join('\n') ?? '',

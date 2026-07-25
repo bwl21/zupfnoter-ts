@@ -270,9 +270,11 @@ function reorderChordNotes<T>(notes: T[], sourcePitches: number[], livePitches: 
 
   const liveBuckets = new Map<number, T[]>()
   for (const [index, pitch] of livePitches.entries()) {
+    const note = notes[index]
+    if (note === undefined) return null
     const bucket = liveBuckets.get(pitch)
-    if (bucket === undefined) liveBuckets.set(pitch, [notes[index]])
-    else bucket.push(notes[index])
+    if (bucket === undefined) liveBuckets.set(pitch, [note])
+    else bucket.push(note)
   }
 
   const reordered: T[] = []

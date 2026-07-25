@@ -18,7 +18,29 @@ export interface DetectedFailure {
   extractNr?: number
 }
 
-const OPEN_IMPLEMENTATIONS: OpenImplementation[] = []
+const OPEN_IMPLEMENTATIONS: OpenImplementation[] = [
+  {
+    id: 'empty-part-marker-flowline-break',
+    stage: 'both',
+    summary: 'Keep empty [P:] markers as legacy-parity annotations that interrupt flowlines.',
+    scope: 'ABC part markers [P:] without a label',
+    fixtures: [
+      '758_adventliche-weise',
+      '765_guter-mond-du-gehst-so-stille',
+      '782_lobe-den-herren-o-meine-seele',
+      '784_herr-wir-loben-deine-gnade',
+      '786_menuetto_salzburger-tanzbuechlein-15',
+      '788_italienisches-lied-arpggio',
+      '792_wie-ein-hirsch',
+    ],
+    prompt: [
+      'Short term: materialize every empty [P:] marker like Legacy as a note-bound annotation with a single space.',
+      'The annotation must remain in the model and interrupt flowline continuation.',
+      'Later: keep the semantic interruption, but suppress visual rendering of the empty annotation.',
+    ].join(' '),
+    notes: 'Do not remove the marker from the Song model when implementing the visual suppression; the flowline break is semantic.',
+  },
+]
 
 export function getOpenImplementations(
   stage: Extract<FixtureStage, 'song' | 'sheet'>,
