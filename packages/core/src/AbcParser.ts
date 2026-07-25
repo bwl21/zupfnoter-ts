@@ -243,27 +243,69 @@ function normalizeChordNoteOrder(liveSymbol: Abc2svgSymbol, source: string): Abc
   const chordSource = sourceSlice.slice(openIndex + 1, closeIndex)
   const liveMidis = liveNotes.map((note) => note.midi)
   const sourceMidis = parseChordSourceMidis(chordSource, liveMidis)
-  if (sourceMidis === null || sourceMidis.length !== liveNotes.length) return liveNotes
-
-  const notesByMidi = new Map<number, typeof liveNotes>()
-  for (const note of liveNotes) {
-    const bucket = notesByMidi.get(note.midi)
-    if (bucket === undefined) {
-      notesByMidi.set(note.midi, [note])
-    } else {
-      bucket.push(note)
-    }
+  if (sourceMidis !== null && sourceMidis.length === liveNotes.length) {
+    const reordered = reorderChordNotes(liveNotes, sourceMidis, liveMidis)
+    if (reordered !== null) return reordered
   }
 
-  const reordered: typeof liveNotes = new Array(liveNotes.length)
-  for (const [index, midi] of sourceMidis.entries()) {
-    const bucket = notesByMidi.get(midi)
-    const liveNote = bucket?.shift()
-    if (liveNote === undefined) return liveNotes
-    reordered[index] = liveNote
+  const sourceDiatonicPitches = parseChordSourceDiatonicPitches(chordSource)
+  const liveDiatonicPitches = liveNotes.map((note) => {
+    const pit = note.pit
+    return typeof pit === 'number' ? pit : undefined
+  })
+  if (sourceDiatonicPitches !== null && liveDiatonicPitches.every((pitch): pitch is number => pitch !== undefined)) {
+    const reordered = reorderChordNotes(liveNotes, sourceDiatonicPitches, liveDiatonicPitches)
+    if (reordered !== null) return reordered
   }
 
-  return reordered.every((note) => note !== undefined) ? reordered : liveNotes
+  return liveNotes
+}
+
+function reorderChordNotes<T>(notes: T[], sourcePitches: number[], livePitches: number[]): T[] | null {
+  if (sourcePitches.length !== notes.length || livePitches.length !== notes.length) return null
+
+  const sourceRanks = [...new Set(sourcePitches)].sort((left, right) => left - right)
+  const liveRanks = [...new Set(livePitches)].sort((left, right) => left - right)
+  if (sourceRanks.length !== liveRanks.length) return null
+
+  const liveBuckets = new Map<number, T[]>()
+  for (const [index, pitch] of livePitches.entries()) {
+    const bucket = liveBuckets.get(pitch)
+    if (bucket === undefined) liveBuckets.set(pitch, [notes[index]])
+    else bucket.push(notes[index])
+  }
+
+  const reordered: T[] = []
+  for (const sourcePitch of sourcePitches) {
+    const rank = sourceRanks.indexOf(sourcePitch)
+    const livePitch = liveRanks[rank]
+    if (livePitch === undefined) return null
+    const bucket = liveBuckets.get(livePitch)
+    const note = bucket?.shift()
+    if (note === undefined) return null
+    reordered.push(note)
+  }
+
+  return reordered
+}
+
+function parseChordSourceDiatonicPitches(chordSource: string): number[] | null {
+  const notePattern = /[_=^]*([A-Ga-g])([,']*)/g
+  const result: number[] = []
+  let match: RegExpExecArray | null
+  while ((match = notePattern.exec(chordSource)) !== null) {
+    const letter = match[1]
+    const octaveMarks = match[2]
+    if (letter === undefined || octaveMarks === undefined) return null
+
+    const base = 'CDEFGAB'.indexOf(letter.toUpperCase())
+    if (base < 0) return null
+    let pitch = base + (letter === letter.toLowerCase() ? 7 : 0)
+    for (const mark of octaveMarks) pitch += mark === "'" ? 7 : -7
+    result.push(pitch)
+  }
+
+  return result.length > 0 ? result : null
 }
 
 function parseChordSourceMidis(chordSource: string, liveMidis: number[]): number[] | null {

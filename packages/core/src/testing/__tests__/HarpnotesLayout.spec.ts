@@ -341,6 +341,42 @@ describe('HarpnotesLayout', () => {
       expect(visibleRests[0]?.visible).toBe(true)
     })
 
+    it('anchors a flowline after a chord at the legacy proxy note', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = [1]
+      extract0.subflowlines = []
+      extract0.synchlines = []
+      extract0.layoutlines = []
+
+      const { song, sheet } = pipelineWithConfig(
+        `X:1
+T:Flowline SynchPoint Proxy Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1
+[V:V1] [EG] A |]`,
+        config,
+      )
+      const synchPoint = song.voices[0]?.entities.find((entity) => entity.type === 'SynchPoint')
+      if (!synchPoint || synchPoint.type !== 'SynchPoint') throw new Error('Expected a SynchPoint')
+      const proxyNote = synchPoint.notes[synchPoint.notes.length - 1]
+      const nextNote = song.voices[0]?.entities.find((entity) => entity.type === 'Note')
+      if (!proxyNote || !nextNote || nextNote.type !== 'Note') throw new Error('Expected chord and following note')
+
+      const flowline = sheet.children.find((child): child is FlowLine => (
+        child.type === 'FlowLine' && child.style === 'solid' && child.znId === nextNote.znId
+      ))
+      if (!flowline) throw new Error('Expected solid flowline after SynchPoint')
+
+      const expectedProxyX = (proxyNote.pitch + config.layout.PITCH_OFFSET) * config.layout.X_SPACING + config.layout.X_OFFSET
+      expect(flowline.from[0]).toBe(expectedProxyX)
+    })
+
     it('keeps the solid flowline after an annotated longer rest', () => {
       const config = clonedDefaultConfig()
       const extract0 = config.extract['0']

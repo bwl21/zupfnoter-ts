@@ -152,6 +152,7 @@ function enrichEntitySlurs(entity, state) {
 
 function extractPdfVariants(inputFile) {
   const documentText = readFileSync(inputFile, 'utf-8')
+  const filebase = documentText.match(/^F:\s*(.*)$/m)?.[1]?.trim()
   const configPart = documentText
     .split('%%%%zupfnoter')
     .find((part) => part.startsWith('.config'))
@@ -171,7 +172,10 @@ function extractPdfVariants(inputFile) {
     }
     const filenamepart = extract.filenamepart
     if (typeof filenamepart !== 'string') {
-      throw new Error(`Legacy PDF export: extract.${String(extractNr)} is missing filenamepart.`)
+      const filebaseHint = filebase === undefined
+        ? ' No F: filebase metadata was found.'
+        : ` F: ${filebase} is the ABC filebase, but it does not replace extract.${String(extractNr)}.filenamepart.`
+      throw new Error(`Legacy PDF export: extract.${String(extractNr)} is missing filenamepart.${filebaseHint}`)
     }
     return { extractNr, filenamepart }
   })
@@ -210,6 +214,13 @@ function exportLegacyPdfs(inputFile, fixtureDir) {
   }
 }
 
+function fixtureCaseName(inputFile) {
+  const inputFilename = basename(inputFile)
+  return inputFilename === 'input.abc'
+    ? basename(dirname(inputFile))
+    : basename(inputFilename, '.abc')
+}
+
 const expandedGlobPatterns = globPatterns.map((pattern) => expandHome(pattern))
 const matches = [...new Set(
   expandedGlobPatterns.flatMap((pattern) => globSync(pattern, { nodir: true }).map((match) => resolve(match))),
@@ -225,9 +236,11 @@ console.log(`ABC files: ${matches.length}`)
 console.log(`ABC glob: ${expandedGlobPatterns.join(', ')}`)
 console.log(`Output dir: ${fixtureOutDir ?? 'source fixture root (public/protected)'}`)
 
+let currentInputFile
 try {
   for (const inputFile of matches) {
-    const caseName = basename(dirname(inputFile))
+    currentInputFile = inputFile
+    const caseName = fixtureCaseName(inputFile)
     const outputRoot = fixtureOutDir ?? dirname(dirname(inputFile))
     const args = [
 
@@ -239,6 +252,10 @@ try {
 
     console.log(`Exporting: ${inputFile}`)
     execFileSync(process.execPath, args, { stdio: 'inherit' })
+
+    // The legacy exporter creates the case directory and writes its generated
+    // fixtures there, but it does not copy the source ABC into the fixture.
+    copyFileSync(inputFile, resolve(outputRoot, caseName, 'input.abc'))
 
     // FixtureExporter writes <case>/song.legacy-raw.json directly. We still
     // post-process it to reconstruct @slur_starts / @slur_ends from the
@@ -256,6 +273,10 @@ try {
   console.error(
     'Expected legacy CLI call shape: node zupfnoter-cli.min.js --export-fixtures <input.abc> <target-dir>',
   )
+  if (currentInputFile !== undefined) {
+    console.error(`Input ABC: ${currentInputFile}`)
+    console.error(`Case: ${fixtureCaseName(currentInputFile)}`)
+  }
   console.error(`Reason: ${message}`)
   process.exit(1)
 }
