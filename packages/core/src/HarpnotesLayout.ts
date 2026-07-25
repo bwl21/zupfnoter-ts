@@ -2022,9 +2022,11 @@ export class HarpnotesLayout {
 
     if (rawLyrics && Object.keys(lyricsConf).length > 0) {
       const lyricsText = (rawLyrics as { text?: string[] }).text ?? []
-      const verses = this._normalizeAnnotationText(
-        lyricsText.join('\n').replace(/\t/g, ' ').replace(/ +/g, ' '),
-      ).split(/\n\n+/).map((entry) => entry.trim())
+      const normalizedLyrics = lyricsText.join('\n').replace(/\t/g, ' ').replace(/ +/g, ' ')
+      if (normalizedLyrics.trim().length === 0) return result
+      const verses = this._normalizeAnnotationText(normalizedLyrics)
+        .split(/\n\n+/)
+        .map((entry) => entry.trim())
 
       for (const [key, entry] of Object.entries(lyricsConf)) {
         if (key === 'versepos' || !entry.pos) continue
@@ -2040,7 +2042,7 @@ export class HarpnotesLayout {
           .map((verse) => verse ?? '')
           .join('\n\n')
 
-        if (!text) continue
+        if (text.length === 0) continue
         result.push({
           type: 'Annotation',
           center: entry.pos,
