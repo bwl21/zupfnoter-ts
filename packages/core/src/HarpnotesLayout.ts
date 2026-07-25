@@ -769,7 +769,7 @@ export class HarpnotesLayout {
     for (const entity of voice.entities) {
       if (entity.type === 'Note') {
         const note = entity as Note
-        const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note), voiceNr, extractNr, 0, true)
+        const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note), voiceNr, extractNr, 0, true, conf)
         playableElements.push(drawable)
         if (note.measureStart) {
           playableElements.push(this._layoutMeasureBarover(drawable, layout))
@@ -779,7 +779,7 @@ export class HarpnotesLayout {
         decorations.push(...noteDecorations.decorations)
       } else if (entity.type === 'Pause') {
         const pause = entity as Pause
-        const glyph = this._layoutPause(pause, beatMap, layout, startpos, visibleByPlayable.get(pause), voiceNr, extractNr, 0, true)
+        const glyph = this._layoutPause(pause, beatMap, layout, startpos, visibleByPlayable.get(pause), voiceNr, extractNr, 0, true, conf)
         if (glyph) {
           playableElements.push(glyph)
           if (pause.measureStart) {
@@ -806,6 +806,7 @@ export class HarpnotesLayout {
             extractNr,
             legacyNoteIndex,
             legacyNoteIndex === 0,
+            conf,
           )
           playableElements.push(drawable)
           if (
@@ -1019,6 +1020,21 @@ export class HarpnotesLayout {
   // Note / Pause
   // ---------------------------------------------------------------------------
 
+  private _noteShift(
+    playable: PlayableEntity,
+    size: [number, number],
+    voiceNr: number | undefined,
+    extractNr: number | string | undefined,
+    noteIndex: number,
+    conf: Confstack | undefined,
+  ): number {
+    if (voiceNr === undefined || extractNr === undefined || conf === undefined) return 0
+    const configured = conf.get(
+      `extract.notebound.nconf.v_${voiceNr}.t_${playable.time}.n_${noteIndex}.nshift`,
+    )
+    return typeof configured === 'number' ? size[0] * 2 * configured : 0
+  }
+
   private _layoutNote(
     note: Note,
     beatMap: BeatCompressionMap,
@@ -1029,6 +1045,7 @@ export class HarpnotesLayout {
     extractNr?: number | string,
     noteIndex = 0,
     enableEditorMeta = true,
+    conf?: Confstack,
   ): Ellipse {
     const dKey = durationToKey(note.duration)
     const style = layout.DURATION_TO_STYLE[dKey]
@@ -1043,7 +1060,7 @@ export class HarpnotesLayout {
       layout.ELLIPSE_SIZE[0] * effectiveStyle.sizeFactor,
       layout.ELLIPSE_SIZE[1] * effectiveStyle.sizeFactor,
     ]
-    const x = playableX(note, layout)
+    const x = playableX(note, layout) + this._noteShift(note, size, voiceNr, extractNr, noteIndex, conf)
     const y = beatToY(note.beat, beatMap, layout, startpos)
     const confBase = voiceNr !== undefined && extractNr !== undefined
       ? `extract.${extractNr}.notebound.nconf.v_${voiceNr}.t_${note.time}.n_${noteIndex}`
@@ -1083,14 +1100,19 @@ export class HarpnotesLayout {
     extractNr?: number | string,
     noteIndex = 0,
     enableEditorMeta = true,
+    conf?: Confstack,
   ): Glyph | null {
     if (pause.invisible) return null
 
-    const x = playableX(pause, layout)
-    const y = beatToY(pause.beat, beatMap, layout, startpos)
     const dKey = durationToKey(pause.duration)
     const restStyle = layout.REST_TO_GLYPH?.[dKey] ?? layout.REST_TO_GLYPH?.['err']
     if (!restStyle) return null
+    const restSize: [number, number] = [
+      layout.REST_SIZE[0] * restStyle.scale[0],
+      layout.REST_SIZE[1] * restStyle.scale[1],
+    ]
+    const x = playableX(pause, layout) + this._noteShift(pause, restSize, voiceNr, extractNr, noteIndex, conf)
+    const y = beatToY(pause.beat, beatMap, layout, startpos)
     const confBase = voiceNr !== undefined && extractNr !== undefined
       ? `extract.${extractNr}.notebound.nconf.v_${voiceNr}.t_${pause.time}.n_${noteIndex}`
       : undefined
@@ -1100,7 +1122,7 @@ export class HarpnotesLayout {
     return {
       type: 'Glyph',
       center: [x, y],
-      size: [layout.REST_SIZE[0] * restStyle.scale[0], layout.REST_SIZE[1] * restStyle.scale[1]],
+      size: restSize,
       glyphName: restStyle.glyphName,
       dotted: restStyle.dotted,
       fill: 'filled',
@@ -2177,7 +2199,15 @@ export class HarpnotesLayout {
         measureStartBeat = playable.beat
       }
 
-      const [x, y] = playableCenter(playable, beatMap, layout, startpos)
+      const [baseX, y] = playableCenter(playable, beatMap, layout, startpos)
+      const x = baseX + this._noteShift(
+        playable,
+        playableSize(playable, layout),
+        voiceNr,
+        extractNr,
+        0,
+        conf,
+      )
 
       if (countnoteVoices.has(voiceNr)) {
         const countnoteText = this._countnoteText(playable, measureStartBeat, voiceNr, conf)
@@ -2306,7 +2336,7 @@ export class HarpnotesLayout {
     const size = playableSize(playable, layout)
     const proxy = playableLayoutProxy(playable)
     const sizeWithDot: [number, number] = [
-      size[0] + (proxy.type !== 'Pause' && proxy.duration % 3 === 0 ? 1 : 0),
+      size[0] + (playableDotted(playable, layout) ? 1 : 0),
       size[1],
     ]
     const tieOffset = side === 'r' && (playable.tieStart || playable.tieEnd) ? 1 : 0
