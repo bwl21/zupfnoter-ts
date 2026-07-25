@@ -419,7 +419,7 @@ function makeAnnotatedBezierPath(
   p1: [number, number],
   p2: [number, number],
   options: AnnotatedBezierOptions,
-): { path: [number, number][]; pathData: string; anchor: [number, number]; cp1: [number, number]; cp2: [number, number] } {
+): { path: [number, number][]; pathData: string; anchor: [number, number]; baseAnchor: [number, number]; cp1: [number, number]; cp2: [number, number] } {
   const delta = subtractPoint(p2, p1)
   const angle = Math.atan2(delta[1], delta[0])
   const cp1 = rotatePoint(rotatePoint(options.cp1, angle), -Math.PI * 0.5)
@@ -454,7 +454,7 @@ function makeAnnotatedBezierPath(
     pathDataParts.push(`l${cp1[0]} ${cp1[1]}L${cpa2[0]} ${cpa2[1]}L${p2[0]} ${p2[1]}`)
   }
 
-  return { path, pathData: pathDataParts.join(''), anchor, cp1, cp2 }
+  return { path, pathData: pathDataParts.join(''), anchor, baseAnchor, cp1, cp2 }
 }
 
 function makeLegacySlurPath(p1: [number, number], p2: [number, number]): { path: [number, number][]; pathData: string } {
@@ -1703,7 +1703,7 @@ export class HarpnotesLayout {
         if (options.show) {
           const p1 = playableCenter(tupletStart, beatMap, layout, startpos)
           const p2 = playableCenter(p, beatMap, layout, startpos)
-          const { path, pathData, anchor, cp1, cp2 } = makeAnnotatedBezierPath(p1, p2, options)
+          const { path, pathData, anchor, baseAnchor, cp1, cp2 } = makeAnnotatedBezierPath(p1, p2, options)
           const configuredText = conf.get('extract.tuplets.text')
           const text = (
             typeof configuredText === 'string'
@@ -1728,7 +1728,9 @@ export class HarpnotesLayout {
               p2,
               cp1: addPoint(p1, cp1),
               cp2: addPoint(p1, cp2),
-              mp: { x: anchor[0], y: anchor[1] },
+              // Legacy's drag handle stays at the unconfigured curve anchor;
+              // the configured offset applies only to the visible annotation.
+              mp: { x: baseAnchor[0], y: baseAnchor[1] },
               tuplet_options: options,
               conf_key: `extract.${extractNr}.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}`,
               callback: null,
