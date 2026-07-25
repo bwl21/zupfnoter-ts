@@ -2035,7 +2035,9 @@ export class HarpnotesLayout {
             if (verseNo < 0) return verses[verseNo]
             return verses[verseNo - 1]
           })
-          .filter((verse): verse is string => typeof verse === 'string' && verse.length > 0)
+          // Ruby's Array#join keeps separators for missing (nil) verses.
+          // Preserve those empty slots instead of filtering them out.
+          .map((verse) => verse ?? '')
           .join('\n\n')
 
         if (!text) continue
