@@ -561,6 +561,8 @@ export class AbcToSong {
       state.nextFirstInPart = false
     }
 
+    const previousPlayable = state.previousNote
+    if (previousPlayable) entity.prevPlayable = previousPlayable
     state.previousNote = entity
 
     const inlineEntities: VoiceEntity[] = []
@@ -628,6 +630,8 @@ export class AbcToSong {
       invisible: sym.invis ?? sym.invisible ?? false,
     }
 
+    const previousPlayable = state.previousNote
+    if (previousPlayable) pause.prevPlayable = previousPlayable
     state.previousNote = pause
     if (state.repeatBaseAnchor === null) {
       state.repeatBaseAnchor = pause

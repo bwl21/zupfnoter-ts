@@ -71,14 +71,15 @@ function collectRelevantPlayables(song: Song, layoutLines: number[]): PlayableEn
     for (const entity of voice.entities) {
       if (isPlayable(entity)) {
         playables.push(entity)
-        // SynchPoint-Noten flach einbetten
-        if (isSynchPoint(entity)) {
-          for (const note of entity.notes) {
-            playables.push(note)
-          }
-        }
       }
     }
+  }
+
+  // Ruby first collects all Playable entities and appends all SynchPoint
+  // notes afterwards (`relevant_notes.push(relevant_sp).flatten`).
+  const synchPoints = playables.filter(isSynchPoint)
+  for (const entity of synchPoints) {
+    playables.push(...entity.notes)
   }
   return playables
 }
