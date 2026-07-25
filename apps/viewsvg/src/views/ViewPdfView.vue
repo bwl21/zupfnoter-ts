@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import ComparisonLayout, { type ComparisonCase, type ComparisonViewMode } from '@/components/ComparisonLayout.vue'
 import {
@@ -9,6 +9,8 @@ import {
   type ViewPdfCaseDetails,
 } from '@/lib/viewPdfApi'
 
+const BLINK_INTERVAL_MS = 500
+
 const cases = ref<ViewPdfCaseDetails[]>([])
 const selectedCaseId = ref('')
 const selectedExtract = ref(0)
@@ -17,6 +19,7 @@ const swipePosition = ref(50)
 const blinkVisible = ref<'legacy' | 'ts'>('legacy')
 const loading = ref(false)
 const error = ref<string | null>(null)
+let blinkTimer: number | undefined
 
 const selectedCase = computed(() => cases.value.find((caseItem) => caseItem.id === selectedCaseId.value) ?? null)
 const sidebarCases = computed<ComparisonCase[]>(() => cases.value.map((caseItem) => ({
@@ -76,16 +79,37 @@ watch(selectedCaseId, () => {
   selectFirstAvailableExtract()
 })
 
-watch([legacyPdfUrl, tsPdfUrl], ([legacyPdf, tsPdf]) => {
+function ensureBlinkTimer(): void {
+  if (blinkTimer !== undefined) {
+    window.clearInterval(blinkTimer)
+    blinkTimer = undefined
+  }
+
+  if (selectedMode.value !== 'blink') {
+    blinkVisible.value = 'legacy'
+    return
+  }
+
+  blinkVisible.value = legacyPdfUrl.value !== null ? 'legacy' : 'ts'
+  if (legacyPdfUrl.value === null || tsPdfUrl.value === null) return
+
+  blinkTimer = window.setInterval(() => {
+    toggleBlinkVisible()
+  }, BLINK_INTERVAL_MS)
+}
+
+watch([selectedMode, legacyPdfUrl, tsPdfUrl], ([legacyPdf, tsPdf]) => {
   if (blinkVisible.value === 'legacy' && legacyPdf === null && tsPdf !== null) {
     blinkVisible.value = 'ts'
   }
   if (blinkVisible.value === 'ts' && tsPdf === null && legacyPdf !== null) {
     blinkVisible.value = 'legacy'
   }
+  ensureBlinkTimer()
 })
 
 function toggleBlinkVisible(): void {
+  if (selectedMode.value !== 'blink') return
   const nextSource = blinkVisible.value === 'legacy' ? 'ts' : 'legacy'
   if (nextSource === 'legacy' && legacyPdfUrl.value !== null) blinkVisible.value = nextSource
   if (nextSource === 'ts' && tsPdfUrl.value !== null) blinkVisible.value = nextSource
@@ -94,6 +118,11 @@ function toggleBlinkVisible(): void {
 onMounted(async () => {
   await loadCases()
   selectFirstAvailableExtract()
+  ensureBlinkTimer()
+})
+
+onBeforeUnmount(() => {
+  if (blinkTimer !== undefined) window.clearInterval(blinkTimer)
 })
 </script>
 

@@ -12,6 +12,8 @@ import {
 
 type DeviationKind = 'position' | 'size' | 'style' | 'visibility' | 'order' | 'wrong-element' | 'other'
 
+const BLINK_INTERVAL_MS = 500
+
 interface LoadedSvg {
   svg: string
   source: SvgSource
@@ -90,6 +92,7 @@ const legacySurfaceRef = ref<HTMLElement | null>(null)
 const tsSurfaceRef = ref<HTMLElement | null>(null)
 const selectedDomElement = ref<Element | null>(null)
 const hoveredDomElement = ref<Element | null>(null)
+let blinkTimer: number | undefined
 
 const selectedCase = computed(() => cases.value.find((caseItem) => caseItem.id === selectedCaseId.value) ?? null)
 
@@ -203,12 +206,22 @@ async function loadSelectedSvgs(caseId: string, extractNr: number): Promise<void
 }
 
 function ensureBlinkTimer(): void {
+  if (blinkTimer !== undefined) {
+    window.clearInterval(blinkTimer)
+    blinkTimer = undefined
+  }
+
   if (selectedMode.value !== 'blink') {
     blinkVisible.value = 'legacy'
     return
   }
 
-  blinkVisible.value = 'legacy'
+  blinkVisible.value = hasLegacy.value ? 'legacy' : 'ts'
+  if (!hasLegacy.value || !hasTs.value) return
+
+  blinkTimer = window.setInterval(() => {
+    toggleBlinkVisible()
+  }, BLINK_INTERVAL_MS)
 }
 
 function selectCase(caseId: string): void {
@@ -234,7 +247,10 @@ function toggleHoverInspector(): void {
 
 function toggleBlinkVisible(): void {
   if (selectedMode.value !== 'blink') return
-  blinkVisible.value = blinkVisible.value === 'legacy' ? 'ts' : 'legacy'
+  const nextSource = blinkVisible.value === 'legacy' ? 'ts' : 'legacy'
+  if (nextSource === 'legacy' && !hasLegacy.value) return
+  if (nextSource === 'ts' && !hasTs.value) return
+  blinkVisible.value = nextSource
 }
 
 async function selectSvgElement(source: SvgSource, event: MouseEvent): Promise<void> {
@@ -694,7 +710,7 @@ watch(selectedCaseId, () => {
   selectedExtract.value = fallbackExtract
 })
 
-watch(selectedMode, () => {
+watch([selectedMode, hasLegacy, hasTs], () => {
   ensureBlinkTimer()
   void nextTick().then(() => {
     refreshSelectionHighlight()
@@ -712,6 +728,7 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
+  if (blinkTimer !== undefined) window.clearInterval(blinkTimer)
   window.removeEventListener('resize', refreshSelectionHighlight)
 })
 </script>
