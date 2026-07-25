@@ -80,7 +80,7 @@ function expectedLegacyChecksum(abcText: string): string {
     checksum += stripped.charCodeAt(index) * (index + 1)
   }
 
-  return String(checksum).match(/.{1,3}/g)?.join(' ') ?? String(checksum)
+  return String(checksum).match(/...?/g)?.join(' ') ?? String(checksum)
 }
 
 describe('AbcParser', () => {
@@ -123,6 +123,10 @@ describe('AbcParser', () => {
       const model = parser.parse(SINGLE_NOTE_ABC)
 
       expect(model.checksum).toBe(expectedLegacyChecksum(SINGLE_NOTE_ABC))
+    })
+
+    it('drops a trailing single checksum digit like Legacy', () => {
+      expect('1605979159'.match(/...?/g)?.join(' ')).toBe('160 597 915')
     })
 
     it('returns two voices for two-voice ABC', () => {

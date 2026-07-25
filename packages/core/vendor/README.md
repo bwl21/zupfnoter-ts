@@ -5,7 +5,8 @@ Local copy of the abc2svg core script.
 - **Source**: http://moinejf.free.fr/js/abc2svg-1.js
 - **Repository**: https://chiselapp.com/user/moinejf/repository/abc2svg
 - **License**: LGPL-3.0+
-- **Downloaded**: 2026-04-22
+- **Version**: v1.23.4 (2026-07-24)
+- **Downloaded**: 2026-07-25
 - **Copyright**: Jean-François Moine
 
 ## Why vendored

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Update abc2svg Vendor"
+  short_description: "Update and validate the vendored abc2svg core"
+  default_prompt: "Update the vendored abc2svg core from the canonical source, verify its version and date, document the update, and run the relevant parser and parity tests."

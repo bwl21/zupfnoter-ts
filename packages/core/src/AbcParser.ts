@@ -397,7 +397,8 @@ function computeLegacyChecksum(abcText: string): string {
     checksum += text.charCodeAt(index) * (index + 1)
   }
 
-  const groups = checksum.toString().match(/.{1,3}/g)
+  // Legacy uses Ruby `/...?/`, which drops a trailing single character.
+  const groups = checksum.toString().match(/...?/g)
   return groups === null ? '' : groups.join(' ')
 }
 
