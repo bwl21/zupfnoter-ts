@@ -769,7 +769,7 @@ export class HarpnotesLayout {
         const note = entity as Note
         const drawable = this._layoutNote(note, beatMap, layout, startpos, visibleByPlayable.get(note), voiceNr, extractNr, 0, true)
         playableElements.push(drawable)
-        if (note.measureStart && !this._isLegacyVariantLeadInMeasureStart(note)) {
+        if (note.measureStart) {
           playableElements.push(this._layoutMeasureBarover(drawable, layout))
         }
         const noteDecorations = this._layoutDecorations(note, drawable, layout, voiceNr, conf)
@@ -780,7 +780,7 @@ export class HarpnotesLayout {
         const glyph = this._layoutPause(pause, beatMap, layout, startpos, visibleByPlayable.get(pause), voiceNr, extractNr, 0, true)
         if (glyph) {
           playableElements.push(glyph)
-          if (pause.measureStart && !this._isLegacyVariantLeadInMeasureStart(pause)) {
+          if (pause.measureStart) {
             playableElements.push(this._layoutMeasureBarover(glyph, layout))
           }
           const pauseDecorations = this._layoutDecorations(pause, glyph, layout, voiceNr, conf)
@@ -808,7 +808,7 @@ export class HarpnotesLayout {
           playableElements.push(drawable)
           if (
             note.measureStart &&
-            !this._isLegacyVariantLeadInMeasureStart(note)
+            note.measureStart
           ) {
             playableElements.push(this._layoutMeasureBarover(drawable, layout))
           }
@@ -883,7 +883,15 @@ export class HarpnotesLayout {
     }
 
     const repeatSigns = this._layoutVoiceRepeatSigns(voice, beatMap, layout, startpos, voiceNr, conf)
-    const noteboundAnnotations = this._layoutVoiceNoteboundAnnotations(voice, beatMap, layout, startpos, voiceNr, conf)
+    const noteboundAnnotations = this._layoutVoiceNoteboundAnnotations(
+      voice,
+      beatMap,
+      layout,
+      startpos,
+      voiceNr,
+      conf,
+      showJumplines,
+    )
     const orderedAnnotations = [...noteboundAnnotations, ...repeatSigns]
     const annotationBackgrounds = orderedAnnotations.map((annotation) => (
       this._annotationBackground(annotation, 'left', layout, 0.5)
@@ -1276,6 +1284,20 @@ export class HarpnotesLayout {
     padding: number,
     shiftEu = false,
   ): Ellipse {
+    if (annotation.text === '') {
+      return {
+        type: 'Ellipse',
+        center: [annotation.center[0], annotation.center[1] - 0.25],
+        size: [0.5, 0.35],
+        fill: 'filled',
+        dotted: false,
+        rect: true,
+        hasbarover: false,
+        color: 'white',
+        lineWidth: layout.LINE_THIN,
+        visible: true,
+      }
+    }
     const size = this._annotationSize(annotation.text, annotation.style, layout)
     const halfSize: [number, number] = [size[0] * 0.5, size[1] * 0.5]
     const paddedSize: [number, number] = [halfSize[0] + padding, halfSize[1] + padding]
@@ -1331,16 +1353,10 @@ export class HarpnotesLayout {
     const playables = voice.entities.filter(
       (e): e is PlayableEntity => e.type === 'Note' || e.type === 'Pause' || e.type === 'SynchPoint',
     )
-    const noteBoundPlayables = new Set(
-      voice.entities
-        .filter((e): e is NoteBoundAnnotation => e.type === 'NoteBoundAnnotation')
-        .map((e) => e.companion),
-    )
-
     let prev: PlayableEntity | null = null
     for (const curr of playables) {
       if (prev && !curr.firstInPart && !synchedPlayables?.has(curr)) {
-        if (this._skipLegacyFlowline(prev, curr, style, noteBoundPlayables)) {
+        if (this._skipLegacyFlowline(prev, curr)) {
           prev = curr
           continue
         }
@@ -1387,17 +1403,8 @@ export class HarpnotesLayout {
   private _skipLegacyFlowline(
     prev: PlayableEntity,
     curr: PlayableEntity,
-    style: 'solid' | 'dotted',
-    noteBoundPlayables: Set<PlayableEntity>,
   ): boolean {
     if (curr.measureStart === true && prev.variant !== curr.variant) return true
-    if (style !== 'solid') return false
-    if (curr.type === 'Pause') {
-      return prev.type === 'Pause' &&
-        curr.duration < prev.duration &&
-        !noteBoundPlayables.has(prev) &&
-        !noteBoundPlayables.has(curr)
-    }
     return false
   }
 
@@ -1651,6 +1658,12 @@ export class HarpnotesLayout {
     toNote: PlayableEntity,
     configuredVerticalCut: number,
   ): number {
+    // Legacy checks adjacency on the underlying note origins. A jump between
+    // chord proxy SynchPoints is therefore considered open even when the
+    // proxy objects are consecutive in the TS playable list.
+    if (fromNote.type === 'SynchPoint' && toNote.type === 'SynchPoint') {
+      return configuredVerticalCut
+    }
     const adjacentToFrom = fromNote.prevPlayable === toNote || fromNote.nextPlayable === toNote
     const adjacentToTarget = toNote.prevPlayable === fromNote || toNote.nextPlayable === fromNote
     return adjacentToFrom || adjacentToTarget ? 0 : configuredVerticalCut
@@ -1888,21 +1901,19 @@ export class HarpnotesLayout {
         ? 'center'
         : 'left'
 
-    if (metaData.title) {
-      result.push({
-        type: 'Annotation',
-        center: titlePos,
-        text: metaData.title,
-        style: titleStyle,
-        align,
-        confKey: `extract.${extractNr}.legend.pos`,
-        color: layout.color.color_default,
-        lineWidth: layout.LINE_THIN,
-        visible: true,
-        more_conf_keys: [],
-        draginfo: this._annotationDraginfo(titlePos),
-      })
-    }
+    result.push({
+      type: 'Annotation',
+      center: titlePos,
+      text: metaData.title ?? '',
+      style: titleStyle,
+      align,
+      confKey: `extract.${extractNr}.legend.pos`,
+      color: layout.color.color_default,
+      lineWidth: layout.LINE_THIN,
+      visible: true,
+      more_conf_keys: [],
+      draginfo: this._annotationDraginfo(titlePos),
+    })
 
     const meter = metaData.meter ? `Takt: ${metaData.meter}${metaData.tempoDisplay ? ` (${metaData.tempoDisplay})` : ''}` : undefined
     const key = metaData.key ? `Tonart: ${metaData.key}` : undefined
@@ -1985,7 +1996,9 @@ export class HarpnotesLayout {
 
     if (rawLyrics && Object.keys(lyricsConf).length > 0) {
       const lyricsText = (rawLyrics as { text?: string[] }).text ?? []
-      const verses = lyricsText.join('\n').replace(/\t/g, ' ').replace(/ +/g, ' ').split(/\n\n+/).map((entry) => entry.trim())
+      const verses = this._normalizeAnnotationText(
+        lyricsText.join('\n').replace(/\t/g, ' ').replace(/ +/g, ' '),
+      ).split(/\n\n+/).map((entry) => entry.trim())
 
       for (const [key, entry] of Object.entries(lyricsConf)) {
         if (key === 'versepos' || !entry.pos) continue
@@ -2246,15 +2259,6 @@ export class HarpnotesLayout {
     return { barnumberBackgrounds, barnumbers, countnoteBackgrounds, countnotes }
   }
 
-  private _isLegacyVariantLeadInMeasureStart(playable: PlayableEntity): boolean {
-    return Boolean(
-      playable.measureStart &&
-      playable.duration < 32 &&
-      playable.nextPlayable?.measureStart &&
-      playable.nextPlayable.variant === playable.variant,
-    )
-  }
-
   private _countnoteText(
     playable: PlayableEntity,
     measureStartBeat: number,
@@ -2414,7 +2418,7 @@ export class HarpnotesLayout {
         visible: true,
         confKey: `extract.${extractNr}.images.${nr}.pos`,
         more_conf_keys: [],
-        draginfo: { handler: 'image' },
+        draginfo: { handler: 'annotation' },
       })
     }
 
@@ -2586,6 +2590,7 @@ export class HarpnotesLayout {
     startpos: number,
     voiceNr: number,
     conf: Confstack,
+    showJumplines: boolean,
   ): Annotation[] {
     const result: Annotation[] = []
 
@@ -2638,6 +2643,7 @@ export class HarpnotesLayout {
 
     for (const entity of annotationEntities) {
       if (entity.type !== 'NoteBoundAnnotation' && entity.type !== 'NewPart') continue
+      if (entity.type === 'NoteBoundAnnotation' && entity.policy === 'Goto' && !showJumplines) continue
 
       const companion = entity.companion
       const center: [number, number] = [
@@ -2651,7 +2657,9 @@ export class HarpnotesLayout {
 
       if (entity.type === 'NoteBoundAnnotation') {
         const annotation = entity as NoteBoundAnnotation
-        if (annotation.text.length === 0) continue
+        // Legacy keeps empty [P:] markers as drawable annotations. Retain the
+        // empty text so its annotation/background remains non-visible while
+        // still interrupting the flowline.
         text = annotation.text
         style = annotation.style
         offset = annotation.position
@@ -2676,7 +2684,9 @@ export class HarpnotesLayout {
         style: configuredStyle ?? style,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
-        visible: companion.visible,
+        // Legacy keeps note-bound annotations drawable even when their
+        // companion is an invisible pause.
+        visible: true,
         confKey: `${confBase}.pos`,
         draginfo: this._annotationDraginfo(configuredOffset ?? offset),
         more_conf_keys: [],

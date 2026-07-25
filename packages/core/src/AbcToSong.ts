@@ -708,7 +708,7 @@ export class AbcToSong {
       state.pendingVariantEndingText = variantLabel
       state.pendingVariantEndingDuration = sym.bar_type === '[|:' ? 64 : null
     }
-    if (sym.rbstop && !isRepeatBar && !hasVariantStart) {
+    if (sym.rbstop && !hasVariantStart) {
       if (state.previousNote && state.variantSectionNo > 0) {
         state.pendingVariantExitSources.push({ source: state.previousNote, distances: state.variantAnchorDistances })
       }
@@ -984,7 +984,9 @@ export class AbcToSong {
         to: target,
         policy: {
           confKey: `notebound.c_jumplines.v_${resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)}.${resolvedSource.time}.${state.pendingVariantEntryIndex}.p_begin`,
-          distance: entry.distances?.[0],
+          // abc2svg/Legacy defaults variant jump distances to [-10, 10, 15]
+          // when no explicit bar distance is present.
+          distance: entry.distances?.[0] ?? -10,
           fromAnchor: 'after',
           toAnchor: 'before',
           isRepeat: true,
@@ -1007,6 +1009,7 @@ export class AbcToSong {
         continue
       }
       const suffix = index < exitSources.length - 1 ? 'p_end' : 'p_follow'
+      const distanceIndex = suffix === 'p_end' ? 1 : 2
       state.deferredJumplines.push({
         type: 'Goto' as const,
         beat: target.beat,
@@ -1024,7 +1027,7 @@ export class AbcToSong {
         to: target,
         policy: {
           confKey: `notebound.c_jumplines.v_${resolveConfigVoiceNumberFromAbcVoiceIndex(voiceIndex)}.${variantAnchorTime ?? resolvedSource.time}.${suffix}`,
-          distance: exit.distances?.[2] ?? currentGotoDistances?.[2],
+          distance: exit.distances?.[distanceIndex] ?? currentGotoDistances?.[distanceIndex] ?? (suffix === 'p_end' ? 10 : 15),
           isRepeat: true,
           fromAnchor: 'after',
           toAnchor: 'before',
