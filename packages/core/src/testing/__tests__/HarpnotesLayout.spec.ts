@@ -112,7 +112,7 @@ Q:1/4=120
 K:C
 %%score (V1)
 V:V1 clef=treble-8
-[V:V1] "^override target" C |]`
+[V:V1] "^#override target" C |]`
 
 const ABC_SYNCHPOINT_TRIAD = `X:1
 T:SynchPoint Triad Test
