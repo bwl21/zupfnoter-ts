@@ -634,9 +634,11 @@ export class HarpnotesLayout {
     const voiceElements: DrawableElement[] = []
     const activeVoices: number[] = []
 
-    for (const voiceNr of activeVoiceNrs) {
-      const voice = getSongVoiceByVoiceNumber(song, voiceNr)
-      if (!voice) continue
+    // Legacy walks the song's voice array and uses the extract voice list only
+    // as a membership filter. The configured list is not a render-order list.
+    for (const voice of song.voices) {
+      const voiceNr = voice.index
+      if (voiceNr <= 0 || !activeVoiceNrs.includes(voiceNr)) continue
 
       activeVoices.push(voiceNr)
       beatMaps.set(voiceNr, beatCompressionMap)
