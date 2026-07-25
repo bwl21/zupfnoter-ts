@@ -17,6 +17,7 @@ const selectedExtract = ref(0)
 const selectedMode = ref<ComparisonViewMode>('blink')
 const swipePosition = ref(50)
 const blinkVisible = ref<'legacy' | 'ts'>('legacy')
+const blinkPaused = ref(false)
 const loading = ref(false)
 const error = ref<string | null>(null)
 let blinkTimer: number | undefined
@@ -86,9 +87,12 @@ function ensureBlinkTimer(): void {
   }
 
   if (selectedMode.value !== 'blink') {
+    blinkPaused.value = false
     blinkVisible.value = 'legacy'
     return
   }
+
+  if (blinkPaused.value) return
 
   blinkVisible.value = legacyPdfUrl.value !== null ? 'legacy' : 'ts'
   if (legacyPdfUrl.value === null || tsPdfUrl.value === null) return
@@ -96,6 +100,17 @@ function ensureBlinkTimer(): void {
   blinkTimer = window.setInterval(() => {
     toggleBlinkVisible()
   }, BLINK_INTERVAL_MS)
+}
+
+function toggleBlinkPause(): void {
+  if (selectedMode.value !== 'blink') return
+  blinkPaused.value = !blinkPaused.value
+  if (blinkPaused.value) {
+    if (blinkTimer !== undefined) window.clearInterval(blinkTimer)
+    blinkTimer = undefined
+    return
+  }
+  ensureBlinkTimer()
 }
 
 watch([selectedMode, legacyPdfUrl, tsPdfUrl], ([legacyPdf, tsPdf]) => {
@@ -175,6 +190,9 @@ onBeforeUnmount(() => {
       </article>
       <div v-if="selectedMode === 'swipe'" class="viewpdf-swipe__handle" :style="{ left: `${swipePosition}%` }" />
       <div v-if="selectedMode === 'blink'" class="viewpdf-blink__legend" role="note" aria-label="Blink mode guide">
+        <button type="button" class="viewpdf-blink__toggle" @click="toggleBlinkPause">
+          {{ blinkPaused ? 'Fortsetzen' : 'Pause' }}
+        </button>
         <button
           type="button"
           class="viewpdf-blink__toggle"
@@ -289,6 +307,8 @@ onBeforeUnmount(() => {
   left: 2rem;
   bottom: 2rem;
   z-index: 2;
+  display: inline-flex;
+  gap: 0.35rem;
   padding: 0.55rem 0.65rem;
   border: 1px solid rgba(15, 23, 42, 0.18);
   border-radius: 999px;
@@ -303,6 +323,7 @@ onBeforeUnmount(() => {
   background: transparent;
   color: var(--viewsvg-text);
   font-weight: 700;
+  cursor: pointer;
 }
 
 .viewpdf-blink__toggle.is-legacy,

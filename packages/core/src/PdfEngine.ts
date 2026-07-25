@@ -193,7 +193,7 @@ export class PdfEngine {
       element.url,
       format,
       this.x(element.position[0]),
-      this.y(element.position[1] - element.height),
+      this.y(element.position[1]),
       0,
       element.height,
     )

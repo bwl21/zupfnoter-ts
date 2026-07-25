@@ -14,7 +14,7 @@ import { AbcToSong } from '../AbcToSong.js'
 import { HarpnotesLayout } from '../HarpnotesLayout.js'
 import { PdfEngine } from '../PdfEngine.js'
 import { SvgEngine } from '../SvgEngine.js'
-import { extractSongConfig, mergeSongConfig } from '../extractSongConfig.js'
+import { extractSongConfig, extractSongResources, mergeSongConfig } from '../extractSongConfig.js'
 import { LegacyFixtureAnnotationTextMetrics } from './legacyAnnotationTextMetrics.js'
 import type { SongFixture, SheetFixture, DrawableFixture, EntityFixture } from './semanticMatch.js'
 import { defaultTestConfig } from './defaultConfig.js'
@@ -269,6 +269,7 @@ export function transformFixtureToSheet(
   const target = resolveFixtureSheetRenderTarget(fixture.config, extractNr)
   const sheet = new HarpnotesLayout(fixture.config, {
     annotationTextMetrics: new LegacyFixtureAnnotationTextMetrics(),
+    imageResolver: fixtureImageResolver(fixture.input.abc),
   }).layout(song, target.extractNr, target.pageFormat)
   return sheetToFixture(sheet)
 }
@@ -300,6 +301,7 @@ export function transformFixtureToSvg(
   const target = resolveFixtureSheetRenderTarget(fixture.config, extractNr)
   const sheet = new HarpnotesLayout(fixture.config, {
     annotationTextMetrics: new LegacyFixtureAnnotationTextMetrics(),
+    imageResolver: fixtureImageResolver(fixture.input.abc),
   }).layout(song, target.extractNr, target.pageFormat)
   return new SvgEngine().draw(sheet)
 }
@@ -315,11 +317,17 @@ export function transformFixtureToPdf(
   const target = resolveFixtureSheetRenderTarget(fixture.config, extractNr)
   const sheet = new HarpnotesLayout(fixture.config, {
     annotationTextMetrics: new LegacyFixtureAnnotationTextMetrics(),
+    imageResolver: fixtureImageResolver(fixture.input.abc),
   }).layout(song, target.extractNr, pageFormat)
   const engine = new PdfEngine()
   return pageFormat === 'A3'
     ? engine.draw(sheet)
     : engine.drawInSegments(sheet, fixture.config.layout.X_SPACING)
+}
+
+function fixtureImageResolver(abcText: string): (imageName: string) => string | undefined {
+  const resources = extractSongResources(abcText)
+  return (imageName) => resources[imageName]?.join('')
 }
 
 export function saveFixtureOutput(fixture: PipelineFixture, stage: FixtureStage, data: unknown): void {

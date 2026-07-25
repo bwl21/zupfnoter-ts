@@ -308,10 +308,11 @@ describe('SvgEngine', () => {
   })
 
   describe('Image', () => {
-    it('renders an image element', () => {
+    it('renders the configured position as the image top edge', () => {
       const svg = engine.draw(makeSheet([image()]))
       expect(svg).toContain('<image ')
       expect(svg).toContain('href="https://example.com/harp.png"')
+      expect(svg).toContain('x="10" y="50"')
       expect(svg).toContain('height="30"')
     })
 

@@ -761,7 +761,7 @@ export class SvgEngine {
     const content = `<image ${attrs({
       href: el.url,
       x,
-      y: y - el.height,
+      y,
       height: el.height,
       preserveAspectRatio: 'xMinYMin meet',
       fill: 'none',

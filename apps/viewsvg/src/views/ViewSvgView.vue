@@ -80,6 +80,7 @@ const error = ref<string | null>(null)
 const legacySvg = ref<LoadedSvg | null>(null)
 const tsSvg = ref<LoadedSvg | null>(null)
 const blinkVisible = ref<'legacy' | 'ts'>('legacy')
+const blinkPaused = ref(false)
 const selectedDeviation = ref<DeviationKind>('position')
 const promptNote = ref('')
 const selectedElement = ref<SvgElementInfo | null>(null)
@@ -212,9 +213,12 @@ function ensureBlinkTimer(): void {
   }
 
   if (selectedMode.value !== 'blink') {
+    blinkPaused.value = false
     blinkVisible.value = 'legacy'
     return
   }
+
+  if (blinkPaused.value) return
 
   blinkVisible.value = hasLegacy.value ? 'legacy' : 'ts'
   if (!hasLegacy.value || !hasTs.value) return
@@ -222,6 +226,17 @@ function ensureBlinkTimer(): void {
   blinkTimer = window.setInterval(() => {
     toggleBlinkVisible()
   }, BLINK_INTERVAL_MS)
+}
+
+function toggleBlinkPause(): void {
+  if (selectedMode.value !== 'blink') return
+  blinkPaused.value = !blinkPaused.value
+  if (blinkPaused.value) {
+    if (blinkTimer !== undefined) window.clearInterval(blinkTimer)
+    blinkTimer = undefined
+    return
+  }
+  ensureBlinkTimer()
 }
 
 function selectCase(caseId: string): void {
@@ -943,6 +958,9 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <div class="viewsvg-blink__legend" role="note" aria-label="Blink mode guide">
+            <button type="button" class="viewsvg-blink__toggle" @click="toggleBlinkPause">
+              {{ blinkPaused ? 'Fortsetzen' : 'Pause' }}
+            </button>
             <button
               type="button"
               class="viewsvg-blink__toggle"
@@ -1127,6 +1145,7 @@ onBeforeUnmount(() => {
   z-index: 3;
   display: inline-flex;
   align-items: center;
+  gap: 0.35rem;
   padding: 0.55rem 0.65rem;
   background: rgba(255, 255, 255, 0.94);
   color: var(--viewsvg-text);
