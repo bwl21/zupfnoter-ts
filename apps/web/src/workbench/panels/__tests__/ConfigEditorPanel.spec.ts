@@ -52,6 +52,23 @@ describe('ConfigEditorPanel', () => {
     expect(voicesRow.find('input').attributes('placeholder')).toBe('1')
   })
 
+  it('shows the dynamic note shift parameter for a note config path', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'extract.0.notebound.nconf.v_1.t_384.n_0',
+      },
+    })
+
+    expect(wrapper.text()).toContain('Verschiebung')
+  })
+
   it('explains that deleting a local value recalculates the effective value', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

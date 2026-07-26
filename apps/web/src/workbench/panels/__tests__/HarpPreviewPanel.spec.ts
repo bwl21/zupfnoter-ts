@@ -98,4 +98,35 @@ describe('HarpPreviewPanel', () => {
     expect(pdfFrame.attributes('style')).toContain('height: 140%;')
     expect(wrapper.find('.harp-preview__svg').exists()).toBe(false)
   })
+
+  it('opens the context menu when the note hitbox is the event target', async () => {
+    const wrapper = mount(HarpPreviewPanel, {
+      props: {
+        svg: '<svg width="200" height="100"><g class="zupfnoter-element" data-conf-key="extract.0.notebound.nconf.v_1.t_384.n_0.***"><ellipse cx="20" cy="20" /><rect class="zupfnoter-element zupfnoter-hitbox" data-role="hitbox" pointer-events="all" /></g></svg>',
+      },
+    })
+
+    await wrapper.find('.zupfnoter-hitbox').trigger('contextmenu', {
+      clientX: 20,
+      clientY: 20,
+    })
+    await nextTick()
+
+    expect(wrapper.find('.harp-preview__context-menu').exists()).toBe(true)
+    expect(wrapper.find('.harp-preview__context-menu-entry').text()).toContain('Konfiguration bearbeiten')
+  })
+
+  it('reports the configuration path while hovering an SVG element', async () => {
+    const wrapper = mount(HarpPreviewPanel, {
+      props: {
+        svg: '<svg width="200" height="100"><g class="zupfnoter-element" data-conf-key="extract.0.notebound.nconf.v_1.t_384.n_0.***"><rect class="zupfnoter-element zupfnoter-hitbox" /></g></svg>',
+      },
+    })
+
+    await wrapper.find('.zupfnoter-hitbox').trigger('pointermove')
+
+    expect(wrapper.emitted('config-hover')).toContainEqual([
+      { confKey: 'extract.0.notebound.nconf.v_1.t_384.n_0.***' },
+    ])
+  })
 })

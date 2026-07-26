@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<{
   speedFactor: number
   cursorPosition: string
   cursorUnicode?: string
+  configHover?: string
   selectionVoiceScope: 'single-voice' | 'extract-voices' | 'all-voices'
   selectionVoiceScopeSummary: string
 }>(), {})
@@ -64,6 +65,9 @@ function handleSelectionVoiceScopeChange(event: Event): void {
     <span class="footer-bar__meta footer-bar__cursor">
       {{ cursorPosition }}
       <span class="footer-bar__unicode">{{ cursorUnicode ?? '—' }}</span>
+    </span>
+    <span class="footer-bar__meta footer-bar__config-hover" :title="configHover ?? 'Kein SVG-Parameter unter dem Mauszeiger'">
+      {{ configHover ?? '—' }}
     </span>
     <ZnBadge tone="accent">
       {{ extractLabel }}

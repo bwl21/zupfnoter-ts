@@ -6,7 +6,7 @@ export function parseConfigHelpMarkdown(markdown) {
 
   for (let index = 0; index < matches.length; index += 1) {
     const match = matches[index]
-    const key = match[1].trim()
+    const key = match[1].trim().replace(/\\_/g, '_')
     const start = (match.index ?? 0) + match[0].length
     const end = matches[index + 1]?.index ?? markdown.length
     sections[key] = markdown.slice(start, end).trim()

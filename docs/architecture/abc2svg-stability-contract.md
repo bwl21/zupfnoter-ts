@@ -25,6 +25,33 @@ Direct abc2svg access is intentionally limited to:
 
 Everything else in the codebase works against our own internal `AbcModel`.
 
+## Update procedure for a new abc2svg vendor
+
+New abc2svg drops are expected. The vendor file is consumed in two different
+module environments and must support both:
+
+1. the CommonJS-compatible loading behavior used by legacy tooling, and
+2. a native ESM named export `Abc` used by Vite in the browser.
+
+After replacing `packages/core/vendor/abc2svg-1.js`:
+
+- preserve or restore the final ESM export:
+
+  ```js
+  export { Abc, abc2svg }
+  ```
+
+- run `pnpm --filter @zupfnoter/core exec vitest run src/testing/__tests__/AbcParser.spec.ts`;
+  this includes a native Node ESM subprocess check and therefore does not rely
+  on Vitest's CommonJS/SSR wrapping;
+- run `pnpm --filter @zupfnoter/web run build`, because only the browser bundle
+  exercises the Vite loading path and catches bundler incompatibilities;
+- run the normal core parity tests before accepting the new vendor.
+
+The native-ESM test is intentionally part of the regular unit-test suite. A
+green parser test alone is insufficient when the vendor can be loaded through
+different module systems.
+
 ## Integration Overview
 
 ```mermaid

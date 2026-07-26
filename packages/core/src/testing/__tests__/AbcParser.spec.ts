@@ -4,6 +4,9 @@
  * These tests verify that AbcParser correctly wraps abc2svg and returns
  * a well-formed AbcModel. They do NOT test the Song transformation.
  */
+import { execFileSync } from 'node:child_process'
+import { resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { describe, it, expect } from 'vitest'
 import { AbcParser } from '../../AbcParser.js'
 import { ABC_TYPE } from '../../AbcModel.js'
@@ -35,6 +38,15 @@ C D E F |]
 V:V2
 G, A, B, C |]
 `
+
+it('exposes abc2svg as native ESM for the browser bundle', () => {
+  const vendorUrl = pathToFileURL(resolve(import.meta.dirname, '../../../vendor/abc2svg-1.js')).href
+  const script = `
+    const module = await import(${JSON.stringify(vendorUrl)})
+    if (typeof module.Abc !== 'function') process.exit(1)
+  `
+  expect(() => execFileSync(process.execPath, ['--input-type=module', '-e', script])).not.toThrow()
+})
 
 const INVALID_ABC = `X:1
 T:Test

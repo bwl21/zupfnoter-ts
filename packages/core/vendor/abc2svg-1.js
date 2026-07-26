@@ -10389,3 +10389,7 @@ abc2svg.loadjs(fn+"-1.js",load_end,function(){abc2svg.modules.errmsg('Error load
 load_end()})}
 return this.nreq==nreq_i}}
 abc2svg.version="v1.23.4";abc2svg.vdate="2026-07-24"
+
+// Keep the original CommonJS-compatible globals above, but also expose the
+// constructors when this vendor file is loaded as an ES module by Vite.
+export { Abc, abc2svg }

@@ -131,7 +131,7 @@ export const CONFIG_EDITOR_OPTION_DOCUMENTATION: Readonly<Record<string, Readonl
       "description": "ein Instrument bei dem die Unterlegnonten auf ein A4-Blatt passen."
     }
   },
-  "instrument\\_shape": {
+  "instrument_shape": {
     "['M', x, y]": {
       "label": "['M', x, y]",
       "description": "Bewege den Schreibpunkt zu x, y"
@@ -171,7 +171,7 @@ export const CONFIG_EDITOR_OPTION_DOCUMENTATION: Readonly<Record<string, Readonl
       "description": ""
     }
   },
-  "minc\\_f": {
+  "minc_f": {
     "0": {
       "label": "0",
       "description": "ändert nichts am Vorschub. Damit kann man den Wert zurücksetzen, falls er im Auszug 0 gesetzt wurde."
@@ -217,7 +217,7 @@ export const CONFIG_EDITOR_OPTION_DOCUMENTATION: Readonly<Record<string, Readonl
       "description": "Legacy-Standardmethode auf Basis der vorhandenen Beat-Maps."
     }
   },
-  "notes.T01\\_number\\_extract": {
+  "notes.T01_number_extract": {
     "-A": {
       "label": "-A",
       "description": "Sopran Alt - per default Auszug 1"

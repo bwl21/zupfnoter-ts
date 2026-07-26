@@ -201,6 +201,8 @@ const configHelpTexts = ref<ConfigHelpTexts>({})
 const activeSectionTreeDefinition = computed(() => buildActiveSectionTreeDefinition())
 const pendingNewEntryBranchPaths = ref<ReadonlySet<string> | undefined>(undefined)
 
+const dynamicConfigPath = /^extract\.(?:current|\d+)\.notebound\.(?:nconf\.v_\d+\.t_\d+\.n_\d+|minc\.\d+(?:\.minc_f)?)$/
+
 watch(
   [() => props.currentExtract, () => props.abcText],
   () => {
@@ -491,12 +493,48 @@ function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | unde
       props.currentExtract,
     )
   }
+  if (dynamicConfigPath.test(props.activeSection)) {
+    return buildDynamicConfigTree(props.activeSection)
+  }
   return buildConfigEditorSectionTree(
     props.activeSection,
     parsedSongConfig.value.config as unknown as Record<string, CommandArgumentValue>,
     effectiveConfig.value as unknown as Record<string, CommandArgumentValue>,
     props.currentExtract,
   )
+}
+
+function buildDynamicConfigTree(path: string): ConfigEditorTreeDefinition[] {
+  const normalizedPath = path.replace(/^extract\.\d+\./, 'extract.current.')
+  const isMinc = normalizedPath.includes('.notebound.minc.')
+  const hasExplicitLeaf = normalizedPath.endsWith('.minc_f')
+  const leafKey = isMinc ? 'minc_f' : 'nshift'
+  const parts = (hasExplicitLeaf ? normalizedPath.slice(0, -'.minc_f'.length) : normalizedPath).split('.')
+  const leafPath = isMinc
+    ? (hasExplicitLeaf ? path : `${path}.minc_f`)
+    : `${path}.nshift`
+  const labels: Record<string, string> = {
+    nconf: 'Notenkonfiguration',
+    nshift: 'Verschiebung',
+    minc: 'extra Vorschub',
+    minc_f: 'minc_f',
+  }
+
+  let child: ConfigEditorTreeDefinition = {
+    key: leafKey,
+    label: labels[leafKey] ?? leafKey,
+    configPath: leafPath,
+  }
+  for (let index = parts.length - 1; index >= 0; index -= 1) {
+    const key = parts[index] ?? path
+    child = {
+      key,
+      label: labels[key] ?? key,
+      children: [child],
+      configPath: `${parts.slice(0, index + 1).join('.')}`,
+    }
+  }
+  return [child]
 }
 
 function matchesRow(row: ConfigTreeRow): boolean {
@@ -603,6 +641,15 @@ function isTextareaValue(row: ConfigTreeRow): boolean {
 function getBooleanValue(row: ConfigTreeRow): boolean {
   if (typeof row.localValue === 'boolean') return row.localValue
   return typeof row.effectiveValue === 'boolean' ? row.effectiveValue : false
+}
+
+function isInheritedBoolean(row: ConfigTreeRow): boolean {
+  return row.localValue === undefined && typeof row.effectiveValue === 'boolean'
+}
+
+function getBooleanValueLabel(row: ConfigTreeRow): string {
+  const value = getBooleanValue(row) ? 'Ja' : 'Nein'
+  return isInheritedBoolean(row) ? `Geerbt: ${value}` : value
 }
 
 function commitBooleanValue(row: ConfigTreeRow, value: boolean): void {
@@ -1119,7 +1166,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
         aria-label="Konfigurationsbaum"
       >
         <div v-if="visibleRows.length === 0" class="config-panel__empty">
-          Keine passenden Parameter
+          Keine passenden Parameter für: {{ activeSection }}
         </div>
         <div
           v-for="row in visibleRows"
@@ -1197,12 +1244,14 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
                 :class="{ 'config-row__switch--on': getBooleanValue(row) }"
                 role="switch"
                 :aria-checked="getBooleanValue(row)"
-                :aria-label="`${row.label} aktivieren`"
+                :aria-label="getBooleanValueLabel(row)"
                 @click="commitBooleanValue(row, !getBooleanValue(row))"
               >
                 <span class="config-row__switch-thumb" aria-hidden="true" />
               </button>
-              <span>{{ getBooleanValue(row) ? 'Ja' : 'Nein' }}</span>
+              <span :class="{ 'config-row__boolean-value--inherited': isInheritedBoolean(row) }">
+                {{ getBooleanValueLabel(row) }}
+              </span>
             </div>
             <textarea
               v-else-if="row.isLeaf && isTextareaValue(row)"
@@ -1753,6 +1802,11 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
   color: var(--zn-text);
   font-size: 0.82rem;
   cursor: pointer;
+}
+
+.config-row__boolean-value--inherited {
+  color: var(--zn-text-muted, #7a8797);
+  font-style: italic;
 }
 
 .config-row__switch {

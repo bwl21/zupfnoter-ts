@@ -174,6 +174,7 @@ const abcText = computed({
 })
 const currentExtract = ref(0)
 const activeConfigSection = ref('basic_settings')
+const hoveredConfigKey = ref<string>()
 const configEntryMutationVersion = ref(0)
 const configCanUndo = ref(false)
 const configCanRedo = ref(false)
@@ -1796,6 +1797,31 @@ function handleHarpPreviewDragEnd(payload: HarpPreviewDragEnd): void {
   )
 }
 
+function handleHarpPreviewContextMenu(payload: {
+  action: 'set' | 'edit'
+  path: string
+  value?: CommandArgumentValue
+}): void {
+  if (payload.action === 'edit') {
+    void executeToolbarCommand(`editconf ${payload.path}`)
+    return
+  }
+  if (payload.value === undefined) return
+  void executeParsedToolbarCommand(
+    `cconf ${payload.path} ${JSON.stringify(payload.value)}`,
+    'cconf',
+    [payload.path, payload.value],
+  ).then((succeeded) => {
+    if (succeeded) {
+      void executeToolbarCommand(`editconf ${payload.path.replace(/\.[^.]+$/, '')}`)
+    }
+  })
+}
+
+function handleHarpPreviewConfigHover(payload: { confKey?: string }): void {
+  hoveredConfigKey.value = payload.confKey
+}
+
 function handleHarpPreviewScroll(payload: { scrollLeft: number; scrollTop: number }): void {
   harpScrollLeft.value = payload.scrollLeft
   harpScrollTop.value = payload.scrollTop
@@ -2282,6 +2308,8 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :maximized="maximizedPanel === 'harp'"
                   @select-text-range="handleHarpPreviewSelection"
                   @drag-end="handleHarpPreviewDragEnd"
+                  @context-menu="handleHarpPreviewContextMenu"
+                  @config-hover="handleHarpPreviewConfigHover"
                   @toggle-maximize="togglePanelMaximize('harp')"
                 />
               </template>
@@ -2301,6 +2329,7 @@ function handleMirrorMessage(event: MessageEvent): void {
           :save-format="saveFormat"
           :cursor-position="editorCursor"
           :cursor-unicode="editorCursorUnicode"
+          :config-hover="hoveredConfigKey"
           :speed-factor="playbackStore.state.speedFactor"
           :selection-voice-scope="selectionStore.selection.voiceScope"
           :selection-voice-scope-summary="selectionVoiceScopeSummary"

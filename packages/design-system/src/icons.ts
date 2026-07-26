@@ -1,10 +1,16 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import {
   faBullseye,
+  faArrowDown,
+  faArrowLeft,
+  faArrowRight,
+  faArrowUp,
+  faArrowsUpDown,
   faChevronDown,
   faChevronRight,
   faDownload,
   faEllipsis,
+  faGear,
   faPen,
   faRotateLeft,
   faRotateRight,
@@ -27,11 +33,23 @@ export type ZnIconName =
   | 'redo'
   | 'select'
   | 'share'
+  | 'shiftDown'
+  | 'shiftLeft'
+  | 'shiftRight'
+  | 'shiftUp'
+  | 'settings'
   | 'undo'
+  | 'verticalAdjust'
 
 /** Zupfnoter-Schlüssel auf die zugehörige Font-Awesome-Definition. */
 export const ZN_ICONS: Record<ZnIconName, IconDefinition> = {
   collapse: faChevronDown,
+  shiftDown: faArrowDown,
+  shiftLeft: faArrowLeft,
+  shiftRight: faArrowRight,
+  shiftUp: faArrowUp,
+  settings: faGear,
+  verticalAdjust: faArrowsUpDown,
   delete: faTrash,
   edit: faPen,
   expand: faChevronRight,

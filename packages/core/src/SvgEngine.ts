@@ -18,6 +18,7 @@ import type {
   Annotation,
   Path,
   Image,
+  MoreConfKey,
 } from '@zupfnoter/types'
 import { GLYPHS } from './glyphs.js'
 import { requireDefined } from './requireDefined.js'
@@ -231,6 +232,7 @@ interface ElementMeta {
   dataIndex: number
   znId?: string
   confKey?: string
+  moreConfKeys?: MoreConfKey[]
   dragHandler?: string
   dragValue?: number | [number, number]
   dragGrid?: number
@@ -346,6 +348,7 @@ export class SvgEngine {
     confKey?: string,
     znId?: string,
     sourceOffsets?: [number, number],
+    moreConfKeys?: MoreConfKey[],
     draginfo?: unknown,
     dragValue?: number | [number, number],
     dragGrid?: number,
@@ -375,6 +378,7 @@ export class SvgEngine {
       dataIndex: index,
       znId: normalizedZnId && normalizedZnId.length > 0 ? normalizedZnId : undefined,
       confKey,
+      moreConfKeys,
       dragHandler: this._dragHandler(draginfo),
       dragValue,
       dragGrid,
@@ -436,6 +440,9 @@ export class SvgEngine {
       'data-zn-id': meta.znId,
     }
     if (meta.confKey !== undefined) groupAttrs['data-conf-key'] = meta.confKey
+    if (this._interactive && meta.moreConfKeys !== undefined && meta.moreConfKeys.length > 0) {
+      groupAttrs['data-more-conf-keys'] = JSON.stringify(meta.moreConfKeys)
+    }
     if (this._interactive && meta.dragHandler !== undefined && meta.confKey !== undefined) {
       groupAttrs['data-drag-enabled'] = 'true'
       groupAttrs['data-drag-handler'] = meta.dragHandler
@@ -498,6 +505,7 @@ export class SvgEngine {
       el.confKey,
       el.znId,
       el.origin?.sourceOffsets,
+      el.more_conf_keys,
       el.draginfo,
       this._dragValue(el.draginfo) ?? el.center,
     )
@@ -571,6 +579,7 @@ export class SvgEngine {
       el.confKey,
       el.znId,
       el.origin?.sourceOffsets,
+      el.more_conf_keys,
       el.draginfo,
       this._dragValue(el.draginfo) ?? el.center,
     )
@@ -629,6 +638,7 @@ export class SvgEngine {
       el.confKey,
       el.znId,
       undefined,
+      el.more_conf_keys,
       el.draginfo,
       this._jumplineDragValue(el.draginfo),
       this._jumplineDragGrid(el.draginfo),
@@ -668,6 +678,7 @@ export class SvgEngine {
       el.confKey,
       el.znId,
       undefined,
+      el.more_conf_keys,
       el.draginfo,
       this._jumplineDragValue(el.draginfo),
       this._jumplineDragGrid(el.draginfo),
@@ -724,6 +735,7 @@ export class SvgEngine {
       el.confKey,
       el.znId,
       undefined,
+      el.more_conf_keys,
       el.draginfo,
       this._dragValue(el.draginfo) ?? el.center,
     )
@@ -755,6 +767,7 @@ export class SvgEngine {
       el.confKey,
       el.znId,
       undefined,
+      el.more_conf_keys,
       el.draginfo,
       el.position,
     )

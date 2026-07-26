@@ -75,6 +75,7 @@ export type {
 
 export type {
   FillStyle,
+  MoreConfKey,
   Drawable,
   Ellipse,
   FlowLine,

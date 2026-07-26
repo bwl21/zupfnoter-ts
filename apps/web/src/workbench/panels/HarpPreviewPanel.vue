@@ -1,16 +1,24 @@
 <script setup lang="ts">
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, toRef, watch } from 'vue'
+import tippy, { type Instance as TippyInstance } from 'tippy.js'
 
 import { makeJumplinePathData, type JumplinePathInfo } from '@zupfnoter/core'
+import type { CommandArgumentValue } from '@zupfnoter/core'
 import type { PlaybackHighlight, SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
-import { ZnMaximizeButton, ZnPanel, ZnTabs, ZnZoomControl } from '@zupfnoter/design-system'
+import { ZnIcon, ZnMaximizeButton, ZnPanel, ZnTabs, ZnZoomControl, type ZnIconName } from '@zupfnoter/design-system'
 import { resolveSelectionOriginByZnId } from '../selectionIndex'
 import type { HarpPreviewDragEnd } from '../multiWindow/harpMirrorChannel'
 import HarpMagnifierPopover from './HarpMagnifierPopover.vue'
 import { useZoomableSvgPreview } from './useZoomableSvgPreview'
 import { usePlaybackSvgHighlight } from './usePlaybackSvgHighlight'
 import { useSelectionSvgHighlight } from './useSelectionSvgHighlight'
+import { loadConfigHelpTexts, resolveConfigHelpHtml, type ConfigHelpTexts } from './configHelp'
+import {
+  buildSvgContextMenuEntries,
+  parseSvgContextMenuEntries,
+  type SvgContextMenuEntry,
+} from './svgContextMenu'
 
 /** Rasterweite für dragbare Layout-Positionen in SVG-/Layout-Millimetern. */
 const DRAG_GRID_MM = 1
@@ -42,6 +50,12 @@ const emit = defineEmits<{
   }): void
   (event: 'scroll', payload: { scrollLeft: number; scrollTop: number }): void
   (event: 'drag-end', payload: HarpPreviewDragEnd): void
+  (event: 'context-menu', payload: {
+    action: 'set' | 'edit'
+    path: string
+    value?: CommandArgumentValue
+  }): void
+  (event: 'config-hover', payload: { confKey?: string }): void
   (event: 'toggle-maximize'): void
 }>()
 
@@ -76,7 +90,17 @@ interface ActiveDrag {
   startClient: { x: number; y: number }
 }
 
+interface ContextMenuState {
+  left: number
+  top: number
+  entries: SvgContextMenuEntry[]
+}
+
 const dragState = ref<ActiveDrag | null>(null)
+const contextMenu = ref<ContextMenuState | null>(null)
+const hoveredConfigKey = ref<string | undefined>(undefined)
+const contextMenuHelpTexts = ref<ConfigHelpTexts>({})
+const contextMenuTooltips = new Map<HTMLElement, TippyInstance>()
 const zoom = defineModel<number>('zoom', {
   default: 100,
 })
@@ -115,6 +139,9 @@ watch(mode, (value) => {
   }
   if (value !== 'pdf') setZoom(presetZoom[value])
 })
+watch(contextMenu, () => {
+  void syncContextMenuTooltips()
+})
 usePlaybackSvgHighlight(
   canvasRef,
   toRef(props, 'svg'),
@@ -144,6 +171,112 @@ function emitSelectionFromEvent(target: EventTarget | null, extend: boolean): vo
     origin,
     source: 'harp-preview',
   })
+}
+
+function closeContextMenu(): void {
+  contextMenu.value = null
+}
+
+function configKeyAtElement(element: Element | null): string | undefined {
+  const drawable = element?.closest<HTMLElement>('.zupfnoter-element[data-conf-key]')
+  const confKey = drawable?.getAttribute('data-conf-key')?.trim()
+  if (confKey === undefined || confKey === '') return undefined
+  return confKey
+}
+
+function updateConfigHover(target: EventTarget | null): void {
+  const confKey = target instanceof Element ? configKeyAtElement(target) : undefined
+  if (confKey === hoveredConfigKey.value) return
+  hoveredConfigKey.value = confKey
+  emit('config-hover', confKey === undefined ? {} : { confKey })
+}
+
+function contextMenuEntries(element: Element): SvgContextMenuEntry[] {
+  // Pointer events on notes normally target the transparent hitbox. Its
+  // interaction metadata belongs to the enclosing drawable group.
+  const drawable = element.closest<HTMLElement>('.zupfnoter-element[data-conf-key]')
+  if (drawable === null) return []
+  const confKey = drawable.getAttribute('data-conf-key')?.trim() ?? ''
+  const confBase = confKey.replace(/\.[^.]+$/, '')
+  return buildSvgContextMenuEntries(
+    confKey,
+    parseSvgContextMenuEntries(drawable.getAttribute('data-more-conf-keys')),
+    {
+      visibilityPath: ['Annotation', 'Image'].includes(drawable.getAttribute('data-type') ?? '') && confBase.length > 0
+        ? `${confBase}.show`
+        : undefined,
+    },
+  )
+}
+
+function handleContextMenu(event: MouseEvent): void {
+  const target = event.target
+  if (!(target instanceof Element)) return
+  const entries = contextMenuEntries(target)
+  if (entries.length === 0) return
+  const frame = frameRef.value
+  if (frame === null) return
+  event.preventDefault()
+  event.stopPropagation()
+  const frameRect = frame.getBoundingClientRect()
+  contextMenu.value = {
+    left: event.clientX - frameRect.left + frame.scrollLeft,
+    top: event.clientY - frameRect.top + frame.scrollTop,
+    entries,
+  }
+}
+
+function executeContextMenuEntry(entry: SvgContextMenuEntry): void {
+  if (entry.disabled) return
+  if (entry.action === 'set' && entry.value !== undefined && entry.path !== undefined) {
+    emit('context-menu', { action: 'set', path: entry.path, value: entry.value })
+  } else if (entry.action === 'edit' && entry.path !== undefined) {
+    emit('context-menu', { action: 'edit', path: entry.path })
+  }
+  closeContextMenu()
+}
+
+function resolveContextMenuIcon(icon: string | undefined): ZnIconName | undefined {
+  const icons: Record<string, ZnIconName> = {
+    'fa fa-arrow-down': 'shiftDown',
+    'fa fa-arrow-left': 'shiftLeft',
+    'fa fa-arrow-right': 'shiftRight',
+    'fa fa-arrow-up': 'shiftUp',
+    'fa fa-arrows-v': 'verticalAdjust',
+    'fa fa-gear': 'settings',
+  }
+  return icon === undefined ? undefined : icons[icon]
+}
+
+function destroyContextMenuTooltips(): void {
+  for (const instance of contextMenuTooltips.values()) instance.destroy()
+  contextMenuTooltips.clear()
+}
+
+async function syncContextMenuTooltips(): Promise<void> {
+  destroyContextMenuTooltips()
+  if (contextMenu.value === null) return
+  if (Object.keys(contextMenuHelpTexts.value).length === 0) {
+    contextMenuHelpTexts.value = await loadConfigHelpTexts()
+  }
+  await nextTick()
+  const frame = frameRef.value
+  if (frame === null || contextMenu.value === null) return
+  const elements = frame.querySelectorAll<HTMLElement>('[data-context-menu-help-key]')
+  for (const element of elements) {
+    const helpKey = element.dataset.contextMenuHelpKey
+    if (helpKey === undefined || helpKey === '') continue
+    const helpHtml = resolveConfigHelpHtml(helpKey, contextMenuHelpTexts.value)
+    contextMenuTooltips.set(element, tippy(element, {
+      content: helpHtml ?? `Konfiguration: ${helpKey}`,
+      allowHTML: helpHtml !== undefined,
+      interactive: true,
+      trigger: 'mouseenter focus',
+      theme: 'zn-config-help',
+      placement: 'right-start',
+      maxWidth: 560,
+    }))
+  }
 }
 
 function findJumplineAtEvent(event: PointerEvent): HTMLElement | null {
@@ -251,6 +384,7 @@ function handlePointerDown(event: PointerEvent): void {
 }
 
 function handlePointerMove(event: PointerEvent): void {
+  updateConfigHover(event.target)
   const activeDrag = dragState.value
   if (activeDrag?.pointerId === event.pointerId) {
     const delta = screenDeltaToSvgDelta(
@@ -280,6 +414,10 @@ function updateJumplineHover(event: PointerEvent): void {
 
 function clearJumplineHover(): void {
   frameRef.value?.classList.remove('harp-preview__frame--jumpline-hover')
+  if (hoveredConfigKey.value !== undefined) {
+    hoveredConfigKey.value = undefined
+    emit('config-hover', {})
+  }
 }
 
 function handlePointerUp(event: PointerEvent): void {
@@ -467,6 +605,10 @@ const magnifierPopupStyle = computed(() => {
     top: `${centerY}px`,
   }
 })
+
+onBeforeUnmount(() => {
+  destroyContextMenuTooltips()
+})
 </script>
 
 <template>
@@ -505,6 +647,8 @@ const magnifierPopupStyle = computed(() => {
         @pointerup="handlePointerUp"
         @pointerleave="clearJumplineHover"
         @wheel="onWheel"
+        @contextmenu="handleContextMenu"
+        @click="closeContextMenu"
       >
         <div v-if="mode === 'pdf'" class="harp-preview__pdf">
           <p v-if="pdfLoading" class="harp-preview__pdf-status" role="status">PDF-Vorschau wird geladen …</p>
@@ -533,6 +677,33 @@ const magnifierPopupStyle = computed(() => {
           class="harp-preview__magnifier-spot"
           :style="magnifierFocusStyle"
         />
+        <div
+          v-if="contextMenu !== null"
+          class="harp-preview__context-menu"
+          :style="{ left: `${contextMenu.left}px`, top: `${contextMenu.top}px` }"
+          role="menu"
+          @pointerdown.stop
+          @click.stop
+        >
+          <button
+            v-for="(entry, index) in contextMenu.entries"
+            :key="`${entry.text}-${index}`"
+            type="button"
+            class="harp-preview__context-menu-entry"
+            :class="{ 'is-disabled': entry.disabled }"
+            :disabled="entry.disabled"
+            :data-context-menu-help-key="entry.helpPath ?? entry.path"
+            :title="entry.helpPath ?? entry.path ?? entry.text"
+            role="menuitem"
+            @click="executeContextMenuEntry(entry)"
+          >
+            <span class="harp-preview__context-menu-icon" aria-hidden="true">
+              <ZnIcon v-if="resolveContextMenuIcon(entry.icon) !== undefined" :name="resolveContextMenuIcon(entry.icon) as ZnIconName" />
+              <span v-else>•</span>
+            </span>
+            <span>{{ entry.text }}</span>
+          </button>
+        </div>
       </div>
       <HarpMagnifierPopover
         :key="magnifierSession"
@@ -691,5 +862,46 @@ const magnifierPopupStyle = computed(() => {
   background: rgba(74, 97, 132, 0.08);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45) inset;
   pointer-events: none;
+}
+
+.harp-preview__context-menu {
+  position: absolute;
+  z-index: 20;
+  display: grid;
+  min-width: 13rem;
+  padding: 0.35rem;
+  border: 1px solid var(--zn-panel-border, #ccd5e2);
+  border-radius: 0.45rem;
+  background: var(--zn-surface, #ffffff);
+  box-shadow: 0 0.5rem 1.4rem rgba(25, 38, 58, 0.22);
+}
+
+.harp-preview__context-menu-entry {
+  display: grid;
+  grid-template-columns: 1.2rem 1fr;
+  gap: 0.45rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: var(--zn-text, #1d2a3a);
+  text-align: left;
+  cursor: pointer;
+}
+
+.harp-preview__context-menu-entry:hover:not(:disabled) {
+  background: var(--zn-surface-muted, #edf2f8);
+}
+
+.harp-preview__context-menu-entry:disabled {
+  color: var(--zn-text-muted, #8a96a6);
+  cursor: default;
+}
+
+.harp-preview__context-menu-icon {
+  color: var(--zn-accent, #46658d);
+  text-align: center;
 }
 </style>

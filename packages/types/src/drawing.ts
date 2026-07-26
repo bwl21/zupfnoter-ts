@@ -15,6 +15,18 @@ import type { LayoutConfig, PrinterConfig } from './config.js'
 /** Füllstil einer Ellipse oder eines Glyphs */
 export type FillStyle = 'filled' | 'empty'
 
+/** Ein vom Legacy-Layout geliefertes Kontextmenü-Angebot. */
+export interface MoreConfKey {
+  /** Konfigurationspfad, der beim Ausführen beschrieben wird. */
+  conf_key?: string
+  /** Sichtbarer Menütext. */
+  text?: string
+  /** Optionales Legacy-Icon-Klassenset. */
+  icon?: string
+  /** Wert, der an den Konfigurationspfad geschrieben wird. */
+  value?: unknown
+}
+
 /**
  * Gemeinsame Basis aller zeichenbaren Elemente.
  * Entspricht `Harpnotes::Drawing::Drawable`.
@@ -24,7 +36,7 @@ export interface Drawable {
   lineWidth: number
   confKey?: string
   /** Legacy-Kontextmenü-Einträge für editorrelevante Alternativen */
-  more_conf_keys?: unknown[]
+  more_conf_keys?: MoreConfKey[]
   /** Legacy-Dragmetadaten für editierbare Drawables */
   draginfo?: unknown
   /** Legacy-nahe Zupfnoter-ID des fachlichen Ursprungsobjekts */

@@ -1200,6 +1200,7 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
+          confKey: `${overrideKey}.pos`,
           more_conf_keys: [],
           draginfo: this._annotationDraginfo(offset),
           znId: playable.znId,

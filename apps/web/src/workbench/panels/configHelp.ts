@@ -26,7 +26,9 @@ function convertConfigHelpTexts(source: Record<string, unknown>): ConfigHelpText
 
   for (const [key, value] of Object.entries(source)) {
     if (typeof value === 'string') {
-      result[key] = value
+      // The generated documentation escapes underscores in JSON keys. SVG
+      // config paths use the unescaped parameter names.
+      result[key.replace(/\\_/g, '_')] = value
     }
   }
 
