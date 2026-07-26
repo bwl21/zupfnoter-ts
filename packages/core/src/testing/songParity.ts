@@ -489,6 +489,8 @@ const TS_EVENT_KNOWN_KEYS = new Set([
   'stableKey',
   'repeatInfo',
   'gotoInfo',
+  'sourceOrder',
+  'noteSourceOffsets',
 ])
 
 function addDiagnostic(

@@ -463,6 +463,8 @@ export class AbcToSong {
       znId: this._makeZnId(sym, _voiceIndex),
       duration,
       pitch: n.midi,
+      ...(n.sourceOrder === undefined ? {} : { sourceOrder: n.sourceOrder }),
+      ...(n.sourceOffsets === undefined ? {} : { noteSourceOffsets: n.sourceOffsets }),
       tieStart: false,
       tieEnd: false,
       tuplet,

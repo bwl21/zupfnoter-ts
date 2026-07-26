@@ -66,7 +66,13 @@ interface Abc2svgSymbol {
   dur?: number
   istart: number
   iend: number
-  notes?: Array<{ midi: number; dur: number; [key: string]: unknown }>
+  notes?: Array<{
+    midi: number
+    dur: number
+    sourceOrder?: number
+    sourceOffsets?: [number, number]
+    [key: string]: unknown
+  }>
   bar_type?: string
   text?: string
   ti1?: number
@@ -190,9 +196,10 @@ function normalizeSymbol(
     next: nextSymbol,
   } as AbcSymbol
 
-  const normalizedNotes = normalizeChordNoteOrder(liveSymbol, source)
-  if (normalizedNotes !== undefined) {
-    normalized.notes = normalizedNotes
+  if (Array.isArray(liveSymbol.notes)) {
+    // output_music() sorts the live notes in place. Detach the model's array
+    // before calling it so the hook-captured source order cannot be mutated.
+    normalized.notes = liveSymbol.notes.map((note) => ({ ...note }))
   }
 
   const slurStarts = Array.isArray(liveSymbol.slur_sls)
@@ -205,184 +212,38 @@ function normalizeSymbol(
   return normalized
 }
 
-function diatonicStepForLetter(letter: string): number | null {
-  switch (letter.toUpperCase()) {
-    case 'C': return 0
-    case 'D': return 1
-    case 'E': return 2
-    case 'F': return 3
-    case 'G': return 4
-    case 'A': return 5
-    case 'B': return 6
-    default: return null
-  }
-}
-
-function semitoneOffsetForStep(step: number): number | null {
-  switch (step) {
-    case 0: return 0
-    case 1: return 2
-    case 2: return 4
-    case 3: return 5
-    case 4: return 7
-    case 5: return 9
-    case 6: return 11
-    default: return null
-  }
-}
-
-function normalizeChordNoteOrder(liveSymbol: Abc2svgSymbol, source: string): Abc2svgSymbol['notes'] | undefined {
-  const liveNotes = liveSymbol.notes
-  if (!Array.isArray(liveNotes) || liveNotes.length <= 1) return liveNotes
-
-  const sourceSlice = source.slice(liveSymbol.istart, liveSymbol.iend)
+function readChordNoteOffsets(symbol: Abc2svgSymbol, source: string): [number, number][] | null {
+  const sourceSlice = source.slice(symbol.istart, symbol.iend)
   const openIndex = sourceSlice.indexOf('[')
   const closeIndex = sourceSlice.indexOf(']', openIndex + 1)
-  if (openIndex < 0 || closeIndex < 0) return liveNotes
+  if (openIndex < 0 || closeIndex < 0) return null
 
-  const chordSource = sourceSlice.slice(openIndex + 1, closeIndex)
-  const liveMidis = liveNotes.map((note) => note.midi)
-  const sourceMidis = parseChordSourceMidis(chordSource, liveMidis)
-  if (sourceMidis !== null && sourceMidis.length === liveNotes.length) {
-    const reordered = reorderChordNotes(liveNotes, sourceMidis, liveMidis)
-    if (reordered !== null) return reordered
-  }
-
-  const sourceDiatonicPitches = parseChordSourceDiatonicPitches(chordSource)
-  const liveDiatonicPitches = liveNotes.map((note) => {
-    const pit = note.pit
-    return typeof pit === 'number' ? pit : undefined
-  })
-  if (sourceDiatonicPitches !== null && liveDiatonicPitches.every((pitch): pitch is number => pitch !== undefined)) {
-    const reordered = reorderChordNotes(liveNotes, sourceDiatonicPitches, liveDiatonicPitches)
-    if (reordered !== null) return reordered
-  }
-
-  return liveNotes
-}
-
-function reorderChordNotes<T>(notes: T[], sourcePitches: number[], livePitches: number[]): T[] | null {
-  if (sourcePitches.length !== notes.length || livePitches.length !== notes.length) return null
-
-  const sourceRanks = [...new Set(sourcePitches)].sort((left, right) => left - right)
-  const liveRanks = [...new Set(livePitches)].sort((left, right) => left - right)
-  if (sourceRanks.length !== liveRanks.length) return null
-
-  const liveBuckets = new Map<number, T[]>()
-  for (const [index, pitch] of livePitches.entries()) {
-    const note = notes[index]
-    if (note === undefined) return null
-    const bucket = liveBuckets.get(pitch)
-    if (bucket === undefined) liveBuckets.set(pitch, [note])
-    else bucket.push(note)
-  }
-
-  const reordered: T[] = []
-  for (const sourcePitch of sourcePitches) {
-    const rank = sourceRanks.indexOf(sourcePitch)
-    const livePitch = liveRanks[rank]
-    if (livePitch === undefined) return null
-    const bucket = liveBuckets.get(livePitch)
-    const note = bucket?.shift()
-    if (note === undefined) return null
-    reordered.push(note)
-  }
-
-  return reordered
-}
-
-function parseChordSourceDiatonicPitches(chordSource: string): number[] | null {
-  const notePattern = /[_=^]*([A-Ga-g])([,']*)/g
-  const result: number[] = []
-  let match: RegExpExecArray | null
-  while ((match = notePattern.exec(chordSource)) !== null) {
-    const letter = match[1]
-    const octaveMarks = match[2]
-    if (letter === undefined || octaveMarks === undefined) return null
-
-    const base = 'CDEFGAB'.indexOf(letter.toUpperCase())
-    if (base < 0) return null
-    let pitch = base + (letter === letter.toLowerCase() ? 7 : 0)
-    for (const mark of octaveMarks) pitch += mark === "'" ? 7 : -7
-    result.push(pitch)
-  }
-
-  return result.length > 0 ? result : null
-}
-
-function parseChordSourceMidis(chordSource: string, liveMidis: number[]): number[] | null {
-  const sortedLiveMidis = [...liveMidis].sort((left, right) => left - right)
-
-  const parse = (index: number, remainingMidis: number[]): number[] | null => {
-    let cursor = index
-    while (cursor < chordSource.length) {
-      const char = chordSource[cursor]
-      if (char !== ',' && char !== ' ' && char !== '\t') break
-      cursor += 1
+  const offsets: [number, number][] = []
+  let index = openIndex + 1
+  while (index < closeIndex) {
+    const current = sourceSlice[index]
+    if (current === undefined) break
+    if (current === '!' ) {
+      const decorationEnd = sourceSlice.indexOf('!', index + 1)
+      if (decorationEnd < 0 || decorationEnd >= closeIndex) return null
+      index = decorationEnd + 1
+      continue
+    }
+    if (current === ',' || current === ' ' || current === '\t' || current === '\r' || current === '\n') {
+      index += 1
+      continue
     }
 
-    if (cursor >= chordSource.length) {
-      return remainingMidis.length === 0 ? [] : null
-    }
-
-    let accidental = 0
-    while (cursor < chordSource.length) {
-      const char = chordSource[cursor]
-      if (char === '^') {
-        accidental += 1
-      } else if (char === '_') {
-        accidental -= 1
-      } else if (char === '=') {
-        accidental = 0
-      } else {
-        break
-      }
-      cursor += 1
-    }
-
-    const letter = chordSource[cursor]
-    if (letter === undefined) return null
-    const step = diatonicStepForLetter(letter)
-    if (step === null) return null
-    cursor += 1
-
-    let markEnd = cursor
-    while (markEnd < chordSource.length) {
-      const char = chordSource[markEnd]
-      if (char !== '\'' && char !== ',') break
-      markEnd += 1
-    }
-
-    for (let split = cursor; split <= markEnd; split += 1) {
-      const midi = abcPitchToMidi(letter, chordSource.slice(cursor, split), accidental, step)
-      const midiIndex = remainingMidis.indexOf(midi)
-      if (midiIndex < 0) continue
-
-      const nextRemaining = remainingMidis.slice()
-      nextRemaining.splice(midiIndex, 1)
-      const tail = parse(split, nextRemaining)
-      if (tail !== null) return [midi, ...tail]
-    }
-
-    return null
+    const start = index
+    while (index < closeIndex && '^_='.includes(sourceSlice[index] ?? '')) index += 1
+    const letter = sourceSlice[index]
+    if (letter === undefined || !/[A-Ga-g]/.test(letter)) return null
+    index += 1
+    while (index < closeIndex && "',".includes(sourceSlice[index] ?? '')) index += 1
+    offsets.push([symbol.istart + start, symbol.istart + index])
   }
 
-  return parse(0, sortedLiveMidis)
-}
-
-function abcPitchToMidi(letter: string, octaveMarks: string, accidental: number, step: number): number {
-  const semitoneOffset = semitoneOffsetForStep(step)
-  if (semitoneOffset === null) return 48 + accidental
-
-  let midi = 48 + semitoneOffset
-
-  if (letter >= 'a' && letter <= 'g') midi += 12
-  for (const char of octaveMarks) {
-    if (char === '\'') midi += 12
-    if (char === ',') midi -= 12
-  }
-
-  return midi + accidental
+  return offsets.length > 0 ? offsets : null
 }
 
 function computeLegacyChecksum(abcText: string): string {
@@ -524,6 +385,21 @@ export class AbcParser {
         if (capturedModel === null && typeof this.get_voice_tb === 'function') {
           const voiceTb = this.get_voice_tb()
           if (Array.isArray(voiceTb)) {
+            for (const voice of voiceTb) {
+              for (let symbol = voice.sym; symbol !== undefined; symbol = symbol.next) {
+                if (!Array.isArray(symbol.notes) || symbol.notes.length < 2) continue
+                symbol.notes.forEach((note, sourceOrder) => {
+                  note.sourceOrder = sourceOrder
+                })
+                const noteOffsets = readChordNoteOffsets(symbol, abcText)
+                if (noteOffsets !== null && noteOffsets.length === symbol.notes.length) {
+                  symbol.notes.forEach((note, index) => {
+                    const sourceOffsets = noteOffsets[index]
+                    if (sourceOffsets !== undefined) note.sourceOffsets = sourceOffsets
+                  })
+                }
+              }
+            }
             capturedModel = AbcParser._buildModel(
               voiceTb,
               _abc2svgModule.abc2svg.sym_name,

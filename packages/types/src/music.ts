@@ -105,6 +105,10 @@ export interface TimeSignature {
  */
 export interface Note extends Playable {
   readonly type: 'Note'
+  /** Original zero-based position within the ABC chord. */
+  sourceOrder?: number
+  /** Absolute half-open source range of this note within its ABC chord. */
+  noteSourceOffsets?: [number, number]
 }
 
 /**

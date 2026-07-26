@@ -44,6 +44,10 @@ export interface AbcNote {
   midi: number
   /** Duration in abc2svg units (1536 = whole note) */
   dur: number
+  /** Original zero-based position within the ABC chord before abc2svg sorting. */
+  sourceOrder?: number
+  /** Absolute half-open source range of this note within the ABC chord. */
+  sourceOffsets?: [number, number]
   [key: string]: unknown
 }
 
