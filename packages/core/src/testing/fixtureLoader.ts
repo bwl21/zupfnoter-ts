@@ -29,6 +29,20 @@ const FIXTURE_CASES_ROOTS = [
 
 export type FixtureStage = 'song' | 'sheet' | 'output_svg'
 
+export interface FixtureExceptions {
+  compactSlurClose?: {
+    sourceLines: number[]
+    reason: string
+  }
+}
+
+export interface FixtureAbcPreconditionIssue {
+  rule: 'compactSlurClose'
+  line: number
+  token: string
+  message: string
+}
+
 export interface PipelineFixture {
   name: string
   id: string
@@ -102,23 +116,59 @@ export function fixtureCaseDir(name: string): string {
   throw new Error(`Fixture case "${name}" exists in both public and protected fixture roots.`)
 }
 
+export function readFixtureExceptions(name: string): FixtureExceptions {
+  const path = resolve(fixtureCaseDir(name), 'fixture-exceptions.json')
+  if (!existsSync(path)) return {}
+
+  const raw = JSON.parse(readFileSync(path, 'utf-8')) as unknown
+  if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
+    throw new Error(`Fixture exceptions for "${name}" must be a JSON object.`)
+  }
+
+  const value = raw as Record<string, unknown>
+  const compactSlurClose = value.compactSlurClose
+  if (compactSlurClose === undefined) return {}
+  if (typeof compactSlurClose !== 'object' || compactSlurClose === null || Array.isArray(compactSlurClose)) {
+    throw new Error(`Fixture exception "compactSlurClose" for "${name}" must be an object.`)
+  }
+
+  const reason = (compactSlurClose as Record<string, unknown>).reason
+  if (typeof reason !== 'string' || reason.trim() === '') {
+    throw new Error(`Fixture exception "compactSlurClose" for "${name}" requires a reason.`)
+  }
+  const sourceLines = (compactSlurClose as Record<string, unknown>).sourceLines
+  if (!Array.isArray(sourceLines) || !sourceLines.every((line): line is number => Number.isInteger(line) && line > 0)) {
+    throw new Error(`Fixture exception "compactSlurClose" for "${name}" requires positive integer sourceLines.`)
+  }
+
+  return { compactSlurClose: { sourceLines, reason } }
+}
+
 function stripFixtureConfigBlock(abcText: string): string {
   const markerIndex = abcText.indexOf(FIXTURE_ABC_CONFIG_MARKER)
   return markerIndex >= 0 ? abcText.slice(0, markerIndex) : abcText
 }
 
 export function validateFixtureAbcPreconditions(abcText: string): string[] {
-  const issues: string[] = []
+  return findFixtureAbcPreconditionIssues(abcText).map((issue) => issue.message)
+}
+
+export function findFixtureAbcPreconditionIssues(abcText: string): FixtureAbcPreconditionIssue[] {
+  const issues: FixtureAbcPreconditionIssue[] = []
   const abcWithoutConfig = stripFixtureConfigBlock(abcText)
   const matches = abcWithoutConfig.matchAll(COMPACT_SLUR_CLOSE_PATTERN)
 
   for (const match of matches) {
     const token = match[0]
     if (typeof token !== 'string' || !token.endsWith(')')) continue
-    issues.push(
-      `Known abc2svg source-position pitfall in ABC input: compact slur-close token "${token}". ` +
-      `Write the slur end with whitespace, e.g. "A ))" instead of "A))".`,
-    )
+    const line = abcWithoutConfig.slice(0, match.index ?? 0).split('\n').length
+    issues.push({
+      rule: 'compactSlurClose',
+      line,
+      token,
+      message: `Known abc2svg source-position pitfall in ABC input: compact slur-close token "${token}". ` +
+        `Write the slur end with whitespace, e.g. "A ))" instead of "A))".`,
+    })
   }
 
   return issues

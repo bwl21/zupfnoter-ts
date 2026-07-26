@@ -3,12 +3,14 @@ import { extractSongConfig, extractSongFilebase, extractSongResources, replaceSo
 import {
   fixtureConfigFromAbc,
   fixtureAbcPath,
+  findFixtureAbcPreconditionIssues,
   getOutputSvgFixtureTargets,
   getSheetFixtureTargets,
   loadFixture,
   readFixtureAbc,
   loadSongFixture,
   loadSheetExtractFixture,
+  readFixtureExceptions,
   songToFixture,
   resolveFixtureSheetRenderTarget,
   scanFixtureCases,
@@ -21,11 +23,6 @@ import { defaultTestConfig } from '../defaultConfig.js'
 import { formatOpenImplementations, getOpenImplementations } from '../openImplementations.js'
 
 describe('fixtureLoader', () => {
-  const KNOWN_COMPACT_SLUR_CLOSE_FIXTURES = [
-    '3015_reference_sheet',
-    'abc-to-song-slur-tuplet-parity',
-  ]
-
   it('resolves fixture ABC paths by test case name', () => {
     expect(fixtureAbcPath('single_note')).toBe('fixtures/cases/public/single_note/input.abc')
   })
@@ -280,20 +277,15 @@ describe('fixtureLoader', () => {
     expect(issues[0]).toContain('A ))')
   })
 
-  it('tracks the current baseline of fixture ABC cases with compact slur-close tokens', () => {
-    const violatingFixtures = scanFixtureCases()
-      .map((testCase) => ({
-        id: testCase.id,
-        issues: validateFixtureAbcPreconditions(readFixtureAbc(testCase.id)),
-      }))
-      .filter((entry) => entry.issues.length > 0)
+  it('requires fixture-local documentation for compact slur-close locations', () => {
+    for (const testCase of scanFixtureCases()) {
+      const issues = findFixtureAbcPreconditionIssues(readFixtureAbc(testCase.id))
+      const documented = readFixtureExceptions(testCase.id).compactSlurClose
+      const issueLines = [...new Set(issues.map((issue) => issue.line))].sort((a, b) => a - b)
+      const documentedLines = [...new Set(documented?.sourceLines ?? [])].sort((a, b) => a - b)
 
-    expect(violatingFixtures.map((entry) => entry.id).sort()).toEqual(
-      [...KNOWN_COMPACT_SLUR_CLOSE_FIXTURES].sort(),
-    )
-    const allIssuesContainRemediationHint = violatingFixtures
-      .flatMap((entry) => entry.issues)
-      .every((issue) => issue.includes('A ))'))
-    expect(allIssuesContainRemediationHint).toBe(true)
+      expect(documentedLines, `${testCase.id}: missing or incomplete fixture exception documentation`).toEqual(issueLines)
+      expect(issues.every((issue) => issue.message.includes('A ))'))).toBe(true)
+    }
   })
 })

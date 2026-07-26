@@ -1,0 +1,6 @@
+{
+  "compactSlurClose": {
+    "sourceLines": [58],
+    "reason": "Legacy fixture retained as-is; abc2svg source positions treat the compact slur-close token as a known input exception."
+  }
+}
