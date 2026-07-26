@@ -129,12 +129,26 @@ function playableCenter(
   beatMap: BeatCompressionMap,
   layout: LayoutConfig,
   startpos: number,
+  context?: { conf: Confstack; voiceNr: number; extractNr: number | string },
 ): [number, number] {
   const proxy = playableLayoutProxy(playable)
   return [
-    playableX(proxy, layout),
+    playableX(proxy, layout) + configuredNoteShift(proxy, layout, context),
     beatToY(proxy.beat, beatMap, layout, startpos),
   ]
+}
+
+function configuredNoteShift(
+  playable: PlayableEntity,
+  layout: LayoutConfig,
+  context: { conf: Confstack; voiceNr: number; extractNr: number | string } | undefined,
+): number {
+  if (context === undefined || (playable.type !== 'Note' && playable.type !== 'Pause')) return 0
+  const configured = context.conf.get(
+    `extract.notebound.nconf.v_${context.voiceNr}.t_${playable.time}.n_0.nshift`,
+  )
+  if (typeof configured !== 'number') return 0
+  return playableSize(playable, layout)[0] * 2 * configured
 }
 
 function playableX(playable: PlayableEntity, layout: LayoutConfig): number {
@@ -792,7 +806,16 @@ export class HarpnotesLayout {
       } else if (entity.type === 'SynchPoint') {
         const sp = entity as SynchPoint
         let decorationRoot: Ellipse | null = null
-        const synchLine = this._layoutSynchPointLine(sp, beatMap, layout, startpos, visibleByPlayable.get(sp))
+        const synchLine = this._layoutSynchPointLine(
+          sp,
+          beatMap,
+          layout,
+          startpos,
+          visibleByPlayable.get(sp),
+          voiceNr,
+          extractNr,
+          conf,
+        )
         if (synchLine) playableElements.push(synchLine)
         for (const [noteIndex, note] of sp.notes.entries()) {
           const legacyNoteIndex = sp.notes.length - 1 - noteIndex
@@ -1386,8 +1409,9 @@ export class HarpnotesLayout {
           continue
         }
 
-        const from = playableCenter(prev, beatMap, layout, startpos)
-        const to = playableCenter(curr, beatMap, layout, startpos)
+        const context = { conf, voiceNr, extractNr }
+        const from = playableCenter(prev, beatMap, layout, startpos, context)
+        const to = playableCenter(curr, beatMap, layout, startpos, context)
         const visible = (visibleByPlayable.get(curr) ?? curr.visible) && (visibleByPlayable.get(prev) ?? prev.visible)
         const override = conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.znId}`)
           ?? conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.time}`)
@@ -1439,10 +1463,14 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     visible: boolean | undefined,
+    voiceNr: number,
+    extractNr: number | string,
+    conf: Confstack,
   ): FlowLine | null {
+    const context = { conf, voiceNr, extractNr }
     const noteCenters = synchPoint.notes.map((note) => ({
       note,
-      center: playableCenter(note, beatMap, layout, startpos),
+      center: playableCenter(note, beatMap, layout, startpos, context),
     }))
     if (noteCenters.length < 2) return null
 

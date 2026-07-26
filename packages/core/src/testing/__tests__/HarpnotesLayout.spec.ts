@@ -377,6 +377,50 @@ V:V1
       expect(flowline.from[0]).toBe(expectedProxyX)
     })
 
+    it('keeps a shifted chord proxy aligned with the following flowline', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.voices = [1]
+      extract0.flowlines = [1]
+      extract0.subflowlines = []
+      extract0.synchlines = []
+      extract0.layoutlines = []
+
+      const abc = `X:1
+T:Shifted Chord Proxy Test
+M:4/4
+L:1/4
+K:C
+%%score (V1)
+V:V1
+[V:V1] [EG] A |]`
+      const song = new AbcToSong().transform(new AbcParser().parse(abc), config)
+      const synchPoint = song.voices[0]?.entities.find((entity) => entity.type === 'SynchPoint')
+      if (!synchPoint || synchPoint.type !== 'SynchPoint') throw new Error('Expected a SynchPoint')
+      const proxyNote = synchPoint.notes[synchPoint.notes.length - 1]
+      const nextNote = song.voices[0]?.entities.find((entity) => entity.type === 'Note')
+      if (!proxyNote || !nextNote || nextNote.type !== 'Note') throw new Error('Expected chord and following note')
+
+      extract0.notebound = {
+        nconf: {
+          v_1: {
+            [`t_${proxyNote.time}`]: { n_0: { nshift: 0.5 } },
+          },
+        },
+      }
+      const sheet = new HarpnotesLayout(config).layout(song, 0, 'A4')
+      const proxyEllipse = sheet.children.find((child): child is Ellipse => (
+        child.type === 'Ellipse' && child.confKey?.endsWith('.n_0.***')
+      ))
+      const flowline = sheet.children.find((child): child is FlowLine => (
+        child.type === 'FlowLine' && child.style === 'solid' && child.znId === nextNote.znId
+      ))
+      if (!proxyEllipse || !flowline) throw new Error('Expected shifted proxy and following flowline')
+
+      expect(flowline.from[0]).toBeCloseTo(proxyEllipse.center[0])
+    })
+
     it('keeps the solid flowline after an annotated longer rest', () => {
       const config = clonedDefaultConfig()
       const extract0 = config.extract['0']
