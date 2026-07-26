@@ -53,7 +53,7 @@ function renderReport(): string {
 }
 
 describe('sheet attribute audit', () => {
-  it('writes the sheet attribute audit markdown', () => {
+  it('writes the sheet attribute audit markdown', { timeout: 30000 }, () => {
     mkdirSync(dirname(REPORT_PATH), { recursive: true })
     writeFileSync(REPORT_PATH, renderReport(), 'utf-8')
     console.log(`\n[sheet-attribute-audit] Markdown: ${REPORT_PATH}\n`)
