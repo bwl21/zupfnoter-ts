@@ -48,6 +48,8 @@ fixtures/
     │   ├── output.extract-0.svg
     │   ├── output.extract-1.svg
     │   ├── ...
+    │   ├── parity.ts             # optional: case-spezifische Paritätspolitik
+    │   ├── fixture-exceptions.json # optional: dokumentierte ABC-Ausnahmen
     │   └── _ts_output/        # TypeScript-Ausgabe (generiert)
     │       ├── song.json
     │       ├── sheet.extract-0.json
@@ -66,6 +68,23 @@ fixtures/
 - Keine separate `input.config.json`: Fixture-Tests verwenden genau dieselbe Config-Quelle wie die Pipeline.
 - Legacy-ABC-Direktiven wie `%%%%hnc`, `%%%%hna` oder `%%%%hn.legend` sind davon getrennt und müssen bei Bedarf explizit in die TS-Config-Extraktion überführt werden.
 
+### Fallbezogene und globale Paritätsregeln
+
+Ein Case kann eine optionale `parity.ts` exportieren. Der Fixture-Loader lädt sie
+automatisch aus demselben Verzeichnis wie `input.abc`. Sie darf den generischen
+Vergleich mit begründeten, fallbezogenen Regeln ergänzen, zum Beispiel über
+`ignoreSongEntityFields` oder eine `assertSong`-Funktion. Die normale Paritätsprüfung
+bleibt dabei aktiv.
+
+`fixture-exceptions.json` ist für dokumentierte Eingabe-Ausnahmen des
+Fixture-Loaders vorgesehen. Ausnahmen werden dort mit Quellzeilen und Begründung
+beschrieben, statt Case-Namen in den Testcode einzubauen.
+
+Ist die TS-Ausgabe fachlich falsch, wird die gemeinsame TS-Pipeline korrigiert.
+Gilt eine legitime Abweichung für viele Cases, wird eine gemeinsame Vergleichsregel
+im Testcode gepflegt. Nur eine Besonderheit eines einzelnen Cases oder eines eng
+begrenzten Eingabemusters gehört in dessen `parity.ts`.
+
 ---
 
 ## Test-Implementierung
@@ -73,7 +92,8 @@ fixtures/
 ### 1. Überblick über den Testablauf
 
 Die Vergleichstests werden generisch aus den ABC-Dateien in beiden Fixture-Wurzeln erzeugt.
-Sie enthalten keine fallweise handgeschriebenen Assertions. Stattdessen entscheidet
+Sie enthalten keine fallweise fest verdrahteten Assertions im Testframework. Optionale
+case-lokale Assertions werden aus `parity.ts` geladen; ansonsten entscheidet
 der Fixture-Bestand, welche Song-, Sheet- und SVG-Vergleiche ausgeführt werden.
 
 ```mermaid

@@ -223,7 +223,7 @@ function readChordNoteOffsets(symbol: Abc2svgSymbol, source: string): [number, n
   while (index < closeIndex) {
     const current = sourceSlice[index]
     if (current === undefined) break
-    if (current === '!' ) {
+    if (current === '!') {
       const decorationEnd = sourceSlice.indexOf('!', index + 1)
       if (decorationEnd < 0 || decorationEnd >= closeIndex) return null
       index = decorationEnd + 1

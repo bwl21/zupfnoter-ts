@@ -6,7 +6,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
 import { resolve, dirname, relative } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import type { Song, Sheet, ZupfnoterConfig } from '@zupfnoter/types'
 import { AbcParser } from '../AbcParser.js'
@@ -16,7 +16,7 @@ import { PdfEngine } from '../PdfEngine.js'
 import { SvgEngine } from '../SvgEngine.js'
 import { extractSongConfig, extractSongResources, mergeSongConfig } from '../extractSongConfig.js'
 import { LegacyFixtureAnnotationTextMetrics } from './legacyAnnotationTextMetrics.js'
-import type { SongFixture, SheetFixture, DrawableFixture, EntityFixture } from './semanticMatch.js'
+import type { SongFixture, SheetFixture, DrawableFixture, EntityFixture, MatchResult } from './semanticMatch.js'
 import { defaultTestConfig } from './defaultConfig.js'
 
 // Resolve the repo root: packages/core/src/testing/ → ../../../../
@@ -28,6 +28,18 @@ const FIXTURE_CASES_ROOTS = [
 ]
 
 export type FixtureStage = 'song' | 'sheet' | 'output_svg'
+
+export interface FixtureParityContext {
+  actual: SongFixture
+  expected: SongFixture
+  abcText: string
+  match: MatchResult
+}
+
+export interface FixtureParityPolicy {
+  ignoreSongEntityFields?: string[]
+  assertSong?: (context: FixtureParityContext) => void
+}
 
 export interface FixtureExceptions {
   compactSlurClose?: {
@@ -142,6 +154,32 @@ export function readFixtureExceptions(name: string): FixtureExceptions {
   }
 
   return { compactSlurClose: { sourceLines, reason } }
+}
+
+export async function loadFixtureParity(name: string): Promise<FixtureParityPolicy | undefined> {
+  const path = resolve(fixtureCaseDir(name), 'parity.ts')
+  if (!existsSync(path)) return undefined
+
+  const module = await import(pathToFileURL(path).href)
+  const policy = (module.default ?? module) as unknown
+  if (typeof policy !== 'object' || policy === null || Array.isArray(policy)) {
+    throw new Error(`Parity policy for "${name}" must export an object.`)
+  }
+
+  const value = policy as Record<string, unknown>
+  const ignored = value.ignoreSongEntityFields
+  if (ignored !== undefined && (!Array.isArray(ignored) || !ignored.every((field): field is string => typeof field === 'string'))) {
+    throw new Error(`Parity policy for "${name}" has invalid ignoreSongEntityFields.`)
+  }
+  const assertSong = value.assertSong
+  if (assertSong !== undefined && typeof assertSong !== 'function') {
+    throw new Error(`Parity policy for "${name}" has invalid assertSong.`)
+  }
+
+  return {
+    ignoreSongEntityFields: ignored,
+    assertSong: assertSong as FixtureParityPolicy['assertSong'],
+  }
 }
 
 function stripFixtureConfigBlock(abcText: string): string {
@@ -453,6 +491,13 @@ export function songToFixture(song: Song): SongFixture {
           entry['from'] = e.from.beat
           entry['to'] = e.to.beat
           entry['policy'] = e.policy as Record<string, unknown>
+        }
+        if (e.type === 'SynchPoint') {
+          entry['notes'] = e.notes.map((note) => ({
+            pitch: note.pitch,
+            sourceOrder: note.sourceOrder,
+            noteSourceOffsets: note.noteSourceOffsets,
+          }))
         }
         return entry
       }),

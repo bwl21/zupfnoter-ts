@@ -16,19 +16,23 @@
 import { describe, it, expect } from 'vitest'
 
 import { matchSong, formatMismatches, normalizeRawSongFixture } from '../../semanticMatch.js'
-import { loadFixture, scanFixtureCases, transformFixtureToSong } from '../../fixtureLoader.js'
+import { loadFixture, loadFixtureParity, scanFixtureCases, transformFixtureToSong } from '../../fixtureLoader.js'
 import { formatOpenImplementations, getOpenImplementations } from '../../openImplementations.js'
 
 const SONG_FIXTURES = scanFixtureCases().filter((testCase) => testCase.hasSongFixture)
 
 describe('Song fixtures', () => {
   for (const testCase of SONG_FIXTURES) {
-    it(`matches legacy output: ${testCase.id}`, () => {
+    it(`matches legacy output: ${testCase.id}`, async () => {
       const fixture = loadFixture(testCase)
       if (fixture.song === null) throw new Error(`Missing song fixture for ${testCase.id}`)
       const actual = transformFixtureToSong(fixture)
       const expected = normalizeRawSongFixture(fixture.song)
-      const result = matchSong(actual, expected)
+      const parity = await loadFixtureParity(testCase.id)
+      const result = matchSong(actual, expected, {
+        ignoredEntityFields: new Set(parity?.ignoreSongEntityFields ?? []),
+      })
+      parity?.assertSong?.({ actual, expected, abcText: fixture.input.abc, match: result })
       const openImplementations = getOpenImplementations('song')
       const knownGaps = formatOpenImplementations(openImplementations)
       const failureMessage = [formatMismatches(result), knownGaps].filter(Boolean).join('\n\n')

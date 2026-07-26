@@ -26,6 +26,8 @@ fixtures/
     │       ├── song.legacy-raw.json # Stufe-2-Referenz: Rohdump aus Legacy-CLI (@music_model.to_json)
     │       ├── sheet.extract-0.json # Stufe-3-Referenz für Extrakt 0
     │       ├── output.extract-0.svg # Stufe-4-Referenz für Extrakt 0
+    │       ├── parity.ts          # optionale fallbezogene Paritätsregeln/Assertions
+    │       ├── fixture-exceptions.json # optionale dokumentierte ABC-Ausnahmen
     │       ├── _ts_output/     # generierte TS-Ausgabe, nicht Referenz
     │       └── _parity/song/   # harte Song-Parity-Artefakte (normalisiert, Report, Debug)
     └── protected/
@@ -36,6 +38,31 @@ fixtures/
 `protected/` enthält lokale, urheberrechtlich geschützte Fälle und ist per `.gitignore`
 ausgeschlossen. Beide Bereiche werden lokal gleich behandelt. Ein Fallname darf nur in
 einem der beiden Bereiche vorkommen.
+
+### Fallbezogene Paritätsregeln
+
+Ein Fixture kann optional eine `parity.ts` enthalten. Sie wird automatisch anhand
+des Case-Verzeichnisses geladen und exportiert ein Objekt, zum Beispiel:
+
+```ts
+export default {
+  ignoreSongEntityFields: ['countNote'],
+  assertSong({ actual, expected, abcText, match }) {
+    // Nur die fachliche Besonderheit dieses Cases prüfen.
+  },
+}
+```
+
+Die normale Paritätsprüfung bleibt aktiv; `assertSong` ergänzt sie nur. Eine
+`fixture-exceptions.json` dokumentiert dagegen Eingabebesonderheiten mit
+betroffenen ABC-Quellzeilen und Begründung. Case-Namen oder Sonderfälle werden
+dafür nicht in den Testcode eingetragen.
+
+Bei wiederkehrenden Abweichungen gilt: Eine echte TS-Abweichung wird in der
+gemeinsamen TS-Pipeline korrigiert. Eine fachlich legitime Vergleichsregel, die
+viele Cases betrifft, wird gemeinsam im Testcode gepflegt. Nur eine wirklich
+case-spezifische Ausnahme gehört in `parity.ts`; so werden Regeln nicht in viele
+Fixtures dupliziert.
 
 Die Tests scannen `fixtures/cases/public/*/input.abc` und
 `fixtures/cases/protected/*/input.abc` automatisch. Ein neuer Testfall wird
@@ -55,11 +82,9 @@ Der Fixture-Loader prüft diese ABC-Eingaberegel und meldet kompakte
 Slur-Endtokens mit einer klaren Fehlermeldung, damit neue Fälle nicht erst
 über schwer verständliche `endPos`-Abweichungen auffallen.
 
-Bekannte, noch nicht portierte Legacy-Aspekte werden nicht testfallspezifisch im
-Fixture-Verzeichnis gepflegt, sondern zentral im Testcode als globale Capability-Liste.
-Vergleichstests bleiben aktiv; bei Fehlschlägen wird diese stage-spezifische Liste an die
-Fehlermeldung angehängt, damit sichtbar bleibt, welche Paritätslücken systemweit noch offen
-sind.
+Bekannte, noch nicht portierte Legacy-Aspekte werden nicht pauschal als lokale
+Ausnahmen eingetragen. Sie bleiben im Vergleich sichtbar, bis die gemeinsame
+Pipeline oder eine fachlich begründete gemeinsame Vergleichsregel korrigiert ist.
 
 ## Bestehende Testfälle
 

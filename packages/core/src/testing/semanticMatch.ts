@@ -123,6 +123,10 @@ export interface MatchResult {
   mismatches: Mismatch[]
 }
 
+export interface MatchSongOptions {
+  ignoredEntityFields?: ReadonlySet<string>
+}
+
 function fail(mismatches: Mismatch[], path: string, expected: unknown, actual: unknown): void {
   mismatches.push({ path, expected, actual })
 }
@@ -197,7 +201,11 @@ const SONG_HANDLED_FIELDS = new Set(['_comment', 'voices', 'beat_maps'])
  * against the actual output. Extra fields in the actual output are ignored.
  * The internal `_comment` fixture field is skipped.
  */
-export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResult {
+export function matchSong(
+  actual: SongFixture,
+  fixture: SongFixture,
+  options: MatchSongOptions = {},
+): MatchResult {
   const mismatches: Mismatch[] = []
 
   // Reject placeholder fixtures — empty voices[] means the fixture was never populated
@@ -263,7 +271,7 @@ export function matchSong(actual: SongFixture, fixture: SongFixture): MatchResul
       const fe = expectedVoice.entities[ei]
       if (fe === undefined) continue
 
-      const matchIndex = unmatchedActual.findIndex(({ entity: ae }) => compareSongEntity(ae, fe))
+      const matchIndex = unmatchedActual.findIndex(({ entity: ae }) => compareSongEntity(ae, fe, options))
 
       if (matchIndex === -1) {
         fail(mismatches, `${vPath}.entities[${ei}]`, fe, 'no matching entity')
@@ -283,7 +291,11 @@ function normalizeBeatMap(beatMap: Record<string, number>): Record<string, numbe
   )
 }
 
-function compareSongEntity(actual: EntityFixture, expected: EntityFixture): boolean {
+function compareSongEntity(
+  actual: EntityFixture,
+  expected: EntityFixture,
+  options: MatchSongOptions,
+): boolean {
   if (expected.type !== 'Note' && expected.type !== 'Pause' && expected.type !== 'SynchPoint') {
     return actual.type === expected.type
   }
@@ -312,6 +324,7 @@ function compareSongEntity(actual: EntityFixture, expected: EntityFixture): bool
   ])
   for (const [key, expectedValue] of Object.entries(expected)) {
     if (!comparableFields.has(key)) continue
+    if (options.ignoredEntityFields?.has(key)) continue
     const actualValue = actual[key as keyof EntityFixture]
     if (!compareFixtureValue(actualValue, expectedValue)) {
       return false
