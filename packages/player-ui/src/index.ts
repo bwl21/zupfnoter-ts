@@ -6,6 +6,7 @@ export interface PlayerUiCallbacks {
   onReset: () => void
   onSpeedChange: (speed: number) => void
   onMetronomeChange: (enabled: boolean) => void
+  onMetronomeSubdivisionChange: (subdivision: 1 | 2) => void
   onCountInStyleChange: (style: CountInStyle) => void
   onPlay: () => void
   onPause: () => void
@@ -135,11 +136,14 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       </label>
       <div class="metronome-row" aria-label="Metronom">
         <label class="metronome-control" for="metronome-toggle">
-          <input id="metronome-toggle" type="checkbox" ${options.hasMetronomeData ? '' : 'disabled'}>
-          <span class="metronome-switch" aria-hidden="true"></span>
-          <span class="sr-only">Metronom</span>
+          <span class="metronome-control__label">Metronom</span>
+          <span class="metronome-control__switch"><input id="metronome-toggle" type="checkbox" ${options.hasMetronomeData ? '' : 'disabled'}><span class="metronome-switch" aria-hidden="true"></span></span>
         </label>
         <output id="metronome-status" class="metronome-status" aria-live="polite">${options.hasMetronomeData ? '<span class="metronome-beat" aria-hidden="true"></span><span>—</span><span>—</span>' : 'Metronomdaten fehlen in diesem Link'}</output>
+        <label class="metronome-subdivision" for="metronome-subdivision">
+          <span class="metronome-subdivision__label">Doppel</span>
+          <span class="metronome-subdivision__switch"><input id="metronome-subdivision" type="checkbox" ${options.hasMetronomeData ? '' : 'disabled'}><span aria-hidden="true"></span></span>
+        </label>
       </div>
       <div class="count-in-control">
         <span class="count-in-label">Einzählen</span>
@@ -168,6 +172,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const speedRange = container.querySelector<HTMLInputElement>('#speed-range')
   const speedValue = container.querySelector<HTMLOutputElement>('#speed-value')
   const metronomeToggle = container.querySelector<HTMLInputElement>('#metronome-toggle')
+  const metronomeSubdivision = container.querySelector<HTMLInputElement>('#metronome-subdivision')
   const countInStyle = container.querySelector<HTMLButtonElement>('#count-in-style')
   const countInLabel = container.querySelector<HTMLSpanElement>('.count-in-select__label')
   const countInMenu = container.querySelector<HTMLDivElement>('#count-in-menu')
@@ -255,6 +260,9 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const onMetronome = (): void => callbacks.onMetronomeChange(metronomeToggle?.checked === true)
   metronomeToggle?.addEventListener('change', onMetronome)
   if (metronomeToggle !== null) listeners.push(() => metronomeToggle.removeEventListener('change', onMetronome))
+  const onMetronomeSubdivision = (): void => callbacks.onMetronomeSubdivisionChange(metronomeSubdivision?.checked === true ? 2 : 1)
+  metronomeSubdivision?.addEventListener('change', onMetronomeSubdivision)
+  if (metronomeSubdivision !== null) listeners.push(() => metronomeSubdivision.removeEventListener('change', onMetronomeSubdivision))
   const closeCountInMenu = (): void => {
     if (countInMenu !== null) countInMenu.hidden = true
     countInStyle?.setAttribute('aria-expanded', 'false')

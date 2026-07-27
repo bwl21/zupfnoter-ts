@@ -33,7 +33,32 @@ Wiedergabe ausgewählt werden. Die zweite Zahl ist die Durchlaufnummer.
 
 Die vollständige `PlaybackStep[]`-Timeline aus `apps/web/src/workbench/playback.ts` ist die einzige Quelle. Sie wird nicht erneut pro Auszug erzeugt.
 
-Für jeden konfigurierten `produce`-Auszug wird die vorhandene Timeline anhand der `originVoiceIds` projiziert. Die Auszugskonfiguration liefert die aktiven Stimmen. Ohne `produce` wird Auszug 0 verwendet.
+Für jeden konfigurierten `produce`-Auszug wird die vollständige Timeline aus dem
+Song-Modell erzeugt. Das Sheet-/SVG-Layout bestimmt anschließend, welche Stimmen
+für den Auszug aktiv sind. Diese Stimmen werden erst bei der Projektion in
+Audioereignisse gefiltert. Ohne `produce` wird Auszug 0 verwendet.
+
+Damit Workbench, CLI und der Zupfmanager-QR-Sheet-Generator zeitlich identisch
+bleiben, gilt folgende Pipeline:
+
+```mermaid
+flowchart TD
+    ABC[ABC-Quelle] --> SONG[Song-Modell]
+    SONG --> SHEET[Sheet-/SVG-Pipeline]
+    SHEET --> VOICES[Aktive Stimmen des Auszugs]
+    SONG --> TIMELINE[Vollständige Playback-Timeline]
+    TIMELINE --> FILTER[Stimmenfilter beim Export]
+    VOICES --> FILTER
+    FILTER --> EVENTS[Audioereignisse und Positionsmarker]
+    EVENTS --> LINK[Playback-Link und QR-Code]
+```
+
+Die Timeline darf nicht bereits beim Aufbau auf die aktiven Stimmen reduziert
+werden. Auch stumme Flow-Schritte und Zeitpunkte anderer Stimmen können die
+zeitliche Struktur des Stücks bestimmen. Die zentrale Funktion
+`packages/core/src/PlaybackExport.ts` baut deshalb zuerst die vollständige
+Timeline und filtert danach die `activeNotes`. Anwendungen dürfen für den
+Playback-Export keine eigene Variante dieser Berechnung einführen.
 
 Die bestehende Playback-Erzeugung bleibt für die Timeline verantwortlich. Der Export darf nur:
 

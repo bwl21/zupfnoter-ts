@@ -48,6 +48,7 @@
     "format": "pnpm -r run format",
     "sync:conf-help": "node tools/generate-config-docs.mjs",
     "generate:config-docs": "node tools/generate-config-docs.mjs",
+    "generate:project-player-qr": "pnpm --filter @zupfnoter/zupfmanager-qr-sheet-generator generate --",
     "test:config-docs": "node --test tools/config-help-documentation.test.mjs"
   },
   "devDependencies": {

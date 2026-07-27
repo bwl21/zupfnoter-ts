@@ -39,6 +39,16 @@ export function resolveBaseTempoFromSong(song: Song): number {
   return resolveTempoBpm(song)
 }
 
+/** Returns the whole-note fraction used by the ABC tempo declaration. */
+export function resolveTempoUnitFromSong(song: Song): number {
+  const tempo = song.metaData.tempo
+  if (tempo !== undefined && typeof tempo !== 'number' && tempo.duration.length > 0) {
+    const firstDuration = tempo.duration[0]
+    if (typeof firstDuration === 'number' && firstDuration > 0) return firstDuration
+  }
+  return 0.25
+}
+
 function buildPlaybackIdentity(voiceId: string | undefined, znId: string): string {
   return `${voiceId ?? '?'}::${znId}`
 }

@@ -30,6 +30,9 @@ function buildPositionMarkers(timeline: readonly PlaybackStep[]): PlaybackExport
       || previous.position.passIndex !== step.position.passIndex
     if (changed) {
       markers.push({ timeMs: step.playbackStartMs, position: step.position, meter: step.meter })
+    } else if (previous !== undefined && step.meter !== undefined
+      && previous.meter === undefined && step.playbackStartMs > previous.timeMs) {
+      markers.push({ timeMs: step.playbackStartMs, position: { ...step.position }, meter: step.meter })
     } else if (previous !== undefined && previous.meter === undefined && step.meter !== undefined) {
       previous.meter = step.meter
     }
@@ -69,7 +72,9 @@ export function buildPlaybackExportDataFromTimeline(
 
 /** Erzeugt die exportierbare Audio-/Positionsspur aus der gemeinsamen Timeline. */
 export function buildPlaybackExportData(song: Song, activeVoiceNumbers?: readonly number[]): PlaybackExportData {
-  const timeline = buildPlaybackTimeline(song, activeVoiceNumbers)
+  // Keep timing based on the complete flow. Filter voices only after the
+  // timeline has been expanded, otherwise silent flow steps become longer.
+  const timeline = buildPlaybackTimeline(song)
   const activeVoiceIds = activeVoiceNumbers === undefined
     ? undefined
     : new Set(activeVoiceNumbers.map((voiceNumber) => String(voiceNumber)))

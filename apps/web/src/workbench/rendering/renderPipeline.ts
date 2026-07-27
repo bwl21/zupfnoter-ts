@@ -18,7 +18,7 @@ import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/public/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 import { DEFAULT_WORKBENCH_CONFIG } from '../../stores/workbenchConfigDefaults'
-import { buildPlaybackTimeline, resolveBaseTempoFromSong, type PlaybackStep } from '../playback'
+import { buildPlaybackTimeline, resolveBaseTempoFromSong, resolveTempoUnitFromSong, type PlaybackStep } from '../playback'
 import { createPlaybackLinkFromTimeline, createPlayerQrJpeg } from '../playbackLink'
 import { isUserVisibleVoice, resolveActiveVoiceIdsFromSheet, resolveUserVisibleVoiceIds } from '../songVoiceIdentity'
 import {
@@ -50,6 +50,7 @@ export interface WorkbenchRenderResult {
   editorDiagnostics: EditorDiagnostic[]
   playbackTimeline: PlaybackStep[]
   baseTempoFromQ?: number
+  tempoUnitFromQ?: number
   summary: string
   renderError?: string
 }
@@ -100,7 +101,14 @@ export async function renderPdfExport(
     // Use the same web timeline as the Share/Playback-Link command. A second
     // export calculation can differ for ties, repeats and extract voice sets.
     const playbackTimeline = buildPlaybackTimeline(song, sheet.activeVoices)
-    const playbackLink = await createPlaybackLinkFromTimeline(playbackTimeline, options.playerUrl)
+    const playbackLink = await createPlaybackLinkFromTimeline(
+      playbackTimeline,
+      options.playerUrl,
+      undefined,
+      10,
+      resolveBaseTempoFromSong(song),
+      resolveTempoUnitFromSong(song),
+    )
     playerQrJpegUrl = await createPlayerQrJpeg(playbackLink.url)
     sheet = new HarpnotesLayout(config, {
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
@@ -257,6 +265,7 @@ export function renderWorkbenchPreviews(
   const toastDiagnostics = modelDiagnostics.filter((diagnostic) => !workbenchDiagnosticHasPosition(diagnostic))
   const playbackTimeline = song === null ? [] : buildPlaybackTimeline(song as Song)
   const baseTempoFromQ = song === null ? undefined : resolveBaseTempoFromSong(song as Song)
+  const tempoUnitFromQ = song === null ? undefined : resolveTempoUnitFromSong(song as Song)
 
   const renderError = scoreError ?? modelError
   const summary = song === null
@@ -278,6 +287,7 @@ export function renderWorkbenchPreviews(
     editorDiagnostics,
     playbackTimeline,
     baseTempoFromQ,
+    tempoUnitFromQ,
     summary,
     renderError,
   }

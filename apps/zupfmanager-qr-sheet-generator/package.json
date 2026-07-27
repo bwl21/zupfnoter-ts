@@ -1,0 +1,24 @@
+{
+  "name": "@zupfnoter/zupfmanager-qr-sheet-generator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Erzeugt Player-QR-ABC-Dateien aus Zupfmanager-Projekten.",
+  "bin": {
+    "zupfmanager-qr-sheet-generator": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "pnpm --filter @zupfnoter/core build && pnpm --filter @zupfnoter/playback build && tsc",
+    "type-check": "tsc --noEmit",
+    "generate": "pnpm run build && node dist/index.js"
+  },
+  "dependencies": {
+    "@zupfnoter/core": "workspace:*",
+    "@zupfnoter/playback": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.2",
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.3"
+  }
+}

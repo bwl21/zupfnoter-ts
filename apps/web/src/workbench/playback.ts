@@ -98,7 +98,7 @@ export function createPlaybackHighlightFromEvent(event: PlaybackPlayerEvent): Pl
   }
 }
 
-export { buildPlaybackTimeline, resolveBaseTempoFromSong } from '@zupfnoter/core'
+export { buildPlaybackTimeline, resolveBaseTempoFromSong, resolveTempoUnitFromSong } from '@zupfnoter/core'
 
 export function resolvePlaybackSteps(
   selection: SelectionState,

@@ -60,6 +60,8 @@ export async function createPlaybackLinkFromTimeline(
   playerUrl: string,
   activeVoiceIds?: ReadonlySet<string>,
   timeResolutionMs = 10,
+  tempoBpm?: number,
+  tempoUnit?: number,
 ) {
   return exportPlaybackLink(
     playbackEventsFromTimeline(timeline, activeVoiceIds),
@@ -67,6 +69,8 @@ export async function createPlaybackLinkFromTimeline(
       playerUrl,
       timeResolutionMs,
       positionMarkers: playbackPositionsFromTimeline(timeline),
+      tempoBpm,
+      tempoUnit,
     } satisfies PlaybackLinkOptions,
     browserPlaybackCodec,
   )
@@ -77,6 +81,8 @@ export async function createPlaybackLinkFromExportData(
   exportData: PlaybackExportData,
   playerUrl: string,
   timeResolutionMs = 10,
+  tempoBpm?: number,
+  tempoUnit?: number,
 ) {
   return exportPlaybackLink(
     exportData.events.map((event) => ({
@@ -90,6 +96,8 @@ export async function createPlaybackLinkFromExportData(
       playerUrl,
       timeResolutionMs,
       positionMarkers: exportData.positionMarkers,
+      tempoBpm,
+      tempoUnit,
     } satisfies PlaybackLinkOptions,
     browserPlaybackCodec,
   )

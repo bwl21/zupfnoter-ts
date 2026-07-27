@@ -15,13 +15,14 @@ import {
   nextPositionBoundaryMarker,
   parsePosition,
   positionAtTime,
+  pickupMetronomeStateAtTime,
   type PlaybackCountInStyle,
   resolveCountIn,
   resolveRange,
   tempoBpmAtTime,
 } from './playerLogic'
 
-const PLAYER_VERSION = '0.1.6'
+const PLAYER_VERSION = '0.1.7'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -194,7 +195,13 @@ function midiToSoundfontNote(midi: number): string {
   return `${names[[0, 2, 4, 5, 7, 9, 11].indexOf(pitch.note % 12)] ?? 'C'}${Math.floor(pitch.note / 12) - 1}`
 }
 
-function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPositionMarker[], identification?: string): void {
+function renderPlayer(
+  events: PlaybackEvent[],
+  positionMarkers: PlaybackPositionMarker[],
+  identification?: string,
+  tempoBpm?: number,
+  tempoUnit = 0.25,
+): void {
   destroyCurrentPlayer()
   const firstPosition = positionMarkers[0]?.position ?? eventPosition(events[0])
   const maximumMeasure = Math.max(1, ...positionMarkers.map((marker) => marker.position.measureNumber))
@@ -203,6 +210,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
   let selectedStartMs = positionMarkers[0]?.timeMs ?? events[0]?.startMs ?? 0
   let selectedRangePosition = firstPosition
   let countInStyle: PlaybackCountInStyle = 'classic'
+  let metronomeSubdivision: 1 | 2 = 1
 
   function readRange(fromPosition: PlaybackPosition = firstPosition): [number, number] | undefined {
     const from = `${fromPosition.measureNumber}.${fromPosition.passIndex}`
@@ -226,7 +234,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     maximumMeasure,
     maximumPass,
     hasMetronomeData: positionMarkers.some((marker) => marker.meter !== undefined),
-    baseTempoBpm: tempoBpmAtTime(positionMarkers, selectedStartMs),
+    baseTempoBpm: tempoBpmAtTime(positionMarkers, selectedStartMs, tempoBpm),
     callbacks: {
       onRangeChange: (position) => { readRange(position) },
       onReset: () => {
@@ -238,6 +246,10 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       },
       onSpeedChange: (speed) => { setSpeed(speed) },
       onMetronomeChange: (enabled) => { handleMetronomeChange(enabled) },
+      onMetronomeSubdivisionChange: (subdivision) => {
+        metronomeSubdivision = subdivision
+        if (metronomeEnabled) { handleMetronomeChange(false); handleMetronomeChange(true) }
+      },
       onCountInStyleChange: (style) => { countInStyle = style },
       onPlay: () => { if (readRange(selectedRangePosition) !== undefined) void playPlayback() },
       onPause: pausePlayback,
@@ -291,7 +303,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     const absoluteTimeMs = selectedStartMs + elapsedMs
     const currentPosition = positionAtTime(positionMarkers, absoluteTimeMs)
     ui.setPosition(currentPosition)
-    ui.setTempoBpm(tempoBpmAtTime(positionMarkers, absoluteTimeMs))
+    ui.setTempoBpm(tempoBpmAtTime(positionMarkers, absoluteTimeMs, tempoBpm))
     let markerIndex = -1
     for (const [index, marker] of positionMarkers.entries()) {
       if (marker.timeMs <= absoluteTimeMs && marker.meter !== undefined) markerIndex = index
@@ -302,9 +314,14 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       const selectedDurationMs = playbackDurationForSelection(selectedEvents, positionMarkers, selectedStartMs)
       const playbackEndMs = selectedStartMs + selectedDurationMs
       const measureDuration = (nextMarker?.timeMs ?? playbackEndMs) - marker.timeMs
-      const beatDuration = measureDuration / marker.meter.numerator
+      const beatDuration = tempoBpm !== undefined && tempoBpm > 0
+        ? 60000 / tempoBpm * tempoUnit * marker.meter.denominator
+        : measureDuration / marker.meter.numerator
       const beat = beatDuration > 0 ? Math.min(marker.meter.numerator, Math.floor((absoluteTimeMs - marker.timeMs) / beatDuration) + 1) : 1
       ui.setMetronome(marker.meter, beat, metronomeEnabled)
+    } else {
+      const pickup = pickupMetronomeStateAtTime(positionMarkers, absoluteTimeMs, tempoBpm, tempoUnit)
+      if (pickup !== undefined) ui.setMetronome(pickup.meter, pickup.beat, metronomeEnabled)
     }
     ui.setPlaybackTime(elapsedMs)
   }
@@ -361,6 +378,11 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     windowEndMs = durationMs,
   ): void {
     if (!metronomeEnabled) return
+    const pickup = pickupMetronomeStateAtTime(positionMarkers, selectedStartMs, tempoBpm, tempoUnit)
+    if (pickup !== undefined && selectedStartMs === (positionMarkers[0]?.timeMs ?? selectedStartMs)) {
+      playMetronomeClick(context, false, audioStartAt)
+      scheduledMetronomeTimes.add(selectedStartMs)
+    }
     for (let markerIndex = 0; markerIndex < positionMarkers.length; markerIndex += 1) {
       const marker = positionMarkers[markerIndex]
       if (marker === undefined || marker.meter === undefined) continue
@@ -369,7 +391,11 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
       const measureDuration = measureEnd - marker.timeMs
       if (measureDuration <= 0 || marker.timeMs + measureDuration < selectedStartMs) continue
       const beatCount = marker.meter.numerator
-      const beatDuration = measureDuration / beatCount
+      const beatDuration = tempoBpm !== undefined && tempoBpm > 0
+        ? 60000 / tempoBpm * tempoUnit * marker.meter.denominator
+        : measureDuration / beatCount
+      const clickDuration = beatDuration / metronomeSubdivision
+      const clickCount = beatCount * metronomeSubdivision
       const grouping = marker.meter.grouping ?? []
       const accentBeats = new Set<number>()
       let groupingOffset = 0
@@ -377,13 +403,13 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
         accentBeats.add(groupingOffset)
         groupingOffset += group
       }
-      for (let beat = 0; beat < beatCount; beat += 1) {
-        const clickTime = marker.timeMs + beat * beatDuration
+      for (let beat = 0; beat < clickCount; beat += 1) {
+        const clickTime = marker.timeMs + beat * clickDuration
         if (clickTime < selectedStartMs || clickTime > selectedStartMs + durationMs) continue
         const relativeClickTime = clickTime - selectedStartMs
         if (relativeClickTime < windowStartMs || relativeClickTime >= windowEndMs) continue
         if (scheduledMetronomeTimes.has(clickTime)) continue
-        const accent = beat === 0 || accentBeats.has(beat)
+        const accent = beat % metronomeSubdivision === 0
         const delaySec = (clickTime - selectedStartMs - playbackOffsetMsForSchedule) / 1000 / speedFactor
         if (delaySec < 0) continue
         playMetronomeClick(context, accent, audioStartAt + delaySec)
@@ -493,7 +519,7 @@ function renderPlayer(events: PlaybackEvent[], positionMarkers: PlaybackPosition
     if (audioContext !== playerContext) return
     setLoading(false)
     const countIn = metronomeEnabled && playbackOffsetMs === 0
-      ? resolveCountIn(positionMarkers, selectedStartMs, countInStyle)
+      ? resolveCountIn(positionMarkers, selectedStartMs, countInStyle, tempoBpm, tempoUnit)
       : undefined
     const audioStartAt = playerContext.currentTime
       + AUDIO_START_LEAD_MS / 1000
@@ -652,9 +678,18 @@ async function loadPlaybackUrl(rawUrl: string): Promise<void> {
     throw new Error('Kein Playback-Link gefunden.')
   }
   const identification = pageUrl.searchParams.get('id') ?? undefined
+  // Backward compatibility for QR codes generated before tempo metadata was
+  // moved into the versioned playback payload.
+  const legacyTempoValue = Number(pageUrl.searchParams.get('tempo'))
+  const legacyTempoBpm = Number.isFinite(legacyTempoValue) && legacyTempoValue > 0 ? legacyTempoValue : undefined
+  const legacyTempoUnitValue = Number(pageUrl.searchParams.get('tempoUnit'))
+  const legacyTempoUnit = Number.isFinite(legacyTempoUnitValue) && legacyTempoUnitValue > 0
+    ? legacyTempoUnitValue
+    : undefined
   const decoded = await decodePlaybackFragment(value, browserPlaybackCodec)
   history.replaceState(null, '', `${window.location.pathname}${pageUrl.search}${pageUrl.hash}`)
-  renderPlayer(decoded.events, decoded.positionMarkers, identification)
+  renderPlayer(decoded.events, decoded.positionMarkers, identification,
+    decoded.tempoBpm ?? legacyTempoBpm, decoded.tempoUnit ?? legacyTempoUnit)
 }
 
 async function main(): Promise<void> {

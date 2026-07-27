@@ -26,7 +26,7 @@ h1 { margin: .25rem 0 1.25rem; font-size: clamp(1.6rem, 5vw, 2.25rem); }
 .range-actions button { width: auto; min-height: 2.25rem; padding: .35rem .7rem; border-color: #cbd5e1; background: #f0f4f8; color: #486581; font-size: .8rem; }
 input, button { box-sizing: border-box; min-height: 2.75rem; width: 100%; padding: .5rem .65rem; border: 1px solid #9fb3c8; border-radius: .4rem; font: inherit; }
 button { background: #2f80ed; color: white; cursor: pointer; }
-.transport { margin-top: 1rem; text-align: center; }
+.transport { margin-top: 0; text-align: center; }
 .position-label { margin: 0; color: #627d98; font-size: .9rem; }
 .position-row { display: flex; align-items: center; justify-content: center; gap: 2rem; margin-bottom: .45rem; }
 .position { display: block; margin: .25rem 0; color: #102a43; font-size: clamp(3rem, 14vw, 5.5rem); font-weight: 700; line-height: 1; }
@@ -44,23 +44,36 @@ button { background: #2f80ed; color: white; cursor: pointer; }
 .speed-control { display: grid; grid-template-columns: minmax(8rem, 16rem) auto; align-items: center; justify-content: center; gap: .6rem; margin: 1rem auto 0; color: #627d98; font-size: .85rem; }
 .speed-control input { width: 100%; min-height: auto; padding: 0; accent-color: #2f80ed; }
 .speed-control output { min-width: 3rem; color: #243b53; font-variant-numeric: tabular-nums; }
-.metronome-row { display: flex; align-items: center; justify-content: center; gap: .7rem; min-height: 1.9rem; margin: .65rem auto 0; color: #627d98; font-size: .9rem; font-variant-numeric: tabular-nums; }
-.metronome-control { position: relative; display: inline-flex; flex: 0 0 auto; align-items: center; width: 2.2rem; height: 1.25rem; cursor: pointer; }
-.metronome-control input { position: absolute; width: 1px; height: 1px; opacity: 0; }
-.metronome-switch { display: block; width: 2.2rem; height: 1.25rem; border-radius: 1rem; background: #bcccdc; transition: background .15s ease; }
-.metronome-switch::after { display: block; width: .95rem; height: .95rem; margin: .15rem; border-radius: 50%; background: white; content: ''; transition: transform .15s ease; }
-.metronome-control input:checked + .metronome-switch { background: #2f80ed; }
-.metronome-control input:checked + .metronome-switch::after { transform: translateX(.95rem); }
-.metronome-control input:focus-visible + .metronome-switch { outline: 2px solid #2f80ed; outline-offset: 2px; }
-.metronome-control input:disabled + .metronome-switch { cursor: not-allowed; opacity: .55; }
-.metronome-status { display: inline-flex; align-items: center; gap: .5rem; min-height: 1.2rem; }
+.metronome-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; min-height: 2.8rem; margin: .9rem 0 .75rem; color: #627d98; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.metronome-control { display: inline-flex; flex-direction: column; align-items: center; gap: .35rem; cursor: pointer; }
+.metronome-control { justify-self: start; }
+.metronome-control__label { white-space: nowrap; }
+.metronome-control__switch { position: relative; display: block; width: 2.2rem; height: 1.25rem; }
+.metronome-control__switch input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.metronome-switch { position: relative; display: block; width: 2.2rem; height: 1.25rem; border-radius: 1rem; background: #bcccdc; transition: background .15s ease; }
+.metronome-switch::after { position: absolute; top: 50%; left: .15rem; display: block; width: .95rem; height: .95rem; border-radius: 50%; background: white; content: ''; transform: translateY(-50%); transition: transform .15s ease; }
+.metronome-control__switch input:checked + .metronome-switch { background: #2f80ed; }
+.metronome-control__switch input:checked + .metronome-switch::after { transform: translate(.95rem, -50%); }
+.metronome-control__switch input:focus-visible + .metronome-switch { outline: 2px solid #2f80ed; outline-offset: 2px; }
+.metronome-control__switch input:disabled + .metronome-switch { cursor: not-allowed; opacity: .55; }
+.metronome-status { display: inline-flex; align-items: center; justify-self: center; gap: .5rem; min-height: 1.2rem; }
+.metronome-subdivision { display: inline-flex; flex-direction: column; align-items: center; justify-self: end; gap: .35rem; color: #627d98; font-size: .8rem; cursor: pointer; pointer-events: auto; }
+.metronome-subdivision__label { white-space: nowrap; }
+.metronome-subdivision__switch { position: relative; display: block; width: 2.2rem; height: 1.25rem; }
+.metronome-subdivision__switch input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.metronome-subdivision__switch > span { display: block; width: 2.2rem; height: 1.25rem; border-radius: 1rem; background: #bcccdc; transition: background .15s ease; }
+.metronome-subdivision__switch > span::after { position: absolute; top: 50%; left: .15rem; display: block; width: .95rem; height: .95rem; border-radius: 50%; background: white; content: ''; transform: translateY(-50%); transition: transform .15s ease; }
+.metronome-subdivision__switch input:checked + span { background: #2f80ed; }
+.metronome-subdivision__switch input:checked + span::after { transform: translate(.95rem, -50%); }
+.metronome-subdivision__switch input:focus-visible + span { outline: 2px solid #2f80ed; outline-offset: 2px; }
+.metronome-subdivision__switch input:disabled + span { cursor: not-allowed; opacity: .55; }
 .metronome-beats { display: inline-flex; align-items: center; gap: .2rem; }
 .metronome-beat { display: inline-block; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: #cbd5e1; vertical-align: middle; }
 .metronome-count { min-width: 1.1rem; color: #243b53; font-size: 1.05rem; font-weight: 600; text-align: center; }
 .metronome-beat--active { background: #2f80ed; box-shadow: 0 0 .35rem #2f80ed99; }
 .metronome-beat--accent { background: #e67e22; }
-.count-in-control { position: relative; display: flex; align-items: center; justify-content: center; gap: .55rem; margin: .35rem auto 0; color: #627d98; font-size: .85rem; }
-.count-in-select { display: inline-flex; align-items: center; justify-content: space-between; gap: .6rem; min-width: 13rem; max-width: 17rem; padding: .3rem .55rem; border: 1px solid #bcccdc; border-radius: .35rem; color: #243b53; background: white; font: inherit; text-align: left; cursor: pointer; }
+.count-in-control { position: relative; display: flex; align-items: center; justify-content: center; gap: .55rem; margin: 0 auto .75rem; color: #627d98; font-size: .85rem; }
+.count-in-select { display: inline-flex; align-items: center; justify-content: space-between; gap: .6rem; min-width: 13rem; max-width: 17rem; min-height: 2.25rem; padding: .2rem .55rem; border: 1px solid #bcccdc; border-radius: .35rem; color: #243b53; background: white; font: inherit; text-align: left; cursor: pointer; }
 .count-in-select span { color: #627d98; font-size: 1rem; }
 .count-in-select:disabled { cursor: not-allowed; opacity: .55; }
 .count-in-menu { position: absolute; z-index: 5; top: calc(100% + .25rem); right: 0; display: grid; min-width: 13rem; padding: .25rem; border: 1px solid #bcccdc; border-radius: .4rem; background: white; box-shadow: 0 .35rem 1rem #243b5326; }

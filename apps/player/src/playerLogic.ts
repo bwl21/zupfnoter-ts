@@ -49,7 +49,7 @@ export function nextPositionBoundaryMarker(
   return markers.slice(markerIndex + 1).find((candidate) => (
     candidate.position.measureNumber !== marker.position.measureNumber
     || candidate.position.passIndex !== marker.position.passIndex
-    || candidate.meter === undefined
+    || candidate.meter !== marker.meter
   ))
 }
 
@@ -58,8 +58,52 @@ export function resolveCountIn(
   markers: readonly PlaybackPositionMarker[],
   startMs: number,
   style: PlaybackCountInStyle = 'classic',
+  tempoBpm?: number,
+  tempoUnit = 0.25,
 ): PlaybackCountIn | undefined {
   if (style === 'none') return undefined
+  const openingMarker = markers[0]
+  const openingMeteredMarker = markers.find((marker, index) => index > 0
+    && marker.meter !== undefined
+    && openingMarker !== undefined
+    && marker.position.measureNumber === openingMarker.position.measureNumber
+    && marker.position.passIndex === openingMarker.position.passIndex)
+  if (openingMarker !== undefined && openingMarker.meter === undefined
+    && openingMeteredMarker?.meter !== undefined && openingMarker.timeMs === startMs) {
+    const meter = openingMeteredMarker.meter
+    const beatDurationMs = tempoBpm !== undefined && tempoBpm > 0
+      ? 60000 / tempoBpm * tempoUnit * meter.denominator
+      : (() => {
+        const next = markers.find((candidate) => candidate.timeMs > openingMeteredMarker.timeMs
+          && (candidate.position.measureNumber !== openingMeteredMarker.position.measureNumber
+            || candidate.position.passIndex !== openingMeteredMarker.position.passIndex))
+        return next === undefined ? 0 : (next.timeMs - openingMeteredMarker.timeMs) / meter.numerator
+      })()
+    if (beatDurationMs <= 0) return undefined
+    const pickupBeatCount = Math.max(1, Math.min(meter.numerator,
+      Math.round((openingMeteredMarker.timeMs - openingMarker.timeMs) / beatDurationMs)))
+    const countInBeatCount = Math.max(0, meter.numerator - pickupBeatCount)
+    const leadBeatCount = style === 'band' ? Math.min(2, meter.numerator) : 0
+    const beats = style === 'band'
+      ? [
+        ...Array.from({ length: leadBeatCount }, (_value, index) => index),
+        ...Array.from({ length: countInBeatCount }, (_value, index) => index),
+      ]
+      : Array.from({ length: countInBeatCount }, (_value, index) => index)
+    const beatOffsetsMs = beats.map((_beat, index) => (
+      leadBeatCount > 0 && index < leadBeatCount
+        ? index * beatDurationMs * 2
+        : (leadBeatCount * 2 + index - leadBeatCount) * beatDurationMs
+    ))
+    return {
+      durationMs: (beatOffsetsMs[beatOffsetsMs.length - 1] ?? -beatDurationMs) + beatDurationMs,
+      beatDurationMs,
+      beatOffsetsMs,
+      meter,
+      beats,
+      leadBeatCount,
+    }
+  }
   const markerIndex = markers.findIndex((marker) => marker.timeMs === startMs && marker.meter !== undefined)
   if (markerIndex < 0) return undefined
   const marker = markers[markerIndex]
@@ -69,7 +113,9 @@ export function resolveCountIn(
   const durationMs = nextMarker.timeMs - marker.timeMs
   if (durationMs <= 0 || marker.meter.numerator <= 0) return undefined
   const beatCount = marker.meter.numerator
-  let beatDurationMs = durationMs / beatCount
+  let beatDurationMs = tempoBpm !== undefined && tempoBpm > 0
+    ? 60000 / tempoBpm * tempoUnit * marker.meter.denominator
+    : durationMs / beatCount
   let hasPickup = false
   let pickupBeatCount = beatCount
   if (style === 'pickup' && markerIndex === 0) {
@@ -125,7 +171,11 @@ export function countInBeatIndexAtTime(countIn: PlaybackCountIn, elapsedMs: numb
 export function tempoBpmAtTime(
   markers: readonly PlaybackPositionMarker[],
   timeMs: number,
+  explicitTempoBpm?: number,
 ): number | undefined {
+  if (explicitTempoBpm !== undefined && Number.isFinite(explicitTempoBpm) && explicitTempoBpm > 0) {
+    return explicitTempoBpm
+  }
   let markerIndex = -1
   for (const [index, marker] of markers.entries()) {
     if (marker.timeMs <= timeMs && marker.meter !== undefined) markerIndex = index
@@ -140,6 +190,41 @@ export function tempoBpmAtTime(
   const quarterDurationMs = beatDurationMs * marker.meter.denominator / 4
   if (quarterDurationMs <= 0) return undefined
   return 60000 / quarterDurationMs
+}
+
+export interface PickupMetronomeState {
+  meter: PlaybackMeter
+  beat: number
+  beatDurationMs: number
+}
+
+/** Resolves the metrical phase of an unmetered opening pickup. */
+export function pickupMetronomeStateAtTime(
+  markers: readonly PlaybackPositionMarker[],
+  timeMs: number,
+  tempoBpm?: number,
+  tempoUnit = 0.25,
+): PickupMetronomeState | undefined {
+  const opening = markers[0]
+  const firstMeterIndex = markers.findIndex((marker, index) => index > 0
+    && marker.meter !== undefined
+    && opening !== undefined
+    && marker.position.measureNumber === opening.position.measureNumber
+    && marker.position.passIndex === opening.position.passIndex)
+  const metered = firstMeterIndex >= 0 ? markers[firstMeterIndex] : undefined
+  if (opening === undefined || opening.meter !== undefined || metered?.meter === undefined
+    || timeMs < opening.timeMs || timeMs >= metered.timeMs) return undefined
+  const beatDurationMs = tempoBpm !== undefined && tempoBpm > 0
+    ? 60000 / tempoBpm * tempoUnit * metered.meter.denominator
+    : metered.timeMs - opening.timeMs
+  if (beatDurationMs <= 0) return undefined
+  const pickupBeatCount = Math.max(1, Math.min(metered.meter.numerator,
+    Math.round((metered.timeMs - opening.timeMs) / beatDurationMs)))
+  return {
+    meter: metered.meter,
+    beat: Math.max(1, metered.meter.numerator - pickupBeatCount + 1),
+    beatDurationMs,
+  }
 }
 
 export function resolveRange(

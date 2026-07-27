@@ -3,7 +3,11 @@ import jpeg from 'jpeg-js'
 
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
-import { buildPlaybackExportData } from '../../PlaybackExport.js'
+import {
+  buildPlaybackExportData,
+  buildPlaybackExportDataFromTimeline,
+} from '../../PlaybackExport.js'
+import { buildPlaybackTimeline } from '../../PlaybackTimeline.js'
 import { createPlayerQrJpeg } from '../../playerQr.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 
@@ -26,6 +30,27 @@ E F
     expect(result.events).toHaveLength(2)
     expect(result.events.map((event) => event.pitch)).toEqual(expect.arrayContaining([60, 62]))
     expect(result.positionMarkers[0]?.position).toEqual({ measureNumber: 1, passIndex: 1 })
+  })
+
+  it('filtert Stimmen erst nach dem Aufbau der vollständigen Timeline', () => {
+    const abc = `X:1
+T:Timeline-Filter
+M:4/4
+L:1/4
+K:C
+V:1
+C z C |]
+V:2
+z2 C2 |]
+`
+    const song = new AbcToSong().transform(new AbcParser().parse(abc), defaultTestConfig)
+    const exportData = buildPlaybackExportData(song, [1])
+    const workbenchEquivalent = buildPlaybackExportDataFromTimeline(
+      buildPlaybackTimeline(song),
+      new Set(['1']),
+    )
+
+    expect(exportData).toEqual(workbenchEquivalent)
   })
 
   it('erzeugt ein decodierbares JPG für den Player-Link', () => {

@@ -295,6 +295,7 @@ const renderSummary = ref('not rendered')
 const playbackTimeline = ref<PlaybackStep[]>([])
 const playerQrJpegUrl = ref<string | undefined>()
 const baseTempoFromQ = ref<number | undefined>(undefined)
+const tempoUnitFromQ = ref<number | undefined>(undefined)
 const activeVoiceIds = ref<string[]>([])
 const allVoiceIds = ref<string[]>([])
 const commandBusy = ref(false)
@@ -666,6 +667,7 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   editorDiagnostics.value = result.editorDiagnostics
   playbackTimeline.value = result.playbackTimeline
   baseTempoFromQ.value = result.baseTempoFromQ
+  tempoUnitFromQ.value = result.tempoUnitFromQ
   syncDiagnostics(result.toastDiagnostics)
   for (const issue of result.issues) {
     const column = issue.column ?? 1
@@ -710,6 +712,9 @@ async function ensurePlayerQrForRenderedExtract(result: WorkbenchRenderResult): 
       result.playbackTimeline,
       playerUrl.toString(),
       result.activeVoiceIds.length > 0 ? new Set(result.activeVoiceIds) : undefined,
+      10,
+      result.baseTempoFromQ,
+      result.tempoUnitFromQ,
     )
     const qrJpegUrl = await createPlayerQrJpeg(playbackLink.url)
     if (documentText.value !== sourceDocument || currentExtract.value !== sourceExtract) return
@@ -1373,6 +1378,9 @@ async function exportPlaybackLinkCommand(): Promise<void> {
     playbackTimeline.value,
     playerUrl.toString(),
     activeVoiceIds.value.length > 0 ? new Set(activeVoiceIds.value) : undefined,
+    10,
+    baseTempoFromQ.value,
+    tempoUnitFromQ.value,
   )
   const qrCodeDataUrl = await QRCode.toDataURL(result.url, {
     errorCorrectionLevel: 'L',
