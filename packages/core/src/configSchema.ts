@@ -1747,7 +1747,11 @@ function mergeSchemaNodes(
 }
 
 function normalizeLegacyPattern(pattern: string): string {
-  if (pattern === 'd*' || pattern === 'd+') {
+  if (pattern === 'd*') {
+    return '^.+$'
+  }
+
+  if (pattern === 'd+') {
     return '^\\d+$'
   }
 
@@ -1918,7 +1922,7 @@ function findPatternSchema(
   patternProperties: Record<string, JsonSchemaNode>,
 ): JsonSchemaNode | undefined {
   for (const [pattern, schema] of Object.entries(patternProperties)) {
-    const regex = new RegExp(pattern)
+    const regex = new RegExp(normalizeLegacyPattern(pattern))
     if (regex.test(key)) {
       return schema
     }

@@ -162,6 +162,68 @@ describe('SvgEngine', () => {
       expect(svg).toContain('data-drag-hitbox="true"')
       expect(svg).toContain('stroke-width="10.3"')
     })
+
+    it('renders editable Bézier handles for interactive flowconf paths', () => {
+      const interactive = new SvgEngine({ width: 400, height: 282, interactive: true })
+      const svg = interactive.draw(makeSheet([
+        pathEl({
+          pathData: 'M10 20c0 10 0 10 0 20',
+          confKey: 'extract.0.notebound.flowline.v_1.42',
+          draginfo: {
+            handler: 'bezier',
+            bezier: {
+              from: [10, 20],
+              to: [10, 40],
+              cp1: [10, 30],
+              cp2: [10, 30],
+            },
+          },
+        }),
+      ]))
+
+      expect(svg).toContain('data-drag-handler="bezier"')
+      expect(svg).toContain('data-drag-bezier=')
+      expect(svg).toContain('data-bezier-control="cp1"')
+      expect(svg).toContain('data-bezier-control="cp2"')
+    })
+
+    it('renders tuplet control lines even in non-interactive output', () => {
+      const legacyCompatible = new SvgEngine({ width: 400, height: 282 })
+      const svg = legacyCompatible.draw(makeSheet([
+        pathEl({
+          pathData: 'M10 20c3 4 7 4 10 0',
+          confKey: 'extract.0.notebound.tuplet.v_1.42',
+          draginfo: {
+            handler: 'tuplet',
+            p1: [10, 20],
+            p2: [20, 20],
+            cp1: [13, 24],
+            cp2: [17, 24],
+          },
+        }),
+      ]))
+
+      expect(svg.match(/data-bezier-control=/g)?.length ?? 0).toBe(2)
+      expect(svg).not.toContain('data-bezier-polygon="true"')
+
+      const interactive = new SvgEngine({ width: 400, height: 282, interactive: true })
+      const interactiveSvg = interactive.draw(makeSheet([
+        pathEl({
+          pathData: 'M10 20c3 4 7 4 10 0',
+          confKey: 'extract.0.notebound.tuplet.v_1.42.*',
+          draginfo: {
+            handler: 'tuplet',
+            p1: [10, 20],
+            p2: [20, 20],
+            cp1: [13, 24],
+            cp2: [17, 24],
+            conf_key: 'extract.0.notebound.tuplet.v_1.42',
+          },
+        }),
+      ]))
+      expect(interactiveSvg).toContain('data-drag-handler="tuplet"')
+      expect(interactiveSvg).toContain('data-drag-bezier=')
+    })
   })
 
   describe('Ellipse', () => {

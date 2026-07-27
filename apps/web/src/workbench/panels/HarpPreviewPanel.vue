@@ -2,7 +2,13 @@
 import { computed, nextTick, onBeforeUnmount, ref, toRef, watch } from 'vue'
 import tippy, { type Instance as TippyInstance } from 'tippy.js'
 
-import { makeJumplinePathData, type JumplinePathInfo } from '@zupfnoter/core'
+import {
+  bezierControlToLegacyValue,
+  makeBezierPathData,
+  makeJumplinePathData,
+  type BezierPathInfo,
+  type JumplinePathInfo,
+} from '@zupfnoter/core'
 import type { CommandArgumentValue } from '@zupfnoter/core'
 import type { PlaybackHighlight, SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
@@ -51,7 +57,7 @@ const emit = defineEmits<{
   (event: 'scroll', payload: { scrollLeft: number; scrollTop: number }): void
   (event: 'drag-end', payload: HarpPreviewDragEnd): void
   (event: 'context-menu', payload: {
-    action: 'set' | 'edit'
+    action: 'set' | 'edit' | 'reset-shape' | 'delete-shape'
     path: string
     value?: CommandArgumentValue
   }): void
@@ -84,8 +90,14 @@ interface ActiveDrag {
   value?: number | [number, number]
   grid?: number
   jumpline?: JumplinePathInfo
+  bezier?: BezierPathInfo
+  bezierControl?: 'cp1' | 'cp2'
   pathElement?: SVGPathElement
+  controlLineElement?: SVGPathElement
+  polygonElement?: SVGPathElement
   originalPathData?: string
+  originalControlPathData?: string
+  originalPolygonPathData?: string
   element: Element
   startClient: { x: number; y: number }
 }
@@ -198,6 +210,27 @@ function contextMenuEntries(element: Element): SvgContextMenuEntry[] {
   if (drawable === null) return []
   const confKey = drawable.getAttribute('data-conf-key')?.trim() ?? ''
   const confBase = confKey.replace(/\.[^.]+$/, '')
+  const dragConfKey = drawable.getAttribute('data-drag-conf-key')?.trim() ?? ''
+  const bezier = parseBezierInfo(drawable.getAttribute('data-drag-bezier'))
+  const resetShapeValue = bezier === undefined ? undefined : {
+    cp1: bezierControlToLegacyValue(
+      bezier.from,
+      bezier.to,
+      [
+        bezier.from[0] + (bezier.to[0] - bezier.from[0]) / 3,
+        bezier.from[1] + (bezier.to[1] - bezier.from[1]) / 3,
+      ],
+    ),
+    cp2: bezierControlToLegacyValue(
+      bezier.from,
+      bezier.to,
+      [
+        bezier.from[0] + (bezier.to[0] - bezier.from[0]) * 2 / 3,
+        bezier.from[1] + (bezier.to[1] - bezier.from[1]) * 2 / 3,
+      ],
+      'to',
+    ),
+  }
   return buildSvgContextMenuEntries(
     confKey,
     parseSvgContextMenuEntries(drawable.getAttribute('data-more-conf-keys')),
@@ -205,6 +238,9 @@ function contextMenuEntries(element: Element): SvgContextMenuEntry[] {
       visibilityPath: ['Annotation', 'Image'].includes(drawable.getAttribute('data-type') ?? '') && confBase.length > 0
         ? `${confBase}.show`
         : undefined,
+      resetShapePath: drawable.getAttribute('data-drag-handler') === 'bezier' ? dragConfKey : undefined,
+      resetShapeValue,
+      deleteShapePath: drawable.getAttribute('data-drag-handler') === 'bezier' ? dragConfKey : undefined,
     },
   )
 }
@@ -230,6 +266,10 @@ function executeContextMenuEntry(entry: SvgContextMenuEntry): void {
   if (entry.disabled) return
   if (entry.action === 'set' && entry.value !== undefined && entry.path !== undefined) {
     emit('context-menu', { action: 'set', path: entry.path, value: entry.value })
+  } else if (entry.action === 'reset-shape' && entry.path !== undefined && entry.value !== undefined) {
+    emit('context-menu', { action: 'reset-shape', path: entry.path, value: entry.value })
+  } else if (entry.action === 'delete-shape' && entry.path !== undefined) {
+    emit('context-menu', { action: 'delete-shape', path: entry.path })
   } else if (entry.action === 'edit' && entry.path !== undefined) {
     emit('context-menu', { action: 'edit', path: entry.path })
   }
@@ -244,6 +284,8 @@ function resolveContextMenuIcon(icon: string | undefined): ZnIconName | undefine
     'fa fa-arrow-up': 'shiftUp',
     'fa fa-arrows-v': 'verticalAdjust',
     'fa fa-gear': 'settings',
+    'fa fa-refresh': 'undo',
+    'fa fa-trash': 'delete',
   }
   return icon === undefined ? undefined : icons[icon]
 }
@@ -326,15 +368,26 @@ function handlePointerDown(event: PointerEvent): void {
   if (event.button === 0 && event.target instanceof Element) {
     const directDraggable = event.target.closest<HTMLElement>('.zupfnoter-element[data-drag-enabled="true"][data-conf-key]')
     const draggable = directDraggable ?? findJumplineAtEvent(event)
-    const confKey = draggable?.getAttribute('data-conf-key')
+    const confKey = draggable?.getAttribute('data-drag-conf-key') ?? draggable?.getAttribute('data-conf-key')
     const handler = draggable?.getAttribute('data-drag-handler')
     const dragGridText = draggable?.getAttribute('data-drag-grid')
     const dragGrid = typeof dragGridText === 'string' ? Number(dragGridText) : Number.NaN
     const jumplineText = draggable?.getAttribute('data-drag-jumpline')
     const jumpline = parseJumplineInfo(jumplineText ?? null)
-    const pathElement = jumpline === undefined
-      ? undefined
-      : draggable?.querySelector<SVGPathElement>('path:not([data-drag-hitbox])')
+    const bezier = parseBezierInfo(draggable?.getAttribute('data-drag-bezier') ?? null)
+    const bezierControl = event.target instanceof Element
+      ? event.target.closest<HTMLElement>('[data-bezier-control]')?.dataset.bezierControl
+      : undefined
+    if ((handler === 'bezier' || handler === 'tuplet') && bezierControl !== 'cp1' && bezierControl !== 'cp2') return
+    const pathElement = (jumpline !== undefined || bezier !== undefined)
+      ? draggable?.querySelector<SVGPathElement>('path:not([data-drag-hitbox]):not([data-bezier-polygon]):not([data-bezier-control])')
+      : undefined
+    const controlLineElement = bezierControl === 'cp1' || bezierControl === 'cp2'
+      ? draggable?.querySelector<SVGPathElement>(`path[data-bezier-control="${bezierControl}"]`) ?? undefined
+      : undefined
+    const polygonElement = bezier !== undefined
+      ? draggable?.querySelector<SVGPathElement>('path[data-bezier-polygon="true"]') ?? undefined
+      : undefined
     const dragValueText = draggable?.getAttribute('data-drag-value')
     let dragValue: number | [number, number] | undefined
     if (typeof dragValueText === 'string') {
@@ -366,9 +419,22 @@ function handlePointerDown(event: PointerEvent): void {
             originalPathData: pathElement.getAttribute('d') ?? undefined,
           }
           : {}),
+        ...(bezier !== undefined && pathElement instanceof SVGPathElement && (bezierControl === 'cp1' || bezierControl === 'cp2')
+          ? {
+            bezier,
+            bezierControl,
+            pathElement,
+            controlLineElement,
+            polygonElement,
+            originalPathData: pathElement.getAttribute('d') ?? undefined,
+            originalControlPathData: controlLineElement?.getAttribute('d') ?? undefined,
+            originalPolygonPathData: polygonElement?.getAttribute('d') ?? undefined,
+          }
+          : {}),
         element: draggable,
         startClient: { x: event.clientX, y: event.clientY },
       }
+      if (handler === 'bezier' || handler === 'tuplet') draggable.setAttribute('data-drag-active', 'true')
       frameRef.value?.setPointerCapture(event.pointerId)
       event.preventDefault()
       event.stopPropagation()
@@ -428,6 +494,7 @@ function handlePointerUp(event: PointerEvent): void {
       event.clientX - activeDrag.startClient.x,
       event.clientY - activeDrag.startClient.y,
     )
+    activeDrag.element.removeAttribute('data-drag-active')
     dragState.value = null
     if (frameRef.value?.hasPointerCapture(event.pointerId) === true) {
       frameRef.value.releasePointerCapture(event.pointerId)
@@ -438,10 +505,21 @@ function handlePointerUp(event: PointerEvent): void {
       const [deltaX, deltaY] = snapDragDelta(activeDrag, delta)
       updateLiveDrag(activeDrag, deltaX, deltaY)
       emit('drag-end', {
-        confKey: activeDrag.confKey,
+        confKey: activeDrag.bezier !== undefined && activeDrag.bezierControl !== undefined
+          ? `${activeDrag.confKey}.${activeDrag.bezierControl}`
+          : activeDrag.confKey,
         handler: activeDrag.handler,
         delta: [deltaX, deltaY],
-        ...(activeDrag.value !== undefined
+        ...(activeDrag.bezier !== undefined && activeDrag.bezierControl !== undefined
+          ? {
+            value: bezierControlToLegacyValue(
+              activeDrag.bezier.from,
+              activeDrag.bezier.to,
+              activeDrag.bezier[activeDrag.bezierControl].map((value, index) => value + (index === 0 ? deltaX : deltaY)) as [number, number],
+              activeDrag.bezierControl === 'cp1' ? 'from' : 'to',
+            ),
+          }
+          : activeDrag.value !== undefined
           ? {
             value: typeof activeDrag.value === 'number'
               && activeDrag.handler === 'jumpline' && activeDrag.grid !== undefined
@@ -495,6 +573,23 @@ function updateLiveDrag(activeDrag: ActiveDrag, deltaX: number, deltaY: number):
     }).outlinePathData)
     return
   }
+  if (activeDrag.bezier !== undefined && activeDrag.bezierControl !== undefined && activeDrag.pathElement !== undefined) {
+    const control = activeDrag.bezier[activeDrag.bezierControl]
+    const updated: BezierPathInfo = {
+      ...activeDrag.bezier,
+      [activeDrag.bezierControl]: [control[0] + deltaX, control[1] + deltaY],
+    }
+    activeDrag.pathElement.setAttribute('d', makeBezierPathData(updated))
+    if (activeDrag.controlLineElement !== undefined) {
+      const endpoint = activeDrag.bezierControl === 'cp1' ? updated.from : updated.to
+      const control = updated[activeDrag.bezierControl]
+      activeDrag.controlLineElement.setAttribute('d', `M${endpoint[0]} ${endpoint[1]}L${control[0]} ${control[1]}`)
+    }
+    if (activeDrag.polygonElement !== undefined) {
+      activeDrag.polygonElement.setAttribute('d', `M${updated.from[0]} ${updated.from[1]}L${updated.cp1[0]} ${updated.cp1[1]}L${updated.cp2[0]} ${updated.cp2[1]}L${updated.to[0]} ${updated.to[1]}Z`)
+    }
+    return
+  }
   activeDrag.element.setAttribute('transform', `translate(${deltaX} ${deltaY})`)
 }
 
@@ -507,6 +602,31 @@ function parseJumplineInfo(value: string | null): JumplinePathInfo | undefined {
   } catch {
     return undefined
   }
+}
+
+function parseBezierInfo(value: string | null): BezierPathInfo | undefined {
+  if (value === null) return undefined
+  try {
+    const parsed: unknown = JSON.parse(value)
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return undefined
+    const info = parsed as Record<string, unknown>
+    if (!isPoint(info.from) || !isPoint(info.to) || !isPoint(info.cp1) || !isPoint(info.cp2)) return undefined
+    return {
+      from: info.from,
+      to: info.to,
+      cp1: info.cp1,
+      cp2: info.cp2,
+    }
+  } catch {
+    return undefined
+  }
+}
+
+function isPoint(value: unknown): value is [number, number] {
+  return Array.isArray(value)
+    && value.length === 2
+    && typeof value[0] === 'number'
+    && typeof value[1] === 'number'
 }
 
 function snapJumplineConfigValue(verticalOffset: number, deltaX: number, grid: number): number {
@@ -540,7 +660,14 @@ function handlePointerCancel(event: PointerEvent): void {
     if (dragState.value.pathElement !== undefined && dragState.value.originalPathData !== undefined) {
       dragState.value.pathElement.setAttribute('d', dragState.value.originalPathData)
     }
+    if (dragState.value.controlLineElement !== undefined && dragState.value.originalControlPathData !== undefined) {
+      dragState.value.controlLineElement.setAttribute('d', dragState.value.originalControlPathData)
+    }
+    if (dragState.value.polygonElement !== undefined && dragState.value.originalPolygonPathData !== undefined) {
+      dragState.value.polygonElement.setAttribute('d', dragState.value.originalPolygonPathData)
+    }
     dragState.value.element.removeAttribute('transform')
+    dragState.value.element.removeAttribute('data-drag-active')
     dragState.value = null
     if (frameRef.value?.hasPointerCapture(event.pointerId) === true) {
       frameRef.value.releasePointerCapture(event.pointerId)
@@ -563,6 +690,10 @@ function closeMagnifier(): void {
   magnifierAnchor.value = null
   magnifierSourcePoint.value = null
   magnifierViewport.value = null
+}
+
+function handleMagnifierDragEnd(payload: HarpPreviewDragEnd): void {
+  emit('drag-end', payload)
 }
 
 function onMagnifierViewportResize(size: { width: number, height: number }): void {
@@ -714,6 +845,7 @@ onBeforeUnmount(() => {
         :zoom-level="magnifierZoom"
         :svg="svg"
         @viewport-resize="onMagnifierViewportResize"
+        @drag-end="handleMagnifierDragEnd"
         @close="closeMagnifier"
       />
     </div>

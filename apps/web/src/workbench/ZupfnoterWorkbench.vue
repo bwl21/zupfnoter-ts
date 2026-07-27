@@ -61,6 +61,7 @@ import {
 import WorkbenchLayout from './WorkbenchLayout.vue'
 import { usePlaybackStore } from '../stores/playback'
 import { useSelectionStore } from '../stores/selection'
+import { useWorkbenchConfigStore } from '../stores/workbenchConfig'
 import { usePlaybackDriver } from './usePlaybackDriver'
 import { useAudioPlayer, type PlaybackInstrument } from './useAudioPlayer'
 import { resolvePlaybackInstrument } from './sound'
@@ -232,12 +233,13 @@ const storageProviderDescriptors: StorageProviderDescriptor[] = [
 const playbackInstrument = ref<PlaybackInstrument>('harp')
 const logLevel = ref('warning')
 const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
+const workbenchConfig = useWorkbenchConfigStore()
 const runtimeSettings = ref<Record<string, string>>({
   autoscroll: 'true',
-  flowconf: 'false',
   follow: 'true',
   validate: 'true',
 })
+const flowconfEnabled = computed(() => workbenchConfig.config.flowconf)
 const storageStateKey = 'zupfnoter.storage.context'
 const storageDialogResumeKey = 'zupfnoter.storage.connections-dialog.resume'
 const abcTextKey = 'zupfnoter.abc.current'
@@ -760,6 +762,7 @@ function renderNow(): void {
         extractNr: currentExtract.value,
         playerQrJpegUrl: playerQrJpegUrl.value,
         resources: documentResources.value,
+        flowconf: flowconfEnabled.value,
       })
       return
     }
@@ -767,6 +770,7 @@ function renderNow(): void {
     const result = renderWorkbenchPreviews(documentText.value, currentExtract.value, {
       playerQrJpegUrl: playerQrJpegUrl.value,
       resources: documentResources.value,
+      flowconf: flowconfEnabled.value,
     })
     applyRenderResult(result)
     logger.info('worker: render complete in 0.000 sec')
@@ -1618,9 +1622,11 @@ const legacyCommandController = registerLegacyCommands(commandStack, {
   },
   setSetting: (key, value) => {
     runtimeSettings.value = { ...runtimeSettings.value, [key]: value }
+    workbenchConfig.setRuntimeSetting(key, value)
+    if (key === 'flowconf') renderNow()
   },
-  getSetting: (key) => runtimeSettings.value[key],
-  listSettings: () => ({ ...runtimeSettings.value }),
+  getSetting: (key) => workbenchConfig.getRuntimeSetting(key) ?? runtimeSettings.value[key],
+  listSettings: () => ({ ...runtimeSettings.value, ...workbenchConfig.runtimeSettings }),
   downloadAbc,
   listLocalStore,
   saveLocalStore: saveToLocalStore,
@@ -1798,12 +1804,35 @@ function handleHarpPreviewDragEnd(payload: HarpPreviewDragEnd): void {
 }
 
 function handleHarpPreviewContextMenu(payload: {
-  action: 'set' | 'edit'
+  action: 'set' | 'edit' | 'reset-shape' | 'delete-shape'
   path: string
   value?: CommandArgumentValue
 }): void {
   if (payload.action === 'edit') {
     void executeToolbarCommand(`editconf ${payload.path}`)
+    return
+  }
+  if (payload.action === 'delete-shape') {
+    void executeToolbarCommand(`delconfig ${payload.path}`)
+    return
+  }
+  if (payload.action === 'reset-shape') {
+    if (!isRecordValue(payload.value)) return
+    const cp1 = payload.value.cp1
+    const cp2 = payload.value.cp2
+    if (!isPointValue(cp1) || !isPointValue(cp2)) return
+    void executeParsedToolbarCommand(
+      `cconf ${payload.path}.cp1 ${JSON.stringify(cp1)}`,
+      'cconf',
+      [`${payload.path}.cp1`, cp1],
+    ).then((succeeded) => {
+      if (!succeeded) return
+      void executeParsedToolbarCommand(
+        `cconf ${payload.path}.cp2 ${JSON.stringify(cp2)}`,
+        'cconf',
+        [`${payload.path}.cp2`, cp2],
+      )
+    })
     return
   }
   if (payload.value === undefined) return
@@ -1816,6 +1845,17 @@ function handleHarpPreviewContextMenu(payload: {
       void executeToolbarCommand(`editconf ${payload.path.replace(/\.[^.]+$/, '')}`)
     }
   })
+}
+
+function isRecordValue(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function isPointValue(value: unknown): value is [number, number] {
+  return Array.isArray(value)
+    && value.length === 2
+    && typeof value[0] === 'number'
+    && typeof value[1] === 'number'
 }
 
 function handleHarpPreviewConfigHover(payload: { confKey?: string }): void {

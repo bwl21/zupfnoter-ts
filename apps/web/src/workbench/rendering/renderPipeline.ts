@@ -17,6 +17,7 @@ import type { SheetObjectIndex, SongDiagnostic, SongResources } from '@zupfnoter
 import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
 import referenceSheetAbc from '../../../../../fixtures/cases/public/3015_reference_sheet/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
+import { DEFAULT_WORKBENCH_CONFIG } from '../../stores/workbenchConfigDefaults'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, type PlaybackStep } from '../playback'
 import { createPlaybackLinkFromTimeline, createPlayerQrJpeg } from '../playbackLink'
 import { isUserVisibleVoice, resolveActiveVoiceIdsFromSheet, resolveUserVisibleVoiceIds } from '../songVoiceIdentity'
@@ -60,6 +61,8 @@ export interface WorkbenchRenderOptions {
   playerQrJpegUrl?: string
   /** Basis-URL des Players; wird beim PDF-Export pro Auszug aufgelöst. */
   playerUrl?: string
+  /** Aktiviert editierbare Bézier-Handles an nicht konfigurierten Flusslinien. */
+  flowconf?: boolean
 }
 
 function resolveResourceUrl(resources: SongResources | undefined, imageName: string): string | undefined {
@@ -90,6 +93,7 @@ export async function renderPdfExport(
     imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME
       ? options.playerQrJpegUrl
       : resolveResourceUrl(resources, imageName),
+    flowconf: false,
   }).layout(song, extractNr, pageFormat)
   let playerQrJpegUrl = options.playerQrJpegUrl
   if (playerQrJpegUrl === undefined && options.playerUrl !== undefined && abcText.includes(PLAYER_QR_IMAGE_NAME)) {
@@ -103,6 +107,7 @@ export async function renderPdfExport(
       imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME
         ? playerQrJpegUrl
         : resolveResourceUrl(resources, imageName),
+      flowconf: false,
     }).layout(song, extractNr, pageFormat)
   }
   const engine = new PdfEngine()
@@ -221,6 +226,7 @@ export function renderWorkbenchPreviews(
       imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME
         ? options.playerQrJpegUrl
         : resolveResourceUrl(resources, imageName),
+      flowconf: options.flowconf ?? DEFAULT_WORKBENCH_CONFIG.flowconf,
     }
     const sheet = new HarpnotesLayout(config, layoutOptions).layout(transformedSong, extractNr, 'A3')
     activeVoiceIds = resolveActiveVoiceIdsFromSheet(sheet)

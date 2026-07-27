@@ -46,6 +46,13 @@ function esc(s: string): string {
     .replace(/"/g, '&quot;')
 }
 
+function isPoint(value: unknown): value is [number, number] {
+  return Array.isArray(value)
+    && value.length === 2
+    && typeof value[0] === 'number'
+    && typeof value[1] === 'number'
+}
+
 function attrs(obj: Record<string, string | number | undefined>): string {
   return Object.entries(obj)
     .filter(([, v]) => v !== undefined)
@@ -118,6 +125,13 @@ function svgPath(
     'stroke-linecap': linecap ?? 'round',
     ...extra,
   })} />`
+}
+
+interface BezierDragInfo {
+  from: [number, number]
+  to: [number, number]
+  cp1: [number, number]
+  cp2: [number, number]
 }
 
 function svgText(
@@ -235,8 +249,10 @@ interface ElementMeta {
   moreConfKeys?: MoreConfKey[]
   dragHandler?: string
   dragValue?: number | [number, number]
+  dragConfKey?: string
   dragGrid?: number
   dragJumpline?: unknown
+  dragBezier?: BezierDragInfo
   /** ABC-Quelltext-Offset (startChar) für Rückverweis auf Editor-Position */
   startChar?: number
   /** ABC-Quelltext-Offset (endChar) für Rückverweis auf Editor-Position */
@@ -381,8 +397,10 @@ export class SvgEngine {
       moreConfKeys,
       dragHandler: this._dragHandler(draginfo),
       dragValue,
+      dragConfKey: this._dragConfKey(draginfo),
       dragGrid,
       dragJumpline,
+      dragBezier: this._bezierDragInfo(draginfo),
       startChar: sourceOffsets?.[0],
       endChar: sourceOffsets?.[1],
     }
@@ -416,6 +434,27 @@ export class SvgEngine {
     return info.handler === 'jumpline' ? info.jumpline : undefined
   }
 
+  private _bezierDragInfo(draginfo: unknown): BezierDragInfo | undefined {
+    if (typeof draginfo !== 'object' || draginfo === null || Array.isArray(draginfo)) return undefined
+    const info = draginfo as Record<string, unknown>
+    const bezier = info.handler === 'bezier'
+      ? info.bezier
+      : info.handler === 'tuplet'
+        ? info
+        : undefined
+    if (typeof bezier !== 'object' || bezier === null || Array.isArray(bezier)) return undefined
+    const pointsSource = bezier as Record<string, unknown>
+    const from = info.handler === 'tuplet' ? pointsSource.p1 : pointsSource.from
+    const to = info.handler === 'tuplet' ? pointsSource.p2 : pointsSource.to
+    if (!isPoint(from) || !isPoint(to) || !isPoint(pointsSource.cp1) || !isPoint(pointsSource.cp2)) return undefined
+    return {
+      from,
+      to,
+      cp1: pointsSource.cp1 as [number, number],
+      cp2: pointsSource.cp2 as [number, number],
+    }
+  }
+
   private _dragValue(draginfo: unknown): number | [number, number] | undefined {
     if (typeof draginfo !== 'object' || draginfo === null || Array.isArray(draginfo)) return undefined
     const value = (draginfo as Record<string, unknown>).value
@@ -426,6 +465,12 @@ export class SvgEngine {
       if (typeof first === 'number' && typeof second === 'number') return [first, second]
     }
     return undefined
+  }
+
+  private _dragConfKey(draginfo: unknown): string | undefined {
+    if (typeof draginfo !== 'object' || draginfo === null || Array.isArray(draginfo)) return undefined
+    const confKey = (draginfo as Record<string, unknown>).conf_key
+    return typeof confKey === 'string' && confKey.trim().length > 0 ? confKey.trim() : undefined
   }
 
   private _wrapElement(meta: ElementMeta, content: string, hitbox?: string): string {
@@ -446,9 +491,11 @@ export class SvgEngine {
     if (this._interactive && meta.dragHandler !== undefined && meta.confKey !== undefined) {
       groupAttrs['data-drag-enabled'] = 'true'
       groupAttrs['data-drag-handler'] = meta.dragHandler
+      if (meta.dragConfKey !== undefined) groupAttrs['data-drag-conf-key'] = meta.dragConfKey
       if (meta.dragValue !== undefined) groupAttrs['data-drag-value'] = JSON.stringify(meta.dragValue)
       if (meta.dragGrid !== undefined) groupAttrs['data-drag-grid'] = meta.dragGrid
       if (meta.dragJumpline !== undefined) groupAttrs['data-drag-jumpline'] = JSON.stringify(meta.dragJumpline)
+      if (meta.dragBezier !== undefined) groupAttrs['data-drag-bezier'] = JSON.stringify(meta.dragBezier)
     }
     const inner = [content, hitbox].filter((part): part is string => part !== undefined && part.length > 0).join('\n')
     return svgGroup(inner, groupAttrs)
@@ -684,6 +731,29 @@ export class SvgEngine {
       this._jumplineDragGrid(el.draginfo),
       this._jumplineDragInfo(el.draginfo),
     )
+    const bezier = this._bezierDragInfo(el.draginfo)
+    const isTuplet = meta.dragHandler === 'tuplet'
+    const handles = bezier !== undefined && (this._interactive || isTuplet)
+      ? [
+        ...(isTuplet ? [] : [svgPath(`M${bezier.from[0]} ${bezier.from[1]}L${bezier.cp1[0]} ${bezier.cp1[1]}L${bezier.cp2[0]} ${bezier.cp2[1]}L${bezier.to[0]} ${bezier.to[1]}Z`, '#aaa', 0.7, '#aaa', {
+          class: 'zupfnoter-bezier-drag-polygon',
+          'data-bezier-polygon': 'true',
+          'pointer-events': 'none',
+        })]),
+        svgPath(`M${bezier.from[0]} ${bezier.from[1]}L${bezier.cp1[0]} ${bezier.cp1[1]}`, isTuplet ? '#aaa' : '#d44', 1, 'none', {
+          class: 'zupfnoter-bezier-controls',
+          'data-bezier-handles': 'cp1',
+          'data-bezier-control': 'cp1',
+          'pointer-events': 'none',
+        }),
+        svgPath(`M${bezier.to[0]} ${bezier.to[1]}L${bezier.cp2[0]} ${bezier.cp2[1]}`, isTuplet ? '#aaa' : '#d44', 1, 'none', {
+          class: 'zupfnoter-bezier-controls',
+          'data-bezier-handles': 'cp2',
+          'data-bezier-control': 'cp2',
+          'pointer-events': 'none',
+        }),
+      ].join('')
+      : ''
     const dragHitbox = this._interactive && meta.dragHandler === 'jumpline'
       // The SVG layout uses millimetres as coordinate units: five millimetres
       // on either side of the visible line make the drag target forgiving.
@@ -705,7 +775,7 @@ export class SvgEngine {
         'stroke-linecap': 'round',
         'stroke-width': el.lineWidth,
       }
-      const legacyContent = `<g id="${legacyId}" fill="${groupFill}" stroke="black" ><path ${attrs(pathAttrs)} /></g>`
+      const legacyContent = `<g id="${legacyId}" fill="${groupFill}" stroke="black" ><path ${attrs(pathAttrs)} />${handles}</g>`
       return this._interactive ? this._wrapElement(meta, legacyContent, dragHitbox) : legacyContent
     }
 
@@ -714,7 +784,7 @@ export class SvgEngine {
       class: 'zupfnoter-shape zupfnoter-shape--path',
       'data-filled': el.fill ? 'true' : 'false',
     })
-    return this._wrapElement(meta, content, dragHitbox)
+    return this._wrapElement(meta, `${content}${handles}`, dragHitbox)
   }
 
   // ---------------------------------------------------------------------------

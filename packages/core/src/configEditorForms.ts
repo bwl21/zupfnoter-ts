@@ -507,6 +507,17 @@ export function getConfigEditorFormSections(formId: string): ConfigEditorFormSec
 }
 
 /**
+ * Liefert das Legacy-Formset für einen dynamischen Konfigurationspfad.
+ * Die regulären Formsets werden vor den statischen Formularen geprüft.
+ */
+export function getConfigEditorDynamicFields(path: string): readonly string[] | undefined {
+  if (/^extract\.(?:current|\d+)\.notebound\.flowline\.v_\d+\.\d+$/.test(path)) return ['cp1', 'cp2', 'show']
+  if (/^extract\.(?:current|\d+)\.notebound\.minc\.\d+$/.test(path)) return ['minc_f']
+  if (/^extract\.(?:current|\d+)\.notebound\.nconf\.v_\d+\.t_\d+\.n_\d+$/.test(path)) return ['nshift']
+  return undefined
+}
+
+/**
  * Liefert die fachliche Beschriftung einer Schnelleinstellung.
  *
  * Die Preset-IDs bleiben aus Kompatibilitätsgründen technisch; für die UI

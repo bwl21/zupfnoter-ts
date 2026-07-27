@@ -18,3 +18,37 @@ body {
   min-height: 0;
   overflow: hidden;
 }
+
+/* Legacy flowconf behavior: controls appear only while the flowline is hovered. */
+.zupfnoter-element[data-drag-handler='bezier'] .zupfnoter-bezier-controls {
+  opacity: 0.08;
+  pointer-events: stroke;
+  transition: opacity 80ms ease-in;
+}
+
+.zupfnoter-element[data-drag-handler='tuplet'] .zupfnoter-bezier-controls {
+  opacity: 0.55;
+  pointer-events: stroke;
+  transition: opacity 80ms ease-in;
+}
+
+.zupfnoter-element[data-drag-handler='bezier'] .zupfnoter-bezier-drag-polygon {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.zupfnoter-element[data-drag-handler='bezier']:hover .zupfnoter-bezier-controls,
+.zupfnoter-element[data-drag-handler='bezier'][data-drag-active='true'] .zupfnoter-bezier-controls {
+  opacity: 0.9;
+  pointer-events: stroke;
+}
+
+.zupfnoter-element[data-drag-handler='bezier'][data-drag-active='true'] .zupfnoter-bezier-drag-polygon {
+  opacity: 0.22;
+}
+
+.zupfnoter-element[data-drag-handler='tuplet']:hover .zupfnoter-bezier-controls,
+.zupfnoter-element[data-drag-handler='tuplet'][data-drag-active='true'] .zupfnoter-bezier-controls {
+  opacity: 0.9;
+  pointer-events: stroke;
+}

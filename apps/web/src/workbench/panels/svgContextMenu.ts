@@ -1,7 +1,7 @@
 import type { CommandArgumentValue } from '@zupfnoter/core'
 import type { MoreConfKey } from '@zupfnoter/types'
 
-export type SvgContextMenuAction = 'edit' | 'set' | 'separator'
+export type SvgContextMenuAction = 'edit' | 'set' | 'reset-shape' | 'delete-shape' | 'separator'
 
 export interface SvgContextMenuEntry {
   text: string
@@ -17,7 +17,12 @@ export interface SvgContextMenuEntry {
 export function buildSvgContextMenuEntries(
   confKey: string | null,
   moreConfKeys: MoreConfKey[],
-  options: { visibilityPath?: string } = {},
+  options: {
+    visibilityPath?: string
+    resetShapePath?: string
+    resetShapeValue?: CommandArgumentValue
+    deleteShapePath?: string
+  } = {},
 ): SvgContextMenuEntry[] {
   const entries: SvgContextMenuEntry[] = []
   const normalizedConfKey = confKey?.trim() ?? ''
@@ -40,6 +45,29 @@ export function buildSvgContextMenuEntries(
       action: 'edit',
       path: stripLeaf(visibilityPath),
       helpPath: visibilityPath,
+      disabled: false,
+    })
+  }
+
+  const resetShapePath = options.resetShapePath?.trim() ?? ''
+  if (resetShapePath.length > 0 && options.resetShapeValue !== undefined) {
+    entries.push({
+      text: 'Formung zurücksetzen',
+      icon: 'fa fa-refresh',
+      action: 'reset-shape',
+      path: resetShapePath,
+      value: options.resetShapeValue,
+      disabled: false,
+    })
+  }
+
+  const deleteShapePath = options.deleteShapePath?.trim() ?? ''
+  if (deleteShapePath.length > 0) {
+    entries.push({
+      text: 'Formung löschen',
+      icon: 'fa fa-trash',
+      action: 'delete-shape',
+      path: deleteShapePath,
       disabled: false,
     })
   }

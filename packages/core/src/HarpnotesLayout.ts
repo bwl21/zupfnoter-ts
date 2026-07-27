@@ -501,12 +501,14 @@ function makeLegacySlurPath(p1: [number, number], p2: [number, number]): { path:
 
 export class HarpnotesLayout {
   private readonly _imageResolver: HarpnotesLayoutOptions['imageResolver']
+  private readonly _flowconf: boolean
   private _config: ZupfnoterConfig
   private _annotationTextMetrics: AnnotationTextMetrics
   private _createdAt: Date
 
   constructor(config: ZupfnoterConfig, options: HarpnotesLayoutOptions = {}) {
     this._imageResolver = options.imageResolver
+    this._flowconf = options.flowconf === true
     this._config = config
     this._annotationTextMetrics = options.annotationTextMetrics ?? createDefaultAnnotationTextMetrics()
     this._createdAt = options.createdAt ?? new Date()
@@ -1416,18 +1418,35 @@ export class HarpnotesLayout {
         const override = conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.znId}`)
           ?? conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.time}`)
 
-        if (override !== undefined) {
+        if (override !== undefined || this._flowconf) {
           const options = mergeAnnotatedBezierOptions(DEFAULT_FLOWLINE_OPTIONS, override)
           if (options.show) {
+            const flowlineConfKey = `extract.${extractNr}.notebound.flowline.v_${voiceNr}.${curr.znId}`
+            const pathData = makeAnnotatedBezierPath(from, to, options)
+            const draginfo = this._flowconf
+              ? {
+                handler: 'bezier',
+                conf_key: flowlineConfKey,
+                bezier: {
+                  from,
+                  to,
+                  cp1: addPoint(from, pathData.cp1),
+                  cp2: addPoint(from, pathData.cp2),
+                },
+              }
+              : undefined
             result.push({
               type: 'Path',
-              ...makeAnnotatedBezierPath(from, to, options),
+              ...pathData,
               fill: false,
               color: layout.color.color_default,
               lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
-              confKey: `extract.${extractNr}.notebound.flowline.v_${voiceNr}.${curr.znId}.*`,
+              // The drawable key is the Legacy context-menu parent. The
+              // draginfo keeps the concrete key for cp1/cp2 updates.
+              confKey: `${flowlineConfKey}.*`,
               visible,
               more_conf_keys: [],
+              ...(draginfo === undefined ? {} : { draginfo }),
               znId: curr.znId,
             })
           }

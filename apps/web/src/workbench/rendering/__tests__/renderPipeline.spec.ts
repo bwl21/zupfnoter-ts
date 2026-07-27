@@ -42,6 +42,29 @@ V:4
 `
 
 describe('renderWorkbenchPreviews', () => {
+  it('enables editable flowline handles by default', () => {
+    const result = renderWorkbenchPreviews(`X:1
+T:Flowconf default
+M:4/4
+L:1/4
+K:C
+C D E F |]`)
+
+    expect(result.harpSvg).toContain('data-bezier-control="cp1"')
+    expect(result.harpSvg).toContain('data-bezier-control="cp2"')
+  })
+
+  it('keeps flowline handles disabled for performance-sensitive renders', () => {
+    const result = renderWorkbenchPreviews(`X:1
+T:Flowconf disabled
+M:4/4
+L:1/4
+K:C
+C D E F |]`, 0, { flowconf: false })
+
+    expect(result.harpSvg).not.toContain('data-bezier-control="cp1"')
+  })
+
   it('uses the effective produce list and filename additions for PDF exports', () => {
     const variants = resolvePdfExportVariants(`X:1
 T:Ausgabe

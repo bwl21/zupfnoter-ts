@@ -48,6 +48,14 @@ function pipelineWithLayout(abcText: string, layout: HarpnotesLayout) {
   return { song, sheet }
 }
 
+function pipelineWithFlowconf(abcText: string, flowconf: boolean) {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const song = new AbcToSong().transform(model, defaultTestConfig)
+  const sheet = new HarpnotesLayout(defaultTestConfig, { flowconf }).layout(song, 0, 'A4')
+  return { song, sheet }
+}
+
 // ---------------------------------------------------------------------------
 // Fixtures
 // ---------------------------------------------------------------------------
@@ -258,6 +266,25 @@ describe('HarpnotesLayout', () => {
       const { sheet } = pipeline(ABC_TWO_VOICES)
       const flowlines = sheet.children.filter((c): c is FlowLine => c.type === 'FlowLine')
       expect(flowlines.length).toBeGreaterThan(0)
+    })
+
+    it('keeps ordinary flowlines fast when flowconf is disabled', () => {
+      const { sheet } = pipelineWithFlowconf(ABC_TWO_VOICES, false)
+      expect(sheet.children.some((child) => child.type === 'FlowLine')).toBe(true)
+      expect(sheet.children.some((child) => child.type === 'Path' && child.draginfo !== undefined)).toBe(false)
+    })
+
+    it('creates editable Bézier flowlines when flowconf is enabled', () => {
+      const { sheet } = pipelineWithFlowconf(ABC_TWO_VOICES, true)
+      const flowline = sheet.children.find((child) => (
+        child.type === 'Path' && child.draginfo !== undefined && child.confKey?.includes('.flowline.')
+      ))
+      expect(flowline).toBeDefined()
+      expect(flowline?.draginfo).toMatchObject({ handler: 'bezier' })
+      expect(flowline?.confKey).toMatch(/\.\*$/)
+      expect(flowline?.draginfo).toMatchObject({
+        conf_key: expect.stringMatching(/\.flowline\.v_1\.[^.]+$/),
+      })
     })
 
     it('activeVoices contains voice numbers', () => {

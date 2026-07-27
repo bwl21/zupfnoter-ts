@@ -23,6 +23,8 @@ export interface HarpnotesLayoutOptions {
   createdAt?: Date
   /** Löst einen fachlichen Bildnamen in eine exportierbare Daten-URL auf. */
   imageResolver?: (imageName: string) => string | undefined
+  /** Erzeugt nicht konfigurierte Flusslinien als editierbare Bézier-Pfade. */
+  flowconf?: boolean
 }
 
 type JsPdfOrientation = 'p' | 'l'

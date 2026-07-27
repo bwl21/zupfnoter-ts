@@ -2,6 +2,12 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, toRef, watch } from 'vue'
 
 import { ZnButton, ZnZoomControl } from '@zupfnoter/design-system'
+import {
+  bezierControlToLegacyValue,
+  makeBezierPathData,
+  type BezierPathInfo,
+} from '@zupfnoter/core'
+import type { HarpPreviewDragEnd } from '../multiWindow/harpMirrorChannel'
 import { useZoomableSvgPreview } from './useZoomableSvgPreview'
 
 interface Point {
@@ -21,17 +27,31 @@ const props = defineProps<{
 const emit = defineEmits<{
   close: []
   'viewport-resize': [size: { width: number, height: number }]
+  'drag-end': [payload: HarpPreviewDragEnd]
 }>()
+
+interface ActiveHandleDrag {
+  pointerId: number
+  confKey: string
+  handler: 'bezier' | 'tuplet'
+  control: 'cp1' | 'cp2'
+  bezier: BezierPathInfo
+  element: HTMLElement
+  pathElement: SVGPathElement
+  controlLineElement?: SVGPathElement
+  startClient: Point
+}
 
 const zoom = ref(props.zoomLevel ?? 25600)
 const needsCenter = ref(false)
 const panelKey = ref(0)
 const lastSourcePoint = ref<Point | null>(null)
-const { canvasRef, canvasStyle, centerOnSourcePoint, frameRef, getViewportCenterPoint, onPointerCancel, onPointerDown, onPointerMove, onPointerUp, onWheel, setZoomAtPoint } = useZoomableSvgPreview(
+const { canvasRef, canvasStyle, centerOnSourcePoint, displayScale, frameRef, getViewportCenterPoint, onPointerCancel: onPreviewPointerCancel, onPointerDown: onPreviewPointerDown, onPointerMove: onPreviewPointerMove, onPointerUp: onPreviewPointerUp, onWheel, setZoomAtPoint } = useZoomableSvgPreview(
   toRef(props, 'svg'),
   zoom,
   { fitToWidth: false, maxZoom: 25600 },
 )
+const activeHandleDrag = ref<ActiveHandleDrag | null>(null)
 
 function emitViewportSize(): void {
   const frame = frameRef.value
@@ -105,6 +125,146 @@ function onKeydown(event: KeyboardEvent): void {
   if (event.key === 'Escape') close()
 }
 
+function parseBezierInfo(value: string | null): BezierPathInfo | undefined {
+  if (value === null || value.trim() === '') return undefined
+  try {
+    const parsed: unknown = JSON.parse(value)
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return undefined
+    const info = parsed as Record<string, unknown>
+    if (!isPoint(info.from) || !isPoint(info.to) || !isPoint(info.cp1) || !isPoint(info.cp2)) return undefined
+    return { from: info.from, to: info.to, cp1: info.cp1, cp2: info.cp2 }
+  } catch {
+    return undefined
+  }
+}
+
+function isPoint(value: unknown): value is [number, number] {
+  return Array.isArray(value)
+    && value.length === 2
+    && typeof value[0] === 'number'
+    && typeof value[1] === 'number'
+}
+
+function screenDeltaToSvgDelta(element: Element, screenX: number, screenY: number): [number, number] | null {
+  const svg = element.closest('svg')
+  if (!(svg instanceof SVGSVGElement)) return null
+  const matrix = svg.getScreenCTM()
+  if (matrix === null) {
+    if (displayScale.value <= 0) return null
+    return [screenX / displayScale.value, screenY / displayScale.value]
+  }
+  const determinant = matrix.a * matrix.d - matrix.b * matrix.c
+  if (determinant === 0) return null
+  return [
+    (matrix.d * screenX - matrix.c * screenY) / determinant,
+    (-matrix.b * screenX + matrix.a * screenY) / determinant,
+  ]
+}
+
+function tryStartHandleDrag(event: PointerEvent): boolean {
+  if (event.button !== 0 || !(event.target instanceof Element)) return false
+  const control = event.target.closest<SVGPathElement>('[data-bezier-control]')?.dataset.bezierControl
+  if (control !== 'cp1' && control !== 'cp2') return false
+  const drawable = event.target.closest<HTMLElement>('.zupfnoter-element[data-drag-enabled="true"][data-drag-handler]')
+  if (drawable === null) return false
+  const handler = drawable.dataset.dragHandler
+  if (handler !== 'bezier' && handler !== 'tuplet') return false
+  const bezier = parseBezierInfo(drawable.dataset.dragBezier ?? null)
+  const confKey = drawable.dataset.dragConfKey ?? drawable.dataset.confKey
+  const pathElement = drawable.querySelector<SVGPathElement>('path:not([data-drag-hitbox]):not([data-bezier-polygon]):not([data-bezier-control])')
+  if (bezier === undefined || confKey === undefined || pathElement === null) return false
+  activeHandleDrag.value = {
+    pointerId: event.pointerId,
+    confKey,
+    handler,
+    control,
+    bezier,
+    element: drawable,
+    pathElement,
+    controlLineElement: drawable.querySelector<SVGPathElement>(`path[data-bezier-control="${control}"]`) ?? undefined,
+    startClient: { x: event.clientX, y: event.clientY },
+  }
+  frameRef.value?.setPointerCapture(event.pointerId)
+  drawable.setAttribute('data-drag-active', 'true')
+  event.preventDefault()
+  event.stopPropagation()
+  return true
+}
+
+function updateHandleDrag(event: PointerEvent): void {
+  const active = activeHandleDrag.value
+  if (active === null || active.pointerId !== event.pointerId) return
+  const delta = screenDeltaToSvgDelta(active.element, event.clientX - active.startClient.x, event.clientY - active.startClient.y)
+  if (delta === null) return
+  const updated: BezierPathInfo = {
+    ...active.bezier,
+    [active.control]: [
+      active.bezier[active.control][0] + delta[0],
+      active.bezier[active.control][1] + delta[1],
+    ],
+  }
+  active.pathElement.setAttribute('d', makeBezierPathData(updated))
+  active.controlLineElement?.setAttribute(
+    'd',
+    `M${active.control === 'cp1' ? updated.from[0] : updated.to[0]} ${active.control === 'cp1' ? updated.from[1] : updated.to[1]}L${updated[active.control][0]} ${updated[active.control][1]}`,
+  )
+}
+
+function finishHandleDrag(event: PointerEvent, cancelled: boolean): void {
+  const active = activeHandleDrag.value
+  if (active === null || active.pointerId !== event.pointerId) return
+  const delta = screenDeltaToSvgDelta(active.element, event.clientX - active.startClient.x, event.clientY - active.startClient.y)
+  active.element.removeAttribute('data-drag-active')
+  activeHandleDrag.value = null
+  if (frameRef.value?.hasPointerCapture(event.pointerId) === true) frameRef.value.releasePointerCapture(event.pointerId)
+  if (cancelled || delta === null) return
+  const control = active.bezier[active.control]
+  const updatedControl: [number, number] = [control[0] + delta[0], control[1] + delta[1]]
+  emit('drag-end', {
+    confKey: `${active.confKey}.${active.control}`,
+    handler: active.handler,
+    delta,
+    value: bezierControlToLegacyValue(
+      active.bezier.from,
+      active.bezier.to,
+      updatedControl,
+      active.control === 'cp1' ? 'from' : 'to',
+    ),
+    source: 'harp-preview',
+  })
+}
+
+function handlePointerDown(event: PointerEvent): void {
+  if (!tryStartHandleDrag(event)) onPreviewPointerDown(event)
+}
+
+function handlePointerMove(event: PointerEvent): void {
+  if (activeHandleDrag.value !== null) {
+    updateHandleDrag(event)
+    event.preventDefault()
+    return
+  }
+  onPreviewPointerMove(event)
+}
+
+function handlePointerUp(event: PointerEvent): void {
+  if (activeHandleDrag.value !== null) {
+    finishHandleDrag(event, false)
+    event.preventDefault()
+    return
+  }
+  onPreviewPointerUp(event)
+}
+
+function handlePointerCancel(event: PointerEvent): void {
+  if (activeHandleDrag.value !== null) {
+    finishHandleDrag(event, true)
+    event.preventDefault()
+    return
+  }
+  onPreviewPointerCancel(event)
+}
+
 onMounted(() => {
   window.addEventListener('keydown', onKeydown)
 })
@@ -154,10 +314,10 @@ watch(frameRef, (frame, previousFrame) => {
         ref="frameRef"
         class="harp-magnifier__frame"
         tabindex="0"
-        @pointercancel="onPointerCancel"
-        @pointerdown="onPointerDown"
-        @pointermove="onPointerMove"
-        @pointerup="onPointerUp"
+        @pointercancel="handlePointerCancel"
+        @pointerdown="handlePointerDown"
+        @pointermove="handlePointerMove"
+        @pointerup="handlePointerUp"
         @wheel="onWheel"
       >
         <div v-if="errorMessage" class="harp-magnifier__error">

@@ -14,6 +14,7 @@ import {
   findConfigEditorTreeDefinition,
   formatConfigEditorValue,
   getConfigEditorNewEntryCommand,
+  getConfigEditorDynamicFields,
   getConfigEditorQuickSettingLabel,
   getConfigPathActionProfile,
   getConfigEditorFormSet,
@@ -201,7 +202,6 @@ const configHelpTexts = ref<ConfigHelpTexts>({})
 const activeSectionTreeDefinition = computed(() => buildActiveSectionTreeDefinition())
 const pendingNewEntryBranchPaths = ref<ReadonlySet<string> | undefined>(undefined)
 
-const dynamicConfigPath = /^extract\.(?:current|\d+)\.notebound\.(?:nconf\.v_\d+\.t_\d+\.n_\d+|minc\.\d+(?:\.minc_f)?)$/
 
 watch(
   [() => props.currentExtract, () => props.abcText],
@@ -437,9 +437,14 @@ function createRow(
   const localPath = definition.configPath === undefined && path.startsWith('section:')
     ? undefined
     : resolveLocalPath(configPath)
-  const effectivePath = localPath === undefined ? undefined : resolveEffectivePath(configPath)
+  const directEffectivePath = localPath === undefined ? undefined : resolveEffectivePath(configPath)
   const localValue = localPath === undefined ? undefined : getPathValue(parsedSongConfig.value.config, localPath)
-  const effectiveValue = effectivePath === undefined ? undefined : getPathValue(effectiveConfig.value, effectivePath)
+  const directEffectiveValue = directEffectivePath === undefined ? undefined : getPathValue(effectiveConfig.value, directEffectivePath)
+  const inheritedFlowlinePath = localPath === undefined ? undefined : resolveInheritedFlowlinePath(localPath)
+  const effectivePath = directEffectiveValue === undefined ? inheritedFlowlinePath ?? directEffectivePath : directEffectivePath
+  const effectiveValue = directEffectiveValue === undefined && inheritedFlowlinePath !== undefined
+    ? getPathValue(effectiveConfig.value, inheritedFlowlinePath)
+    : directEffectiveValue
   const actionProfile = getConfigPathActionProfile(localPath, {
     hasEffectiveValue: effectiveValue !== undefined,
     hasLocalValue: localValue !== undefined,
@@ -468,6 +473,11 @@ function createRow(
   }
 }
 
+function resolveInheritedFlowlinePath(path: string): string | undefined {
+  const match = path.match(/^extract\.\d+\.notebound\.flowline\.v_\d+\.\d+\.(cp1|cp2|pos|shape|show)$/)
+  return match === null ? undefined : `defaults.notebound.flowline.${match[1]}`
+}
+
 function joinPath(parentPath: string, key: string): string {
   return parentPath === '' ? key : `${parentPath}.${key}`
 }
@@ -493,7 +503,7 @@ function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | unde
       props.currentExtract,
     )
   }
-  if (dynamicConfigPath.test(props.activeSection)) {
+  if (getConfigEditorDynamicFields(props.activeSection) !== undefined) {
     return buildDynamicConfigTree(props.activeSection)
   }
   return buildConfigEditorSectionTree(
@@ -506,6 +516,32 @@ function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | unde
 
 function buildDynamicConfigTree(path: string): ConfigEditorTreeDefinition[] {
   const normalizedPath = path.replace(/^extract\.\d+\./, 'extract.current.')
+  const isFlowline = normalizedPath.includes('.notebound.flowline.')
+  if (isFlowline) {
+    const parts = normalizedPath.split('.')
+    const leafDefinitions = (getConfigEditorDynamicFields(path) ?? []).map((key) => ({
+      key,
+      label: key,
+      configPath: `${path}.${key}`,
+    }))
+    const lastPart = parts[parts.length - 1] ?? path
+    let branch: ConfigEditorTreeDefinition = {
+      key: lastPart,
+      label: lastPart,
+      children: leafDefinitions,
+      configPath: path,
+    }
+    for (let index = parts.length - 2; index >= 0; index -= 1) {
+      const key = parts[index] ?? path
+      branch = {
+        key,
+        label: key,
+        children: [branch],
+        configPath: parts.slice(0, index + 1).join('.'),
+      }
+    }
+    return [branch]
+  }
   const isMinc = normalizedPath.includes('.notebound.minc.')
   const hasExplicitLeaf = normalizedPath.endsWith('.minc_f')
   const leafKey = isMinc ? 'minc_f' : 'nshift'

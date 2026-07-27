@@ -40,6 +40,33 @@ describe('svgContextMenu', () => {
     })
   })
 
+  it('offers flowline reset and deletion actions for a concrete shape', () => {
+    const entries = buildSvgContextMenuEntries('extract.0.notebound.flowline.v_1.1536.*', [], {
+      resetShapePath: 'extract.0.notebound.flowline.v_1.1536',
+      resetShapeValue: { cp1: [0.33, 0], cp2: [0.67, 0] },
+      deleteShapePath: 'extract.0.notebound.flowline.v_1.1536',
+    })
+
+    expect(entries).toEqual([
+      expect.objectContaining({
+        text: 'Konfiguration bearbeiten',
+        action: 'edit',
+        path: 'extract.0.notebound.flowline.v_1.1536',
+      }),
+      expect.objectContaining({
+        text: 'Formung zurücksetzen',
+        action: 'reset-shape',
+        path: 'extract.0.notebound.flowline.v_1.1536',
+        value: { cp1: [0.33, 0], cp2: [0.67, 0] },
+      }),
+      expect.objectContaining({
+        text: 'Formung löschen',
+        action: 'delete-shape',
+        path: 'extract.0.notebound.flowline.v_1.1536',
+      }),
+    ])
+  })
+
   it('keeps the legacy placeholder as a disabled separator', () => {
     const [entry] = buildSvgContextMenuEntries(null, [{ text: '---', value: 0.5 }])
 
