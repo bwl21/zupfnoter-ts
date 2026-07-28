@@ -10,6 +10,7 @@ export { AbcParser } from './AbcParser.js'
 export type { AbcParseError } from './AbcParser.js'
 
 export { AbcToSong } from './AbcToSong.js'
+export { exportSongToAbc } from './SongToAbc.js'
 
 export { Confstack, DeleteMe } from './Confstack.js'
 export type { ConfigObject, ConfigValue } from './Confstack.js'
