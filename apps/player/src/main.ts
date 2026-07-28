@@ -23,7 +23,7 @@ import {
   tempoBpmAtTime,
 } from './playerLogic'
 
-const PLAYER_VERSION = '0.2.0'
+const PLAYER_VERSION = '0.2.1'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
