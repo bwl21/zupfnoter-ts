@@ -70,6 +70,27 @@ pnpm lint
 `pnpm dev:web` startet `@zupfnoter/web`.
 `pnpm dev:all` startet beide Apps parallel.
 
+### Produktions-Deployment des Players
+
+Der produktive Webserver oder CDN muss die Cache-Regeln für den Player so
+setzen, dass `index.html` bei jedem Start revalidiert wird:
+
+```http
+/index.html
+Cache-Control: no-cache, must-revalidate
+
+/assets/*
+Cache-Control: public, max-age=31536000, immutable
+```
+
+Vite erzeugt für JavaScript- und CSS-Dateien gehashte Dateinamen. Diese Assets
+können deshalb dauerhaft gecacht werden. `index.html` darf dagegen nicht
+dauerhaft aus dem Cache eines eingebetteten iOS-Browsers kommen, weil sie auf
+die jeweils aktuelle Bundle-Datei verweist. Beim Deployment ist zusätzlich
+eine Invalidierung des CDN-Caches für `index.html` erforderlich, sofern der
+Hoster dies nicht automatisch erledigt. Die Player-URLs und bereits erzeugten
+QR-Codes bleiben dadurch stabil.
+
 Für Fixture- und Legacy-Vergleichsarbeit:
 
 ```sh

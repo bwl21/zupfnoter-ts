@@ -86,8 +86,11 @@ button { background: #2f80ed; color: white; cursor: pointer; }
 .qr-scanner-header { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
 .qr-scanner-header h2 { margin: 0 0 .75rem; color: #243b53; font-size: 1.1rem; }
 .qr-scanner-close { width: 2.25rem; min-height: 2.25rem; padding: 0; background: #f0f4f8; color: #486581; font-size: 1.5rem; line-height: 1; }
-.qr-scanner-video { display: block; width: 100%; max-height: 65vh; min-height: 12rem; border-radius: .6rem; background: #102a43; object-fit: cover; }
+.qr-scanner-viewfinder { position: relative; overflow: hidden; border-radius: .6rem; background: #102a43; }
+.qr-scanner-video { display: block; width: 100%; aspect-ratio: 4 / 3; max-height: 65vh; min-height: 12rem; border-radius: .6rem; background: #102a43; object-fit: contain; }
+.qr-scanner-frame { position: absolute; top: 50%; left: 50%; width: min(72%, 18rem); aspect-ratio: 1; border: .18rem solid #ffffff; border-radius: .8rem; box-shadow: 0 0 0 999px #102a4366; transform: translate(-50%, -50%); pointer-events: none; }
 .qr-scanner-status { margin: .7rem 0 0; color: #627d98; font-size: .85rem; text-align: center; }
+.qr-scanner-help { margin: .35rem 0 0; color: #829ab1; font-size: .75rem; text-align: center; }
 
 @media (min-width: 36rem) {
   body { padding: 2rem 1rem; }

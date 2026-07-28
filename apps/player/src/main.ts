@@ -7,6 +7,7 @@ import {
 } from '@zupfnoter/playback'
 import { mountPlayerUi, type PlayerUiController } from '@zupfnoter/player-ui'
 import { BrowserQRCodeReader, type IScannerControls } from '@zxing/browser'
+import { DecodeHintType } from '@zxing/library'
 import { deflateSync, inflateSync } from 'fflate'
 import '@zupfnoter/player-ui/style.css'
 import {
@@ -22,7 +23,7 @@ import {
   tempoBpmAtTime,
 } from './playerLogic'
 
-const PLAYER_VERSION = '0.1.7'
+const PLAYER_VERSION = '0.2.0'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -54,6 +55,15 @@ function renderPlaybackDataError(error: unknown): void {
   renderError(INVALID_PLAYBACK_MESSAGE)
 }
 
+function renderWelcome(): void {
+  destroyCurrentPlayer()
+  app.innerHTML = `<section class="card welcome-card">
+    <div class="player-title-row"><h1>Zupfnoter Player</h1><button id="welcome-scan" class="scan-button" type="button">Scan</button></div>
+    <p class="summary">Öffne einen Player-Link oder scanne einen Zupfnoter-QR-Code.</p>
+  </section>`
+  app.querySelector<HTMLButtonElement>('#welcome-scan')?.addEventListener('click', openQrScanner)
+}
+
 function openQrScanner(): void {
   closeQrScanner?.()
 
@@ -70,8 +80,12 @@ function openQrScanner(): void {
         <h2 id="qr-scanner-title">Player-QR-Code scannen</h2>
         <button class="qr-scanner-close" type="button" aria-label="Scanner schließen">×</button>
       </div>
-      <video class="qr-scanner-video" autoplay muted playsinline></video>
+      <div class="qr-scanner-viewfinder">
+        <video class="qr-scanner-video" autoplay muted playsinline></video>
+        <div class="qr-scanner-frame" aria-hidden="true"></div>
+      </div>
       <p class="qr-scanner-status" role="status">Kamera wird geöffnet …</p>
+      <p class="qr-scanner-help">QR-Code vollständig in den Rahmen bringen und das Telefon ruhig halten.</p>
     </div>`
   app.appendChild(overlay)
 
@@ -100,9 +114,19 @@ function openQrScanner(): void {
   closeQrScanner = close
   closeButton.addEventListener('click', close, { once: true })
 
-  const reader = new BrowserQRCodeReader()
+  const reader = new BrowserQRCodeReader(
+    new Map<DecodeHintType, unknown>([[DecodeHintType.TRY_HARDER, true]]),
+    { delayBetweenScanAttempts: 100, delayBetweenScanSuccess: 1000 },
+  )
   void reader.decodeFromConstraints(
-    { audio: false, video: { facingMode: { ideal: 'environment' } } },
+    {
+      audio: false,
+      video: {
+        facingMode: { ideal: 'environment' },
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
+      },
+    },
     video,
     (result, error) => {
       if (closed) return
@@ -675,7 +699,8 @@ async function loadPlaybackUrl(rawUrl: string): Promise<void> {
   const pageUrl = new URL(rawUrl, window.location.href)
   const value = pageUrl.hash.match(/^#p=(.+)$/)?.[1]
   if (value === undefined) {
-    throw new Error('Kein Playback-Link gefunden.')
+    renderWelcome()
+    return
   }
   const identification = pageUrl.searchParams.get('id') ?? undefined
   // Backward compatibility for QR codes generated before tempo metadata was
