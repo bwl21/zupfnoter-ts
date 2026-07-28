@@ -23,6 +23,9 @@ defineProps<{
     <template v-else-if="name === 'import'">
       <path d="M6 3.5h7l5 5V20.5H6zM13 3.5v5h5M12 17V10M9.5 12.5 12 10l2.5 2.5" />
     </template>
+    <template v-else-if="name === 'format'">
+      <path d="M6 3.5h7l5 5V20.5H6zM13 3.5v5h5M9 12h6M9 15h6M9 18h4" />
+    </template>
     <template v-else-if="name === 'download'">
       <path d="M6 3.5h7l5 5V20.5H6zM13 3.5v5h5M12 10v7M9.5 14.5 12 17l2.5-2.5" />
     </template>

@@ -273,6 +273,7 @@ const rootPickerFolders = ref<Array<{ name: string; path: string }>>([])
 const rootPickerLoading = ref(false)
 const rootPickerCache = new Map<string, Array<{ name: string; path: string }>>()
 const fileMenuElement = ref<HTMLDetailsElement | null>(null)
+const editorEditMenuElement = ref<HTMLDetailsElement | null>(null)
 const fileToolbarTooltips = new Map<HTMLElement, TippyInstance>()
 const consoleLines = ref<ConsoleLogEntry[]>([])
 const logger = new WorkbenchLogger((entry) => {
@@ -1034,6 +1035,15 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
   }
   if (action === 'save') {
     void saveDocument()
+  }
+}
+
+function handleEditorEditAction(action: 'format'): void {
+  if (editorEditMenuElement.value !== null) {
+    editorEditMenuElement.value.open = false
+  }
+  if (action === 'format') {
+    void executeToolbarCommand('format_abc', 'ABC-Formatierung nicht möglich')
   }
 }
 
@@ -2263,7 +2273,29 @@ function handleMirrorMessage(event: MessageEvent): void {
                   <template #toolbar>
                     <ZnToolbar class="abc-editor-toolbar">
                       <template #leading>
-                        <ZnButton variant="ghost">Bearbeiten</ZnButton>
+                        <details ref="editorEditMenuElement" class="file-menu" data-testid="editor-edit-menu">
+                          <summary
+                            class="file-menu__summary"
+                            aria-haspopup="menu"
+                            data-testid="editor-edit-menu-toggle"
+                          >
+                            <span>Bearbeiten</span>
+                            <span class="file-menu__caret" aria-hidden="true">v</span>
+                          </summary>
+                          <div class="file-menu__list" role="menu" aria-label="Bearbeiten">
+                            <button
+                              class="file-menu__item"
+                              type="button"
+                              role="menuitem"
+                              data-testid="editor-action-format"
+                              data-file-toolbar-tooltip="Effektive Tonhöhen in die ABC-Quelle schreiben"
+                              @click="handleEditorEditAction('format')"
+                            >
+                              <ToolbarFileIcon name="format" />
+                              <span>ABC formatieren</span>
+                            </button>
+                          </div>
+                        </details>
                         <ZnButton variant="ghost" @click="executeToolbarCommand('adddecoration !fermata!')">Dekoration einfügen</ZnButton>
                         <ZnButton variant="ghost" @click="executeToolbarCommand('addsnippet note')">Zusatz einfügen</ZnButton>
                         <ZnButton variant="ghost" @click="executeToolbarCommand('editsnippet')">Zusatz bearbeiten</ZnButton>

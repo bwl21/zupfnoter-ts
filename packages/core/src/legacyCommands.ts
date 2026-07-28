@@ -7,6 +7,7 @@ import {
 } from './commands.js'
 import { Confstack } from './Confstack.js'
 import { initConf } from './initConf.js'
+import { formatAbcSource } from './SongToAbc.js'
 
 export interface WorkbenchCommandRuntime {
   getAbcText(): string
@@ -410,6 +411,22 @@ function registerCreateAndConfigCommands(
     help: 'download as ABC',
     undoable: false,
     perform: () => runtime.downloadAbc(),
+  })
+
+  stack.addCommand({
+    name: 'format_abc',
+    help: 'format ABC and materialize effective pitches',
+    perform: () => {
+      const oldValue = runtime.getAbcText()
+      const formatted = formatAbcSource(oldValue)
+      runtime.setAbcText(formatted)
+      runtime.render()
+      return { undoArguments: { oldValue } }
+    },
+    invert: (args) => {
+      runtime.setAbcText(readString(args, 'oldValue'))
+      runtime.render()
+    },
   })
 
   stack.addCommand({

@@ -700,6 +700,23 @@ describe('legacy command registration', () => {
     expect(runtime.getAbcText()).not.toContain('"title": "NeuerTitel"')
   })
 
+  it('formats ABC in place and supports command undo', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    runtime.setAbcText(runtime.getAbcText().replace('K:C', 'K:C shift=DC'))
+    const original = runtime.getAbcText()
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('format_abc')
+    expect(runtime.getAbcText()).toContain('K:C')
+    expect(log).toContain('render')
+    expect(runtime.getAbcText()).not.toBe(original)
+
+    await stack.runString('undo')
+    expect(runtime.getAbcText()).toBe(original)
+  })
+
   it('adds config entries through legacy addconf templates', async () => {
     const log: string[] = []
     const runtime = createRuntime(log)

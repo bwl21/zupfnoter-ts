@@ -6,7 +6,7 @@ export type FileToolbarAction =
   | 'download'
   | 'storage-connections'
 
-export type ToolbarFileIconName = 'file' | 'new' | 'open' | 'save' | 'import' | 'download' | 'storage'
+export type ToolbarFileIconName = 'file' | 'new' | 'open' | 'save' | 'import' | 'format' | 'download' | 'storage'
 
 export interface FileToolbarMenuAction {
   type: 'action'

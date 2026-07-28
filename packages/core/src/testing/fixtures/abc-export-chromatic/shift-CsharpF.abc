@@ -1,0 +1,8 @@
+X:1
+T:Chromatic shift roundtrip
+M:4/4
+L:1/8
+K:F#
+V:1 treble
+V:1
+F, =G, ^G, =A, ^A, B, =C ^C | =D ^D =E =F | F G A B c d =f ^f | [F,G,A,B,CD=F^F] |]
