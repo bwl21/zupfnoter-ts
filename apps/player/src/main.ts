@@ -339,7 +339,7 @@ function renderPlayer(
       const playbackEndMs = selectedStartMs + selectedDurationMs
       const measureDuration = (nextMarker?.timeMs ?? playbackEndMs) - marker.timeMs
       const beatDuration = tempoBpm !== undefined && tempoBpm > 0
-        ? 60000 / tempoBpm * tempoUnit * marker.meter.denominator
+        ? 60000 / tempoBpm / (tempoUnit * marker.meter.denominator)
         : measureDuration / marker.meter.numerator
       const beat = beatDuration > 0 ? Math.min(marker.meter.numerator, Math.floor((absoluteTimeMs - marker.timeMs) / beatDuration) + 1) : 1
       ui.setMetronome(marker.meter, beat, metronomeEnabled)
@@ -416,7 +416,7 @@ function renderPlayer(
       if (measureDuration <= 0 || marker.timeMs + measureDuration < selectedStartMs) continue
       const beatCount = marker.meter.numerator
       const beatDuration = tempoBpm !== undefined && tempoBpm > 0
-        ? 60000 / tempoBpm * tempoUnit * marker.meter.denominator
+        ? 60000 / tempoBpm / (tempoUnit * marker.meter.denominator)
         : measureDuration / beatCount
       const clickDuration = beatDuration / metronomeSubdivision
       const clickCount = beatCount * metronomeSubdivision

@@ -72,7 +72,7 @@ export function resolveCountIn(
     && openingMeteredMarker?.meter !== undefined && openingMarker.timeMs === startMs) {
     const meter = openingMeteredMarker.meter
     const beatDurationMs = tempoBpm !== undefined && tempoBpm > 0
-      ? 60000 / tempoBpm * tempoUnit * meter.denominator
+      ? 60000 / tempoBpm / (tempoUnit * meter.denominator)
       : (() => {
         const next = markers.find((candidate) => candidate.timeMs > openingMeteredMarker.timeMs
           && (candidate.position.measureNumber !== openingMeteredMarker.position.measureNumber
@@ -114,7 +114,7 @@ export function resolveCountIn(
   if (durationMs <= 0 || marker.meter.numerator <= 0) return undefined
   const beatCount = marker.meter.numerator
   let beatDurationMs = tempoBpm !== undefined && tempoBpm > 0
-    ? 60000 / tempoBpm * tempoUnit * marker.meter.denominator
+    ? 60000 / tempoBpm / (tempoUnit * marker.meter.denominator)
     : durationMs / beatCount
   let hasPickup = false
   let pickupBeatCount = beatCount
@@ -215,7 +215,7 @@ export function pickupMetronomeStateAtTime(
   if (opening === undefined || opening.meter !== undefined || metered?.meter === undefined
     || timeMs < opening.timeMs || timeMs >= metered.timeMs) return undefined
   const beatDurationMs = tempoBpm !== undefined && tempoBpm > 0
-    ? 60000 / tempoBpm * tempoUnit * metered.meter.denominator
+    ? 60000 / tempoBpm / (tempoUnit * metered.meter.denominator)
     : metered.timeMs - opening.timeMs
   if (beatDurationMs <= 0) return undefined
   const pickupBeatCount = Math.max(1, Math.min(metered.meter.numerator,

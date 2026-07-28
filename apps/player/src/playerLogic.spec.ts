@@ -132,6 +132,24 @@ describe('player logic', () => {
     })
   })
 
+  it.each([
+    { name: '3/4', numerator: 3, denominator: 4, beatDurationMs: 600 },
+    { name: '4/4', numerator: 4, denominator: 4, beatDurationMs: 600 },
+    { name: '5/4', numerator: 5, denominator: 4, beatDurationMs: 600 },
+    { name: '6/8', numerator: 6, denominator: 8, beatDurationMs: 300 },
+    { name: '7/8', numerator: 7, denominator: 8, beatDurationMs: 300 },
+    { name: '12/8', numerator: 12, denominator: 8, beatDurationMs: 300 },
+  ])('uses the denominator note duration for a $name count-in', ({ numerator, denominator, beatDurationMs }) => {
+    expect(resolveCountIn([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator, denominator } },
+      { timeMs: numerator * beatDurationMs, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator, denominator } },
+    ], 0, 'classic', 100)).toMatchObject({
+      durationMs: numerator * beatDurationMs,
+      beatDurationMs,
+      beatOffsetsMs: Array.from({ length: numerator }, (_value, index) => index * beatDurationMs),
+    })
+  })
+
   it('derives quarter-note BPM from the timed meter', () => {
     expect(tempoBpmAtTime(markers, 0)).toBe(60)
     expect(tempoBpmAtTime([

@@ -32,7 +32,7 @@ function resolveTempoUnit(song: Song): number {
 
 function computeNoteDurationMs(song: Song, duration: number): number {
   const wholeNoteFraction = duration / 64
-  return Math.max(120, (wholeNoteFraction / resolveTempoUnit(song)) * (60000 / resolveTempoBpm(song)))
+  return Math.max(1, (wholeNoteFraction / resolveTempoUnit(song)) * (60000 / resolveTempoBpm(song)))
 }
 
 export function resolveBaseTempoFromSong(song: Song): number {
@@ -209,7 +209,7 @@ export function buildPlaybackTimeline(song: Song, activeVoices?: readonly number
   }
   const unit = resolveTempoUnit(song)
   const bpm = resolveTempoBpm(song)
-  const timeToMs = (duration: number): number => Math.max(120, (duration / 1536 / unit) * (60000 / bpm))
+  const timeToMs = (duration: number): number => Math.max(1, (duration / 1536 / unit) * (60000 / bpm))
   let cursorMs = 0
 
   return flow.map((flowStep, index) => {
