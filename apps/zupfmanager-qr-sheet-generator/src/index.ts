@@ -92,7 +92,7 @@ Optionen:
   --project <id|kurzname>  Projekt aus der Datenbank
   --database <pfad>        Pfad zu zupfmanager.db
   --abc-root <pfad>        Optionaler Vorrang für ABC-Dateien
-  --output <pfad>          Ausgabebasis; standardmäßig <projekt>/tmp/<projekt>_player_qr.abc
+  --output <pfad>          Ausgabebasis; standardmäßig <projekt>/player-qr/<projekt>_player-qr.abc
   --player-url <url>       Player-Basis-URL
   --per-page <zahl>        Maximale QR-Anzahl pro Blatt (1–35)
   --help                   Diese Hilfe anzeigen
@@ -339,8 +339,8 @@ function createAbc(project: Project, entries: QrEntry[], perPage: number): strin
 
 function outputPath(basePath: string, suffix: QrGroup['suffix']): string {
   return basePath.endsWith('.abc')
-    ? basePath.slice(0, -4) + '-' + suffix + '.abc'
-    : basePath + '-' + suffix + '.abc'
+    ? basePath.slice(0, -4) + '_' + suffix + '.abc'
+    : basePath + '_' + suffix + '.abc'
 }
 
 async function main(): Promise<void> {
@@ -354,8 +354,8 @@ async function main(): Promise<void> {
   const output = options.output ?? resolve(
     dirname(options.database),
     project.short_name,
-    'tmp',
-    project.short_name + '_player_qr.abc',
+    'player-qr',
+    project.short_name + '_player-qr.abc',
   )
   const songs = await loadPriorityOneSongs(options.database, project.id)
   if (songs.length === 0) throw new Error('Das Projekt enthält keine priority-1-Stücke.')
