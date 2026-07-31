@@ -731,6 +731,37 @@ export function resolveIndexesByConfKey(
   })
 }
 
+function confKeyAddressesConfigPath(confKey: string, configPath: string): boolean {
+  if (confKey === configPath) return true
+
+  for (const wildcard of ['.***', '.*']) {
+    if (!confKey.endsWith(wildcard)) continue
+    const base = confKey.slice(0, -wildcard.length)
+    return configPath === base || configPath.startsWith(`${base}.`)
+  }
+
+  return false
+}
+
+export function resolveConfKeyForConfigPath(
+  index: SheetObjectIndex | undefined,
+  configPath: string,
+): string | undefined {
+  if (index === undefined) return undefined
+  if (index.byConfKey[configPath] !== undefined) return configPath
+
+  return Object.keys(index.byConfKey).find((confKey) => confKeyAddressesConfigPath(confKey, configPath))
+}
+
+export function resolveIndexesByConfigPath(
+  index: SheetObjectIndex | undefined,
+  configPath: string,
+  pane?: AddressablePane,
+): number[] {
+  const confKey = resolveConfKeyForConfigPath(index, configPath)
+  return confKey === undefined ? [] : resolveIndexesByConfKey(index, confKey, pane)
+}
+
 export function resolveSelectionOriginByTextRange(
   index: SheetObjectIndex | undefined,
   textRange: SelectionTextRange,

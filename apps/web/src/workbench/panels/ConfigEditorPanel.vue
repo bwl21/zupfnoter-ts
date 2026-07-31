@@ -32,6 +32,7 @@ import type { SongResources } from '@zupfnoter/types'
 
 import { ZnBadge, ZnButton, ZnIconButton, ZnIcon, ZnPanel, ZnToolbar } from '@zupfnoter/design-system'
 import { loadConfigHelpTexts, resolveConfigHelpHtml, type ConfigHelpTexts } from './configHelp'
+import { RESOURCE_DRAG_MIME } from '../resourceDrag'
 
 interface ConfigIntent {
   action:
@@ -118,6 +119,7 @@ const expandedPaths = ref<string[]>([
 ])
 const draftValues = ref<Record<string, string>>({})
 const inputErrors = ref<Record<string, string>>({})
+const enlargedResourceUrl = ref<string | undefined>(undefined)
 
 const fallbackSectionVisiblePaths: Record<string, string[]> = {
   layout: [
@@ -675,6 +677,37 @@ function isTextareaValue(row: ConfigTreeRow): boolean {
   return row.editorStrategy === 'textarea'
 }
 
+function isResourceValue(row: ConfigTreeRow): boolean {
+  return row.localPath?.startsWith('$resources.') ?? false
+}
+
+function getResourcePreviewUrl(row: ConfigTreeRow): string | undefined {
+  if (!isResourceValue(row)) return undefined
+  const resource = row.effectiveValue
+  if (typeof resource === 'string') return resource
+  if (Array.isArray(resource) && resource.every((part): part is string => typeof part === 'string')) {
+    return resource.join('')
+  }
+  return undefined
+}
+
+function getResourceKey(row: ConfigTreeRow): string | undefined {
+  if (!isResourceValue(row) || row.localPath === undefined) return undefined
+  return row.localPath.slice('$resources.'.length)
+}
+
+function openResourcePreview(row: ConfigTreeRow): void {
+  const previewUrl = getResourcePreviewUrl(row)
+  if (previewUrl !== undefined) enlargedResourceUrl.value = previewUrl
+}
+
+function startResourceDrag(row: ConfigTreeRow, event: DragEvent): void {
+  const resourceKey = getResourceKey(row)
+  if (resourceKey === undefined || event.dataTransfer === null) return
+  event.dataTransfer.effectAllowed = 'copy'
+  event.dataTransfer.setData(RESOURCE_DRAG_MIME, resourceKey)
+}
+
 function getBooleanValue(row: ConfigTreeRow): boolean {
   if (typeof row.localValue === 'boolean') return row.localValue
   return typeof row.effectiveValue === 'boolean' ? row.effectiveValue : false
@@ -715,6 +748,16 @@ function getSelectedOptionLabel(row: ConfigTreeRow): string {
   const value = getSelectDraftValue(row)
   const option = getEditorOptions(row).find((entry) => entry.value === value)
   return option === undefined ? 'Bitte auswählen' : `${option.label} (${option.value})`
+}
+
+function getImagePreviewUrl(row: ConfigTreeRow, value: string): string | undefined {
+  if (!(row.localPath?.endsWith('.imagename') ?? false)) return undefined
+  const resources = getPathValue(effectiveConfig.value, '$resources')
+  if (!isRecord(resources)) return undefined
+  const resource = resources[value]
+  if (typeof resource === 'string') return resource
+  if (Array.isArray(resource) && resource.every((part): part is string => typeof part === 'string')) return resource.join('')
+  return undefined
 }
 
 function selectEditorOption(row: ConfigTreeRow, value: string, event: MouseEvent): void {
@@ -1030,6 +1073,11 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   })
 }
 
+function selectAffectedObject(row: ConfigTreeRow): void {
+  if (!row.canSelect || row.localPath === undefined) return
+  emitIntent('config.selectAffectedObject', row.localPath)
+}
+
 function fillFromEffectiveValue(row: ConfigTreeRow): void {
   if (row.localPath === undefined || !isCommandArgumentValue(row.effectiveValue)) return
   if (row.isBranch && !isExpanded(row.path)) {
@@ -1249,12 +1297,33 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
             >
               <ZnIcon name="help" />
             </span>
+            <div
+              v-if="row.isLeaf && isResourceValue(row)"
+              class="config-row__resource-preview"
+            >
+              <img
+                v-if="getResourcePreviewUrl(row) !== undefined"
+                :src="getResourcePreviewUrl(row)"
+                :alt="row.label"
+                draggable="true"
+                @click="openResourcePreview(row)"
+                @dragstart="startResourceDrag(row, $event)"
+              >
+              <span v-else>Keine Vorschau verfügbar</span>
+            </div>
             <details
-              v-if="row.isLeaf && hasEditorOptions(row)"
+              v-else-if="row.isLeaf && hasEditorOptions(row)"
               class="config-row__input config-row__select"
+              @toggle="($event.target as HTMLDetailsElement).open && selectAffectedObject(row)"
               @keydown.esc.prevent="closeEditorOptions($event)"
             >
               <summary class="config-row__select-summary">
+                <img
+                  v-if="getImagePreviewUrl(row, getSelectDraftValue(row)) !== undefined"
+                  class="config-row__image-preview"
+                  :src="getImagePreviewUrl(row, getSelectDraftValue(row))"
+                  alt=""
+                >
                 <span>{{ getSelectedOptionLabel(row) }}</span>
                 <ZnIcon class="config-row__select-caret" name="collapse" aria-hidden="true" />
               </summary>
@@ -1270,6 +1339,12 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
                   :data-option-description="option.description"
                   @click="selectEditorOption(row, option.value, $event)"
                 >
+                  <img
+                    v-if="getImagePreviewUrl(row, option.value) !== undefined"
+                    class="config-row__image-preview"
+                    :src="getImagePreviewUrl(row, option.value)"
+                    alt=""
+                  >
                   {{ option.label }} ({{ option.value }})
                 </button>
               </div>
@@ -1282,7 +1357,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
                 role="switch"
                 :aria-checked="getBooleanValue(row)"
                 :aria-label="getBooleanValueLabel(row)"
-                @click="commitBooleanValue(row, !getBooleanValue(row))"
+                @click="selectAffectedObject(row); commitBooleanValue(row, !getBooleanValue(row))"
               >
                 <span class="config-row__switch-thumb" aria-hidden="true" />
               </button>
@@ -1299,6 +1374,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
               :aria-invalid="inputErrors[row.path] !== undefined"
               :aria-describedby="inputErrors[row.path] !== undefined ? `config-error-${row.key}` : undefined"
               @input="updateDraftValue(row, ($event.target as HTMLTextAreaElement).value)"
+              @focus="selectAffectedObject(row)"
               @blur="commitDraftValue(row)"
             />
             <input
@@ -1310,6 +1386,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
               :aria-invalid="inputErrors[row.path] !== undefined"
               :aria-describedby="inputErrors[row.path] !== undefined ? `config-error-${row.key}` : undefined"
               @input="updateDraftValue(row, ($event.target as HTMLInputElement).value)"
+              @focus="selectAffectedObject(row)"
               @blur="commitDraftValue(row)"
               @keydown.enter.prevent="commitDraftValue(row)"
             >
@@ -1330,7 +1407,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
               variant="ghost"
               :disabled="!row.canSelect"
               :tabindex="-1"
-              @click="emitIntent('config.selectAffectedObject', row.localPath)"
+              @click="selectAffectedObject(row)"
             >
               <ZnIcon name="select" />
             </ZnIconButton>
@@ -1400,6 +1477,23 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
           </div>
 
         </div>
+      </div>
+      <div
+        v-if="enlargedResourceUrl !== undefined"
+        class="config-resource-lightbox"
+        role="dialog"
+        aria-label="Bildvorschau"
+        @click.self="enlargedResourceUrl = undefined"
+      >
+        <button
+          type="button"
+          class="config-resource-lightbox__close"
+          aria-label="Bildvorschau schließen"
+          @click="enlargedResourceUrl = undefined"
+        >
+          <ZnIcon name="delete" />
+        </button>
+        <img :src="enlargedResourceUrl" alt="Vergrößerte Ressourcen-Vorschau">
       </div>
       </div>
     </ZnPanel>
@@ -1789,6 +1883,71 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
   display: none;
 }
 
+.config-row__image-preview {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 1.55rem;
+  border: 1px solid var(--zn-border);
+  border-radius: 0.22rem;
+  background: var(--zn-bg-surface-soft);
+  object-fit: contain;
+}
+
+.config-row__resource-preview {
+  display: flex;
+  align-items: center;
+  min-height: 5rem;
+  color: var(--zn-text-muted);
+  font-size: 0.78rem;
+}
+
+.config-row__resource-preview img {
+  display: block;
+  width: 8rem;
+  height: 5rem;
+  border: 1px solid var(--zn-border);
+  border-radius: 0.3rem;
+  background: var(--zn-bg-surface-soft);
+  object-fit: contain;
+  cursor: zoom-in;
+}
+
+.config-resource-lightbox {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: color-mix(in srgb, black 68%, transparent);
+  cursor: zoom-out;
+}
+
+.config-resource-lightbox img {
+  display: block;
+  max-width: min(92vw, 72rem);
+  max-height: 88vh;
+  border-radius: 0.35rem;
+  background: var(--zn-bg-surface);
+  box-shadow: 0 1rem 3rem color-mix(in srgb, black 45%, transparent);
+  object-fit: contain;
+}
+
+.config-resource-lightbox__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid color-mix(in srgb, white 60%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, black 35%, transparent);
+  color: white;
+  cursor: pointer;
+}
+
 .config-row__select-caret {
   flex: 0 0 auto;
   font-size: 0.7rem;
@@ -1813,7 +1972,9 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
 }
 
 .config-row__select-option {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   width: 100%;
   padding: 0.22rem 0.35rem;
   border: 0;

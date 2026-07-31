@@ -980,7 +980,7 @@ describe('ConfigEditorPanel', () => {
   it('offers embedded image resources when adding an image', async () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {
-        abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n\n{"extract":{"0":{"images":{"0":{"imagename":"","show":true,"pos":[10,10],"height":30}}}}}',
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n\n{"extract":{"0":{"images":{"0":{"imagename":"cover_jpg","show":true,"pos":[10,10],"height":30}}}}}',
         resources: { cover_jpg: ['data:image/jpeg;base64,test'] },
         currentExtract: 0,
         activeSection: 'images',
@@ -994,6 +994,14 @@ describe('ConfigEditorPanel', () => {
 
     const resourceOption = wrapper.findAll('.config-row__select-option').find((option) => option.text().includes('cover_jpg'))
     expect(resourceOption).toBeDefined()
+    expect(wrapper.findAll('.config-row__image-preview')).not.toHaveLength(0)
+    expect(wrapper.find('.config-row__image-preview').attributes('src')).toBe('data:image/jpeg;base64,test')
+
+    const resourceRow = wrapper.findAll('.config-row').find((row) => row.text().includes('cover_jpg'))
+    expect(resourceRow).toBeDefined()
+    if (resourceRow === undefined) return
+    expect(resourceRow.find('.config-row__resource-preview img').attributes('src')).toBe('data:image/jpeg;base64,test')
+    expect(resourceRow.find('input').exists()).toBe(false)
   })
 
   it('disables quick settings when the active section has none', () => {

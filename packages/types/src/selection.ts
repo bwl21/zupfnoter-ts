@@ -76,7 +76,7 @@ export interface SheetObjectIndex {
 }
 
 /** Selection origin within the workbench. */
-export type SelectionSource = 'abc-editor' | 'score-preview' | 'harp-preview' | 'player' | 'command'
+export type SelectionSource = 'abc-editor' | 'score-preview' | 'harp-preview' | 'config-editor' | 'player' | 'command'
 
 /** Shared projection identities understood by the workbench selection manager. */
 export type SelectionProjectionKind = 'textRange' | 'znId' | 'confKey'

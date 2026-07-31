@@ -14,6 +14,7 @@ import type { PlaybackHighlight, SelectionOrigin, SelectionTextRange, SheetObjec
 
 import { ZnIcon, ZnMaximizeButton, ZnPanel, ZnTabs, ZnZoomControl, type ZnIconName } from '@zupfnoter/design-system'
 import { resolveSelectionOriginByZnId } from '../selectionIndex'
+import { RESOURCE_DRAG_MIME } from '../resourceDrag'
 import type { HarpPreviewDragEnd } from '../multiWindow/harpMirrorChannel'
 import HarpMagnifierPopover from './HarpMagnifierPopover.vue'
 import { useZoomableSvgPreview } from './useZoomableSvgPreview'
@@ -62,6 +63,7 @@ const emit = defineEmits<{
     value?: CommandArgumentValue
   }): void
   (event: 'config-hover', payload: { confKey?: string }): void
+  (event: 'resource-drop', payload: { resourceKey: string; targetConfKey?: string; position: [number, number] }): void
   (event: 'toggle-maximize'): void
 }>()
 
@@ -201,6 +203,30 @@ function updateConfigHover(target: EventTarget | null): void {
   if (confKey === hoveredConfigKey.value) return
   hoveredConfigKey.value = confKey
   emit('config-hover', confKey === undefined ? {} : { confKey })
+}
+
+function handleResourceDragOver(event: DragEvent): void {
+  if (event.dataTransfer?.types.includes(RESOURCE_DRAG_MIME) !== true || mode.value === 'pdf') return
+  event.preventDefault()
+  event.stopPropagation()
+  if (event.dataTransfer !== null) event.dataTransfer.dropEffect = 'copy'
+}
+
+function handleResourceDrop(event: DragEvent): void {
+  if (event.dataTransfer?.types.includes(RESOURCE_DRAG_MIME) !== true || mode.value === 'pdf') return
+  const resourceKey = event.dataTransfer.getData(RESOURCE_DRAG_MIME).trim()
+  if (resourceKey === '') return
+  const framePoint = eventToFramePoint(event)
+  if (framePoint === null) return
+  const sourcePoint = framePointToSourcePoint(framePoint)
+  if (sourcePoint === null) return
+  event.preventDefault()
+  event.stopPropagation()
+  const target = event.target instanceof Element
+    ? event.target.closest<HTMLElement>('.zupfnoter-element[data-type="Image"][data-conf-key]')
+    : null
+  const targetConfKey = target?.getAttribute('data-conf-key')?.trim() || undefined
+  emit('resource-drop', { resourceKey, targetConfKey, position: [sourcePoint.x, sourcePoint.y] })
 }
 
 function contextMenuEntries(element: Element): SvgContextMenuEntry[] {
@@ -772,6 +798,8 @@ onBeforeUnmount(() => {
         class="harp-preview__frame"
         :class="{ 'harp-preview__frame--pdf': mode === 'pdf' }"
         @scroll="handleScroll"
+        @dragover="handleResourceDragOver"
+        @drop="handleResourceDrop"
         @pointercancel="handlePointerCancel"
         @pointerdown="handlePointerDown"
         @pointermove="handlePointerMove"

@@ -215,7 +215,7 @@ export function useZoomableSvgPreview(
     }
   }
 
-  function eventToFramePoint(event: PointerEvent): Point | null {
+  function eventToFramePoint(event: Pick<MouseEvent, 'clientX' | 'clientY'>): Point | null {
     const frame = frameRef.value
     const metrics = frameMetrics.value
     if (frame === null || metrics === null) {

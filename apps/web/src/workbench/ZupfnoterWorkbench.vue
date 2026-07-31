@@ -81,6 +81,7 @@ import { WorkbenchLogger, type ConsoleLogEntry } from './consoleLog'
 import { ShortcutManager } from './ShortcutManager'
 import {
   canTargetCreateSelection,
+  createConfKeySelectedSelectionEvent,
   createExtractChangedSelectionEvent,
   createRenderRefreshedSelectionEvent,
   createScopeChangedSelectionEvent,
@@ -91,6 +92,7 @@ import {
   resolveSelectionEditorRange,
   resolveSelectionProjection,
 } from './selectionManager'
+import { resolveConfKeyForConfigPath } from './selectionIndex'
 import { ABC_PARSER_DIAGNOSTIC_SOURCE, workbenchDiagnosticKey, type WorkbenchDiagnostic as WebWorkbenchDiagnostic } from './diagnostics'
 import {
   createHarpMirrorChannel,
@@ -943,6 +945,14 @@ async function executeParsedToolbarCommand(
 }
 
 function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
+  if (intent.action === 'config.selectAffectedObject' && intent.path !== undefined) {
+    const confKey = resolveConfKeyForConfigPath(selectionStore.sheetObjectIndex, intent.path)
+    if (confKey !== undefined) {
+      selectionStore.dispatchSelectionEvent(createConfKeySelectedSelectionEvent(confKey, 'config-editor'))
+    }
+    return
+  }
+
   if (intent.action === 'config.undo') {
     void executeToolbarCommand('undoconfig')
     return
@@ -1890,6 +1900,40 @@ function handleHarpPreviewDragEnd(payload: HarpPreviewDragEnd): void {
   )
 }
 
+function handleHarpResourceDrop(payload: {
+  resourceKey: string
+  targetConfKey?: string
+  position: [number, number]
+}): void {
+  const targetPath = payload.targetConfKey?.endsWith('.pos')
+    ? payload.targetConfKey.replace(/\.pos$/, '.imagename')
+    : undefined
+  if (targetPath !== undefined) {
+    void executeParsedToolbarCommand(
+      `cconf ${targetPath} ${JSON.stringify(payload.resourceKey)}`,
+      'cconf',
+      [targetPath, payload.resourceKey],
+    )
+    return
+  }
+
+  const config = extractSongConfig(documentText.value)
+  const extract = config.extract?.[String(currentExtract.value)]
+  const images = extract?.images ?? {}
+  const numericKeys = Object.keys(images)
+    .map((key) => Number(key))
+    .filter((key) => Number.isInteger(key) && key >= 0)
+  const nextKey = numericKeys.length === 0 ? 0 : Math.max(...numericKeys) + 1
+  const path = `extract.${currentExtract.value}.images.${nextKey}`
+  const value = {
+    imagename: payload.resourceKey,
+    show: true,
+    pos: payload.position,
+    height: 100,
+  }
+  void executeParsedToolbarCommand(`cconf ${path} ${JSON.stringify(value)}`, 'cconf', [path, value])
+}
+
 function handleHarpPreviewContextMenu(payload: {
   action: 'set' | 'edit' | 'reset-shape' | 'delete-shape'
   path: string
@@ -2463,6 +2507,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :maximized="maximizedPanel === 'harp'"
                   @select-text-range="handleHarpPreviewSelection"
                   @drag-end="handleHarpPreviewDragEnd"
+                  @resource-drop="handleHarpResourceDrop"
                   @context-menu="handleHarpPreviewContextMenu"
                   @config-hover="handleHarpPreviewConfigHover"
                   @toggle-maximize="togglePanelMaximize('harp')"
