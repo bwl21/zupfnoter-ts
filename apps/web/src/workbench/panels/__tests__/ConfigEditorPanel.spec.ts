@@ -977,6 +977,25 @@ describe('ConfigEditorPanel', () => {
     expect(menu.findAll('button').map((button) => button.text())).toContain('Übungs-QR-Code')
   })
 
+  it('offers embedded image resources when adding an image', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n\n{"extract":{"0":{"images":{"0":{"imagename":"","show":true,"pos":[10,10],"height":30}}}}}',
+        resources: { cover_jpg: ['data:image/jpeg;base64,test'] },
+        currentExtract: 0,
+        activeSection: 'images',
+      },
+    })
+
+    const imageSelect = wrapper.find('.config-row__select-summary')
+    expect(imageSelect).toBeDefined()
+    if (imageSelect === undefined) return
+    await imageSelect.trigger('click')
+
+    const resourceOption = wrapper.findAll('.config-row__select-option').find((option) => option.text().includes('cover_jpg'))
+    expect(resourceOption).toBeDefined()
+  })
+
   it('disables quick settings when the active section has none', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

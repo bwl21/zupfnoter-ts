@@ -64,7 +64,6 @@ export function storageSaveTooltip(target: StorageSaveTarget | undefined, relati
 export function fileToolbarPlaceholderMessage(action: FileToolbarAction): string | undefined {
   const messages: Partial<Record<FileToolbarAction, string>> = {
     open: 'Öffnen wird mit dem Dateiauswahl-Workflow in Phase 5.6 ergänzt.',
-    import: 'Der lokale Import wird mit der Datei-Integration in Phase 5.6 ergänzt.',
   }
   return messages[action]
 }

@@ -101,6 +101,7 @@ import {
 import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
 import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
 import { createStorageProviderRegistry } from './storage/providerRegistry'
+import { readLocalImport, resourceKeyFromFileName, UnsupportedImportError } from './fileImport'
 
 interface ConfigEditorIntent {
   action: string
@@ -273,6 +274,8 @@ const rootPickerFolders = ref<Array<{ name: string; path: string }>>([])
 const rootPickerLoading = ref(false)
 const rootPickerCache = new Map<string, Array<{ name: string; path: string }>>()
 const fileMenuElement = ref<HTMLDetailsElement | null>(null)
+const localFileInput = ref<HTMLInputElement | null>(null)
+const fileDropActive = ref(false)
 const editorEditMenuElement = ref<HTMLDetailsElement | null>(null)
 const fileToolbarTooltips = new Map<HTMLElement, TippyInstance>()
 const consoleLines = ref<ConsoleLogEntry[]>([])
@@ -1014,6 +1017,10 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
     storageConnectionsDialogOpen.value = true
     return
   }
+  if (action === 'import') {
+    localFileInput.value?.click()
+    return
+  }
   const placeholderMessage = fileToolbarPlaceholderMessage(action)
   if (placeholderMessage !== undefined) {
     pushToast({
@@ -1036,6 +1043,68 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
   if (action === 'save') {
     void saveDocument()
   }
+}
+
+function hasFiles(event: DragEvent): boolean {
+  return event.dataTransfer?.types.includes('Files') === true
+}
+
+function handleFileDragOver(event: DragEvent): void {
+  if (!hasFiles(event)) return
+  event.preventDefault()
+  event.stopPropagation()
+  if (event.dataTransfer !== null) event.dataTransfer.dropEffect = 'copy'
+  fileDropActive.value = true
+}
+
+function handleFileDragLeave(event: DragEvent): void {
+  if (!hasFiles(event)) return
+  const currentTarget = event.currentTarget
+  if (currentTarget instanceof HTMLElement && currentTarget.contains(event.relatedTarget as Node | null)) return
+  fileDropActive.value = false
+}
+
+async function importLocalFile(file: File): Promise<void> {
+  try {
+    const imported = await readLocalImport(file)
+    if (imported.kind === 'abc') {
+      documentText.value = imported.text
+      savedDocumentText.value = imported.text
+      renderNow()
+      pushToast({ severity: 'success', title: 'Datei importiert', message: `„${file.name}“ wurde geöffnet.` })
+      return
+    }
+    const key = resourceKeyFromFileName(imported.name)
+    documentText.value = replaceSongDocumentResources(documentText.value, {
+      ...documentResources.value,
+      [key]: [imported.dataUri],
+    })
+    renderNow()
+    pushToast({ severity: 'success', title: 'Ressource importiert', message: `„${file.name}“ wurde als Ressource übernommen.` })
+  } catch (error) {
+    const message = error instanceof UnsupportedImportError || error instanceof Error
+      ? error.message
+      : `„${file.name}“ konnte nicht gelesen werden`
+    logger.error(message)
+    pushToast({ severity: 'danger', title: 'Import fehlgeschlagen', message })
+  }
+}
+
+function handleFileDrop(event: DragEvent): void {
+  if (!hasFiles(event)) return
+  event.preventDefault()
+  event.stopPropagation()
+  fileDropActive.value = false
+  const file = event.dataTransfer?.files.item(0)
+  if (file !== null && file !== undefined) void importLocalFile(file)
+}
+
+function handleLocalFileInput(event: Event): void {
+  const input = event.currentTarget
+  if (!(input instanceof HTMLInputElement)) return
+  const file = input.files?.item(0)
+  input.value = ''
+  if (file !== null && file !== undefined) void importLocalFile(file)
 }
 
 function handleEditorEditAction(action: 'format'): void {
@@ -2061,7 +2130,12 @@ function handleMirrorMessage(event: MessageEvent): void {
 </script>
 
 <template>
-  <WorkbenchLayout>
+  <WorkbenchLayout
+    :class="{ 'workbench-layout--file-drop-active': fileDropActive }"
+    @dragover="handleFileDragOver"
+    @dragleave="handleFileDragLeave"
+    @drop="handleFileDrop"
+  >
     <template #header>
       <section class="workbench-chrome">
         <ZnToolbar>
@@ -2109,6 +2183,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                 </template>
               </div>
             </details>
+            <input ref="localFileInput" class="local-file-input" type="file" accept=".abc,.xml,.mxl,.jpg,.jpeg,image/jpeg" @change="handleLocalFileInput">
             <ZnButton
               data-testid="file-shortcut-new"
               variant="ghost"
@@ -2553,6 +2628,15 @@ function handleMirrorMessage(event: MessageEvent): void {
   font-weight: 800;
   text-transform: none;
   border-radius: 999px;
+}
+
+.local-file-input {
+  display: none;
+}
+
+.workbench-layout--file-drop-active {
+  outline: 2px dashed var(--zn-accent);
+  outline-offset: -2px;
 }
 
 .file-menu {
