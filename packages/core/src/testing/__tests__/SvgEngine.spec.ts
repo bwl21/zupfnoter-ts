@@ -367,6 +367,22 @@ describe('SvgEngine', () => {
       const svg = eng.draw(makeSheet([annotation({ style: 'regular' })]))
       expect(svg).toContain('font-size="5"')
     })
+
+    it('makes configured annotations draggable in interactive output', () => {
+      const interactive = new SvgEngine({ width: 400, height: 282, interactive: true })
+      const svg = interactive.draw(makeSheet([annotation({
+        confKey: 'extract.0.notebound.tuplet.v_1.42.*',
+        draginfo: {
+          handler: 'annotation',
+          conf_key: 'extract.0.notebound.tuplet.v_1.42',
+          value: [3, -2],
+        },
+      })]))
+
+      expect(svg).toContain('data-drag-handler="annotation"')
+      expect(svg).toContain('data-drag-conf-key="extract.0.notebound.tuplet.v_1.42"')
+      expect(svg).toContain('data-drag-value="[3,-2]"')
+    })
   })
 
   describe('Image', () => {

@@ -538,6 +538,10 @@ describe('initConf()', () => {
       fill: true,
       show: false,
     })
+    expect(defaults.extract['0']?.tuplets).toEqual({
+      text: '{{tuplet}}',
+      style: 'small',
+    })
     expect(defaults.annotations).toMatchObject({
       vl: { text: 'v', pos: [-5, -5] },
       rit: { text: 'rit', pos: [2, -5], style: 'italic' },

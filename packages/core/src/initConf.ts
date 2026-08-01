@@ -68,7 +68,7 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
     },
     sortmark: { size: [2, 4], fill: true, show: false },
     nonflowrest: false,
-    tuplets: { text: '{{tuplet}}' },
+    tuplets: { text: '{{tuplet}}', style: 'small' },
     chords: {
       voices: [],
       pos: [3, -2],

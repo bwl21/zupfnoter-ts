@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   CONFIG_EDITOR_FORM_SETS,
   CONFIG_EDITOR_MENU_ITEMS,
+  getConfigEditorDynamicFields,
   getConfigEditorNewEntryCommand,
   getConfigEditorFormSections,
 } from '../../configEditorForms.js'
@@ -30,6 +31,16 @@ const expectedLayoutFormKeys = [
 ]
 
 describe('ConfigEditorForms', () => {
+  it('exposes legacy tuplet parameters including the annotation position', () => {
+    expect(getConfigEditorDynamicFields('extract.0.notebound.tuplet.v_1.1536'))
+      .toEqual(['show', 'pos', 'shape', 'cp1', 'cp2'])
+  })
+
+  it('keeps the global tuplet style parameter in the editor form', () => {
+    expect(CONFIG_EDITOR_FORM_SETS.barnumbers_countnotes.keys)
+      .toContain('extract.{extract}.tuplets.style')
+  })
+
   it('ports the legacy editconf menu order and ids', () => {
     const menuShape = CONFIG_EDITOR_MENU_ITEMS.map((item) => {
       if (item.type === 'separator') return '|'

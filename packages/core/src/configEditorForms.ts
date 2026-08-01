@@ -512,6 +512,9 @@ export function getConfigEditorFormSections(formId: string): ConfigEditorFormSec
  */
 export function getConfigEditorDynamicFields(path: string): readonly string[] | undefined {
   if (/^extract\.(?:current|\d+)\.notebound\.flowline\.v_\d+\.\d+$/.test(path)) return ['cp1', 'cp2', 'show']
+  if (/^extract\.(?:current|\d+)\.notebound\.tuplet\.v_\d+\.\w+$/.test(path)) {
+    return ['show', 'pos', 'shape', 'cp1', 'cp2']
+  }
   if (/^extract\.(?:current|\d+)\.notebound\.minc\.\d+$/.test(path)) return ['minc_f']
   if (/^extract\.(?:current|\d+)\.notebound\.nconf\.v_\d+\.t_\d+\.n_\d+$/.test(path)) return ['nshift']
   return undefined

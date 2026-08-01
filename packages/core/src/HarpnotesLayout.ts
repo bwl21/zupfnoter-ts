@@ -1303,10 +1303,12 @@ export class HarpnotesLayout {
     ]
   }
 
-  private _annotationDraginfo(value?: [number, number]): Record<string, unknown> {
-    return value === undefined
-      ? { handler: 'annotation' }
-      : { handler: 'annotation', value }
+  private _annotationDraginfo(value?: [number, number], confKey?: string): Record<string, unknown> {
+    return {
+      handler: 'annotation',
+      ...(value === undefined ? {} : { value }),
+      ...(confKey === undefined ? {} : { conf_key: confKey }),
+    }
   }
 
   private _layoutMeasureBarover(root: Ellipse | Glyph, layout: LayoutConfig): Ellipse {
@@ -1816,9 +1818,13 @@ export class HarpnotesLayout {
             style: typeof configuredStyle === 'string' ? configuredStyle : 'small',
             color: layout.color.color_default,
             lineWidth: layout.LINE_THIN,
+            confKey: `extract.${extractNr}.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}.*`,
             visible: true,
             more_conf_keys: [],
-            draginfo: this._annotationDraginfo(),
+            draginfo: this._annotationDraginfo(
+              options.pos,
+              `extract.${extractNr}.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}.pos`,
+            ),
             znId: tupletStart.znId,
           })
         }

@@ -122,6 +122,13 @@ K:C
 V:V1 clef=treble-8
 [V:V1] "^#override target" C |]`
 
+const ABC_TUPLET_ANNOTATION = `X:1
+T:tuplet
+M:4/4
+L:1/4
+K:C
+G A B c | (3 GAB cd]`
+
 const ABC_SYNCHPOINT_TRIAD = `X:1
 T:SynchPoint Triad Test
 M:4/4
@@ -318,6 +325,43 @@ describe('HarpnotesLayout', () => {
       const xs = ellipses.map((ellipse) => ellipse.center[0]).sort((left, right) => left - right)
       expect(synchLine?.from[0]).toBeCloseTo(xs[0] ?? 0)
       expect(synchLine?.to[0]).toBeCloseTo(xs[2] ?? 0)
+    })
+  })
+
+  describe('tuplets', () => {
+    it('uses the configured global tuplet annotation style', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      expect(extract0).toBeDefined()
+      if (extract0 === undefined) return
+      extract0.tuplets = {
+        ...(extract0.tuplets ?? {}),
+        style: 'small_bold',
+      }
+
+      const { sheet } = pipelineWithConfig(ABC_TUPLET_ANNOTATION, config)
+      const tuplet = sheet.children.find((child): child is Annotation => (
+        child.type === 'Annotation'
+        && child.confKey?.includes('.notebound.tuplet.')
+      ))
+
+      expect(tuplet?.style).toBe('small_bold')
+    })
+
+    it('makes the visible tuplet annotation draggable', () => {
+      const { sheet } = pipeline(ABC_TUPLET_ANNOTATION)
+      const tuplets = sheet.children.filter((child): child is Annotation => (
+        child.type === 'Annotation'
+        && child.confKey?.includes('.notebound.tuplet.')
+      ))
+
+      expect(tuplets).toHaveLength(1)
+      expect(tuplets[0]?.draginfo).toMatchObject({
+        handler: 'annotation',
+        value: [0, 0],
+        conf_key: expect.stringMatching(/\.notebound\.tuplet\.v_1\.[^.]+\.pos$/),
+      })
+      expect(tuplets[0]?.confKey).toMatch(/\.notebound\.tuplet\.v_1\.[^.]+\.\*$/)
     })
   })
 

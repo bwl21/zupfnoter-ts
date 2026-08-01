@@ -320,6 +320,7 @@ export interface ExtractConfig {
   }
   tuplets?: {
     text?: string
+    style?: string
   }
   chords?: Record<string, unknown>
   instrument_shape?: string | null
