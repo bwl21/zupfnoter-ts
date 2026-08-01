@@ -5394,7 +5394,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.26112.pos"
 - children[713].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[7,-8]}
+  - actual: {"handler":"annotation","value":[7,-8],"conf_key":"extract.notebound.variantend.v_1.26112.pos"}
 - children[714].center (mismatch)
   - expected: [370.3,198.4806]
   - actual: [370.3,198.48061413465558]
@@ -5403,7 +5403,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.27648.pos"
 - children[714].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[34,-22]}
+  - actual: {"handler":"annotation","value":[34,-22],"conf_key":"extract.notebound.variantend.v_1.27648.pos"}
 - children[715].from (extra)
   - expected: undefined
   - actual: [244.3,17.32988828484378]
@@ -13569,7 +13569,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_3.t_36096.0.pos"
 - children[1880].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_3.t_36096.0.pos"}
 - children[1881].fill (extra)
   - expected: undefined
   - actual: false
@@ -13701,7 +13701,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_3.26112.pos"
 - children[1892].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.variantend.v_3.26112.pos"}
 - children[1893].center (mismatch)
   - expected: [56.3,213.4806]
   - actual: [56.3,213.48061413465558]
@@ -13710,7 +13710,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_3.27648.pos"
 - children[1893].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.variantend.v_3.27648.pos"}
 - children[1894].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -18292,7 +18292,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.26112.pos"
 - children[610].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[7,-8]}
+  - actual: {"handler":"annotation","value":[7,-8],"conf_key":"extract.notebound.variantend.v_1.26112.pos"}
 - children[611].center (mismatch)
   - expected: [370.3,199.2665]
   - actual: [370.3,199.26652075090493]
@@ -18301,7 +18301,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.27648.pos"
 - children[611].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[34,-22]}
+  - actual: {"handler":"annotation","value":[34,-22],"conf_key":"extract.notebound.variantend.v_1.27648.pos"}
 - children[612].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -22520,7 +22520,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.26112.pos"
 - children[580].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-14,-4]}
+  - actual: {"handler":"annotation","value":[-14,-4],"conf_key":"extract.notebound.variantend.v_2.26112.pos"}
 - children[581].center (mismatch)
   - expected: [210.3,206.9215]
   - actual: [210.3,206.92154401380824]
@@ -22529,7 +22529,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.27648.pos"
 - children[581].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[12,-18]}
+  - actual: {"handler":"annotation","value":[12,-18],"conf_key":"extract.notebound.variantend.v_2.27648.pos"}
 - children[582].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -27045,7 +27045,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_3.t_36096.0.pos"
 - children[596].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_3.t_36096.0.pos"}
 - children[597].fill (extra)
   - expected: undefined
   - actual: false
@@ -27174,7 +27174,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_3.26112.pos"
 - children[608].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-23,-5]}
+  - actual: {"handler":"annotation","value":[-23,-5],"conf_key":"extract.notebound.variantend.v_3.26112.pos"}
 - children[609].center (mismatch)
   - expected: [37.3,224.5299]
   - actual: [37.3,224.52988734975477]
@@ -27183,7 +27183,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_3.27648.pos"
 - children[609].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-23,-4]}
+  - actual: {"handler":"annotation","value":[-23,-4],"conf_key":"extract.notebound.variantend.v_3.27648.pos"}
 - children[610].confKey (extra)
   - expected: undefined
   - actual: "extract.3.legend.pos"
@@ -31756,7 +31756,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.26112.pos"
 - children[610].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[7,-8]}
+  - actual: {"handler":"annotation","value":[7,-8],"conf_key":"extract.notebound.variantend.v_1.26112.pos"}
 - children[611].center (mismatch)
   - expected: [370.3,199.2665]
   - actual: [370.3,199.26652075090493]
@@ -31765,7 +31765,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.27648.pos"
 - children[611].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[34,-22]}
+  - actual: {"handler":"annotation","value":[34,-22],"conf_key":"extract.notebound.variantend.v_1.27648.pos"}
 - children[612].confKey (extra)
   - expected: undefined
   - actual: "extract.4.legend.pos"
@@ -31958,7 +31958,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 246_Horch-was-kommt-von-draussen-rein [extract 0]
 
-- Issues: 3044
+- Issues: 3048
 - children[0].from (extra)
   - expected: undefined
   - actual: [415.2,16.826431959139]
@@ -33015,6 +33015,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[116].znId (extra)
   - expected: undefined
   - actual: "tp_1_1"
+- children[116].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.tuplet.v_1.tp_1_1.*"
+- children[116].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,0],"conf_key":"extract.0.notebound.tuplet.v_1.tp_1_1.pos"}
 - children[117].center (mismatch)
   - expected: [415.2,16.8264]
   - actual: [415.2,16.826431959139]
@@ -35741,7 +35747,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_0.0.pos"
 - children[550].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-3]}
+  - actual: {"handler":"annotation","value":[0,-3],"conf_key":"extract.notebound.decoration.v_1.t_0.0.pos"}
 - children[551].center (mismatch)
   - expected: [306.8,43.7084]
   - actual: [306.8,43.70840933965706]
@@ -35753,7 +35759,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_3264.0.pos"
 - children[551].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_1.t_3264.0.pos"}
 - children[552].center (mismatch)
   - expected: [295.3,44.8773]
   - actual: [295.3,44.87732579350602]
@@ -35765,7 +35771,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_3456.0.pos"
 - children[552].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_1.t_3456.0.pos"}
 - children[553].center (mismatch)
   - expected: [270.3,49.4069]
   - actual: [270.3,49.406877052170735]
@@ -35777,7 +35783,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_4224.0.pos"
 - children[553].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_1.t_4224.0.pos"}
 - children[554].center (mismatch)
   - expected: [278.8,63.6437]
   - actual: [278.8,63.643743159430855]
@@ -35789,7 +35795,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_6144.0.pos"
 - children[554].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-3]}
+  - actual: {"handler":"annotation","value":[0,-3],"conf_key":"extract.notebound.decoration.v_1.t_6144.0.pos"}
 - children[555].center (mismatch)
   - expected: [362.3,85.3998]
   - actual: [362.3,85.39976286026996]
@@ -35801,7 +35807,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_8448.0.pos"
 - children[555].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_1.t_8448.0.pos"}
 - children[556].center (mismatch)
   - expected: [316.3,102.8848]
   - actual: [316.3,102.88480481576065]
@@ -35813,7 +35819,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_11520.0.pos"
 - children[556].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_1.t_11520.0.pos"}
 - children[557].center (mismatch)
   - expected: [304.8,134.6525]
   - actual: [304.8,134.65254469171833]
@@ -35825,7 +35831,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_16320.0.pos"
 - children[557].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_1.t_16320.0.pos"}
 - children[558].center (mismatch)
   - expected: [339.3,227.8599]
   - actual: [339.3,227.859905144108]
@@ -35837,7 +35843,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_30720.0.pos"
 - children[558].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-3]}
+  - actual: {"handler":"annotation","value":[0,-3],"conf_key":"extract.notebound.decoration.v_1.t_30720.0.pos"}
 - children[559].center (mismatch)
   - expected: [350.8,253.5517]
   - actual: [350.8,253.55171470266328]
@@ -35849,7 +35855,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_33792.0.pos"
 - children[559].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-3]}
+  - actual: {"handler":"annotation","value":[0,-3],"conf_key":"extract.notebound.decoration.v_1.t_33792.0.pos"}
 - children[560].fill (extra)
   - expected: undefined
   - actual: false
@@ -36008,7 +36014,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.27648.pos"
 - children[574].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.variantend.v_1.27648.pos"}
 - children[575].center (mismatch)
   - expected: [332.3,223.8599]
   - actual: [332.3,223.859905144108]
@@ -36017,7 +36023,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.30720.pos"
 - children[575].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.variantend.v_1.30720.pos"}
 - children[576].from (extra)
   - expected: undefined
   - actual: [278.8,16.826431959139]
@@ -38019,6 +38025,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[797].znId (extra)
   - expected: undefined
   - actual: "tp_2_1"
+- children[797].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.tuplet.v_2.tp_2_1.*"
+- children[797].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,0],"conf_key":"extract.0.notebound.tuplet.v_2.tp_2_1.pos"}
 - children[798].center (mismatch)
   - expected: [278.8,16.8264]
   - actual: [278.8,16.826431959139]
@@ -40889,7 +40901,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.27648.pos"
 - children[1233].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.variantend.v_2.27648.pos"}
 - children[1234].center (mismatch)
   - expected: [76.3,223.8599]
   - actual: [76.3,223.859905144108]
@@ -40898,7 +40910,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.30720.pos"
 - children[1234].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-7,-7]}
+  - actual: {"handler":"annotation","value":[-7,-7],"conf_key":"extract.notebound.variantend.v_2.30720.pos"}
 - children[1235].center (mismatch)
   - expected: [111.3,194.5274]
   - actual: [111.3,194.52740788033566]
@@ -40907,7 +40919,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_2.26496.pos"
 - children[1235].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-7]}
+  - actual: {"handler":"annotation","value":[5,-7],"conf_key":"extract.notebound.annotation.v_2.26496.pos"}
 - children[1236].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -41094,7 +41106,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 3015_reference_sheet [extract 0]
 
-- Issues: 686
+- Issues: 688
 - children[0].from (extra)
   - expected: undefined
   - actual: [278.8,20]
@@ -41703,37 +41715,37 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.5376.pos"
 - children[81].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-14,-7]}
+  - actual: {"handler":"annotation","value":[-14,-7],"conf_key":"extract.notebound.partname.v_1.5376.pos"}
 - children[82].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_1.0.pos"
 - children[82].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.0.pos"}
 - children[83].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_1.0.1.pos"
 - children[83].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,5]}
+  - actual: {"handler":"annotation","value":[5,5],"conf_key":"extract.notebound.annotation.v_1.0.1.pos"}
 - children[84].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_1.1536.pos"
 - children[84].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.1536.pos"}
 - children[85].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_1.2304.pos"
 - children[85].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.2304.pos"}
 - children[86].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_1.2688.pos"
 - children[86].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.2688.pos"}
 - children[87].center (mismatch)
   - expected: [306.8,60.7]
   - actual: [306.8,60.699999999999996]
@@ -41742,25 +41754,25 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_1.2880.pos"
 - children[87].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.2880.pos"}
 - children[88].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_1.3072.pos"
 - children[88].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-7]}
+  - actual: {"handler":"annotation","value":[5,-7],"conf_key":"extract.notebound.annotation.v_1.3072.pos"}
 - children[89].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_1.4224.pos"
 - children[89].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[20,-5]}
+  - actual: {"handler":"annotation","value":[20,-5],"conf_key":"extract.notebound.annotation.v_1.4224.pos"}
 - children[90].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_1.4608.pos"
 - children[90].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.4608.pos"}
 - children[91].center (mismatch)
   - expected: [306.8,117.6]
   - actual: [306.8,117.59999999999998]
@@ -41769,7 +41781,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_1.5376.pos"
 - children[91].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.5376.pos"}
 - children[92].center (mismatch)
   - expected: [306.8,148.6]
   - actual: [306.8,148.59999999999997]
@@ -41778,7 +41790,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_1.6912.pos"
 - children[92].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.6912.pos"}
 - children[93].center (mismatch)
   - expected: [306.8,154.6]
   - actual: [306.8,154.59999999999997]
@@ -41787,7 +41799,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_1.7680.pos"
 - children[93].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.7680.pos"}
 - children[94].center (mismatch)
   - expected: [306.8,159.6]
   - actual: [306.8,159.59999999999997]
@@ -41796,7 +41808,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_1.8064.pos"
 - children[94].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.8064.pos"}
 - children[95].center (mismatch)
   - expected: [306.8,162.8]
   - actual: [306.8,162.79999999999998]
@@ -41805,13 +41817,13 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_1.8256.pos"
 - children[95].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.8256.pos"}
 - children[96].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_1.8448.pos"
 - children[96].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.8448.pos"}
 - children[97].center (mismatch)
   - expected: [306.8,183.95]
   - actual: [306.8,183.94999999999996]
@@ -41820,7 +41832,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_1.9984.pos"
 - children[97].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-2]}
+  - actual: {"handler":"annotation","value":[5,-2],"conf_key":"extract.notebound.annotation.v_1.9984.pos"}
 - children[98].from (extra)
   - expected: undefined
   - actual: [232.8,20]
@@ -41875,6 +41887,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[103].znId (extra)
   - expected: undefined
   - actual: "1536"
+- children[103].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.tuplet.v_2.1536.*"
+- children[103].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,0],"conf_key":"extract.0.notebound.tuplet.v_2.1536.pos"}
 - children[104].znId (extra)
   - expected: undefined
   - actual: "0"
@@ -42177,43 +42195,43 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.5376.pos"
 - children[145].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-12,-7]}
+  - actual: {"handler":"annotation","value":[-12,-7],"conf_key":"extract.notebound.partname.v_2.5376.pos"}
 - children[146].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_2.0.pos"
 - children[146].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-7]}
+  - actual: {"handler":"annotation","value":[5,-7],"conf_key":"extract.notebound.annotation.v_2.0.pos"}
 - children[147].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_2.768.pos"
 - children[147].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-10,-5]}
+  - actual: {"handler":"annotation","value":[-10,-5],"conf_key":"extract.notebound.annotation.v_2.768.pos"}
 - children[148].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_2.1536.pos"
 - children[148].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[8,5]}
+  - actual: {"handler":"annotation","value":[8,5],"conf_key":"extract.notebound.annotation.v_2.1536.pos"}
 - children[149].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_2.2304.pos"
 - children[149].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,1]}
+  - actual: {"handler":"annotation","value":[5,1],"conf_key":"extract.notebound.annotation.v_2.2304.pos"}
 - children[150].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_2.4224.pos"
 - children[150].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[10,2]}
+  - actual: {"handler":"annotation","value":[10,2],"conf_key":"extract.notebound.annotation.v_2.4224.pos"}
 - children[151].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_2.4608.pos"
 - children[151].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-31,1]}
+  - actual: {"handler":"annotation","value":[-31,1],"conf_key":"extract.notebound.annotation.v_2.4608.pos"}
 - children[152].center (mismatch)
   - expected: [237.8,112.6]
   - actual: [237.8,112.59999999999998]
@@ -42222,7 +42240,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_2.5376.pos"
 - children[152].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-7]}
+  - actual: {"handler":"annotation","value":[5,-7],"conf_key":"extract.notebound.annotation.v_2.5376.pos"}
 - children[155].from (extra)
   - expected: undefined
   - actual: [163.8,20]
@@ -42561,7 +42579,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_3.t_6912.0.pos"
 - children[218].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-3]}
+  - actual: {"handler":"annotation","value":[0,-3],"conf_key":"extract.notebound.decoration.v_3.t_6912.0.pos"}
 - children[219].fill (extra)
   - expected: undefined
   - actual: false
@@ -42759,31 +42777,31 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_3.3072.pos"
 - children[241].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.variantend.v_3.3072.pos"}
 - children[242].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.variantend.v_3.4608.pos"
 - children[242].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.variantend.v_3.4608.pos"}
 - children[243].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_3.0.pos"
 - children[243].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[10,0]}
+  - actual: {"handler":"annotation","value":[10,0],"conf_key":"extract.notebound.annotation.v_3.0.pos"}
 - children[244].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_3.1536.pos"
 - children[244].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[10,-5]}
+  - actual: {"handler":"annotation","value":[10,-5],"conf_key":"extract.notebound.annotation.v_3.1536.pos"}
 - children[245].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_3.3072.pos"
 - children[245].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[10,-2]}
+  - actual: {"handler":"annotation","value":[10,-2],"conf_key":"extract.notebound.annotation.v_3.3072.pos"}
 - children[246].center (mismatch)
   - expected: [123.8,81.6]
   - actual: [123.80000000000001,81.6]
@@ -42792,13 +42810,13 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_3.4224.pos"
 - children[246].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-40,0]}
+  - actual: {"handler":"annotation","value":[-40,0],"conf_key":"extract.notebound.annotation.v_3.4224.pos"}
 - children[247].confKey (extra)
   - expected: undefined
   - actual: "extract.notebound.annotation.v_3.4608.pos"
 - children[247].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-15,-10]}
+  - actual: {"handler":"annotation","value":[-15,-10],"conf_key":"extract.notebound.annotation.v_3.4608.pos"}
 - children[248].center (mismatch)
   - expected: [123.8,112.6]
   - actual: [123.80000000000001,112.59999999999998]
@@ -42807,7 +42825,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_3.4992.pos"
 - children[248].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-40,10]}
+  - actual: {"handler":"annotation","value":[-40,10],"conf_key":"extract.notebound.annotation.v_3.4992.pos"}
 - children[249].center (mismatch)
   - expected: [164.8,112.6]
   - actual: [164.8,112.59999999999998]
@@ -42816,7 +42834,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_3.4992.1.pos"
 - children[249].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[1,10]}
+  - actual: {"handler":"annotation","value":[1,10],"conf_key":"extract.notebound.annotation.v_3.4992.1.pos"}
 - children[250].center (mismatch)
   - expected: [168.8,143.6]
   - actual: [168.8,143.59999999999997]
@@ -42825,7 +42843,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.annotation.v_3.6912.pos"
 - children[250].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[5,-7]}
+  - actual: {"handler":"annotation","value":[5,-7],"conf_key":"extract.notebound.annotation.v_3.6912.pos"}
 - children[251].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -48361,7 +48379,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.16896.pos"
 - children[769].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[17,-2]}
+  - actual: {"handler":"annotation","value":[17,-2],"conf_key":"extract.notebound.variantend.v_1.16896.pos"}
 - children[770].center (mismatch)
   - expected: [261.3,105.9423]
   - actual: [261.3,105.94230466907727]
@@ -48370,7 +48388,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.18432.pos"
 - children[770].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[17,-6]}
+  - actual: {"handler":"annotation","value":[17,-6],"conf_key":"extract.notebound.variantend.v_1.18432.pos"}
 - children[771].from (extra)
   - expected: undefined
   - actual: [163.8,16.572079861656974]
@@ -53389,7 +53407,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.16896.pos"
 - children[1476].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-29,-7]}
+  - actual: {"handler":"annotation","value":[-29,-7],"conf_key":"extract.notebound.variantend.v_2.16896.pos"}
 - children[1477].center (mismatch)
   - expected: [76.3,104.9423]
   - actual: [76.3,104.94230466907727]
@@ -53398,7 +53416,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.18432.pos"
 - children[1477].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-30,-7]}
+  - actual: {"handler":"annotation","value":[-30,-7],"conf_key":"extract.notebound.variantend.v_2.18432.pos"}
 - children[1478].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -58817,7 +58835,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.16896.pos"
 - children[769].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[17,-6]}
+  - actual: {"handler":"annotation","value":[17,-6],"conf_key":"extract.notebound.variantend.v_1.16896.pos"}
 - children[770].center (mismatch)
   - expected: [275.3,97.2345]
   - actual: [275.3,97.23453908984825]
@@ -58826,7 +58844,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.18432.pos"
 - children[770].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[31,-15]}
+  - actual: {"handler":"annotation","value":[31,-15],"conf_key":"extract.notebound.variantend.v_1.18432.pos"}
 - children[771].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -64230,7 +64248,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.16896.pos"
 - children[769].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[12,-5]}
+  - actual: {"handler":"annotation","value":[12,-5],"conf_key":"extract.notebound.variantend.v_1.16896.pos"}
 - children[770].center (mismatch)
   - expected: [278.3,99.244]
   - actual: [278.3,99.24398208733035]
@@ -64239,7 +64257,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.18432.pos"
 - children[770].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[34,-12]}
+  - actual: {"handler":"annotation","value":[34,-12],"conf_key":"extract.notebound.variantend.v_1.18432.pos"}
 - children[771].from (extra)
   - expected: undefined
   - actual: [163.8,16.56075540561632]
@@ -69261,7 +69279,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.16896.pos"
 - children[1476].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-21,-4]}
+  - actual: {"handler":"annotation","value":[-21,-4],"conf_key":"extract.notebound.variantend.v_2.16896.pos"}
 - children[1477].center (mismatch)
   - expected: [85.3,106.244]
   - actual: [85.3,106.24398208733035]
@@ -69270,7 +69288,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.18432.pos"
 - children[1477].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-21,-5]}
+  - actual: {"handler":"annotation","value":[-21,-5],"conf_key":"extract.notebound.variantend.v_2.18432.pos"}
 - children[1478].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -75106,7 +75124,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_59904.0.pos"
 - children[843].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-10,-4]}
+  - actual: {"handler":"annotation","value":[-10,-4],"conf_key":"extract.notebound.decoration.v_1.t_59904.0.pos"}
 - children[844].center (mismatch)
   - expected: [281.8,207.0239]
   - actual: [281.8,207.02390811782178]
@@ -75118,7 +75136,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_72192.0.pos"
 - children[844].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-4]}
+  - actual: {"handler":"annotation","value":[0,-4],"conf_key":"extract.notebound.decoration.v_1.t_72192.0.pos"}
 - children[845].znId (extra)
   - expected: undefined
   - actual: "96768"
@@ -75127,7 +75145,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_96768.0.pos"
 - children[845].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-4]}
+  - actual: {"handler":"annotation","value":[0,-4],"conf_key":"extract.notebound.decoration.v_1.t_96768.0.pos"}
 - children[846].fill (extra)
   - expected: undefined
   - actual: false
@@ -75178,7 +75196,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.73728.pos"
 - children[850].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[11,-8]}
+  - actual: {"handler":"annotation","value":[11,-8],"conf_key":"extract.notebound.partname.v_1.73728.pos"}
 - children[851].from (extra)
   - expected: undefined
   - actual: [244.3,16.39073365106649]
@@ -83833,7 +83851,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.73728.pos"
 - children[2033].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.73728.pos"}
 - children[2034].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -89678,7 +89696,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_59904.0.pos"
 - children[843].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-10,-4]}
+  - actual: {"handler":"annotation","value":[-10,-4],"conf_key":"extract.notebound.decoration.v_1.t_59904.0.pos"}
 - children[844].center (mismatch)
   - expected: [281.8,205.8141]
   - actual: [281.8,205.81408789885612]
@@ -89690,7 +89708,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_72192.0.pos"
 - children[844].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-4]}
+  - actual: {"handler":"annotation","value":[0,-4],"conf_key":"extract.notebound.decoration.v_1.t_72192.0.pos"}
 - children[845].znId (extra)
   - expected: undefined
   - actual: "96768"
@@ -89699,7 +89717,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_96768.0.pos"
 - children[845].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-4]}
+  - actual: {"handler":"annotation","value":[0,-4],"conf_key":"extract.notebound.decoration.v_1.t_96768.0.pos"}
 - children[846].fill (extra)
   - expected: undefined
   - actual: false
@@ -89750,7 +89768,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.73728.pos"
 - children[850].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[11,-8]}
+  - actual: {"handler":"annotation","value":[11,-8],"conf_key":"extract.notebound.partname.v_1.73728.pos"}
 - children[851].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -98601,7 +98619,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.73728.pos"
 - children[1182].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[45,-6]}
+  - actual: {"handler":"annotation","value":[45,-6],"conf_key":"extract.notebound.partname.v_2.73728.pos"}
 - children[1183].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -104437,7 +104455,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_59904.0.pos"
 - children[843].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-10,-4]}
+  - actual: {"handler":"annotation","value":[-10,-4],"conf_key":"extract.notebound.decoration.v_1.t_59904.0.pos"}
 - children[844].center (mismatch)
   - expected: [281.8,205.8141]
   - actual: [281.8,205.81408789885612]
@@ -104449,7 +104467,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_72192.0.pos"
 - children[844].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-4]}
+  - actual: {"handler":"annotation","value":[0,-4],"conf_key":"extract.notebound.decoration.v_1.t_72192.0.pos"}
 - children[845].znId (extra)
   - expected: undefined
   - actual: "96768"
@@ -104458,7 +104476,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_96768.0.pos"
 - children[845].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-4]}
+  - actual: {"handler":"annotation","value":[0,-4],"conf_key":"extract.notebound.decoration.v_1.t_96768.0.pos"}
 - children[846].fill (extra)
   - expected: undefined
   - actual: false
@@ -104509,7 +104527,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.73728.pos"
 - children[850].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[11,-8]}
+  - actual: {"handler":"annotation","value":[11,-8],"conf_key":"extract.notebound.partname.v_1.73728.pos"}
 - children[851].confKey (extra)
   - expected: undefined
   - actual: "extract.4.legend.pos"
@@ -139337,7 +139355,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[919].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[12,-2]}
+  - actual: {"handler":"annotation","value":[12,-2],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[920].center (mismatch)
   - expected: [325.3,90.121]
   - actual: [325.3,90.12101239124704]
@@ -139346,7 +139364,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[920].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[12,-5]}
+  - actual: {"handler":"annotation","value":[12,-5],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[921].center (mismatch)
   - expected: [324.175,156.1242]
   - actual: [324.175,156.12417611389404]
@@ -139355,7 +139373,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.30720.pos"
 - children[921].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-90,-1]}
+  - actual: {"handler":"annotation","value":[-90,-1],"conf_key":"extract.notebound.partname.v_1.30720.pos"}
 - children[922].from (extra)
   - expected: undefined
   - actual: [140.8,12.689164249934088]
@@ -145541,7 +145559,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.0.pos"
 - children[1812].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.0.pos"}
 - children[1813].center (mismatch)
   - expected: [33.3,88.121]
   - actual: [33.3,88.12101239124704]
@@ -145550,7 +145568,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.18432.pos"
 - children[1813].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.18432.pos"}
 - children[1814].center (mismatch)
   - expected: [90.8,150.1242]
   - actual: [90.8,150.12417611389404]
@@ -145559,7 +145577,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.30720.pos"
 - children[1814].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.30720.pos"}
 - children[1815].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -151713,7 +151731,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[919].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[12,-2]}
+  - actual: {"handler":"annotation","value":[12,-2],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[920].center (mismatch)
   - expected: [325.3,97.2605]
   - actual: [325.3,97.26046489653211]
@@ -151722,7 +151740,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[920].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[12,-5]}
+  - actual: {"handler":"annotation","value":[12,-5],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[921].center (mismatch)
   - expected: [326.8,169.7578]
   - actual: [326.8,169.75781914390998]
@@ -151731,7 +151749,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.30720.pos"
 - children[921].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-90,-1]}
+  - actual: {"handler":"annotation","value":[-90,-1],"conf_key":"extract.notebound.partname.v_1.30720.pos"}
 - children[922].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -158116,7 +158134,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.0.pos"
 - children[890].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-109,-6]}
+  - actual: {"handler":"annotation","value":[-109,-6],"conf_key":"extract.notebound.partname.v_2.0.pos"}
 - children[891].center (mismatch)
   - expected: [33.3,93.1015]
   - actual: [33.3,93.10148504134735]
@@ -158125,7 +158143,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.18432.pos"
 - children[891].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.18432.pos"}
 - children[892].center (mismatch)
   - expected: [33.8,159.7749]
   - actual: [33.8,159.77494912759232]
@@ -158134,7 +158152,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.30720.pos"
 - children[892].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-61,-6]}
+  - actual: {"handler":"annotation","value":[-61,-6],"conf_key":"extract.notebound.partname.v_2.30720.pos"}
 - children[893].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -164279,7 +164297,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[919].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[12,-2]}
+  - actual: {"handler":"annotation","value":[12,-2],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[920].center (mismatch)
   - expected: [325.3,97.2605]
   - actual: [325.3,97.26046489653211]
@@ -164288,7 +164306,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[920].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[12,-5]}
+  - actual: {"handler":"annotation","value":[12,-5],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[921].center (mismatch)
   - expected: [324.175,169.7578]
   - actual: [324.175,169.75781914390998]
@@ -164297,7 +164315,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.30720.pos"
 - children[921].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-90,-1]}
+  - actual: {"handler":"annotation","value":[-90,-1],"conf_key":"extract.notebound.partname.v_1.30720.pos"}
 - children[922].confKey (extra)
   - expected: undefined
   - actual: "extract.4.legend.pos"
@@ -168312,7 +168330,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_2688.0.pos"
 - children[567].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,1]}
+  - actual: {"handler":"annotation","value":[0,1],"conf_key":"extract.notebound.decoration.v_1.t_2688.0.pos"}
 - children[568].znId (extra)
   - expected: undefined
   - actual: "34560"
@@ -168321,7 +168339,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_34560.0.pos"
 - children[568].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_1.t_34560.0.pos"}
 - children[569].fill (extra)
   - expected: undefined
   - actual: false
@@ -168390,7 +168408,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[577].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[10,-7]}
+  - actual: {"handler":"annotation","value":[10,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[578].center (mismatch)
   - expected: [205.8,64.3767]
   - actual: [205.8,64.37670002566077]
@@ -168399,7 +168417,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.5760.pos"
 - children[578].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.5760.pos"}
 - children[579].center (mismatch)
   - expected: [205.8,107.0762]
   - actual: [205.8,107.07621247113164]
@@ -168408,7 +168426,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.11904.pos"
 - children[579].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.11904.pos"}
 - children[580].center (mismatch)
   - expected: [205.8,190.8573]
   - actual: [205.8,190.8573261483192]
@@ -168417,7 +168435,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.24192.pos"
 - children[580].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.24192.pos"}
 - children[581].center (mismatch)
   - expected: [205.8,238.6441]
   - actual: [205.8,238.6440851937388]
@@ -168426,7 +168444,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.30720.pos"
 - children[581].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.30720.pos"}
 - children[582].from (extra)
   - expected: undefined
   - actual: [163.8,18.335899409802412]
@@ -170463,7 +170481,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.3072.pos"
 - children[882].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[15,-7]}
+  - actual: {"handler":"annotation","value":[15,-7],"conf_key":"extract.notebound.partname.v_2.3072.pos"}
 - children[883].center (mismatch)
   - expected: [217.3,64.3767]
   - actual: [217.3,64.37670002566077]
@@ -170472,7 +170490,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.5760.pos"
 - children[883].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.5760.pos"}
 - children[884].center (mismatch)
   - expected: [205.8,107.0762]
   - actual: [205.8,107.07621247113164]
@@ -170481,7 +170499,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.11904.pos"
 - children[884].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.11904.pos"}
 - children[885].center (mismatch)
   - expected: [240.3,190.8573]
   - actual: [240.3,190.8573261483192]
@@ -170490,7 +170508,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.24192.pos"
 - children[885].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.24192.pos"}
 - children[886].center (mismatch)
   - expected: [159.8,238.6441]
   - actual: [159.8,238.6440851937388]
@@ -170499,7 +170517,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.30720.pos"
 - children[886].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.30720.pos"}
 - children[887].from (extra)
   - expected: undefined
   - actual: [163.8,18.335899409802412]
@@ -172878,7 +172896,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.0.pos"
 - children[1231].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.0.pos"}
 - children[1232].center (mismatch)
   - expected: [179.8,39.1914]
   - actual: [179.8,39.19142930459328]
@@ -172887,7 +172905,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.3072.pos"
 - children[1232].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[16,-8]}
+  - actual: {"handler":"annotation","value":[16,-8],"conf_key":"extract.notebound.partname.v_3.3072.pos"}
 - children[1233].center (mismatch)
   - expected: [99.3,58.3767]
   - actual: [99.3,58.37670002566077]
@@ -172896,7 +172914,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.5760.pos"
 - children[1233].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-7,-13]}
+  - actual: {"handler":"annotation","value":[-7,-13],"conf_key":"extract.notebound.partname.v_3.5760.pos"}
 - children[1234].center (mismatch)
   - expected: [102.3,107.0762]
   - actual: [102.3,107.07621247113164]
@@ -172905,7 +172923,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.11904.pos"
 - children[1234].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.11904.pos"}
 - children[1235].center (mismatch)
   - expected: [159.8,238.6441]
   - actual: [159.8,238.6440851937388]
@@ -172914,7 +172932,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.30720.pos"
 - children[1235].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.30720.pos"}
 - children[1236].from (extra)
   - expected: undefined
   - actual: [71.8,18.335899409802412]
@@ -175029,7 +175047,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.0.pos"
 - children[1543].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_5.0.pos"}
 - children[1544].center (mismatch)
   - expected: [21.8,40.1914]
   - actual: [21.8,40.19142930459328]
@@ -175038,7 +175056,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.3072.pos"
 - children[1544].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_5.3072.pos"}
 - children[1545].center (mismatch)
   - expected: [44.8,64.3767]
   - actual: [44.8,64.37670002566077]
@@ -175047,7 +175065,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.5760.pos"
 - children[1545].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_5.5760.pos"}
 - children[1546].center (mismatch)
   - expected: [21.8,107.0762]
   - actual: [21.8,107.07621247113164]
@@ -175056,7 +175074,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.11904.pos"
 - children[1546].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_5.11904.pos"}
 - children[1547].center (mismatch)
   - expected: [21.8,238.6441]
   - actual: [21.8,238.6440851937388]
@@ -175065,7 +175083,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.30720.pos"
 - children[1547].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_5.30720.pos"}
 - children[1548].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -179092,7 +179110,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_2688.0.pos"
 - children[567].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,1]}
+  - actual: {"handler":"annotation","value":[0,1],"conf_key":"extract.notebound.decoration.v_1.t_2688.0.pos"}
 - children[568].znId (extra)
   - expected: undefined
   - actual: "34560"
@@ -179101,7 +179119,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_34560.0.pos"
 - children[568].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_1.t_34560.0.pos"}
 - children[569].fill (extra)
   - expected: undefined
   - actual: false
@@ -179167,7 +179185,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[576].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-29,-7]}
+  - actual: {"handler":"annotation","value":[-29,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[577].center (mismatch)
   - expected: [183.8,65.5363]
   - actual: [183.8,65.5363272680346]
@@ -179176,7 +179194,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.5760.pos"
 - children[577].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-26,-6]}
+  - actual: {"handler":"annotation","value":[-26,-6],"conf_key":"extract.notebound.partname.v_1.5760.pos"}
 - children[578].center (mismatch)
   - expected: [205.8,107.4838]
   - actual: [205.8,107.48380436185315]
@@ -179185,7 +179203,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.11904.pos"
 - children[578].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.11904.pos"}
 - children[579].center (mismatch)
   - expected: [205.8,191.0804]
   - actual: [205.8,191.08039747064134]
@@ -179194,7 +179212,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.24192.pos"
 - children[579].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.24192.pos"}
 - children[580].from (extra)
   - expected: undefined
   - actual: [163.8,18.355271647954574]
@@ -181225,7 +181243,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.3072.pos"
 - children[879].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[13,-8]}
+  - actual: {"handler":"annotation","value":[13,-8],"conf_key":"extract.notebound.partname.v_2.3072.pos"}
 - children[880].center (mismatch)
   - expected: [205.8,107.4838]
   - actual: [205.8,107.48380436185315]
@@ -181234,7 +181252,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.11904.pos"
 - children[880].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.11904.pos"}
 - children[881].center (mismatch)
   - expected: [240.3,191.0804]
   - actual: [240.3,191.08039747064134]
@@ -181243,7 +181261,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.24192.pos"
 - children[881].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.24192.pos"}
 - children[882].center (mismatch)
   - expected: [181.8,239.1447]
   - actual: [181.8,239.14466382759065]
@@ -181252,7 +181270,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.30720.pos"
 - children[882].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[18,-7]}
+  - actual: {"handler":"annotation","value":[18,-7],"conf_key":"extract.notebound.partname.v_2.30720.pos"}
 - children[883].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -185303,7 +185321,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_2688.0.pos"
 - children[573].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,1]}
+  - actual: {"handler":"annotation","value":[0,1],"conf_key":"extract.notebound.decoration.v_1.t_2688.0.pos"}
 - children[574].znId (extra)
   - expected: undefined
   - actual: "34560"
@@ -185312,7 +185330,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_34560.0.pos"
 - children[574].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_1.t_34560.0.pos"}
 - children[575].fill (extra)
   - expected: undefined
   - actual: false
@@ -185384,7 +185402,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[583].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-26,-6]}
+  - actual: {"handler":"annotation","value":[-26,-6],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[584].center (mismatch)
   - expected: [182.8,66.4906]
   - actual: [182.8,66.4905504207477]
@@ -185393,7 +185411,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.5760.pos"
 - children[584].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-27,-5]}
+  - actual: {"handler":"annotation","value":[-27,-5],"conf_key":"extract.notebound.partname.v_1.5760.pos"}
 - children[585].center (mismatch)
   - expected: [205.8,107.9793]
   - actual: [205.8,107.97930749068838]
@@ -185402,7 +185420,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.11904.pos"
 - children[585].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.11904.pos"}
 - children[586].center (mismatch)
   - expected: [205.8,190.8859]
   - actual: [205.8,190.8859152986619]
@@ -185411,7 +185429,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.24192.pos"
 - children[586].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.24192.pos"}
 - children[587].center (mismatch)
   - expected: [186.8,237.6027]
   - actual: [186.8,237.60270382121672]
@@ -185420,7 +185438,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.30720.pos"
 - children[587].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-23,-7]}
+  - actual: {"handler":"annotation","value":[-23,-7],"conf_key":"extract.notebound.partname.v_1.30720.pos"}
 - children[588].from (extra)
   - expected: undefined
   - actual: [163.8,17.690026210511796]
@@ -187781,7 +187799,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.3072.pos"
 - children[929].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[16,-8]}
+  - actual: {"handler":"annotation","value":[16,-8],"conf_key":"extract.notebound.partname.v_3.3072.pos"}
 - children[930].center (mismatch)
   - expected: [102.3,107.9793]
   - actual: [102.3,107.97930749068838]
@@ -187790,7 +187808,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.11904.pos"
 - children[930].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.11904.pos"}
 - children[931].from (extra)
   - expected: undefined
   - actual: [71.8,17.690026210511796]
@@ -189905,7 +189923,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.0.pos"
 - children[1238].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_5.0.pos"}
 - children[1239].center (mismatch)
   - expected: [21.8,39.6526]
   - actual: [21.8,39.65264174368879]
@@ -189914,7 +189932,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.3072.pos"
 - children[1239].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_5.3072.pos"}
 - children[1240].center (mismatch)
   - expected: [129.8,68.4906]
   - actual: [129.8,68.4905504207477]
@@ -189923,7 +189941,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.5760.pos"
 - children[1240].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[81,-3]}
+  - actual: {"handler":"annotation","value":[81,-3],"conf_key":"extract.notebound.partname.v_5.5760.pos"}
 - children[1241].center (mismatch)
   - expected: [21.8,107.9793]
   - actual: [21.8,107.97930749068838]
@@ -189932,7 +189950,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.11904.pos"
 - children[1241].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_5.11904.pos"}
 - children[1242].center (mismatch)
   - expected: [21.8,237.6027]
   - actual: [21.8,237.60270382121672]
@@ -189941,7 +189959,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.30720.pos"
 - children[1242].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_5.30720.pos"}
 - children[1243].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -231885,7 +231903,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[381].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[382].center (mismatch)
   - expected: [297.8,143.9649]
   - actual: [297.8,143.96491228070175]
@@ -231894,7 +231912,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[382].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[383].center (mismatch)
   - expected: [217.3,208.8772]
   - actual: [217.3,208.87719298245614]
@@ -231903,7 +231921,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[383].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[384].from (extra)
   - expected: undefined
   - actual: [186.8,17.105263157894736]
@@ -233751,7 +233769,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.4608.pos"
 - children[672].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.4608.pos"}
 - children[673].center (mismatch)
   - expected: [263.3,143.9649]
   - actual: [263.3,143.96491228070175]
@@ -233760,7 +233778,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.9216.pos"
 - children[673].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.9216.pos"}
 - children[674].center (mismatch)
   - expected: [182.8,208.8772]
   - actual: [182.8,208.87719298245614]
@@ -233769,7 +233787,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.13824.pos"
 - children[674].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.13824.pos"}
 - children[675].from (extra)
   - expected: undefined
   - actual: [83.3,17.105263157894736]
@@ -235404,7 +235422,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.4608.pos"
 - children[934].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.4608.pos"}
 - children[935].center (mismatch)
   - expected: [79.3,143.9649]
   - actual: [79.3,143.96491228070175]
@@ -235413,7 +235431,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.9216.pos"
 - children[935].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.9216.pos"}
 - children[936].center (mismatch)
   - expected: [79.3,208.8772]
   - actual: [79.3,208.87719298245614]
@@ -235422,7 +235440,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.13824.pos"
 - children[936].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.13824.pos"}
 - children[937].from (extra)
   - expected: undefined
   - actual: [140.8,17.105263157894736]
@@ -236589,7 +236607,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.4608.pos"
 - children[1125].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.4608.pos"}
 - children[1126].center (mismatch)
   - expected: [125.3,143.9649]
   - actual: [125.30000000000001,143.96491228070175]
@@ -236598,7 +236616,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.9216.pos"
 - children[1126].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.9216.pos"}
 - children[1127].center (mismatch)
   - expected: [182.8,208.8772]
   - actual: [182.8,208.87719298245614]
@@ -236607,7 +236625,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.13824.pos"
 - children[1127].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.13824.pos"}
 - children[1128].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -239008,7 +239026,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[347].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[348].center (mismatch)
   - expected: [297.8,140.4528]
   - actual: [297.8,140.45283018867923]
@@ -239017,7 +239035,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[348].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[349].center (mismatch)
   - expected: [217.3,207.366]
   - actual: [217.3,207.36603773584903]
@@ -239026,7 +239044,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[349].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[350].from (extra)
   - expected: undefined
   - actual: [186.8,17.354716981132075]
@@ -240877,7 +240895,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.4608.pos"
 - children[638].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.4608.pos"}
 - children[639].center (mismatch)
   - expected: [263.3,140.4528]
   - actual: [263.3,140.45283018867923]
@@ -240886,7 +240904,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.9216.pos"
 - children[639].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.9216.pos"}
 - children[640].center (mismatch)
   - expected: [182.8,207.366]
   - actual: [182.8,207.36603773584903]
@@ -240895,7 +240913,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.13824.pos"
 - children[640].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.13824.pos"}
 - children[641].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -243128,7 +243146,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[321].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[322].center (mismatch)
   - expected: [297.8,143.9649]
   - actual: [297.8,143.96491228070175]
@@ -243137,7 +243155,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[322].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[323].center (mismatch)
   - expected: [217.3,208.8772]
   - actual: [217.3,208.87719298245614]
@@ -243146,7 +243164,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[323].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[324].from (extra)
   - expected: undefined
   - actual: [83.3,17.105263157894736]
@@ -244781,7 +244799,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.4608.pos"
 - children[583].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.4608.pos"}
 - children[584].center (mismatch)
   - expected: [79.3,143.9649]
   - actual: [79.3,143.96491228070175]
@@ -244790,7 +244808,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.9216.pos"
 - children[584].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.9216.pos"}
 - children[585].center (mismatch)
   - expected: [79.3,208.8772]
   - actual: [79.3,208.87719298245614]
@@ -244799,7 +244817,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.13824.pos"
 - children[585].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.13824.pos"}
 - children[586].from (extra)
   - expected: undefined
   - actual: [140.8,17.105263157894736]
@@ -245966,7 +245984,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.4608.pos"
 - children[774].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.4608.pos"}
 - children[775].center (mismatch)
   - expected: [125.3,143.9649]
   - actual: [125.30000000000001,143.96491228070175]
@@ -245975,7 +245993,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.9216.pos"
 - children[775].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.9216.pos"}
 - children[776].center (mismatch)
   - expected: [182.8,208.8772]
   - actual: [182.8,208.87719298245614]
@@ -245984,7 +246002,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.13824.pos"
 - children[776].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.13824.pos"}
 - children[777].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -250092,7 +250110,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[605].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[606].center (mismatch)
   - expected: [297.8,95.459]
   - actual: [297.8,95.45904761904764]
@@ -250101,7 +250119,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[606].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[607].center (mismatch)
   - expected: [274.8,182.819]
   - actual: [274.8,182.81904761904764]
@@ -250110,7 +250128,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[607].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[608].from (extra)
   - expected: undefined
   - actual: [186.8,17.97142857142857]
@@ -253356,7 +253374,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.0.pos"
 - children[1100].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.0.pos"}
 - children[1101].center (mismatch)
   - expected: [263.3,95.459]
   - actual: [263.3,95.45904761904764]
@@ -253365,7 +253383,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.9216.pos"
 - children[1101].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.9216.pos"}
 - children[1102].center (mismatch)
   - expected: [182.8,182.819]
   - actual: [182.8,182.81904761904764]
@@ -253374,7 +253392,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.18432.pos"
 - children[1102].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.18432.pos"}
 - children[1103].from (extra)
   - expected: undefined
   - actual: [48.8,17.97142857142857]
@@ -256620,7 +256638,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.0.pos"
 - children[1595].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.0.pos"}
 - children[1596].center (mismatch)
   - expected: [125.3,95.459]
   - actual: [125.30000000000001,95.45904761904764]
@@ -256629,7 +256647,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.9216.pos"
 - children[1596].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.9216.pos"}
 - children[1597].center (mismatch)
   - expected: [44.8,182.819]
   - actual: [44.8,182.81904761904764]
@@ -256638,7 +256656,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.18432.pos"
 - children[1597].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.18432.pos"}
 - children[1598].from (extra)
   - expected: undefined
   - actual: [4.55,17.97142857142857]
@@ -259797,7 +259815,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.0.pos"
 - children[2069].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-1,-7]}
+  - actual: {"handler":"annotation","value":[-1,-7],"conf_key":"extract.notebound.partname.v_5.0.pos"}
 - children[2070].center (mismatch)
   - expected: [159.8,95.459]
   - actual: [159.8,95.45904761904764]
@@ -259806,7 +259824,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.9216.pos"
 - children[2070].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_5.9216.pos"}
 - children[2071].center (mismatch)
   - expected: [6.425,181.819]
   - actual: [6.425,181.81904761904764]
@@ -259815,7 +259833,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.18432.pos"
 - children[2071].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[1,-8]}
+  - actual: {"handler":"annotation","value":[1,-8],"conf_key":"extract.notebound.partname.v_5.18432.pos"}
 - children[2072].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -263335,7 +263353,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[500].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-38,-7]}
+  - actual: {"handler":"annotation","value":[-38,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[501].center (mismatch)
   - expected: [243.8,98.5819]
   - actual: [243.8,98.58193176357521]
@@ -263344,7 +263362,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[501].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-58,-6]}
+  - actual: {"handler":"annotation","value":[-58,-6],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[502].center (mismatch)
   - expected: [245.8,180.7919]
   - actual: [245.8,180.7919269581932]
@@ -263353,7 +263371,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[502].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-33,-7]}
+  - actual: {"handler":"annotation","value":[-33,-7],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[503].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -266828,7 +266846,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.0.pos"
 - children[492].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-24,-7]}
+  - actual: {"handler":"annotation","value":[-24,-7],"conf_key":"extract.notebound.partname.v_2.0.pos"}
 - children[493].center (mismatch)
   - expected: [163.3,103.3082]
   - actual: [163.3,103.30817610062894]
@@ -266837,7 +266855,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.9216.pos"
 - children[493].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-104,-1]}
+  - actual: {"handler":"annotation","value":[-104,-1],"conf_key":"extract.notebound.partname.v_2.9216.pos"}
 - children[494].center (mismatch)
   - expected: [163.8,181.0818]
   - actual: [163.8,181.08176100628933]
@@ -266846,7 +266864,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.18432.pos"
 - children[494].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-23,-7]}
+  - actual: {"handler":"annotation","value":[-23,-7],"conf_key":"extract.notebound.partname.v_2.18432.pos"}
 - children[495].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -270357,7 +270375,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[500].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[501].center (mismatch)
   - expected: [297.8,97.8475]
   - actual: [297.8,97.84747378455671]
@@ -270366,7 +270384,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[501].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[502].center (mismatch)
   - expected: [274.8,180.3832]
   - actual: [274.8,180.38322211630123]
@@ -270375,7 +270393,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[502].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[503].from (extra)
   - expected: undefined
   - actual: [48.8,18.717826501429933]
@@ -273639,7 +273657,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.0.pos"
 - children[995].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-25,-7]}
+  - actual: {"handler":"annotation","value":[-25,-7],"conf_key":"extract.notebound.partname.v_4.0.pos"}
 - children[996].center (mismatch)
   - expected: [24.3,104.8475]
   - actual: [24.30000000000001,104.84747378455671]
@@ -273648,7 +273666,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.9216.pos"
 - children[996].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-105,0]}
+  - actual: {"handler":"annotation","value":[-105,0],"conf_key":"extract.notebound.partname.v_4.9216.pos"}
 - children[997].center (mismatch)
   - expected: [23.8,180.3832]
   - actual: [23.799999999999997,180.38322211630123]
@@ -273657,7 +273675,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.18432.pos"
 - children[997].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-25,-7]}
+  - actual: {"handler":"annotation","value":[-25,-7],"conf_key":"extract.notebound.partname.v_4.18432.pos"}
 - children[998].confKey (extra)
   - expected: undefined
   - actual: "extract.4.legend.pos"
@@ -277036,7 +277054,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.0.pos"
 - children[471].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[22,-7]}
+  - actual: {"handler":"annotation","value":[22,-7],"conf_key":"extract.notebound.partname.v_5.0.pos"}
 - children[472].center (mismatch)
   - expected: [24.8,111.5914]
   - actual: [24.80000000000001,111.59142434696896]
@@ -277045,7 +277063,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.9216.pos"
 - children[472].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-139,-4]}
+  - actual: {"handler":"annotation","value":[-139,-4],"conf_key":"extract.notebound.partname.v_5.9216.pos"}
 - children[473].center (mismatch)
   - expected: [24.8,197.0345]
   - actual: [24.8,197.03449975357321]
@@ -277054,7 +277072,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_5.18432.pos"
 - children[473].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[22,-8]}
+  - actual: {"handler":"annotation","value":[22,-8],"conf_key":"extract.notebound.partname.v_5.18432.pos"}
 - children[474].confKey (extra)
   - expected: undefined
   - actual: "extract.5.legend.pos"
@@ -281021,7 +281039,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_31488.0.pos"
 - children[565].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-40,-3]}
+  - actual: {"handler":"annotation","value":[-40,-3],"conf_key":"extract.notebound.decoration.v_1.t_31488.0.pos"}
 - children[566].fill (extra)
   - expected: undefined
   - actual: false
@@ -281111,7 +281129,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.27648.pos"
 - children[573].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[58,-6]}
+  - actual: {"handler":"annotation","value":[58,-6],"conf_key":"extract.notebound.partname.v_1.27648.pos"}
 - children[574].from (extra)
   - expected: undefined
   - actual: [186.8,21.16217242688948]
@@ -284807,7 +284825,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_3.t_31488.0.pos"
 - children[1123].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-55,-3]}
+  - actual: {"handler":"annotation","value":[-55,-3],"conf_key":"extract.notebound.decoration.v_3.t_31488.0.pos"}
 - children[1124].fill (extra)
   - expected: undefined
   - actual: false
@@ -284897,7 +284915,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.27648.pos"
 - children[1131].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.27648.pos"}
 - children[1132].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -288852,7 +288870,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_31488.0.pos"
 - children[565].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-50,-3]}
+  - actual: {"handler":"annotation","value":[-50,-3],"conf_key":"extract.notebound.decoration.v_1.t_31488.0.pos"}
 - children[566].fill (extra)
   - expected: undefined
   - actual: false
@@ -288939,7 +288957,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.27648.pos"
 - children[573].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[45,-7]}
+  - actual: {"handler":"annotation","value":[45,-7],"conf_key":"extract.notebound.partname.v_1.27648.pos"}
 - children[574].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -292900,7 +292918,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_31488.0.pos"
 - children[565].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-40,-3]}
+  - actual: {"handler":"annotation","value":[-40,-3],"conf_key":"extract.notebound.decoration.v_1.t_31488.0.pos"}
 - children[566].fill (extra)
   - expected: undefined
   - actual: false
@@ -292990,7 +293008,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.27648.pos"
 - children[573].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[56,-4]}
+  - actual: {"handler":"annotation","value":[56,-4],"conf_key":"extract.notebound.partname.v_1.27648.pos"}
 - children[574].from (extra)
   - expected: undefined
   - actual: [186.8,21.16217242688948]
@@ -296686,7 +296704,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_3.t_31488.0.pos"
 - children[1123].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-55,-3]}
+  - actual: {"handler":"annotation","value":[-55,-3],"conf_key":"extract.notebound.decoration.v_3.t_31488.0.pos"}
 - children[1124].fill (extra)
   - expected: undefined
   - actual: false
@@ -296776,7 +296794,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.27648.pos"
 - children[1131].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.27648.pos"}
 - children[1132].confKey (extra)
   - expected: undefined
   - actual: "extract.4.legend.pos"
@@ -316556,7 +316574,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.12288.pos"
 - children[471].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.12288.pos"}
 - children[472].from (extra)
   - expected: undefined
   - actual: [221.3,19.267570900123303]
@@ -319064,7 +319082,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.12288.pos"
 - children[839].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.12288.pos"}
 - children[840].from (extra)
   - expected: undefined
   - actual: [94.8,19.267570900123303]
@@ -322382,7 +322400,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.12288.pos"
 - children[1334].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.12288.pos"}
 - children[1335].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -325722,7 +325740,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.12288.pos"
 - children[471].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.12288.pos"}
 - children[472].from (extra)
   - expected: undefined
   - actual: [221.3,19.159616469261138]
@@ -328230,7 +328248,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.12288.pos"
 - children[839].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.12288.pos"}
 - children[840].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -331084,7 +331102,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.12288.pos"
 - children[391].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.12288.pos"}
 - children[392].from (extra)
   - expected: undefined
   - actual: [94.8,19.284464806330696]
@@ -334408,7 +334426,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.12288.pos"
 - children[886].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.12288.pos"}
 - children[887].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -337028,7 +337046,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[374].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[375].center (mismatch)
   - expected: [366.8,139.6508]
   - actual: [366.8,139.65079365079362]
@@ -337037,7 +337055,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[375].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[376].from (extra)
   - expected: undefined
   - actual: [175.3,18.3015873015873]
@@ -338828,7 +338846,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.0.pos"
 - children[643].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.0.pos"}
 - children[644].center (mismatch)
   - expected: [309.3,139.6508]
   - actual: [309.3,139.65079365079362]
@@ -338837,7 +338855,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.9216.pos"
 - children[644].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.9216.pos"}
 - children[645].from (extra)
   - expected: undefined
   - actual: [140.8,18.3015873015873]
@@ -340571,7 +340589,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.0.pos"
 - children[905].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.0.pos"}
 - children[906].center (mismatch)
   - expected: [228.8,139.6508]
   - actual: [228.8,139.65079365079362]
@@ -340580,7 +340598,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.9216.pos"
 - children[906].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.9216.pos"}
 - children[907].from (extra)
   - expected: undefined
   - actual: [94.8,18.3015873015873]
@@ -342353,7 +342371,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.0.pos"
 - children[1172].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.0.pos"}
 - children[1173].center (mismatch)
   - expected: [136.8,139.6508]
   - actual: [136.8,139.65079365079362]
@@ -342362,7 +342380,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.9216.pos"
 - children[1173].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.9216.pos"}
 - children[1174].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -344691,7 +344709,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[321].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-38,-7]}
+  - actual: {"handler":"annotation","value":[-38,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[322].center (mismatch)
   - expected: [348.8,137.1059]
   - actual: [348.8,137.10594947025265]
@@ -344700,7 +344718,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[322].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-22,-8]}
+  - actual: {"handler":"annotation","value":[-22,-8],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[323].from (extra)
   - expected: undefined
   - actual: [175.3,18.39038304808476]
@@ -348805,7 +348823,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[321].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[322].center (mismatch)
   - expected: [366.8,143.0814]
   - actual: [366.8,143.0814332247557]
@@ -348814,7 +348832,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[322].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[323].from (extra)
   - expected: undefined
   - actual: [140.8,18.387622149837135]
@@ -350554,7 +350572,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.9216.pos"
 - children[582].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-50,-8]}
+  - actual: {"handler":"annotation","value":[-50,-8],"conf_key":"extract.notebound.partname.v_3.9216.pos"}
 - children[583].from (extra)
   - expected: undefined
   - actual: [94.8,18.387622149837135]
@@ -352333,7 +352351,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.0.pos"
 - children[847].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[11,-7]}
+  - actual: {"handler":"annotation","value":[11,-7],"conf_key":"extract.notebound.partname.v_4.0.pos"}
 - children[848].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -355496,7 +355514,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[447].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[448].from (extra)
   - expected: undefined
   - actual: [232.8,19.888780009799117]
@@ -357917,7 +357935,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.13824.pos"
 - children[802].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.13824.pos"}
 - children[803].from (extra)
   - expected: undefined
   - actual: [140.8,19.888780009799117]
@@ -360245,7 +360263,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.13824.pos"
 - children[1142].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.13824.pos"}
 - children[1143].from (extra)
   - expected: undefined
   - actual: [94.8,19.888780009799117]
@@ -362651,7 +362669,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.13824.pos"
 - children[1494].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.13824.pos"}
 - children[1495].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -365451,7 +365469,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[386].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[387].from (extra)
   - expected: undefined
   - actual: [232.8,20.08265802269044]
@@ -367872,7 +367890,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.13824.pos"
 - children[741].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.13824.pos"}
 - children[742].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -370675,7 +370693,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[388].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[389].from (extra)
   - expected: undefined
   - actual: [140.8,19.986089644513136]
@@ -373003,7 +373021,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.13824.pos"
 - children[728].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.13824.pos"}
 - children[729].from (extra)
   - expected: undefined
   - actual: [94.8,19.986089644513136]
@@ -375409,7 +375427,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.13824.pos"
 - children[1080].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.13824.pos"}
 - children[1081].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -379556,7 +379574,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.33792.pos"
 - children[580].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[13,-3]}
+  - actual: {"handler":"annotation","value":[13,-3],"conf_key":"extract.notebound.variantend.v_1.33792.pos"}
 - children[581].center (mismatch)
   - expected: [293.3,241.4855]
   - actual: [293.3,241.485549132948]
@@ -379565,7 +379583,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.36864.pos"
 - children[581].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[26,-26]}
+  - actual: {"handler":"annotation","value":[26,-26],"conf_key":"extract.notebound.variantend.v_1.36864.pos"}
 - children[582].from (extra)
   - expected: undefined
   - actual: [186.8,17.003853564547207]
@@ -382733,7 +382751,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.33792.pos"
 - children[1030].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-24,-4]}
+  - actual: {"handler":"annotation","value":[-24,-4],"conf_key":"extract.notebound.variantend.v_2.33792.pos"}
 - children[1031].center (mismatch)
   - expected: [185.3,242.4855]
   - actual: [185.3,242.485549132948]
@@ -382742,7 +382760,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.36864.pos"
 - children[1031].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-59,-25]}
+  - actual: {"handler":"annotation","value":[-59,-25],"conf_key":"extract.notebound.variantend.v_2.36864.pos"}
 - children[1032].from (extra)
   - expected: undefined
   - actual: [140.8,17.003853564547207]
@@ -386015,7 +386033,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_3.33792.pos"
 - children[1493].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-18,-4]}
+  - actual: {"handler":"annotation","value":[-18,-4],"conf_key":"extract.notebound.variantend.v_3.33792.pos"}
 - children[1494].center (mismatch)
   - expected: [127.8,241.4855]
   - actual: [127.80000000000001,241.485549132948]
@@ -386024,7 +386042,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_3.36864.pos"
 - children[1494].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-36,-26]}
+  - actual: {"handler":"annotation","value":[-36,-26],"conf_key":"extract.notebound.variantend.v_3.36864.pos"}
 - children[1495].from (extra)
   - expected: undefined
   - actual: [106.3,17.003853564547207]
@@ -388208,7 +388226,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_4.33792.pos"
 - children[1812].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[23,-7]}
+  - actual: {"handler":"annotation","value":[23,-7],"conf_key":"extract.notebound.variantend.v_4.33792.pos"}
 - children[1813].center (mismatch)
   - expected: [35.8,241.4855]
   - actual: [35.8,241.485549132948]
@@ -388217,7 +388235,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_4.36864.pos"
 - children[1813].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-13,-26]}
+  - actual: {"handler":"annotation","value":[-13,-26],"conf_key":"extract.notebound.variantend.v_4.36864.pos"}
 - children[1814].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -392043,7 +392061,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.33792.pos"
 - children[525].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[13,-4]}
+  - actual: {"handler":"annotation","value":[13,-4],"conf_key":"extract.notebound.variantend.v_1.33792.pos"}
 - children[526].center (mismatch)
   - expected: [298.3,239.7548]
   - actual: [298.3,239.75475687103597]
@@ -392052,7 +392070,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.36864.pos"
 - children[526].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[31,-27]}
+  - actual: {"handler":"annotation","value":[31,-27],"conf_key":"extract.notebound.variantend.v_1.36864.pos"}
 - children[527].from (extra)
   - expected: undefined
   - actual: [186.8,16.649048625792812]
@@ -395220,7 +395238,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.33792.pos"
 - children[975].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-24,-4]}
+  - actual: {"handler":"annotation","value":[-24,-4],"conf_key":"extract.notebound.variantend.v_2.33792.pos"}
 - children[976].center (mismatch)
   - expected: [186.3,239.7548]
   - actual: [186.3,239.75475687103597]
@@ -395229,7 +395247,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_2.36864.pos"
 - children[976].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-58,-27]}
+  - actual: {"handler":"annotation","value":[-58,-27],"conf_key":"extract.notebound.variantend.v_2.36864.pos"}
 - children[977].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -398848,7 +398866,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.33792.pos"
 - children[492].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[13,-4]}
+  - actual: {"handler":"annotation","value":[13,-4],"conf_key":"extract.notebound.variantend.v_1.33792.pos"}
 - children[493].center (mismatch)
   - expected: [231.3,241.4855]
   - actual: [231.3,241.485549132948]
@@ -398857,7 +398875,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_1.36864.pos"
 - children[493].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-36,-26]}
+  - actual: {"handler":"annotation","value":[-36,-26],"conf_key":"extract.notebound.variantend.v_1.36864.pos"}
 - children[494].from (extra)
   - expected: undefined
   - actual: [140.8,17.003853564547207]
@@ -402130,7 +402148,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_3.33792.pos"
 - children[955].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[11,-7]}
+  - actual: {"handler":"annotation","value":[11,-7],"conf_key":"extract.notebound.variantend.v_3.33792.pos"}
 - children[956].center (mismatch)
   - expected: [148.8,241.4855]
   - actual: [148.8,241.485549132948]
@@ -402139,7 +402157,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_3.36864.pos"
 - children[956].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-15,-26]}
+  - actual: {"handler":"annotation","value":[-15,-26],"conf_key":"extract.notebound.variantend.v_3.36864.pos"}
 - children[957].from (extra)
   - expected: undefined
   - actual: [106.3,17.003853564547207]
@@ -404323,7 +404341,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_4.33792.pos"
 - children[1274].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[22,-8]}
+  - actual: {"handler":"annotation","value":[22,-8],"conf_key":"extract.notebound.variantend.v_4.33792.pos"}
 - children[1275].center (mismatch)
   - expected: [31.8,240.4855]
   - actual: [31.799999999999997,240.485549132948]
@@ -404332,7 +404350,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.variantend.v_4.36864.pos"
 - children[1275].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-17,-27]}
+  - actual: {"handler":"annotation","value":[-17,-27],"conf_key":"extract.notebound.variantend.v_4.36864.pos"}
 - children[1276].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -407708,7 +407726,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[482].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[483].center (mismatch)
   - expected: [320.8,167.0548]
   - actual: [320.8,167.0547703180212]
@@ -407717,7 +407735,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[483].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[484].from (extra)
   - expected: undefined
   - actual: [209.8,16.7226148409894]
@@ -410258,7 +410276,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.9216.pos"
 - children[855].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.9216.pos"}
 - children[856].center (mismatch)
   - expected: [240.3,167.0548]
   - actual: [240.3,167.0547703180212]
@@ -410267,7 +410285,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.18432.pos"
 - children[856].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.18432.pos"}
 - children[857].from (extra)
   - expected: undefined
   - actual: [209.8,16.7226148409894]
@@ -412853,7 +412871,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.9216.pos"
 - children[1240].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.9216.pos"}
 - children[1241].center (mismatch)
   - expected: [182.8,167.0548]
   - actual: [182.8,167.0547703180212]
@@ -412862,7 +412880,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.18432.pos"
 - children[1241].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.18432.pos"}
 - children[1242].from (extra)
   - expected: undefined
   - actual: [163.8,16.7226148409894]
@@ -415541,7 +415559,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.9216.pos"
 - children[1633].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.9216.pos"}
 - children[1634].center (mismatch)
   - expected: [10.3,167.0548]
   - actual: [10.3,167.0547703180212]
@@ -415550,7 +415568,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.18432.pos"
 - children[1634].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.18432.pos"}
 - children[1635].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -418545,7 +418563,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[415].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[416].center (mismatch)
   - expected: [320.8,161.0118]
   - actual: [320.8,161.01180092355054]
@@ -418554,7 +418572,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[416].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[417].from (extra)
   - expected: undefined
   - actual: [209.8,17.001026167265266]
@@ -421095,7 +421113,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.9216.pos"
 - children[788].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.9216.pos"}
 - children[789].center (mismatch)
   - expected: [240.3,161.0118]
   - actual: [240.3,161.01180092355054]
@@ -421104,7 +421122,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.18432.pos"
 - children[789].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.18432.pos"}
 - children[790].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -424096,7 +424114,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[418].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[419].center (mismatch)
   - expected: [320.8,172.2792]
   - actual: [320.8,172.27919708029196]
@@ -424105,7 +424123,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[419].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[420].from (extra)
   - expected: undefined
   - actual: [209.8,16.779197080291972]
@@ -426685,7 +426703,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.9216.pos"
 - children[803].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.9216.pos"}
 - children[804].center (mismatch)
   - expected: [182.8,172.2792]
   - actual: [182.8,172.27919708029196]
@@ -426694,7 +426712,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.18432.pos"
 - children[804].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.18432.pos"}
 - children[805].from (extra)
   - expected: undefined
   - actual: [163.8,16.779197080291972]
@@ -429367,7 +429385,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.9216.pos"
 - children[1196].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.9216.pos"}
 - children[1197].center (mismatch)
   - expected: [10.3,172.2792]
   - actual: [10.3,172.27919708029196]
@@ -429376,7 +429394,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.18432.pos"
 - children[1197].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.18432.pos"}
 - children[1198].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -440822,7 +440840,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[406].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[407].center (mismatch)
   - expected: [240.3,81.3127]
   - actual: [240.3,81.31267448352875]
@@ -440831,7 +440849,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[407].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[408].center (mismatch)
   - expected: [318.8,150.7554]
   - actual: [318.8,150.75544388609717]
@@ -440840,7 +440858,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[408].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-29,-5]}
+  - actual: {"handler":"annotation","value":[-29,-5],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[409].center (mismatch)
   - expected: [343.8,213.3283]
   - actual: [343.8,213.3283082077052]
@@ -440849,7 +440867,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[409].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[410].from (extra)
   - expected: undefined
   - actual: [209.8,20.869905080960358]
@@ -442859,7 +442877,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.0.pos"
 - children[709].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.0.pos"}
 - children[710].center (mismatch)
   - expected: [205.8,81.3127]
   - actual: [205.8,81.31267448352875]
@@ -442868,7 +442886,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.4608.pos"
 - children[710].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.4608.pos"}
 - children[711].center (mismatch)
   - expected: [297.8,213.3283]
   - actual: [297.8,213.3283082077052]
@@ -442877,7 +442895,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.13824.pos"
 - children[711].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.13824.pos"}
 - children[712].from (extra)
   - expected: undefined
   - actual: [209.8,20.869905080960358]
@@ -444794,7 +444812,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.0.pos"
 - children[1000].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.0.pos"}
 - children[1001].center (mismatch)
   - expected: [205.8,81.3127]
   - actual: [205.8,81.31267448352875]
@@ -444803,7 +444821,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.4608.pos"
 - children[1001].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.4608.pos"}
 - children[1002].center (mismatch)
   - expected: [191.3,150.7554]
   - actual: [191.3,150.75544388609717]
@@ -444812,7 +444830,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.9216.pos"
 - children[1002].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-53,-5]}
+  - actual: {"handler":"annotation","value":[-53,-5],"conf_key":"extract.notebound.partname.v_3.9216.pos"}
 - children[1003].center (mismatch)
   - expected: [240.3,213.3283]
   - actual: [240.3,213.3283082077052]
@@ -444821,7 +444839,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.13824.pos"
 - children[1003].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.13824.pos"}
 - children[1004].from (extra)
   - expected: undefined
   - actual: [163.8,20.869905080960358]
@@ -446816,7 +446834,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.0.pos"
 - children[1303].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.0.pos"}
 - children[1304].center (mismatch)
   - expected: [159.8,81.3127]
   - actual: [159.8,81.31267448352875]
@@ -446825,7 +446843,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.4608.pos"
 - children[1304].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.4608.pos"}
 - children[1305].center (mismatch)
   - expected: [159.8,213.3283]
   - actual: [159.8,213.3283082077052]
@@ -446834,7 +446852,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.13824.pos"
 - children[1305].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.13824.pos"}
 - children[1306].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -449307,7 +449325,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[346].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[347].center (mismatch)
   - expected: [240.3,80.0941]
   - actual: [240.3,80.09409701928698]
@@ -449316,7 +449334,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[347].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[348].center (mismatch)
   - expected: [318.8,148.1841]
   - actual: [318.8,148.18410286382235]
@@ -449325,7 +449343,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[348].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-29,-5]}
+  - actual: {"handler":"annotation","value":[-29,-5],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[349].center (mismatch)
   - expected: [343.8,213.7762]
   - actual: [343.8,213.7761542957335]
@@ -449334,7 +449352,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[349].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[350].from (extra)
   - expected: undefined
   - actual: [209.8,21.004091174751608]
@@ -451344,7 +451362,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.0.pos"
 - children[649].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.0.pos"}
 - children[650].center (mismatch)
   - expected: [205.8,80.0941]
   - actual: [205.8,80.09409701928698]
@@ -451353,7 +451371,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.4608.pos"
 - children[650].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.4608.pos"}
 - children[651].center (mismatch)
   - expected: [297.8,213.7762]
   - actual: [297.8,213.7761542957335]
@@ -451362,7 +451380,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.13824.pos"
 - children[651].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.13824.pos"}
 - children[652].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -453838,7 +453856,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[348].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[349].center (mismatch)
   - expected: [240.3,80.5003]
   - actual: [240.3,80.50029394473839]
@@ -453847,7 +453865,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[349].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[350].center (mismatch)
   - expected: [318.8,148.9788]
   - actual: [318.8,148.97883597883597]
@@ -453856,7 +453874,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[350].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-29,-5]}
+  - actual: {"handler":"annotation","value":[-29,-5],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[351].center (mismatch)
   - expected: [343.8,210.4356]
   - actual: [343.8,210.4356261022928]
@@ -453865,7 +453883,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[351].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[352].from (extra)
   - expected: undefined
   - actual: [209.8,21.0217519106408]
@@ -455782,7 +455800,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.0.pos"
 - children[640].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.0.pos"}
 - children[641].center (mismatch)
   - expected: [205.8,80.5003]
   - actual: [205.8,80.50029394473839]
@@ -455791,7 +455809,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.4608.pos"
 - children[641].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.4608.pos"}
 - children[642].center (mismatch)
   - expected: [191.3,148.9788]
   - actual: [191.3,148.97883597883597]
@@ -455800,7 +455818,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.9216.pos"
 - children[642].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-53,-5]}
+  - actual: {"handler":"annotation","value":[-53,-5],"conf_key":"extract.notebound.partname.v_3.9216.pos"}
 - children[643].center (mismatch)
   - expected: [240.3,210.4356]
   - actual: [240.3,210.4356261022928]
@@ -455809,7 +455827,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.13824.pos"
 - children[643].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.13824.pos"}
 - children[644].from (extra)
   - expected: undefined
   - actual: [163.8,21.0217519106408]
@@ -457804,7 +457822,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.0.pos"
 - children[943].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.0.pos"}
 - children[944].center (mismatch)
   - expected: [159.8,80.5003]
   - actual: [159.8,80.50029394473839]
@@ -457813,7 +457831,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.4608.pos"
 - children[944].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.4608.pos"}
 - children[945].center (mismatch)
   - expected: [159.8,210.4356]
   - actual: [159.8,210.4356261022928]
@@ -457822,7 +457840,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_4.13824.pos"
 - children[945].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_4.13824.pos"}
 - children[946].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -458021,7 +458039,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 786_menuetto_salzburger-tanzbuechlein-15 [extract 0]
 
-- Issues: 2881
+- Issues: 2889
 - children[0].from (extra)
   - expected: undefined
   - actual: [278.8,18.99406910778752]
@@ -458904,6 +458922,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[95].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[95].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.tuplet.v_1.4608.*"
+- children[95].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[3,3],"conf_key":"extract.0.notebound.tuplet.v_1.4608.pos"}
 - children[96].fill (extra)
   - expected: undefined
   - actual: false
@@ -458925,6 +458949,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[97].znId (extra)
   - expected: undefined
   - actual: "13824"
+- children[97].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.tuplet.v_1.13824.*"
+- children[97].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,3],"conf_key":"extract.0.notebound.tuplet.v_1.13824.pos"}
 - children[98].from (extra)
   - expected: undefined
   - actual: [244.3,18.99406910778752]
@@ -462401,7 +462431,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_36096.0.pos"
 - children[612].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-3]}
+  - actual: {"handler":"annotation","value":[0,-3],"conf_key":"extract.notebound.decoration.v_1.t_36096.0.pos"}
 - children[613].fill (extra)
   - expected: undefined
   - actual: false
@@ -462575,7 +462605,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[628].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[629].center (mismatch)
   - expected: [136.8,116.653]
   - actual: [136.8,116.65297833935017]
@@ -462584,7 +462614,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[629].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[630].center (mismatch)
   - expected: [349.3,156.2028]
   - actual: [349.3,156.20281072717893]
@@ -462593,7 +462623,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[630].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[151,-1]}
+  - actual: {"handler":"annotation","value":[151,-1],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[631].from (extra)
   - expected: undefined
   - actual: [60.3,18.99406910778752]
@@ -463551,6 +463581,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[736].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[736].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.tuplet.v_2.4608.*"
+- children[736].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,0],"conf_key":"extract.0.notebound.tuplet.v_2.4608.pos"}
 - children[737].fill (extra)
   - expected: undefined
   - actual: false
@@ -463572,6 +463608,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[738].znId (extra)
   - expected: undefined
   - actual: "13824"
+- children[738].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.tuplet.v_2.13824.*"
+- children[738].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-1,3],"conf_key":"extract.0.notebound.tuplet.v_2.13824.pos"}
 - children[739].center (mismatch)
   - expected: [60.3,18.9941]
   - actual: [60.3,18.99406910778752]
@@ -466274,7 +466316,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_2.t_36096.0.pos"
 - children[1169].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-3]}
+  - actual: {"handler":"annotation","value":[0,-3],"conf_key":"extract.notebound.decoration.v_2.t_36096.0.pos"}
 - children[1170].fill (extra)
   - expected: undefined
   - actual: false
@@ -466448,7 +466490,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.4608.pos"
 - children[1185].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.4608.pos"}
 - children[1186].center (mismatch)
   - expected: [0.55,116.653]
   - actual: [0.5499999999999998,116.65297833935017]
@@ -466457,7 +466499,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.13824.pos"
 - children[1186].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.13824.pos"}
 - children[1187].center (mismatch)
   - expected: [17.3,153.2028]
   - actual: [17.299999999999997,153.20281072717893]
@@ -466466,7 +466508,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.18432.pos"
 - children[1187].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-43,-4]}
+  - actual: {"handler":"annotation","value":[-43,-4],"conf_key":"extract.notebound.partname.v_2.18432.pos"}
 - children[1188].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -466668,7 +466710,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 786_menuetto_salzburger-tanzbuechlein-15 [extract 1]
 
-- Issues: 1585
+- Issues: 1589
 - children[0].from (extra)
   - expected: undefined
   - actual: [278.8,19.184422766725554]
@@ -467551,6 +467593,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[95].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[95].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.tuplet.v_1.4608.*"
+- children[95].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[3,3],"conf_key":"extract.1.notebound.tuplet.v_1.4608.pos"}
 - children[96].fill (extra)
   - expected: undefined
   - actual: false
@@ -467572,6 +467620,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[97].znId (extra)
   - expected: undefined
   - actual: "13824"
+- children[97].confKey (extra)
+  - expected: undefined
+  - actual: "extract.1.notebound.tuplet.v_1.13824.*"
+- children[97].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,3],"conf_key":"extract.1.notebound.tuplet.v_1.13824.pos"}
 - children[98].from (extra)
   - expected: undefined
   - actual: [244.3,19.184422766725554]
@@ -471048,7 +471102,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_36096.0.pos"
 - children[612].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,1]}
+  - actual: {"handler":"annotation","value":[0,1],"conf_key":"extract.notebound.decoration.v_1.t_36096.0.pos"}
 - children[613].fill (extra)
   - expected: undefined
   - actual: false
@@ -471216,7 +471270,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[628].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[629].center (mismatch)
   - expected: [136.8,118.0323]
   - actual: [136.8,118.03233735309932]
@@ -471225,7 +471279,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[629].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[630].center (mismatch)
   - expected: [349.3,161.4798]
   - actual: [349.3,161.47983716107228]
@@ -471234,7 +471288,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[630].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[151,-1]}
+  - actual: {"handler":"annotation","value":[151,-1],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[631].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -471427,7 +471481,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## 786_menuetto_salzburger-tanzbuechlein-15 [extract 2]
 
-- Issues: 2875
+- Issues: 2883
 - children[0].from (extra)
   - expected: undefined
   - actual: [278.8,18.95349987632946]
@@ -472310,6 +472364,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[95].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[95].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notebound.tuplet.v_1.4608.*"
+- children[95].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[3,3],"conf_key":"extract.2.notebound.tuplet.v_1.4608.pos"}
 - children[96].fill (extra)
   - expected: undefined
   - actual: false
@@ -472331,6 +472391,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[97].znId (extra)
   - expected: undefined
   - actual: "13824"
+- children[97].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notebound.tuplet.v_1.13824.*"
+- children[97].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,3],"conf_key":"extract.2.notebound.tuplet.v_1.13824.pos"}
 - children[98].from (extra)
   - expected: undefined
   - actual: [244.3,18.95349987632946]
@@ -475807,7 +475873,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_36096.0.pos"
 - children[612].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,0]}
+  - actual: {"handler":"annotation","value":[0,0],"conf_key":"extract.notebound.decoration.v_1.t_36096.0.pos"}
 - children[613].fill (extra)
   - expected: undefined
   - actual: false
@@ -475975,7 +476041,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[628].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[629].center (mismatch)
   - expected: [136.8,116.1551]
   - actual: [136.8,116.15514469453373]
@@ -475984,7 +476050,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.13824.pos"
 - children[629].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.13824.pos"}
 - children[630].center (mismatch)
   - expected: [349.3,157.1963]
   - actual: [349.3,157.19626514964133]
@@ -475993,7 +476059,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[630].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[151,-1]}
+  - actual: {"handler":"annotation","value":[151,-1],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[631].from (extra)
   - expected: undefined
   - actual: [60.3,18.95349987632946]
@@ -476951,6 +477017,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[736].znId (extra)
   - expected: undefined
   - actual: "4608"
+- children[736].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notebound.tuplet.v_2.4608.*"
+- children[736].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-1,5],"conf_key":"extract.2.notebound.tuplet.v_2.4608.pos"}
 - children[737].fill (extra)
   - expected: undefined
   - actual: false
@@ -476972,6 +477044,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[738].znId (extra)
   - expected: undefined
   - actual: "13824"
+- children[738].confKey (extra)
+  - expected: undefined
+  - actual: "extract.2.notebound.tuplet.v_2.13824.*"
+- children[738].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[-1,3],"conf_key":"extract.2.notebound.tuplet.v_2.13824.pos"}
 - children[739].center (mismatch)
   - expected: [60.3,18.9535]
   - actual: [60.3,18.95349987632946]
@@ -479674,7 +479752,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_2.t_36096.0.pos"
 - children[1169].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-1,2]}
+  - actual: {"handler":"annotation","value":[-1,2],"conf_key":"extract.notebound.decoration.v_2.t_36096.0.pos"}
 - children[1170].fill (extra)
   - expected: undefined
   - actual: false
@@ -479845,7 +479923,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.4608.pos"
 - children[1185].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.4608.pos"}
 - children[1186].center (mismatch)
   - expected: [-1.2,116.1551]
   - actual: [-1.2000000000000002,116.15514469453373]
@@ -479854,7 +479932,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.13824.pos"
 - children[1186].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.13824.pos"}
 - children[1187].center (mismatch)
   - expected: [66.3,152.1963]
   - actual: [66.3,152.19626514964133]
@@ -479863,7 +479941,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.18432.pos"
 - children[1187].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[6,-6]}
+  - actual: {"handler":"annotation","value":[6,-6],"conf_key":"extract.notebound.partname.v_2.18432.pos"}
 - children[1188].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -484328,7 +484406,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[663].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[664].center (mismatch)
   - expected: [355.3,93.639]
   - actual: [355.3,93.63897547093106]
@@ -484337,7 +484415,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[664].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[665].from (extra)
   - expected: undefined
   - actual: [48.8,15.880878167773412]
@@ -489494,7 +489572,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.4608.pos"
 - children[1464].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.4608.pos"}
 - children[1465].center (mismatch)
   - expected: [79.3,93.639]
   - actual: [79.3,93.63897547093106]
@@ -489503,7 +489581,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.9216.pos"
 - children[1465].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.9216.pos"}
 - children[1466].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -493977,7 +494055,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[663].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[664].center (mismatch)
   - expected: [355.3,93.4426]
   - actual: [355.3,93.44264553909744]
@@ -493986,7 +494064,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[664].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[665].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -498451,7 +498529,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.4608.pos"
 - children[663].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.4608.pos"}
 - children[664].center (mismatch)
   - expected: [355.3,93.639]
   - actual: [355.3,93.63897547093106]
@@ -498460,7 +498538,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.9216.pos"
 - children[664].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.9216.pos"}
 - children[665].from (extra)
   - expected: undefined
   - actual: [48.8,15.880878167773412]
@@ -503617,7 +503695,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.4608.pos"
 - children[1464].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.4608.pos"}
 - children[1465].center (mismatch)
   - expected: [79.3,93.639]
   - actual: [79.3,93.63897547093106]
@@ -503626,7 +503704,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.9216.pos"
 - children[1465].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.9216.pos"}
 - children[1466].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -507932,7 +508010,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_36096.0.pos"
 - children[593].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[3,-3]}
+  - actual: {"handler":"annotation","value":[3,-3],"conf_key":"extract.notebound.decoration.v_1.t_36096.0.pos"}
 - children[594].fill (extra)
   - expected: undefined
   - actual: false
@@ -508058,7 +508136,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[604].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[8,-7]}
+  - actual: {"handler":"annotation","value":[8,-7],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[605].from (extra)
   - expected: undefined
   - actual: [60.3,23.306742323097463]
@@ -512600,7 +512678,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_2.t_36480.0.pos"
 - children[1258].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_2.t_36480.0.pos"}
 - children[1259].fill (extra)
   - expected: undefined
   - actual: false
@@ -512726,7 +512804,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.18432.pos"
 - children[1269].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-21,-7]}
+  - actual: {"handler":"annotation","value":[-21,-7],"conf_key":"extract.notebound.partname.v_2.18432.pos"}
 - children[1270].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -517044,7 +517122,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_36096.0.pos"
 - children[593].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[2,-2]}
+  - actual: {"handler":"annotation","value":[2,-2],"conf_key":"extract.notebound.decoration.v_1.t_36096.0.pos"}
 - children[594].fill (extra)
   - expected: undefined
   - actual: false
@@ -517170,7 +517248,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[604].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[8,-7]}
+  - actual: {"handler":"annotation","value":[8,-7],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[605].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -521476,7 +521554,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_36096.0.pos"
 - children[593].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[3,-3]}
+  - actual: {"handler":"annotation","value":[3,-3],"conf_key":"extract.notebound.decoration.v_1.t_36096.0.pos"}
 - children[594].fill (extra)
   - expected: undefined
   - actual: false
@@ -521599,7 +521677,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.18432.pos"
 - children[604].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[8,-7]}
+  - actual: {"handler":"annotation","value":[8,-7],"conf_key":"extract.notebound.partname.v_1.18432.pos"}
 - children[605].from (extra)
   - expected: undefined
   - actual: [60.3,23.29485695386142]
@@ -526141,7 +526219,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_2.t_36480.0.pos"
 - children[1258].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-2]}
+  - actual: {"handler":"annotation","value":[0,-2],"conf_key":"extract.notebound.decoration.v_2.t_36480.0.pos"}
 - children[1259].fill (extra)
   - expected: undefined
   - actual: false
@@ -526264,7 +526342,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.18432.pos"
 - children[1269].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-21,-7]}
+  - actual: {"handler":"annotation","value":[-21,-7],"conf_key":"extract.notebound.partname.v_2.18432.pos"}
 - children[1270].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -528995,7 +529073,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.12288.pos"
 - children[381].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.12288.pos"}
 - children[382].from (extra)
   - expected: undefined
   - actual: [221.3,16.656050955414013]
@@ -531113,7 +531191,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.12288.pos"
 - children[693].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.12288.pos"}
 - children[694].from (extra)
   - expected: undefined
   - actual: [83.3,16.656050955414013]
@@ -534599,7 +534677,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.12288.pos"
 - children[1221].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.12288.pos"}
 - children[1222].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -537345,7 +537423,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.12288.pos"
 - children[381].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.12288.pos"}
 - children[382].from (extra)
   - expected: undefined
   - actual: [221.3,17.58792302587923]
@@ -539463,7 +539541,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_2.12288.pos"
 - children[693].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_2.12288.pos"}
 - children[694].confKey (extra)
   - expected: undefined
   - actual: "extract.1.legend.pos"
@@ -541810,7 +541888,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.12288.pos"
 - children[316].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_1.12288.pos"}
 - children[317].from (extra)
   - expected: undefined
   - actual: [83.3,16.667379221889696]
@@ -545296,7 +545374,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.12288.pos"
 - children[844].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-4,-7]}
+  - actual: {"handler":"annotation","value":[-4,-7],"conf_key":"extract.notebound.partname.v_3.12288.pos"}
 - children[845].confKey (extra)
   - expected: undefined
   - actual: "extract.2.legend.pos"
@@ -549242,7 +549320,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[561].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-45,-10]}
+  - actual: {"handler":"annotation","value":[-45,-10],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[562].center (mismatch)
   - expected: [282.8,144.436]
   - actual: [282.8,144.43604896580837]
@@ -549251,7 +549329,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.23040.pos"
 - children[562].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-65,-7]}
+  - actual: {"handler":"annotation","value":[-65,-7],"conf_key":"extract.notebound.partname.v_1.23040.pos"}
 - children[563].from (extra)
   - expected: undefined
   - actual: [244.3,21.254537779653862]
@@ -555038,7 +555116,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.0.pos"
 - children[1396].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-50,-9]}
+  - actual: {"handler":"annotation","value":[-50,-9],"conf_key":"extract.notebound.partname.v_3.0.pos"}
 - children[1397].center (mismatch)
   - expected: [110.8,147.436]
   - actual: [110.80000000000001,147.43604896580837]
@@ -555047,7 +555125,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.23040.pos"
 - children[1397].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-53,-4]}
+  - actual: {"handler":"annotation","value":[-53,-4],"conf_key":"extract.notebound.partname.v_3.23040.pos"}
 - children[1398].from (extra)
   - expected: undefined
   - actual: [106.3,21.254537779653862]
@@ -561516,7 +561594,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[480].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-45,-10]}
+  - actual: {"handler":"annotation","value":[-45,-10],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[481].center (mismatch)
   - expected: [282.8,149.2285]
   - actual: [282.8,149.22851834649327]
@@ -561525,7 +561603,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.23040.pos"
 - children[481].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-65,-7]}
+  - actual: {"handler":"annotation","value":[-65,-7],"conf_key":"extract.notebound.partname.v_1.23040.pos"}
 - children[482].from (extra)
   - expected: undefined
   - actual: [244.3,21.581049698095683]
@@ -567805,7 +567883,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.0.pos"
 - children[484].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-45,-10]}
+  - actual: {"handler":"annotation","value":[-45,-10],"conf_key":"extract.notebound.partname.v_1.0.pos"}
 - children[485].center (mismatch)
   - expected: [282.8,144.436]
   - actual: [282.8,144.43604896580837]
@@ -567814,7 +567892,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_1.23040.pos"
 - children[485].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-65,-7]}
+  - actual: {"handler":"annotation","value":[-65,-7],"conf_key":"extract.notebound.partname.v_1.23040.pos"}
 - children[486].from (extra)
   - expected: undefined
   - actual: [186.8,21.254537779653862]
@@ -570808,7 +570886,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.0.pos"
 - children[915].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-50,-9]}
+  - actual: {"handler":"annotation","value":[-50,-9],"conf_key":"extract.notebound.partname.v_3.0.pos"}
 - children[916].center (mismatch)
   - expected: [110.8,147.436]
   - actual: [110.80000000000001,147.43604896580837]
@@ -570817,7 +570895,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.partname.v_3.23040.pos"
 - children[916].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[-53,-4]}
+  - actual: {"handler":"annotation","value":[-53,-4],"conf_key":"extract.notebound.partname.v_3.23040.pos"}
 - children[917].from (extra)
   - expected: undefined
   - actual: [106.3,21.254537779653862]
@@ -574019,7 +574097,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## abc-to-song-slur-tuplet-parity [extract 0]
 
-- Issues: 47
+- Issues: 49
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,18.75]
@@ -574086,6 +574164,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[6].znId (extra)
   - expected: undefined
   - actual: "768"
+- children[6].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.tuplet.v_1.768.*"
+- children[6].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,0],"conf_key":"extract.0.notebound.tuplet.v_1.768.pos"}
 - children[7].znId (extra)
   - expected: undefined
   - actual: "0"
@@ -574343,6 +574427,223 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
   - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
 
+## config-runtime-parity [extract 0]
+
+- Issues: 71
+- children[0].from (extra)
+  - expected: undefined
+  - actual: [60.3,18]
+- children[0].to (extra)
+  - expected: undefined
+  - actual: [83.3,24]
+- children[0].znId (extra)
+  - expected: undefined
+  - actual: "384"
+- children[1].from (extra)
+  - expected: undefined
+  - actual: [106.3,39]
+- children[1].to (extra)
+  - expected: undefined
+  - actual: [117.8,45]
+- children[1].znId (extra)
+  - expected: undefined
+  - actual: "1024"
+- children[2].from (extra)
+  - expected: undefined
+  - actual: [117.8,45]
+- children[2].to (extra)
+  - expected: undefined
+  - actual: [140.8,51]
+- children[2].znId (extra)
+  - expected: undefined
+  - actual: "1280"
+- children[3].from (extra)
+  - expected: undefined
+  - actual: [60.3,18]
+- children[3].to (extra)
+  - expected: undefined
+  - actual: [83.3,24]
+- children[3].znId (extra)
+  - expected: undefined
+  - actual: "384"
+- children[4].from (extra)
+  - expected: undefined
+  - actual: [106.3,39]
+- children[4].to (extra)
+  - expected: undefined
+  - actual: [117.8,45]
+- children[4].znId (extra)
+  - expected: undefined
+  - actual: "1024"
+- children[5].from (extra)
+  - expected: undefined
+  - actual: [117.8,45]
+- children[5].to (extra)
+  - expected: undefined
+  - actual: [140.8,51]
+- children[5].znId (extra)
+  - expected: undefined
+  - actual: "1280"
+- children[6].fill (extra)
+  - expected: undefined
+  - actual: false
+- children[6].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[6].znId (extra)
+  - expected: undefined
+  - actual: "768"
+- children[6].draginfo (mismatch)
+  - expected: {"handler":"tuplet","p1":[106.3,39],"p2":[140.8,51],"cp1":[109.83159671811867,34.934557266351746],"cp2":[140.55360953129406,45.62047476658666],"mp":{"$$id":1000,"x":125.4389935934123,"y":37.56914341893959},"conf_key":"extract.0.notebound.tuplet.v_1.768"}
+  - actual: {"handler":"tuplet","p1":[106.3,39],"p2":[140.8,51],"cp1":[109.83159671811867,34.934557266351746],"cp2":[140.55360953129406,45.62047476658666],"mp":{"x":125.4389935934123,"y":37.56914341893959},"tuplet_options":{"cp1":[5,2],"cp2":[5,-2],"pos":[0,0],"shape":["c"],"show":true},"conf_key":"extract.0.notebound.tuplet.v_1.768","callback":null}
+- children[6].path (mismatch)
+  - expected: [["M",106.3,39],["c",3.531596718118682,-4.065442733648251,34.25360953129406,6.620474766586659,34.500000000000014,12]]
+  - actual: [[106.3,39],[107.71599463148713,38.27935182580037],[110.06469396679773,38.1036986873851],[113.14586870579454,38.40339561079339],[116.7592895483403,39.10879762206448],[120.7047271942978,40.15025974723758],[124.78195234352977,41.4581370123519],[128.79073569589897,42.96278444344668],[132.53084795126819,44.59455706656113],[135.80205980950012,46.28380990773446],[138.40414197045757,47.960897993005915],[140.13686513400327,49.55617634841468],[140.8,51]]
+- children[7].center (mismatch)
+  - expected: [125.439,37.5691]
+  - actual: [125.4389935934123,37.56914341893959]
+- children[7].znId (extra)
+  - expected: undefined
+  - actual: "768"
+- children[7].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.tuplet.v_1.768.*"
+- children[7].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,0],"conf_key":"extract.0.notebound.tuplet.v_1.768.pos"}
+- children[8].znId (extra)
+  - expected: undefined
+  - actual: "0"
+- children[8].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_0.n_0.***"
+- children[9].znId (extra)
+  - expected: undefined
+  - actual: "384"
+- children[9].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_384.n_0.***"
+- children[10].znId (extra)
+  - expected: undefined
+  - actual: "768"
+- children[10].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_768.n_0.***"
+- children[11].znId (extra)
+  - expected: undefined
+  - actual: "768"
+- children[12].znId (extra)
+  - expected: undefined
+  - actual: "1024"
+- children[12].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1024.n_0.***"
+- children[13].znId (extra)
+  - expected: undefined
+  - actual: "1280"
+- children[13].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.nconf.v_1.t_1280.n_0.***"
+- children[14].size (mismatch)
+  - expected: [0.6445,1.2512]
+  - actual: [0.6445000000000001,1.2512499999999998]
+- children[15].znId (extra)
+  - expected: undefined
+  - actual: "384"
+- children[15].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.decoration.v_1.t_384.0.pos"
+- children[15].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,-3],"conf_key":"extract.notebound.decoration.v_1.t_384.0.pos"}
+- children[16].fill (extra)
+  - expected: undefined
+  - actual: false
+- children[16].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[16].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-768"
+- children[16].path (mismatch)
+  - expected: [["M",146.425,53.275],["l",11.625,0],["l",0,-15.549999999999997],["M",158.05,53.275],["L",158.05,36.725],["L",113.925,36.725]]
+  - actual: [[146.425,53.275],[158.05,53.275],[158.05,37.725],[158.05,53.275],[158.05,36.725],[113.925,36.725]]
+- children[17].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[17].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[17].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-768"
+- children[17].path (mismatch)
+  - expected: [["M",111.925,36.725],["l",2.5,1],["l",0,-2],["l",-2.5,1],["z"]]
+  - actual: [[111.925,36.725],[114.425,37.725],[114.425,35.725]]
+- children[18].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[18].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[18].znId (extra)
+  - expected: undefined
+  - actual: "goto-0-768"
+- children[19].center (mismatch)
+  - expected: [72.2107,16.8667]
+  - actual: [72.2149,16.866666666666667]
+- children[19].size (mismatch)
+  - expected: [5.4107,1.8317]
+  - actual: [5.414899999999999,1.8316666666666663]
+- children[20].confKey (extra)
+  - expected: undefined
+  - actual: "extract.notebound.annotation.v_1.0.pos"
+- children[20].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[7,-3],"conf_key":"extract.notebound.annotation.v_1.0.pos"}
+- children[21].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.legend.pos"
+- children[21].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[320,7]}
+- children[22].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.legend.spos"
+- children[23].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[24].draginfo (extra)
+  - expected: undefined
+  - actual: {"handler":"annotation"}
+- children[26].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[26].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[26].path (mismatch)
+  - expected: [["M",2.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
+  - actual: [[2.3,8.5],[2.8,7.5],[3.3,8.5],[3.3,13.5],[2.8,14.5],[2.3,13.5],[2.3,8.5]]
+- children[27].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[27].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[27].path (mismatch)
+  - expected: [["M",140.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
+  - actual: [[140.3,8.5],[140.8,7.5],[141.3,8.5],[141.3,13.5],[140.8,14.5],[140.3,13.5],[140.3,8.5]]
+- children[28].fill (extra)
+  - expected: undefined
+  - actual: true
+- children[28].color (extra)
+  - expected: undefined
+  - actual: "black"
+- children[28].path (mismatch)
+  - expected: [["M",416.3,8.5],["l",0.5,-1],["l",0.5,1],["l",0,5],["l",-0.5,1],["l",-0.5,-1],["l",0,-5]]
+  - actual: [[416.3,8.5],[416.8,7.5],[417.3,8.5],[417.3,13.5],[416.8,14.5],[416.3,13.5],[416.3,8.5]]
+
 ## decoration [extract 0]
 
 - Issues: 45
@@ -574420,7 +574721,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_0.0.pos"
 - children[10].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-4]}
+  - actual: {"handler":"annotation","value":[0,-4],"conf_key":"extract.notebound.decoration.v_1.t_0.0.pos"}
 - children[11].znId (extra)
   - expected: undefined
   - actual: "768"
@@ -574429,7 +574730,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_768.0.pos"
 - children[11].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-3]}
+  - actual: {"handler":"annotation","value":[0,-3],"conf_key":"extract.notebound.decoration.v_1.t_768.0.pos"}
 - children[12].znId (extra)
   - expected: undefined
   - actual: "1152"
@@ -574438,7 +574739,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
   - actual: "extract.notebound.decoration.v_1.t_1152.0.pos"
 - children[12].draginfo (mismatch)
   - expected: {"handler":"annotation"}
-  - actual: {"handler":"annotation","value":[0,-3]}
+  - actual: {"handler":"annotation","value":[0,-3],"conf_key":"extract.notebound.decoration.v_1.t_1152.0.pos"}
 - children[13].confKey (extra)
   - expected: undefined
   - actual: "extract.0.legend.pos"
@@ -575821,7 +576122,7 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 
 ## tuplet [extract 0]
 
-- Issues: 43
+- Issues: 45
 - children[0].from (extra)
   - expected: undefined
   - actual: [60.3,17]
@@ -575879,6 +576180,12 @@ This report lists legacy-relevant Sheet fields that are missing, mismatched, or 
 - children[5].znId (extra)
   - expected: undefined
   - actual: "0"
+- children[5].confKey (extra)
+  - expected: undefined
+  - actual: "extract.0.notebound.tuplet.v_1.0.*"
+- children[5].draginfo (mismatch)
+  - expected: {"handler":"annotation"}
+  - actual: {"handler":"annotation","value":[0,0],"conf_key":"extract.0.notebound.tuplet.v_1.0.pos"}
 - children[6].znId (extra)
   - expected: undefined
   - actual: "0"

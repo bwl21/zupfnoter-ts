@@ -58512,6 +58512,52 @@ This report lists legacy fields that are missing or value-mismatched in the curr
   - expected: null
   - actual: undefined
 
+## config-runtime-parity
+
+- Issues: 14
+- voices[0].entities[0].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[0].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[1].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[1].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[2].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[3].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[0].entities[5].policy.level (mismatch)
+  - expected: 2
+  - actual: 4
+- voices[1].entities[0].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[0].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[1].tupletStart (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[1].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[2].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[3].tupletEnd (missing)
+  - expected: null
+  - actual: undefined
+- voices[1].entities[5].policy.level (mismatch)
+  - expected: 2
+  - actual: 4
+
 ## decoration
 
 - Issues: 16
