@@ -740,6 +740,12 @@ function confKeyAddressesConfigPath(confKey: string, configPath: string): boolea
     return configPath === base || configPath.startsWith(`${base}.`)
   }
 
+  if (configPath.startsWith(`${confKey}.`)) return true
+
+  const confKeyParent = confKey.slice(0, confKey.lastIndexOf('.'))
+  const configPathParent = configPath.slice(0, configPath.lastIndexOf('.'))
+  if (confKeyParent !== '' && confKeyParent === configPathParent) return true
+
   return false
 }
 

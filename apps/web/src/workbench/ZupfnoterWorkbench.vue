@@ -83,6 +83,7 @@ import {
   canTargetCreateSelection,
   createConfKeySelectedSelectionEvent,
   createExtractChangedSelectionEvent,
+  createIndexesSelectedSelectionEvent,
   createRenderRefreshedSelectionEvent,
   createScopeChangedSelectionEvent,
   createSongLoadedSelectionEvent,
@@ -92,7 +93,7 @@ import {
   resolveSelectionEditorRange,
   resolveSelectionProjection,
 } from './selectionManager'
-import { resolveConfKeyForConfigPath } from './selectionIndex'
+import { resolveConfKeyForConfigPath, resolveIndexesByConfigPath } from './selectionIndex'
 import { ABC_PARSER_DIAGNOSTIC_SOURCE, workbenchDiagnosticKey, type WorkbenchDiagnostic as WebWorkbenchDiagnostic } from './diagnostics'
 import {
   createHarpMirrorChannel,
@@ -947,9 +948,16 @@ async function executeParsedToolbarCommand(
 function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
   if (intent.action === 'config.selectAffectedObject' && intent.path !== undefined) {
     const confKey = resolveConfKeyForConfigPath(selectionStore.sheetObjectIndex, intent.path)
-    if (confKey !== undefined) {
-      selectionStore.dispatchSelectionEvent(createConfKeySelectedSelectionEvent(confKey, 'config-editor'))
+    const selectedIndexes = resolveIndexesByConfigPath(selectionStore.sheetObjectIndex, intent.path)
+    if (confKey === undefined) {
+      logger.warning(`config selection: ${intent.path} -> kein confKey gefunden`)
+      return
     }
+    selectionStore.dispatchSelectionEvent(createConfKeySelectedSelectionEvent(confKey, 'config-editor'))
+    logger.info(
+      `config selection: ${intent.path} -> ${confKey} -> `
+      + `${selectedIndexes.length} Objekt(e): [${selectedIndexes.join(', ')}]`,
+    )
     return
   }
 
@@ -1007,6 +1015,10 @@ function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
   }
 
   logger.info(`config intent: ${intent.action}${intent.path ? ` ${intent.path}` : ''}`)
+}
+
+function canSelectConfigPath(path: string): boolean {
+  return resolveConfKeyForConfigPath(selectionStore.sheetObjectIndex, path) !== undefined
 }
 
 function closeFileMenu(): void {
@@ -1888,6 +1900,10 @@ function handleHarpPreviewSelection(payload: {
   )
 }
 
+function handleHarpPreviewClearSelection(): void {
+  selectionStore.dispatchSelectionEvent(createIndexesSelectedSelectionEvent([], 'harp-preview'))
+}
+
 function handleHarpPreviewDragEnd(payload: HarpPreviewDragEnd): void {
   if (payload.value === undefined) {
     logger.warning(`dragend ${payload.handler}: kein konfigurierbarer Zielwert für ${payload.confKey}`)
@@ -2450,6 +2466,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :entry-mutation-version="configEntryMutationVersion"
                   :can-undo="configCanUndo"
                   :can-redo="configCanRedo"
+                  :can-select-config-path="canSelectConfigPath"
                   @intent="handleConfigEditorIntent"
                 />
                 <ConsolePanel
@@ -2506,6 +2523,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :svg="harpSvg"
                   :maximized="maximizedPanel === 'harp'"
                   @select-text-range="handleHarpPreviewSelection"
+                  @clear-selection="handleHarpPreviewClearSelection"
                   @drag-end="handleHarpPreviewDragEnd"
                   @resource-drop="handleHarpResourceDrop"
                   @context-menu="handleHarpPreviewContextMenu"

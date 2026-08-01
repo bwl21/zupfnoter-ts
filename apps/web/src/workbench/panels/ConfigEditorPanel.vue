@@ -94,11 +94,13 @@ const props = withDefaults(defineProps<{
   canRedo?: boolean
   extractOptions?: readonly ConfigExtractOption[]
   entryMutationVersion?: number
+  canSelectConfigPath?: (path: string) => boolean
 }>(), {
   extractOptions: () => [],
   canUndo: false,
   canRedo: false,
   entryMutationVersion: 0,
+  canSelectConfigPath: undefined,
 })
 
 const emit = defineEmits<{
@@ -1074,8 +1076,13 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
 }
 
 function selectAffectedObject(row: ConfigTreeRow): void {
-  if (!row.canSelect || row.localPath === undefined) return
+  if (row.localPath === undefined) return
   emitIntent('config.selectAffectedObject', row.localPath)
+}
+
+function canHighlightConfigRow(row: ConfigTreeRow): boolean {
+  if (row.localPath === undefined) return false
+  return props.canSelectConfigPath?.(row.localPath) ?? row.canSelect
 }
 
 function fillFromEffectiveValue(row: ConfigTreeRow): void {
@@ -1266,7 +1273,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
           role="treeitem"
           :aria-expanded="row.isBranch ? isExpanded(row.path) : undefined"
         >
-          <div class="config-row__name">
+          <div class="config-row__name" @click="row.isLeaf && selectAffectedObject(row)">
             <ZnIconButton
               v-if="row.isBranch"
               class="config-row__toggle"
@@ -1287,7 +1294,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
             </div>
           </div>
 
-          <div class="config-row__value">
+          <div class="config-row__value" @click="row.isLeaf && selectAffectedObject(row)">
             <span
               class="config-row__help"
               role="button"
@@ -1402,10 +1409,10 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
 
           <div class="config-row__actions">
             <ZnIconButton
+              v-if="row.isLeaf && canHighlightConfigRow(row)"
               class="config-row__action"
               label="Betroffenes Objekt selektieren"
               variant="ghost"
-              :disabled="!row.canSelect"
               :tabindex="-1"
               @click="selectAffectedObject(row)"
             >

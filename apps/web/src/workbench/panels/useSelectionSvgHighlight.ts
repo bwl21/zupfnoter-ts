@@ -5,14 +5,12 @@ import type { SelectionTextRange } from '@zupfnoter/types'
 const SELECTION_HIGHLIGHT_CLASS = 'zn-selection-highlight'
 
 function applyHighlightClass(element: HTMLElement): void {
+  element.classList.add(SELECTION_HIGHLIGHT_CLASS)
   const hitboxes = element.matches('.zupfnoter-hitbox')
     ? [element]
     : [...element.querySelectorAll<HTMLElement>('.zupfnoter-hitbox')]
 
-  if (hitboxes.length === 0) {
-    element.classList.add(SELECTION_HIGHLIGHT_CLASS)
-    return
-  }
+  if (hitboxes.length === 0) return
 
   hitboxes.forEach((hitbox) => {
     hitbox.classList.add(SELECTION_HIGHLIGHT_CLASS)

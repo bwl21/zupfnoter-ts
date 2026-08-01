@@ -552,6 +552,28 @@ export function resolveSelectionAfterActiveVoicesChange(
   )
 }
 
+function resolveSelectionByStableIdentity(
+  previousIndex: SheetObjectIndex | undefined,
+  nextIndex: SheetObjectIndex,
+  selection: SelectionState,
+): SelectionState | undefined {
+  const previousIndexes = selection.originSelectedIndexes.length > 0
+    ? selection.originSelectedIndexes
+    : selection.selectedIndexes
+  const previousEntries = previousIndexes
+    .map((entryIndex) => previousIndex?.entries[entryIndex])
+    .filter((entry): entry is SheetObjectIndexEntry => entry !== undefined)
+  const stableIndexes = previousEntries.flatMap((entry) => {
+    if (entry.confKey !== undefined) return resolveIndexesByConfKey(nextIndex, entry.confKey)
+    if (entry.znId !== undefined) return resolveIndexesByZnId(nextIndex, entry.znId)
+    return []
+  })
+  const normalizedIndexes = [...new Set(stableIndexes)].sort((left, right) => left - right)
+  if (normalizedIndexes.length === 0) return undefined
+
+  return createSelectionState(normalizedIndexes, selection.source, selection.voiceScope)
+}
+
 export function resolveSelectionAfterRenderRefresh(
   previousIndex: SheetObjectIndex | undefined,
   nextIndex: SheetObjectIndex | undefined,
@@ -562,9 +584,16 @@ export function resolveSelectionAfterRenderRefresh(
     return createClearedSelectionState(selection.source, selection.voiceScope)
   }
 
-  const supportsTextRangeRebind = selection.source === 'abc-editor' || selection.source === 'score-preview'
-  if (!supportsTextRangeRebind) {
-    return createClearedSelectionState(selection.source, selection.voiceScope)
+  if (selection.source !== 'abc-editor' && selection.source !== 'score-preview') {
+    const stableIdentitySelection = resolveSelectionByStableIdentity(previousIndex, nextIndex, selection)
+    if (stableIdentitySelection !== undefined) {
+      return resolveSelectionWithVoiceScope(
+        nextIndex,
+        stableIdentitySelection,
+        selection.voiceScope,
+        options,
+      )
+    }
   }
 
   const originSelection: SelectionState = {

@@ -55,6 +55,7 @@ const emit = defineEmits<{
     origin?: SelectionOrigin
     source: 'harp-preview'
   }): void
+  (event: 'clear-selection'): void
   (event: 'scroll', payload: { scrollLeft: number; scrollTop: number }): void
   (event: 'drag-end', payload: HarpPreviewDragEnd): void
   (event: 'context-menu', payload: {
@@ -170,6 +171,10 @@ useSelectionSvgHighlight(
 function emitSelectionFromEvent(target: EventTarget | null, extend: boolean): void {
   if (!(target instanceof Element)) return
   const element = target.closest('.zupfnoter-hitbox[data-start-char][data-end-char]')
+  if (element === null) {
+    emit('clear-selection')
+    return
+  }
   const startChar = element?.getAttribute('data-start-char')
   const endChar = element?.getAttribute('data-end-char')
   const znId = element?.getAttribute('data-zn-id') ?? undefined
@@ -1005,6 +1010,28 @@ onBeforeUnmount(() => {
   vector-effect: non-scaling-stroke;
   shape-rendering: geometricPrecision;
   stroke-linejoin: miter;
+}
+
+.harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight .zupfnoter-bezier-controls) {
+  opacity: 1;
+  stroke: var(--zn-danger);
+  stroke-width: 1.6;
+}
+
+.harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight > .zupfnoter-shape) {
+  stroke: var(--zn-danger);
+  stroke-width: 1.5;
+}
+
+.harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight .zupfnoter-bezier-drag-polygon) {
+  opacity: 0.18;
+  fill: var(--zn-danger);
+  stroke: var(--zn-danger);
+}
+
+.harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight .zupfnoter-shape--image) {
+  opacity: 0.72;
+  filter: drop-shadow(0 0 0.7px var(--zn-danger));
 }
 
 .harp-preview__error {

@@ -7,6 +7,7 @@ import {
   getSelectionTargetCapabilities,
   registerSelectionTargetCapabilities,
   resolvePlaybackProjection,
+  resolveSelectionAfterRenderRefresh,
   resolveSelectionEditorRange,
   resolvePlaybackScoreRanges,
   resolveSelectionProjection,
@@ -319,6 +320,18 @@ describe('selectionManager', () => {
         { startpos: 4, endpos: 6 },
         { startpos: 10, endpos: 12 },
       ])
+  })
+
+  it('rebinds harp selections by stable object identity after a render refresh', () => {
+    const selection: SelectionState = {
+      selectedIndexes: [2],
+      originSelectedIndexes: [2],
+      source: 'harp-preview',
+      voiceScope: 'single-voice',
+    }
+
+    expect(resolveSelectionAfterRenderRefresh(sheetObjectIndex, sheetObjectIndex, selection))
+      .toEqual({ ...selection, anchorIndex: 2 })
   })
 
   it('supports explicit capability registration', () => {
