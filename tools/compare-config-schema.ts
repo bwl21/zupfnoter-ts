@@ -57,6 +57,11 @@ const LEGACY_SCHEMA_EXTENSIONS: readonly LegacySchemaExtension[] = [
     reason: 'Der TS-Editor verarbeitet die Legacy-Liedtextfelder verses, pos und style vollständig; die exportierte Legacy-Schema-Referenz enthält diese Eigenschaften an dieser Stelle nicht.',
   },
   {
+    path: '$.properties.extract.patternProperties.d*.properties.tuplets.properties.style',
+    classification: 'legacy-runtime-contradiction',
+    reason: 'Legacy-Builtin- und Vorlagenkonfigurationen sowie die Runtime verarbeiten tuplets.style; die exportierte Legacy-Schema-Referenz enthält dieses Feld nicht.',
+  },
+  {
     path: '$.properties.layout.properties.FONT_STYLE_DEF.patternProperties..*.properties.description',
     classification: 'ts-editor-extension',
     reason: 'Dynamische Schriftstile können eine Markdown-Beschreibung für die Auswahl anbieten.',

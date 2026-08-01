@@ -69,6 +69,29 @@ describe('ConfigEditorPanel', () => {
     expect(wrapper.text()).toContain('Verschiebung')
   })
 
+  it('shows the legacy-visible default for an absent note-bound show override', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"notebound":{"annotation":{"v_1":{"0":{"pos":[1,2],"style":"regular"}}}}}}}',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'extract.0.notebound.annotation.v_1.0',
+      },
+    })
+
+    const showRow = wrapper.findAll('.config-row').find((row) => row.find('[data-help-key="extract.0.notebound.annotation.v_1.0.show"]').exists())
+    expect(showRow).toBeDefined()
+    expect(showRow?.find('.config-row__boolean').text()).toContain('Ja')
+    expect(showRow?.find('.config-row__boolean-origin').text()).toContain('lokal nicht gesetzt')
+  })
+
   it('explains that deleting a local value recalculates the effective value', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {
@@ -248,6 +271,23 @@ describe('ConfigEditorPanel', () => {
     expect(produceRow.find('.config-row__menu').exists()).toBe(true)
     await produceRow.find('.config-row__menu-summary').trigger('click')
     expect(produceRow.find('.config-row__menu-list').text()).toContain('Wirksamen Wert eintragen')
+  })
+
+  it('finds schema-defined tuplet parameters when searching all parameters', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'all_parameters',
+      },
+    })
+
+    const search = wrapper.find('.config-panel__search-input')
+    await search.setValue('Tolen')
+
+    expect(wrapper.find('.config-panel__tree').text()).toContain('n-Tolen')
+    expect(wrapper.findAll('.config-row').some((row) => row.find('[data-help-key="extract.0.tuplets.text"]').exists())).toBe(true)
+    expect(wrapper.findAll('.config-row').some((row) => row.find('[data-help-key="extract.0.tuplets.style"]').exists())).toBe(true)
   })
 
   it('filters the tree to the selected config edit section', () => {
@@ -497,7 +537,7 @@ describe('ConfigEditorPanel', () => {
       },
     })
 
-    const titleRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Titel'))
+    const titleRow = wrapper.findAll('.config-row').find((row) => row.find('[data-help-key="extract.0.title"]').exists())
     expect(titleRow).toBeDefined()
     if (titleRow === undefined) return
 
@@ -628,7 +668,7 @@ describe('ConfigEditorPanel', () => {
       },
     })
 
-    const titleRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Titel'))
+    const titleRow = wrapper.findAll('.config-row').find((row) => row.find('[data-help-key="extract.0.title"]').exists())
     expect(titleRow).toBeDefined()
     if (titleRow === undefined) return
 

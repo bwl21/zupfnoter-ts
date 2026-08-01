@@ -313,6 +313,7 @@ function flattenTree(
   parentPath = '',
   depth = 0,
   respectActiveSectionFilter = true,
+  forceVisible = false,
 ): ConfigTreeRow[] {
   const rows: ConfigTreeRow[] = []
 
@@ -323,9 +324,9 @@ function flattenTree(
     }
     const branch = definition.children !== undefined && definition.children.length > 0
     const row = createRow(definition, path, depth, branch)
-    const matches = matchesRow(row)
+    const matches = forceVisible || matchesRow(row)
     const children = branch
-      ? flattenTree(definition.children ?? [], path, depth + 1, respectActiveSectionFilter)
+      ? flattenTree(definition.children ?? [], path, depth + 1, respectActiveSectionFilter, forceVisible || matchesRow(row))
       : []
     const hasVisibleChildren = children.length > 0
 
@@ -451,16 +452,16 @@ function createRow(
   const directEffectiveValue = directEffectivePath === undefined ? undefined : getPathValue(effectiveConfig.value, directEffectivePath)
   const inheritedFlowlinePath = localPath === undefined ? undefined : resolveInheritedFlowlinePath(localPath)
   const effectivePath = directEffectiveValue === undefined ? inheritedFlowlinePath ?? directEffectivePath : directEffectivePath
-  const effectiveValue = directEffectiveValue === undefined && inheritedFlowlinePath !== undefined
+  const inheritedValue = directEffectiveValue === undefined && inheritedFlowlinePath !== undefined
     ? getPathValue(effectiveConfig.value, inheritedFlowlinePath)
     : directEffectiveValue
+  const schema = localPath === undefined ? undefined : resolveConfigSchemaPath(localPath)
+  const effectiveValue = inheritedValue
   const actionProfile = getConfigPathActionProfile(localPath, {
     hasEffectiveValue: effectiveValue !== undefined,
     hasLocalValue: localValue !== undefined,
     isLeaf: !isBranch,
   })
-  const schema = localPath === undefined ? undefined : resolveConfigSchemaPath(localPath)
-
   return {
     key: path,
     path,
@@ -483,8 +484,8 @@ function createRow(
 }
 
 function resolveInheritedFlowlinePath(path: string): string | undefined {
-  const match = path.match(/^extract\.\d+\.notebound\.flowline\.v_\d+\.\d+\.(cp1|cp2|pos|shape|show)$/)
-  return match === null ? undefined : `defaults.notebound.flowline.${match[1]}`
+  const match = path.match(/^extract\.\d+\.notebound\.(annotation|chord|partname|variantend|flowline|tuplet)\.v_\d+\.\d+\.(cp1|cp2|pos|shape|show)$/)
+  return match === null ? undefined : `defaults.notebound.${match[1]}.${match[2]}`
 }
 
 function joinPath(parentPath: string, key: string): string {
@@ -1433,6 +1434,9 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
               <span :class="{ 'config-row__boolean-value--inherited': isInheritedBoolean(row) }">
                 {{ getBooleanValueLabel(row) }}
               </span>
+              <span v-if="isInheritedBoolean(row)" class="config-row__boolean-origin">
+                wirksam · lokal nicht gesetzt
+              </span>
             </div>
             <textarea
               v-else-if="row.isLeaf && isTextareaValue(row)"
@@ -2075,6 +2079,11 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
 .config-row__boolean-value--inherited {
   color: var(--zn-text-muted, #7a8797);
   font-style: italic;
+}
+
+.config-row__boolean-origin {
+  color: var(--zn-text-muted, #7a8797);
+  font-size: 0.72rem;
 }
 
 .config-row__switch {

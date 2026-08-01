@@ -368,6 +368,14 @@ const DEFAULT_FLOWLINE_OPTIONS: AnnotatedBezierOptions = {
   show: true,
 }
 
+function getAnnotatedBezierDefaults(
+  conf: Confstack,
+  kind: 'flowline' | 'tuplet',
+): AnnotatedBezierOptions {
+  const fallback = kind === 'flowline' ? DEFAULT_FLOWLINE_OPTIONS : DEFAULT_TUPLET_OPTIONS
+  return mergeAnnotatedBezierOptions(fallback, conf.get(`defaults.notebound.${kind}`))
+}
+
 function normalizePoint(value: unknown, fallback: [number, number]): [number, number] {
   if (
     Array.isArray(value) &&
@@ -1421,7 +1429,7 @@ export class HarpnotesLayout {
           ?? conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.time}`)
 
         if (override !== undefined || this._flowconf) {
-          const options = mergeAnnotatedBezierOptions(DEFAULT_FLOWLINE_OPTIONS, override)
+          const options = mergeAnnotatedBezierOptions(getAnnotatedBezierDefaults(conf, 'flowline'), override)
           if (options.show) {
             const flowlineConfKey = `extract.${extractNr}.notebound.flowline.v_${voiceNr}.${curr.znId}`
             const pathData = makeAnnotatedBezierPath(from, to, options)
@@ -1772,7 +1780,7 @@ export class HarpnotesLayout {
       if (p.tupletEnd && tupletStart) {
         const override = conf.get(`extract.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}`)
           ?? conf.get(`extract.notebound.tuplet.v_${voiceNr}.${tupletStart.time}`)
-        const options = mergeAnnotatedBezierOptions(DEFAULT_TUPLET_OPTIONS, override)
+        const options = mergeAnnotatedBezierOptions(getAnnotatedBezierDefaults(conf, 'tuplet'), override)
 
         if (options.show) {
           const p1 = playableCenter(tupletStart, beatMap, layout, startpos)

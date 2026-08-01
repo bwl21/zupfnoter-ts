@@ -173,10 +173,10 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
     },
     defaults: {
       notebound: {
-        annotation: { pos: [5, -7] },
-        chord: { pos: [0, 0] },
-        partname: { pos: [-4, -7] },
-        variantend: { pos: [-4, -7] },
+        annotation: { pos: [5, -7], show: true },
+        chord: { pos: [0, 0], show: true },
+        partname: { pos: [-4, -7], show: true },
+        variantend: { pos: [-4, -7], show: true },
         tuplet: {
           cp1: [5, 2],
           cp2: [5, -2],

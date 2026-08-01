@@ -324,6 +324,13 @@ describe('configSchema', () => {
     })).toEqual([])
   })
 
+  it('exposes both global tuplet annotation fields in the editor schema', () => {
+    const tuplets = ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW.properties?.extract
+      ?.patternProperties?.['d*']?.properties?.tuplets
+
+    expect(Object.keys(tuplets?.properties ?? {})).toEqual(['text', 'style'])
+  })
+
   it('keeps the legacy preset families in the default config', () => {
     const config = initConf(new Confstack())
     const presets = config.presets as Record<string, unknown>

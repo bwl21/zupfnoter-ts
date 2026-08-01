@@ -7,6 +7,8 @@ import {
   LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
   LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
   LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
+  getConfigSchemaOverview,
+  type JsonSchemaNode,
   resolveConfigSchemaPath,
 } from './configSchema.js'
 import { type CommandArgumentValue } from './commands.js'
@@ -349,8 +351,9 @@ export function buildConfigEditorAllParametersTree(
   effectiveConfig: Record<string, CommandArgumentValue>,
   extractId: number,
 ): ConfigEditorTreeDefinition[] {
-  return materializeDynamicTreeDefinitions(
-    CONFIG_EDITOR_TREE_DEFINITION,
+  return buildSchemaTreeChildren(
+    getConfigSchemaOverview(),
+    '',
     '',
     currentConfig,
     effectiveConfig,
@@ -358,67 +361,103 @@ export function buildConfigEditorAllParametersTree(
   )
 }
 
-function materializeDynamicTreeDefinitions(
-  definitions: readonly ConfigEditorTreeDefinition[],
-  parentPath: string,
+const ALL_PARAMETERS_INTERNAL_ROOTS = new Set([
+  'confstack',
+  'defaults',
+  'templates',
+  'presets',
+  'neatjson',
+])
+
+function buildSchemaTreeChildren(
+  schema: JsonSchemaNode,
+  parentTreePath: string,
+  parentSchemaPath: string,
   currentConfig: Record<string, CommandArgumentValue>,
   effectiveConfig: Record<string, CommandArgumentValue>,
   extractId: number,
 ): ConfigEditorTreeDefinition[] {
-  return definitions.map((definition) => {
-    const treePath = joinPath(parentPath, definition.key)
-    const schemaPath = treePath.replace(/^extract\.current(?=\.|$)/, `extract.${extractId}`)
-    const schema = resolveConfigSchemaPath(schemaPath)
-    const children = definition.children
+  const properties = Object.keys(schema.properties ?? {})
+  const definitions: ConfigEditorTreeDefinition[] = []
 
-    if (children !== undefined && isDynamicEntryContainer(schemaPath, schema?.patternProperties)) {
-      return {
-        ...definition,
-        children: collectDynamicObjectKeys(currentConfig, effectiveConfig, schemaPath).map((entryKey) => ({
-          key: entryKey,
-          label: entryKey,
-          children: materializeDynamicTreeDefinitions(
-            children,
-            `${treePath}.${entryKey}`,
-            currentConfig,
-            effectiveConfig,
-            extractId,
-          ),
-        })),
-      }
+  for (const key of properties) {
+    if (parentTreePath === '' && ALL_PARAMETERS_INTERNAL_ROOTS.has(key)) continue
+
+    if (parentTreePath === '' && key === 'extract') {
+      const treePath = 'extract.current'
+      const schemaPath = `extract.${extractId}`
+      definitions.push({
+        key,
+        label: legacyLabel(key),
+        children: [buildSchemaTreeNode(
+          'current',
+          treePath,
+          schemaPath,
+          currentConfig,
+          effectiveConfig,
+          extractId,
+          String(extractId),
+        )],
+      })
+      continue
     }
 
-    return children === undefined
-      ? { ...definition }
-      : {
-          ...definition,
-          children: materializeDynamicTreeDefinitions(
-            children,
-            treePath,
-            currentConfig,
-            effectiveConfig,
-            extractId,
-          ),
-        }
-  })
+    const treePath = joinPath(parentTreePath, key)
+    const schemaPath = joinPath(parentSchemaPath, key)
+    definitions.push(buildSchemaTreeNode(
+      key,
+      treePath,
+      schemaPath,
+      currentConfig,
+      effectiveConfig,
+      extractId,
+    ))
+  }
+
+  for (const key of collectSchemaDynamicKeys(schema, parentSchemaPath, currentConfig, effectiveConfig)) {
+    const treePath = joinPath(parentTreePath, key)
+    const schemaPath = joinPath(parentSchemaPath, key)
+    definitions.push(buildSchemaTreeNode(
+      key,
+      treePath,
+      schemaPath,
+      currentConfig,
+      effectiveConfig,
+      extractId,
+      key,
+    ))
+  }
+
+  return definitions
 }
 
-function isDynamicEntryContainer(
+function buildSchemaTreeNode(
+  key: string,
+  treePath: string,
   schemaPath: string,
-  patternProperties: Record<string, unknown> | undefined,
-): boolean {
-  return patternProperties !== undefined && schemaPath !== 'extract'
-}
-
-function collectDynamicObjectKeys(
   currentConfig: Record<string, CommandArgumentValue>,
   effectiveConfig: Record<string, CommandArgumentValue>,
-  path: string,
+  extractId: number,
+  label = legacyLabel(key),
+): ConfigEditorTreeDefinition {
+  const schema = resolveConfigSchemaPath(schemaPath)
+  const children = schema === undefined
+    ? []
+    : buildSchemaTreeChildren(schema, treePath, schemaPath, currentConfig, effectiveConfig, extractId)
+
+  return children.length === 0
+    ? { key, label, configPath: treePath }
+    : { key, label, children, configPath: treePath }
+}
+
+function collectSchemaDynamicKeys(
+  schema: JsonSchemaNode,
+  schemaPath: string,
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
 ): string[] {
-  return collectUnionObjectKeys(
-    getPathValue(currentConfig, path),
-    getPathValue(effectiveConfig, path),
-  )
+  if (schema.patternProperties === undefined) return []
+  return collectUnionObjectKeys(getPathValue(currentConfig, schemaPath), getPathValue(effectiveConfig, schemaPath))
 }
 
 function buildSectionChildren(

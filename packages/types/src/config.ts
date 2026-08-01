@@ -231,15 +231,19 @@ export interface PositionedTextConfig {
 export interface DefaultNoteboundConfig {
   annotation?: {
     pos?: [number, number]
+    show?: boolean
   }
   chord?: {
     pos?: [number, number]
+    show?: boolean
   }
   partname?: {
     pos?: [number, number]
+    show?: boolean
   }
   variantend?: {
     pos?: [number, number]
+    show?: boolean
   }
   tuplet?: {
     cp1?: [number, number]

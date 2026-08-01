@@ -73,6 +73,36 @@ describe('buildConfigEditorSectionTree', () => {
     expect(paths).toContain('extract.current.lyrics.0.pos')
   })
 
+  it('includes schema-defined tuplet fields without a local configuration value', () => {
+    const tree = buildConfigEditorAllParametersTree({}, {}, 0)
+    const paths = flattenTreePaths(tree)
+
+    expect(paths).toContain('extract.current.tuplets')
+    expect(paths).toContain('extract.current.tuplets.text')
+    expect(paths).toContain('extract.current.tuplets.style')
+  })
+
+  it('keeps schema-defined dynamic entries from the current and effective config', () => {
+    const currentConfig = {
+      extract: {
+        0: {
+          notebound: {
+            flowline: {
+              v_1: {
+                1: { cp1: [1, 2], cp2: [1, -2], shape: ['c'], show: true },
+              },
+            },
+          },
+        },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+
+    const tree = buildConfigEditorAllParametersTree(currentConfig, {}, 0)
+    const paths = flattenTreePaths(tree)
+
+    expect(paths).toContain('extract.current.notebound.flowline.v_1.1.cp1')
+  })
+
   it('expands extract annotation keys for extract ids from current and effective config', () => {
     const currentConfig = {
       extract: {

@@ -479,6 +479,7 @@ const POSITIONED_TEXT_SCHEMA: JsonSchemaNode = {
   additionalProperties: false,
   properties: {
     pos: POSITION_SCHEMA,
+    show: { type: 'boolean' },
     text: multilineTextSchema(),
     style: fontStyleSchema(),
   },
@@ -1397,7 +1398,7 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
           variantend: refTo('#/definitions/notebound_pos'),
         },
       },
-      tuplets: { type: 'object', properties: { text: multilineTextSchema() } },
+      tuplets: { type: 'object', properties: { text: multilineTextSchema(), style: fontStyleSchema() } },
       barnumbers: {
         type: 'object',
         required: ['voices', 'pos', 'autopos', 'style', 'prefix'],
@@ -1592,6 +1593,7 @@ export function resolveConfigSchemaPath(path: string): JsonSchemaNode | undefine
   return resolveSchemaNodeReference(current, ZUPFNOTER_CONFIG_SCHEMA_OVERVIEW)
 }
 
+/** Liefert den im Schema beschriebenen Default eines konkreten Konfigurationspfads. */
 function buildValidationSchemaOverview(schema: JsonSchemaNode): JsonSchemaNode {
   return normalizeSchemaNodeForValidation(schema, schema)
 }
