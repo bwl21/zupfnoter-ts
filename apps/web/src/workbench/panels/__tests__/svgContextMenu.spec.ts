@@ -16,17 +16,13 @@ describe('svgContextMenu', () => {
     ])
   })
 
-  it('keeps the visibility help path while opening the parent editor', () => {
+  it('does not offer a separate visibility action for images and annotations', () => {
     const entries = buildSvgContextMenuEntries('extract.0.annotations.7.pos', [], {
-      visibilityPath: 'extract.0.annotations.7.show',
+      resetShapePath: 'extract.0.annotations.7',
+      resetShapeValue: { cp1: [0.33, 0], cp2: [0.67, 0] },
     })
-    const entry = entries[1]
 
-    expect(entry).toMatchObject({
-      action: 'edit',
-      path: 'extract.0.annotations.7',
-      helpPath: 'extract.0.annotations.7.show',
-    })
+    expect(entries.map((entry) => entry.text)).not.toContain('Sichtbarkeit bearbeiten')
   })
 
   it('keeps the minc leaf when opening the dynamic minc editor', () => {

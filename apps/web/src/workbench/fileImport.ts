@@ -18,7 +18,35 @@ function fileExtension(fileName: string): string {
 }
 
 function isImage(file: File): boolean {
-  return file.type.toLowerCase().startsWith('image/jpeg') || fileExtension(file.name) === 'jpg' || fileExtension(file.name) === 'jpeg'
+  if (file.type.toLowerCase().startsWith('image/')) return true
+  return ['gif', 'jpeg', 'jpg', 'png', 'svg', 'webp'].includes(fileExtension(file.name))
+}
+
+function isJpeg(file: File): boolean {
+  return file.type.toLowerCase() === 'image/jpeg'
+    || fileExtension(file.name) === 'jpg'
+    || fileExtension(file.name) === 'jpeg'
+}
+
+async function normalizeJpegOrientation(file: File, dataUri: string): Promise<string> {
+  if (!isJpeg(file) || typeof createImageBitmap !== 'function' || typeof document === 'undefined') return dataUri
+
+  try {
+    const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
+    try {
+      const canvas = document.createElement('canvas')
+      canvas.width = bitmap.width
+      canvas.height = bitmap.height
+      const context = canvas.getContext('2d')
+      if (context === null) return dataUri
+      context.drawImage(bitmap, 0, 0)
+      return canvas.toDataURL('image/jpeg', 0.92)
+    } finally {
+      bitmap.close()
+    }
+  } catch {
+    return dataUri
+  }
 }
 
 function isMxl(file: File): boolean {
@@ -50,7 +78,8 @@ export async function readLocalImport(file: File): Promise<LocalImport> {
     let binary = ''
     for (const byte of bytes) binary += String.fromCharCode(byte)
     const mimeType = file.type === '' ? 'image/jpeg' : file.type
-    return { kind: 'resource', name: file.name, dataUri: `data:${mimeType};base64,${btoa(binary)}` }
+    const dataUri = `data:${mimeType};base64,${btoa(binary)}`
+    return { kind: 'resource', name: file.name, dataUri: await normalizeJpegOrientation(file, dataUri) }
   }
 
   if (isMxl(file)) {

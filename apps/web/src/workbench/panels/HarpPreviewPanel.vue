@@ -240,7 +240,6 @@ function contextMenuEntries(element: Element): SvgContextMenuEntry[] {
   const drawable = element.closest<HTMLElement>('.zupfnoter-element[data-conf-key]')
   if (drawable === null) return []
   const confKey = drawable.getAttribute('data-conf-key')?.trim() ?? ''
-  const confBase = confKey.replace(/\.[^.]+$/, '')
   const dragConfKey = drawable.getAttribute('data-drag-conf-key')?.trim() ?? ''
   const bezier = parseBezierInfo(drawable.getAttribute('data-drag-bezier'))
   const resetShapeValue = bezier === undefined ? undefined : {
@@ -266,9 +265,6 @@ function contextMenuEntries(element: Element): SvgContextMenuEntry[] {
     confKey,
     parseSvgContextMenuEntries(drawable.getAttribute('data-more-conf-keys')),
     {
-      visibilityPath: ['Annotation', 'Image'].includes(drawable.getAttribute('data-type') ?? '') && confBase.length > 0
-        ? `${confBase}.show`
-        : undefined,
       resetShapePath: drawable.getAttribute('data-drag-handler') === 'bezier' ? dragConfKey : undefined,
       resetShapeValue,
       deleteShapePath: drawable.getAttribute('data-drag-handler') === 'bezier' ? dragConfKey : undefined,

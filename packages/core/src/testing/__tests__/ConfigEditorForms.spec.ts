@@ -6,6 +6,7 @@ import {
   getConfigEditorDynamicFields,
   getConfigEditorNewEntryCommand,
   getConfigEditorFormSections,
+  resolveConfigEditorFormId,
 } from '../../configEditorForms.js'
 import {
   LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
@@ -48,6 +49,11 @@ describe('ConfigEditorForms', () => {
   it('keeps the global tuplet style parameter in the editor form', () => {
     expect(CONFIG_EDITOR_FORM_SETS.barnumbers_countnotes.keys)
       .toContain('extract.{extract}.tuplets.style')
+  })
+
+  it('resolves concrete image paths to the image editor form', () => {
+    expect(resolveConfigEditorFormId('extract.0.images.0')).toBe('images')
+    expect(resolveConfigEditorFormId('$resources.second_png')).toBe('images')
   })
 
   it('ports the legacy editconf menu order and ids', () => {

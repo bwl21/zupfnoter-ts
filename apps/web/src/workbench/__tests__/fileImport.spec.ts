@@ -16,6 +16,12 @@ describe('readLocalImport', () => {
     expect(result).toEqual({ kind: 'resource', name: 'cover.jpg', dataUri: 'data:image/jpeg;base64,/9g=' })
   })
 
+  it('reads PNG files as data URIs', async () => {
+    const result = await readLocalImport(new File([new Uint8Array([0x89, 0x50])], 'second.png', { type: 'image/png' }))
+
+    expect(result).toEqual({ kind: 'resource', name: 'second.png', dataUri: 'data:image/png;base64,iVA=' })
+  })
+
   it('converts MusicXML instead of importing XML as raw ABC', async () => {
     const musicXml = [
       '<?xml version="1.0" encoding="UTF-8"?>',

@@ -1044,6 +1044,20 @@ describe('ConfigEditorPanel', () => {
     expect(resourceRow.find('input').exists()).toBe(false)
   })
 
+  it('resolves a concrete image entry when opening its configuration', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n\n{"extract":{"0":{"images":{"0":{"imagename":"cover_jpg","show":true,"pos":[10,10],"height":30}}}}}',
+        resources: { cover_jpg: ['data:image/jpeg;base64,test'] },
+        currentExtract: 0,
+        activeSection: 'extract.0.images.0',
+      },
+    })
+
+    expect(wrapper.text()).toContain('cover_jpg')
+    expect(wrapper.text()).not.toContain('Keine passenden Parameter')
+  })
+
   it('disables quick settings when the active section has none', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

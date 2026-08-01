@@ -498,6 +498,32 @@ export function getConfigEditorFormSet(formId: string): ConfigEditorFormSet | un
   return undefined
 }
 
+/** Liefert das Legacy-Formular zu einem konkreten Konfigurationspfad. */
+export function resolveConfigEditorFormId(path: string): ConfigEditorFormId | undefined {
+  if (isConfigEditorFormId(path)) return path
+  if (getConfigEditorDynamicFields(path) !== undefined) return undefined
+
+  const pathParts = normalizeConfigEditorPath(path).split('.')
+  for (const formSet of Object.values(CONFIG_EDITOR_FORM_SETS)) {
+    if (formSet.id === 'all_parameters' || formSet.id === 'template') continue
+    if (formSet.keys.some((key) => matchesConfigEditorPathPrefix(pathParts, key))) return formSet.id
+  }
+  return undefined
+}
+
+function normalizeConfigEditorPath(path: string): string {
+  return path.replace(/^extract\.(?:current|\d+)(?=\.|$)/, 'extract.{extract}')
+}
+
+function matchesConfigEditorPathPrefix(pathParts: string[], key: string): boolean {
+  const keyParts = key.split('.')
+  if (pathParts.length > keyParts.length) return false
+  return pathParts.every((part, index) => {
+    const keyPart = keyParts[index]
+    return keyPart === '*' || keyPart === '{extract}' || keyPart === part
+  })
+}
+
 export function isConfigEditorFormId(formId: string): formId is ConfigEditorFormId {
   return formId in CONFIG_EDITOR_FORM_SETS
 }

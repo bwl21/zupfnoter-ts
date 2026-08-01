@@ -80,6 +80,11 @@ import type { CommandArgumentValue } from '@zupfnoter/core'
 import { WorkbenchLogger, type ConsoleLogEntry } from './consoleLog'
 import { ShortcutManager } from './ShortcutManager'
 import {
+  INDEXED_DB_DOCUMENT_MARKER,
+  loadCurrentDocumentFromIndexedDb,
+  saveCurrentDocumentToIndexedDb,
+} from './documentPersistence'
+import {
   canTargetCreateSelection,
   createConfKeySelectedSelectionEvent,
   createExtractChangedSelectionEvent,
@@ -247,6 +252,7 @@ const flowconfEnabled = computed(() => workbenchConfig.config.flowconf)
 const storageStateKey = 'zupfnoter.storage.context'
 const storageDialogResumeKey = 'zupfnoter.storage.connections-dialog.resume'
 const abcTextKey = 'zupfnoter.abc.current'
+const workbenchUiStateKey = 'zupfnoter.workbench.ui-state'
 const playbackInstrumentKey = 'zupfnoter.playback.instrument'
 const extractPickerOpen = ref(false)
 const aboutDialogOpen = ref(false)
@@ -555,6 +561,7 @@ let nextRenderRequestId = 0
 let pendingRenderRequestId: number | undefined
 let renderTimer: ReturnType<typeof setTimeout> | undefined
 let pdfPreviewRequestId = 0
+let documentPersistenceQueue = Promise.resolve()
 
 function appendDiagnosticLine(message: string, severity: 'warning' | 'error', source?: string): void {
   const prefix = source === undefined || source === ''
@@ -584,10 +591,47 @@ function restoreStorageContext(): void {
   }
 }
 
-function restoreCurrentAbcText(): void {
+async function restoreCurrentAbcText(): Promise<void> {
+  try {
+    const indexedDocument = await loadCurrentDocumentFromIndexedDb()
+    if (indexedDocument !== undefined) {
+      documentText.value = indexedDocument
+      return
+    }
+  } catch (error) {
+    logger.warning(`IndexedDB konnte nicht geladen werden: ${error instanceof Error ? error.message : String(error)}`)
+  }
+
   const raw = localStorage.getItem(abcTextKey)
+  if (raw !== null && raw !== INDEXED_DB_DOCUMENT_MARKER) {
+    documentText.value = raw
+  }
+}
+
+function restoreWorkbenchUiState(): void {
+  const raw = localStorage.getItem(workbenchUiStateKey)
   if (raw === null) return
-  documentText.value = raw
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    if (typeof parsed !== 'object' || parsed === null) return
+    const state = parsed as Record<string, unknown>
+    if (typeof state.editorTab === 'string') editorTab.value = state.editorTab
+    if (typeof state.viewPerspective === 'string' && viewPerspectiveItems.some((item) => item.id === state.viewPerspective)) {
+      viewPerspective.value = state.viewPerspective as ViewPerspective
+    }
+    if (state.maximizedPanel === null || state.maximizedPanel === 'editor' || state.maximizedPanel === 'score' || state.maximizedPanel === 'harp') {
+      maximizedPanel.value = state.maximizedPanel
+    }
+    if (typeof state.editorPaneSize === 'number' && Number.isFinite(state.editorPaneSize) && state.editorPaneSize > 0) editorPaneSize.value = state.editorPaneSize
+    if (typeof state.previewPaneSize === 'number' && Number.isFinite(state.previewPaneSize) && state.previewPaneSize > 0) previewPaneSize.value = state.previewPaneSize
+    if (typeof state.activeConfigSection === 'string') activeConfigSection.value = state.activeConfigSection
+    if (typeof state.currentExtract === 'number' && Number.isInteger(state.currentExtract) && state.currentExtract >= 0) {
+      currentExtract.value = state.currentExtract
+      playbackStore.setActiveExtract(currentExtract.value)
+    }
+  } catch {
+    // ignore malformed UI state
+  }
 }
 
 function restorePlaybackInstrument(): void {
@@ -606,6 +650,38 @@ function persistStorageContext(): void {
   }))
 }
 
+async function persistCurrentAbcText(value: string): Promise<void> {
+  try {
+    await saveCurrentDocumentToIndexedDb(value)
+    localStorage.setItem(abcTextKey, INDEXED_DB_DOCUMENT_MARKER)
+    return
+  } catch (error) {
+    try {
+      localStorage.removeItem(abcTextKey)
+      localStorage.setItem(abcTextKey, value)
+      logger.warning(`Dokument wird ersatzweise in LocalStorage gespeichert: ${error instanceof Error ? error.message : String(error)}`)
+    } catch (fallbackError) {
+      logger.error(`Dokument konnte nicht dauerhaft gespeichert werden: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`)
+    }
+  }
+}
+
+function persistWorkbenchUiState(): void {
+  try {
+    localStorage.setItem(workbenchUiStateKey, JSON.stringify({
+      editorTab: editorTab.value,
+      viewPerspective: viewPerspective.value,
+      maximizedPanel: maximizedPanel.value,
+      editorPaneSize: editorPaneSize.value,
+      previewPaneSize: previewPaneSize.value,
+      activeConfigSection: activeConfigSection.value,
+      currentExtract: currentExtract.value,
+    }))
+  } catch (error) {
+    logger.warning(`Bildschirmzustand konnte nicht gespeichert werden: ${error instanceof Error ? error.message : String(error)}`)
+  }
+}
+
 watch(storageState, persistStorageContext, { deep: true })
 
 watch(storageConnections, (connections) => {
@@ -617,8 +693,10 @@ watch(saveTooltip, () => {
 })
 
 watch(documentText, (value) => {
-  localStorage.setItem(abcTextKey, value)
+  documentPersistenceQueue = documentPersistenceQueue.then(() => persistCurrentAbcText(value))
 })
+
+watch([editorTab, viewPerspective, maximizedPanel, editorPaneSize, previewPaneSize, activeConfigSection, currentExtract], persistWorkbenchUiState)
 
 watch(playbackInstrument, (value) => {
   localStorage.setItem(playbackInstrumentKey, value)
@@ -1101,6 +1179,8 @@ async function importLocalFile(file: File): Promise<void> {
       ...documentResources.value,
       [key]: [imported.dataUri],
     })
+    activeConfigSection.value = 'images'
+    editorTab.value = 'config'
     renderNow()
     pushToast({ severity: 'success', title: 'Ressource importiert', message: `„${file.name}“ wurde als Ressource übernommen.` })
   } catch (error) {
@@ -1112,13 +1192,19 @@ async function importLocalFile(file: File): Promise<void> {
   }
 }
 
+async function importLocalFiles(files: readonly File[]): Promise<void> {
+  for (const file of files) {
+    await importLocalFile(file)
+  }
+}
+
 function handleFileDrop(event: DragEvent): void {
   if (!hasFiles(event)) return
   event.preventDefault()
   event.stopPropagation()
   fileDropActive.value = false
-  const file = event.dataTransfer?.files.item(0)
-  if (file !== null && file !== undefined) void importLocalFile(file)
+  const files = event.dataTransfer === null ? [] : Array.from(event.dataTransfer.files)
+  if (files.length > 0) void importLocalFiles(files)
 }
 
 function handleLocalFileInput(event: Event): void {
@@ -2106,8 +2192,9 @@ function isExtractProduced(extractNumber: number): boolean {
   return produceExtracts.value.has(extractNumber)
 }
 
-onMounted(() => {
-  restoreCurrentAbcText()
+onMounted(async () => {
+  await restoreCurrentAbcText()
+  restoreWorkbenchUiState()
   savedDocumentText.value = documentText.value
   restorePlaybackInstrument()
   restoreStorageContext()
@@ -2192,9 +2279,9 @@ function handleMirrorMessage(event: MessageEvent): void {
 <template>
   <WorkbenchLayout
     :class="{ 'workbench-layout--file-drop-active': fileDropActive }"
-    @dragover="handleFileDragOver"
+    @dragover.capture="handleFileDragOver"
     @dragleave="handleFileDragLeave"
-    @drop="handleFileDrop"
+    @drop.capture="handleFileDrop"
   >
     <template #header>
       <section class="workbench-chrome">

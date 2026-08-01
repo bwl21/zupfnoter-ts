@@ -18,7 +18,6 @@ export function buildSvgContextMenuEntries(
   confKey: string | null,
   moreConfKeys: MoreConfKey[],
   options: {
-    visibilityPath?: string
     resetShapePath?: string
     resetShapeValue?: CommandArgumentValue
     deleteShapePath?: string
@@ -33,18 +32,6 @@ export function buildSvgContextMenuEntries(
       action: 'edit',
       path: stripLeaf(normalizedConfKey),
       helpPath: normalizedConfKey,
-      disabled: false,
-    })
-  }
-
-  const visibilityPath = options.visibilityPath?.trim() ?? ''
-  if (visibilityPath.length > 0) {
-    entries.push({
-      text: 'Sichtbarkeit bearbeiten',
-      icon: '◉',
-      action: 'edit',
-      path: stripLeaf(visibilityPath),
-      helpPath: visibilityPath,
       disabled: false,
     })
   }

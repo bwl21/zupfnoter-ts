@@ -18,6 +18,7 @@ import {
   getConfigEditorQuickSettingLabel,
   getConfigPathActionProfile,
   getConfigEditorFormSet,
+  resolveConfigEditorFormId,
   initConf,
   mergeSongConfig,
   parseConfigEditorValue,
@@ -169,14 +170,15 @@ const parsedSongConfig = computed(() => {
 const defaultConfig = computed(() => initConf(new Confstack()))
 const effectiveConfig = computed(() => mergeSongConfig(defaultConfig.value, parsedSongConfig.value.config))
 const filteredSearch = computed(() => searchText.value.trim().toLowerCase())
-const activeSectionSearch = computed(() => getConfigEditorFormSet(props.activeSection) === undefined
-  ? props.activeSection.trim().toLowerCase()
+const resolvedActiveSection = computed(() => resolveConfigEditorFormId(props.activeSection) ?? props.activeSection)
+const activeSectionSearch = computed(() => getConfigEditorFormSet(resolvedActiveSection.value) === undefined
+  ? resolvedActiveSection.value.trim().toLowerCase()
   : '')
 const effectiveSearch = computed(() => filteredSearch.value === '' ? activeSectionSearch.value : filteredSearch.value)
-const newEntryCommand = computed(() => getConfigEditorNewEntryCommand(props.activeSection, props.currentExtract))
+const newEntryCommand = computed(() => getConfigEditorNewEntryCommand(resolvedActiveSection.value, props.currentExtract))
 const canAddEntry = computed(() => newEntryCommand.value !== undefined)
 const quickSettings = computed<QuickSettingMenuItem[]>(() => {
-  const formSet = getConfigEditorFormSet(props.activeSection)
+  const formSet = getConfigEditorFormSet(resolvedActiveSection.value)
   const presets = defaultConfig.value.presets as unknown as Record<string, unknown>
   return (formSet?.quicksettingCommands ?? []).flatMap((command) => {
     if (command === 'stdextract') {
@@ -231,7 +233,7 @@ watch(
 watch(
   () => props.activeSection,
   (section) => {
-    expandSection(section)
+    expandSection(resolvedActiveSection.value)
     searchText.value = ''
   },
   { immediate: true },
@@ -359,7 +361,7 @@ function expandSection(section: string): void {
     return
   }
 
-  if (section === props.activeSection && activeSectionTreeDefinition.value !== undefined) {
+  if (section === resolvedActiveSection.value && activeSectionTreeDefinition.value !== undefined) {
     const nextExpanded = new Set(expandedPaths.value)
     for (const branchPath of collectBranchPaths(activeSectionTreeDefinition.value)) {
       nextExpanded.add(branchPath)
@@ -506,7 +508,7 @@ function resolveEffectivePath(path: string): string | undefined {
 }
 
 function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | undefined {
-  if (props.activeSection === 'all_parameters') {
+  if (resolvedActiveSection.value === 'all_parameters') {
     return buildConfigEditorAllParametersTree(
       parsedSongConfig.value.config as unknown as Record<string, CommandArgumentValue>,
       effectiveConfig.value as unknown as Record<string, CommandArgumentValue>,
@@ -517,7 +519,7 @@ function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | unde
     return buildDynamicConfigTree(props.activeSection)
   }
   return buildConfigEditorSectionTree(
-    props.activeSection,
+    resolvedActiveSection.value,
     parsedSongConfig.value.config as unknown as Record<string, CommandArgumentValue>,
     effectiveConfig.value as unknown as Record<string, CommandArgumentValue>,
     props.currentExtract,
@@ -1321,7 +1323,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
         aria-label="Konfigurationsbaum"
       >
         <div v-if="visibleRows.length === 0" class="config-panel__empty">
-          Keine passenden Parameter für: {{ activeSection }}
+          Keine passenden Parameter für: {{ resolvedActiveSection }}
         </div>
         <div
           v-for="row in visibleRows"
