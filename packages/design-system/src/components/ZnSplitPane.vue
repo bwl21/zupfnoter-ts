@@ -244,6 +244,13 @@ onBeforeUnmount(() => {
   z-index: 3;
 }
 
+@media (pointer: coarse) {
+  .zn-split-pane__divider {
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+  }
+}
+
 .zn-split-pane__divider:hover,
 .zn-split-pane--dragging .zn-split-pane__divider {
   background: color-mix(in srgb, var(--zn-accent) 28%, var(--zn-border-strong));

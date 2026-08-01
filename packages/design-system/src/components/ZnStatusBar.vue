@@ -22,6 +22,14 @@
   box-shadow: var(--zn-shadow-soft);
 }
 
+@media (max-width: 48rem) {
+  .zn-status-bar {
+    flex-wrap: wrap;
+    gap: var(--zn-space-2);
+    padding: var(--zn-space-1) var(--zn-space-2);
+  }
+}
+
 .zn-status-bar__main,
 .zn-status-bar__aside {
   display: inline-flex;

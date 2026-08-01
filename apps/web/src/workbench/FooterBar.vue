@@ -151,6 +151,10 @@ function handleSelectionVoiceScopeChange(event: Event): void {
   font-weight: 600;
   line-height: 1.1;
   cursor: pointer;
+  max-width: 18rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .footer-bar__storage-chip:hover {
@@ -234,5 +238,32 @@ function handleSelectionVoiceScopeChange(event: Event): void {
   color: var(--zn-text);
   font: inherit;
   cursor: pointer;
+}
+
+@media (pointer: coarse) {
+  .footer-bar__scope-select {
+    min-height: 2.75rem;
+  }
+
+  .footer-bar__speed-button,
+  .footer-bar__speed-value {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+
+  .footer-bar__storage-chip {
+    min-height: 2.2rem;
+    padding: 0.35rem 0.65rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .footer-bar__meta {
+    display: none;
+  }
+
+  .footer-bar__cursor {
+    min-width: 0;
+  }
 }
 </style>

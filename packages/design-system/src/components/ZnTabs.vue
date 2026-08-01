@@ -105,6 +105,13 @@ function panelId(): string {
     transform 140ms ease;
 }
 
+@media (pointer: coarse) {
+  .zn-tabs__tab {
+    min-height: 2.75rem;
+    padding: 0.55rem 0.85rem;
+  }
+}
+
 .zn-tabs__tab:hover {
   transform: translateY(-1px);
   border-color: var(--zn-border-strong);

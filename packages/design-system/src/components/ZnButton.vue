@@ -47,6 +47,13 @@ defineEmits<{
   cursor: pointer;
 }
 
+@media (pointer: coarse) {
+  .zn-button {
+    min-height: 2.75rem;
+    padding: 0.55rem 0.9rem;
+  }
+}
+
 .zn-button:hover:not(:disabled) {
   transform: translateY(-1px);
   border-color: var(--zn-border-strong);
