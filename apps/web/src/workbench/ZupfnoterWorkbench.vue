@@ -3236,6 +3236,9 @@ function handleMirrorMessage(event: MessageEvent): void {
 
 .preview-pane :deep(.zn-panel__shell) {
   padding: 0.25rem;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .workbench-footer {

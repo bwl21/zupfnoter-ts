@@ -1051,7 +1051,7 @@ onBeforeUnmount(() => {
 .harp-preview {
   display: flex;
   flex-direction: column;
-  gap: var(--zn-space-2);
+  gap: 0;
   min-height: 0;
   height: 100%;
 }
@@ -1061,6 +1061,10 @@ onBeforeUnmount(() => {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--zn-space-3);
+}
+
+.harp-preview__header :deep(.zn-tabs__panel) {
+  display: none;
 }
 
 .harp-preview__controls {

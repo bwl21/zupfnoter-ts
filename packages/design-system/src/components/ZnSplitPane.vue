@@ -240,7 +240,7 @@ onBeforeUnmount(() => {
   color: var(--zn-border-strong);
   cursor: col-resize;
   touch-action: none;
-  background-color: var(--zn-bg-elevated);
+  background-color: transparent;
   transition: background 120ms ease, color 120ms ease;
   position: absolute;
   z-index: 3;
@@ -249,20 +249,18 @@ onBeforeUnmount(() => {
 .zn-split-pane--horizontal .zn-split-pane__divider {
   background-image: linear-gradient(
     to right,
-    transparent calc(50% - 0.5px),
-    var(--zn-border-strong) calc(50% - 0.5px),
-    var(--zn-border-strong) calc(50% + 0.5px),
-    transparent calc(50% + 0.5px)
+    transparent calc(100% - 1px),
+    var(--zn-border-strong) calc(100% - 1px),
+    var(--zn-border-strong) 100%
   );
 }
 
 .zn-split-pane--vertical .zn-split-pane__divider {
   background-image: linear-gradient(
     to bottom,
-    transparent calc(50% - 0.5px),
-    var(--zn-border-strong) calc(50% - 0.5px),
-    var(--zn-border-strong) calc(50% + 0.5px),
-    transparent calc(50% + 0.5px)
+    transparent calc(100% - 1px),
+    var(--zn-border-strong) calc(100% - 1px),
+    var(--zn-border-strong) 100%
   );
 }
 
@@ -270,10 +268,9 @@ onBeforeUnmount(() => {
 .zn-split-pane--dragging.zn-split-pane--horizontal .zn-split-pane__divider {
   background-image: linear-gradient(
     to right,
-    transparent calc(50% - 1px),
-    var(--zn-accent-strong) calc(50% - 1px),
-    var(--zn-accent-strong) calc(50% + 1px),
-    transparent calc(50% + 1px)
+    transparent calc(100% - 2px),
+    var(--zn-accent-strong) calc(100% - 2px),
+    var(--zn-accent-strong) 100%
   );
 }
 
@@ -281,10 +278,9 @@ onBeforeUnmount(() => {
 .zn-split-pane--dragging.zn-split-pane--vertical .zn-split-pane__divider {
   background-image: linear-gradient(
     to bottom,
-    transparent calc(50% - 1px),
-    var(--zn-accent-strong) calc(50% - 1px),
-    var(--zn-accent-strong) calc(50% + 1px),
-    transparent calc(50% + 1px)
+    transparent calc(100% - 2px),
+    var(--zn-accent-strong) calc(100% - 2px),
+    var(--zn-accent-strong) 100%
   );
 }
 
@@ -305,7 +301,7 @@ onBeforeUnmount(() => {
   top: 0;
   bottom: 0;
   left: var(--zn-split-primary);
-  transform: translateX(-50%);
+  transform: translateX(-100%);
   cursor: col-resize;
 }
 
@@ -317,7 +313,7 @@ onBeforeUnmount(() => {
   right: 0;
   bottom: auto;
   left: 0;
-  transform: translateY(-50%);
+  transform: translateY(-100%);
   cursor: row-resize;
 }
 </style>
