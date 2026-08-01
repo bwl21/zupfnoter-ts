@@ -86,6 +86,8 @@ const magnifierViewport = ref<{ width: number, height: number } | null>(null)
 const magnifierZoom = 800
 const pointerDownPosition = ref<{ x: number; y: number } | null>(null)
 const pointerDownTarget = ref<EventTarget | null>(null)
+type ImageResizeCorner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+
 interface ActiveDrag {
   pointerId: number
   confKey: string
@@ -101,6 +103,12 @@ interface ActiveDrag {
   originalPathData?: string
   originalControlPathData?: string
   originalPolygonPathData?: string
+  imageResize?: {
+    corner: ImageResizeCorner
+    positionConfKey: string
+    heightConfKey: string
+    bounds: { x: number; y: number; width: number; height: number }
+  }
   element: Element
   startClient: { x: number; y: number }
 }
@@ -154,6 +162,57 @@ watch(mode, (value) => {
   }
   if (value !== 'pdf') setZoom(presetZoom[value])
 })
+
+function syncImageResizeHandles(): void {
+  const canvas = canvasRef.value
+  if (canvas === null) return
+  const elements = new Set<HTMLElement>()
+  for (const handle of canvas.querySelectorAll<SVGRectElement>('[data-image-resize-corner]')) {
+    const element = handle.closest<HTMLElement>('.zupfnoter-element')
+    if (element !== null) elements.add(element)
+  }
+  for (const element of elements) {
+    const image = element.querySelector<SVGImageElement>('image.zupfnoter-shape--image')
+    if (image === null) continue
+    try {
+      const source = image.getAttribute('href') ?? image.getAttribute('xlink:href')
+      if (source !== null && image.dataset.imageSizeResolved !== 'true') {
+        const probe = new window.Image()
+        probe.addEventListener('load', () => {
+          const height = Number(image.getAttribute('height'))
+          if (probe.naturalWidth > 0 && probe.naturalHeight > 0 && Number.isFinite(height)) {
+            image.setAttribute('width', String(height * probe.naturalWidth / probe.naturalHeight))
+            image.dataset.imageSizeResolved = 'true'
+            syncImageResizeHandles()
+          }
+        }, { once: true })
+        probe.src = source
+      }
+      const bounds = image.getBBox()
+      for (const handle of element.querySelectorAll<SVGRectElement>('[data-image-resize-corner]')) {
+        const corner = handle.getAttribute('data-image-resize-corner')
+        const point: [number, number] = corner === 'top-left'
+          ? [bounds.x, bounds.y]
+          : corner === 'top-right'
+            ? [bounds.x + bounds.width, bounds.y]
+            : corner === 'bottom-left'
+              ? [bounds.x, bounds.y + bounds.height]
+              : [bounds.x + bounds.width, bounds.y + bounds.height]
+        handle.setAttribute('x', String(point[0] - 2))
+        handle.setAttribute('y', String(point[1] - 2))
+      }
+      const moveHandle = element.querySelector<SVGGElement>('[data-image-move-handle]')
+      moveHandle?.setAttribute('transform', `translate(${bounds.x + bounds.width / 2} ${bounds.y + bounds.height / 2})`)
+    } catch {
+      // getBBox() is unavailable until an SVG image has been laid out.
+    }
+  }
+}
+
+watch(() => props.svg, () => {
+  void nextTick().then(syncImageResizeHandles)
+}, { flush: 'post' })
+
 watch(contextMenu, () => {
   void syncContextMenuTooltips()
 })
@@ -395,8 +454,26 @@ function handlePointerDown(event: PointerEvent): void {
   if (event.button === 0 && event.target instanceof Element) {
     const directDraggable = event.target.closest<HTMLElement>('.zupfnoter-element[data-drag-enabled="true"][data-conf-key]')
     const draggable = directDraggable ?? findJumplineAtEvent(event)
-    const confKey = draggable?.getAttribute('data-drag-conf-key') ?? draggable?.getAttribute('data-conf-key')
-    const handler = draggable?.getAttribute('data-drag-handler')
+    const resizeHandle = event.target.closest<SVGRectElement>('[data-image-resize-corner]')
+    const image = event.target.closest<SVGImageElement>('image.zupfnoter-shape--image')
+      ?? draggable?.querySelector<SVGImageElement>('image.zupfnoter-shape--image')
+    const positionConfKey = draggable?.getAttribute('data-drag-conf-key')
+    const imageHeightConfKey = draggable?.getAttribute('data-drag-height-conf-key')
+      ?? (positionConfKey?.endsWith('.pos') === true ? positionConfKey.replace(/\.pos$/, '.height') : null)
+    const resizeCornerValue = resizeHandle?.getAttribute('data-image-resize-corner')
+    const imageResizeCorner: ImageResizeCorner | undefined = resizeCornerValue === 'top-left'
+      || resizeCornerValue === 'top-right'
+      || resizeCornerValue === 'bottom-left'
+      || resizeCornerValue === 'bottom-right'
+      ? resizeCornerValue
+      : image === null || image === undefined ? undefined : resolveImageResizeCorner(event, image)
+    const imageResize = (resizeHandle !== null || imageResizeCorner !== undefined)
+      && typeof imageHeightConfKey === 'string'
+      && typeof positionConfKey === 'string'
+    const confKey = imageResize && typeof imageHeightConfKey === 'string'
+      ? imageHeightConfKey
+      : draggable?.getAttribute('data-drag-conf-key') ?? draggable?.getAttribute('data-conf-key')
+    const handler = imageResize ? 'image-resize' : draggable?.getAttribute('data-drag-handler')
     const dragGridText = draggable?.getAttribute('data-drag-grid')
     const dragGrid = typeof dragGridText === 'string' ? Number(dragGridText) : Number.NaN
     const jumplineText = draggable?.getAttribute('data-drag-jumpline')
@@ -415,7 +492,9 @@ function handlePointerDown(event: PointerEvent): void {
     const polygonElement = bezier !== undefined
       ? draggable?.querySelector<SVGPathElement>('path[data-bezier-polygon="true"]') ?? undefined
       : undefined
-    const dragValueText = draggable?.getAttribute('data-drag-value')
+    const dragValueText = imageResize
+      ? draggable?.getAttribute('data-drag-height-value') ?? image?.getAttribute('height')
+      : draggable?.getAttribute('data-drag-value')
     let dragValue: number | [number, number] | undefined
     if (typeof dragValueText === 'string') {
       try {
@@ -433,6 +512,7 @@ function handlePointerDown(event: PointerEvent): void {
       }
     }
     if (draggable !== null && typeof confKey === 'string' && typeof handler === 'string' && displayScale.value > 0) {
+      if (image !== null && image !== undefined && !imageResize && !isImageMoveCenter(event, image)) return
       dragState.value = {
         pointerId: event.pointerId,
         confKey,
@@ -458,10 +538,20 @@ function handlePointerDown(event: PointerEvent): void {
             originalPolygonPathData: polygonElement?.getAttribute('d') ?? undefined,
           }
           : {}),
+        ...(imageResize && image !== null && image !== undefined && imageResizeCorner !== undefined && typeof imageHeightConfKey === 'string'
+          ? {
+            imageResize: {
+              corner: imageResizeCorner,
+              positionConfKey,
+              heightConfKey: imageHeightConfKey,
+              bounds: image.getBBox(),
+            },
+          }
+          : {}),
         element: draggable,
         startClient: { x: event.clientX, y: event.clientY },
       }
-      if (handler === 'bezier' || handler === 'tuplet') draggable.setAttribute('data-drag-active', 'true')
+      if (handler === 'bezier' || handler === 'tuplet' || handler === 'image-resize') draggable.setAttribute('data-drag-active', 'true')
       frameRef.value?.setPointerCapture(event.pointerId)
       event.preventDefault()
       event.stopPropagation()
@@ -474,6 +564,29 @@ function handlePointerDown(event: PointerEvent): void {
   }
   pointerDownTarget.value = event.target
   onPointerDown(event)
+}
+
+function resolveImageResizeCorner(event: PointerEvent, image: SVGImageElement): ImageResizeCorner | undefined {
+  const bounds = image.getBoundingClientRect()
+  const nearLeft = Math.abs(event.clientX - bounds.left) <= 18
+  const nearRight = Math.abs(event.clientX - bounds.right) <= 18
+  const nearTop = Math.abs(event.clientY - bounds.top) <= 18
+  const nearBottom = Math.abs(event.clientY - bounds.bottom) <= 18
+  if (nearLeft && nearTop) return 'top-left'
+  if (nearRight && nearTop) return 'top-right'
+  if (nearLeft && nearBottom) return 'bottom-left'
+  if (nearRight && nearBottom) return 'bottom-right'
+  return undefined
+}
+
+function isImageMoveCenter(event: PointerEvent, image: SVGImageElement): boolean {
+  const bounds = image.getBoundingClientRect()
+  const insetX = Math.min(bounds.width / 3, Math.max(18, bounds.width * 0.2))
+  const insetY = Math.min(bounds.height / 3, Math.max(18, bounds.height * 0.2))
+  return event.clientX > bounds.left + insetX
+    && event.clientX < bounds.right - insetX
+    && event.clientY > bounds.top + insetY
+    && event.clientY < bounds.bottom - insetY
 }
 
 function handlePointerMove(event: PointerEvent): void {
@@ -537,6 +650,17 @@ function handlePointerUp(event: PointerEvent): void {
           : activeDrag.confKey,
         handler: activeDrag.handler,
         delta: [deltaX, deltaY],
+        ...(activeDrag.imageResize !== undefined
+          ? {
+            updates: (() => {
+              const geometry = imageResizeGeometry(activeDrag.imageResize, deltaY)
+              return [
+                { confKey: activeDrag.imageResize.positionConfKey, value: [geometry.x, geometry.y] as [number, number] },
+                { confKey: activeDrag.imageResize.heightConfKey, value: geometry.height },
+              ]
+            })(),
+          }
+          : {}),
         ...(activeDrag.bezier !== undefined && activeDrag.bezierControl !== undefined
           ? {
             value: bezierControlToLegacyValue(
@@ -548,7 +672,9 @@ function handlePointerUp(event: PointerEvent): void {
           }
           : activeDrag.value !== undefined
           ? {
-            value: typeof activeDrag.value === 'number'
+            value: activeDrag.imageResize !== undefined
+              ? imageResizeGeometry(activeDrag.imageResize, deltaY).height
+              : typeof activeDrag.value === 'number'
               && activeDrag.handler === 'jumpline' && activeDrag.grid !== undefined
                 ? snapJumplineConfigValue(activeDrag.value, deltaX, activeDrag.grid)
                 : typeof activeDrag.value === 'number'
@@ -593,6 +719,33 @@ function snapDragDelta(activeDrag: ActiveDrag, delta: [number, number]): [number
 }
 
 function updateLiveDrag(activeDrag: ActiveDrag, deltaX: number, deltaY: number): void {
+  if (activeDrag.handler === 'image-resize' && activeDrag.imageResize !== undefined && typeof activeDrag.value === 'number') {
+    const image = activeDrag.element.querySelector<SVGImageElement>('image.zupfnoter-shape--image')
+    if (image !== null) {
+      const geometry = imageResizeGeometry(activeDrag.imageResize, deltaY)
+      image.setAttribute('x', String(geometry.x))
+      image.setAttribute('y', String(geometry.y))
+      image.setAttribute('width', String(geometry.width))
+      image.setAttribute('height', String(geometry.height))
+      for (const handle of activeDrag.element.querySelectorAll<SVGRectElement>('[data-image-resize-corner]')) {
+        const corner = handle.getAttribute('data-image-resize-corner')
+        const point: [number, number] = corner === 'top-left'
+          ? [geometry.x, geometry.y]
+          : corner === 'top-right'
+            ? [geometry.x + geometry.width, geometry.y]
+            : corner === 'bottom-left'
+              ? [geometry.x, geometry.y + geometry.height]
+              : [geometry.x + geometry.width, geometry.y + geometry.height]
+        handle.setAttribute('x', String(point[0] - 2))
+        handle.setAttribute('y', String(point[1] - 2))
+      }
+      activeDrag.element.querySelector<SVGGElement>('[data-image-move-handle]')?.setAttribute(
+        'transform',
+        `translate(${geometry.x + geometry.width / 2} ${geometry.y + geometry.height / 2})`,
+      )
+    }
+    return
+  }
   if (activeDrag.jumpline !== undefined && activeDrag.pathElement !== undefined) {
     activeDrag.pathElement.setAttribute('d', makeJumplinePathData({
       ...activeDrag.jumpline,
@@ -618,6 +771,19 @@ function updateLiveDrag(activeDrag: ActiveDrag, deltaX: number, deltaY: number):
     return
   }
   activeDrag.element.setAttribute('transform', `translate(${deltaX} ${deltaY})`)
+}
+
+function imageResizeGeometry(
+  resize: NonNullable<ActiveDrag['imageResize']>,
+  deltaY: number,
+): { x: number; y: number; width: number; height: number } {
+  const { bounds, corner } = resize
+  const heightDelta = corner.startsWith('top-') ? -deltaY : deltaY
+  const height = Math.max(1, bounds.height + heightDelta)
+  const width = Math.max(1, bounds.width * height / Math.max(1, bounds.height))
+  const x = corner.endsWith('left') ? bounds.x + bounds.width - width : bounds.x
+  const y = corner.startsWith('top') ? bounds.y + bounds.height - height : bounds.y
+  return { x, y, width, height }
 }
 
 function parseJumplineInfo(value: string | null): JumplinePathInfo | undefined {
@@ -1017,6 +1183,53 @@ onBeforeUnmount(() => {
 .harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight > .zupfnoter-shape) {
   stroke: var(--zn-danger);
   stroke-width: 1.5;
+}
+
+.harp-preview__svg :deep(.zupfnoter-image-resize-handle) {
+  opacity: 0;
+  fill: color-mix(in srgb, var(--zn-danger) 72%, white);
+  stroke: color-mix(in srgb, var(--zn-danger) 55%, transparent);
+  stroke-width: 0.35;
+  cursor: nwse-resize !important;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.harp-preview__svg :deep(.zupfnoter-shape--image) {
+  cursor: move;
+}
+
+.harp-preview__svg :deep(.zupfnoter-image-move-handle) {
+  opacity: 0;
+  color: var(--zn-danger);
+  cursor: move !important;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.harp-preview__svg :deep(.zupfnoter-element:hover .zupfnoter-image-move-handle),
+.harp-preview__svg :deep(.zupfnoter-element[data-drag-active="true"] .zupfnoter-image-move-handle) {
+  opacity: 0.86;
+}
+
+.harp-preview__svg :deep(.zupfnoter-image-resize-handle[data-image-resize-corner="top-left"]),
+.harp-preview__svg :deep(.zupfnoter-image-resize-handle[data-image-resize-corner="bottom-right"]) {
+  cursor: nwse-resize !important;
+}
+
+.harp-preview__svg :deep(.zupfnoter-image-resize-handle[data-image-resize-corner="top-right"]),
+.harp-preview__svg :deep(.zupfnoter-image-resize-handle[data-image-resize-corner="bottom-left"]) {
+  cursor: nesw-resize !important;
+}
+
+.harp-preview__svg :deep(.zupfnoter-element:hover .zupfnoter-image-resize-handle),
+.harp-preview__svg :deep(.zupfnoter-image-resize-handle:hover),
+.harp-preview__svg :deep(.zupfnoter-element[data-drag-active="true"] .zupfnoter-image-resize-handle) {
+  opacity: 0.86;
+  stroke-width: 0.45;
+  transform: scale(1.12);
 }
 
 .harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight .zupfnoter-bezier-drag-polygon) {

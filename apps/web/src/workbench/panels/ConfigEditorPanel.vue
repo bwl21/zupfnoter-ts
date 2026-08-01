@@ -518,12 +518,38 @@ function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | unde
   if (getConfigEditorDynamicFields(props.activeSection) !== undefined) {
     return buildDynamicConfigTree(props.activeSection)
   }
-  return buildConfigEditorSectionTree(
+  const definitions = buildConfigEditorSectionTree(
     resolvedActiveSection.value,
     parsedSongConfig.value.config as unknown as Record<string, CommandArgumentValue>,
     effectiveConfig.value as unknown as Record<string, CommandArgumentValue>,
     props.currentExtract,
   )
+  const concreteImageMatch = props.activeSection.match(/^extract\.(\d+)\.images\.(\d+)(?:\.|$)/)
+  if (definitions === undefined || concreteImageMatch === null) return definitions
+  const imagePath = `extract.${concreteImageMatch[1]}.images.${concreteImageMatch[2]}`
+  return restrictTreeToConfigPath(definitions, imagePath)
+}
+
+function restrictTreeToConfigPath(
+  definitions: ConfigEditorTreeDefinition[],
+  targetPath: string,
+): ConfigEditorTreeDefinition[] {
+  return definitions.flatMap((definition) => {
+    const configPath = definition.configPath
+    const containsTarget = configPath === undefined
+      || targetPath === configPath
+      || targetPath.startsWith(`${configPath}.`)
+      || configPath.startsWith(`${targetPath}.`)
+    if (!containsTarget) return []
+    const children = definition.children === undefined
+      ? undefined
+      : restrictTreeToConfigPath(definition.children, targetPath)
+    if (children !== undefined && children.length === 0 && configPath !== targetPath) return []
+    return [{
+      ...definition,
+      ...(children === undefined ? {} : { children }),
+    }]
+  })
 }
 
 function buildDynamicConfigTree(path: string): ConfigEditorTreeDefinition[] {

@@ -22,6 +22,7 @@ export interface HarpPreviewDragEnd {
   handler: string
   delta: [number, number]
   value?: number | [number, number]
+  updates?: Array<{ confKey: string; value: number | [number, number] }>
   source: 'harp-preview'
 }
 

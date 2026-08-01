@@ -42,6 +42,19 @@ interface ActiveHandleDrag {
   startClient: Point
 }
 
+type ImageResizeCorner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+
+interface ActiveImageResizeDrag {
+  pointerId: number
+  positionConfKey: string
+  heightConfKey: string
+  corner: ImageResizeCorner
+  bounds: { x: number; y: number; width: number; height: number }
+  element: HTMLElement
+  image: SVGImageElement
+  startClient: Point
+}
+
 const zoom = ref(props.zoomLevel ?? 25600)
 const needsCenter = ref(false)
 const panelKey = ref(0)
@@ -52,6 +65,7 @@ const { canvasRef, canvasStyle, centerOnSourcePoint, displayScale, frameRef, get
   { fitToWidth: false, maxZoom: 25600 },
 )
 const activeHandleDrag = ref<ActiveHandleDrag | null>(null)
+const activeImageResizeDrag = ref<ActiveImageResizeDrag | null>(null)
 
 function emitViewportSize(): void {
   const frame = frameRef.value
@@ -191,6 +205,107 @@ function tryStartHandleDrag(event: PointerEvent): boolean {
   return true
 }
 
+function tryStartImageResizeDrag(event: PointerEvent): boolean {
+  if (event.button !== 0 || !(event.target instanceof Element)) return false
+  const handle = event.target.closest<SVGRectElement>('[data-image-resize-corner]')
+  if (handle === null) return false
+  const corner = handle.dataset.imageResizeCorner
+  if (corner !== 'top-left' && corner !== 'top-right' && corner !== 'bottom-left' && corner !== 'bottom-right') return false
+  const element = handle.closest<HTMLElement>('.zupfnoter-element[data-drag-enabled="true"]')
+  const image = element?.querySelector<SVGImageElement>('image.zupfnoter-shape--image')
+  const positionConfKey = element?.dataset.dragConfKey ?? element?.dataset.confKey
+  const heightConfKey = element?.dataset.dragHeightConfKey
+  if (element === null || element === undefined || image === null || image === undefined || positionConfKey === undefined || heightConfKey === undefined) return false
+
+  activeImageResizeDrag.value = {
+    pointerId: event.pointerId,
+    positionConfKey,
+    heightConfKey,
+    corner,
+    bounds: image.getBBox(),
+    element,
+    image,
+    startClient: { x: event.clientX, y: event.clientY },
+  }
+  element.setAttribute('data-drag-active', 'true')
+  frameRef.value?.setPointerCapture(event.pointerId)
+  event.preventDefault()
+  event.stopPropagation()
+  return true
+}
+
+function imageResizeGeometry(
+  resize: Pick<ActiveImageResizeDrag, 'bounds' | 'corner'>,
+  deltaY: number,
+): { x: number; y: number; width: number; height: number } {
+  const { bounds, corner } = resize
+  const heightDelta = corner.startsWith('top-') ? -deltaY : deltaY
+  const height = Math.max(1, bounds.height + heightDelta)
+  const width = Math.max(1, bounds.width * height / Math.max(1, bounds.height))
+  const x = corner.endsWith('left') ? bounds.x + bounds.width - width : bounds.x
+  const y = corner.startsWith('top') ? bounds.y + bounds.height - height : bounds.y
+  return { x, y, width, height }
+}
+
+function setImageResizeGeometry(
+  drag: ActiveImageResizeDrag,
+  geometry: { x: number; y: number; width: number; height: number },
+): void {
+  drag.image.setAttribute('x', String(geometry.x))
+  drag.image.setAttribute('y', String(geometry.y))
+  drag.image.setAttribute('width', String(geometry.width))
+  drag.image.setAttribute('height', String(geometry.height))
+  for (const handle of drag.element.querySelectorAll<SVGRectElement>('[data-image-resize-corner]')) {
+    const corner = handle.dataset.imageResizeCorner
+    const point: Point = corner === 'top-left'
+      ? { x: geometry.x, y: geometry.y }
+      : corner === 'top-right'
+        ? { x: geometry.x + geometry.width, y: geometry.y }
+        : corner === 'bottom-left'
+          ? { x: geometry.x, y: geometry.y + geometry.height }
+          : { x: geometry.x + geometry.width, y: geometry.y + geometry.height }
+    handle.setAttribute('x', String(point.x - 2))
+    handle.setAttribute('y', String(point.y - 2))
+  }
+  drag.element.querySelector<SVGGElement>('[data-image-move-handle]')?.setAttribute(
+    'transform',
+    `translate(${geometry.x + geometry.width / 2} ${geometry.y + geometry.height / 2})`,
+  )
+}
+
+function updateImageResizeDrag(event: PointerEvent): void {
+  const active = activeImageResizeDrag.value
+  if (active === null || active.pointerId !== event.pointerId) return
+  const delta = screenDeltaToSvgDelta(active.element, event.clientX - active.startClient.x, event.clientY - active.startClient.y)
+  if (delta === null) return
+  setImageResizeGeometry(active, imageResizeGeometry(active, delta[1]))
+}
+
+function finishImageResizeDrag(event: PointerEvent, cancelled: boolean): void {
+  const active = activeImageResizeDrag.value
+  if (active === null || active.pointerId !== event.pointerId) return
+  const delta = screenDeltaToSvgDelta(active.element, event.clientX - active.startClient.x, event.clientY - active.startClient.y)
+  active.element.removeAttribute('data-drag-active')
+  activeImageResizeDrag.value = null
+  if (frameRef.value?.hasPointerCapture(event.pointerId) === true) frameRef.value.releasePointerCapture(event.pointerId)
+  if (cancelled || delta === null) {
+    setImageResizeGeometry(active, active.bounds)
+    return
+  }
+  const geometry = imageResizeGeometry(active, delta[1])
+  emit('drag-end', {
+    confKey: active.heightConfKey,
+    handler: 'image-resize',
+    delta,
+    updates: [
+      { confKey: active.positionConfKey, value: [geometry.x, geometry.y] },
+      { confKey: active.heightConfKey, value: geometry.height },
+    ],
+    value: geometry.height,
+    source: 'harp-preview',
+  })
+}
+
 function updateHandleDrag(event: PointerEvent): void {
   const active = activeHandleDrag.value
   if (active === null || active.pointerId !== event.pointerId) return
@@ -235,10 +350,15 @@ function finishHandleDrag(event: PointerEvent, cancelled: boolean): void {
 }
 
 function handlePointerDown(event: PointerEvent): void {
-  if (!tryStartHandleDrag(event)) onPreviewPointerDown(event)
+  if (!tryStartImageResizeDrag(event) && !tryStartHandleDrag(event)) onPreviewPointerDown(event)
 }
 
 function handlePointerMove(event: PointerEvent): void {
+  if (activeImageResizeDrag.value !== null) {
+    updateImageResizeDrag(event)
+    event.preventDefault()
+    return
+  }
   if (activeHandleDrag.value !== null) {
     updateHandleDrag(event)
     event.preventDefault()
@@ -248,6 +368,11 @@ function handlePointerMove(event: PointerEvent): void {
 }
 
 function handlePointerUp(event: PointerEvent): void {
+  if (activeImageResizeDrag.value !== null) {
+    finishImageResizeDrag(event, false)
+    event.preventDefault()
+    return
+  }
   if (activeHandleDrag.value !== null) {
     finishHandleDrag(event, false)
     event.preventDefault()
@@ -257,6 +382,11 @@ function handlePointerUp(event: PointerEvent): void {
 }
 
 function handlePointerCancel(event: PointerEvent): void {
+  if (activeImageResizeDrag.value !== null) {
+    finishImageResizeDrag(event, true)
+    event.preventDefault()
+    return
+  }
   if (activeHandleDrag.value !== null) {
     finishHandleDrag(event, true)
     event.preventDefault()
@@ -411,6 +541,32 @@ watch(frameRef, (frame, previousFrame) => {
 .harp-magnifier__svg :deep(svg) {
   display: block;
   max-width: none;
+}
+.harp-magnifier__svg :deep(.zupfnoter-image-resize-handle) {
+  opacity: 0;
+  fill: color-mix(in srgb, var(--zn-danger) 72%, white);
+  stroke: color-mix(in srgb, var(--zn-danger) 55%, transparent);
+  stroke-width: 0.35;
+  cursor: nwse-resize !important;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+.harp-magnifier__svg :deep(.zupfnoter-image-resize-handle[data-image-resize-corner="top-right"]),
+.harp-magnifier__svg :deep(.zupfnoter-image-resize-handle[data-image-resize-corner="bottom-left"]) {
+  cursor: nesw-resize !important;
+}
+.harp-magnifier__svg :deep(.zupfnoter-image-move-handle) {
+  opacity: 0.86;
+  color: var(--zn-danger);
+  cursor: move !important;
+}
+.harp-magnifier__svg :deep(.zupfnoter-element:hover .zupfnoter-image-resize-handle),
+.harp-magnifier__svg :deep(.zupfnoter-image-resize-handle:hover),
+.harp-magnifier__svg :deep(.zupfnoter-element[data-drag-active="true"] .zupfnoter-image-resize-handle) {
+  opacity: 0.86;
+  stroke-width: 0.45;
+  transform: scale(1.12);
 }
 .harp-magnifier__error {
   padding: var(--zn-space-3);

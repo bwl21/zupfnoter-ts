@@ -1991,6 +1991,16 @@ function handleHarpPreviewClearSelection(): void {
 }
 
 function handleHarpPreviewDragEnd(payload: HarpPreviewDragEnd): void {
+  if (payload.updates !== undefined) {
+    for (const update of payload.updates) {
+      void executeParsedToolbarCommand(
+        `cconf ${update.confKey} ${JSON.stringify(update.value)}`,
+        'cconf',
+        [update.confKey, update.value],
+      )
+    }
+    return
+  }
   if (payload.value === undefined) {
     logger.warning(`dragend ${payload.handler}: kein konfigurierbarer Zielwert für ${payload.confKey}`)
     return

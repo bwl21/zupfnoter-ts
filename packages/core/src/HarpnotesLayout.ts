@@ -2518,7 +2518,12 @@ export class HarpnotesLayout {
         visible: true,
         confKey: `extract.${extractNr}.images.${nr}.pos`,
         more_conf_keys: [],
-        draginfo: { handler: 'annotation' },
+        draginfo: {
+          handler: 'annotation',
+          conf_key: `extract.${extractNr}.images.${nr}.pos`,
+          height_conf_key: `extract.${extractNr}.images.${nr}.height`,
+          height: img.height,
+        },
       })
     }
 

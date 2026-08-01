@@ -1020,8 +1020,8 @@ describe('ConfigEditorPanel', () => {
   it('offers embedded image resources when adding an image', async () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {
-        abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n\n{"extract":{"0":{"images":{"0":{"imagename":"cover_jpg","show":true,"pos":[10,10],"height":30}}}}}',
-        resources: { cover_jpg: ['data:image/jpeg;base64,test'] },
+      abcText: 'X:1\nT:Config Demo\nK:C\nC |]\n\n%%%%zupfnoter.config\n\n{"extract":{"0":{"images":{"0":{"imagename":"cover_jpg","show":true,"pos":[10,10],"height":30},"1":{"imagename":"other_png","show":true,"pos":[20,20],"height":40}}}}}',
+      resources: { cover_jpg: ['data:image/jpeg;base64,test'], other_png: ['data:image/png;base64,test'] },
         currentExtract: 0,
         activeSection: 'images',
       },
@@ -1054,7 +1054,8 @@ describe('ConfigEditorPanel', () => {
       },
     })
 
-    expect(wrapper.text()).toContain('cover_jpg')
+  expect(wrapper.text()).toContain('cover_jpg')
+  expect(wrapper.text()).not.toContain('other_png')
     expect(wrapper.text()).not.toContain('Keine passenden Parameter')
   })
 

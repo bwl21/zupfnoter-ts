@@ -398,6 +398,24 @@ describe('SvgEngine', () => {
       const svg = engine.draw(makeSheet([image({ url: 'https://example.com/a&b.png' })]))
       expect(svg).toContain('href="https://example.com/a&amp;b.png"')
     })
+
+    it('renders resize handles with separate position and height metadata', () => {
+      const interactive = new SvgEngine({ width: 400, height: 282, interactive: true })
+      const svg = interactive.draw(makeSheet([image({
+        confKey: 'extract.0.images.0.pos',
+        draginfo: {
+          handler: 'annotation',
+          conf_key: 'extract.0.images.0.pos',
+          height_conf_key: 'extract.0.images.0.height',
+          height: 30,
+        },
+      })]))
+
+      expect(svg).toContain('data-drag-conf-key="extract.0.images.0.pos"')
+      expect(svg).toContain('data-drag-height-conf-key="extract.0.images.0.height"')
+      expect(svg).toContain('data-drag-height-value="30"')
+      expect(svg.match(/data-image-resize-corner=/g)).toHaveLength(4)
+    })
   })
 
   describe('full pipeline integration', () => {

@@ -250,6 +250,8 @@ interface ElementMeta {
   dragHandler?: string
   dragValue?: number | [number, number]
   dragConfKey?: string
+  dragHeightConfKey?: string
+  dragHeightValue?: number
   dragGrid?: number
   dragJumpline?: unknown
   dragBezier?: BezierDragInfo
@@ -398,6 +400,8 @@ export class SvgEngine {
       dragHandler: this._dragHandler(draginfo),
       dragValue,
       dragConfKey: this._dragConfKey(draginfo),
+      dragHeightConfKey: this._dragHeightConfKey(draginfo),
+      dragHeightValue: this._dragHeightValue(draginfo),
       dragGrid,
       dragJumpline,
       dragBezier: this._bezierDragInfo(draginfo),
@@ -473,6 +477,18 @@ export class SvgEngine {
     return typeof confKey === 'string' && confKey.trim().length > 0 ? confKey.trim() : undefined
   }
 
+  private _dragHeightConfKey(draginfo: unknown): string | undefined {
+    if (typeof draginfo !== 'object' || draginfo === null || Array.isArray(draginfo)) return undefined
+    const confKey = (draginfo as Record<string, unknown>).height_conf_key
+    return typeof confKey === 'string' && confKey.trim().length > 0 ? confKey.trim() : undefined
+  }
+
+  private _dragHeightValue(draginfo: unknown): number | undefined {
+    if (typeof draginfo !== 'object' || draginfo === null || Array.isArray(draginfo)) return undefined
+    const height = (draginfo as Record<string, unknown>).height
+    return typeof height === 'number' && Number.isFinite(height) ? height : undefined
+  }
+
   private _wrapElement(meta: ElementMeta, content: string, hitbox?: string): string {
     const groupAttrs: Record<string, string | number | undefined> = {
       id: meta.id,
@@ -492,6 +508,8 @@ export class SvgEngine {
       groupAttrs['data-drag-enabled'] = 'true'
       groupAttrs['data-drag-handler'] = meta.dragHandler
       if (meta.dragConfKey !== undefined) groupAttrs['data-drag-conf-key'] = meta.dragConfKey
+      if (meta.dragHeightConfKey !== undefined) groupAttrs['data-drag-height-conf-key'] = meta.dragHeightConfKey
+      if (meta.dragHeightValue !== undefined) groupAttrs['data-drag-height-value'] = meta.dragHeightValue
       if (meta.dragValue !== undefined) groupAttrs['data-drag-value'] = JSON.stringify(meta.dragValue)
       if (meta.dragGrid !== undefined) groupAttrs['data-drag-grid'] = meta.dragGrid
       if (meta.dragJumpline !== undefined) groupAttrs['data-drag-jumpline'] = JSON.stringify(meta.dragJumpline)
@@ -850,7 +868,31 @@ export class SvgEngine {
       fill: 'none',
       stroke: 'none',
       class: 'zupfnoter-shape zupfnoter-shape--image',
-    })} />`
+    })} />${this._interactive ? `\n${svgGroup([
+      ['top-left', x, y],
+      ['top-right', x + el.height, y],
+      ['bottom-left', x, y + el.height],
+      ['bottom-right', x + el.height, y + el.height],
+    ].map(([corner, cx, cy]) => svgRect(Number(cx) - 2, Number(cy) - 2, 4, 4, '#fff', '#526d88', 0.8, {
+      class: 'zupfnoter-image-resize-handle',
+      'data-image-resize-corner': corner,
+      'pointer-events': 'all',
+    })).join(''), {
+      class: 'zupfnoter-image-resize-handles',
+      'pointer-events': 'all',
+    })}
+${svgGroup([
+      svgEllipse(0, 0, 8, 8, '#fff', 'currentColor', 0.5),
+      svgText(0, 3, '✥', 9, 'bold', 'normal', 'middle', {
+        fill: 'currentColor',
+        'pointer-events': 'none',
+      }),
+    ].join(''), {
+      class: 'zupfnoter-image-move-handle',
+      'data-image-move-handle': 'true',
+      'pointer-events': 'all',
+      transform: `translate(${x + el.height / 2} ${y + el.height / 2})`,
+    })}` : ''}`
     return this._wrapElement(meta, content)
   }
 
