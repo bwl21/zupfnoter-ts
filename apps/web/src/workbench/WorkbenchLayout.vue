@@ -26,6 +26,13 @@
   overflow: hidden;
 }
 
+@media (max-width: 48rem) {
+  .workbench-layout {
+    padding: 0.25rem;
+    gap: var(--zn-space-1);
+  }
+}
+
 .workbench-layout__header,
 .workbench-layout__workspace,
 .workbench-layout__footer {

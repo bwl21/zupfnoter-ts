@@ -1992,4 +1992,39 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
     order: 4;
   }
 }
+
+@media (pointer: coarse) {
+  .config-panel__toolbar:deep(.zn-toolbar) {
+    height: auto;
+    min-height: auto;
+    max-height: none;
+    flex-wrap: wrap;
+  }
+
+  .config-panel__toolbar:deep(.zn-button) {
+    min-height: 2.25rem;
+    padding: 0.35rem 0.6rem;
+  }
+
+  .config-panel__main-menu-summary {
+    min-height: 2.25rem;
+    padding: 0.35rem 0.6rem;
+  }
+
+  .config-panel__main-menu-item {
+    min-height: 2.5rem;
+    padding: 0.5rem 0.55rem;
+  }
+
+  .config-panel__search-input {
+    height: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0.35rem 0.6rem;
+  }
+
+  .config-row {
+    min-height: 2.5rem;
+    padding: 0.3rem 0.35rem;
+  }
+}
 </style>
