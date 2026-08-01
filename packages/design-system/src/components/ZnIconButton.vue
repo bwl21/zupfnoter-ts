@@ -19,7 +19,6 @@ defineEmits<{
     :class="`zn-icon-button--${props.variant}`"
     type="button"
     :aria-label="props.label"
-    :title="props.label"
     :disabled="props.disabled"
     @click="$emit('click', $event)"
   >

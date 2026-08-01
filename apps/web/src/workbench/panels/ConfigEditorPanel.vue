@@ -202,6 +202,7 @@ let panelResizeObserver: ResizeObserver | undefined
 const helpTooltips = new Map<HTMLElement, TippyInstance>()
 const optionTooltips = new Map<HTMLElement, TippyInstance>()
 const toolbarTooltips = new Map<HTMLElement, TippyInstance>()
+const configObjectTooltips = new Map<HTMLElement, TippyInstance>()
 const configHelpTexts = ref<ConfigHelpTexts>({})
 const activeSectionTreeDefinition = computed(() => buildActiveSectionTreeDefinition())
 const pendingNewEntryBranchPaths = ref<ReadonlySet<string> | undefined>(undefined)
@@ -221,6 +222,7 @@ watch(
     void nextTick(() => {
       syncHelpTooltips()
       syncOptionTooltips()
+      syncConfigObjectTooltips()
     })
   },
   { deep: true },
@@ -280,10 +282,12 @@ onMounted(() => {
     configHelpTexts.value = texts
     syncHelpTooltips()
     syncOptionTooltips()
+    syncConfigObjectTooltips()
   })
   void nextTick(() => {
     syncHelpTooltips()
     syncOptionTooltips()
+    syncConfigObjectTooltips()
     syncToolbarTooltips()
   })
 })
@@ -293,6 +297,7 @@ onBeforeUnmount(() => {
   panelResizeObserver?.disconnect()
   destroyHelpTooltips()
   destroyOptionTooltips()
+  destroyConfigObjectTooltips()
   destroyToolbarTooltips()
 })
 
@@ -940,6 +945,39 @@ function destroyOptionTooltips(): void {
   optionTooltips.clear()
 }
 
+function syncConfigObjectTooltips(): void {
+  if (panelElement.value === null) return
+  const elements = panelElement.value.querySelectorAll<HTMLElement>('[data-config-object-tooltip]')
+
+  for (const element of elements) {
+    const content = element.dataset.configObjectTooltip
+    if (content === undefined || content === '') continue
+    const existing = configObjectTooltips.get(element)
+    if (existing !== undefined) {
+      existing.setContent(content)
+      continue
+    }
+    configObjectTooltips.set(element, tippy(element, {
+      content,
+      placement: 'top',
+      theme: 'zn-config-help',
+    }))
+  }
+
+  for (const [element, instance] of configObjectTooltips) {
+    if (panelElement.value.contains(element)) continue
+    instance.destroy()
+    configObjectTooltips.delete(element)
+  }
+}
+
+function destroyConfigObjectTooltips(): void {
+  for (const instance of configObjectTooltips.values()) {
+    instance.destroy()
+  }
+  configObjectTooltips.clear()
+}
+
 function syncToolbarTooltips(): void {
   if (panelElement.value === null) return
   const elements = panelElement.value.querySelectorAll<HTMLElement>('[data-toolbar-tooltip]')
@@ -1082,7 +1120,29 @@ function selectAffectedObject(row: ConfigTreeRow): void {
 
 function canHighlightConfigRow(row: ConfigTreeRow): boolean {
   if (row.localPath === undefined) return false
+  if (row.isLeaf && isFlowlineConfigPath(row.localPath)) return false
+  if (!row.isLeaf && !isFlowlineConfigPath(row.localPath)) return false
   return props.canSelectConfigPath?.(row.localPath) ?? row.canSelect
+}
+
+function isFlowlineConfigPath(path: string): boolean {
+  return /^extract\.\d+\.notebound\.flowline\.v_\d+\.\d+(?:\.(?:cp1|cp2|show))?$/.test(path)
+}
+
+function getAffectedObjectTooltip(row: ConfigTreeRow): string {
+  if (row.localPath === undefined) return 'Betroffenes Objekt in allen Ansichten selektieren'
+
+  const pathParts = row.localPath.split('.')
+  const objectPath = row.isLeaf ? pathParts.slice(0, -1) : pathParts
+  const noteboundIndex = objectPath.indexOf('notebound')
+  const objectType = noteboundIndex >= 0
+    ? objectPath[noteboundIndex + 1]
+    : objectPath[objectPath.length - 2]
+  const objectId = objectPath[objectPath.length - 1]
+  const objectLabel = objectType !== undefined && objectId !== undefined
+    ? `${objectType.charAt(0).toUpperCase()}${objectType.slice(1)} ${objectId}`
+    : `Konfigurationsobjekt „${objectPath.join('.')}“`
+  return `${objectLabel} in allen Ansichten selektieren`
 }
 
 function fillFromEffectiveValue(row: ConfigTreeRow): void {
@@ -1408,16 +1468,6 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
           </div>
 
           <div class="config-row__actions">
-            <ZnIconButton
-              v-if="row.isLeaf && canHighlightConfigRow(row)"
-              class="config-row__action"
-              label="Betroffenes Objekt selektieren"
-              variant="ghost"
-              :tabindex="-1"
-              @click="selectAffectedObject(row)"
-            >
-              <ZnIcon name="select" />
-            </ZnIconButton>
             <details
               v-if="hasRowMenu(row)"
               class="config-row__menu"
@@ -1480,6 +1530,17 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
             @click="emitIntent('config.deletePath', row.localPath)"
             >
               <ZnIcon name="delete" />
+            </ZnIconButton>
+            <ZnIconButton
+              v-if="canHighlightConfigRow(row)"
+              class="config-row__action"
+              label="Zugehöriges Objekt selektieren"
+              :data-config-object-tooltip="getAffectedObjectTooltip(row)"
+              variant="ghost"
+              :tabindex="-1"
+              @click="selectAffectedObject(row)"
+            >
+              <ZnIcon name="select" />
             </ZnIconButton>
           </div>
 
