@@ -3234,13 +3234,6 @@ function handleMirrorMessage(event: MessageEvent): void {
   overflow: hidden;
 }
 
-.preview-pane :deep(.zn-panel__shell) {
-  padding: 0.25rem;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
-
 .workbench-footer {
   position: relative;
 }
@@ -3273,13 +3266,6 @@ function handleMirrorMessage(event: MessageEvent): void {
   min-height: 0;
   height: 100%;
   overflow: hidden;
-}
-
-.editor-pane > :deep(.zn-tabs .zn-panel__shell) {
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 0.25rem;
 }
 
 .save-result__backdrop {

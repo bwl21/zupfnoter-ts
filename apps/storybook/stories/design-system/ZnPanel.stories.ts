@@ -7,11 +7,15 @@ const meta = {
   component: ZnPanel,
   subcomponents: { ZnBadge },
   tags: ['autodocs'],
-  parameters: { docs: { description: { component: 'Rahmen für eigenständige Inhaltsbereiche mit optionalem Eyebrow, Titel, Untertitel und Footer. `fillHeight` entscheidet, ob das Panel den verfügbaren Raum ausfüllt. Das Panel gibt seinen Kindern bei `fillHeight: false` ihre natürliche Größe; bei `fillHeight: true` füllt es den vom Parent bereitgestellten Raum.' } } },
+  parameters: { docs: { description: { component: 'Rahmen für eigenständige Inhaltsbereiche mit optionalem Eyebrow, Titel, Untertitel und Footer. `variant="card"` zeichnet den eigenständigen Rahmen; `variant="workspace"` liefert die dichte, rahmenlose Fläche für Split-Panes. `fillHeight` entscheidet, ob das Panel den verfügbaren Raum ausfüllt.' } } },
   argTypes: {
     tone: {
       control: 'select',
       options: ['surface', 'sunken', 'accent'],
+    },
+    variant: {
+      control: 'select',
+      options: ['card', 'workspace'],
     },
   },
 } satisfies Meta<typeof ZnPanel>
@@ -55,6 +59,28 @@ export const EmptyState: Story = {
       <ZnPanel v-bind="args">
         <p style="margin: 0; color: var(--zn-text-muted);">ABC-Datei öffnen, um die Vorschau zu sehen.</p>
       </ZnPanel>
+    `,
+  }),
+}
+
+export const Workspace: Story = {
+  args: {
+    title: 'Arbeitsfläche',
+    tone: 'surface',
+    variant: 'workspace',
+    fillHeight: true,
+  },
+  render: (args) => ({
+    components: { ZnPanel },
+    setup: () => ({ args }),
+    template: `
+      <div style="height: 16rem; border: 1px solid var(--zn-border);">
+        <ZnPanel v-bind="args">
+          <div style="height: 100%; border: 1px solid var(--zn-border); background: var(--zn-bg-surface);">
+            Dichte Workbench-Fläche
+          </div>
+        </ZnPanel>
+      </div>
     `,
   }),
 }

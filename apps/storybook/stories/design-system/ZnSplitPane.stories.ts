@@ -9,6 +9,40 @@ type Story = StoryObj<typeof meta>
 export const Horizontal: Story = { render: (args) => ({ components: { ZnPanel, ZnSplitPane }, setup: () => ({ args }), template: '<div style="height:18rem"><ZnSplitPane v-bind="args"><template #primary><ZnPanel title="Editor" fill-height="false"><p>ABC-Text</p></ZnPanel></template><template #secondary><ZnPanel title="Vorschau" fill-height="false"><p>SVG-Vorschau</p></ZnPanel></template></ZnSplitPane></div>' }), args: { orientation: 'horizontal', primarySize: 55 } }
 export const Vertical: Story = { render: (args) => ({ components: { ZnPanel, ZnSplitPane }, setup: () => ({ args }), template: '<div style="height:24rem"><ZnSplitPane v-bind="args"><template #primary><ZnPanel title="Oben" fill-height="false"><p>Oberer Bereich</p></ZnPanel></template><template #secondary><ZnPanel title="Unten" fill-height="false"><p>Unterer Bereich</p></ZnPanel></template></ZnSplitPane></div>' }), args: { orientation: 'vertical', primarySize: 45 } }
 
+export const WorkbenchPanels: Story = {
+  render: (args) => ({
+    components: { ZnPanel, ZnSplitPane },
+    setup: () => ({ args }),
+    template: `
+      <div style="height: 24rem; border: 1px solid var(--zn-border);">
+        <ZnSplitPane v-bind="args">
+          <template #primary>
+            <ZnPanel variant="workspace">
+              <div style="display: grid; grid-template-rows: auto 1fr; height: 100%;">
+                <div style="padding: 0.5rem; border-bottom: 1px solid var(--zn-border);">Editor</div>
+                <div style="padding: 0.5rem; background: var(--zn-bg-surface);">ABC-Notation</div>
+              </div>
+            </ZnPanel>
+          </template>
+          <template #secondary>
+            <ZnPanel variant="workspace">
+              <div style="display: grid; grid-template-rows: auto 1fr; height: 100%;">
+                <div style="padding: 0.5rem; border-bottom: 1px solid var(--zn-border);">Vorschau</div>
+                <div style="padding: 0.5rem; background: var(--zn-bg-surface);">SVG-Vorschau</div>
+              </div>
+            </ZnPanel>
+          </template>
+        </ZnSplitPane>
+      </div>
+    `,
+  }),
+  args: {
+    orientation: 'horizontal',
+    primarySize: 55,
+    handleSize: 14,
+  },
+}
+
 export const PrimaryOnly: Story = { render: (args) => ({ components: { ZnPanel, ZnSplitPane }, setup: () => ({ args }), template: '<div style="height:18rem"><ZnSplitPane v-bind="args"><template #primary><ZnPanel title="Primärbereich" fill-height="false"><p>Der Primärbereich nutzt die gesamte Fläche.</p></ZnPanel></template><template #secondary><ZnPanel title="Ausgeblendet" fill-height="false"><p>Dieser Bereich wird nicht gerendert.</p></ZnPanel></template></ZnSplitPane></div>' }), args: { primaryVisible: true, secondaryVisible: false } }
 
 export const SecondaryOnly: Story = { render: (args) => ({ components: { ZnPanel, ZnSplitPane }, setup: () => ({ args }), template: '<div style="height:18rem"><ZnSplitPane v-bind="args"><template #primary><ZnPanel title="Ausgeblendet" fill-height="false"><p>Dieser Bereich wird nicht gerendert.</p></ZnPanel></template><template #secondary><ZnPanel title="Sekundärbereich" fill-height="false"><p>Der Sekundärbereich nutzt die gesamte Fläche.</p></ZnPanel></template></ZnSplitPane></div>' }), args: { primaryVisible: false, secondaryVisible: true } }

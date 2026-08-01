@@ -173,7 +173,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <ZnPanel tone="sunken">
+  <ZnPanel tone="sunken" variant="workspace">
     <template #header>
       <ZnPanelHeader eyebrow="Debug" title="Console" subtitle="Protokoll und Statusmeldungen der Workbench">
         <template #actions>

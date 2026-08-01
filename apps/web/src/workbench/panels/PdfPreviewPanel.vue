@@ -3,7 +3,7 @@ import { ZnButton, ZnPanel, ZnPanelHeader } from '@zupfnoter/design-system'
 </script>
 
 <template>
-  <ZnPanel>
+  <ZnPanel variant="workspace">
     <template #header>
       <ZnPanelHeader eyebrow="Output" title="PDF" subtitle="Export-Platzhalter für Druck und Mehrseitenansicht" />
     </template>

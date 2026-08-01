@@ -219,7 +219,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ZnPanel tone="surface">
+  <ZnPanel tone="surface" variant="workspace">
     <div class="panel-shell">
       <slot name="toolbar" />
       <div ref="editorHost" class="panel-shell__editor" />

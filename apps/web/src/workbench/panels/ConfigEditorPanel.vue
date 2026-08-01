@@ -1227,7 +1227,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
 
 <template>
   <div class="config-panel-frame" :class="{ 'config-panel-frame--compact': usesCompactShell }">
-    <ZnPanel :fill-height="!usesCompactShell">
+    <ZnPanel variant="workspace" :fill-height="!usesCompactShell">
       <div ref="panelElement" class="config-panel" :class="{ 'config-panel--compact': usesCompactShell }">
       <ZnToolbar class="config-panel__toolbar">
         <template #leading>

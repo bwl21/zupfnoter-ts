@@ -4,18 +4,21 @@ withDefaults(defineProps<{
   subtitle?: string
   eyebrow?: string
   tone?: 'surface' | 'sunken' | 'accent'
+  /** Card panels have chrome; workspace panels are flush inside split-pane regions. */
+  variant?: 'card' | 'workspace'
   fillHeight?: boolean
 }>(), {
   title: undefined,
   subtitle: undefined,
   eyebrow: undefined,
   tone: 'surface',
+  variant: 'card',
   fillHeight: true,
 })
 </script>
 
 <template>
-  <section class="zn-panel" :data-tone="tone" :data-fill-height="fillHeight">
+  <section class="zn-panel" :data-tone="tone" :data-variant="variant" :data-fill-height="fillHeight">
     <div class="zn-panel__shell">
       <slot name="header">
         <header v-if="title || subtitle || eyebrow" class="zn-panel__default-header">
@@ -67,6 +70,13 @@ withDefaults(defineProps<{
   border-radius: var(--zn-radius-md);
   background: var(--zn-bg-elevated);
   box-shadow: var(--zn-shadow-soft);
+}
+
+.zn-panel[data-variant='workspace'] .zn-panel__shell {
+  padding: var(--zn-space-1);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .zn-panel[data-fill-height='false'] .zn-panel__shell,

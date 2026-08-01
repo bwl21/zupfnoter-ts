@@ -936,7 +936,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ZnPanel>
+  <ZnPanel variant="workspace">
     <div class="harp-preview">
       <div class="harp-preview__header">
         <ZnTabs

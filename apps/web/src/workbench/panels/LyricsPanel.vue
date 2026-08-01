@@ -87,7 +87,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ZnPanel>
+  <ZnPanel variant="workspace">
     <div class="lyrics-panel">
       <ZnToolbar>
         <template #leading>

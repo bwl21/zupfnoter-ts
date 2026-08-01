@@ -61,7 +61,7 @@ function handleSvgClick(event: MouseEvent): void {
 </script>
 
 <template>
-  <ZnPanel tone="surface">
+  <ZnPanel tone="surface" variant="workspace">
     <div class="preview-stage">
       <div class="preview-stage__controls">
         <div class="preview-stage__controls-left">
