@@ -11,5 +11,5 @@ const documents = [
   { path: '/Noten/Morgenlied.abc', name: 'Morgenlied.abc', modifiedAt: '2026-07-17T09:30:00.000Z', previewPdfPaths: [], previewHtmlPaths: ['/Noten/Morgenlied.html'] },
 ]
 
-export const FilterBeforeSearch: Story = { args: { open: true, locationLabel: 'Privat', path: 'Noten', documents, loading: false, previewLoading: false, previewError: '' } }
-export const Loading: Story = { args: { open: true, locationLabel: 'Privat', path: 'Noten', documents: [], loading: true, previewLoading: false, previewError: '' } }
+export const FilterBeforeSearch: Story = { args: { open: true, locationLabel: 'Privat', path: 'Noten', documents, loading: false, opening: false, previewLoading: false, previewError: '' } }
+export const Loading: Story = { args: { open: true, locationLabel: 'Privat', path: 'Noten', documents: [], loading: true, opening: false, previewLoading: false, previewError: '' } }

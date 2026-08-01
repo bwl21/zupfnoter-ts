@@ -6,4 +6,8 @@ const meta = { title: 'Workbench/Panels/LyricsPanel', component: LyricsPanel, ta
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = {
+  args: {
+    documentText: 'W:La la la',
+  },
+}

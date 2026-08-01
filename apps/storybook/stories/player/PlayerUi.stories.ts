@@ -42,6 +42,7 @@ function renderPlayerUi(args: PlayerUiArgs) {
             onReset: () => undefined,
             onSpeedChange: () => undefined,
             onMetronomeChange: (enabled) => controller?.setMetronome({ numerator: 4, denominator: 4 }, 1, enabled),
+            onMetronomeSubdivisionChange: () => undefined,
             onCountInStyleChange: () => undefined,
             onPlay: () => undefined,
             onPause: () => undefined,
