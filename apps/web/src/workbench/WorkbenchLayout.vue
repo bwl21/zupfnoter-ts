@@ -18,11 +18,11 @@
 .workbench-layout {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: var(--zn-space-2);
+  gap: 0.25rem;
   box-sizing: border-box;
   height: 100%;
   min-height: 0;
-  padding: 0.5rem;
+  padding: 0.25rem;
   overflow: hidden;
 }
 

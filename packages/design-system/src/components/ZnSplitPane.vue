@@ -183,6 +183,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .zn-split-pane {
   display: grid;
+  position: relative;
   min-width: 0;
   min-height: 0;
   width: 100%;
@@ -190,7 +191,7 @@ onBeforeUnmount(() => {
 }
 
 .zn-split-pane--horizontal {
-  grid-template-columns: minmax(0, var(--zn-split-primary)) var(--zn-split-handle-size) minmax(0, 1fr);
+  grid-template-columns: minmax(0, var(--zn-split-primary)) minmax(0, 1fr);
 }
 
 .zn-split-pane--horizontal.zn-split-pane--single-primary,
@@ -200,7 +201,7 @@ onBeforeUnmount(() => {
 
 .zn-split-pane--vertical {
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, var(--zn-split-primary)) var(--zn-split-handle-size) minmax(0, 1fr);
+  grid-template-rows: minmax(0, var(--zn-split-primary)) minmax(0, 1fr);
 }
 
 .zn-split-pane--vertical.zn-split-pane--single-primary,
@@ -239,15 +240,52 @@ onBeforeUnmount(() => {
   color: var(--zn-border-strong);
   cursor: col-resize;
   touch-action: none;
-  transition: background-color 120ms ease, color 120ms ease;
-  position: relative;
+  background-color: var(--zn-bg-elevated);
+  transition: background 120ms ease, color 120ms ease;
+  position: absolute;
   z-index: 3;
 }
 
-.zn-split-pane__divider:hover,
-.zn-split-pane--dragging .zn-split-pane__divider {
-  background: color-mix(in srgb, var(--zn-accent) 28%, var(--zn-border-strong));
-  color: var(--zn-accent-strong);
+.zn-split-pane--horizontal .zn-split-pane__divider {
+  background-image: linear-gradient(
+    to right,
+    transparent calc(50% - 0.5px),
+    var(--zn-border-strong) calc(50% - 0.5px),
+    var(--zn-border-strong) calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
+  );
+}
+
+.zn-split-pane--vertical .zn-split-pane__divider {
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(50% - 0.5px),
+    var(--zn-border-strong) calc(50% - 0.5px),
+    var(--zn-border-strong) calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
+  );
+}
+
+.zn-split-pane--horizontal .zn-split-pane__divider:hover,
+.zn-split-pane--dragging.zn-split-pane--horizontal .zn-split-pane__divider {
+  background-image: linear-gradient(
+    to right,
+    transparent calc(50% - 1px),
+    var(--zn-accent-strong) calc(50% - 1px),
+    var(--zn-accent-strong) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+
+.zn-split-pane--vertical .zn-split-pane__divider:hover,
+.zn-split-pane--dragging.zn-split-pane--vertical .zn-split-pane__divider {
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(50% - 1px),
+    var(--zn-accent-strong) calc(50% - 1px),
+    var(--zn-accent-strong) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
 }
 
 .zn-split-pane__divider:focus-visible {
@@ -263,14 +301,23 @@ onBeforeUnmount(() => {
 
 .zn-split-pane--horizontal .zn-split-pane__divider {
   width: var(--zn-split-handle-size);
-  height: 100%;
+  height: auto;
+  top: 0;
+  bottom: 0;
+  left: var(--zn-split-primary);
+  transform: translateX(-50%);
   cursor: col-resize;
 }
 
 .zn-split-pane--vertical .zn-split-pane__divider {
-  width: 100%;
-  min-height: var(--zn-split-handle-size);
-  height: 100%;
+  width: auto;
+  min-height: 0;
+  height: var(--zn-split-handle-size);
+  top: var(--zn-split-primary);
+  right: 0;
+  bottom: auto;
+  left: 0;
+  transform: translateY(-50%);
   cursor: row-resize;
 }
 </style>

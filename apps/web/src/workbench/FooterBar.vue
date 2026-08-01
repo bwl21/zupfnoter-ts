@@ -66,8 +66,12 @@ function handleSelectionVoiceScopeChange(event: Event): void {
       {{ cursorPosition }}
       <span class="footer-bar__unicode">{{ cursorUnicode ?? '—' }}</span>
     </span>
-    <span class="footer-bar__meta footer-bar__config-hover" :title="configHover ?? 'Kein SVG-Parameter unter dem Mauszeiger'">
-      {{ configHover ?? '—' }}
+    <span
+      v-if="configHover !== undefined"
+      class="footer-bar__meta footer-bar__config-hover"
+      :title="configHover"
+    >
+      {{ configHover }}
     </span>
     <ZnBadge tone="accent">
       {{ extractLabel }}
@@ -122,6 +126,10 @@ function handleSelectionVoiceScopeChange(event: Event): void {
 </template>
 
 <style scoped>
+:deep(.zn-status-bar) {
+  position: relative;
+}
+
 .footer-bar__meta {
   color: var(--zn-text-muted);
   font-size: 0.82rem;
@@ -140,6 +148,24 @@ function handleSelectionVoiceScopeChange(event: Event): void {
   color: var(--zn-text-muted);
   font-family: var(--zn-font-mono, monospace);
   font-size: 0.9em;
+}
+
+.footer-bar__config-hover {
+  position: absolute;
+  left: 0.75rem;
+  bottom: calc(100% + 0.35rem);
+  z-index: 2;
+  max-width: min(48rem, calc(100% - 1.5rem));
+  overflow: hidden;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--zn-accent) 32%, var(--zn-border));
+  border-radius: var(--zn-radius-pill);
+  background: color-mix(in srgb, var(--zn-bg-elevated) 96%, transparent);
+  box-shadow: var(--zn-shadow-soft);
+  color: var(--zn-text-soft);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .footer-bar__storage-chip {
