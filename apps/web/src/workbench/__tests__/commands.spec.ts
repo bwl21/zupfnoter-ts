@@ -709,7 +709,7 @@ describe('legacy command registration', () => {
     registerLegacyCommands(stack, runtime)
 
     await stack.runString('format_abc')
-    expect(runtime.getAbcText()).toContain('K:C')
+    expect(runtime.getAbcText()).toContain('K:Bb')
     expect(log).toContain('render')
     expect(runtime.getAbcText()).not.toBe(original)
 
