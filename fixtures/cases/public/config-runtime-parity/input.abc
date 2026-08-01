@@ -1,0 +1,32 @@
+X:1
+F:config-runtime-parity
+T:Config runtime parity
+M:4/4
+L:1/4
+Q:1/4=120
+K:C
+%%score (V1)
+V:V1 clef=treble-8
+[V:V1] "^#vl" C !f! D |: (3 EFG :|]
+
+%%%%zupfnoter.config
+{
+  "extract": {
+    "0": {
+      "voices": [1],
+      "flowlines": [1],
+      "subflowlines": [1],
+      "synchlines": [],
+      "jumplines": [1],
+      "layoutlines": [1],
+      "tuplets": {"text": "T={{tuplet}}", "style": "bold"},
+      "lyrics": {"0": {"verses": [1], "pos": [2, 3], "style": "small"}},
+      "notebound": {
+        "annotation": {"v_1": {"0": {"pos": [7, -3], "style": "italic"}}},
+        "flowline": {"v_1": {"1": {"cp1": [1, 2], "cp2": [1, -2], "shape": ["c"], "show": true}}},
+        "tuplet": {"v_1": {"1": {"cp1": [2, 3], "cp2": [2, -3], "shape": ["c"], "show": true}}}
+      }
+    }
+  },
+  "annotations": {"vl": {"text": "voice", "pos": [1, 1], "style": "regular"}}
+}

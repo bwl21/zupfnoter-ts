@@ -97,6 +97,7 @@ Pipeline oder eine fachlich begründete gemeinsame Vergleichsregel korrigiert is
 | `tuplet` | Triolen |
 | `tie` | Bindebögen |
 | `decoration` | Fermata, Dynamik |
+| `config-runtime-parity` | Konfigurierte Annotationen, Flusslinien, Tuplets, Liedtexte und Wiederholungen |
 | `lyrics` | Liedtext (w:-Zeilen) |
 | `Twostaff` | Legacy-Testcase aus `30_sources/SRC_Zupfnoter/testcases/` |
 

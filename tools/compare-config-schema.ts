@@ -27,6 +27,8 @@ const EDITOR_ONLY_SCHEMA_KEYS = new Set(['title', 'description', 'x-zupfnoter-ed
 interface LegacySchemaExtension {
   /** Exakter Pfad der bewusst über das Legacy-Schema hinausgehenden TS-Regel. */
   path: string
+  /** Einordnung als Legacy-Widerspruch oder echte TS-Editor-Erweiterung. */
+  classification: 'legacy-runtime-contradiction' | 'ts-editor-extension'
   /** Fachlicher Grund der Erweiterung. */
   reason: string
 }
@@ -40,11 +42,28 @@ interface LegacySchemaExtension {
  */
 const LEGACY_SCHEMA_EXTENSIONS: readonly LegacySchemaExtension[] = [
   {
+    path: '$.definitions.minc_entry.properties.minc_f.type',
+    classification: 'legacy-runtime-contradiction',
+    reason: 'Die TS-Konfigurationsoberfläche verwendet null als explizit inaktiven minc-Override; die Runtime behandelt diesen Legacy-Fall entsprechend als deaktiviert.',
+  },
+  {
+    path: '$.properties.extract.patternProperties.d*.properties.instrument_shape.type',
+    classification: 'legacy-runtime-contradiction',
+    reason: 'Instrument-Presets verwenden null ausdrücklich für Instrumente ohne eigene Umrissform.',
+  },
+  {
+    path: '$.properties.extract.patternProperties.d*.properties.lyrics.patternProperties..*.properties',
+    classification: 'legacy-runtime-contradiction',
+    reason: 'Der TS-Editor verarbeitet die Legacy-Liedtextfelder verses, pos und style vollständig; die exportierte Legacy-Schema-Referenz enthält diese Eigenschaften an dieser Stelle nicht.',
+  },
+  {
     path: '$.properties.layout.properties.FONT_STYLE_DEF.patternProperties..*.properties.description',
+    classification: 'ts-editor-extension',
     reason: 'Dynamische Schriftstile können eine Markdown-Beschreibung für die Auswahl anbieten.',
   },
   {
     path: '$.properties.layout.properties.FONT_STYLE_DEF.patternProperties..*.properties.label',
+    classification: 'ts-editor-extension',
     reason: 'Dynamische Schriftstile können eine fachliche Beschriftung für die Auswahl anbieten.',
   },
 ]
@@ -189,7 +208,7 @@ function toPrettyJson(value: JsonValue | undefined): string {
 }
 
 function isDeclaredLegacySchemaExtension(diff: SchemaDiff): boolean {
-  return diff.kind === 'missing-in-reference' && LEGACY_SCHEMA_EXTENSIONS.some((extension) => extension.path === diff.path)
+  return LEGACY_SCHEMA_EXTENSIONS.some((extension) => extension.path === diff.path)
 }
 
 function createReport(diffs: SchemaDiff[], sourceLabel: string): string {
@@ -204,14 +223,14 @@ function createReport(diffs: SchemaDiff[], sourceLabel: string): string {
     '',
   ]
 
-  lines.push('## Freigegebene TS-Erweiterungen gegenüber Legacy', '')
+  lines.push('## Explizit eingeordnete Abweichungen', '')
   for (const extension of LEGACY_SCHEMA_EXTENSIONS) {
-    lines.push(`- \`${extension.path}\`: ${extension.reason}`)
+    lines.push(`- **${extension.classification}** \`${extension.path}\`: ${extension.reason}`)
   }
   lines.push('')
 
   if (diffs.length === 0) {
-    lines.push('Abgesehen von den oben freigegebenen Erweiterungen sind die kanonisierten Schemaobjekte identisch.')
+    lines.push('Abgesehen von den oben eingeordneten Abweichungen sind die kanonisierten Schemaobjekte identisch.')
     return `${lines.join('\n')}\n`
   }
 

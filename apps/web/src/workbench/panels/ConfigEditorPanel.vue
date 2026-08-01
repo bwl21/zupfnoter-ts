@@ -526,9 +526,9 @@ function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | unde
 function buildDynamicConfigTree(path: string): ConfigEditorTreeDefinition[] {
   const normalizedPath = path.replace(/^extract\.\d+\./, 'extract.current.')
   const dynamicFields = getConfigEditorDynamicFields(path)
-  const isAnnotatedBezier = normalizedPath.includes('.notebound.flowline.')
-    || normalizedPath.includes('.notebound.tuplet.')
-  if (dynamicFields !== undefined && isAnnotatedBezier) {
+  const isSpecialDynamicForm = normalizedPath.includes('.notebound.minc.')
+    || normalizedPath.includes('.notebound.nconf.')
+  if (dynamicFields !== undefined && !isSpecialDynamicForm) {
     const parts = normalizedPath.split('.')
     const leafDefinitions = dynamicFields.map((key) => ({
       key,

@@ -1059,6 +1059,10 @@ V:V1 clef=treble-8
       expect(note).toBeDefined()
       expect(annotation?.center[0]).toBeCloseTo((note?.center[0] ?? 0) + 11)
       expect(annotation?.center[1]).toBeCloseTo((note?.center[1] ?? 0) + 13)
+      expect(annotation?.draginfo).toMatchObject({
+        handler: 'annotation',
+        conf_key: 'extract.notebound.annotation.v_1.0.pos',
+      })
     })
 
     it('uses the legacy repeat-sign side selection based on neighbouring pitches', () => {

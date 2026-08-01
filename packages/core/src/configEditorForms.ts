@@ -515,6 +515,12 @@ export function getConfigEditorDynamicFields(path: string): readonly string[] | 
   if (/^extract\.(?:current|\d+)\.notebound\.tuplet\.v_\d+\.\w+$/.test(path)) {
     return ['show', 'pos', 'shape', 'cp1', 'cp2']
   }
+  if (/^extract\.(?:current|\d+)\.notebound\.(?:chord|annotation|partname|decoration)\.v_\d+\.\d+(?:\.\d+)?$/.test(path)) {
+    return ['show', 'pos', 'style']
+  }
+  if (/^extract\.(?:current|\d+)\.notebound\.decoration\.v_\d+\.t_\d+\.\d+$/.test(path)) {
+    return ['show', 'pos', 'style']
+  }
   if (/^extract\.(?:current|\d+)\.notebound\.minc\.\d+$/.test(path)) return ['minc_f']
   if (/^extract\.(?:current|\d+)\.notebound\.nconf\.v_\d+\.t_\d+\.n_\d+$/.test(path)) return ['nshift']
   return undefined

@@ -1227,7 +1227,7 @@ export class HarpnotesLayout {
           visible: true,
           confKey: `${overrideKey}.pos`,
           more_conf_keys: [],
-          draginfo: this._annotationDraginfo(offset),
+          draginfo: this._annotationDraginfo(offset, `${overrideKey}.pos`),
           znId: playable.znId,
           origin: playable,
         }
@@ -1246,7 +1246,7 @@ export class HarpnotesLayout {
           visible: true,
           confKey: `${overrideKey}.pos`,
           more_conf_keys: [],
-          draginfo: this._annotationDraginfo(offset),
+          draginfo: this._annotationDraginfo(offset, `${overrideKey}.pos`),
           znId: playable.znId,
         })
       }
@@ -2780,7 +2780,7 @@ export class HarpnotesLayout {
         // companion is an invisible pause.
         visible: true,
         confKey: `${confBase}.pos`,
-        draginfo: this._annotationDraginfo(configuredOffset ?? offset),
+        draginfo: this._annotationDraginfo(configuredOffset ?? offset, `${confBase}.pos`),
         more_conf_keys: [],
       })
     }

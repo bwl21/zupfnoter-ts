@@ -342,6 +342,54 @@ describe('configSchema', () => {
       'notes',
       'printer',
     ])
+    expect(Object.keys(layoutPresets)).toEqual([
+      'notes_small',
+      'notes_regular',
+      'notes_large',
+      'notes_with_beams',
+      '-',
+      'packer_compact',
+      'packer_regular',
+      '--',
+      'color_on',
+      'color_off',
+      '---',
+      'jumpline_anchor_close',
+      'jumpline_anchor_medium',
+      'jumpline_anchor_wide',
+      'jumpline_open',
+      'jumpline_close',
+    ])
+    expect(Object.keys(instrumentPresets)).toEqual([
+      '37-strings-g-g',
+      '25-strings-g-g',
+      '25-strings-G-g Bass',
+      '21-strings-a-f',
+      '18-strings-b-e',
+      '14-strings-b-d',
+      'kleine Bauerharfe',
+      'saitenspiel',
+      'Zipino',
+      'Okon-Harfe',
+      'Akkordzither',
+    ])
+    expect(Object.keys(notesPresets)).toEqual([
+      'T01_number',
+      'T01_number_extract',
+      'T01_number_extract_value',
+      'T02_copyright_music',
+      'T03_copyright_harpnotes',
+      'T04_to_order',
+      'T05_printed_extracts',
+      'T06_legend',
+      'T99_do_not_copy',
+      'T01_T99',
+    ])
+    expect(Object.keys(printerPresets)).toEqual([
+      'printer_left',
+      'printer_centric',
+      'printer_right',
+    ])
     expect(layoutPresets).toHaveProperty('notes_with_beams')
     expect(layoutPresets).toHaveProperty('packer_regular')
     expect(instrumentPresets).toHaveProperty('Akkordzither')

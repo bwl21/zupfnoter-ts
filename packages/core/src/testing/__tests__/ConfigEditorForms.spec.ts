@@ -36,6 +36,15 @@ describe('ConfigEditorForms', () => {
       .toEqual(['show', 'pos', 'shape', 'cp1', 'cp2'])
   })
 
+  it('exposes legacy fields for note-bound annotations', () => {
+    expect(getConfigEditorDynamicFields('extract.0.notebound.annotation.v_1.1536'))
+      .toEqual(['show', 'pos', 'style'])
+    expect(getConfigEditorDynamicFields('extract.0.notebound.annotation.v_1.1536.1'))
+      .toEqual(['show', 'pos', 'style'])
+    expect(getConfigEditorDynamicFields('extract.0.notebound.decoration.v_1.t_1536.0'))
+      .toEqual(['show', 'pos', 'style'])
+  })
+
   it('keeps the global tuplet style parameter in the editor form', () => {
     expect(CONFIG_EDITOR_FORM_SETS.barnumbers_countnotes.keys)
       .toContain('extract.{extract}.tuplets.style')
