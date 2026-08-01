@@ -39,11 +39,19 @@ const emit = defineEmits<{
 }>()
 
 const hoverControlRef = ref<HTMLElement | null>(null)
+const caseSearch = ref('')
 const sidebarWidth = ref(360)
 let hoverControlTooltip: TippyInstance | null = null
 let removeResizeListeners: (() => void) | null = null
 
 const sidebarStyle = computed(() => ({ '--comparison-sidebar-width': `${sidebarWidth.value}px` }))
+const filteredCaseItems = computed(() => {
+  const query = caseSearch.value.trim().toLocaleLowerCase()
+  if (query === '') return props.caseItems
+  return props.caseItems.filter((caseItem) =>
+    `${caseItem.id} ${caseItem.label}`.toLocaleLowerCase().includes(query),
+  )
+})
 
 function isComparisonViewMode(value: string): value is ComparisonViewMode {
   return value === 'side-by-side' || value === 'swipe' || value === 'blink'
@@ -53,14 +61,6 @@ function updateSelectedMode(event: Event): void {
   const select = event.target
   if (!(select instanceof HTMLSelectElement) || !isComparisonViewMode(select.value)) return
   emit('update:selectedMode', select.value)
-}
-
-function updateSelectedExtract(event: Event): void {
-  const select = event.target
-  if (!(select instanceof HTMLSelectElement)) return
-  const extractNr = Number(select.value)
-  if (!Number.isInteger(extractNr) || !props.availableExtracts.includes(extractNr)) return
-  emit('update:selectedExtract', extractNr)
 }
 
 function updateSwipePosition(event: Event): void {
@@ -172,20 +172,51 @@ onBeforeUnmount(() => {
       <section class="comparison-panel">
         <div class="comparison-panel__header">
           <h2>Cases</h2>
-          <span>{{ caseItems.length }}</span>
+          <span>{{ filteredCaseItems.length }}/{{ caseItems.length }}</span>
         </div>
+        <input
+          v-model="caseSearch"
+          class="comparison-case-search"
+          type="search"
+          placeholder="Cases durchsuchen …"
+          aria-label="Cases durchsuchen"
+        >
         <div class="comparison-list" role="listbox" aria-label="Vergleichsfälle">
-          <button
-            v-for="caseItem in caseItems"
+          <div
+            v-for="caseItem in filteredCaseItems"
             :key="caseItem.id"
-            type="button"
-            class="comparison-case"
-            :class="{ 'is-active': caseItem.id === selectedCaseId }"
-            :aria-selected="caseItem.id === selectedCaseId"
-            @click="emit('selectCase', caseItem.id)"
           >
-            <span>{{ caseItem.label }}</span>
-          </button>
+            <button
+              type="button"
+              class="comparison-case"
+              :class="{ 'is-active': caseItem.id === selectedCaseId }"
+              :aria-selected="caseItem.id === selectedCaseId"
+              @click="emit('selectCase', caseItem.id)"
+            >
+              <span>{{ caseItem.label }}</span>
+            </button>
+            <div
+              v-if="caseItem.id === selectedCaseId"
+              class="comparison-case-extracts"
+              role="listbox"
+              :aria-label="`Extracts für ${caseItem.label}`"
+            >
+              <button
+                v-for="extractNr in availableExtracts"
+                :key="extractNr"
+                type="button"
+                class="comparison-case-extract"
+                :class="{ 'is-active': extractNr === selectedExtract }"
+                :aria-selected="extractNr === selectedExtract"
+                @click="emit('update:selectedExtract', extractNr)"
+              >
+                Extract {{ extractNr }}
+              </button>
+            </div>
+          </div>
+          <p v-if="filteredCaseItems.length === 0" class="comparison-list__empty">
+            Keine Cases gefunden.
+          </p>
         </div>
       </section>
 
@@ -199,19 +230,6 @@ onBeforeUnmount(() => {
             <option value="side-by-side">Side by side</option>
             <option value="swipe">Swipe</option>
             <option value="blink">Alternierend</option>
-          </select>
-        </label>
-        <label class="comparison-field" for="comparison-extract">
-          <span>Extract</span>
-          <select
-            id="comparison-extract"
-            :value="selectedExtract"
-            :disabled="availableExtracts.length === 0"
-            @change="updateSelectedExtract"
-          >
-            <option v-for="extractNr in availableExtracts" :key="extractNr" :value="extractNr">
-              {{ extractNr }}
-            </option>
           </select>
         </label>
         <label v-if="selectedMode === 'swipe'" class="comparison-field" for="comparison-swipe">
@@ -407,15 +425,32 @@ onBeforeUnmount(() => {
 
 .comparison-list {
   display: grid;
-  gap: 0.5rem;
-  max-height: 34vh;
+  gap: 0.3rem;
+  max-height: 26vh;
   overflow: auto;
   padding-right: 0.15rem;
 }
 
+.comparison-case-search {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--viewsvg-panel-border);
+  border-radius: 0.55rem;
+  background: #ffffff;
+  color: var(--viewsvg-text);
+  font: inherit;
+  font-size: 0.84rem;
+}
+
+.comparison-case-search:focus {
+  outline: 2px solid var(--viewsvg-accent);
+  outline-offset: 1px;
+}
+
 .comparison-case {
   display: block;
-  padding: 0.75rem 0.85rem;
+  padding: 0.42rem 0.6rem;
   border: 1px solid transparent;
   border-radius: 14px;
   background: var(--viewsvg-panel-soft);
@@ -440,6 +475,37 @@ onBeforeUnmount(() => {
 .comparison-case > span {
   font-size: 0.92rem;
   font-weight: 600;
+}
+
+.comparison-case-extracts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.1rem 0.35rem 0.2rem;
+}
+
+.comparison-case-extract {
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--viewsvg-panel-border);
+  border-radius: 0.35rem;
+  background: #ffffff;
+  color: var(--viewsvg-subtext);
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.comparison-case-extract:hover,
+.comparison-case-extract.is-active {
+  border-color: var(--viewsvg-accent);
+  background: var(--viewsvg-accent);
+  color: #ffffff;
+}
+
+.comparison-list__empty {
+  margin: 0;
+  color: var(--viewsvg-subtext);
+  font-size: 0.82rem;
 }
 
 .comparison-panel--controls {
