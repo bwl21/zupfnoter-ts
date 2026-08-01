@@ -24,8 +24,12 @@ export const useSelectionStore = defineStore('selection', () => {
     if (event.type === 'selection.extract-changed') {
       activeVoiceIds.value = [...new Set(event.activeVoiceIds)]
     }
+    const selectionForEvent = event.type === 'selection.render-refreshed'
+      && selection.value.source === 'harp-preview'
+      ? createClearedSelectionState(selection.value.source, selection.value.voiceScope)
+      : selection.value
     selection.value = dispatchSelectionStateEvent(event, {
-      selection: selection.value,
+      selection: selectionForEvent,
       sheetObjectIndex: previousSheetObjectIndex,
       activeVoiceIds: activeVoiceIds.value,
     })
