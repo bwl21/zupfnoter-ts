@@ -13,7 +13,7 @@ import type { CommandArgumentValue } from '@zupfnoter/core'
 import type { PlaybackHighlight, SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
 import { ZnIcon, ZnMaximizeButton, ZnPanel, ZnTabs, ZnZoomControl, type ZnIconName } from '@zupfnoter/design-system'
-import { resolveSelectionOriginByZnId } from '../selectionIndex'
+import { resolveSelectionOriginByZnIdAndConfKey } from '../selectionIndex'
 import { RESOURCE_DRAG_MIME } from '../resourceDrag'
 import type { HarpPreviewDragEnd } from '../multiWindow/harpMirrorChannel'
 import HarpMagnifierPopover from './HarpMagnifierPopover.vue'
@@ -241,7 +241,10 @@ function emitSelectionFromEvent(target: EventTarget | null, extend: boolean): vo
   const startpos = Number(startChar)
   const endpos = Number(endChar)
   if (Number.isNaN(startpos) || Number.isNaN(endpos)) return
-  const origin = znId === undefined ? undefined : resolveSelectionOriginByZnId(props.sheetObjectIndex, znId)
+  const confKey = element.closest<HTMLElement>('.zupfnoter-element[data-conf-key]')?.getAttribute('data-conf-key')?.trim()
+  const origin = znId === undefined
+    ? undefined
+    : resolveSelectionOriginByZnIdAndConfKey(props.sheetObjectIndex, znId, confKey)
   emit('select-text-range', {
     startpos,
     endpos,

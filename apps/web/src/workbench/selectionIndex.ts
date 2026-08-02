@@ -797,6 +797,30 @@ export function resolveSelectionOriginByZnId(
   return buildSelectionOrigin(entryIndex === undefined ? undefined : index?.entries[entryIndex])
 }
 
+/**
+ * Resolves an SVG-origin selection while preserving the voice of the concrete
+ * drawable. A single `znId` may occur in several voices at the same music time.
+ */
+export function resolveSelectionOriginByZnIdAndConfKey(
+  index: SheetObjectIndex | undefined,
+  znId: string,
+  confKey: string | undefined,
+): SelectionOrigin | undefined {
+  const origin = resolveSelectionOriginByZnId(index, znId)
+  if (confKey === undefined) return origin
+
+  const entry = resolveIndexesByConfKey(index, confKey)
+    .map((entryIndex) => index?.entries[entryIndex])
+    .find((candidate) => candidate !== undefined && (candidate.znId === undefined || candidate.znId === znId))
+  const voiceId = resolveEntryVoiceIdFromIndex(index, entry)
+  if (voiceId === undefined) return origin
+
+  return {
+    ...origin,
+    voiceId,
+  }
+}
+
 export function projectIndexesToEntries(
   index: SheetObjectIndex | undefined,
   selectedIndexes: number[],
