@@ -166,6 +166,15 @@ useTextRangeSvgHighlight(
   cursor: pointer;
 }
 
+.preview-stage__svg :deep(.zn-score-hitbox:hover) {
+  fill: color-mix(in srgb, var(--zn-accent) 24%, transparent);
+  fill-opacity: 1;
+  opacity: 0.72;
+  stroke: var(--zn-accent-strong);
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+}
+
 .preview-stage__svg :deep(.zn-score-hitbox.zn-playback-highlight) {
   fill: color-mix(in srgb, var(--zn-accent) 22%, transparent);
   fill-opacity: 1;

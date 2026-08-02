@@ -21,6 +21,7 @@ import { textRangeKey } from './selectionIndex'
 
 import {
   projectPlaybackHighlight,
+  projectIndexesToEntries,
   normalizeLineColumnRange,
   projectLineColumnRangeToTextRange,
   resolveEditorSelectionRange,
@@ -30,6 +31,7 @@ import {
   resolveIndexesByTextRangeAndKind,
   resolveIndexesByZnId,
   resolveSelectionOriginByTextRange,
+  resolveSelectionTextRanges,
   resolveScoreSelectionEntries as resolveScoreSelectionEntriesFromIndex,
   resolveScoreSelectionRanges,
   resolveScopedSelectionIndexes,
@@ -117,6 +119,8 @@ function createSelectionState(
     originSelectedIndexes: normalizeIndexes(segment.originSelectedIndexes),
     anchorIndex: segment.anchorIndex,
     textRanges: segment.textRanges === undefined ? undefined : uniqueTextRanges(segment.textRanges),
+    ...(segment.musicTimeRange === undefined ? {} : { musicTimeRange: { ...segment.musicTimeRange } }),
+    ...(segment.anchorVoiceId === undefined ? {} : { anchorVoiceId: segment.anchorVoiceId }),
   }))
   return {
     selectedIndexes: normalized,
@@ -139,6 +143,14 @@ function selectionSegmentFromState(
   index?: SheetObjectIndex,
 ): SelectionSegment {
   const editorRange = resolveSelectionEditorRange(index, selection)
+  const selectedEntries = projectIndexesToEntries(index, selection.selectedIndexes)
+  const musicTimes = selectedEntries
+    .map((entry) => entry.musicTime)
+    .filter((musicTime): musicTime is number => typeof musicTime === 'number')
+  const anchorEntry = selection.anchorIndex === undefined
+    ? undefined
+    : index?.entries[selection.anchorIndex]
+  const anchorVoiceId = resolveSelectionVoiceId(index, anchorEntry)
   return {
     selectedIndexes: [...selection.selectedIndexes],
     originSelectedIndexes: [...selection.originSelectedIndexes],
@@ -146,6 +158,13 @@ function selectionSegmentFromState(
     textRanges: selection.textRanges === undefined
       ? editorRange === undefined ? undefined : [editorRange]
       : [...selection.textRanges],
+    ...(musicTimes.length === 0 ? {} : {
+      musicTimeRange: {
+        start: Math.min(...musicTimes),
+        end: Math.max(...musicTimes),
+      },
+    }),
+    ...(anchorVoiceId === undefined ? {} : { anchorVoiceId }),
   }
 }
 
@@ -392,9 +411,18 @@ export function resolveSelectionWithVoiceScope(
         voiceScope,
         options,
       )
+      const projectedTextRanges = voiceScope === 'single-voice'
+        ? segment.textRanges
+        : resolveSelectionTextRanges(
+            index,
+            projectIndexesToEntries(index, projectedSegment.selectedIndexes),
+            voiceScope,
+          )
       return {
-        ...selectionSegmentFromState(projectedSegment, index),
+        ...selectionSegmentFromState({ ...projectedSegment, textRanges: projectedTextRanges }, index),
         anchorIndex: segment.anchorIndex,
+        ...(segment.anchorVoiceId === undefined ? {} : { anchorVoiceId: segment.anchorVoiceId }),
+        ...(segment.musicTimeRange === undefined ? {} : { musicTimeRange: { ...segment.musicTimeRange } }),
       }
     })
     return combineSelectionSegments(

@@ -450,6 +450,9 @@ function handlePointerDown(event: PointerEvent): void {
   }
   if (event.button === 0 && event.target instanceof Element) {
     selectionGesture.pointerDown(event)
+    // Shift-click is reserved for musical selection. In particular,
+    // Option+Shift on an image must not fall through to image move/resize.
+    if (event.shiftKey) return
     const directDraggable = event.target.closest<HTMLElement>('.zupfnoter-element[data-drag-enabled="true"][data-conf-key]')
     const draggable = directDraggable ?? findJumplineAtEvent(event)
     const resizeHandle = event.target.closest<SVGRectElement>('[data-image-resize-corner]')
@@ -1146,6 +1149,15 @@ onBeforeUnmount(() => {
   fill: var(--zn-accent);
   stroke: var(--zn-accent-strong);
   stroke-width: 0.8;
+}
+
+.harp-preview__svg :deep(.zupfnoter-hitbox:hover) {
+  opacity: 0.72;
+  fill: color-mix(in srgb, var(--zn-accent) 24%, transparent);
+  fill-opacity: 1;
+  stroke: var(--zn-accent-strong);
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
 }
 
 .harp-preview__svg :deep(.zupfnoter-hitbox.zn-playback-highlight) {

@@ -86,6 +86,80 @@ describe('HarpPreviewPanel selection', () => {
     ])
   })
 
+  it('emits Option-Shift as a new selection segment from the harp preview', async () => {
+    const wrapper = mount(HarpPreviewPanel, {
+      props: {
+        svg: '<svg width="40" height="20"><rect class="zupfnoter-hitbox" data-start-char="20" data-end-char="24" data-zn-id="note-4" width="10" height="10" /></svg>',
+        sheetObjectIndex,
+      },
+    })
+
+    const hitbox = wrapper.find('.harp-preview__svg rect').element
+    hitbox.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true,
+      button: 0,
+      shiftKey: true,
+      altKey: true,
+    }))
+    wrapper.find('.harp-preview__frame').element.dispatchEvent(new PointerEvent('pointerup', {
+      bubbles: true,
+      button: 0,
+      shiftKey: true,
+      altKey: true,
+    }))
+
+    expect(wrapper.emitted('select-text-range')?.[0]?.[0]).toMatchObject({
+      extend: false,
+      startNewSegment: true,
+    })
+  })
+
+  it('keeps Option-Shift available after a first harp selection', async () => {
+    const wrapper = mount(HarpPreviewPanel, {
+      props: {
+        svg: '<svg width="80" height="20"><rect class="zupfnoter-hitbox" data-start-char="20" data-end-char="24" data-zn-id="note-4" x="0" width="10" height="10" /><rect class="zupfnoter-hitbox" data-start-char="28" data-end-char="32" data-zn-id="note-5" x="20" width="10" height="10" /></svg>',
+        sheetObjectIndex: {
+          ...sheetObjectIndex,
+          byZnId: { 'note-4': [0], 'note-5': [2] },
+          byTextRange: { '20:24': [0], '28:32': [2] },
+          entries: [
+            ...sheetObjectIndex.entries,
+            {
+              kind: 'music-entity',
+              znId: 'note-5',
+              voiceId: '4',
+              musicTime: 544,
+              textRange: { startpos: 28, endpos: 32 },
+              addressableIn: { editor: true, score: true, svg: true },
+            },
+          ],
+        },
+      },
+    })
+
+    const hitboxes = wrapper.findAll('.harp-preview__svg rect')
+    const frame = wrapper.find('.harp-preview__frame').element
+    hitboxes[0]?.element.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, button: 0 }))
+    frame.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, button: 0 }))
+    hitboxes[1]?.element.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true,
+      button: 0,
+      shiftKey: true,
+      altKey: true,
+    }))
+    frame.dispatchEvent(new PointerEvent('pointerup', {
+      bubbles: true,
+      button: 0,
+      shiftKey: true,
+      altKey: true,
+    }))
+
+    expect(wrapper.emitted('select-text-range')?.map((event) => event[0])).toEqual([
+      expect.objectContaining({ startpos: 20, startNewSegment: false }),
+      expect.objectContaining({ startpos: 28, startNewSegment: true }),
+    ])
+  })
+
   it('keeps the voice of a drawable when the znId is shared by voices', async () => {
     const sharedVoiceIndex: SheetObjectIndex = {
       ...sheetObjectIndex,

@@ -39,6 +39,8 @@ interface EditorSelectionChange {
   start: LineColumn
   end: LineColumn
   ranges?: EditorSelectionRange[]
+  extend?: boolean
+  startNewSegment?: boolean
 }
 
 const abcText = defineModel<string>({
@@ -66,6 +68,7 @@ const emit = defineEmits<{
 const editorHost = ref<HTMLDivElement | null>(null)
 let editorView: EditorView | null = null
 let isApplyingExternalSelection = false
+let pendingPointerModifiers: { shiftKey: boolean; altKey: boolean } | undefined
 const invisibleCharactersCompartment: Compartment = createInvisibleCharactersCompartment()
 const editorUpdateListener = EditorView.updateListener.of((update) => {
   if (!update.docChanged) return
@@ -177,6 +180,13 @@ function emitSelectionRange(view: EditorView): void {
       column: selection.to - endLine.from + 1,
     },
   }
+  if (pendingPointerModifiers?.shiftKey === true && pendingPointerModifiers.altKey !== true) {
+    selectionChange.extend = true
+  }
+  if (pendingPointerModifiers?.shiftKey === true && pendingPointerModifiers.altKey === true) {
+    selectionChange.startNewSegment = true
+  }
+  pendingPointerModifiers = undefined
   if (ranges.length > 1) selectionChange.ranges = ranges
   emit('selection-change', selectionChange)
 }
@@ -192,6 +202,15 @@ onMounted(() => {
       },
       extensions: [
         ...createAbcEditorExtensions(),
+        EditorView.domEventHandlers({
+          mousedown: (event) => {
+            pendingPointerModifiers = {
+              shiftKey: event.shiftKey,
+              altKey: event.altKey,
+            }
+            return false
+          },
+        }),
         EditorState.allowMultipleSelections.of(true),
         invisibleCharactersCompartment.of(createInvisibleCharactersExtension(props.showInvisibleCharacters)),
         editorUpdateListener,

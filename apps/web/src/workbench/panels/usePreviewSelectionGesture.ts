@@ -63,11 +63,13 @@ export function usePreviewSelectionGesture(
     const startpos = Number(currentGesture.target.getAttribute('data-start-char'))
     const endpos = Number(currentGesture.target.getAttribute('data-end-char'))
     if (Number.isNaN(startpos) || Number.isNaN(endpos)) return
+    const shiftKey = currentGesture.shiftKey || event.shiftKey
+    const altKey = currentGesture.altKey || event.altKey
     onRequest({
       startpos,
       endpos,
-      extend: currentGesture.shiftKey && !currentGesture.altKey,
-      startNewSegment: currentGesture.shiftKey && currentGesture.altKey,
+      extend: shiftKey && !altKey,
+      startNewSegment: shiftKey && altKey,
     }, currentGesture.target)
   }
 

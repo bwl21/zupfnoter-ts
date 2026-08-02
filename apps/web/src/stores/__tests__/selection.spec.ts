@@ -193,6 +193,86 @@ describe('selection store', () => {
       ])
   })
 
+  it('keeps segment boundaries when the voice scope expands', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: sheetObjectIndex })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 4,
+      endpos: 6,
+      origin: { voiceId: '1', musicTime: 64, znId: 'note-1' },
+      source: 'score-preview',
+    })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 10,
+      endpos: 12,
+      origin: { voiceId: '1', musicTime: 128, znId: 'note-3' },
+      startNewSegment: true,
+      source: 'score-preview',
+    })
+
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.scope-changed',
+      voiceScope: 'all-voices',
+    })
+
+    expect(selectionStore.selection.segments).toHaveLength(2)
+    expect(selectionStore.selection.segments?.[0]?.musicTimeRange).toEqual({ start: 64, end: 64 })
+    expect(selectionStore.selection.segments?.[1]?.musicTimeRange).toEqual({ start: 128, end: 128 })
+    expect(selectionStore.selection.segments?.[0]?.textRanges).not.toContainEqual({ startpos: 10, endpos: 12 })
+    expect(selectionStore.selection.segments?.[1]?.textRanges).not.toContainEqual({ startpos: 4, endpos: 6 })
+    expect(resolveEditorSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toEqual([
+        { startpos: 4, endpos: 6 },
+        { startpos: 10, endpos: 12 },
+      ])
+  })
+
+  it('starts another segment after an existing multi-voice projection', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: sheetObjectIndex })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 4,
+      endpos: 6,
+      origin: { voiceId: '1', musicTime: 64, znId: 'note-1' },
+      source: 'score-preview',
+    })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 10,
+      endpos: 12,
+      origin: { voiceId: '1', musicTime: 128, znId: 'note-3' },
+      startNewSegment: true,
+      source: 'score-preview',
+    })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.scope-changed',
+      voiceScope: 'all-voices',
+    })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 7,
+      endpos: 8,
+      origin: { voiceId: '1', musicTime: 96, znId: 'note-2' },
+      startNewSegment: true,
+      source: 'score-preview',
+    })
+
+    expect(selectionStore.selection.activeSegmentIndex).toBe(2)
+    expect(selectionStore.selection.segments).toHaveLength(3)
+    expect(selectionStore.selection.segments?.map((segment) => segment.musicTimeRange)).toEqual([
+      { start: 64, end: 64 },
+      { start: 128, end: 128 },
+      { start: 96, end: 96 },
+    ])
+  })
+
   it('does not feed editor segment envelopes back into score projection', () => {
     setActivePinia(createPinia())
 

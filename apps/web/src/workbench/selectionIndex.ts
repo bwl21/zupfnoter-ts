@@ -173,7 +173,7 @@ function resolveEntryVoiceIdFromIndex(
   return index.voiceByLine[line]
 }
 
-function resolveSelectionTextRanges(
+export function resolveSelectionTextRanges(
   index: SheetObjectIndex | undefined,
   selectedEntries: SheetObjectIndexEntry[],
   voiceScope: SelectionProjectionOptions['voiceScope'] | SelectionState['voiceScope'],
@@ -234,7 +234,11 @@ function resolveScopedSelectionContext(
     .filter((line): line is number => line !== undefined)
   const voiceScope = options?.voiceScope ?? selection.voiceScope
   const selectedTextRanges = selection.segments !== undefined
-    ? resolveSelectionTextRanges(index, selectedEntries, voiceScope)
+    ? selection.segments.flatMap((segment) => resolveSelectionTextRanges(
+      index,
+      projectIndexesToEntries(index, segment.selectedIndexes),
+      voiceScope,
+    ))
     : selection.textRanges !== undefined && selection.textRanges.length > 0
     ? selection.textRanges.map((range) => ({ ...range }))
     : resolveSelectionTextRanges(index, selectedEntries, voiceScope)

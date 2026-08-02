@@ -1955,6 +1955,8 @@ function handleEditorSelectionChange(payload: {
   start: { line: number; column: number }
   end: { line: number; column: number }
   ranges?: Array<{ startpos: number; endpos: number }>
+  extend?: boolean
+  startNewSegment?: boolean
 }): void {
   const ranges = (payload.ranges ?? [{ startpos: payload.startpos, endpos: payload.endpos }])
     .filter((range) => range.startpos !== range.endpos)
@@ -1973,7 +1975,14 @@ function handleEditorSelectionChange(payload: {
   }
 
   selectionStore.dispatchSelectionEvent(
-    createTextRangeSelectionEvent(payload.startpos, payload.endpos, 'abc-editor'),
+    createTextRangeSelectionEvent(
+      payload.startpos,
+      payload.endpos,
+      'abc-editor',
+      payload.extend,
+      undefined,
+      payload.startNewSegment,
+    ),
   )
 }
 

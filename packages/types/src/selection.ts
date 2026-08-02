@@ -109,6 +109,10 @@ export interface SelectionSegment {
   anchorIndex?: number
   /** Getrennte ABC-Teilbereiche dieses Segments. */
   textRanges?: SelectionTextRange[]
+  /** Fachlicher Zeitbereich des Segments, unabhängig von den Stimmen. */
+  musicTimeRange?: { start: number; end: number }
+  /** Stimme, in der der Anker dieses Segments gesetzt wurde. */
+  anchorVoiceId?: string
 }
 
 export interface SelectionState {

@@ -31,6 +31,13 @@ describe('selection architecture', () => {
     expect(source).toContain("event.type === 'selection.interaction-pending'")
   })
 
+  it('carries editor pointer modifiers into the shared selection path', () => {
+    const source = readSource('src/workbench/panels/AbcEditorPanel.vue')
+
+    expect(source).toContain('EditorView.domEventHandlers')
+    expect(source).toContain('selectionChange.startNewSegment = true')
+  })
+
   it('keeps preview range extension based on musical time', () => {
     const source = readSource('src/workbench/selectionManager.ts')
     const functionStart = source.indexOf('function resolveExtendedSelectionByTextRange(')
