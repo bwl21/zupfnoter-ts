@@ -23,6 +23,7 @@ import {
   normalizeLineColumnRange,
   projectLineColumnRangeToTextRange,
   resolveEditorSelectionRange,
+  resolveEditorSelectionRanges,
   resolveIndexesByConfKey,
   resolveIndexesByTextRange,
   resolveIndexesByTextRangeAndKind,
@@ -804,9 +805,11 @@ export function resolveSelectionProjection(
   options?: SelectionProjectionOptions,
 ): SelectionProjection {
   const svgSelection = resolveSvgSelection(index, selection, options)
-  const projectedTextRanges = target === 'harp-preview'
-    ? resolveScoreSelectionRanges(index, selection)
-    : resolveScoreSelectionRanges(index, selection, options)
+  const projectedTextRanges = target === 'abc-editor'
+    ? resolveEditorSelectionRanges(index, selection, options)
+    : target === 'harp-preview'
+      ? resolveScoreSelectionRanges(index, selection)
+      : resolveScoreSelectionRanges(index, selection, options)
   const projection: SelectionProjection = {
     selectedIndexes: [...selection.selectedIndexes],
     textRanges: projectedTextRanges,

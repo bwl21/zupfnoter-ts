@@ -289,6 +289,14 @@ describe('selectionManager', () => {
       znIds: [],
       confKeys: [],
     })
+
+    expect(resolveSelectionProjection(scoreScopedIndex, selection, 'abc-editor', {
+      voiceScope: 'extract-voices',
+      activeVoiceIds: ['1', '2'],
+    }).textRanges).toEqual([
+      { startpos: 4, endpos: 6 },
+      { startpos: 10, endpos: 12 },
+    ])
   })
 
   it('resolves playback projections separately from selection projections', () => {
@@ -320,6 +328,46 @@ describe('selectionManager', () => {
         { startpos: 4, endpos: 6 },
         { startpos: 10, endpos: 12 },
       ])
+  })
+
+  it('projects a multi-voice passage as one editor range per voice', () => {
+    const passageIndex: SheetObjectIndex = {
+      version: 1,
+      lineStarts: [0, 4, 12, 20],
+      voiceByLine: { 1: undefined, 2: '1', 3: '2', 4: '2' },
+      byZnId: {},
+      byConfKey: {},
+      byTextRange: {
+        '4:6': [0],
+        '9:10': [1],
+        '12:14': [2],
+        '17:18': [3],
+      },
+      byMusicTime: {
+        '1': [0, 2],
+        '2': [1, 3],
+      },
+      entries: [
+        { kind: 'music-entity', voiceId: '1', musicTime: 1, textRange: { startpos: 4, endpos: 6 }, startPos: { line: 2, column: 1 }, endPos: { line: 2, column: 3 }, addressableIn: { editor: true, score: true, svg: true } },
+        { kind: 'music-entity', voiceId: '1', musicTime: 2, textRange: { startpos: 9, endpos: 10 }, startPos: { line: 2, column: 6 }, endPos: { line: 2, column: 7 }, addressableIn: { editor: true, score: true, svg: true } },
+        { kind: 'music-entity', voiceId: '2', musicTime: 1, textRange: { startpos: 12, endpos: 14 }, startPos: { line: 3, column: 1 }, endPos: { line: 3, column: 3 }, addressableIn: { editor: true, score: true, svg: true } },
+        { kind: 'music-entity', voiceId: '2', musicTime: 2, textRange: { startpos: 17, endpos: 18 }, startPos: { line: 3, column: 6 }, endPos: { line: 3, column: 7 }, addressableIn: { editor: true, score: true, svg: true } },
+      ],
+    }
+    const selection: SelectionState = {
+      selectedIndexes: [0, 1],
+      originSelectedIndexes: [0, 1],
+      source: 'harp-preview',
+      voiceScope: 'extract-voices',
+    }
+
+    expect(resolveSelectionProjection(passageIndex, selection, 'abc-editor', {
+      voiceScope: 'extract-voices',
+      activeVoiceIds: ['1', '2'],
+    }).textRanges).toEqual([
+      { startpos: 4, endpos: 10 },
+      { startpos: 12, endpos: 18 },
+    ])
   })
 
   it('rebinds harp selections by stable object identity after a render refresh', () => {

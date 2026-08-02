@@ -590,6 +590,12 @@ export function createAbcEditorExtensions(): Extension[] {
         padding: 'var(--zn-space-3) 0',
         caretColor: 'var(--zn-accent)',
       },
+      '.cm-selectionBackground': {
+        backgroundColor: 'color-mix(in srgb, var(--zn-accent) 32%, transparent) !important',
+      },
+      '.cm-content ::selection': {
+        backgroundColor: 'color-mix(in srgb, var(--zn-accent) 32%, transparent)',
+      },
       '.cm-gutters': {
         backgroundColor: 'var(--zn-bg-surface)',
         borderRight: '1px solid var(--zn-border)',

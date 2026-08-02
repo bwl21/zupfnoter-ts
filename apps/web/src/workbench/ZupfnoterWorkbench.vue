@@ -95,7 +95,6 @@ import {
   createTextRangeSelectionEvent,
   resolvePlaybackProjection,
   resolvePlaybackScoreRanges,
-  resolveSelectionEditorRange,
   resolveSelectionProjection,
 } from './selectionManager'
 import { resolveConfKeyForConfigPath, resolveIndexesByConfigPath } from './selectionIndex'
@@ -338,9 +337,17 @@ const selectedScoreTextRanges = computed(() => resolveSelectionProjection(
     activeVoiceIds: activeVoiceIds.value,
   },
 ).textRanges)
-const selectedEditorTextRange = computed(() => selectionStore.selection.source === 'abc-editor'
+const selectedEditorTextRanges = computed(() => selectionStore.selection.source === 'abc-editor'
   ? undefined
-  : resolveSelectionEditorRange(selectionStore.sheetObjectIndex, selectionStore.selection))
+  : resolveSelectionProjection(
+    selectionStore.sheetObjectIndex,
+    selectionStore.selection,
+    'abc-editor',
+    {
+      voiceScope: selectionStore.selection.voiceScope,
+      activeVoiceIds: activeVoiceIds.value,
+    },
+  ).textRanges)
 const playbackScoreTextRanges = computed(() => resolvePlaybackScoreRanges(
   selectionStore.sheetObjectIndex,
   playbackStore.highlight,
@@ -2496,7 +2503,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   v-model="abcText"
                   :diagnostics="editorDiagnostics"
                   :playback-highlight="projectedPlaybackHighlight"
-                  :selected-text-range="selectedEditorTextRange"
+                  :selected-text-ranges="selectedEditorTextRanges"
                   :show-invisible-characters="showInvisibleCharacters"
                   :cursor-offset="editorCursorOffset"
                   @cursor-change="handleEditorCursorChange"

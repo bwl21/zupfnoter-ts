@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Compartment, EditorState } from '@codemirror/state'
+import { Compartment, EditorSelection, EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
@@ -40,7 +40,7 @@ const abcText = defineModel<string>({
 const props = withDefaults(defineProps<{
   diagnostics?: EditorDiagnostic[]
   playbackHighlight?: PlaybackHighlight
-  selectedTextRange?: SelectionTextRange
+  selectedTextRanges?: SelectionTextRange[]
   showInvisibleCharacters?: boolean
   cursorOffset?: number
 }>(), {
@@ -79,23 +79,35 @@ function syncDocument(nextValue: string): void {
   })
 }
 
-function syncExternalSelection(nextSelection: SelectionTextRange | undefined): void {
+function syncExternalSelection(nextSelections: SelectionTextRange[] | undefined): void {
   if (editorView === null) return
-  if (nextSelection === undefined) return
+  if (nextSelections === undefined || nextSelections.length === 0) return
 
-  const normalizedFrom = Math.max(0, Math.min(nextSelection.startpos, editorView.state.doc.length))
-  const normalizedTo = Math.max(0, Math.min(nextSelection.endpos, editorView.state.doc.length))
-  const currentSelection = editorView.state.selection.main
-  if (currentSelection.from === normalizedFrom && currentSelection.to === normalizedTo) return
+  const ranges = nextSelections
+    .map((selection) => ({
+      from: Math.max(0, Math.min(selection.startpos, editorView?.state.doc.length ?? 0)),
+      to: Math.max(0, Math.min(selection.endpos, editorView?.state.doc.length ?? 0)),
+    }))
+    .filter((selection) => selection.from !== selection.to)
+    .sort((left, right) => left.from - right.from || left.to - right.to)
+  if (ranges.length === 0) return
+
+  const currentRanges = editorView.state.selection.ranges
+  if (currentRanges.length === ranges.length && ranges.every((range, index) => {
+    const currentRange = currentRanges[index]
+    return currentRange !== undefined
+      && currentRange.from === range.from
+      && currentRange.to === range.to
+  })) return
 
   isApplyingExternalSelection = true
   editorView.dispatch({
-    selection: {
-      anchor: normalizedFrom,
-      head: normalizedTo,
-    },
+    selection: EditorSelection.create(
+      ranges.map((range) => EditorSelection.range(range.from, range.to)),
+    ),
     scrollIntoView: true,
   })
+  editorView.focus()
   isApplyingExternalSelection = false
 }
 
@@ -151,6 +163,7 @@ onMounted(() => {
       },
       extensions: [
         ...createAbcEditorExtensions(),
+        EditorState.allowMultipleSelections.of(true),
         invisibleCharactersCompartment.of(createInvisibleCharactersExtension(props.showInvisibleCharacters)),
         editorUpdateListener,
         EditorView.updateListener.of((update) => {
@@ -164,6 +177,7 @@ onMounted(() => {
     parent: editorHost.value,
   })
 
+  syncExternalSelection(props.selectedTextRanges)
   syncEditorDiagnostics(editorView, props.diagnostics)
   syncEditorPlaybackHighlight(editorView, props.playbackHighlight)
   emitCursorPosition(editorView)
@@ -193,9 +207,9 @@ watch(
 )
 
 watch(
-  () => props.selectedTextRange,
-  (selectedTextRange) => {
-    syncExternalSelection(selectedTextRange)
+  () => props.selectedTextRanges,
+  (selectedTextRanges) => {
+    syncExternalSelection(selectedTextRanges)
   },
   { immediate: true, deep: true },
 )

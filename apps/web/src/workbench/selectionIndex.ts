@@ -867,6 +867,33 @@ export function resolveScoreSelectionRanges(
   ).values()]
 }
 
+export function resolveEditorSelectionRanges(
+  index: SheetObjectIndex | undefined,
+  selection: SelectionState,
+  options?: SelectionProjectionOptions,
+): SelectionTextRange[] {
+  const { entries } = resolveScopedPaneEntries(index, selection, 'editor', options)
+  const rangesByVoice = new Map<string, SelectionTextRange[]>()
+
+  entries
+    .filter((entry) => entry.textRange !== undefined)
+    .forEach((entry, entryIndex) => {
+      const textRange = entry.textRange as SelectionTextRange
+      const voiceId = resolveEntryVoiceIdFromIndex(index, entry)
+      const groupKey = voiceId === undefined
+        ? `entry-${entryIndex}-${textRangeKey(textRange)}`
+        : `voice-${voiceId}`
+      const ranges = rangesByVoice.get(groupKey) ?? []
+      ranges.push({ ...textRange })
+      rangesByVoice.set(groupKey, ranges)
+    })
+
+  return [...rangesByVoice.values()].map((ranges) => ({
+    startpos: Math.min(...ranges.map((range) => range.startpos)),
+    endpos: Math.max(...ranges.map((range) => range.endpos)),
+  }))
+}
+
 export function resolveScoreSelectionEntries(
   index: SheetObjectIndex | undefined,
   selection: SelectionState,

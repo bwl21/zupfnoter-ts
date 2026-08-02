@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils'
+import { EditorView } from '@codemirror/view'
 import { nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -158,5 +159,25 @@ describe('AbcEditorPanel', () => {
       column: 3,
       unicode: 'U+0020',
     })
+  })
+
+  it('renders multiple externally projected text selections', async () => {
+    const wrapper = mount(AbcEditorPanel, {
+      props: {
+        modelValue: 'X:1\nK:C\nC D E\nC D E',
+        selectedTextRanges: [
+          { startpos: 11, endpos: 12 },
+          { startpos: 17, endpos: 18 },
+        ],
+      },
+    })
+
+    await nextTick()
+
+    const editorView = EditorView.findFromDOM(wrapper.find('.cm-editor').element as HTMLElement)
+    expect(editorView?.state.selection.ranges.map((range) => ({ from: range.from, to: range.to }))).toEqual([
+      { from: 11, to: 12 },
+      { from: 17, to: 18 },
+    ])
   })
 })
