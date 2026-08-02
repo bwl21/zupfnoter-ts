@@ -798,7 +798,7 @@ export class HarpnotesLayout {
         if (note.measureStart) {
           playableElements.push(this._layoutMeasureBarover(drawable, layout))
         }
-        const noteDecorations = this._layoutDecorations(note, drawable, layout, voiceNr, conf)
+        const noteDecorations = this._layoutDecorations(note, drawable, layout, voiceNr, extractNr, conf)
         decorationBackgrounds.push(...noteDecorations.backgrounds)
         decorations.push(...noteDecorations.decorations)
       } else if (entity.type === 'Pause') {
@@ -809,7 +809,7 @@ export class HarpnotesLayout {
           if (pause.measureStart) {
             playableElements.push(this._layoutMeasureBarover(glyph, layout))
           }
-          const pauseDecorations = this._layoutDecorations(pause, glyph, layout, voiceNr, conf)
+          const pauseDecorations = this._layoutDecorations(pause, glyph, layout, voiceNr, extractNr, conf)
           decorationBackgrounds.push(...pauseDecorations.backgrounds)
           decorations.push(...pauseDecorations.decorations)
         }
@@ -853,7 +853,7 @@ export class HarpnotesLayout {
           }
         }
         if (decorationRoot) {
-          const spDecorations = this._layoutDecorations(sp, decorationRoot, layout, voiceNr, conf)
+          const spDecorations = this._layoutDecorations(sp, decorationRoot, layout, voiceNr, extractNr, conf)
           decorationBackgrounds.push(...spDecorations.backgrounds)
           decorations.push(...spDecorations.decorations)
         }
@@ -1180,6 +1180,7 @@ export class HarpnotesLayout {
     root: Ellipse | Glyph,
     layout: LayoutConfig,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
   ): { backgrounds: Ellipse[]; decorations: DrawableElement[] } {
     const backgrounds: Ellipse[] = []
@@ -1198,6 +1199,7 @@ export class HarpnotesLayout {
     for (const [index, decoration] of decorations.entries()) {
       const overrideKey = `extract.notebound.decoration.v_${voiceNr}.t_${playable.time}.${index}`
       const legacyZnIdOverrideKey = `extract.notebound.decoration.v_${voiceNr}.t_${playable.znId}.${index}`
+      const objectConfKey = `extract.${extractNr}.notebound.decoration.v_${voiceNr}.t_${playable.time}.${index}`
       const configuredOffset = (conf.get(`${overrideKey}.pos`) as [number, number] | undefined)
         ?? (conf.get(`${legacyZnIdOverrideKey}.pos`) as [number, number] | undefined)
       const offset = configuredOffset ?? defaultOffset
@@ -1233,9 +1235,9 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
-          confKey: `${overrideKey}.pos`,
+          confKey: `${objectConfKey}.pos`,
           more_conf_keys: [],
-          draginfo: this._annotationDraginfo(offset, `${overrideKey}.pos`),
+          draginfo: this._annotationDraginfo(offset, `${objectConfKey}.pos`),
           znId: playable.znId,
           origin: playable,
         }
@@ -1252,9 +1254,9 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
-          confKey: `${overrideKey}.pos`,
+          confKey: `${objectConfKey}.pos`,
           more_conf_keys: [],
-          draginfo: this._annotationDraginfo(offset, `${overrideKey}.pos`),
+          draginfo: this._annotationDraginfo(offset, `${objectConfKey}.pos`),
           znId: playable.znId,
         })
       }

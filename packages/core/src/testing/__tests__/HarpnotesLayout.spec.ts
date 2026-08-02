@@ -861,6 +861,11 @@ V:V1 clef=treble-8
       expect(annotations.some((annotation) => annotation.text === 'f' && annotation.style === 'small_italic')).toBe(true)
       expect(annotations.some((annotation) => annotation.text === 'p' && annotation.style === 'small_italic')).toBe(true)
       expect(backgrounds.length).toBe(2)
+
+      const decoration = [...glyphs, ...annotations].find((drawable) => (
+        drawable.confKey?.includes('.notebound.decoration.') === true
+      ))
+      expect(decoration?.confKey).toMatch(/^extract\.0\.notebound\.decoration\.v_1\.t_\d+\.\d+\.pos$/)
     })
 
     it('anchors SynchPoint decorations to the legacy proxy note', () => {
@@ -964,7 +969,7 @@ V:V1 clef=treble-8
       expect(cutmarks.some((entry) => entry.center[1] === 290)).toBe(true)
     })
 
-    it('uses legacy printer.a4_pages from embedded song configuration', () => {
+  it('uses legacy printer.a4_pages from embedded song configuration', () => {
       const abcText = `${ABC_SINGLE_NOTE}
 
 %%%%zupfnoter.config
