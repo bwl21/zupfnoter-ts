@@ -23,6 +23,7 @@ import type {
   BeatMap,
   SongMetaData,
   SongDiagnostic,
+  PlaybackDirective,
   RestPositionConfig,
   RestPositionMode,
   TimeSignature,
@@ -169,6 +170,8 @@ export class AbcToSong {
   private _diagnostics: SongDiagnostic[] = []
   private _partTable: Record<number, string> = {}
 
+  private _playbackDirectives: PlaybackDirective[] = []
+
   /**
    * Transform an AbcModel into a Song.
    *
@@ -179,6 +182,7 @@ export class AbcToSong {
     this._config = config
     this._diagnostics = []
     this._partTable = {}
+    this._playbackDirectives = this._collectPlaybackDirectives(model)
     this._beatResolution = config.layout.BEAT_RESOLUTION ?? 192
     this._shortestNote = config.layout.SHORTEST_NOTE ?? 64
     this._sourceLineStarts = model.sourceLineStarts
@@ -214,7 +218,37 @@ export class AbcToSong {
     }
     const harpnoteOptions = this._extractHarpnoteOptions(model, config)
 
-    return { voices, beatMaps, metaData, harpnoteOptions }
+    return { voices, beatMaps, metaData, playbackDirectives: this._playbackDirectives, harpnoteOptions }
+  }
+
+  private _collectPlaybackDirectives(model: AbcModel): PlaybackDirective[] {
+    let jumpToStartTime: number | undefined
+    let fineTime: number | undefined
+    for (const voice of model.voices) {
+      for (const symbol of voice.symbols) {
+        for (const decoration of symbol.a_dd ?? []) {
+          const name = decoration.name?.toLowerCase()
+          if (name === 'd.c.alfine') {
+            jumpToStartTime = Math.max(jumpToStartTime ?? symbol.time, symbol.time)
+          } else if (name === 'fine') {
+            fineTime = Math.max(fineTime ?? symbol.time, symbol.time)
+          }
+        }
+      }
+    }
+    const directives: PlaybackDirective[] = []
+    if (jumpToStartTime !== undefined) {
+      directives.push({
+        type: 'jump',
+        target: 'start',
+        stopAt: 'fine',
+        sourceTime: jumpToStartTime,
+      })
+    }
+    if (fineTime !== undefined) {
+      directives.push({ type: 'marker', marker: 'fine', sourceTime: fineTime })
+    }
+    return directives.sort((left, right) => left.sourceTime - right.sourceTime)
   }
 
   // ---------------------------------------------------------------------------

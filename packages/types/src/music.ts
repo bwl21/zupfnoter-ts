@@ -277,6 +277,23 @@ export interface SongDiagnostic {
 }
 
 /**
+ * Musikalische Ablaufanweisung aus einer ABC-Dekoration.
+ * `sourceTime` verwendet abc2svg-Zeiteinheiten (1536 = ganze Note).
+ */
+export type PlaybackDirective =
+  | {
+      readonly type: 'jump'
+      readonly target: 'start'
+      readonly stopAt?: 'fine'
+      readonly sourceTime: number
+    }
+  | {
+      readonly type: 'marker'
+      readonly marker: 'fine'
+      readonly sourceTime: number
+    }
+
+/**
  * Das vollständige Musikmodell (Ergebnis von Stufe 1: ABC → Song).
  * Entspricht `Harpnotes::Music::Song`.
  */
@@ -284,6 +301,8 @@ export interface Song {
   voices: Voice[]
   beatMaps: BeatMap[]
   metaData: SongMetaData
+  /** Ablaufanweisungen, die beim Aufbau der Player-Timeline berücksichtigt werden. */
+  playbackDirectives?: PlaybackDirective[]
   harpnoteOptions?: Record<string, unknown>
   checksum?: string
 }

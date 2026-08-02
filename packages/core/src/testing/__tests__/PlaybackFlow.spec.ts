@@ -5,6 +5,7 @@ import type { PlaybackFlowStep } from '@zupfnoter/types'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { expandPlaybackFlow } from '../../PlaybackFlow.js'
+import { buildPlaybackTimeline } from '../../PlaybackTimeline.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 
 const amMoargoAbc = `X:799
@@ -53,6 +54,13 @@ function expandFlow(abcText: string): PlaybackFlowStep[] {
   return expandPlaybackFlow(song)
 }
 
+function buildTimeline(abcText: string) {
+  const parser = new AbcParser()
+  const model = parser.parse(abcText)
+  const song = new AbcToSong().transform(model, defaultTestConfig)
+  return buildPlaybackTimeline(song)
+}
+
 describe('expandPlaybackFlow', () => {
   it('duplicates a simple repeat into a second pass', () => {
     const flow = expandFlow(`X:1
@@ -65,6 +73,55 @@ K:C
 
     expect(flow).toHaveLength(6)
     expect(flow.map((step) => step.passIndex)).toEqual([1, 1, 1, 2, 2, 2])
+  })
+
+  it('returns to the beginning for D.C. al Fine and stops at Fine', () => {
+    const abc = `X:1
+T:D.C. al Fine
+M:4/4
+L:1/4
+K:C
+C D | !D.C.alfine! E F | !fine! G A |
+`
+    const flow = expandFlow(abc)
+
+    expect(flow.map((step) => step.sourceTime)).toEqual([0, 384, 768, 0, 384, 768, 1152, 1536])
+    expect(flow.map((step) => step.passIndex)).toEqual([1, 1, 1, 2, 2, 2, 2, 2])
+
+    const timeline = buildTimeline(abc)
+    expect(timeline[2]?.activeNotes.length).toBeGreaterThan(0)
+    expect(timeline[2]?.activeTextRanges.length).toBeGreaterThan(0)
+  })
+
+  it('does not repeat again after D.C. al Fine', () => {
+    const flow = expandFlow(`X:1
+T:D.C. al Fine without repeats
+M:4/4
+L:1/4
+K:C
+|: C D E F :| G A !D.C.alfine! B c | !fine! d e f g |
+`)
+
+    expect(flow.filter((step) => step.passIndex === 3).map((step) => step.sourceTime)).toEqual([
+      0, 384, 768, 1152, 1536, 1920, 2304, 2688, 3072,
+    ])
+  })
+
+  it('waits for D.C. al Fine markers in all voices before jumping', () => {
+    const flow = expandFlow(`X:1
+T:D.C. al Fine with different voice lengths
+M:3/4
+L:1/4
+K:F
+V:1
+L:1/8
+C D E F !D.C.alfine! G | !fine! A |
+V:3
+C, C, C, | D, E, !D.C.alfine! z | !fine! F, |
+`)
+
+    expect(flow.filter((step) => step.passIndex === 1).map((step) => step.sourceTime)).toContain(1920)
+    expect(flow.filter((step) => step.passIndex === 2).map((step) => step.sourceTime)).toContain(2304)
   })
 
   it('skips the first volta on the second pass', () => {

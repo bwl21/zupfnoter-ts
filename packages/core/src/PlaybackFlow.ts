@@ -1,6 +1,7 @@
 import type {
   Goto,
   PlaybackFlowStep,
+  PlaybackDirective,
   PlayableEntity,
   SelectionTextRange,
   Song,
@@ -251,12 +252,21 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
   )
   const variantBeginDecisions = collectVariantBeginDecisions(song)
   const variantFollowDecisions = collectVariantFollowDecisions(song)
+  const directivesByTime = new Map<number, PlaybackDirective[]>()
+  for (const directive of song.playbackDirectives ?? []) {
+    const directives = directivesByTime.get(directive.sourceTime) ?? []
+    directives.push(directive)
+    directivesByTime.set(directive.sourceTime, directives)
+  }
   const timeIndexByTime = new Map(times.map((time, index) => [time, index]))
   const flow: PlaybackFlowStep[] = []
   const repeatUsageByKey = new Map<string, number>()
   const variantUsageByFromTime = new Map<number, number>()
   let index = 0
   let passIndex = 1
+  let jumpToStartUsed = false
+  let stopAtFine = false
+  let ignoreRepeatFlow = false
   let guard = 0
   const maxIterations = Math.max(
     times.length * 8,
@@ -289,7 +299,24 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
       })
     }
 
-    const variantBegins = variantBeginDecisions.get(time)
+    const directives = directivesByTime.get(time) ?? []
+    if (stopAtFine && directives.some((directive) => directive.type === 'marker' && directive.marker === 'fine')) {
+      break
+    }
+
+    const jumpToStart = directives.find((directive): directive is Extract<PlaybackDirective, { type: 'jump' }> => (
+      directive.type === 'jump' && directive.target === 'start'
+    ))
+    if (jumpToStart !== undefined && !jumpToStartUsed) {
+      jumpToStartUsed = true
+      ignoreRepeatFlow = true
+      stopAtFine = jumpToStart.stopAt === 'fine'
+      passIndex += 1
+      index = 0
+      continue
+    }
+
+    const variantBegins = ignoreRepeatFlow ? undefined : variantBeginDecisions.get(time)
     if (variantBegins !== undefined && variantBegins.length > 0) {
       const variantUsage = variantUsageByFromTime.get(time) ?? 0
       if (variantUsage === 0) {
@@ -308,7 +335,7 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
       }
     }
 
-    const repeatDecision = repeatDecisions.get(time)
+    const repeatDecision = ignoreRepeatFlow ? undefined : repeatDecisions.get(time)
     if (repeatDecision !== undefined) {
       const repeatUsage = repeatUsageByKey.get(repeatDecision.key) ?? 0
       if (repeatUsage === 0) {
@@ -337,7 +364,7 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
       }
     }
 
-    const followTarget = variantFollowDecisions.get(time)
+    const followTarget = ignoreRepeatFlow ? undefined : variantFollowDecisions.get(time)
     if (followTarget !== undefined) {
       const jumpIndex = timeIndexByTime.get(followTarget)
       if (jumpIndex === undefined) {
