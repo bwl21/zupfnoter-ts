@@ -176,6 +176,28 @@ export function resolvePlaybackSteps(
     }
   }
 
+  const selectedSingleNoteTime = selectedEntries.length === 1
+    && selectedEntries[0]?.kind === 'music-entity'
+    && typeof selectedEntries[0].musicTime === 'number'
+    ? selectedEntries[0].musicTime
+    : undefined
+
+  if (selectedSingleNoteTime !== undefined && activeVoiceIdSet.size > 0) {
+    const startIndex = timeline.findIndex((step) => step.sourceTime >= selectedSingleNoteTime)
+    if (startIndex < 0) return []
+
+    const anchoredSteps = timeline
+      .slice(startIndex)
+      .map((step) => filterStepToAllowedVoices(step, activeVoiceIdSet))
+      .filter((step): step is PlaybackStep => step !== undefined)
+    const firstStartMs = anchoredSteps[0]?.playbackStartMs ?? 0
+
+    return anchoredSteps.map((step) => ({
+      ...step,
+      playbackStartMs: step.playbackStartMs - firstStartMs,
+    }))
+  }
+
   if (mode === 'all-score' || selectedPlaybackIds.length === 0) {
     if (shouldRestrictToExtractVoices) {
       return timeline

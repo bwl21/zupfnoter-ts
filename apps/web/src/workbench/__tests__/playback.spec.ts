@@ -116,6 +116,71 @@ const sheetObjectIndex: SheetObjectIndex = {
 }
 
 describe('resolvePlaybackSteps', () => {
+  it('starts single-note extract playback at the selected note and keeps all voices', () => {
+    const extractIndex: SheetObjectIndex = {
+      ...sheetObjectIndex,
+      byZnId: { 'note-b-1': [2] },
+      byTextRange: { '2:3': [2] },
+      byMusicTime: { '1': [2] },
+      entries: [{
+        kind: 'music-entity',
+        znId: 'note-b-1',
+        voiceId: '1',
+        musicTime: 1,
+        textRange: { startpos: 2, endpos: 3 },
+        startPos: { line: 1, column: 1 },
+        endPos: { line: 1, column: 2 },
+        addressableIn: { editor: true, score: true, svg: true },
+      }],
+    }
+    const firstTimelineStep = timeline[0]
+    const secondTimelineStep = timeline[1]
+    const thirdTimelineStep = timeline[2]
+    if (firstTimelineStep === undefined || secondTimelineStep === undefined || thirdTimelineStep === undefined) {
+      throw new Error('Playback test timeline is incomplete')
+    }
+    const extractTimeline: PlaybackStep[] = [
+      {
+        ...firstTimelineStep,
+        originVoiceIds: ['1', '2'],
+        originPlaybackIds: ['1::note-a-1', '2::note-a-1'],
+        originZnIds: ['note-a-1', 'note-a-1'],
+        sourceTime: 0,
+      },
+      {
+        ...secondTimelineStep,
+        originVoiceIds: ['1', '2'],
+        originPlaybackIds: ['1::note-b-1', '2::note-b-2'],
+        originZnIds: ['note-b-1', 'note-b-2'],
+        sourceTime: 1,
+      },
+      {
+        ...thirdTimelineStep,
+        originVoiceIds: ['1', '2'],
+        originPlaybackIds: ['1::note-c', '2::note-c'],
+        originZnIds: ['note-c', 'note-c'],
+        sourceTime: 2,
+      },
+    ]
+    const selection: SelectionState = {
+      selectedIndexes: [0],
+      originSelectedIndexes: [0],
+      source: 'abc-editor',
+      voiceScope: 'single-voice',
+    }
+
+    const steps = resolvePlaybackSteps(selection, extractIndex, extractTimeline, 'range-harp', {
+      activeVoiceIds: ['1', '2'],
+    })
+
+    expect(steps.map((step) => step.originZnIds)).toEqual([
+      ['note-b-1', 'note-b-2'],
+      ['note-c'],
+    ])
+    expect(steps[0]?.originVoiceIds).toEqual(['1', '2'])
+    expect(steps[0]?.playbackStartMs).toBe(0)
+  })
+
   it('keeps overlapping voice highlights until each note duration ends', () => {
     const firstVoiceRange = { startpos: 10, endpos: 12 }
     const secondVoiceRange = { startpos: 20, endpos: 22 }
