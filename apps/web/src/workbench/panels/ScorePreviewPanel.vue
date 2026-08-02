@@ -6,6 +6,7 @@ import type { SelectionOrigin, SelectionTextRange, SheetObjectIndex } from '@zup
 import { ZnMaximizeButton, ZnPanel } from '@zupfnoter/design-system'
 import { resolveSelectionOriginByTextRange } from '../selectionIndex'
 import { useTextRangeSvgHighlight } from './useTextRangeSvgHighlight'
+import { usePreviewSelectionGesture } from './usePreviewSelectionGesture'
 
 const props = defineProps<{
   svg: string
@@ -21,13 +22,32 @@ const emit = defineEmits<{
     startpos: number
     endpos: number
     extend: boolean
+    startNewSegment: boolean
     origin?: SelectionOrigin
     source: 'score-preview'
   }): void
+  (event: 'selection-gesture', active: boolean): void
+  (event: 'selection-background-click'): void
   (event: 'toggle-maximize'): void
 }>()
 
 const svgFrame = ref<HTMLElement | null>(null)
+const selectionGesture = usePreviewSelectionGesture(
+  '.zn-score-hitbox[data-start-char][data-end-char]',
+  (active) => emit('selection-gesture', active),
+  ({ startpos, endpos, extend, startNewSegment }, element) => {
+    const origin = resolveSelectionOriginByTextRange(props.sheetObjectIndex, { startpos, endpos })
+    emit('select-text-range', {
+      startpos,
+      endpos,
+      extend,
+      startNewSegment,
+      origin,
+      source: 'score-preview',
+    })
+  },
+  () => emit('selection-background-click'),
+)
 
 useTextRangeSvgHighlight(
   svgFrame,
@@ -42,22 +62,6 @@ useTextRangeSvgHighlight(
   'zn-playback-highlight',
 )
 
-function handleSvgClick(event: MouseEvent): void {
-  const target = event.target
-  if (!(target instanceof Element)) return
-  const element = target.closest('.zn-score-hitbox[data-start-char][data-end-char]')
-  const startpos = Number(element?.getAttribute('data-start-char'))
-  const endpos = Number(element?.getAttribute('data-end-char'))
-  if (Number.isNaN(startpos) || Number.isNaN(endpos)) return
-  const origin = resolveSelectionOriginByTextRange(props.sheetObjectIndex, { startpos, endpos })
-  emit('select-text-range', {
-    startpos,
-    endpos,
-    extend: event.shiftKey,
-    origin,
-    source: 'score-preview',
-  })
-}
 </script>
 
 <template>
@@ -84,7 +88,9 @@ function handleSvgClick(event: MouseEvent): void {
           v-else
           ref="svgFrame"
           class="preview-stage__svg"
-          @click="handleSvgClick"
+          @pointercancel="selectionGesture.pointerCancel"
+          @pointerdown="selectionGesture.pointerDown"
+          @pointerup="selectionGesture.pointerUp"
           v-html="svg"
         />
       </div>
@@ -149,6 +155,11 @@ function handleSvgClick(event: MouseEvent): void {
 .preview-stage__svg :deep(svg) {
   display: block;
   max-width: none;
+}
+
+.preview-stage__svg {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .preview-stage__svg :deep(.zn-score-hitbox) {

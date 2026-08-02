@@ -10,7 +10,7 @@ describe('HarpPreviewPanel', () => {
     vi.restoreAllMocks()
   })
 
-  it('opens the magnifier on shift click', async () => {
+  it('opens the magnifier on Option-click', async () => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
       x: 0,
       y: 0,
@@ -35,7 +35,7 @@ describe('HarpPreviewPanel', () => {
       button: 0,
       clientX: 120,
       clientY: 80,
-      shiftKey: true,
+      altKey: true,
     }))
     await nextTick()
 
@@ -67,7 +67,7 @@ describe('HarpPreviewPanel', () => {
       button: 0,
       clientX: 120,
       clientY: 80,
-      shiftKey: true,
+      altKey: true,
     }))
     await nextTick()
 

@@ -88,11 +88,13 @@ import {
   canTargetCreateSelection,
   createConfKeySelectedSelectionEvent,
   createExtractChangedSelectionEvent,
-  createIndexesSelectedSelectionEvent,
+  createPreviewBackgroundClickedSelectionEvent,
   createRenderRefreshedSelectionEvent,
   createScopeChangedSelectionEvent,
+  createSelectionInteractionEvent,
   createSongLoadedSelectionEvent,
   createTextRangeSelectionEvent,
+  createTextRangesSelectionEvent,
   resolvePlaybackProjection,
   resolvePlaybackScoreRanges,
   resolveSelectionProjection,
@@ -1952,7 +1954,17 @@ function handleEditorSelectionChange(payload: {
   endpos: number
   start: { line: number; column: number }
   end: { line: number; column: number }
+  ranges?: Array<{ startpos: number; endpos: number }>
 }): void {
+  const ranges = (payload.ranges ?? [{ startpos: payload.startpos, endpos: payload.endpos }])
+    .filter((range) => range.startpos !== range.endpos)
+  if (ranges.length > 1) {
+    selectionStore.dispatchSelectionEvent(
+      createTextRangesSelectionEvent(ranges, 'abc-editor'),
+    )
+    return
+  }
+
   if (payload.startpos === payload.endpos) {
     selectionStore.dispatchSelectionEvent(
       createSongLoadedSelectionEvent('abc-editor', selectionStore.selection.voiceScope),
@@ -1984,17 +1996,37 @@ function handleHarpPreviewSelection(payload: {
   startpos: number
   endpos: number
   extend: boolean
+  startNewSegment: boolean
   origin?: SelectionOrigin
   source: 'harp-preview'
 }): void {
   if (!canTargetCreateSelection(payload.source, 'textRange')) return
   selectionStore.dispatchSelectionEvent(
-    createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source, payload.extend, payload.origin),
+    createTextRangeSelectionEvent(
+      payload.startpos,
+      payload.endpos,
+      payload.source,
+      payload.extend,
+      payload.origin,
+      payload.startNewSegment,
+    ),
   )
 }
 
-function handleHarpPreviewClearSelection(): void {
-  selectionStore.dispatchSelectionEvent(createIndexesSelectedSelectionEvent([], 'harp-preview'))
+function handleHarpPreviewSelectionGesture(active: boolean): void {
+  selectionStore.dispatchSelectionEvent(createSelectionInteractionEvent(active))
+}
+
+function handleScorePreviewSelectionGesture(active: boolean): void {
+  selectionStore.dispatchSelectionEvent(createSelectionInteractionEvent(active))
+}
+
+function handleScorePreviewBackgroundClick(): void {
+  selectionStore.dispatchSelectionEvent(createPreviewBackgroundClickedSelectionEvent('score-preview'))
+}
+
+function handleHarpPreviewBackgroundClick(): void {
+  selectionStore.dispatchSelectionEvent(createPreviewBackgroundClickedSelectionEvent('harp-preview'))
 }
 
 function handleHarpPreviewDragEnd(payload: HarpPreviewDragEnd): void {
@@ -2122,12 +2154,20 @@ function handleScorePreviewSelection(payload: {
   startpos: number
   endpos: number
   extend: boolean
+  startNewSegment: boolean
   origin?: SelectionOrigin
   source: 'score-preview'
 }): void {
   if (!canTargetCreateSelection(payload.source, 'textRange')) return
   selectionStore.dispatchSelectionEvent(
-    createTextRangeSelectionEvent(payload.startpos, payload.endpos, payload.source, payload.extend, payload.origin),
+    createTextRangeSelectionEvent(
+      payload.startpos,
+      payload.endpos,
+      payload.source,
+      payload.extend,
+      payload.origin,
+      payload.startNewSegment,
+    ),
   )
 }
 
@@ -2504,6 +2544,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :diagnostics="editorDiagnostics"
                   :playback-highlight="projectedPlaybackHighlight"
                   :selected-text-ranges="selectedEditorTextRanges"
+                  :selection-pending="selectionStore.selection.interactionPending === true"
                   :show-invisible-characters="showInvisibleCharacters"
                   :cursor-offset="editorCursorOffset"
                   @cursor-change="handleEditorCursorChange"
@@ -2609,6 +2650,8 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :svg="scoreSvg"
                   :maximized="maximizedPanel === 'score'"
                   @select-text-range="handleScorePreviewSelection"
+                  @selection-gesture="handleScorePreviewSelectionGesture"
+                  @selection-background-click="handleScorePreviewBackgroundClick"
                   @toggle-maximize="togglePanelMaximize('score')"
                 />
               </template>
@@ -2627,7 +2670,8 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :svg="harpSvg"
                   :maximized="maximizedPanel === 'harp'"
                   @select-text-range="handleHarpPreviewSelection"
-                  @clear-selection="handleHarpPreviewClearSelection"
+                  @selection-gesture="handleHarpPreviewSelectionGesture"
+                  @selection-background-click="handleHarpPreviewBackgroundClick"
                   @drag-end="handleHarpPreviewDragEnd"
                   @resource-drop="handleHarpResourceDrop"
                   @context-menu="handleHarpPreviewContextMenu"

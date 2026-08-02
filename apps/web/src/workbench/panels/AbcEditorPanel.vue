@@ -33,6 +33,14 @@ interface EditorSelectionRange {
   end: LineColumn
 }
 
+interface EditorSelectionChange {
+  startpos: number
+  endpos: number
+  start: LineColumn
+  end: LineColumn
+  ranges?: EditorSelectionRange[]
+}
+
 const abcText = defineModel<string>({
   required: true,
 })
@@ -41,16 +49,18 @@ const props = withDefaults(defineProps<{
   diagnostics?: EditorDiagnostic[]
   playbackHighlight?: PlaybackHighlight
   selectedTextRanges?: SelectionTextRange[]
+  selectionPending?: boolean
   showInvisibleCharacters?: boolean
   cursorOffset?: number
 }>(), {
   diagnostics: () => [],
   showInvisibleCharacters: false,
+  selectionPending: false,
 })
 
 const emit = defineEmits<{
   (event: 'cursor-change', position: CursorPosition): void
-  (event: 'selection-change', selection: EditorSelectionRange): void
+  (event: 'selection-change', selection: EditorSelectionChange): void
 }>()
 
 const editorHost = ref<HTMLDivElement | null>(null)
@@ -81,6 +91,7 @@ function syncDocument(nextValue: string): void {
 
 function syncExternalSelection(nextSelections: SelectionTextRange[] | undefined): void {
   if (editorView === null) return
+  if (props.selectionPending) return
   if (nextSelections === undefined || nextSelections.length === 0) return
 
   const ranges = nextSelections
@@ -138,7 +149,23 @@ function emitSelectionRange(view: EditorView): void {
   const selection = view.state.selection.main
   const startLine = view.state.doc.lineAt(selection.from)
   const endLine = view.state.doc.lineAt(selection.to)
-  emit('selection-change', {
+  const ranges = view.state.selection.ranges.map((range) => {
+    const rangeStartLine = view.state.doc.lineAt(range.from)
+    const rangeEndLine = view.state.doc.lineAt(range.to)
+    return {
+      startpos: range.from,
+      endpos: range.to,
+      start: {
+        line: rangeStartLine.number,
+        column: range.from - rangeStartLine.from + 1,
+      },
+      end: {
+        line: rangeEndLine.number,
+        column: range.to - rangeEndLine.from + 1,
+      },
+    }
+  })
+  const selectionChange: EditorSelectionChange = {
     startpos: selection.from,
     endpos: selection.to,
     start: {
@@ -149,7 +176,9 @@ function emitSelectionRange(view: EditorView): void {
       line: endLine.number,
       column: selection.to - endLine.from + 1,
     },
-  })
+  }
+  if (ranges.length > 1) selectionChange.ranges = ranges
+  emit('selection-change', selectionChange)
 }
 
 onMounted(() => {
@@ -207,9 +236,9 @@ watch(
 )
 
 watch(
-  () => props.selectedTextRanges,
-  (selectedTextRanges) => {
-    syncExternalSelection(selectedTextRanges)
+  [() => props.selectedTextRanges, () => props.selectionPending],
+  ([selectedTextRanges, selectionPending]) => {
+    if (selectionPending !== true) syncExternalSelection(selectedTextRanges)
   },
   { immediate: true, deep: true },
 )

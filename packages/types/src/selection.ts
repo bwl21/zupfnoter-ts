@@ -37,6 +37,8 @@ export interface SheetObjectIndexEntry {
   kind: 'score-object' | 'music-entity' | 'sheet-object'
   /** Stable ordinal among score hitboxes with the same text range, if applicable. */
   scoreHitboxOrdinal?: number
+  /** abc2svg annotation type of a classical-score hitbox, for example `bar`. */
+  scoreObjectType?: string
   /** Stable Zupfnoter identifier when the entry belongs to a music entity. */
   znId?: string
   /** 1-based voice id when the mapped entry belongs to a concrete voice. */
@@ -71,6 +73,8 @@ export interface SheetObjectIndex {
   byTextRange: Record<string, number[]>
   /** Music-time lookup (`time`) for cross-voice selection expansion. */
   byMusicTime: Record<string, number[]>
+  /** Sorted music times for efficient segment projection. */
+  musicTimes?: number[]
   /** Ordered entries for range-based lookups. */
   entries: SheetObjectIndexEntry[]
 }
@@ -95,6 +99,18 @@ export interface SelectionTargetCapabilities {
   writes: SelectionProjectionKind[]
 }
 
+/** Ein unabhängig erweiterbarer Bereich innerhalb einer Mehrfachselektion. */
+export interface SelectionSegment {
+  /** Renderlokale Indexeinträge dieses Bereichs. */
+  selectedIndexes: number[]
+  /** Nicht durch den Stimmumfang erweiterte Indexeinträge dieses Bereichs. */
+  originSelectedIndexes: number[]
+  /** Fester Ausgangspunkt für nachfolgende Shift-Klicks dieses Bereichs. */
+  anchorIndex?: number
+  /** Getrennte ABC-Teilbereiche dieses Segments. */
+  textRanges?: SelectionTextRange[]
+}
+
 export interface SelectionState {
   /** Selected index entries within the current render-generation-local sheet object index. */
   selectedIndexes: number[]
@@ -106,6 +122,14 @@ export interface SelectionState {
   source: SelectionSource
   /** Voice scope used when projecting or expanding the current selection. */
   voiceScope: SelectionVoiceScope
+  /** Separate ABC ranges that make up the selection, when it is disjoint. */
+  textRanges?: SelectionTextRange[]
+  /** Unabhängig erweiterbare Bereiche der aktuellen Mehrfachselektion. */
+  segments?: SelectionSegment[]
+  /** Index des Bereichs, den der nächste Shift-Klick erweitert. */
+  activeSegmentIndex?: number
+  /** True while a preview pointer gesture is not yet committed. */
+  interactionPending?: boolean
 }
 
 /** Projection resolved from the current selection state. */
@@ -141,6 +165,16 @@ export interface SelectionOrigin {
 /** Fachliche Zustandsübergänge rund um die zentrale Selection. */
 export type SelectionEvent =
   | {
+    /** Eine Preview-Auswahlgeste wurde begonnen oder beendet. */
+    type: 'selection.interaction-pending'
+    pending: boolean
+  }
+  | {
+    /** In einer Vorschau wurde ohne adressierbares Objekt auf den Hintergrund geklickt. */
+    type: 'selection.preview-background-clicked'
+    source: 'score-preview' | 'harp-preview'
+  }
+  | {
     /** Benutzer- oder Systemselektion wurde vollständig ersetzt. */
     type: 'selection.replaced'
     selection: SelectionState
@@ -152,12 +186,19 @@ export type SelectionEvent =
     source?: SelectionSource
   }
   | {
+    /** Mehrere getrennte ABC-Bereiche wurden gemeinsam selektiert. */
+    type: 'selection.text-ranges-selected'
+    ranges: SelectionTextRange[]
+    source?: SelectionSource
+  }
+  | {
     /** Selektion wurde über einen Textbereich adressiert. */
     type: 'selection.text-range-selected'
     startpos: number
     endpos: number
     origin?: SelectionOrigin
     extend?: boolean
+    startNewSegment?: boolean
     source?: SelectionSource
   }
   | {

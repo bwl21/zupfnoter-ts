@@ -73,6 +73,35 @@ Stimme, fuer die Stimmen des aktiven Auszugs oder fuer alle Stimmen gilt.
 
 Der Stimmumfang ist daher fachlicher Teil der Selection.
 
+### 4. Selection-Anfragen haben einen zentralen Eingang
+
+Alle Views verwenden dieselbe fachliche Selection-Prozedur. Ein Panel darf nur
+die lokale Eingabe erkennen und eine generische Selection-Geste melden. Es darf
+keinen Selection-State selbst berechnen, projizieren oder direkt verändern.
+
+Die Zuständigkeiten sind verbindlich getrennt:
+
+- Panel oder geklontes Panel
+  - erkennt die lokale Hitbox
+  - meldet Beginn und Ende der Pointer-Geste
+  - meldet bei bestätigter Eingabe den Textbereich und die fachliche Herkunft
+  - meldet einen Hintergrundklick, ohne daraus selbst eine Zustandsaenderung abzuleiten
+- `SelectionManager`
+  - verwaltet den zentralen Selection-State
+  - entscheidet ueber `replace`, `extend` oder ein neues Segment
+  - löst Stimme, Zeitbezug und Projektionen auf
+  - verwaltet den unbestätigten Zwischenzustand bis `pointerup`
+  - entscheidet, dass ein bestaetigter Hintergrundklick die Selection leert
+  - berechnet Preview-Bereichserweiterungen aus Ankerstimme und musikalischer
+    Zeit; ABC-Textoffsets sind nur Fallback ohne musikalische Identitaet
+- Projektionen
+  - lesen ausschließlich den Selection-State
+  - enthalten keine eigene Auswahlsemantik
+
+Für neue oder geklonte Panels gilt daher: Sie verwenden den gemeinsamen
+Preview-Selection-Adapter und senden dieselben generischen Events. Eine zweite
+fachliche Klick- oder Shift-Selection-Implementierung ist nicht zulässig.
+
 ## Selektionsdimensionen
 
 Selection wird fachlich ueber drei Dimensionen beschrieben:
@@ -105,15 +134,17 @@ Es gibt in der ersten Ausbaustufe genau drei fachliche Scopes:
 
 ### 3. Aenderungsmodus
 
-In der ersten Ausbaustufe werden nur diese beiden Modi fachlich garantiert:
+Unterstuetzt werden diese drei Modi:
 
 - `replace`
   - die bisherige Selection wird ersetzt
 - `extend`
-  - die Selection wird vom Anker aus zu einem groesseren Bereich erweitert
+  - das aktive Segment wird von seinem Anker aus erweitert
+- `start-segment`
+  - ein neuer, unabhaengig erweiterbarer Bereich wird angelegt und aktiviert
 
-Freies Toggle-Verhalten mit disjunkten Teilmengen gehoert nicht in diesen ersten
-Schritt.
+Jedes Segment besitzt einen eigenen festen Anker. Alle Segmente werden gemeinsam
+in Editor, Score und Harfenvorschau projiziert.
 
 ## Erlaubte Selektionsarten in Version 1
 
@@ -227,6 +258,18 @@ ist nur:
 - Mehrstimmen-Selection geschieht explizit
 - sie ist nicht stiller Nebeneffekt einer normalen Einzelstimmen-Selektion
 
+### 4. Mehrere getrennte Bereiche
+
+- `Option+Shift+Klick` startet ein neues aktives Segment.
+- Wenn noch keine Selection existiert, verhaelt sich `Option+Shift+Klick` wie
+  ein normaler Klick.
+- Ein anschliessender `Shift+Klick` erweitert nur dieses aktive Segment.
+- Bereits abgeschlossene Segmente bleiben unveraendert selektiert.
+- Der erste und zweite Klick duerfen aus unterschiedlichen Vorschau-Panels
+  kommen; die Geste wird ausschliesslich im zentralen `SelectionManager`
+  ausgewertet.
+- `Option+Klick` ohne Shift bleibt fuer die Lupe reserviert.
+
 ## Architekturvorgaben
 
 ### Zuständigkeit
@@ -271,11 +314,11 @@ Die Umsetzung gilt fuer diese Spezifikation als ausreichend, wenn:
 5. dieselbe fachliche Selection in Editor, Score und Harfe gespiegelt wird
 6. die Views keine voneinander abweichenden eigenen Wahrheiten ueber die Selection
    aufbauen
+7. mehrere getrennte Bereiche paneluebergreifend angelegt und unabhaengig
+   erweitert werden koennen
 
 ## Offene Punkte
 
-- die konkrete Tastenbelegung fuer `Ctrl`, `Cmd`, `Alt` oder weitere Modifikatoren
-  ist noch zu definieren
-- ob spaeter freie disjunkte Mehrfachselektion zugelassen wird, bleibt offen
+- die Belegung von `Ctrl`, `Cmd` oder weiteren Modifikatoren ist noch zu definieren
 - ob der Benutzer den Stimmumfang ueber Gesten, Toolbar oder Commands umschaltet,
   bleibt ein separates UI-Thema

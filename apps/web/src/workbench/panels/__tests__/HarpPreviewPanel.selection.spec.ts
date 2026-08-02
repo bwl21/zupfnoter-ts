@@ -34,6 +34,21 @@ const sheetObjectIndex: SheetObjectIndex = {
 }
 
 describe('HarpPreviewPanel selection', () => {
+  it('clears the selection when clicking outside a harp hitbox', async () => {
+    const wrapper = mount(HarpPreviewPanel, {
+      props: {
+        svg: '<svg width="40" height="20"><rect width="10" height="10" /></svg>',
+      },
+    })
+
+    const svg = wrapper.find('.harp-preview__svg svg').element
+    svg.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, button: 0 }))
+    svg.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, button: 0 }))
+
+    expect(wrapper.emitted('selection-background-click')).toHaveLength(1)
+    expect(wrapper.emitted('select-text-range')).toBeUndefined()
+  })
+
   it('emits fachliche origin data with harp clicks', async () => {
     const wrapper = mount(HarpPreviewPanel, {
       props: {
@@ -46,6 +61,7 @@ describe('HarpPreviewPanel selection', () => {
       bubbles: true,
       clientX: 10,
       clientY: 10,
+      shiftKey: true,
     }))
     wrapper.find('.harp-preview__frame').element.dispatchEvent(new PointerEvent('pointerup', {
       bubbles: true,
@@ -59,6 +75,7 @@ describe('HarpPreviewPanel selection', () => {
         startpos: 20,
         endpos: 24,
         extend: true,
+        startNewSegment: false,
         origin: {
           voiceId: '4',
           musicTime: 512,

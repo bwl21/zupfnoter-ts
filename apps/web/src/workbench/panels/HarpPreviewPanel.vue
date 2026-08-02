@@ -20,6 +20,7 @@ import HarpMagnifierPopover from './HarpMagnifierPopover.vue'
 import { useZoomableSvgPreview } from './useZoomableSvgPreview'
 import { usePlaybackSvgHighlight } from './usePlaybackSvgHighlight'
 import { useSelectionSvgHighlight } from './useSelectionSvgHighlight'
+import { usePreviewSelectionGesture } from './usePreviewSelectionGesture'
 import { loadConfigHelpTexts, resolveConfigHelpHtml, type ConfigHelpTexts } from './configHelp'
 import {
   buildSvgContextMenuEntries,
@@ -52,10 +53,12 @@ const emit = defineEmits<{
     startpos: number
     endpos: number
     extend: boolean
+    startNewSegment: boolean
     origin?: SelectionOrigin
     source: 'harp-preview'
   }): void
-  (event: 'clear-selection'): void
+  (event: 'selection-gesture', active: boolean): void
+  (event: 'selection-background-click'): void
   (event: 'scroll', payload: { scrollLeft: number; scrollTop: number }): void
   (event: 'drag-end', payload: HarpPreviewDragEnd): void
   (event: 'context-menu', payload: {
@@ -84,8 +87,6 @@ const magnifierAnchor = ref<{ x: number; y: number } | null>(null)
 const magnifierSourcePoint = ref<{ x: number, y: number } | null>(null)
 const magnifierViewport = ref<{ width: number, height: number } | null>(null)
 const magnifierZoom = 800
-const pointerDownPosition = ref<{ x: number; y: number } | null>(null)
-const pointerDownTarget = ref<EventTarget | null>(null)
 type ImageResizeCorner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 
 interface ActiveDrag {
@@ -124,6 +125,26 @@ const contextMenu = ref<ContextMenuState | null>(null)
 const hoveredConfigKey = ref<string | undefined>(undefined)
 const contextMenuHelpTexts = ref<ConfigHelpTexts>({})
 const contextMenuTooltips = new Map<HTMLElement, TippyInstance>()
+const selectionGesture = usePreviewSelectionGesture(
+  '.zupfnoter-hitbox[data-start-char][data-end-char]',
+  (active) => emit('selection-gesture', active),
+  ({ startpos, endpos, extend, startNewSegment }, element) => {
+    const znId = element.getAttribute('data-zn-id') ?? undefined
+    const confKey = element.closest<HTMLElement>('.zupfnoter-element[data-conf-key]')?.getAttribute('data-conf-key')?.trim()
+    const origin = znId === undefined
+      ? undefined
+      : resolveSelectionOriginByZnIdAndConfKey(props.sheetObjectIndex, znId, confKey)
+    emit('select-text-range', {
+      startpos,
+      endpos,
+      extend,
+      startNewSegment,
+      origin,
+      source: 'harp-preview',
+    })
+  },
+  () => emit('selection-background-click'),
+)
 const zoom = defineModel<number>('zoom', {
   default: 100,
 })
@@ -226,33 +247,6 @@ useSelectionSvgHighlight(
   toRef(props, 'svg'),
   toRef(props, 'selection'),
 )
-
-function emitSelectionFromEvent(target: EventTarget | null, extend: boolean): void {
-  if (!(target instanceof Element)) return
-  const element = target.closest('.zupfnoter-hitbox[data-start-char][data-end-char]')
-  if (element === null) {
-    emit('clear-selection')
-    return
-  }
-  const startChar = element?.getAttribute('data-start-char')
-  const endChar = element?.getAttribute('data-end-char')
-  const znId = element?.getAttribute('data-zn-id') ?? undefined
-  if (startChar === null || endChar === null) return
-  const startpos = Number(startChar)
-  const endpos = Number(endChar)
-  if (Number.isNaN(startpos) || Number.isNaN(endpos)) return
-  const confKey = element.closest<HTMLElement>('.zupfnoter-element[data-conf-key]')?.getAttribute('data-conf-key')?.trim()
-  const origin = znId === undefined
-    ? undefined
-    : resolveSelectionOriginByZnIdAndConfKey(props.sheetObjectIndex, znId, confKey)
-  emit('select-text-range', {
-    startpos,
-    endpos,
-    extend,
-    origin,
-    source: 'harp-preview',
-  })
-}
 
 function closeContextMenu(): void {
   contextMenu.value = null
@@ -441,7 +435,7 @@ function findJumplineAtEvent(event: PointerEvent): HTMLElement | null {
 }
 
 function handlePointerDown(event: PointerEvent): void {
-  if (event.button === 0 && event.shiftKey) {
+  if (event.button === 0 && event.altKey && !event.shiftKey) {
     const framePoint = eventToFramePoint(event)
     const sourcePoint = framePoint === null ? null : framePointToSourcePoint(framePoint)
     if (sourcePoint !== null) {
@@ -455,6 +449,7 @@ function handlePointerDown(event: PointerEvent): void {
     }
   }
   if (event.button === 0 && event.target instanceof Element) {
+    selectionGesture.pointerDown(event)
     const directDraggable = event.target.closest<HTMLElement>('.zupfnoter-element[data-drag-enabled="true"][data-conf-key]')
     const draggable = directDraggable ?? findJumplineAtEvent(event)
     const resizeHandle = event.target.closest<SVGRectElement>('[data-image-resize-corner]')
@@ -561,11 +556,6 @@ function handlePointerDown(event: PointerEvent): void {
       return
     }
   }
-  pointerDownPosition.value = {
-    x: event.clientX,
-    y: event.clientY,
-  }
-  pointerDownTarget.value = event.target
   onPointerDown(event)
 }
 
@@ -630,6 +620,7 @@ function clearJumplineHover(): void {
 }
 
 function handlePointerUp(event: PointerEvent): void {
+  selectionGesture.pointerUp(event)
   const activeDrag = dragState.value
   if (activeDrag?.pointerId === event.pointerId) {
     const delta = screenDeltaToSvgDelta(
@@ -693,15 +684,7 @@ function handlePointerUp(event: PointerEvent): void {
     }
     return
   }
-  const start = pointerDownPosition.value
-  const target = pointerDownTarget.value
   onPointerUp(event)
-  pointerDownPosition.value = null
-  pointerDownTarget.value = null
-  if (start === null) return
-  const distance = Math.hypot(event.clientX - start.x, event.clientY - start.y)
-  if (distance > 4) return
-  emitSelectionFromEvent(target, event.shiftKey)
 }
 
 function snapDragDelta(activeDrag: ActiveDrag, delta: [number, number]): [number, number] {
@@ -852,6 +835,7 @@ function screenDeltaToSvgDelta(element: Element, screenX: number, screenY: numbe
 }
 
 function handlePointerCancel(event: PointerEvent): void {
+  selectionGesture.pointerCancel()
   if (dragState.value?.pointerId === event.pointerId) {
     if (dragState.value.pathElement !== undefined && dragState.value.originalPathData !== undefined) {
       dragState.value.pathElement.setAttribute('d', dragState.value.originalPathData)

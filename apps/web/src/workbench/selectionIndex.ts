@@ -173,6 +173,39 @@ function resolveEntryVoiceIdFromIndex(
   return index.voiceByLine[line]
 }
 
+function resolveSelectionTextRanges(
+  index: SheetObjectIndex | undefined,
+  selectedEntries: SheetObjectIndexEntry[],
+  voiceScope: SelectionProjectionOptions['voiceScope'] | SelectionState['voiceScope'],
+): SelectionTextRange[] {
+  const entriesWithRanges = selectedEntries.filter((entry) => entry.textRange !== undefined)
+  if (voiceScope === 'single-voice') {
+    return [...new Map(
+      entriesWithRanges.map((entry) => {
+        const textRange = entry.textRange as SelectionTextRange
+        return [textRangeKey(textRange), { ...textRange }]
+      }),
+    ).values()]
+  }
+
+  const rangesByVoice = new Map<string, SelectionTextRange[]>()
+  entriesWithRanges.forEach((entry, entryIndex) => {
+    const textRange = entry.textRange as SelectionTextRange
+    const voiceId = resolveEntryVoiceIdFromIndex(index, entry)
+    const groupKey = voiceId === undefined
+      ? `entry-${entryIndex}-${textRangeKey(textRange)}`
+      : `voice-${voiceId}`
+    const ranges = rangesByVoice.get(groupKey) ?? []
+    ranges.push(textRange)
+    rangesByVoice.set(groupKey, ranges)
+  })
+
+  return [...rangesByVoice.values()].map((ranges) => ({
+    startpos: Math.min(...ranges.map((range) => range.startpos)),
+    endpos: Math.max(...ranges.map((range) => range.endpos)),
+  }))
+}
+
 function resolveScopedSelectionContext(
   index: SheetObjectIndex | undefined,
   selection: SelectionState,
@@ -193,14 +226,6 @@ function resolveScopedSelectionContext(
     ? []
     : projectIndexesToEntries(index, [selection.anchorIndex])
   const anchorEntry = anchorEntries[0]
-  const selectedTextRanges = [...new Map(
-    selectedEntries
-      .filter((entry) => entry.textRange !== undefined)
-      .map((entry) => {
-        const textRange = entry.textRange as SelectionTextRange
-        return [textRangeKey(textRange), { ...textRange }]
-      }),
-  ).values()]
   const selectedStartLine = selectedEntries
     .map((entry) => entry.startPos?.line)
     .filter((line): line is number => line !== undefined)
@@ -208,6 +233,11 @@ function resolveScopedSelectionContext(
     .map((entry) => entry.endPos?.line)
     .filter((line): line is number => line !== undefined)
   const voiceScope = options?.voiceScope ?? selection.voiceScope
+  const selectedTextRanges = selection.segments !== undefined
+    ? resolveSelectionTextRanges(index, selectedEntries, voiceScope)
+    : selection.textRanges !== undefined && selection.textRanges.length > 0
+    ? selection.textRanges.map((range) => ({ ...range }))
+    : resolveSelectionTextRanges(index, selectedEntries, voiceScope)
   const editorSelectionLineWindow = selection.source === 'abc-editor'
     && voiceScope === 'single-voice'
     && selectedStartLine.length > 0
@@ -225,7 +255,10 @@ function resolveScopedSelectionContext(
   const selectedVoiceSemanticEntry = semanticSelectedEntries.find((entry) => resolveEntryVoiceIdFromIndex(index, entry) !== undefined)
   const selectedVoiceId = selectedVoiceSourceEntry === undefined
     ? undefined
-    : resolveEntryVoiceIdFromIndex(index, selectedVoiceSemanticEntry ?? selectedVoiceSourceEntry)
+    : resolveEntryVoiceIdFromIndex(index, selectedVoiceSourceEntry)
+      ?? (selectedVoiceSemanticEntry === undefined
+        ? undefined
+        : resolveEntryVoiceIdFromIndex(index, selectedVoiceSemanticEntry))
   const activeVoiceIds = options?.activeVoiceIds ?? []
   const allowedVoiceIds = voiceScope === 'extract-voices'
     ? new Set(activeVoiceIds)
@@ -277,7 +310,7 @@ function filterEntriesByVoiceScope(
 function resolvePaneEntriesFromTextRanges(
   index: SheetObjectIndex | undefined,
   textRanges: SelectionTextRange[],
-  pane: AddressablePane,
+  pane?: AddressablePane,
 ): SheetObjectIndexEntry[] {
   return dedupeEntries(
     textRanges.flatMap((textRange) => {
@@ -297,6 +330,66 @@ function resolvePaneEntriesFromTextRanges(
       )
     }),
   )
+}
+
+function resolvePaneEntriesFromMusicSegments(
+  index: SheetObjectIndex | undefined,
+  textRanges: SelectionTextRange[],
+  pane: AddressablePane,
+): SheetObjectIndexEntry[] {
+  if (index === undefined) return []
+
+  return dedupeEntries(textRanges.flatMap((textRange) => {
+    const sourceEntries = resolvePaneEntriesFromTextRanges(index, [textRange], undefined)
+      .filter((entry) => entry.addressableIn[pane])
+    const times = sourceEntries
+      .map((entry) => entry.musicTime)
+      .filter((musicTime): musicTime is number => typeof musicTime === 'number')
+    if (times.length === 0) return sourceEntries
+
+    const minTime = Math.min(...times)
+    const maxTime = Math.max(...times)
+    return resolveEntriesByMusicTimeRange(index, minTime, maxTime, pane)
+  }))
+}
+
+function resolveEntriesByMusicTimeRange(
+  index: SheetObjectIndex | undefined,
+  minTime: number,
+  maxTime: number,
+  pane: AddressablePane,
+): SheetObjectIndexEntry[] {
+  if (index === undefined) return []
+  const times = index.musicTimes ?? Object.keys(index.byMusicTime).map(Number).sort((left, right) => left - right)
+  const start = lowerBound(times, minTime)
+  const end = upperBound(times, maxTime)
+  return [...new Set(
+    times.slice(start, end).flatMap((time) => index.byMusicTime[`${time}`] ?? []),
+  )]
+    .map((entryIndex) => index.entries[entryIndex])
+    .filter((entry): entry is SheetObjectIndexEntry => entry !== undefined && entry.addressableIn[pane])
+}
+
+function lowerBound(values: number[], target: number): number {
+  let low = 0
+  let high = values.length
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2)
+    if ((values[middle] ?? Number.POSITIVE_INFINITY) < target) low = middle + 1
+    else high = middle
+  }
+  return low
+}
+
+function upperBound(values: number[], target: number): number {
+  let low = 0
+  let high = values.length
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2)
+    if ((values[middle] ?? Number.NEGATIVE_INFINITY) <= target) low = middle + 1
+    else high = middle
+  }
+  return low
 }
 
 function resolveMusicEntriesFromTextRanges(
@@ -352,7 +445,8 @@ function resolveScopedPaneEntries(
   allowedVoiceIds?: Set<string>
 } {
   const context = resolveScopedSelectionContext(index, selection, options)
-  const textResolvedEntries = resolvePaneEntriesFromTextRanges(index, context.selectedTextRanges, pane)
+  const textResolvedEntries = resolvePaneEntriesFromTextRanges(index, context.selectedTextRanges, undefined)
+    .filter((entry) => entry.addressableIn[pane])
     .filter((entry) => {
       if (context.editorSelectionLineWindow === undefined) return true
       return lineRangeOverlapsEntry(
@@ -363,7 +457,11 @@ function resolveScopedPaneEntries(
     })
   const musicTimeExpandedEntries = context.shouldExpandByMusicTime
     ? dedupeEntries(
-        [...context.selectedEntries, ...textResolvedEntries]
+        [
+          ...context.selectedEntries,
+          ...textResolvedEntries,
+          ...resolvePaneEntriesFromMusicSegments(index, context.selectedTextRanges, pane),
+        ]
           .map((entry) => entry.musicTime)
           .filter((musicTime): musicTime is number => typeof musicTime === 'number')
           .flatMap((musicTime) => projectIndexesToEntries(index, resolveIndexesByMusicTime(index, musicTime, pane))),
@@ -406,7 +504,8 @@ export function resolveScopedSelectionIndexes(
   options?: SelectionProjectionOptions,
 ): number[] {
   const context = resolveScopedSelectionContext(index, selection, options)
-  const textResolvedEntries = resolvePaneEntriesFromTextRanges(index, context.selectedTextRanges, 'editor')
+  const textResolvedEntries = resolvePaneEntriesFromTextRanges(index, context.selectedTextRanges, undefined)
+    .filter((entry) => entry.addressableIn.editor)
     .filter((entry) => {
       if (context.editorSelectionLineWindow === undefined) return true
       return lineRangeOverlapsEntry(
@@ -417,7 +516,11 @@ export function resolveScopedSelectionIndexes(
     })
   const musicTimeExpandedEntries = context.shouldExpandByMusicTime
     ? dedupeEntries(
-        [...context.selectedEntries, ...textResolvedEntries]
+        [
+          ...context.selectedEntries,
+          ...textResolvedEntries,
+          ...resolvePaneEntriesFromMusicSegments(index, context.selectedTextRanges, 'editor'),
+        ]
           .map((entry) => entry.musicTime)
           .filter((musicTime): musicTime is number => typeof musicTime === 'number')
           .flatMap((musicTime) => projectIndexesToEntries(index, resolveIndexesByMusicTime(index, musicTime))),
@@ -545,7 +648,7 @@ function createSheetEntryFromDrawable(drawable: DrawableElement): SheetObjectInd
 
 function parseScoreEntriesFromSvg(scoreSvg: string, lineStarts: number[]): SheetObjectIndexEntry[] {
   const entries: SheetObjectIndexEntry[] = []
-  const pattern = /data-start-char="(\d+)"\s+data-end-char="(\d+)"/g
+  const pattern = /data-start-char="(\d+)"\s+data-end-char="(\d+)"(?:\s+data-score-type="([^"]+)")?/g
   const ordinalsByTextRange = new Map<string, number>()
 
   for (const match of scoreSvg.matchAll(pattern)) {
@@ -559,6 +662,7 @@ function parseScoreEntriesFromSvg(scoreSvg: string, lineStarts: number[]): Sheet
     entries.push({
       kind: 'score-object',
       scoreHitboxOrdinal: nextOrdinal,
+      ...(match[3] === undefined ? {} : { scoreObjectType: match[3] }),
       textRange,
       startPos: charOffsetToLineColumn(lineStarts, textRange.startpos),
       endPos: charOffsetToLineColumn(lineStarts, textRange.endpos),
@@ -573,6 +677,45 @@ function parseScoreEntriesFromSvg(scoreSvg: string, lineStarts: number[]): Sheet
   return dedupeEntries(entries)
 }
 
+function enrichScoreEntriesWithMusicIdentity(
+  scoreEntries: SheetObjectIndexEntry[],
+  musicEntries: SheetObjectIndexEntry[],
+  index: Pick<SheetObjectIndex, 'voiceByLine'>,
+): SheetObjectIndexEntry[] {
+  return scoreEntries.map((scoreEntry) => {
+    const scoreRange = scoreEntry.textRange
+    const scoreLine = scoreEntry.startPos?.line
+    const voiceId = scoreLine === undefined ? undefined : index.voiceByLine[scoreLine]
+    if (voiceId === undefined || scoreRange === undefined) return scoreEntry
+    const sameVoiceEntries = musicEntries
+      .filter((entry) => entry.voiceId === voiceId && entry.textRange !== undefined)
+      .sort((left, right) => (
+        (left.textRange?.startpos ?? 0) - (right.textRange?.startpos ?? 0)
+      ))
+    const exactEntry = sameVoiceEntries.find((entry) => (
+      entry.textRange?.startpos === scoreRange.startpos
+      && entry.textRange?.endpos === scoreRange.endpos
+    ))
+    const nextEntry = sameVoiceEntries.find((entry) => (
+      (entry.textRange?.startpos ?? Number.NEGATIVE_INFINITY) >= scoreRange.endpos
+    ))
+    const previousEntry = [...sameVoiceEntries].reverse().find((entry) => (
+      (entry.textRange?.endpos ?? Number.POSITIVE_INFINITY) <= scoreRange.startpos
+    ))
+    const identityEntry = exactEntry ?? (
+      scoreEntry.scoreObjectType === 'bar'
+        ? nextEntry ?? previousEntry
+        : undefined
+    )
+    if (typeof identityEntry?.musicTime !== 'number') return { ...scoreEntry, voiceId }
+    return {
+      ...scoreEntry,
+      voiceId,
+      musicTime: identityEntry.musicTime,
+    }
+  })
+}
+
 export function buildSheetObjectIndex(
   song: Song,
   sheet: Sheet,
@@ -581,13 +724,19 @@ export function buildSheetObjectIndex(
 ): SheetObjectIndex {
   const lineStarts = createLineStarts(abcText)
   const voiceByLine = createVoiceByLine(abcText)
+  const musicEntries = song.voices
+    .filter(isUserVisibleVoice)
+    .flatMap((voice) => voice.entities
+    .map((entity) => createSongEntryFromVoiceEntity(entity, resolveUserVisibleVoiceId(voice) ?? ''))
+    .filter((entry): entry is SheetObjectIndexEntry => entry !== undefined))
+  const scoreEntries = enrichScoreEntriesWithMusicIdentity(
+    parseScoreEntriesFromSvg(scoreSvg, lineStarts),
+    musicEntries,
+    { voiceByLine },
+  )
   const entries: SheetObjectIndexEntry[] = [
-    ...parseScoreEntriesFromSvg(scoreSvg, lineStarts),
-    ...song.voices
-      .filter(isUserVisibleVoice)
-      .flatMap((voice) => voice.entities
-      .map((entity) => createSongEntryFromVoiceEntity(entity, resolveUserVisibleVoiceId(voice) ?? ''))
-      .filter((entry): entry is SheetObjectIndexEntry => entry !== undefined)),
+    ...scoreEntries,
+    ...musicEntries,
     ...sheet.children.map(createSheetEntryFromDrawable).filter((entry): entry is SheetObjectIndexEntry => entry !== undefined),
   ]
 
@@ -626,6 +775,7 @@ export function buildSheetObjectIndex(
     byConfKey,
     byTextRange,
     byMusicTime,
+    musicTimes: Object.keys(byMusicTime).map(Number).sort((left, right) => left - right),
     entries: dedupedEntries,
   }
 }
@@ -809,6 +959,14 @@ export function resolveSelectionOriginByZnIdAndConfKey(
   const origin = resolveSelectionOriginByZnId(index, znId)
   if (confKey === undefined) return origin
 
+  const confVoiceId = parseVoiceIdFromConfKey(confKey)
+  if (confVoiceId !== undefined) {
+    return {
+      ...origin,
+      voiceId: confVoiceId,
+    }
+  }
+
   const entry = resolveIndexesByConfKey(index, confKey)
     .map((entryIndex) => index?.entries[entryIndex])
     .find((candidate) => candidate !== undefined && (candidate.znId === undefined || candidate.znId === znId))
@@ -872,6 +1030,67 @@ export function resolveEditorSelectionRanges(
   selection: SelectionState,
   options?: SelectionProjectionOptions,
 ): SelectionTextRange[] {
+  if (
+    selection.segments !== undefined
+    && selection.segments.length > 1
+    && selection.textRanges !== undefined
+  ) {
+    return [...new Map(selection.textRanges.map((range) => [textRangeKey(range), { ...range }])).values()]
+  }
+
+  if (
+    selection.textRanges !== undefined
+    && selection.textRanges.length > 0
+    && (options?.voiceScope ?? selection.voiceScope) !== 'single-voice'
+  ) {
+    const voiceScope = options?.voiceScope ?? selection.voiceScope
+    const activeVoiceIds = options?.activeVoiceIds ?? []
+    const result: SelectionTextRange[] = []
+
+    selection.textRanges.forEach((sourceRange) => {
+      const containedIndexes = resolveIndexesByTextRange(index, sourceRange, undefined, 'contained')
+      const sourceIndexes = containedIndexes.length > 0
+        ? containedIndexes
+        : resolveIndexesByTextRange(index, sourceRange, undefined, 'overlap')
+      const sourceEntries = projectIndexesToEntries(index, sourceIndexes)
+        .filter((entry) => entry.addressableIn.editor)
+      const sourceTimes = sourceEntries
+        .map((entry) => entry.musicTime)
+        .filter((musicTime): musicTime is number => typeof musicTime === 'number')
+      const minTime = Math.min(...sourceTimes)
+      const maxTime = Math.max(...sourceTimes)
+      const expandedEntries = Number.isFinite(minTime) && Number.isFinite(maxTime)
+        ? resolveEntriesByMusicTimeRange(index, minTime, maxTime, 'editor')
+        : sourceEntries
+      const allowedEntries = expandedEntries
+        .filter((entry) => entry.addressableIn.editor)
+        .filter((entry) => voiceScope !== 'extract-voices' || activeVoiceIds.length === 0 || entry.voiceId === undefined || activeVoiceIds.includes(entry.voiceId))
+      const rangesByVoice = new Map<string, SelectionTextRange[]>()
+
+      allowedEntries
+        .filter((entry) => entry.textRange !== undefined)
+        .forEach((entry, entryIndex) => {
+          const textRange = entry.textRange as SelectionTextRange
+          const voiceId = resolveEntryVoiceIdFromIndex(index, entry)
+          const groupKey = voiceId === undefined
+            ? `entry-${entryIndex}-${textRangeKey(textRange)}`
+            : `voice-${voiceId}`
+          const ranges = rangesByVoice.get(groupKey) ?? []
+          ranges.push({ ...textRange })
+          rangesByVoice.set(groupKey, ranges)
+        })
+
+      rangesByVoice.forEach((ranges) => {
+        result.push({
+          startpos: Math.min(...ranges.map((range) => range.startpos)),
+          endpos: Math.max(...ranges.map((range) => range.endpos)),
+        })
+      })
+    })
+
+    return result
+  }
+
   const { entries } = resolveScopedPaneEntries(index, selection, 'editor', options)
   const rangesByVoice = new Map<string, SelectionTextRange[]>()
 

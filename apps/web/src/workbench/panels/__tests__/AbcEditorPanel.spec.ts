@@ -180,4 +180,25 @@ describe('AbcEditorPanel', () => {
       { from: 17, to: 18 },
     ])
   })
+
+  it('defers external selection while a harp pointer gesture is pending', async () => {
+    const wrapper = mount(AbcEditorPanel, {
+      props: {
+        modelValue: 'X:1\nK:C\nC D E',
+        selectedTextRanges: [{ startpos: 11, endpos: 12 }],
+        selectionPending: true,
+      },
+    })
+
+    await nextTick()
+
+    const editorView = EditorView.findFromDOM(wrapper.find('.cm-editor').element as HTMLElement)
+    expect(editorView?.state.selection.main.from).toBe(0)
+
+    await wrapper.setProps({ selectionPending: false })
+    await nextTick()
+
+    expect(editorView?.state.selection.main.from).toBe(11)
+    expect(editorView?.state.selection.main.to).toBe(12)
+  })
 })

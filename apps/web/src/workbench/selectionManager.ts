@@ -6,6 +6,7 @@ import type {
   SelectionProjection,
   SelectionProjectionOptions,
   SelectionProjectionKind,
+  SelectionSegment,
   SelectionState,
   SelectionSource,
   SelectionTarget,
@@ -87,22 +88,84 @@ function normalizeIndexes(indexes: number[]): number[] {
   return [...new Set(indexes)].sort((left, right) => left - right)
 }
 
+function resolveSelectionVoiceId(
+  index: SheetObjectIndex | undefined,
+  entry: SheetObjectIndexEntry | undefined,
+): string | undefined {
+  if (entry?.voiceId !== undefined) return entry.voiceId
+  const confVoiceId = entry?.confKey?.match(/(?:^|[.])v_(\d+)(?:[._]|$)/)?.[1]
+  if (confVoiceId !== undefined) return confVoiceId
+  const line = entry?.startPos?.line
+  return line === undefined ? undefined : index?.voiceByLine[line]
+}
+
 function createSelectionState(
   selectedIndexes: number[],
   source: SelectionSource,
   voiceScope: SelectionVoiceScope = 'single-voice',
   originSelectedIndexes?: number[],
   anchorIndex?: number,
+  textRanges?: SelectionTextRange[],
+  segments?: SelectionSegment[],
+  activeSegmentIndex?: number,
 ): SelectionState {
   const normalized = normalizeIndexes(selectedIndexes)
   const normalizedOrigin = normalizeIndexes(originSelectedIndexes ?? selectedIndexes)
+  const normalizedTextRanges = textRanges === undefined ? undefined : uniqueTextRanges(textRanges)
+  const normalizedSegments = segments?.map((segment) => ({
+    selectedIndexes: normalizeIndexes(segment.selectedIndexes),
+    originSelectedIndexes: normalizeIndexes(segment.originSelectedIndexes),
+    anchorIndex: segment.anchorIndex,
+    textRanges: segment.textRanges === undefined ? undefined : uniqueTextRanges(segment.textRanges),
+  }))
   return {
     selectedIndexes: normalized,
     originSelectedIndexes: normalizedOrigin,
     anchorIndex: anchorIndex ?? normalized[0],
     source,
     voiceScope,
+    ...(normalizedTextRanges === undefined ? {} : { textRanges: normalizedTextRanges }),
+    ...(normalizedSegments === undefined ? {} : {
+      segments: normalizedSegments,
+      activeSegmentIndex: normalizedSegments.length === 0
+        ? undefined
+        : activeSegmentIndex ?? normalizedSegments.length - 1,
+    }),
   }
+}
+
+function selectionSegmentFromState(
+  selection: SelectionState,
+  index?: SheetObjectIndex,
+): SelectionSegment {
+  const editorRange = resolveSelectionEditorRange(index, selection)
+  return {
+    selectedIndexes: [...selection.selectedIndexes],
+    originSelectedIndexes: [...selection.originSelectedIndexes],
+    anchorIndex: selection.anchorIndex,
+    textRanges: selection.textRanges === undefined
+      ? editorRange === undefined ? undefined : [editorRange]
+      : [...selection.textRanges],
+  }
+}
+
+function combineSelectionSegments(
+  segments: SelectionSegment[],
+  activeSegmentIndex: number,
+  source: SelectionSource,
+  voiceScope: SelectionVoiceScope,
+): SelectionState {
+  const activeSegment = segments[activeSegmentIndex]
+  return createSelectionState(
+    segments.flatMap((segment) => segment.selectedIndexes),
+    source,
+    voiceScope,
+    segments.flatMap((segment) => segment.originSelectedIndexes),
+    activeSegment?.anchorIndex,
+    segments.flatMap((segment) => segment.textRanges ?? []),
+    segments,
+    activeSegmentIndex,
+  )
 }
 
 function filterProjectionByCapability(
@@ -147,6 +210,22 @@ export function createReplacedSelectionEvent(selection: SelectionState): Selecti
   }
 }
 
+export function createSelectionInteractionEvent(pending: boolean): SelectionEvent {
+  return {
+    type: 'selection.interaction-pending',
+    pending,
+  }
+}
+
+export function createPreviewBackgroundClickedSelectionEvent(
+  source: 'score-preview' | 'harp-preview',
+): SelectionEvent {
+  return {
+    type: 'selection.preview-background-clicked',
+    source,
+  }
+}
+
 export function createIndexesSelectedSelectionEvent(
   selectedIndexes: number[],
   source: SelectionSource = 'command',
@@ -164,13 +243,26 @@ export function createTextRangeSelectionEvent(
   source: SelectionSource = 'abc-editor',
   extend: boolean = false,
   origin?: SelectionOrigin,
+  startNewSegment: boolean = false,
 ): SelectionEvent {
   return {
     type: 'selection.text-range-selected',
     startpos,
     endpos,
     extend,
+    startNewSegment,
     origin,
+    source,
+  }
+}
+
+export function createTextRangesSelectionEvent(
+  ranges: SelectionTextRange[],
+  source: SelectionSource = 'abc-editor',
+): SelectionEvent {
+  return {
+    type: 'selection.text-ranges-selected',
+    ranges,
     source,
   }
 }
@@ -284,12 +376,43 @@ export function resolveSelectionWithVoiceScope(
   voiceScope: SelectionVoiceScope,
   options?: SelectionProjectionOptions,
 ): SelectionState {
+  if (selection.segments !== undefined && selection.segments.length > 0) {
+    const projectedSegments = selection.segments.map((segment) => {
+      const segmentSelection = createSelectionState(
+        segment.selectedIndexes,
+        selection.source,
+        selection.voiceScope,
+        segment.originSelectedIndexes,
+        segment.anchorIndex,
+        segment.textRanges,
+      )
+      const projectedSegment = resolveSelectionWithVoiceScope(
+        index,
+        segmentSelection,
+        voiceScope,
+        options,
+      )
+      return {
+        ...selectionSegmentFromState(projectedSegment, index),
+        anchorIndex: segment.anchorIndex,
+      }
+    })
+    return combineSelectionSegments(
+      projectedSegments,
+      Math.min(selection.activeSegmentIndex ?? 0, projectedSegments.length - 1),
+      selection.source,
+      voiceScope,
+    )
+  }
+
   if (voiceScope === 'single-voice') {
     return createSelectionState(
       selection.originSelectedIndexes,
       selection.source,
       voiceScope,
       selection.originSelectedIndexes,
+      undefined,
+      selection.textRanges,
     )
   }
   const originSelection = createSelectionState(
@@ -297,6 +420,8 @@ export function resolveSelectionWithVoiceScope(
     selection.source,
     selection.voiceScope,
     selection.originSelectedIndexes,
+    undefined,
+    selection.textRanges,
   )
   return createSelectionState(
     resolveScopedSelectionIndexes(index, {
@@ -309,6 +434,8 @@ export function resolveSelectionWithVoiceScope(
     selection.source,
     voiceScope,
     selection.originSelectedIndexes,
+    undefined,
+    selection.textRanges,
   )
 }
 
@@ -417,7 +544,14 @@ export function resolveSelectionByTextRange(
         })()
       : resolveIndexesByTextRange(index, { startpos, endpos }, undefined, 'overlap')
 
-  return createSelectionState(resolvedIndexes, source, voiceScope)
+  return createSelectionState(
+    resolvedIndexes,
+    source,
+    voiceScope,
+    undefined,
+    undefined,
+    source === 'abc-editor' ? [{ startpos, endpos }] : undefined,
+  )
 }
 
 function resolveSelectionByOrigin(
@@ -477,6 +611,38 @@ function resolveExtendedSelectionByTextRange(
   const anchorIndex = selection.anchorIndex
   if (anchorIndex === undefined) return nextSelection
 
+  const anchorEntry = index?.entries[anchorIndex]
+  const targetEntry = nextSelection.anchorIndex === undefined
+    ? undefined
+    : index?.entries[nextSelection.anchorIndex]
+  const anchorVoiceId = resolveSelectionVoiceId(index, anchorEntry)
+  if (
+    anchorVoiceId !== undefined
+    && typeof anchorEntry?.musicTime === 'number'
+    && typeof targetEntry?.musicTime === 'number'
+  ) {
+    const minTime = Math.min(anchorEntry.musicTime, targetEntry.musicTime)
+    const maxTime = Math.max(anchorEntry.musicTime, targetEntry.musicTime)
+    const selectedIndexes = index?.entries.flatMap((entry, entryIndex) => (
+      resolveSelectionVoiceId(index, entry) === anchorVoiceId
+      && typeof entry.musicTime === 'number'
+      && entry.musicTime >= minTime
+      && entry.musicTime <= maxTime
+        ? [entryIndex]
+        : []
+    )) ?? []
+
+    if (selectedIndexes.length > 0) {
+      return createSelectionState(
+        selectedIndexes,
+        source,
+        voiceScope,
+        selectedIndexes,
+        anchorIndex,
+      )
+    }
+  }
+
   const anchorSelection = createSelectionState(
     [anchorIndex],
     selection.source,
@@ -500,6 +666,26 @@ function resolveExtendedSelectionByTextRange(
     source,
     voiceScope,
   )
+
+  if (voiceScope === 'single-voice') {
+    const selectedVoiceId = resolveSelectionVoiceId(index, anchorEntry)
+      ?? selection.originSelectedIndexes
+        .map((entryIndex) => resolveSelectionVoiceId(index, index?.entries[entryIndex]))
+        .find((voiceId): voiceId is string => voiceId !== undefined)
+    if (selectedVoiceId !== undefined) {
+      const voiceFilteredIndexes = extendedSelection.selectedIndexes.filter((entryIndex) => {
+        const entry = index?.entries[entryIndex]
+        if (entry === undefined || entry.kind !== 'music-entity') return true
+        return resolveSelectionVoiceId(index, entry) === selectedVoiceId
+      })
+      return {
+        ...extendedSelection,
+        selectedIndexes: voiceFilteredIndexes,
+        originSelectedIndexes: voiceFilteredIndexes,
+        anchorIndex,
+      }
+    }
+  }
 
   return {
     ...extendedSelection,
@@ -652,6 +838,37 @@ export function dispatchSelectionEvent(
     return event.selection
   }
 
+  if (event.type === 'selection.interaction-pending') {
+    return {
+      ...context.selection,
+      interactionPending: event.pending,
+    }
+  }
+
+  if (event.type === 'selection.preview-background-clicked') {
+    return createClearedSelectionState(event.source, context.selection.voiceScope)
+  }
+
+  if (event.type === 'selection.text-ranges-selected') {
+    const ranges = uniqueTextRanges(event.ranges.filter((range) => range.startpos !== range.endpos))
+    const rangeSelections = ranges.map((range) => resolveSelectionByTextRange(
+      context.sheetObjectIndex,
+      range.startpos,
+      range.endpos,
+      event.source ?? 'abc-editor',
+      context.selection.voiceScope,
+    ))
+    const nextSelection = createSelectionState(
+      rangeSelections.flatMap((rangeSelection) => rangeSelection.selectedIndexes),
+      event.source ?? 'abc-editor',
+      context.selection.voiceScope,
+      rangeSelections.flatMap((rangeSelection) => rangeSelection.originSelectedIndexes),
+      rangeSelections[0]?.anchorIndex,
+      ranges,
+    )
+    return projectInputSelectionToCurrentScope(nextSelection)
+  }
+
   if (event.type === 'selection.indexes-selected') {
     return projectInputSelectionToCurrentScope(
       resolveSelectionByIndexes(
@@ -692,19 +909,73 @@ export function dispatchSelectionEvent(
           context.selection.voiceScope,
         )
 
-    return projectInputSelectionToCurrentScope(
-      event.extend === true
-        ? resolveExtendedSelectionByTextRange(
-            context.sheetObjectIndex,
-            context.selection,
-            event.startpos,
-            event.endpos,
-            event.source ?? 'abc-editor',
-            context.selection.voiceScope,
-            eventOrigin,
-          )
-        : nextSelection,
-    )
+    if (event.startNewSegment === true && context.selection.selectedIndexes.length > 0) {
+      const existingSegments = context.selection.segments
+        ?? [selectionSegmentFromState(context.selection, context.sheetObjectIndex)]
+      const nextSegments = [
+        ...existingSegments,
+        selectionSegmentFromState(nextSelection, context.sheetObjectIndex),
+      ]
+      return projectInputSelectionToCurrentScope(combineSelectionSegments(
+        nextSegments,
+        nextSegments.length - 1,
+        event.source ?? 'abc-editor',
+        context.selection.voiceScope,
+      ))
+    }
+
+    if (event.extend === true) {
+      if (context.selection.segments === undefined) {
+        return projectInputSelectionToCurrentScope(resolveExtendedSelectionByTextRange(
+          context.sheetObjectIndex,
+          context.selection,
+          event.startpos,
+          event.endpos,
+          event.source ?? 'abc-editor',
+          context.selection.voiceScope,
+          eventOrigin,
+        ))
+      }
+
+      const existingSegments = context.selection.segments
+      const activeSegmentIndex = Math.min(
+        context.selection.activeSegmentIndex ?? existingSegments.length - 1,
+        existingSegments.length - 1,
+      )
+      const activeSegment = existingSegments[activeSegmentIndex]
+      if (activeSegment !== undefined) {
+        const activeSelection = createSelectionState(
+          activeSegment.selectedIndexes,
+          context.selection.source,
+          context.selection.voiceScope,
+          activeSegment.originSelectedIndexes,
+          activeSegment.anchorIndex,
+          activeSegment.textRanges,
+        )
+        const extendedSegment = resolveExtendedSelectionByTextRange(
+          context.sheetObjectIndex,
+          activeSelection,
+          event.startpos,
+          event.endpos,
+          event.source ?? 'abc-editor',
+          context.selection.voiceScope,
+          eventOrigin,
+        )
+        const nextSegments = [...existingSegments]
+        nextSegments[activeSegmentIndex] = selectionSegmentFromState(
+          extendedSegment,
+          context.sheetObjectIndex,
+        )
+        return projectInputSelectionToCurrentScope(combineSelectionSegments(
+          nextSegments,
+          activeSegmentIndex,
+          event.source ?? 'abc-editor',
+          context.selection.voiceScope,
+        ))
+      }
+    }
+
+    return projectInputSelectionToCurrentScope(nextSelection)
   }
 
   if (event.type === 'selection.line-column-range-selected') {

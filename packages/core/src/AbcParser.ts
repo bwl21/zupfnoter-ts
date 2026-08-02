@@ -471,7 +471,7 @@ export class AbcParser {
       anno_stop: (type, start, stop, x, y, w, h) => {
         const id = createScoreAnnotationId(type, start, stop)
         abc.out_svg(
-          `<rect id="${id}" class="zn-score-annotation zn-score-hitbox" data-start-char="${start}" data-end-char="${stop}" x="`,
+          `<rect id="${id}" class="zn-score-annotation zn-score-hitbox" data-start-char="${start}" data-end-char="${stop}" data-score-type="${type}" x="`,
         )
         abc.out_sxsy(x, '" y="', y)
         abc.out_svg(

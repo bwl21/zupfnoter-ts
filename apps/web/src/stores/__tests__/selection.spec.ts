@@ -7,6 +7,7 @@ import { useSelectionStore } from '../selection'
 import {
   projectIndexesToEntries,
   resolveEditorSelectionRange,
+  resolveEditorSelectionRanges,
   resolveScoreSelectionRanges,
   resolveSelectedZnIds,
   resolveSvgSelection,
@@ -126,6 +127,242 @@ const sheetObjectIndex: SheetObjectIndex = {
 }
 
 describe('selection store', () => {
+  it('lets the selection manager clear a selection after a preview background click', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: sheetObjectIndex })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 4,
+      endpos: 6,
+      source: 'score-preview',
+    })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.preview-background-clicked',
+      source: 'harp-preview',
+    })
+
+    expect(selectionStore.selection.selectedIndexes).toEqual([])
+    expect(selectionStore.selection.source).toBe('harp-preview')
+  })
+
+  it('creates and extends independent selection segments across preview panels', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: sheetObjectIndex })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 4,
+      endpos: 6,
+      origin: { voiceId: '1', musicTime: 64, znId: 'note-1' },
+      source: 'score-preview',
+    })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 7,
+      endpos: 8,
+      origin: { voiceId: '1', musicTime: 96, znId: 'note-2' },
+      startNewSegment: true,
+      source: 'harp-preview',
+    })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 10,
+      endpos: 12,
+      origin: { voiceId: '1', musicTime: 128, znId: 'note-3' },
+      extend: true,
+      source: 'harp-preview',
+    })
+
+    expect(selectionStore.selection.segments).toHaveLength(2)
+    expect(selectionStore.selection.activeSegmentIndex).toBe(1)
+    expect(selectionStore.selection.segments?.[0]?.textRanges).toEqual([
+      { startpos: 4, endpos: 6 },
+    ])
+    expect(selectionStore.selection.segments?.[1]?.textRanges).toEqual([
+      { startpos: 7, endpos: 12 },
+    ])
+    expect(selectionStore.selection.segments?.[0]?.selectedIndexes).not.toContain(1)
+    expect(selectionStore.selection.segments?.[1]?.selectedIndexes).not.toContain(0)
+    expect(resolveEditorSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toEqual([
+        { startpos: 4, endpos: 6 },
+        { startpos: 7, endpos: 12 },
+      ])
+  })
+
+  it('does not feed editor segment envelopes back into score projection', () => {
+    setActivePinia(createPinia())
+
+    const envelopeIndex: SheetObjectIndex = {
+      ...sheetObjectIndex,
+      byTextRange: {
+        ...sheetObjectIndex.byTextRange,
+        '6:7': [10],
+      },
+      entries: [
+        ...sheetObjectIndex.entries,
+        {
+          kind: 'score-object',
+          textRange: { startpos: 6, endpos: 7 },
+          startPos: { line: 2, column: 3 },
+          endPos: { line: 2, column: 4 },
+          addressableIn: { editor: true, score: true, svg: false },
+        },
+      ],
+    }
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: envelopeIndex })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 4,
+      endpos: 6,
+      origin: { voiceId: '1', musicTime: 64, znId: 'note-1' },
+      source: 'score-preview',
+    })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 10,
+      endpos: 12,
+      origin: { voiceId: '1', musicTime: 128, znId: 'note-3' },
+      startNewSegment: true,
+      source: 'score-preview',
+    })
+
+    expect(selectionStore.selection.textRanges).toContainEqual({ startpos: 4, endpos: 6 })
+    expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .not.toContainEqual({ startpos: 6, endpos: 7 })
+  })
+
+  it('extends by music time and synchronizes measure bars across extract voices', () => {
+    setActivePinia(createPinia())
+
+    const timedIndex: SheetObjectIndex = {
+      version: 1,
+      lineStarts: [0, 4, 20],
+      voiceByLine: { 1: undefined, 2: '1', 3: '2' },
+      byZnId: {
+        'v1-start': [0],
+        'v1-bar': [1],
+        'v1-end': [2],
+        'v2-start': [3],
+        'v2-bar': [4],
+        'v2-end': [5],
+      },
+      byConfKey: {},
+      byTextRange: {
+        '4:5': [0, 6],
+        '6:7': [1, 7],
+        '8:9': [2, 8],
+        '20:21': [3, 9],
+        '22:23': [4, 10],
+        '24:25': [5, 11],
+      },
+      byMusicTime: {
+        '0': [0, 3],
+        '10': [1, 4],
+        '20': [2, 5],
+      },
+      musicTimes: [0, 10, 20],
+      entries: [
+        ...[
+          ['v1-start', '1', 0, 4],
+          ['v1-bar', '1', 10, 6],
+          ['v1-end', '1', 20, 8],
+          ['v2-start', '2', 0, 20],
+          ['v2-bar', '2', 10, 22],
+          ['v2-end', '2', 20, 24],
+        ].map(([znId, voiceId, musicTime, startpos]) => ({
+          kind: 'music-entity' as const,
+          znId: String(znId),
+          voiceId: String(voiceId),
+          musicTime: Number(musicTime),
+          textRange: { startpos: Number(startpos), endpos: Number(startpos) + 1 },
+          addressableIn: { editor: true, score: true, svg: true },
+        })),
+        ...[4, 6, 8, 20, 22, 24].map((startpos) => ({
+          kind: 'score-object' as const,
+          textRange: { startpos, endpos: startpos + 1 },
+          addressableIn: { editor: true, score: true, svg: false },
+        })),
+      ],
+    }
+
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: timedIndex })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.extract-changed', activeVoiceIds: ['1', '2'] })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.scope-changed', voiceScope: 'extract-voices' })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 4,
+      endpos: 5,
+      origin: { voiceId: '1', musicTime: 0, znId: 'v1-start' },
+      source: 'score-preview',
+    })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 8,
+      endpos: 9,
+      origin: { voiceId: '1', musicTime: 20, znId: 'v1-end' },
+      extend: true,
+      source: 'score-preview',
+    })
+
+    expect(selectionStore.selection.originSelectedIndexes).toEqual([0, 1, 2])
+    expect(selectionStore.selection.selectedIndexes).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+    expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toContainEqual({ startpos: 6, endpos: 7 })
+    expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toContainEqual({ startpos: 22, endpos: 23 })
+  })
+
+  it('treats option-shift-click without an existing selection like a normal click', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: sheetObjectIndex })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-range-selected',
+      startpos: 4,
+      endpos: 6,
+      origin: { voiceId: '1', musicTime: 64, znId: 'note-1' },
+      startNewSegment: true,
+      source: 'harp-preview',
+    })
+
+    expect(selectionStore.selection.selectedIndexes).toEqual([0])
+    expect(selectionStore.selection.segments).toBeUndefined()
+  })
+
+  it('keeps disjoint editor segments separate within the same voice', () => {
+    setActivePinia(createPinia())
+
+    const selectionStore = useSelectionStore()
+    selectionStore.dispatchSelectionEvent({ type: 'selection.render-refreshed', nextIndex: sheetObjectIndex })
+    selectionStore.dispatchSelectionEvent({ type: 'selection.scope-changed', voiceScope: 'all-voices' })
+    selectionStore.dispatchSelectionEvent({
+      type: 'selection.text-ranges-selected',
+      ranges: [
+        { startpos: 4, endpos: 6 },
+        { startpos: 10, endpos: 12 },
+      ],
+      source: 'abc-editor',
+    })
+
+    expect(selectionStore.selection.textRanges).toEqual([
+      { startpos: 4, endpos: 6 },
+      { startpos: 10, endpos: 12 },
+    ])
+    expect(resolveEditorSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection))
+      .toEqual([
+        { startpos: 4, endpos: 6 },
+        { startpos: 10, endpos: 12 },
+        { startpos: 10, endpos: 12 },
+      ])
+  })
+
   it('resolves text selections to index entries and pane-specific highlights', () => {
     setActivePinia(createPinia())
 
@@ -178,6 +415,7 @@ describe('selection store', () => {
     expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual([
         { startpos: 4, endpos: 6 },
+        { startpos: 7, endpos: 8 },
         { startpos: 10, endpos: 12 },
       ])
   })

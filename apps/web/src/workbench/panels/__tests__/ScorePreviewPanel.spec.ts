@@ -54,13 +54,21 @@ describe('ScorePreviewPanel', () => {
       },
     })
 
-    await wrapper.find('.preview-stage__svg rect').trigger('click')
+    wrapper.find('.preview-stage__svg rect').element.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true,
+      button: 0,
+    }))
+    wrapper.find('.preview-stage__svg rect').element.dispatchEvent(new PointerEvent('pointerup', {
+      bubbles: true,
+      button: 0,
+    }))
 
     expect(wrapper.emitted('select-text-range')).toEqual([
       [{
         startpos: 12,
         endpos: 18,
         extend: false,
+        startNewSegment: false,
         origin: {
           voiceId: '3',
           musicTime: 384,
@@ -79,13 +87,23 @@ describe('ScorePreviewPanel', () => {
       },
     })
 
-    await wrapper.find('.preview-stage__svg rect').trigger('click', { shiftKey: true })
+    wrapper.find('.preview-stage__svg rect').element.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true,
+      button: 0,
+      shiftKey: true,
+    }))
+    wrapper.find('.preview-stage__svg rect').element.dispatchEvent(new PointerEvent('pointerup', {
+      bubbles: true,
+      button: 0,
+      shiftKey: true,
+    }))
 
     expect(wrapper.emitted('select-text-range')).toEqual([
       [{
         startpos: 12,
         endpos: 18,
         extend: true,
+        startNewSegment: false,
         origin: {
           voiceId: '3',
           musicTime: 384,
@@ -94,5 +112,69 @@ describe('ScorePreviewPanel', () => {
         source: 'score-preview',
       }],
     ])
+  })
+
+  it('emits option-shift-clicks as new selection segments', async () => {
+    const wrapper = mount(ScorePreviewPanel, {
+      props: {
+        svg: '<svg width="40" height="20"><rect class="zn-score-hitbox" data-start-char="12" data-end-char="18" width="10" height="10" /></svg>',
+        sheetObjectIndex,
+      },
+    })
+
+    const hitbox = wrapper.find('.preview-stage__svg rect').element
+    hitbox.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true,
+      button: 0,
+      shiftKey: true,
+      altKey: true,
+    }))
+    hitbox.dispatchEvent(new PointerEvent('pointerup', {
+      bubbles: true,
+      button: 0,
+      shiftKey: true,
+    }))
+
+    expect(wrapper.emitted('select-text-range')?.[0]?.[0]).toMatchObject({
+      extend: false,
+      startNewSegment: true,
+    })
+  })
+
+  it('clears the selection when clicking outside a score hitbox', async () => {
+    const wrapper = mount(ScorePreviewPanel, {
+      props: {
+        svg: '<svg width="40" height="20"><rect width="10" height="10" /></svg>',
+      },
+    })
+
+    const svg = wrapper.find('.preview-stage__svg svg').element
+    svg.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, button: 0 }))
+    svg.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, button: 0 }))
+
+    expect(wrapper.emitted('selection-background-click')).toHaveLength(1)
+    expect(wrapper.emitted('select-text-range')).toBeUndefined()
+  })
+
+  it('marks score selection as pending until the pointer is released', async () => {
+    const wrapper = mount(ScorePreviewPanel, {
+      props: {
+        svg: '<svg width="40" height="20"><rect class="zn-score-hitbox" data-start-char="12" data-end-char="18" width="10" height="10" /></svg>',
+      },
+    })
+
+    const pointerDown = new PointerEvent('pointerdown', {
+      bubbles: true,
+      button: 0,
+      cancelable: true,
+    })
+    wrapper.find('.preview-stage__svg rect').element.dispatchEvent(pointerDown)
+    wrapper.find('.preview-stage__svg').element.dispatchEvent(new PointerEvent('pointerup', {
+      bubbles: true,
+      button: 0,
+    }))
+
+    expect(pointerDown.defaultPrevented).toBe(true)
+    expect(wrapper.emitted('selection-gesture')).toEqual([[true], [false]])
   })
 })

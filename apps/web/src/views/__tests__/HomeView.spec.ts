@@ -3,6 +3,8 @@ import { createPinia } from 'pinia'
 import { nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import type { SheetObjectIndexEntry } from '@zupfnoter/types'
+
 import HomeView from '../HomeView.vue'
 import AbcEditorPanel from '../../workbench/panels/AbcEditorPanel.vue'
 import ScorePreviewPanel from '../../workbench/panels/ScorePreviewPanel.vue'
@@ -158,5 +160,76 @@ describe('HomeView', () => {
 
     expect(selectionStore.selection.source).toBe('score-preview')
     expect(resolveScoreSelectionRanges(selectionStore.sheetObjectIndex, selectionStore.selection).length).toBeGreaterThan(1)
+  })
+
+  it('keeps the second segment active after projecting it into the ABC editor', async () => {
+    vi.useFakeTimers()
+    const pinia = createPinia()
+    const wrapper = mount(HomeView, {
+      global: {
+        plugins: [pinia],
+      },
+    })
+
+    await vi.advanceTimersByTimeAsync(300)
+    await nextTick()
+
+    const selectionStore = useSelectionStore(pinia)
+    const entriesByVoice = new Map<string, SheetObjectIndexEntry[]>()
+    selectionStore.sheetObjectIndex?.entries.forEach((entry) => {
+      if (entry.kind !== 'music-entity' || entry.voiceId === undefined || entry.textRange === undefined) return
+      const entries = entriesByVoice.get(entry.voiceId) ?? []
+      if (!entries.some((candidate) => (
+        candidate.textRange?.startpos === entry.textRange?.startpos
+        && candidate.textRange?.endpos === entry.textRange?.endpos
+      ))) entries.push(entry)
+      entriesByVoice.set(entry.voiceId, entries)
+    })
+    const entries = [...entriesByVoice.values()].find((candidates) => candidates.length >= 3)
+    expect(entries).toBeDefined()
+    if (entries === undefined) throw new Error('expected three selectable entries in one voice')
+    const [first, second, third] = entries
+    if (first?.textRange === undefined || second?.textRange === undefined || third?.textRange === undefined) {
+      throw new Error('expected concrete text ranges')
+    }
+
+    const scorePreview = wrapper.findComponent(ScorePreviewPanel)
+    scorePreview.vm.$emit('select-text-range', {
+      ...first.textRange,
+      extend: false,
+      startNewSegment: false,
+      origin: { voiceId: first.voiceId, musicTime: first.musicTime, znId: first.znId },
+      source: 'score-preview',
+    })
+    await nextTick()
+    scorePreview.vm.$emit('select-text-range', {
+      ...second.textRange,
+      extend: false,
+      startNewSegment: true,
+      origin: { voiceId: second.voiceId, musicTime: second.musicTime, znId: second.znId },
+      source: 'score-preview',
+    })
+    await nextTick()
+    scorePreview.vm.$emit('select-text-range', {
+      ...third.textRange,
+      extend: true,
+      startNewSegment: false,
+      origin: { voiceId: third.voiceId, musicTime: third.musicTime, znId: third.znId },
+      source: 'score-preview',
+    })
+    await nextTick()
+
+    expect(selectionStore.selection.activeSegmentIndex).toBe(1)
+    expect(selectionStore.selection.segments?.[0]?.textRanges?.[0]?.startpos)
+      .toBe(first.textRange.startpos)
+    const activeSegment = selectionStore.selection.segments?.[1]
+    const activeAnchor = activeSegment?.anchorIndex === undefined
+      ? undefined
+      : selectionStore.sheetObjectIndex?.entries[activeSegment.anchorIndex]
+    expect(activeAnchor?.kind).toBe('music-entity')
+    expect(activeAnchor?.voiceId).toBe(second.voiceId)
+    expect(activeAnchor?.musicTime).toBe(second.musicTime)
+    expect(activeSegment?.selectedIndexes).toContain(selectionStore.sheetObjectIndex?.entries.indexOf(second) ?? -1)
+    expect(activeSegment?.selectedIndexes).toContain(selectionStore.sheetObjectIndex?.entries.indexOf(third) ?? -1)
   })
 })

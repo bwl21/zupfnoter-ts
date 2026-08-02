@@ -129,7 +129,32 @@ C D
     expect(result.sheetObjectIndex?.entries.length).toBeGreaterThan(0)
     expect(Object.keys(result.sheetObjectIndex?.byZnId ?? {})).not.toHaveLength(0)
     expect(result.scoreSvg).toContain('data-start-char=')
+    expect(result.scoreSvg).toContain('data-score-type=')
     expect(result.scoreSvg).toContain('class="zn-score-annotation zn-score-hitbox"')
+  })
+
+  it('assigns score bar hitboxes a voice and musical time for synchronized selection', () => {
+    const abc = `X:1
+T:Selection bars
+M:4/4
+L:1/4
+%%score 1 2
+K:C
+V:1
+C D | E F |
+V:2
+C, D, | E, F, |`
+    const result = renderWorkbenchPreviews(abc)
+    const barOffsets = [...abc.matchAll(/[|]/g)].map((match) => match.index)
+    const barEntries = result.sheetObjectIndex?.entries.filter((entry) => (
+      entry.kind === 'score-object'
+      && entry.textRange !== undefined
+      && barOffsets.includes(entry.textRange.startpos)
+    )) ?? []
+
+    expect(barEntries.length).toBeGreaterThanOrEqual(2)
+    expect(barEntries.every((entry) => entry.voiceId !== undefined)).toBe(true)
+    expect(barEntries.every((entry) => typeof entry.musicTime === 'number')).toBe(true)
   })
 
   it('writes the TypeScript implementation marker into the sheet footer', () => {

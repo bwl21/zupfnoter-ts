@@ -48,6 +48,7 @@ export type {
   SelectionTarget,
   SelectionVoiceScope,
   SelectionTargetCapabilities,
+  SelectionSegment,
   SelectionProjection,
   SelectionProjectionOptions,
   SelectionSource,
