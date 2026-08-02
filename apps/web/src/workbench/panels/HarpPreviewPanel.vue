@@ -1076,7 +1076,9 @@ onBeforeUnmount(() => {
 
 .harp-preview__frame {
   position: relative;
+  display: flex;
   flex: 1 1 auto;
+  flex-direction: column;
   min-height: 0;
   border: 1px solid var(--zn-border);
   border-radius: var(--zn-radius-sm);
@@ -1119,12 +1121,15 @@ onBeforeUnmount(() => {
 
 .harp-preview__svg {
   display: block;
+  flex: 0 0 auto;
+  margin: auto;
   max-width: none;
 }
 
 .harp-preview__svg :deep(svg) {
   display: block;
   max-width: none;
+  overflow: visible;
 }
 
 /* Nur explizit freigegebene Drawables zeigen Drag-Affordance. */

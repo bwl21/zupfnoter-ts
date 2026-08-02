@@ -169,8 +169,9 @@ export function useZoomableSvgPreview(
 
   function getViewportPointFromAnchor(anchor: Point): Point | null {
     const frame = frameRef.value
+    const canvas = canvasRef.value
     const metrics = frameMetrics.value
-    if (frame === null || metrics === null || metrics.viewportWidth <= 0 || metrics.viewportHeight <= 0) {
+    if (frame === null || canvas === null || metrics === null || metrics.viewportWidth <= 0 || metrics.viewportHeight <= 0) {
       return null
     }
 
@@ -179,9 +180,29 @@ export function useZoomableSvgPreview(
       return null
     }
 
+    const offset = getCanvasOffsetInFrame()
+    return { x: anchor.x * scale + offset.x, y: anchor.y * scale + offset.y }
+  }
+
+  function getCanvasOffsetInFrame(): Point {
+    const frame = frameRef.value
+    const canvas = canvasRef.value
+    const metrics = frameMetrics.value
+    if (frame === null || canvas === null || metrics === null) return { x: 0, y: 0 }
+
+    const frameRect = frame.getBoundingClientRect()
+    const canvasRect = canvas.getBoundingClientRect()
+    const scaledWidth = (contentSize.value?.width ?? 0) * displayScale.value
+    const scaledHeight = (contentSize.value?.height ?? 0) * displayScale.value
+    const canvasLeft = scaledWidth > metrics.viewportWidth
+      ? -frame.scrollLeft
+      : canvasRect.left - frameRect.left - frame.clientLeft - metrics.paddingLeft
+    const canvasTop = scaledHeight > metrics.viewportHeight
+      ? -frame.scrollTop
+      : canvasRect.top - frameRect.top - frame.clientTop - metrics.paddingTop
     return {
-      x: (anchor.x * scale) - frame.scrollLeft,
-      y: (anchor.y * scale) - frame.scrollTop,
+      x: canvasLeft,
+      y: canvasTop,
     }
   }
 
@@ -240,19 +261,17 @@ export function useZoomableSvgPreview(
       return null
     }
 
-    const framePointX = frame.scrollLeft + point.x
-    const framePointY = frame.scrollTop + point.y
+    const offset = getCanvasOffsetInFrame()
     return {
-      x: framePointX / displayScale.value,
-      y: framePointY / displayScale.value,
+      x: (point.x - offset.x) / displayScale.value,
+      y: (point.y - offset.y) / displayScale.value,
     }
   }
 
   async function applyZoom(nextZoom: number, focusPoint?: Point | null): Promise<void> {
     const frame = frameRef.value
-    const previousZoom = zoom.value
     const focus = focusPoint ?? (lastZoomAnchor.value !== null ? getViewportPointFromAnchor(lastZoomAnchor.value) : getFocusPoint())
-    const currentScale = displayScale.value
+    const focusSource = focus === null ? null : framePointToSourcePoint(focus)
 
     zoom.value = Math.min(options.maxZoom, Math.max(25, nextZoom))
 
@@ -264,22 +283,13 @@ export function useZoomableSvgPreview(
 
     const content = contentSize.value
     const frameContentMetrics = frameMetrics.value
-    if (content === null || frameContentMetrics === null || focus === null || previousZoom <= 0 || currentScale <= 0) {
+    if (content === null || frameContentMetrics === null || focus === null || focusSource === null) {
       return
     }
 
-    lastZoomAnchor.value = {
-      x: (frame.scrollLeft + focus.x) / currentScale,
-      y: (frame.scrollTop + focus.y) / currentScale,
-    }
-
-    const ratio = zoom.value / previousZoom
-    if (!Number.isFinite(ratio) || ratio === 1) {
-      return
-    }
-
-    const nextScrollLeft = (frame.scrollLeft + focus.x) * ratio - focus.x
-    const nextScrollTop = (frame.scrollTop + focus.y) * ratio - focus.y
+    lastZoomAnchor.value = focusSource
+    const nextScrollLeft = focusSource.x * displayScale.value - focus.x
+    const nextScrollTop = focusSource.y * displayScale.value - focus.y
 
     const maxScrollLeft = Math.max(0, (content.width * displayScale.value) - frameContentMetrics.viewportWidth)
     const maxScrollTop = Math.max(0, (content.height * displayScale.value) - frameContentMetrics.viewportHeight)
