@@ -69,6 +69,24 @@ describe('ConfigEditorPanel', () => {
     expect(wrapper.text()).toContain('Verschiebung')
   })
 
+  it('uses widgets for decoration show and style parameters', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'extract.0.notebound.decoration.v_1.t_22848.0',
+      },
+    })
+
+    expect(wrapper.find('[role="switch"]').exists()).toBe(true)
+    expect(wrapper.find('.config-row__select').exists()).toBe(true)
+  })
+
   it('shows the legacy-visible default for an absent note-bound show override', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

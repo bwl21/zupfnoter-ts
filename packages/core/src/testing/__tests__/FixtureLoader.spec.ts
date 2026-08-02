@@ -51,6 +51,21 @@ describe('fixtureLoader', () => {
     expect(config.extract['0']?.voices).toEqual([2])
   })
 
+  it('repairs boolean strings from older config editor fields', () => {
+    const config = extractSongConfig([
+      'X:1',
+      'T:Legacy Boolean',
+      'K:C',
+      'C',
+      '%%%%zupfnoter.config',
+      '{"extract":{"0":{"notebound":{"decoration":{"v_1":{"t_22848":{"0":{"show":"false"}}}}}}}}',
+    ].join('\n'))
+
+    expect(config.extract?.['0']?.notebound?.decoration).toEqual({
+      v_1: { t_22848: { '0': { show: false } } },
+    })
+  })
+
   it('separates embedded configuration from the ABC editor text and preserves it on edits', () => {
     const documentText = [
       'X:1',

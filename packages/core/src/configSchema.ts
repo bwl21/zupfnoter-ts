@@ -444,13 +444,7 @@ const NOTEBOUND_SCHEMA: JsonSchemaNode = {
       },
     },
     countnote: NOTEBOUND_POS_SCHEMA,
-    decoration: {
-      type: 'object',
-      additionalProperties: false,
-      patternProperties: {
-        '^\\d+$': NOTEBOUND_POS_SCHEMA,
-      },
-    },
+    decoration: legacyNoteboundPosSchema(),
     flowline: VOICE_INDEXED_BEZIER_SCHEMA,
     minc: {
       type: 'object',
@@ -1387,7 +1381,7 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
           barnumber: { $ref: '#/definitions/notebound_pos', align: legacyAlignRef() },
           c_jumplines: { type: 'object', additionalProperties: false, patternProperties: { 'v_d*': { p_repeat: { type: 'number' }, p_begin: { type: 'number' }, p_end: { type: 'number' }, p_follow: { type: 'number' } } } },
           countnote: refTo('#/definitions/notebound_pos'),
-          decoration: { type: 'object', patternProperties: { 'd+': refTo('#/definitions/notebound_pos') } },
+          decoration: refTo('#/definitions/notebound_pos'),
           flowline: { type: 'object', patternProperties: { 'v_d+': { type: 'object', patternProperties: { 'd*': refTo('#/definitions/annotated_bezier') } } } },
           minc: { type: 'object', additionalProperties: false, patternProperties: { 'd*': refTo('#/definitions/minc_entry') } },
           nconf: { type: 'object', additionalProperties: false, patternProperties: { 'v_d*': refTo('#/definitions/nconf_entry') } },
@@ -1833,6 +1827,35 @@ export function validateZupfnoterConfigShape(
 
 export function validateEmbeddedZupfnoterConfigShape(config: unknown): string[] {
   return validateZupfnoterConfigShape(config, { enforceRequired: false })
+}
+
+/**
+ * Repairs boolean values written as strings by older text-input editor fields.
+ * Only the unambiguous literals are converted, and only at schema paths whose
+ * declared type is boolean. Other invalid values remain validation errors.
+ */
+export function normalizeEmbeddedZupfnoterConfigTypes(config: unknown): unknown {
+  return normalizeEmbeddedConfigNode(config, '')
+}
+
+function normalizeEmbeddedConfigNode(value: unknown, path: string): unknown {
+  const schema = path === '' ? undefined : resolveConfigSchemaPath(path)
+  if (schema?.type === 'boolean' && typeof value === 'string') {
+    if (value === 'true') return true
+    if (value === 'false') return false
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((entry) => normalizeEmbeddedConfigNode(entry, path))
+  }
+  if (!isPlainObject(value)) return value
+
+  return Object.fromEntries(
+    Object.entries(value).map(([key, entry]) => [
+      key,
+      normalizeEmbeddedConfigNode(entry, path === '' ? key : `${path}.${key}`),
+    ]),
+  )
 }
 
 export function validateCompleteZupfnoterConfigShape(config: unknown): string[] {

@@ -20,7 +20,10 @@
  */
 
 import type { SongResources, ZupfnoterConfig } from '@zupfnoter/types'
-import { validateEmbeddedZupfnoterConfigShape } from './configSchema.js'
+import {
+  normalizeEmbeddedZupfnoterConfigTypes,
+  validateEmbeddedZupfnoterConfigShape,
+} from './configSchema.js'
 
 /** Separator zwischen ABC-Text und Zupfnoter-Konfigurationsblöcken */
 export const CONFIG_SEPARATOR = '%%%%zupfnoter'
@@ -94,7 +97,7 @@ export function extractSongConfig(abcText: string): Partial<ZupfnoterConfig> {
   if (!json) return {}
 
   try {
-    const parsed = JSON.parse(json) as unknown
+    const parsed = normalizeEmbeddedZupfnoterConfigTypes(JSON.parse(json) as unknown)
     if (!isPlainObject(parsed)) {
       throw new Error('zupfnoter config block must contain a JSON object')
     }
