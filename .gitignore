@@ -51,6 +51,7 @@ __screenshots__/
 fixtures/cases/**/_ts_output/
 fixtures/cases/**/_parity/
 fixtures/cases/protected/
+fixtures/reports/song-gap-report.json
 # Legacy-PDFs bleiben lokale Testartefakte. Nur die freigegebene Referenz wird versioniert.
 fixtures/cases/**/output.extract-*_a3.pdf
 !fixtures/cases/public/3015_reference_sheet/output.extract-0_a3.pdf
