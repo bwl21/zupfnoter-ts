@@ -154,7 +154,7 @@ function parserIssueToRenderIssue(error: AbcParseError): RenderIssue {
   }
 }
 
-function scaleSvgForPreview(svg: string): string {
+function scaleHarpSvgForPreview(svg: string): string {
   return svg.replace(
     /(<svg[^>]*)\s+width="[^"]*"\s+height="[^"]*"/,
     '$1 width="100%"',
@@ -211,7 +211,8 @@ export function renderWorkbenchPreviews(
   let scoreSvg = ''
   let scoreError: string | undefined
   try {
-    scoreSvg = scaleSvgForPreview(scoreParser.renderSvg(abcText))
+    // Keep abc2svg's page width from the ABC/%%pagewidth instructions.
+    scoreSvg = scoreParser.renderSvg(abcText)
   } catch (error) {
     scoreError = error instanceof Error ? error.message : String(error)
   }
@@ -240,7 +241,7 @@ export function renderWorkbenchPreviews(
     activeVoiceIds = resolveActiveVoiceIdsFromSheet(sheet)
     sheetObjectIndex = buildSheetObjectIndex(transformedSong, sheet as Sheet, abcText, scoreSvg)
     sheetChildCount = sheet.children.length
-    harpSvg = scaleSvgForPreview(new SvgEngine({ interactive: true }).draw(sheet))
+    harpSvg = scaleHarpSvgForPreview(new SvgEngine({ interactive: true }).draw(sheet))
   } catch (error) {
     modelError = error instanceof Error ? error.message : String(error)
   }

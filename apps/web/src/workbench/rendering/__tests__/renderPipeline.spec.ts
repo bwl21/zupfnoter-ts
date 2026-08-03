@@ -91,6 +91,24 @@ C
     expect(result.editorDiagnostics.some((diagnostic) => diagnostic.line === 4)).toBe(true)
   })
 
+  it('preserves the abc2svg page width for every score block', () => {
+    const result = renderWorkbenchPreviews(`X:1
+T:Mehrteilige SVG
+C:Komponist
+M:4/4
+L:1/4
+K:C
+C D E F | G A B c |`)
+
+    const svgTags = result.scoreSvg.match(/<svg\b[^>]*>/g) ?? []
+
+    expect(svgTags.length).toBeGreaterThan(1)
+    const widths = svgTags.map((tag) => tag.match(/\bwidth="([^"]+)"/)?.[1])
+
+    expect(new Set(widths).size).toBe(1)
+    expect(widths[0]).not.toBe('100%')
+  })
+
   it('surfaces invalid F header characters directly in the editor diagnostics', () => {
     const result = renderWorkbenchPreviews('X:1\nF:demo file\nT:Demo\nK:C\nC')
 
