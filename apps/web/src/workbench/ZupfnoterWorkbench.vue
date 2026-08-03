@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { computed, inject, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import QRCode from 'qrcode'
 import 'tippy.js/dist/tippy.css'
@@ -81,6 +81,8 @@ import { WorkbenchLogger, type ConsoleLogEntry } from './consoleLog'
 import { ShortcutManager } from './ShortcutManager'
 import {
   INDEXED_DB_DOCUMENT_MARKER,
+  CURRENT_DOCUMENT_LOCAL_STORAGE_KEY,
+  INITIAL_DOCUMENT_KEY,
   loadCurrentDocumentFromIndexedDb,
   saveCurrentDocumentToIndexedDb,
 } from './documentPersistence'
@@ -173,7 +175,8 @@ const harpPdfPreviewLoading = ref(false)
 const harpPdfPreviewError = ref('')
 const harpScrollLeft = ref(0)
 const harpScrollTop = ref(0)
-const documentText = ref(DEFAULT_ABC)
+const initialDocument = inject(INITIAL_DOCUMENT_KEY)
+const documentText = ref(initialDocument ?? DEFAULT_ABC)
 const documentResources = computed<SongResources>(() => extractSongResources(documentText.value))
 const savedDocumentText = ref(documentText.value)
 const documentDirty = computed(() => documentText.value !== savedDocumentText.value)
@@ -252,7 +255,7 @@ const runtimeSettings = ref<Record<string, string>>({
 const flowconfEnabled = computed(() => workbenchConfig.config.flowconf)
 const storageStateKey = 'zupfnoter.storage.context'
 const storageDialogResumeKey = 'zupfnoter.storage.connections-dialog.resume'
-const abcTextKey = 'zupfnoter.abc.current'
+const abcTextKey = CURRENT_DOCUMENT_LOCAL_STORAGE_KEY
 const workbenchUiStateKey = 'zupfnoter.workbench.ui-state'
 const playbackInstrumentKey = 'zupfnoter.playback.instrument'
 const extractPickerOpen = ref(false)
@@ -601,6 +604,7 @@ function restoreStorageContext(): void {
 }
 
 async function restoreCurrentAbcText(): Promise<void> {
+  if (initialDocument !== undefined) return
   try {
     const indexedDocument = await loadCurrentDocumentFromIndexedDb()
     if (indexedDocument !== undefined) {

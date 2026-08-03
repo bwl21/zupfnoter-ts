@@ -1,9 +1,13 @@
+import type { InjectionKey } from 'vue'
+
 const DATABASE_NAME = 'zupfnoter.documents'
 const DATABASE_VERSION = 1
 const DOCUMENT_STORE = 'documents'
 const CURRENT_DOCUMENT_KEY = 'current'
 
 export const INDEXED_DB_DOCUMENT_MARKER = '__zupfnoter_document_in_indexeddb__'
+export const CURRENT_DOCUMENT_LOCAL_STORAGE_KEY = 'zupfnoter.abc.current'
+export const INITIAL_DOCUMENT_KEY: InjectionKey<string | undefined> = Symbol('zupfnoter.initial-document')
 
 function openDocumentDatabase(): Promise<IDBDatabase> {
   if (typeof indexedDB === 'undefined') {
@@ -52,4 +56,24 @@ export async function loadCurrentDocumentFromIndexedDb(): Promise<string | undef
   } finally {
     database.close()
   }
+}
+
+function isUsableDocumentText(value: string): boolean {
+  return value.trim() !== '' && /^X:\s*\S/m.test(value)
+}
+
+export async function loadInitialDocument(): Promise<string | undefined> {
+  try {
+    const indexedDocument = await loadCurrentDocumentFromIndexedDb()
+    if (indexedDocument !== undefined && isUsableDocumentText(indexedDocument)) {
+      return indexedDocument
+    }
+  } catch {
+    // Fall back to the legacy LocalStorage representation below.
+  }
+
+  if (typeof localStorage === 'undefined') return undefined
+  const localDocument = localStorage.getItem(CURRENT_DOCUMENT_LOCAL_STORAGE_KEY)
+  if (localDocument === null || localDocument === INDEXED_DB_DOCUMENT_MARKER) return undefined
+  return isUsableDocumentText(localDocument) ? localDocument : undefined
 }
