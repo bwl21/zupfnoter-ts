@@ -517,11 +517,11 @@ function expandConfigEditorKeyToTreePaths(
       break
     }
     case 'lyrics':
-      return expandLegacyExtractZeroWildcardPaths(key, currentConfig, 'lyrics')
+      return expandLegacyExtractZeroWildcardPaths(key, currentConfig, effectiveConfig, 'lyrics')
     case 'images':
-      return expandImagePaths(key, currentConfig)
+      return expandImagePaths(key, currentConfig, effectiveConfig)
     case 'notes': {
-      const notesPaths = expandNotesCollectionPaths(key, currentConfig, extractId)
+      const notesPaths = expandNotesCollectionPaths(key, currentConfig, effectiveConfig, extractId)
       if (notesPaths !== undefined) return notesPaths
       break
     }
@@ -608,16 +608,20 @@ function expandExtractAnnotationPaths(
 function expandLegacyExtractZeroWildcardPaths(
   key: string,
   currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
   collectionName: 'lyrics',
 ): string[] {
   const wildcardToken = `extract.{extract}.${collectionName}.*.`
   if (!key.startsWith(wildcardToken)) return [configEditorKeyToTreePath(key)]
 
   const suffix = key.slice(wildcardToken.length)
-  const wildcardParent = getPathValue(currentConfig, `extract.0.${collectionName}`)
-  if (!isRecord(wildcardParent)) return []
+  const entryKeys = collectUnionObjectKeys(
+    getPathValue(currentConfig, `extract.0.${collectionName}`),
+    getPathValue(effectiveConfig, `extract.0.${collectionName}`),
+  )
+  if (entryKeys.length === 0) return []
 
-  return Object.keys(wildcardParent)
+  return entryKeys
     .sort(compareConfigKeys)
     // Lyrics are, like images, configured once in extract 0 and shared by
     // the extract views. Keep the editor bound to the source path so values
@@ -628,21 +632,26 @@ function expandLegacyExtractZeroWildcardPaths(
 function expandImagePaths(
   key: string,
   currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
 ): string[] {
   if (key === '$resources.*') {
-    const resources = getPathValue(currentConfig, '$resources')
-    if (!isRecord(resources)) return []
-    return Object.keys(resources).sort(compareConfigKeys).map((entryKey) => `$resources.${entryKey}`)
+    return collectUnionObjectKeys(
+      getPathValue(currentConfig, '$resources'),
+      getPathValue(effectiveConfig, '$resources'),
+    ).map((entryKey) => `$resources.${entryKey}`)
   }
 
   const wildcardToken = 'extract.{extract}.images.*.'
   if (!key.startsWith(wildcardToken)) return [configEditorKeyToTreePath(key)]
 
   const suffix = key.slice(wildcardToken.length)
-  const wildcardParent = getPathValue(currentConfig, 'extract.0.images')
-  if (!isRecord(wildcardParent)) return []
+  const entryKeys = collectUnionObjectKeys(
+    getPathValue(currentConfig, 'extract.0.images'),
+    getPathValue(effectiveConfig, 'extract.0.images'),
+  )
+  if (entryKeys.length === 0) return []
 
-  return Object.keys(wildcardParent)
+  return entryKeys
     .sort(compareConfigKeys)
     // Image entries are created in extract 0 and are shared by the
     // workbench's extract views. Keep the editor bound to that source path;
@@ -652,22 +661,30 @@ function expandImagePaths(
 
 function expandNotesCollectionPaths(
   key: string,
-  config: Record<string, CommandArgumentValue>,
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
   extractId: number,
 ): string[] | undefined {
   if (key !== 'extract.{extract}.notes' && key !== `extract.${extractId}.notes`) return undefined
 
   const configPath = key.replace(/^extract\.(\{extract\}|\d+)(?=\.|$)/, `extract.${extractId}`)
-  const notesValue = getPathValue(config, configPath)
-  if (!isRecord(notesValue)) return [configEditorKeyToTreePath(key)]
+  const currentNotesValue = getPathValue(currentConfig, configPath)
+  const effectiveNotesValue = getPathValue(effectiveConfig, configPath)
+  const noteKeys = new Set<string>()
+  for (const value of [currentNotesValue, effectiveNotesValue]) {
+    if (!isRecord(value)) continue
+    Object.keys(value).forEach((entryKey) => noteKeys.add(entryKey))
+  }
+  if (noteKeys.size === 0) return [configEditorKeyToTreePath(key)]
 
-  const entryPaths = Object.keys(notesValue)
+  const entryPaths = [...noteKeys]
     .sort(compareConfigKeys)
     .flatMap((entryKey) => {
-      const noteValue = notesValue[entryKey]
-      const properties = isRecord(noteValue)
-        ? ['pos', 'text', 'style', 'align'].filter((property) => property in noteValue)
-        : []
+      const values = [
+        isRecord(currentNotesValue) ? currentNotesValue[entryKey] : undefined,
+        isRecord(effectiveNotesValue) ? effectiveNotesValue[entryKey] : undefined,
+      ]
+      const properties = ['pos', 'text', 'style', 'align'].filter((property) => values.some((value) => isRecord(value) && property in value))
 
       if (properties.length === 0) return [`extract.current.notes.${entryKey}`]
       return properties.map((property) => `extract.current.notes.${entryKey}.${property}`)

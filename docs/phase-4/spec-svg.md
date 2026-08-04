@@ -5,7 +5,7 @@
 **Commit:** `cdb5e55`
 
 > **Abweichungen (Stand 2026-06):**
-> - **Default-Maße:** Spec sagt `width: 400, height: 282`, Code hat `420 × 297` (DIN A3)
+> - **Maße:** Der SVG-Viewport verwendet standardmäßig die vollständige A3-Fläche `420 × 297` mm. Die Layout-Zeichenfläche `400 × 282` mm begrenzt ausschließlich die vertikale Notenverteilung und ist keine SVG-Clipping-Grenze.
 > - **`DurationStyle.hasbarover`:** Spec-Zeile 74/75 behauptet das Feld existiere auf `DurationStyle` und werde von `_layoutNote` gesetzt. Code hat **kein `hasbarover` auf `DurationStyle`**, und `_layoutNote` setzt `hasbarover: false` (das Feld auf `Ellipse` wird nie auf `true` gesetzt). Barover werden stattdessen als `rect: true`-Ellipsen via `_layoutMeasureBarover` erzeugt.
 
 ---
@@ -28,8 +28,8 @@ class SvgEngine {
 }
 
 interface SvgEngineOptions {
-  width?: number   // Zeichenbreite in mm (default: 400)
-  height?: number  // Zeichenhöhe in mm (default: 282)
+  width?: number   // SVG-Seitenbreite in mm (default: 420, A3)
+  height?: number  // SVG-Seitenhöhe in mm (default: 297, A3)
   fontStyles?: Record<string, { fontSize: number; fontStyle: string }>
 }
 ```

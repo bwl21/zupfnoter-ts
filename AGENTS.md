@@ -70,6 +70,14 @@ die gemeinsame Funktion erweitert oder in das zuständige gemeinsame Paket
 verschoben. Eine abweichende Implementierung muss vorher begründet und durch
 Paritäts- oder Konsistenztests abgesichert werden.
 
+Das Konfigurationssystem muss bei jeder Auflösung alle betroffenen Ebenen
+berücksichtigen: Built-in-Schema, dynamische Parameter, Built-in-Defaults,
+Ebene 0 und aktive Ebene. Jeder dynamische Config-Tree muss daraus dieselbe
+Vereinigungsmenge bilden. „Nur das Notwendige“ bedeutet nicht nur, die
+sichtbare Symptomeigenschaft zu reparieren, sondern diese auch unsichtbare
+Konsistenzregel zentral umzusetzen. Bereichsspezifische Sonderlogik ist zu
+vermeiden, wenn mehrere Bereiche dieselbe fachliche Regel teilen.
+
 Externe Stimmennummern sind 1-basiert, interne Array-Indizes 0-basiert.
 `Sheet.activeVoices` und `extract.*.voices` verwenden die externe 1-basierte
 Konvention.

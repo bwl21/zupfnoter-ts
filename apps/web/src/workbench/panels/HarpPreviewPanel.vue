@@ -1172,14 +1172,10 @@ onBeforeUnmount(() => {
 }
 
 .harp-preview__svg :deep(.zupfnoter-hitbox.zn-selection-highlight) {
-  fill: color-mix(in srgb, var(--zn-danger) 12%, transparent);
-  fill-opacity: 1;
-  stroke: color-mix(in srgb, var(--zn-danger) 88%, white);
-  stroke-width: 1.5;
-  opacity: 1;
-  vector-effect: non-scaling-stroke;
-  shape-rendering: geometricPrecision;
-  stroke-linejoin: miter;
+  fill: none;
+  fill-opacity: 0;
+  stroke: none;
+  opacity: 0;
 }
 
 .harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight .zupfnoter-bezier-controls) {
@@ -1191,6 +1187,21 @@ onBeforeUnmount(() => {
 .harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight > .zupfnoter-shape) {
   stroke: var(--zn-danger);
   stroke-width: 1.5;
+}
+
+.harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight > .zupfnoter-shape--annotation) {
+  fill: black;
+  stroke: none;
+  stroke-width: 0;
+}
+
+.harp-preview__svg :deep(.zn-selection-box) {
+  fill: color-mix(in srgb, var(--zn-danger) 10%, transparent);
+  fill-opacity: 1;
+  stroke: var(--zn-danger);
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
 }
 
 .harp-preview__svg :deep(.zupfnoter-image-resize-handle) {
