@@ -99,6 +99,7 @@ export {
   CONFIG_EDITOR_MENU_ITEMS,
   getConfigEditorFormSet,
   resolveConfigEditorFormId,
+  resolveConfigEditorDynamicFormPath,
   getConfigEditorNewEntryCommand,
   getConfigEditorDynamicFields,
   getConfigEditorFormSections,

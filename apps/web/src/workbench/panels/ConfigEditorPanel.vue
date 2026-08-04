@@ -19,6 +19,7 @@ import {
   getConfigPathActionProfile,
   getConfigEditorFormSet,
   resolveConfigEditorFormId,
+  resolveConfigEditorDynamicFormPath,
   initConf,
   mergeSongConfig,
   parseConfigEditorValue,
@@ -170,8 +171,10 @@ const parsedSongConfig = computed(() => {
 const defaultConfig = computed(() => initConf(new Confstack()))
 const effectiveConfig = computed(() => mergeSongConfig(defaultConfig.value, parsedSongConfig.value.config))
 const filteredSearch = computed(() => searchText.value.trim().toLowerCase())
+const dynamicFormPath = computed(() => resolveConfigEditorDynamicFormPath(props.activeSection))
 const resolvedActiveSection = computed(() => resolveConfigEditorFormId(props.activeSection) ?? props.activeSection)
 const activeSectionSearch = computed(() => getConfigEditorFormSet(resolvedActiveSection.value) === undefined
+  && dynamicFormPath.value === undefined
   ? resolvedActiveSection.value.trim().toLowerCase()
   : '')
 const effectiveSearch = computed(() => filteredSearch.value === '' ? activeSectionSearch.value : filteredSearch.value)
@@ -515,8 +518,8 @@ function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | unde
       props.currentExtract,
     )
   }
-  if (getConfigEditorDynamicFields(props.activeSection) !== undefined) {
-    return buildDynamicConfigTree(props.activeSection)
+  if (dynamicFormPath.value !== undefined) {
+    return buildDynamicConfigTree(dynamicFormPath.value)
   }
   const definitions = buildConfigEditorSectionTree(
     resolvedActiveSection.value,

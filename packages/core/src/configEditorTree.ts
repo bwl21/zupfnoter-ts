@@ -615,10 +615,7 @@ function expandLegacyExtractZeroWildcardPaths(
   if (!key.startsWith(wildcardToken)) return [configEditorKeyToTreePath(key)]
 
   const suffix = key.slice(wildcardToken.length)
-  const entryKeys = collectUnionObjectKeys(
-    getPathValue(currentConfig, `extract.0.${collectionName}`),
-    getPathValue(effectiveConfig, `extract.0.${collectionName}`),
-  )
+  const entryKeys = collectConfigKeysAtPaths(currentConfig, effectiveConfig, [`extract.0.${collectionName}`])
   if (entryKeys.length === 0) return []
 
   return entryKeys
@@ -635,20 +632,15 @@ function expandImagePaths(
   effectiveConfig: Record<string, CommandArgumentValue>,
 ): string[] {
   if (key === '$resources.*') {
-    return collectUnionObjectKeys(
-      getPathValue(currentConfig, '$resources'),
-      getPathValue(effectiveConfig, '$resources'),
-    ).map((entryKey) => `$resources.${entryKey}`)
+    return collectConfigKeysAtPaths(currentConfig, effectiveConfig, ['$resources'])
+      .map((entryKey) => `$resources.${entryKey}`)
   }
 
   const wildcardToken = 'extract.{extract}.images.*.'
   if (!key.startsWith(wildcardToken)) return [configEditorKeyToTreePath(key)]
 
   const suffix = key.slice(wildcardToken.length)
-  const entryKeys = collectUnionObjectKeys(
-    getPathValue(currentConfig, 'extract.0.images'),
-    getPathValue(effectiveConfig, 'extract.0.images'),
-  )
+  const entryKeys = collectConfigKeysAtPaths(currentConfig, effectiveConfig, ['extract.0.images'])
   if (entryKeys.length === 0) return []
 
   return entryKeys
@@ -670,14 +662,10 @@ function expandNotesCollectionPaths(
   const configPath = key.replace(/^extract\.(\{extract\}|\d+)(?=\.|$)/, `extract.${extractId}`)
   const currentNotesValue = getPathValue(currentConfig, configPath)
   const effectiveNotesValue = getPathValue(effectiveConfig, configPath)
-  const noteKeys = new Set<string>()
-  for (const value of [currentNotesValue, effectiveNotesValue]) {
-    if (!isRecord(value)) continue
-    Object.keys(value).forEach((entryKey) => noteKeys.add(entryKey))
-  }
-  if (noteKeys.size === 0) return [configEditorKeyToTreePath(key)]
+  const noteKeys = collectConfigKeysAtPaths(currentConfig, effectiveConfig, [configPath])
+  if (noteKeys.length === 0) return [configEditorKeyToTreePath(key)]
 
-  const entryPaths = [...noteKeys]
+  const entryPaths = noteKeys
     .sort(compareConfigKeys)
     .flatMap((entryKey) => {
       const values = [
@@ -784,6 +772,19 @@ function collectUnionObjectKeys(...sources: unknown[]): string[] {
   }
 
   return [...keys].sort(compareConfigKeys)
+}
+
+function collectConfigKeysAtPaths(
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+  paths: readonly string[],
+): string[] {
+  return collectUnionObjectKeys(
+    ...paths.flatMap((path) => [
+      getPathValue(currentConfig, path),
+      getPathValue(effectiveConfig, path),
+    ]),
+  )
 }
 
 function collectUnionPropertyKeys(

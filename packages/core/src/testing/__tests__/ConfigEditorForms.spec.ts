@@ -7,6 +7,7 @@ import {
   getConfigEditorNewEntryCommand,
   getConfigEditorFormSections,
   resolveConfigEditorFormId,
+  resolveConfigEditorDynamicFormPath,
 } from '../../configEditorForms.js'
 import {
   LEGACY_BARNUMBERS_EXTRACT_PATH_SUFFIXES,
@@ -54,6 +55,34 @@ describe('ConfigEditorForms', () => {
   it('resolves concrete image paths to the image editor form', () => {
     expect(resolveConfigEditorFormId('extract.0.images.0')).toBe('images')
     expect(resolveConfigEditorFormId('$resources.second_png')).toBe('images')
+  })
+
+  it('resolves descendants of schema-dynamic collections to their form', () => {
+    expect(resolveConfigEditorFormId('extract.0.notes.T06_legend')).toBeUndefined()
+    expect(resolveConfigEditorFormId('extract.0.notes.T06_legend.text')).toBeUndefined()
+    expect(resolveConfigEditorFormId('extract.0.lyrics.0.verses')).toBeUndefined()
+  })
+
+  it('recognizes a concrete notes entry as a generated dynamic form', () => {
+    expect(getConfigEditorDynamicFields('extract.0.notes.T06_legend')).toEqual(['pos', 'text', 'style', 'align'])
+    expect(resolveConfigEditorDynamicFormPath('extract.0.notes.T06_legend')).toBe('extract.0.notes.T06_legend')
+    expect(resolveConfigEditorDynamicFormPath('extract.0.notes.T06_legend.text')).toBe('extract.0.notes.T06_legend')
+  })
+
+  it('recognizes all legacy dynamic form key lists', () => {
+    const cases = [
+      ['extract.0.legend', ['pos', 'tstyle', 'align', 'spos', 'style']],
+      ['extract.0.lyrics.0', ['verses', 'pos', 'style']],
+      ['extract.0.notebound.barnumber.v_1.t_2', ['pos', 'align']],
+      ['extract.0.notebound.repeat_x.v_1.2', ['text', 'pos', 'style']],
+      ['extract.0.notebound.flowline.v_1.2', ['cp1', 'cp2', 'show']],
+      ['extract.0.notebound.nconf.v_1.t_2.n_3', ['nshift']],
+    ] as const
+
+    for (const [path, fields] of cases) {
+      expect(getConfigEditorDynamicFields(path)).toEqual(fields)
+      expect(resolveConfigEditorDynamicFormPath(`${path}.${fields[0]}`)).toBe(path)
+    }
   })
 
   it('ports the legacy editconf menu order and ids', () => {

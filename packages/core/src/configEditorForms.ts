@@ -23,6 +23,7 @@ import {
   LEGACY_NOTES_EXTRACT_PATH_SUFFIXES,
   LEGACY_PRINTER_EXTRACT_PATH_SUFFIXES,
   LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES,
+  resolveConfigSchemaPath,
   toExtractConfigPath,
 } from './configSchema.js'
 import { abc2svgTextrans } from './localization/de-de.js'
@@ -501,7 +502,7 @@ export function getConfigEditorFormSet(formId: string): ConfigEditorFormSet | un
 /** Liefert das Legacy-Formular zu einem konkreten Konfigurationspfad. */
 export function resolveConfigEditorFormId(path: string): ConfigEditorFormId | undefined {
   if (isConfigEditorFormId(path)) return path
-  if (getConfigEditorDynamicFields(path) !== undefined) return undefined
+  if (resolveConfigEditorDynamicFormPath(path) !== undefined) return undefined
 
   const pathParts = normalizeConfigEditorPath(path).split('.')
   for (const formSet of Object.values(CONFIG_EDITOR_FORM_SETS)) {
@@ -517,11 +518,15 @@ function normalizeConfigEditorPath(path: string): string {
 
 function matchesConfigEditorPathPrefix(pathParts: string[], key: string): boolean {
   const keyParts = key.split('.')
-  if (pathParts.length > keyParts.length) return false
-  return pathParts.every((part, index) => {
+  if (!pathParts.slice(0, keyParts.length).every((part, index) => {
     const keyPart = keyParts[index]
     return keyPart === '*' || keyPart === '{extract}' || keyPart === part
-  })
+  })) return false
+  if (pathParts.length <= keyParts.length) return true
+
+  const schemaPath = key.replace(/^extract\.\{extract\}(?=\.|$)/, 'extract.0')
+  const schema = resolveConfigSchemaPath(schemaPath)
+  return schema?.properties !== undefined || schema?.patternProperties !== undefined
 }
 
 export function isConfigEditorFormId(formId: string): formId is ConfigEditorFormId {
@@ -549,6 +554,36 @@ export function getConfigEditorDynamicFields(path: string): readonly string[] | 
   }
   if (/^extract\.(?:current|\d+)\.notebound\.minc\.\d+$/.test(path)) return ['minc_f']
   if (/^extract\.(?:current|\d+)\.notebound\.nconf\.v_\d+\.t_\d+\.n_\d+$/.test(path)) return ['nshift']
+  if (/^extract\.(?:current|\d+)\.notebound\.(?:barnumber|countnote)\.v_\d+\.t_\d+$/.test(path)) {
+    return ['pos', 'align']
+  }
+  if (/^extract\.(?:current|\d+)\.notebound\.repeat_.+\.v_\d+\.\d+$/.test(path)) {
+    return ['text', 'pos', 'style']
+  }
+  if (/^extract\.(?:current|\d+)\.legend$/.test(path)) {
+    return ['pos', 'tstyle', 'align', 'spos', 'style']
+  }
+  if (/^extract\.(?:current|\d+)\.lyrics\.\d$/.test(path)) {
+    return ['verses', 'pos', 'style']
+  }
+  if (/^extract\.(?:current|\d+)\.notes\.[^.]+$/.test(path)) {
+    return ['pos', 'text', 'style', 'align']
+  }
+  return undefined
+}
+
+/**
+ * Liefert für einen dynamischen Eintrag den Objektpfad, zu dem Legacy ein
+ * konkretes Formular erzeugt. Ein Treffer auf einem Feld wird dabei auf den
+ * Eintrag zurückgeführt.
+ */
+export function resolveConfigEditorDynamicFormPath(path: string): string | undefined {
+  if (getConfigEditorDynamicFields(path) !== undefined) return path
+  const separator = path.lastIndexOf('.')
+  if (separator > 0) {
+    const objectPath = path.slice(0, separator)
+    if (getConfigEditorDynamicFields(objectPath) !== undefined) return objectPath
+  }
   return undefined
 }
 

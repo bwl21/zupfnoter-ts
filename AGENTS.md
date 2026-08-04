@@ -57,6 +57,13 @@ berechnete Timeline; es wird keine zweite Timeline aus dem Export erzeugt.
 Konfigurationswerte werden über `Confstack` aufgelöst, nicht durch lokale
 Merges in Layout- oder UI-Code.
 
+Jeder konkrete Konfigurationspfad, der über Suche oder `editconf` geöffnet
+wird, muss generisch über `Confstack` und das Built-in-Schema aufgelöst werden.
+Das Formular wird aus dem ermittelten Schemaobjekt und dessen Eigenschaften
+erzeugt. Bereichsspezifische Regex-Tabellen, feste Feldlisten, Expander oder
+Sonderlogik im Editor sind unzulässig. Ausnahmen benötigen einen
+dokumentierten Legacy-Beleg und einen Paritätstest.
+
 ### Bestehende Fachlogik wiederverwenden
 
 Bevor neue fachliche Verarbeitung implementiert wird, muss geprüft werden, ob
@@ -77,6 +84,10 @@ Vereinigungsmenge bilden. „Nur das Notwendige“ bedeutet nicht nur, die
 sichtbare Symptomeigenschaft zu reparieren, sondern diese auch unsichtbare
 Konsistenzregel zentral umzusetzen. Bereichsspezifische Sonderlogik ist zu
 vermeiden, wenn mehrere Bereiche dieselbe fachliche Regel teilen.
+
+Die UI darf diese Ebenen nicht als eigene Merge-Logik nachbauen. Der
+Confstack liefert den wirksamen Wert und muss bei Bedarf auch die Quell-Ebene
+(global, Ebene 0 oder aktive Ebene) für einen konkreten Eintrag bestimmen.
 
 Externe Stimmennummern sind 1-basiert, interne Array-Indizes 0-basiert.
 `Sheet.activeVoices` und `extract.*.voices` verwenden die externe 1-basierte

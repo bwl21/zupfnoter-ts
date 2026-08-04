@@ -147,6 +147,27 @@ describe('buildConfigEditorSectionTree', () => {
     expect(configPaths).toContain('extract.0.lyrics.0.style')
   })
 
+  it('expands note entries that exist only in the effective configuration', () => {
+    const effectiveConfig = {
+      extract: {
+        0: {
+          notes: {
+            T06_legend: {
+              text: 'Legende',
+              pos: [10, 20],
+            },
+          },
+        },
+      },
+    } as unknown as Record<string, CommandArgumentValue>
+
+    const tree = buildConfigEditorSectionTree('notes', {}, effectiveConfig, 0)
+    const configPaths = flattenConfigPaths(tree ?? [])
+
+    expect(configPaths).toContain('extract.current.notes.T06_legend.text')
+    expect(configPaths).toContain('extract.current.notes.T06_legend.pos')
+  })
+
   it('expands image resources and image entries from extract 0', () => {
     const currentConfig = {
       $resources: {
