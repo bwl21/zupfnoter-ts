@@ -41,6 +41,7 @@ export function computeBeatCompression(
   song: Song,
   layoutLines: number[],
   conf: Confstack,
+  _extractNr: number | string = 0,
 ): BeatCompressionMap {
   const packerConf = conf.getSubtree('layout.packer') as { pack_method?: number } | undefined
   const packMethod = packerConf?.pack_method ?? 0
@@ -130,11 +131,7 @@ function getMincFactor(
 }
 
 function getLayoutMinc(conf: Confstack): Record<string, { minc_f?: number | null }> {
-  return (
-    (conf.getSubtree('extract.notebound.minc') as Record<string, { minc_f?: number | null }> | undefined) ??
-    (conf.getSubtree('notebound.minc') as Record<string, { minc_f?: number | null }> | undefined) ??
-    {}
-  )
+  return (conf.getSubtree('notebound.minc') as Record<string, { minc_f?: number | null }> | undefined) ?? {}
 }
 
 function isPlayable(entity: unknown): entity is PlayableEntity {

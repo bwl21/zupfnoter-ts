@@ -776,6 +776,7 @@ export class SvgEngine {
       // The SVG layout uses millimetres as coordinate units: five millimetres
       // on either side of the visible line make the drag target forgiving.
       ? svgPath(d, '#d44', el.lineWidth + 10, 'none', {
+        class: 'zupfnoter-jumpline-hitbox',
         'data-drag-hitbox': 'true',
         // The diagnostic path must not cover neighbouring notation elements.
         // HarpPreviewPanel performs the forgiving geometric hit test instead.

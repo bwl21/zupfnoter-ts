@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildConfigEditorAllParametersTree,
   buildConfigEditorSectionTree,
+  buildConfigEditorTargetTree,
   CONFIG_EDITOR_TREE_DEFINITION,
   findConfigEditorTreeDefinition,
 } from '../../configEditorTree.js'
@@ -38,6 +39,52 @@ function flattenTreePaths(
 }
 
 describe('buildConfigEditorSectionTree', () => {
+  it('builds a generic target tree for a dynamic variant-end key', () => {
+    const tree = buildConfigEditorTargetTree(
+      'extract.0.notebound.variantend.v_3.4608',
+      {},
+      {},
+      0,
+    )
+
+    expect(flattenConfigPaths(tree)).toEqual([
+      'extract',
+      'extract.0',
+      'extract.0.notebound',
+      'extract.0.notebound.variantend',
+      'extract.0.notebound.variantend.v_3',
+      'extract.0.notebound.variantend.v_3.4608',
+      'extract.0.notebound.variantend.v_3.4608.pos',
+      'extract.0.notebound.variantend.v_3.4608.align',
+      'extract.0.notebound.variantend.v_3.4608.show',
+      'extract.0.notebound.variantend.v_3.4608.text',
+      'extract.0.notebound.variantend.v_3.4608.style',
+    ])
+  })
+
+  it('does not treat schema properties as dynamic pattern entries', () => {
+    const tree = buildConfigEditorTargetTree(
+      'extract.0.notebound.variantend.v_3.3072',
+      { extract: { 0: { notebound: { variantend: { v_3: { 3072: { pos: '-8, -7' } } } } } } },
+      {},
+      0,
+    )
+
+    expect(flattenConfigPaths(tree)).toEqual([
+      'extract',
+      'extract.0',
+      'extract.0.notebound',
+      'extract.0.notebound.variantend',
+      'extract.0.notebound.variantend.v_3',
+      'extract.0.notebound.variantend.v_3.3072',
+      'extract.0.notebound.variantend.v_3.3072.pos',
+      'extract.0.notebound.variantend.v_3.3072.align',
+      'extract.0.notebound.variantend.v_3.3072.show',
+      'extract.0.notebound.variantend.v_3.3072.text',
+      'extract.0.notebound.variantend.v_3.3072.style',
+    ])
+  })
+
   it('derives the rest-position subtree from the configuration schema', () => {
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'produce')?.label).toBe('PDF für Auszüge')
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition')?.label).toBe('Position der Pausen')

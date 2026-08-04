@@ -315,7 +315,7 @@ describe('HarpnotesLayout', () => {
       extract0.synchlines = []
 
       const { sheet } = pipelineWithConfig(ABC_SYNCHPOINT_TRIAD, config)
-      const ellipses = sheet.children.filter((child): child is Ellipse => child.type === 'Ellipse')
+      const ellipses = sheet.children.filter((child): child is Ellipse => child.type === 'Ellipse' && child.znId !== undefined)
       const synchLine = sheet.children.find(
         (child): child is FlowLine => child.type === 'FlowLine' && child.style === 'dashed',
       )
@@ -770,6 +770,11 @@ V:V1 clef=treble-8
       const legend = annotations.find(a => a.text.includes('Legend Test'))
       expect(legend).toBeDefined()
       expect(annotations.some(a => a.text.includes('Test Composer'))).toBe(true)
+      expect(sheet.children.some((child) => (
+        child.type === 'Ellipse'
+        && child.rect === true
+        && child.confKey === legend?.confKey
+      ))).toBe(true)
     })
 
     it('uses injected annotation text metrics for annotation backgrounds', () => {
@@ -789,6 +794,7 @@ V:V1 clef=treble-8
       expect(background).toBeDefined()
       expect(background?.size[0]).toBeCloseTo(5.5)
       expect(background?.size[1]).toBeCloseTo(4.5)
+      expect(background?.draginfo).toMatchObject({ handler: 'annotation' })
     })
 
     it('renders the legacy sheet footer annotations', () => {
@@ -860,7 +866,7 @@ V:V1 clef=treble-8
       const glyphs = sheet.children.filter((c): c is Glyph => c.type === 'Glyph')
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
       const backgrounds = sheet.children.filter(
-        (c): c is Ellipse => c.type === 'Ellipse' && c.color === 'white',
+        (c): c is Ellipse => c.type === 'Ellipse' && c.color === 'white' && c.confKey?.includes('.notebound.decoration.') === true,
       )
 
       expect(glyphs.some((glyph) => glyph.glyphName === 'fermata')).toBe(true)
@@ -1072,7 +1078,7 @@ V:V1 clef=treble-8
       expect(annotation?.center[1]).toBeCloseTo((note?.center[1] ?? 0) + 13)
       expect(annotation?.draginfo).toMatchObject({
         handler: 'annotation',
-        conf_key: 'extract.notebound.annotation.v_1.0.pos',
+        conf_key: 'extract.0.notebound.annotation.v_1.0.pos',
       })
     })
 

@@ -296,11 +296,9 @@ describe('computeBeatCompression – method 1 (collision)', () => {
         BEAT_RESOLUTION,
         packer: { pack_method: 1, pack_min_increment: 0 },
       },
-      extract: {
-        notebound: {
-          minc: {
-            96: { minc_f: 1 },
-          },
+      notebound: {
+        minc: {
+          96: { minc_f: 1 },
         },
       },
     })

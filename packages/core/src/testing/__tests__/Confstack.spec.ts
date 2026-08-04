@@ -337,9 +337,9 @@ describe('Confstack.getSubtree()', () => {
     expect(subtree).toEqual({ items: [1, 2, 3] })
   })
 
-  it('entspricht Legacy get_print_options: extract als Hash', () => {
+  it('hält die Extrakt-ID im wirksamen Pfad', () => {
     const cs = buildConfstack(defaultTestConfig, 0)
-    const extract = cs.getSubtree('extract')
+    const extract = cs.getSubtree('extract.0')
     expect(extract).toBeDefined()
     expect(extract).toHaveProperty('voices')
     expect(extract).toHaveProperty('flowlines')
@@ -428,8 +428,8 @@ describe('buildConfstack()', () => {
 
   it('liest Extrakt-Werte', () => {
     const cs = buildConfstack(defaultTestConfig, 0)
-    expect(cs.get('extract.voices')).toEqual([1, 2, 3, 4])
-    expect(cs.get('extract.flowlines')).toEqual([1, 3])
+    expect(cs.get('extract.0.voices')).toEqual([1, 2, 3, 4])
+    expect(cs.get('extract.0.flowlines')).toEqual([1, 3])
   })
 
   it('Layout-Override eines Extrakts überschreibt globale Layout-Werte', () => {
@@ -587,7 +587,7 @@ describe('buildConfstack() – Extract-Vererbung', () => {
 
   it('Extrakt 1 hat eigene voices', () => {
     const cs = buildConfstack(configWithTwoExtracts, 1)
-    expect(cs.get('extract.voices')).toEqual([1, 2])
+    expect(cs.get('extract.1.voices')).toEqual([1, 2])
   })
 
   it('Extrakt 1 Layout-Override überschreibt globales Layout', () => {
@@ -609,6 +609,6 @@ describe('buildConfstack() – Extract-Vererbung', () => {
   it('unbekannter Extrakt erbt von Extrakt 0 und globalen Werten', () => {
     const cs = buildConfstack(configWithTwoExtracts, 99)
     expect(cs.get('layout.ELLIPSE_SIZE')).toEqual([3.5, 1.7])
-    expect(cs.get('extract.voices')).toEqual([1, 2, 3, 4])
+    expect(cs.get('extract.99.voices')).toEqual([1, 2, 3, 4])
   })
 })

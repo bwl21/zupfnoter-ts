@@ -45,6 +45,8 @@ describe('ConfigEditorForms', () => {
       .toEqual(['show', 'pos', 'style'])
     expect(getConfigEditorDynamicFields('extract.0.notebound.decoration.v_1.t_1536.0'))
       .toEqual(['show', 'pos', 'style'])
+    expect(getConfigEditorDynamicFields('extract.0.notebound.variantend.v_3.4608')).toBeUndefined()
+    expect(resolveConfigEditorDynamicFormPath('extract.0.notebound.variantend.v_3.4608.pos')).toBeUndefined()
   })
 
   it('keeps the global tuplet style parameter in the editor form', () => {

@@ -111,6 +111,7 @@ interface ActiveDrag {
     bounds: { x: number; y: number; width: number; height: number }
   }
   element: Element
+  companionElement?: Element
   startClient: { x: number; y: number }
 }
 
@@ -121,6 +122,7 @@ interface ContextMenuState {
 }
 
 const dragState = ref<ActiveDrag | null>(null)
+const hoveredJumpline = ref<HTMLElement | null>(null)
 const contextMenu = ref<ContextMenuState | null>(null)
 const hoveredConfigKey = ref<string | undefined>(undefined)
 const contextMenuHelpTexts = ref<ConfigHelpTexts>({})
@@ -259,8 +261,15 @@ function configKeyAtElement(element: Element | null): string | undefined {
   return confKey
 }
 
-function updateConfigHover(target: EventTarget | null): void {
-  const confKey = target instanceof Element ? configKeyAtElement(target) : undefined
+function configurableElementAtEvent(event: MouseEvent): HTMLElement | null {
+  const direct = event.target instanceof Element
+    ? event.target.closest<HTMLElement>('.zupfnoter-element[data-conf-key]')
+    : null
+  return direct ?? findJumplineAtEvent(event)
+}
+
+function updateConfigHover(element: Element | null): void {
+  const confKey = configKeyAtElement(element)
   if (confKey === hoveredConfigKey.value) return
   hoveredConfigKey.value = confKey
   emit('config-hover', confKey === undefined ? {} : { confKey })
@@ -331,7 +340,7 @@ function contextMenuEntries(element: Element): SvgContextMenuEntry[] {
 function handleContextMenu(event: MouseEvent): void {
   const target = event.target
   if (!(target instanceof Element)) return
-  const entries = contextMenuEntries(target)
+  const entries = contextMenuEntries(configurableElementAtEvent(event) ?? target)
   if (entries.length === 0) return
   const frame = frameRef.value
   if (frame === null) return
@@ -404,7 +413,7 @@ async function syncContextMenuTooltips(): Promise<void> {
   }
 }
 
-function findJumplineAtEvent(event: PointerEvent): HTMLElement | null {
+function findJumplineAtEvent(event: MouseEvent): HTMLElement | null {
   const canvas = canvasRef.value
   if (canvas === null) return null
   const target = event.target
@@ -453,7 +462,8 @@ function handlePointerDown(event: PointerEvent): void {
     // Shift-click is reserved for musical selection. In particular,
     // Option+Shift on an image must not fall through to image move/resize.
     if (event.shiftKey) return
-    const directDraggable = event.target.closest<HTMLElement>('.zupfnoter-element[data-drag-enabled="true"][data-conf-key]')
+    const resolvedDrag = resolveDragDrawable(event.target)
+    const directDraggable = resolvedDrag?.drawable ?? null
     const draggable = directDraggable ?? findJumplineAtEvent(event)
     const resizeHandle = event.target.closest<SVGRectElement>('[data-image-resize-corner]')
     const image = event.target.closest<SVGImageElement>('image.zupfnoter-shape--image')
@@ -550,6 +560,7 @@ function handlePointerDown(event: PointerEvent): void {
           }
           : {}),
         element: draggable,
+        ...(resolvedDrag?.companion === undefined ? {} : { companionElement: resolvedDrag.companion }),
         startClient: { x: event.clientX, y: event.clientY },
       }
       if (handler === 'bezier' || handler === 'tuplet' || handler === 'image-resize') draggable.setAttribute('data-drag-active', 'true')
@@ -585,8 +596,22 @@ function isImageMoveCenter(event: PointerEvent, image: SVGImageElement): boolean
     && event.clientY < bounds.bottom - insetY
 }
 
+function resolveDragDrawable(target: Element): { drawable: HTMLElement; companion?: HTMLElement } | null {
+  const drawable = target.closest<HTMLElement>('.zupfnoter-element[data-drag-enabled="true"][data-conf-key]')
+  if (drawable === null) return null
+  if (!drawable.classList.contains('zupfnoter-role--barover')) return { drawable }
+  const confKey = drawable.getAttribute('data-conf-key')
+  const canvas = canvasRef.value
+  if (confKey === null || canvas === null) return { drawable }
+  const annotation = [...canvas.querySelectorAll<HTMLElement>('.zupfnoter-element[data-role="annotation"][data-conf-key]')]
+    .find((candidate) => candidate.getAttribute('data-conf-key') === confKey)
+  return annotation === undefined ? { drawable } : { drawable: annotation, companion: drawable }
+}
+
 function handlePointerMove(event: PointerEvent): void {
-  updateConfigHover(event.target)
+  const drawable = configurableElementAtEvent(event)
+  const jumpline = drawable?.getAttribute('data-drag-handler') === 'jumpline' ? drawable : null
+  updateConfigHover(drawable)
   const activeDrag = dragState.value
   if (activeDrag?.pointerId === event.pointerId) {
     const delta = screenDeltaToSvgDelta(
@@ -601,21 +626,30 @@ function handlePointerMove(event: PointerEvent): void {
     event.preventDefault()
     return
   }
-  updateJumplineHover(event)
+  updateJumplineHover(event, jumpline)
   onPointerMove(event)
 }
 
-function updateJumplineHover(event: PointerEvent): void {
+function updateJumplineHover(event: PointerEvent, resolvedJumpline: HTMLElement | null = null): void {
   const frame = frameRef.value
   if (frame === null) return
   const target = event.target
   const directJumpline = target instanceof Element
-    && target.closest('.zupfnoter-element[data-drag-handler="jumpline"][data-conf-key]') !== null
-  frame.classList.toggle('harp-preview__frame--jumpline-hover', directJumpline || findJumplineAtEvent(event) !== null)
+    ? target.closest<HTMLElement>('.zupfnoter-element[data-drag-handler="jumpline"][data-conf-key]')
+    : null
+  const currentJumpline = resolvedJumpline ?? directJumpline ?? findJumplineAtEvent(event)
+  if (hoveredJumpline.value !== currentJumpline) {
+    hoveredJumpline.value?.classList.remove('harp-preview__jumpline-hover')
+    hoveredJumpline.value = currentJumpline
+    hoveredJumpline.value?.classList.add('harp-preview__jumpline-hover')
+  }
+  frame.classList.toggle('harp-preview__frame--jumpline-hover', currentJumpline !== null)
 }
 
 function clearJumplineHover(): void {
   frameRef.value?.classList.remove('harp-preview__frame--jumpline-hover')
+  hoveredJumpline.value?.classList.remove('harp-preview__jumpline-hover')
+  hoveredJumpline.value = null
   if (hoveredConfigKey.value !== undefined) {
     hoveredConfigKey.value = undefined
     emit('config-hover', {})
@@ -632,6 +666,7 @@ function handlePointerUp(event: PointerEvent): void {
       event.clientY - activeDrag.startClient.y,
     )
     activeDrag.element.removeAttribute('data-drag-active')
+    activeDrag.companionElement?.removeAttribute('data-drag-active')
     dragState.value = null
     if (frameRef.value?.hasPointerCapture(event.pointerId) === true) {
       frameRef.value.releasePointerCapture(event.pointerId)
@@ -759,7 +794,9 @@ function updateLiveDrag(activeDrag: ActiveDrag, deltaX: number, deltaY: number):
     }
     return
   }
-  activeDrag.element.setAttribute('transform', `translate(${deltaX} ${deltaY})`)
+  const transform = `translate(${deltaX} ${deltaY})`
+  activeDrag.element.setAttribute('transform', transform)
+  activeDrag.companionElement?.setAttribute('transform', transform)
 }
 
 function imageResizeGeometry(
@@ -1144,6 +1181,13 @@ onBeforeUnmount(() => {
   cursor: pointer;
 }
 
+.harp-preview__svg :deep(.zupfnoter-element.harp-preview__jumpline-hover .zupfnoter-jumpline-hitbox) {
+  stroke: var(--zn-accent);
+  stroke-opacity: 0.2;
+  stroke-width: 10;
+  pointer-events: none;
+}
+
 .harp-preview__svg :deep(.zupfnoter-element[data-drag-enabled="true"]:hover .zupfnoter-hitbox) {
   opacity: 0.12;
   fill: var(--zn-accent);
@@ -1193,6 +1237,11 @@ onBeforeUnmount(() => {
   fill: color-mix(in srgb, var(--zn-danger) 10%, transparent);
   fill-opacity: 1;
   stroke: var(--zn-danger);
+}
+
+.harp-preview__svg :deep(.zupfnoter-element.zupfnoter-role--barover.zn-selection-highlight > .zupfnoter-shape--rect) {
+  fill: none;
+  stroke: none;
 }
 
 .harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight > .zupfnoter-shape--annotation) {

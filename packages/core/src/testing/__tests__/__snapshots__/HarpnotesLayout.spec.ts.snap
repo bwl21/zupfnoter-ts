@@ -3,7 +3,7 @@
 exports[`HarpnotesLayout > full sheet snapshot > single_note sheet matches snapshot 1`] = `
 {
   "Annotation": 9,
-  "Ellipse": 1,
+  "Ellipse": 3,
   "Path": 3,
 }
 `;
@@ -11,7 +11,7 @@ exports[`HarpnotesLayout > full sheet snapshot > single_note sheet matches snaps
 exports[`HarpnotesLayout > full sheet snapshot > two_voices sheet matches snapshot 1`] = `
 {
   "Annotation": 9,
-  "Ellipse": 10,
+  "Ellipse": 12,
   "FlowLine": 7,
   "Path": 3,
 }
@@ -114,6 +114,58 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
     "type": "Ellipse",
     "visible": true,
     "znId": "0",
+  },
+  {
+    "center": [
+      347.1921111111111,
+      4.883333333333333,
+    ],
+    "color": "white",
+    "confKey": "extract.0.legend.pos",
+    "dotted": false,
+    "draginfo": {
+      "handler": "annotation",
+      "value": [
+        320,
+        7,
+      ],
+    },
+    "fill": "filled",
+    "hasbarover": false,
+    "lineWidth": 0.1,
+    "more_conf_keys": [],
+    "rect": true,
+    "size": [
+      27.692111111111107,
+      4.027777777777778,
+    ],
+    "type": "Ellipse",
+    "visible": true,
+    "znId": undefined,
+  },
+  {
+    "center": [
+      337.84138333333334,
+      32.461,
+    ],
+    "color": "white",
+    "confKey": "extract.0.legend.spos",
+    "dotted": false,
+    "draginfo": {
+      "handler": "annotation",
+    },
+    "fill": "filled",
+    "hasbarover": false,
+    "lineWidth": 0.1,
+    "more_conf_keys": [],
+    "rect": true,
+    "size": [
+      18.34138333333333,
+      9.601666666666665,
+    ],
+    "type": "Ellipse",
+    "visible": true,
+    "znId": undefined,
   },
 ]
 `;

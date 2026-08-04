@@ -38,9 +38,11 @@ export function buildConfstack(
     printer: config.printer as unknown as ConfigObject,
   })
 
-  // Schicht 2: Basis-Extrakt (extract.0), wenn wir nicht bereits Extrakt 0 sind
+  // Schicht 2: Basis-Extrakt (extract.0), wenn wir nicht bereits Extrakt 0 sind.
+  // The active extract id remains part of the path; the base values are
+  // layered under the target id so inheritance does not create an id-less alias.
   if (extractKey !== '0' && baseExtract) {
-    stack.push(extractToLayer(baseExtract))
+    stack.push(extractToLayer(extractKey, baseExtract))
     if (baseExtract.printer) {
       stack.push({ printer: baseExtract.printer as unknown as ConfigObject })
     }
@@ -51,7 +53,7 @@ export function buildConfstack(
 
   // Schicht 3: Ziel-Extrakt (ohne layout/printer-Overrides)
   if (targetExtract) {
-    stack.push(extractToLayer(targetExtract))
+    stack.push(extractToLayer(extractKey, targetExtract))
   }
 
   // Schicht 4: Printer-Override des Extrakts
@@ -68,19 +70,76 @@ export function buildConfstack(
 }
 
 /**
+ * Baut die Legacy-kompatible lokale Layout-Instanz für einen Extrakt.
+ *
+ * Diese Instanz ist absichtlich nicht der globale Konfigurationsbaum: In ihr
+ * liegen extract.0 und der aktive Extrakt als lokale wirksame Werte. Die
+ * fachlichen Schlüssel im Sheet-Modell bleiben davon unberührt und werden
+ * weiterhin mit `extract.<id>...` erzeugt.
+ */
+export function buildPrintOptions(
+  config: ZupfnoterConfig,
+  extractNr: number | string = 0,
+): Confstack {
+  const stack = new Confstack()
+  stack.strict = false
+  const extractKey = String(extractNr)
+  const baseExtract = config.extract['0']
+  const targetExtract = config.extract[extractKey]
+
+  const { extract: _extract, ...globalConfigValues } = config
+  const globalConfig = globalConfigValues as unknown as ConfigObject
+  // initConf-Presets enthalten weiterhin Late-Bindings auf extract.0.
+  // Diese globale Referenz bleibt in der lokalen Instanz verfügbar; die
+  // wirksamen Extraktwerte liegen zusätzlich direkt auf ihrer Wurzelebene.
+  globalConfig.extract = config.extract as unknown as ConfigObject
+  stack.push(globalConfig)
+
+  if (extractKey !== '0' && baseExtract) {
+    stack.push(extractToPrintOptionsLayer(baseExtract))
+    if (baseExtract.printer) stack.push({ printer: baseExtract.printer as unknown as ConfigObject })
+    if (baseExtract.layout) stack.push({ layout: baseExtract.layout as unknown as ConfigObject })
+  }
+
+  if (targetExtract) stack.push(extractToPrintOptionsLayer(targetExtract))
+  if (targetExtract?.printer) stack.push({ printer: targetExtract.printer as unknown as ConfigObject })
+  if (targetExtract?.layout) stack.push({ layout: targetExtract.layout as unknown as ConfigObject })
+
+  return stack
+}
+
+/**
  * Wandelt eine ExtractConfig in eine Stack-Schicht um.
  * layout/printer-Overrides werden ausgelassen — sie kommen als eigene Schichten.
  */
-function extractToLayer(extract: ExtractConfig): ConfigObject {
+function extractToLayer(extractKey: string, extract: ExtractConfig): ConfigObject {
   const { layout: _layout, printer: _printer, ...rest } = extract
   const notebound = (rest.notebound ?? {}) as Record<string, unknown>
   return {
     extract: {
-      ...rest,
-      notebound: {
-        minc: {},
-        ...notebound,
+      [extractKey]: {
+        ...rest,
+        notebound: {
+          minc: {},
+          ...notebound,
+        },
       },
     },
+  } as unknown as ConfigObject
+}
+
+function extractToPrintOptionsLayer(extract: ExtractConfig): ConfigObject {
+  const { layout: _layout, printer: _printer, ...rest } = extract
+  const notebound = (rest.notebound ?? {}) as Record<string, unknown>
+  const localOptions = {
+    ...rest,
+    notebound: {
+      minc: {},
+      ...notebound,
+    },
+  }
+  return {
+    ...localOptions,
+    print_options: localOptions,
   } as unknown as ConfigObject
 }

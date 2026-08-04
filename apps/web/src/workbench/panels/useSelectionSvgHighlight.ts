@@ -57,6 +57,34 @@ function addAnnotationSelectionBox(element: HTMLElement): void {
   }
 }
 
+function syncAnnotationHitboxes(root: HTMLElement): void {
+  const groups = [...root.querySelectorAll<HTMLElement>('.zupfnoter-element[data-conf-key]')]
+
+  for (const annotationGroup of groups) {
+    const annotationShapes = [...annotationGroup.querySelectorAll<SVGGraphicsElement>('.zupfnoter-shape--annotation')]
+    if (annotationShapes.length === 0) continue
+    const svg = annotationShapes[0]?.ownerSVGElement
+    if (svg === null || svg === undefined) continue
+    const confKey = annotationGroup.dataset.confKey
+    if (confKey === undefined) continue
+
+    const backgroundGroup = groups.find((candidate) => (
+      candidate !== annotationGroup
+      && candidate.classList.contains('zupfnoter-role--barover')
+      && candidate.dataset.confKey === confKey
+    ))
+    if (backgroundGroup === undefined) continue
+    const background = backgroundGroup.querySelector<SVGRectElement>('rect.zupfnoter-shape--rect')
+    if (background === null) continue
+
+    const bounds = toRootBounds(annotationShapes, svg)
+    if (bounds === undefined || bounds.width <= 0 || bounds.height <= 0) continue
+    background.setAttribute('x', `${bounds.x}`)
+    background.setAttribute('y', `${bounds.y}`)
+    background.setAttribute('width', `${bounds.width}`)
+    background.setAttribute('height', `${bounds.height}`)
+  }
+}
 function applyHighlightClass(element: HTMLElement): void {
   element.classList.add(SELECTION_HIGHLIGHT_CLASS)
   const parent = element.classList.contains('zupfnoter-hitbox')
@@ -120,6 +148,7 @@ export function useSelectionSvgHighlight(
   const sync = (): void => {
     const root = rootRef.value
     if (root === null) return
+    syncAnnotationHitboxes(root)
     applySelectionHighlight(root, selection.value ?? { znIds: [], confKeys: [], textRanges: [] })
   }
 

@@ -41,7 +41,7 @@ import type {
   LayoutConfig,
   PrinterConfig,
 } from '@zupfnoter/types'
-import { buildConfstack } from './buildConfstack.js'
+import { buildPrintOptions } from './buildConfstack.js'
 import { computeBeatCompression, type BeatCompressionMap } from './BeatPacker.js'
 import type { Confstack } from './Confstack.js'
 import { requireDefined } from './requireDefined.js'
@@ -124,6 +124,12 @@ function variantToColor(variant: 0 | 1 | 2, layout: LayoutConfig): string {
   return layout.color.color_default
 }
 
+/** Erzeugt den vollständigen fachlichen Key des aktiven Extrakts. */
+function activeExtractConfKey(extractNr: number | string, key: string): string {
+  const suffix = key.replace(/^extract\.(?:\d+\.)?/, '')
+  return `extract.${extractNr}.${suffix}`
+}
+
 function playableCenter(
   playable: PlayableEntity,
   beatMap: BeatCompressionMap,
@@ -145,7 +151,7 @@ function configuredNoteShift(
 ): number {
   if (context === undefined || (playable.type !== 'Note' && playable.type !== 'Pause')) return 0
   const configured = context.conf.get(
-    `extract.notebound.nconf.v_${context.voiceNr}.t_${playable.time}.n_0.nshift`,
+    `notebound.nconf.v_${context.voiceNr}.t_${playable.time}.n_0.nshift`,
   )
   if (typeof configured !== 'number') return 0
   return playableSize(playable, layout)[0] * 2 * configured
@@ -577,13 +583,19 @@ export class HarpnotesLayout {
 
       // 10. Instrument shape
       const resInstrument = this._layoutInstrument(conf, extractNr)
+      const resLegendBackgrounds = this._annotationBackgrounds(resLegend, renderLayout, 0.5)
+      const resAnnotationBackgrounds = this._annotationBackgrounds(resAnnotations, renderLayout, 0.5)
+      const resLyricsBackgrounds = this._annotationBackgrounds(resLyrics, renderLayout, 0.5)
       const children: DrawableElement[] = [
         ...resImages,
         ...resSynchLines,
         ...voiceElements,
+        ...resLegendBackgrounds,
         ...resLegend,
+        ...resAnnotationBackgrounds,
         ...resAnnotations,
         ...resZnAnnotations,
+        ...resLyricsBackgrounds,
         ...resLyrics,
         ...resSheetmarks,
         ...resCutmarks,
@@ -617,12 +629,12 @@ export class HarpnotesLayout {
   // ---------------------------------------------------------------------------
 
   private _layoutPrepareOptions(extractNr: number | string): Confstack {
-    return buildConfstack(this._config, extractNr)
+    return buildPrintOptions(this._config, extractNr)
   }
 
-  private _resolveExtractOptions(conf: Confstack): ExtractConfig {
+  private _resolveExtractOptions(conf: Confstack, extractNr: number | string): ExtractConfig {
     return requireDefined(
-      conf.get('extract') as ExtractConfig | undefined,
+      conf.get('print_options') as ExtractConfig | undefined,
       'HarpnotesLayout._resolveExtractOptions(): missing extract options',
     )
   }
@@ -636,7 +648,7 @@ export class HarpnotesLayout {
     extractNr: number | string,
     conf: Confstack,
   ): { activeVoices: number[]; voiceElements: DrawableElement[]; beatMaps: Map<number, BeatCompressionMap> } {
-    const extractOptions = this._resolveExtractOptions(conf)
+    const extractOptions = this._resolveExtractOptions(conf, extractNr)
     const layout = conf.get('layout') as LayoutConfig
     const activeVoiceNrs = extractOptions.voices ?? [1]
     const flowlineVoices = new Set(extractOptions.flowlines ?? [])
@@ -649,7 +661,7 @@ export class HarpnotesLayout {
     // layoutlineVoices contains the fachliche voice numbers from config.
     const layoutlineIndices = Array.from(new Set([...activeVoiceNrs, ...layoutlineVoices]))
     const beatCompressionMap = applyLegacyBeatSpread(
-      computeBeatCompression(song, layoutlineIndices, conf),
+      computeBeatCompression(song, layoutlineIndices, conf, extractNr),
       layout,
       startpos,
     )
@@ -780,7 +792,7 @@ export class HarpnotesLayout {
     const playableElements: DrawableElement[] = []
     const decorationBackgrounds: Ellipse[] = []
     const decorations: DrawableElement[] = []
-    const repeatSignVoices = new Set((conf.get('extract.repeatsigns.voices') as number[] | undefined) ?? [])
+    const repeatSignVoices = new Set((conf.get('repeatsigns.voices') as number[] | undefined) ?? [])
     const visibleByPlayable = this._computePlayableVisibility(
       voice,
       showFlowlines,
@@ -1064,7 +1076,7 @@ export class HarpnotesLayout {
   ): number {
     if (voiceNr === undefined || extractNr === undefined || conf === undefined) return 0
     const configured = conf.get(
-      `extract.notebound.nconf.v_${voiceNr}.t_${playable.time}.n_${noteIndex}.nshift`,
+      `notebound.nconf.v_${voiceNr}.t_${playable.time}.n_${noteIndex}.nshift`,
     )
     return typeof configured === 'number' ? size[0] * 2 * configured : 0
   }
@@ -1198,8 +1210,8 @@ export class HarpnotesLayout {
     ].filter((decoration) => decoration !== '')
 
     for (const [index, decoration] of decorations.entries()) {
-      const overrideKey = `extract.notebound.decoration.v_${voiceNr}.t_${playable.time}.${index}`
-      const legacyZnIdOverrideKey = `extract.notebound.decoration.v_${voiceNr}.t_${playable.znId}.${index}`
+      const overrideKey = `notebound.decoration.v_${voiceNr}.t_${playable.time}.${index}`
+      const legacyZnIdOverrideKey = `notebound.decoration.v_${voiceNr}.t_${playable.znId}.${index}`
       const objectConfKey = `extract.${extractNr}.notebound.decoration.v_${voiceNr}.t_${playable.time}.${index}`
       const configuredOffset = (conf.get(`${overrideKey}.pos`) as [number, number] | undefined)
         ?? (conf.get(`${legacyZnIdOverrideKey}.pos`) as [number, number] | undefined)
@@ -1361,6 +1373,7 @@ export class HarpnotesLayout {
         confKey: annotation.confKey,
         more_conf_keys: annotation.more_conf_keys,
         znId: annotation.znId,
+        draginfo: annotation.draginfo,
         visible: true,
       }
     }
@@ -1372,14 +1385,13 @@ export class HarpnotesLayout {
       : align === 'right'
         ? -halfSize[0]
         : 0
-    let backgroundY = halfSize[1]
-    if (shiftEu) {
-      backgroundY = halfSize[1] - padding * 0.7
-      paddedSize[1] *= 0.5
-    } else if (!/[|gyqp]/.test(annotation.text)) {
-      backgroundY = halfSize[1] - padding * 0.5
-      paddedSize[1] *= 0.7
-    }
+    const lineCount = Math.max(1, annotation.text.split('\n').length)
+    const lineHeight = size[1] / lineCount
+    // SVG text uses the baseline as its y coordinate. The metrics describe
+    // the complete text block, so move the rectangle upward by the ascent
+    // portion instead of placing its top edge on the baseline.
+    let backgroundY = (size[1] - lineHeight) * 0.5 - lineHeight * 0.3
+    if (shiftEu) backgroundY -= padding * 0.7
 
     return {
       type: 'Ellipse',
@@ -1394,8 +1406,19 @@ export class HarpnotesLayout {
       confKey: annotation.confKey,
       more_conf_keys: annotation.more_conf_keys,
       znId: annotation.znId,
+      draginfo: annotation.draginfo,
       visible: true,
     }
+  }
+
+  private _annotationBackgrounds(
+    annotations: Annotation[],
+    layout: LayoutConfig,
+    padding: number,
+  ): Ellipse[] {
+    return annotations
+      .filter((annotation) => annotation.confKey !== undefined)
+      .map((annotation) => this._annotationBackground(annotation, annotation.align ?? 'left', layout, padding))
   }
 
   private _annotationSize(text: string, style: string, layout: LayoutConfig): [number, number] {
@@ -1434,8 +1457,8 @@ export class HarpnotesLayout {
         const from = playableCenter(prev, beatMap, layout, startpos, context)
         const to = playableCenter(curr, beatMap, layout, startpos, context)
         const visible = (visibleByPlayable.get(curr) ?? curr.visible) && (visibleByPlayable.get(prev) ?? prev.visible)
-        const override = conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.znId}`)
-          ?? conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.time}`)
+        const override = conf.get(`notebound.flowline.v_${voiceNr}.${curr.znId}`)
+          ?? conf.get(`notebound.flowline.v_${voiceNr}.${curr.time}`)
         const flowlineConfKey = `extract.${extractNr}.notebound.flowline.v_${voiceNr}.${curr.znId}`
 
         if (override !== undefined || this._flowconf) {
@@ -1575,7 +1598,7 @@ export class HarpnotesLayout {
     extractNr: number | string,
     conf: Confstack,
   ): Path[] {
-    let distance = this._resolveJumplineDistance(goto, conf)
+    let distance = this._resolveJumplineDistance(goto, conf, extractNr)
     if (distance === 0) return []
     if (distance > 0) distance -= 1
 
@@ -1732,10 +1755,11 @@ export class HarpnotesLayout {
     ]
   }
 
-  private _resolveJumplineDistance(goto: Goto, conf: Confstack): number {
+  private _resolveJumplineDistance(goto: Goto, conf: Confstack, extractNr: number | string): number {
     const confKey = goto.confKey ?? goto.policy?.confKey
     if (confKey) {
-      const configuredDistance = conf.get(`extract.${confKey}`) ?? conf.get(confKey)
+      const localConfKey = confKey.replace(/^extract\.\d+\./, '')
+      const configuredDistance = conf.get(localConfKey)
       if (typeof configuredDistance === 'number') return configuredDistance
     }
 
@@ -1744,8 +1768,7 @@ export class HarpnotesLayout {
 
   private _buildJumplineConfKey(extractNr: number | string, confKey: string | undefined): string | undefined {
     if (confKey === undefined) return undefined
-    if (confKey.startsWith('extract.')) return confKey
-    return `extract.${extractNr}.${confKey}`
+    return activeExtractConfKey(extractNr, confKey)
   }
 
   private _computeJumplineVerticalCut(
@@ -1791,21 +1814,21 @@ export class HarpnotesLayout {
         tupletNum = p.tuplet
       }
       if (p.tupletEnd && tupletStart) {
-        const override = conf.get(`extract.notebound.tuplet.v_${voiceNr}.${tupletStart.znId}`)
-          ?? conf.get(`extract.notebound.tuplet.v_${voiceNr}.${tupletStart.time}`)
+        const override = conf.get(`notebound.tuplet.v_${voiceNr}.${tupletStart.znId}`)
+          ?? conf.get(`notebound.tuplet.v_${voiceNr}.${tupletStart.time}`)
         const options = mergeAnnotatedBezierOptions(getAnnotatedBezierDefaults(conf, 'tuplet'), override)
 
         if (options.show) {
           const p1 = playableCenter(tupletStart, beatMap, layout, startpos)
           const p2 = playableCenter(p, beatMap, layout, startpos)
           const { path, pathData, anchor, baseAnchor, cp1, cp2 } = makeAnnotatedBezierPath(p1, p2, options)
-          const configuredText = conf.get('extract.tuplets.text')
+          const configuredText = conf.get('tuplets.text')
           const text = (
             typeof configuredText === 'string'
               ? configuredText
               : String(tupletNum)
           ).replaceAll('{{tuplet}}', String(tupletNum))
-          const configuredStyle = conf.get('extract.tuplets.style')
+          const configuredStyle = conf.get('tuplets.style')
 
           result.push({
             type: 'Path',
@@ -1870,8 +1893,8 @@ export class HarpnotesLayout {
   ): FlowLine[] {
     const result: FlowLine[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const startpos = (conf.get('extract.startpos') as number | undefined) ?? 15
-    const synchlinePairs = (conf.get('extract.synchlines') as number[][] | undefined) ?? []
+    const startpos = (conf.get('startpos') as number | undefined) ?? 15
+    const synchlinePairs = (conf.get('synchlines') as number[][] | undefined) ?? []
     const activeVoices = new Set(activeVoiceNrs)
 
     for (const [v1Nr, v2Nr] of synchlinePairs) {
@@ -1929,11 +1952,11 @@ export class HarpnotesLayout {
   private _layoutSheetmarks(conf: Confstack, extractNr: number | string): DrawableElement[] {
     const result: DrawableElement[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const vpos = (conf.get('extract.stringnames.vpos') as number[] | undefined) ?? []
-    const style = (conf.get('extract.stringnames.style') as string | undefined) ?? 'small'
-    const labels = parseStringNamesText(conf.get('extract.stringnames.text') as string | undefined)
-    const marks = (conf.get('extract.stringnames.marks.hpos') as number[] | undefined) ?? []
-    const markVpos = (conf.get('extract.stringnames.marks.vpos') as number[] | undefined) ?? []
+    const vpos = (conf.get('stringnames.vpos') as number[] | undefined) ?? []
+    const style = (conf.get('stringnames.style') as string | undefined) ?? 'small'
+    const labels = parseStringNamesText(conf.get('stringnames.text') as string | undefined)
+    const marks = (conf.get('stringnames.marks.hpos') as number[] | undefined) ?? []
+    const markVpos = (conf.get('stringnames.marks.vpos') as number[] | undefined) ?? []
 
     for (const pitch of marks) {
       const x = pitchToX(pitch, layout)
@@ -1991,7 +2014,7 @@ export class HarpnotesLayout {
   ): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const extractOptions = this._resolveExtractOptions(conf)
+    const extractOptions = this._resolveExtractOptions(conf, extractNr)
     const legendConf = extractOptions.legend as Record<string, unknown> | undefined
 
     const titlePos = (legendConf?.['pos'] as [number, number] | undefined) ?? [320, 7]
@@ -2096,7 +2119,7 @@ export class HarpnotesLayout {
   ): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const lyricsConf = (conf.get('extract.lyrics') as Record<string, { verses?: number[]; pos?: [number, number]; style?: string }> | undefined) ?? {}
+    const lyricsConf = (conf.get('lyrics') as Record<string, { verses?: number[]; pos?: [number, number]; style?: string }> | undefined) ?? {}
     const rawLyrics = song.harpnoteOptions?.['lyrics']
 
     if (rawLyrics && Object.keys(lyricsConf).length > 0) {
@@ -2153,7 +2176,7 @@ export class HarpnotesLayout {
   ): Annotation[] {
     const result: Annotation[] = []
     const layout = conf.get('layout') as LayoutConfig
-    const extractOptions = this._resolveExtractOptions(conf)
+    const extractOptions = this._resolveExtractOptions(conf, extractNr)
     const notes = extractOptions.notes as Record<string, unknown> | undefined
 
     if (!notes) return result
@@ -2268,8 +2291,8 @@ export class HarpnotesLayout {
     const barnumbers: Annotation[] = []
     const countnoteBackgrounds: Ellipse[] = []
     const countnotes: Annotation[] = []
-    const barnumberVoices = new Set((conf.get('extract.barnumbers.voices') as number[] | undefined) ?? [])
-    const countnoteVoices = new Set((conf.get('extract.countnotes.voices') as number[] | undefined) ?? [])
+    const barnumberVoices = new Set((conf.get('barnumbers.voices') as number[] | undefined) ?? [])
+    const countnoteVoices = new Set((conf.get('countnotes.voices') as number[] | undefined) ?? [])
     let measureStartBeat: number | null = null
     const visiblePlayables = voice.entities.filter(
       (entity): entity is PlayableEntity =>
@@ -2293,10 +2316,10 @@ export class HarpnotesLayout {
       )
 
       if (countnoteVoices.has(voiceNr)) {
-        const countnoteText = this._countnoteText(playable, measureStartBeat, voiceNr, conf)
-        const offset = this._countnoteOffset(playable, layout, voiceNr, conf)
-        const style = (conf.get('extract.countnotes.style') as string | undefined) ?? 'smaller'
-        const side = this._countnoteSide(playable, voiceNr, conf)
+        const countnoteText = this._countnoteText(playable, measureStartBeat, voiceNr, extractNr, conf)
+        const offset = this._countnoteOffset(playable, layout, voiceNr, extractNr, conf)
+        const style = (conf.get('countnotes.style') as string | undefined) ?? 'smaller'
+        const side = this._countnoteSide(playable, voiceNr, extractNr, conf)
         const shiftEu = /^[aoveu]$/.test(countnoteText)
         const fontSize = layout.FONT_STYLE_DEF[style]?.fontSize ?? 10
         const shiftY = shiftEu ? fontSize * layout.MM_PER_POINT * 0.25 : 0
@@ -2340,8 +2363,8 @@ export class HarpnotesLayout {
         playable.measureStart &&
         playable.measureCount !== undefined
       ) {
-        const offset = this._barnumberOffset(playable, layout, voiceNr, conf)
-        const side = this._barnumberSide(playable, voiceNr, conf)
+        const offset = this._barnumberOffset(playable, layout, voiceNr, extractNr, conf)
+        const side = this._barnumberSide(playable, voiceNr, extractNr, conf)
         const barnumber = playable.measureCount
         const barnumberAlignKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}.align`
         const barnumberConfKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}.*`
@@ -2349,8 +2372,8 @@ export class HarpnotesLayout {
         const annotation: Annotation = {
           type: 'Annotation',
           center: [x + offset[0], y + offset[1]],
-          text: `${(conf.get('extract.barnumbers.prefix') as string | undefined) ?? ''}${barnumber}`,
-          style: (conf.get('extract.barnumbers.style') as string | undefined) ?? 'small_bold',
+          text: `${(conf.get('barnumbers.prefix') as string | undefined) ?? ''}${barnumber}`,
+          style: (conf.get('barnumbers.style') as string | undefined) ?? 'small_bold',
           align: side === 'l' ? 'right' : 'left',
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
@@ -2384,15 +2407,16 @@ export class HarpnotesLayout {
     playable: PlayableEntity,
     measureStartBeat: number,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
   ): string {
     const fallback = playable.countNote ?? computeCountnoteText(playable, measureStartBeat)
-    const leftPattern = conf.get('extract.countnotes.cntextleft') as string | undefined
-    const rightPattern = conf.get('extract.countnotes.cntextright') as string | undefined
+    const leftPattern = conf.get('countnotes.cntextleft') as string | undefined
+    const rightPattern = conf.get('countnotes.cntextright') as string | undefined
     const patterns = [leftPattern, rightPattern].filter((pattern): pattern is string => pattern !== undefined)
     if (patterns.length === 0) return fallback
 
-    const side = this._countnoteSide(playable, voiceNr, conf)
+    const side = this._countnoteSide(playable, voiceNr, extractNr, conf)
     const pattern = side === 'l'
       ? (patterns[0] ?? fallback)
       : (patterns[patterns.length - 1] ?? fallback)
@@ -2406,20 +2430,21 @@ export class HarpnotesLayout {
     playable: PlayableEntity,
     layout: LayoutConfig,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
   ): [number, number] {
-    const overrideKey = `extract.notebound.countnote.v_${voiceNr}.t_${playable.time}`
+    const overrideKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}`
     const overridePos = conf.get(`${overrideKey}.pos`) as [number, number] | undefined
     if (overridePos) return overridePos
 
-    const fixedPos = (conf.get('extract.countnotes.pos') as [number, number] | undefined) ?? [3, -2]
-    const autoPos = (conf.get('extract.countnotes.autopos') as boolean | undefined) ?? true
+    const fixedPos = (conf.get('countnotes.pos') as [number, number] | undefined) ?? [3, -2]
+    const autoPos = (conf.get('countnotes.autopos') as boolean | undefined) ?? true
     if (!autoPos) return fixedPos
 
-    const side = this._countnoteSide(playable, voiceNr, conf)
+    const side = this._countnoteSide(playable, voiceNr, extractNr, conf)
     const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
-    const apanchor = (conf.get('extract.countnotes.apanchor') as string | undefined) ?? 'box'
-    const apbase = (conf.get('extract.countnotes.apbase') as [number, number] | undefined) ?? [1, -0.5]
+    const apanchor = (conf.get('countnotes.apanchor') as string | undefined) ?? 'box'
+    const apbase = (conf.get('countnotes.apbase') as [number, number] | undefined) ?? [1, -0.5]
     const size = playableSize(playable, layout)
     const proxy = playableLayoutProxy(playable)
     const sizeWithDot: [number, number] = [
@@ -2436,9 +2461,10 @@ export class HarpnotesLayout {
   private _countnoteSide(
     playable: PlayableEntity,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
   ): 'l' | 'r' {
-    const overrideKey = `extract.notebound.countnote.v_${voiceNr}.t_${playable.time}`
+    const overrideKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}`
     const overrideAlign = conf.get(`${overrideKey}.align`) as 'l' | 'r' | 'auto' | undefined
     if (overrideAlign && overrideAlign !== 'auto') return overrideAlign
 
@@ -2459,20 +2485,21 @@ export class HarpnotesLayout {
     playable: PlayableEntity,
     layout: LayoutConfig,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
   ): [number, number] {
-    const overrideKey = `extract.notebound.barnumber.v_${voiceNr}.t_${playable.time}`
+    const overrideKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}`
     const overridePos = conf.get(`${overrideKey}.pos`) as [number, number] | undefined
     if (overridePos) return overridePos
 
-    const fixedPos = (conf.get('extract.barnumbers.pos') as [number, number] | undefined) ?? [6, -4]
-    const autoPos = (conf.get('extract.barnumbers.autopos') as boolean | undefined) ?? true
+    const fixedPos = (conf.get('barnumbers.pos') as [number, number] | undefined) ?? [6, -4]
+    const autoPos = (conf.get('barnumbers.autopos') as boolean | undefined) ?? true
     if (!autoPos) return fixedPos
 
-    const side = this._barnumberSide(playable, voiceNr, conf)
+    const side = this._barnumberSide(playable, voiceNr, extractNr, conf)
     const bottomup = (conf.get('layout.bottomup') as boolean | undefined) ?? layout.bottomup ?? false
-    const apanchor = (conf.get('extract.barnumbers.apanchor') as string | undefined) ?? 'box'
-    const apbase = (conf.get('extract.barnumbers.apbase') as [number, number] | undefined) ?? [1, 1]
+    const apanchor = (conf.get('barnumbers.apanchor') as string | undefined) ?? 'box'
+    const apbase = (conf.get('barnumbers.apbase') as [number, number] | undefined) ?? [1, 1]
     const size = playableSize(playable, layout)
     const sizeWithDot: [number, number] = [
       size[0] + (playableDotted(playable, layout) ? 1 : 0),
@@ -2493,9 +2520,10 @@ export class HarpnotesLayout {
   private _barnumberSide(
     playable: PlayableEntity,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
   ): 'l' | 'r' {
-    const overrideKey = `extract.notebound.barnumber.v_${voiceNr}.t_${playable.time}`
+    const overrideKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}`
     const overrideAlign = conf.get(`${overrideKey}.align`) as 'l' | 'r' | 'auto' | undefined
     if (overrideAlign && overrideAlign !== 'auto') return overrideAlign
 
@@ -2518,7 +2546,7 @@ export class HarpnotesLayout {
 
   private _layoutImages(conf: Confstack, extractNr: number | string): Image[] {
     const result: Image[] = []
-    const images = conf.get('extract.images') as Record<string, unknown> | undefined
+    const images = conf.get('images') as Record<string, unknown> | undefined
 
     if (!images) return result
 
@@ -2555,8 +2583,8 @@ export class HarpnotesLayout {
   // Instrument shape (stub — instrument-specific logic post-migration)
   // ---------------------------------------------------------------------------
 
-  private _layoutInstrument(conf: Confstack, _extractNr: number | string): DrawableElement[] {
-    const shape = conf.get('extract.instrument_shape') as string | undefined
+  private _layoutInstrument(conf: Confstack, extractNr: number | string): DrawableElement[] {
+    const shape = conf.get('instrument_shape') as string | undefined
     const layout = conf.get('layout') as LayoutConfig
 
     if (!shape) return []
@@ -2627,7 +2655,7 @@ export class HarpnotesLayout {
     extractNr: number | string,
     conf: Confstack,
   ): Annotation[] {
-    const repeatVoices = new Set((conf.get('extract.repeatsigns.voices') as number[] | undefined) ?? [])
+    const repeatVoices = new Set((conf.get('repeatsigns.voices') as number[] | undefined) ?? [])
     if (!repeatVoices.has(voiceNr)) return []
 
     const result: Annotation[] = []
@@ -2677,13 +2705,13 @@ export class HarpnotesLayout {
     const companion = pointRole === 'begin' ? goto.to : goto.from
     const attachSide = this._repeatSignAttachSide(goto, pointRole)
     const pos = (
-      conf.get(`extract.repeatsigns.${attachSide}.pos`) as [number, number] | undefined
+      conf.get(`repeatsigns.${attachSide}.pos`) as [number, number] | undefined
     ) ?? (attachSide === 'left' ? [-7, -2] : [5, -2])
     const text = (
-      conf.get(`extract.repeatsigns.${attachSide}.text`) as string | undefined
+      conf.get(`repeatsigns.${attachSide}.text`) as string | undefined
     ) ?? (attachSide === 'left' ? '|:' : ':|')
     const style = (
-      conf.get(`extract.repeatsigns.${attachSide}.style`) as string | undefined
+      conf.get(`repeatsigns.${attachSide}.style`) as string | undefined
     ) ?? 'bold'
     const confBase = `extract.${extractNr}.notebound.repeat_${pointRole}.v_${voiceNr}.${companion.time}`
 
@@ -2799,7 +2827,8 @@ export class HarpnotesLayout {
         text = annotation.text
         style = annotation.style
         offset = annotation.position
-        confBase = `extract.${annotation.confKey ?? `notebound.annotation.v_${voiceNr}.${companion.time}`}`
+        const annotationConfKey = annotation.confKey ?? `notebound.annotation.v_${voiceNr}.${companion.time}`
+        confBase = activeExtractConfKey(extractNr, annotationConfKey)
       } else {
         const part = entity as NewPart
         text = part.name
@@ -2808,9 +2837,10 @@ export class HarpnotesLayout {
         confBase = `extract.${extractNr}.notebound.partname.v_${voiceNr}.${companion.time}`
       }
 
-      const configuredOffset = conf.get(`${confBase}.pos`) as [number, number] | undefined
-      const configuredStyle = conf.get(`${confBase}.style`) as string | undefined
-      const show = conf.get(`${confBase}.show`) as boolean | undefined
+      const localConfBase = confBase.replace(/^extract\.\d+\./, '')
+      const configuredOffset = conf.get(`${localConfBase}.pos`) as [number, number] | undefined
+      const configuredStyle = conf.get(`${localConfBase}.style`) as string | undefined
+      const show = conf.get(`${localConfBase}.show`) as boolean | undefined
       if (show === false) continue
 
       result.push({

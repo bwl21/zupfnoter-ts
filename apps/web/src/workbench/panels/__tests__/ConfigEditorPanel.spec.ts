@@ -69,6 +69,26 @@ describe('ConfigEditorPanel', () => {
     expect(wrapper.text()).toContain('Verschiebung')
   })
 
+  it('builds the concrete variant-end form from all schema fields', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+        ].join('\n'),
+        currentExtract: 0,
+        activeSection: 'extract.0.notebound.variantend.v_3.4608',
+      },
+    })
+
+    expect(wrapper.text()).toContain('Position')
+    expect(wrapper.text()).toContain('anzeigen')
+    expect(wrapper.text()).toContain('Text')
+    expect(wrapper.text()).toContain('Stil')
+  })
+
   it('uses widgets for decoration show and style parameters', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

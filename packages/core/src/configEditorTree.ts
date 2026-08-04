@@ -361,6 +361,37 @@ export function buildConfigEditorAllParametersTree(
   )
 }
 
+/** Baut den generischen Legacy-Formularbaum für einen konkreten Konfigurationspfad. */
+export function buildConfigEditorTargetTree(
+  path: string,
+  currentConfig: Record<string, CommandArgumentValue>,
+  effectiveConfig: Record<string, CommandArgumentValue>,
+  extractId: number,
+): ConfigEditorTreeDefinition[] {
+  const parts = path.split('.').filter((part) => part.length > 0)
+  const lastPart = parts[parts.length - 1]
+  if (lastPart === undefined) return []
+
+  let child = buildSchemaTreeNode(
+    lastPart,
+    path,
+    path,
+    currentConfig,
+    effectiveConfig,
+    extractId,
+  )
+  for (let index = parts.length - 2; index >= 0; index -= 1) {
+    const prefix = parts.slice(0, index + 1).join('.')
+    child = {
+      key: parts[index] ?? prefix,
+      label: legacyLabel(parts[index] ?? prefix),
+      configPath: prefix,
+      children: [child],
+    }
+  }
+  return [child]
+}
+
 const ALL_PARAMETERS_INTERNAL_ROOTS = new Set([
   'confstack',
   'defaults',
@@ -457,7 +488,12 @@ function collectSchemaDynamicKeys(
   effectiveConfig: Record<string, CommandArgumentValue>,
 ): string[] {
   if (schema.patternProperties === undefined) return []
+  const patterns = Object.keys(schema.patternProperties).map((pattern) => {
+    const normalizedPattern = pattern.replace(/d([+*])/g, '\\d$1')
+    return new RegExp(normalizedPattern)
+  })
   return collectUnionObjectKeys(getPathValue(currentConfig, schemaPath), getPathValue(effectiveConfig, schemaPath))
+    .filter((key) => patterns.some((pattern) => pattern.test(key)))
 }
 
 function buildSectionChildren(

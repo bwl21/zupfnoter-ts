@@ -117,6 +117,7 @@ export type {
 export {
   buildConfigEditorAllParametersTree,
   buildConfigEditorSectionTree,
+  buildConfigEditorTargetTree,
   configEditorKeyToTreePath,
   CONFIG_EDITOR_TREE_DEFINITION,
   findConfigEditorTreeDefinition,

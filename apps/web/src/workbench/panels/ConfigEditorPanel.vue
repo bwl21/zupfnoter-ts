@@ -6,6 +6,7 @@ import 'tippy.js/dist/tippy.css'
 import {
   buildConfigEditorAllParametersTree,
   buildConfigEditorSectionTree,
+  buildConfigEditorTargetTree,
   configEditorKeyToTreePath,
   CONFIG_EDITOR_TREE_DEFINITION,
   CONFIG_EDITOR_MENU_ITEMS,
@@ -172,7 +173,12 @@ const defaultConfig = computed(() => initConf(new Confstack()))
 const effectiveConfig = computed(() => mergeSongConfig(defaultConfig.value, parsedSongConfig.value.config))
 const filteredSearch = computed(() => searchText.value.trim().toLowerCase())
 const dynamicFormPath = computed(() => resolveConfigEditorDynamicFormPath(props.activeSection))
-const resolvedActiveSection = computed(() => resolveConfigEditorFormId(props.activeSection) ?? props.activeSection)
+const concreteConfigPath = computed(() => isConcreteConfigPath(props.activeSection)
+  ? props.activeSection
+  : undefined)
+const resolvedActiveSection = computed(() => concreteConfigPath.value
+  ?? resolveConfigEditorFormId(props.activeSection)
+  ?? props.activeSection)
 const activeSectionSearch = computed(() => getConfigEditorFormSet(resolvedActiveSection.value) === undefined
   && dynamicFormPath.value === undefined
   ? resolvedActiveSection.value.trim().toLowerCase()
@@ -510,6 +516,14 @@ function resolveEffectivePath(path: string): string | undefined {
   return resolveLocalPath(path)
 }
 
+function isConcreteConfigPath(path: string): boolean {
+  if (!/^extract\.\d+\./.test(path)) return false
+  if (path.split('.').length <= 3) return false
+  return resolveConfigSchemaPath(path) !== undefined
+    || getPathValue(parsedSongConfig.value.config, path) !== undefined
+    || getPathValue(effectiveConfig.value, path) !== undefined
+}
+
 function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | undefined {
   if (resolvedActiveSection.value === 'all_parameters') {
     return buildConfigEditorAllParametersTree(
@@ -520,6 +534,14 @@ function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | unde
   }
   if (dynamicFormPath.value !== undefined) {
     return buildDynamicConfigTree(dynamicFormPath.value)
+  }
+  if (concreteConfigPath.value !== undefined) {
+    return buildConfigEditorTargetTree(
+      concreteConfigPath.value,
+      parsedSongConfig.value.config as unknown as Record<string, CommandArgumentValue>,
+      effectiveConfig.value as unknown as Record<string, CommandArgumentValue>,
+      props.currentExtract,
+    )
   }
   const definitions = buildConfigEditorSectionTree(
     resolvedActiveSection.value,
