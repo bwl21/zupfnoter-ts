@@ -343,6 +343,7 @@ describe('SvgEngine', () => {
       expect(svg).toContain('Hello')
       expect(svg).toContain('x="20"')
       expect(svg).toContain('y="30"')
+      expect(svg).toContain('pointer-events="none"')
     })
 
     it('escapes special characters in text', () => {

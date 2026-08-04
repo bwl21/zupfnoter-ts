@@ -617,6 +617,12 @@ V:V1 clef=treble-8
       )
       expect(annotations.length).toBeGreaterThanOrEqual(2)
       expect(annotations.every((entry) => /^\d+$/.test(entry.text))).toBe(true)
+      const annotationBackground = sheet.children.find((child) => (
+        child.type === 'Ellipse'
+        && child.rect === true
+        && child.confKey?.includes('.notebound.barnumber.v_1.')
+      ))
+      expect(annotationBackground).toBeDefined()
     })
 
     it('adds dotted width for SynchPoint barnumber autopositioning', () => {

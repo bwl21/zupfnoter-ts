@@ -555,7 +555,7 @@ export class HarpnotesLayout {
       const { activeVoices, voiceElements, beatMaps } = this._layoutVoices(song, extractNr, conf)
 
       // 3. Synchlines
-      const resSynchLines = this._layoutSynchLines(song, beatMaps, conf, activeVoices)
+      const resSynchLines = this._layoutSynchLines(song, beatMaps, conf, activeVoices, extractNr)
 
       // 4. Legend
       const resLegend = this._layoutLegend(song.metaData, conf, extractNr)
@@ -570,7 +570,7 @@ export class HarpnotesLayout {
       const resAnnotations = this._layoutAnnotations(song.metaData, conf, extractNr)
 
       // 8. Sheetmarks
-      const resSheetmarks = this._layoutSheetmarks(conf)
+      const resSheetmarks = this._layoutSheetmarks(conf, extractNr)
 
       // 9. Cutmarks
       const resCutmarks = this._layoutCutmarks(pageFormat, conf)
@@ -918,13 +918,14 @@ export class HarpnotesLayout {
       result.push(...gotos)
     }
 
-    const repeatSigns = this._layoutVoiceRepeatSigns(voice, beatMap, layout, startpos, voiceNr, conf)
+    const repeatSigns = this._layoutVoiceRepeatSigns(voice, beatMap, layout, startpos, voiceNr, extractNr, conf)
     const noteboundAnnotations = this._layoutVoiceNoteboundAnnotations(
       voice,
       beatMap,
       layout,
       startpos,
       voiceNr,
+      extractNr,
       conf,
       showJumplines,
     )
@@ -1357,6 +1358,9 @@ export class HarpnotesLayout {
         hasbarover: false,
         color: 'white',
         lineWidth: layout.LINE_THIN,
+        confKey: annotation.confKey,
+        more_conf_keys: annotation.more_conf_keys,
+        znId: annotation.znId,
         visible: true,
       }
     }
@@ -1387,6 +1391,9 @@ export class HarpnotesLayout {
       hasbarover: false,
       color: 'white',
       lineWidth: layout.LINE_THIN,
+      confKey: annotation.confKey,
+      more_conf_keys: annotation.more_conf_keys,
+      znId: annotation.znId,
       visible: true,
     }
   }
@@ -1429,11 +1436,11 @@ export class HarpnotesLayout {
         const visible = (visibleByPlayable.get(curr) ?? curr.visible) && (visibleByPlayable.get(prev) ?? prev.visible)
         const override = conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.znId}`)
           ?? conf.get(`extract.notebound.flowline.v_${voiceNr}.${curr.time}`)
+        const flowlineConfKey = `extract.${extractNr}.notebound.flowline.v_${voiceNr}.${curr.znId}`
 
         if (override !== undefined || this._flowconf) {
           const options = mergeAnnotatedBezierOptions(getAnnotatedBezierDefaults(conf, 'flowline'), override)
           if (options.show) {
-            const flowlineConfKey = `extract.${extractNr}.notebound.flowline.v_${voiceNr}.${curr.znId}`
             const pathData = makeAnnotatedBezierPath(from, to, options)
             const draginfo = this._flowconf
               ? {
@@ -1470,6 +1477,7 @@ export class HarpnotesLayout {
             style,
             color: layout.color.color_default,
             lineWidth: style === 'solid' ? layout.LINE_MEDIUM : layout.LINE_THIN,
+            confKey: `${flowlineConfKey}.*`,
             visible,
             znId: curr.znId,
           })
@@ -1520,6 +1528,7 @@ export class HarpnotesLayout {
       style: 'dashed',
       color: variantToColor(leftmost.note.variant, layout),
       lineWidth: layout.LINE_THIN,
+      confKey: `extract.${extractNr}.synchlines.*`,
       visible: visible === true,
       znId: synchPoint.znId,
     }
@@ -1697,6 +1706,7 @@ export class HarpnotesLayout {
         fill: true,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
+        confKey,
         visible: true,
         more_conf_keys: [],
         znId: goto.znId,
@@ -1714,6 +1724,7 @@ export class HarpnotesLayout {
         fill: true,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
+        confKey,
         visible: true,
         more_conf_keys: [],
         znId: goto.znId,
@@ -1855,6 +1866,7 @@ export class HarpnotesLayout {
     beatMaps: Map<number, BeatCompressionMap>,
     conf: Confstack,
     activeVoiceNrs: number[],
+    extractNr: number | string,
   ): FlowLine[] {
     const result: FlowLine[] = []
     const layout = conf.get('layout') as LayoutConfig
@@ -1900,6 +1912,7 @@ export class HarpnotesLayout {
           style: 'dashed',
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
+          confKey: `extract.${extractNr}.synchlines.*`,
           visible: p1.visible && p2.visible,
           more_conf_keys: [],
         })
@@ -1913,7 +1926,7 @@ export class HarpnotesLayout {
   // Sheetmarks
   // ---------------------------------------------------------------------------
 
-  private _layoutSheetmarks(conf: Confstack): DrawableElement[] {
+  private _layoutSheetmarks(conf: Confstack, extractNr: number | string): DrawableElement[] {
     const result: DrawableElement[] = []
     const layout = conf.get('layout') as LayoutConfig
     const vpos = (conf.get('extract.stringnames.vpos') as number[] | undefined) ?? []
@@ -1934,6 +1947,7 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
+          confKey: `extract.${extractNr}.stringnames.marks.hpos`,
           more_conf_keys: [],
         })
       }
@@ -1955,6 +1969,7 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
+          confKey: `extract.${extractNr}.stringnames.text`,
           more_conf_keys: [],
           draginfo: this._annotationDraginfo(),
         })
@@ -2287,6 +2302,7 @@ export class HarpnotesLayout {
         const shiftY = shiftEu ? fontSize * layout.MM_PER_POINT * 0.25 : 0
         const align: 'left' | 'right' = side === 'l' ? 'right' : 'left'
         const countnoteAlignKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}.align`
+        const countnoteConfKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}.*`
         const annotation: Annotation = {
           type: 'Annotation',
           center: [x + offset[0], y + offset[1] - shiftY],
@@ -2295,6 +2311,7 @@ export class HarpnotesLayout {
           align,
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
+          confKey: countnoteConfKey,
           visible: playable.visible,
           more_conf_keys: [
             {
@@ -2327,6 +2344,7 @@ export class HarpnotesLayout {
         const side = this._barnumberSide(playable, voiceNr, conf)
         const barnumber = playable.measureCount
         const barnumberAlignKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}.align`
+        const barnumberConfKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}.*`
 
         const annotation: Annotation = {
           type: 'Annotation',
@@ -2336,6 +2354,7 @@ export class HarpnotesLayout {
           align: side === 'l' ? 'right' : 'left',
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
+          confKey: barnumberConfKey,
           visible: playable.visible,
           more_conf_keys: [
             {
@@ -2605,6 +2624,7 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
   ): Annotation[] {
     const repeatVoices = new Set((conf.get('extract.repeatsigns.voices') as number[] | undefined) ?? [])
@@ -2623,6 +2643,8 @@ export class HarpnotesLayout {
         beatMap,
         layout,
         startpos,
+        voiceNr,
+        extractNr,
         conf,
       )
       const end = this._makeRepeatSignAnnotation(
@@ -2631,6 +2653,8 @@ export class HarpnotesLayout {
         beatMap,
         layout,
         startpos,
+        voiceNr,
+        extractNr,
         conf,
       )
 
@@ -2646,6 +2670,8 @@ export class HarpnotesLayout {
     beatMap: BeatCompressionMap,
     layout: LayoutConfig,
     startpos: number,
+    voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
   ): Annotation {
     const companion = pointRole === 'begin' ? goto.to : goto.from
@@ -2659,6 +2685,7 @@ export class HarpnotesLayout {
     const style = (
       conf.get(`extract.repeatsigns.${attachSide}.style`) as string | undefined
     ) ?? 'bold'
+    const confBase = `extract.${extractNr}.notebound.repeat_${pointRole}.v_${voiceNr}.${companion.time}`
 
     return {
       type: 'Annotation',
@@ -2670,6 +2697,7 @@ export class HarpnotesLayout {
       style,
       color: layout.color.color_default,
       lineWidth: layout.LINE_THIN,
+      confKey: `${confBase}.pos`,
       visible: goto.visible,
       more_conf_keys: [],
       draginfo: this._annotationDraginfo(),
@@ -2696,6 +2724,7 @@ export class HarpnotesLayout {
     layout: LayoutConfig,
     startpos: number,
     voiceNr: number,
+    extractNr: number | string,
     conf: Confstack,
     showJumplines: boolean,
   ): Annotation[] {
@@ -2776,7 +2805,7 @@ export class HarpnotesLayout {
         text = part.name
         style = 'bold'
         offset = [-4, -7]
-        confBase = `extract.notebound.partname.v_${voiceNr}.${companion.time}`
+        confBase = `extract.${extractNr}.notebound.partname.v_${voiceNr}.${companion.time}`
       }
 
       const configuredOffset = conf.get(`${confBase}.pos`) as [number, number] | undefined

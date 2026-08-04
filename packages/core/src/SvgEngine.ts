@@ -837,6 +837,7 @@ export class SvgEngine {
       svgText(x, y, el.text, style.fontSize, style.fontStyle.includes('bold') ? 'bold' : 'normal', style.fontStyle.includes('italic') ? 'italic' : 'normal', anchor, {
         class: 'zupfnoter-shape zupfnoter-shape--annotation',
         'data-style': el.style,
+        'pointer-events': 'none',
       }, this._useLegacyFrame),
     )
   }

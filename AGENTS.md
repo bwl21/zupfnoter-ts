@@ -64,6 +64,13 @@ erzeugt. Bereichsspezifische Regex-Tabellen, feste Feldlisten, Expander oder
 Sonderlogik im Editor sind unzulässig. Ausnahmen benötigen einen
 dokumentierten Legacy-Beleg und einen Paritätstest.
 
+Jedes SVG-Drawable, das aus einem konfigurierbaren Layoutparameter entsteht,
+muss beim Erzeugen seinen fachlichen `confKey` erhalten. Der SVG-Renderer
+reicht diesen Schlüssel nur als Objektmetadatum weiter; er darf den
+Konfigurationspfad nicht nachträglich aus Geometrie oder Darstellung erraten.
+Für dynamische Objekte bezeichnet ein `.*`-Schlüssel den editierbaren
+Gesamteintrag, während Dragging weiterhin konkrete Unterfelder verwenden darf.
+
 ### Bestehende Fachlogik wiederverwenden
 
 Bevor neue fachliche Verarbeitung implementiert wird, muss geprüft werden, ob

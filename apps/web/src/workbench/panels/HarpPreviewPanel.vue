@@ -1189,6 +1189,12 @@ onBeforeUnmount(() => {
   stroke-width: 1.5;
 }
 
+.harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight > .zupfnoter-shape--rect.zupfnoter-shape--filled) {
+  fill: color-mix(in srgb, var(--zn-danger) 10%, transparent);
+  fill-opacity: 1;
+  stroke: var(--zn-danger);
+}
+
 .harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight > .zupfnoter-shape--annotation) {
   fill: black;
   stroke: none;
