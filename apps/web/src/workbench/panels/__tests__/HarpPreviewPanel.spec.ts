@@ -93,7 +93,7 @@ describe('HarpPreviewPanel', () => {
 
     const pdfFrame = wrapper.find('.harp-preview__pdf-document')
     expect(pdfFrame.exists()).toBe(true)
-    expect(pdfFrame.attributes('src')).toBe('blob:test-pdf')
+    expect(pdfFrame.attributes('src')).toBe('blob:test-pdf#view=Fit')
     expect(pdfFrame.attributes('style')).toContain('width: 140%;')
     expect(pdfFrame.attributes('style')).toContain('height: 140%;')
     expect(wrapper.find('.harp-preview__svg').exists()).toBe(false)

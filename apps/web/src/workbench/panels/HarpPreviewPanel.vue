@@ -81,6 +81,9 @@ const pdfDocumentStyle = computed(() => ({
   width: `${zoom.value}%`,
   height: `${zoom.value}%`,
 }))
+const pdfDocumentSrc = computed(() => (
+  props.pdfUrl === undefined ? undefined : `${props.pdfUrl}#view=Fit`
+))
 const magnifierOpen = ref(false)
 const magnifierSession = ref(0)
 const magnifierAnchor = ref<{ x: number; y: number } | null>(null)
@@ -1007,10 +1010,10 @@ onBeforeUnmount(() => {
           <p v-if="pdfLoading" class="harp-preview__pdf-status" role="status">PDF-Vorschau wird geladen …</p>
           <p v-else-if="pdfError" class="harp-preview__error">{{ pdfError }}</p>
           <iframe
-            v-else-if="pdfUrl"
+            v-else-if="pdfDocumentSrc"
             class="harp-preview__pdf-document"
             :style="pdfDocumentStyle"
-            :src="pdfUrl"
+            :src="pdfDocumentSrc"
             title="PDF-Vorschau der Harfennoten"
           />
           <p v-else class="harp-preview__pdf-status">Keine PDF-Vorschau verfügbar.</p>
@@ -1121,8 +1124,8 @@ onBeforeUnmount(() => {
 }
 
 .harp-preview__pdf {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   min-height: 0;
@@ -1130,9 +1133,10 @@ onBeforeUnmount(() => {
 }
 
 .harp-preview__pdf-document {
+  flex: 1 1 auto;
   display: block;
-  min-width: 100%;
-  min-height: 100%;
+  min-width: 0;
+  min-height: 0;
   border: 0;
   background: white;
 }
