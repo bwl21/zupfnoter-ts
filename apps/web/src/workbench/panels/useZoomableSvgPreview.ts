@@ -30,6 +30,7 @@ interface PanState {
 interface ZoomableSvgPreviewOptions {
   fitToWidth?: boolean
   fitToViewport?: Ref<boolean>
+  fixedCanvasSize?: Ref<SvgSize | null>
   allowWheelZoomWithoutModifier?: boolean
   maxZoom?: number
 }
@@ -50,6 +51,7 @@ export function useZoomableSvgPreview(
     : {
         fitToWidth: optionsOrAllowWheelZoomWithoutModifier.fitToWidth ?? true,
         fitToViewport: optionsOrAllowWheelZoomWithoutModifier.fitToViewport,
+        fixedCanvasSize: optionsOrAllowWheelZoomWithoutModifier.fixedCanvasSize,
         allowWheelZoomWithoutModifier: optionsOrAllowWheelZoomWithoutModifier.allowWheelZoomWithoutModifier ?? false,
         maxZoom: optionsOrAllowWheelZoomWithoutModifier.maxZoom ?? 400,
       }
@@ -131,12 +133,17 @@ export function useZoomableSvgPreview(
   }
 
   const fitScale = computed(() => {
+    const fixedCanvasSize = options.fixedCanvasSize?.value ?? null
+    const content = contentSize.value
+    if (fixedCanvasSize !== null && content !== null && content.width > 0) {
+      return fixedCanvasSize.width / content.width
+    }
+
     if (options.fitToWidth === false) {
       return 1
     }
 
     const metrics = frameMetrics.value
-    const content = contentSize.value
     if (
       metrics === null
       || content === null
@@ -157,6 +164,14 @@ export function useZoomableSvgPreview(
 
   const canvasStyle = computed(() => {
     const content = contentSize.value
+    const fixedCanvasSize = options.fixedCanvasSize?.value ?? null
+    if (fixedCanvasSize !== null) {
+      return {
+        width: `${fixedCanvasSize.width * (zoom.value / 100)}px`,
+        height: `${fixedCanvasSize.height * (zoom.value / 100)}px`,
+      }
+    }
+
     if (content === null) {
       return undefined
     }

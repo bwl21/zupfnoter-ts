@@ -73,10 +73,21 @@ const emit = defineEmits<{
 
 type HarpPreviewMode = 'gross' | 'normal' | 'klein' | 'eingepasst' | 'pdf'
 
+interface PreviewCanvasSize {
+  width: number
+  height: number
+}
+
 const mode = defineModel<HarpPreviewMode>('mode', {
   default: 'normal',
 })
 const fitToViewport = computed(() => mode.value === 'eingepasst')
+const fixedCanvasSize = computed<PreviewCanvasSize | null>(() => {
+  if (mode.value === 'gross') return { width: 2200, height: 1400 }
+  if (mode.value === 'normal') return { width: 1500, height: 750 }
+  if (mode.value === 'klein') return { width: 800, height: 400 }
+  return null
+})
 const pdfDocumentStyle = computed(() => ({
   width: `${zoom.value}%`,
   height: `${zoom.value}%`,
@@ -160,6 +171,7 @@ const preview = useZoomableSvgPreview(
   {
     fitToWidth: true,
     fitToViewport,
+    fixedCanvasSize,
     allowWheelZoomWithoutModifier: props.allowWheelZoomWithoutModifier === true,
   },
 )
@@ -181,9 +193,9 @@ const {
 
 watch(mode, (value) => {
   const presetZoom: Record<Exclude<HarpPreviewMode, 'pdf'>, number> = {
-    gross: 130,
+    gross: 100,
     normal: 100,
-    klein: 70,
+    klein: 100,
     eingepasst: 100,
   }
   if (value !== 'pdf') setZoom(presetZoom[value])
@@ -1159,6 +1171,8 @@ onBeforeUnmount(() => {
 
 .harp-preview__svg :deep(svg) {
   display: block;
+  width: 100%;
+  height: 100%;
   max-width: none;
   overflow: visible;
 }

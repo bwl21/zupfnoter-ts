@@ -200,22 +200,69 @@ export class PdfEngine {
   }
 
   private drawGlyphPath(pathData: string, center: [number, number], scale: [number, number]): void {
-    let lines: PdfLine[] = []
-    let start: [number, number] | undefined
+    let current: [number, number] | undefined
+    let pathOpen = false
+    const pdf = this.document()
     for (const command of this.parseSvgPath(pathData)) {
       if (command.command === 'M') {
-        this.drawLines(lines, start, scale, 'FD', false)
         const x = command.values[0]
         const y = command.values[1]
-        if (x !== undefined && y !== undefined) start = [center[0] + x * scale[0], center[1] + y * scale[1]]
-        lines = []
+        if (x === undefined || y === undefined) continue
+        if (pathOpen) pdf.fillStroke()
+        const next: [number, number] = [center[0] + x * scale[0], center[1] + y * scale[1]]
+        pdf.moveTo(this.x(next[0]), this.y(next[1]))
+        current = [x, y]
+        pathOpen = true
       } else if (command.command === 'l' || command.command === 'm' || command.command === 'c') {
-        lines.push(command.values)
+        if (current === undefined) continue
+        if (command.command === 'm') {
+          const dx = command.values[0]
+          const dy = command.values[1]
+          if (dx === undefined || dy === undefined) continue
+          current = [current[0] + dx, current[1] + dy]
+          pdf.moveTo(this.x(center[0] + current[0] * scale[0]), this.y(center[1] + current[1] * scale[1]))
+          continue
+        }
+        if (command.command === 'l') {
+          for (let index = 0; index + 1 < command.values.length; index += 2) {
+            const dx = command.values[index] ?? 0
+            const dy = command.values[index + 1] ?? 0
+            current = [current[0] + dx, current[1] + dy]
+            pdf.lineTo(this.x(center[0] + current[0] * scale[0]), this.y(center[1] + current[1] * scale[1]))
+          }
+          continue
+        }
+        for (let index = 0; index + 5 < command.values.length; index += 6) {
+          const control1: [number, number] = [
+            current[0] + (command.values[index] ?? 0),
+            current[1] + (command.values[index + 1] ?? 0),
+          ]
+          const control2: [number, number] = [
+            current[0] + (command.values[index + 2] ?? 0),
+            current[1] + (command.values[index + 3] ?? 0),
+          ]
+          const end: [number, number] = [
+            current[0] + (command.values[index + 4] ?? 0),
+            current[1] + (command.values[index + 5] ?? 0),
+          ]
+          pdf.curveTo(
+            this.x(center[0] + control1[0] * scale[0]),
+            this.y(center[1] + control1[1] * scale[1]),
+            this.x(center[0] + control2[0] * scale[0]),
+            this.y(center[1] + control2[1] * scale[1]),
+            this.x(center[0] + end[0] * scale[0]),
+            this.y(center[1] + end[1] * scale[1]),
+          )
+          current = end
+        }
       } else if (command.command === 'z') {
-        this.drawLines(lines, start, scale, 'FD', true)
-        lines = []
+        if (!pathOpen) continue
+        pdf.close()
+        pdf.fillStroke()
+        pathOpen = false
       }
     }
+    if (pathOpen) pdf.fillStroke()
   }
 
   private drawPathData(pathData: string, filled: boolean): void {

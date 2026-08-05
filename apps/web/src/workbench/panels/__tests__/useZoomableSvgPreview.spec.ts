@@ -47,6 +47,7 @@ describe('HarpPreviewPanel zooming', () => {
     const wrapper = mount(HarpPreviewPanel, {
       props: {
         svg: '<svg width="1000" height="500" viewBox="0 0 1000 500"></svg>',
+        mode: 'eingepasst',
       },
     })
 

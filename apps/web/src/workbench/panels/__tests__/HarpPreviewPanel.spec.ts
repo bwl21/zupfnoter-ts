@@ -99,6 +99,30 @@ describe('HarpPreviewPanel', () => {
     expect(wrapper.find('.harp-preview__svg').exists()).toBe(false)
   })
 
+  it('uses the Legacy canvas sizes for the fixed SVG tabs', async () => {
+    const wrapper = mount(HarpPreviewPanel, {
+      props: {
+        svg: '<svg width="200" height="100" viewBox="0 0 200 100"></svg>',
+        mode: 'normal',
+      },
+    })
+
+    await nextTick()
+    expect(wrapper.find('.harp-preview__svg').attributes('style')).toContain('width: 1500px;')
+    expect(wrapper.find('.harp-preview__svg').attributes('style')).toContain('height: 750px;')
+
+    const tabs = wrapper.findAll('.zn-tabs__tab')
+    await tabs[0]?.trigger('click')
+    await nextTick()
+    expect(wrapper.find('.harp-preview__svg').attributes('style')).toContain('width: 2200px;')
+    expect(wrapper.find('.harp-preview__svg').attributes('style')).toContain('height: 1400px;')
+
+    await tabs[2]?.trigger('click')
+    await nextTick()
+    expect(wrapper.find('.harp-preview__svg').attributes('style')).toContain('width: 800px;')
+    expect(wrapper.find('.harp-preview__svg').attributes('style')).toContain('height: 400px;')
+  })
+
   it('opens the context menu when the note hitbox is the event target', async () => {
     const wrapper = mount(HarpPreviewPanel, {
       props: {
