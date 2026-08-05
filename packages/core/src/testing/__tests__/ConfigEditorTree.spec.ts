@@ -85,6 +85,17 @@ describe('buildConfigEditorSectionTree', () => {
     ])
   })
 
+  it('builds jumpline fields from the nested schema path', () => {
+    const tree = buildConfigEditorTargetTree(
+      'extract.0.notebound.c_jumplines.v_3.2976',
+      {},
+      {},
+      0,
+    )
+
+    expect(flattenConfigPaths(tree)).toContain('extract.0.notebound.c_jumplines.v_3.2976.p_follow')
+  })
+
   it('derives the rest-position subtree from the configuration schema', () => {
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'produce')?.label).toBe('PDF für Auszüge')
     expect(findConfigEditorTreeDefinition(CONFIG_EDITOR_TREE_DEFINITION, 'restposition')?.label).toBe('Position der Pausen')

@@ -1623,9 +1623,11 @@ export class HarpnotesLayout {
     const toCenter = playableCenter(toNote, beatMap, layout, startpos)
     const fromSize = playableSize(fromNote, layout)
     const toSize = playableSize(toNote, layout)
-    const verticalOffset = goto.confKey?.endsWith('.p_end') === true && distance < 0
-      ? Math.abs((distance + 0.5) * layout.X_SPACING)
-      : (distance + 0.5) * layout.X_SPACING
+    // Keep the signed distance. Legacy uses this value directly; in
+    // particular, a negative p_end moves the vertical segment to the other
+    // side of the target anchor instead of being mirrored to the positive
+    // side.
+    const verticalOffset = (distance + 0.5) * layout.X_SPACING
     const verticalBase = verticalAnchor === 'to' ? toCenter : fromCenter
     const verticalX = verticalBase[0] + verticalOffset
     const startOrientation = orientationX(verticalX - fromCenter[0])

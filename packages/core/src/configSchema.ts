@@ -395,6 +395,20 @@ const C_JUMPLINES_ENTRY_SCHEMA: JsonSchemaNode = {
   },
 }
 
+const C_JUMPLINES_SCHEMA: JsonSchemaNode = {
+  type: 'object',
+  additionalProperties: false,
+  patternProperties: {
+    '^v_\\d+$': {
+      type: 'object',
+      additionalProperties: false,
+      patternProperties: {
+        '^\\d+$': C_JUMPLINES_ENTRY_SCHEMA,
+      },
+    },
+  },
+}
+
 const VOICE_INDEXED_BEZIER_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
@@ -430,19 +444,7 @@ const NOTEBOUND_SCHEMA: JsonSchemaNode = {
     annotation: NOTEBOUND_POS_SCHEMA,
     chord: NOTEBOUND_POS_SCHEMA,
     barnumber: NOTEBOUND_POS_SCHEMA,
-    c_jumplines: {
-      type: 'object',
-      additionalProperties: false,
-      patternProperties: {
-        '^v_\\d+$': {
-          type: 'object',
-          additionalProperties: false,
-          patternProperties: {
-            '^\\d+$': C_JUMPLINES_ENTRY_SCHEMA,
-          },
-        },
-      },
-    },
+    c_jumplines: C_JUMPLINES_SCHEMA,
     countnote: NOTEBOUND_POS_SCHEMA,
     decoration: legacyNoteboundPosSchema(),
     flowline: VOICE_INDEXED_BEZIER_SCHEMA,
@@ -1379,7 +1381,7 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
           annotation: refTo('#/definitions/notebound_pos'),
           chord: refTo('#/definitions/notebound_pos'),
           barnumber: { $ref: '#/definitions/notebound_pos', align: legacyAlignRef() },
-          c_jumplines: { type: 'object', additionalProperties: false, patternProperties: { 'v_d*': { p_repeat: { type: 'number' }, p_begin: { type: 'number' }, p_end: { type: 'number' }, p_follow: { type: 'number' } } } },
+          c_jumplines: C_JUMPLINES_SCHEMA,
           countnote: refTo('#/definitions/notebound_pos'),
           decoration: refTo('#/definitions/notebound_pos'),
           flowline: { type: 'object', patternProperties: { 'v_d+': { type: 'object', patternProperties: { 'd*': refTo('#/definitions/annotated_bezier') } } } },

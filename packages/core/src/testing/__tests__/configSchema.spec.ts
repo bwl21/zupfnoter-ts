@@ -116,6 +116,9 @@ describe('configSchema', () => {
       expect.objectContaining({ value: 'auto' }),
     )
     expect(resolveConfigSchemaPath('extract.0.countnotes.cntextleft')?.['x-zupfnoter-editor']?.strategy).toBeUndefined()
+    expect(resolveConfigSchemaPath('extract.0.notebound.c_jumplines.v_3.2976.p_follow')).toMatchObject({
+      type: 'number',
+    })
   })
 
   it('recognizes legacy top-level keys', () => {
