@@ -516,6 +516,7 @@ function makeLegacySlurPath(p1: [number, number], p2: [number, number]): { path:
 export class HarpnotesLayout {
   private readonly _imageResolver: HarpnotesLayoutOptions['imageResolver']
   private readonly _flowconf: boolean
+  private readonly _interactive: boolean
   private _config: ZupfnoterConfig
   private _annotationTextMetrics: AnnotationTextMetrics
   private _createdAt: Date
@@ -523,6 +524,7 @@ export class HarpnotesLayout {
   constructor(config: ZupfnoterConfig, options: HarpnotesLayoutOptions = {}) {
     this._imageResolver = options.imageResolver
     this._flowconf = options.flowconf === true
+    this._interactive = options.interactive === true
     this._config = config
     this._annotationTextMetrics = options.annotationTextMetrics ?? createDefaultAnnotationTextMetrics()
     this._createdAt = options.createdAt ?? new Date()
@@ -1367,6 +1369,7 @@ export class HarpnotesLayout {
         fill: 'filled',
         dotted: false,
         rect: true,
+        ...(annotation.selectionBackground === false ? { hitboxOnly: true } : {}),
         hasbarover: false,
         color: 'white',
         lineWidth: layout.LINE_THIN,
@@ -1400,6 +1403,7 @@ export class HarpnotesLayout {
       fill: 'filled',
       dotted: false,
       rect: true,
+      ...(annotation.selectionBackground === false ? { hitboxOnly: true } : {}),
       hasbarover: false,
       color: 'white',
       lineWidth: layout.LINE_THIN,
@@ -1417,7 +1421,9 @@ export class HarpnotesLayout {
     padding: number,
   ): Ellipse[] {
     return annotations
-      .filter((annotation) => annotation.confKey !== undefined)
+      .filter((annotation) => annotation.confKey !== undefined && (
+        annotation.selectionBackground !== false || this._interactive
+      ))
       .map((annotation) => this._annotationBackground(annotation, annotation.align ?? 'left', layout, padding))
   }
 
@@ -2156,6 +2162,7 @@ export class HarpnotesLayout {
           color: layout.color.color_default,
           lineWidth: layout.LINE_THIN,
           visible: true,
+          selectionBackground: false,
           more_conf_keys: [],
           draginfo: this._annotationDraginfo(entry.pos),
         })

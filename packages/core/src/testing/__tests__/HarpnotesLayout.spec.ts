@@ -14,6 +14,7 @@ import type { AnnotationTextMetrics } from '../../TextMetrics.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 import type { Ellipse, Glyph, FlowLine, Path, Annotation } from '@zupfnoter/types'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
+import { loadFixture, transformFixtureToSheet } from '../fixtureLoader.js'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -760,6 +761,16 @@ V:V1 clef=treble-8
       if (!countnote) throw new Error('Expected countnote annotation for measure-start SynchPoint')
 
       expect(countnote.center[0]).toBeCloseTo(proxyEllipse.center[0] + proxyEllipse.size[0] + 2, 5)
+    })
+  })
+
+  describe('lyrics', () => {
+    it('does not place a background over the notes', () => {
+      const sheet = transformFixtureToSheet(loadFixture('3015_reference_sheet'), 0)
+
+      expect(sheet.children.some((child) => (
+        child.type === 'Ellipse' && child.confKey === 'extract.0.lyrics.1.pos'
+      ))).toBe(false)
     })
   })
 

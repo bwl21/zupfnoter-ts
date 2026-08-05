@@ -62,6 +62,8 @@ export interface Ellipse extends Drawable {
   dotted: boolean
   /** Als Rechteck rendern (für Taktstriche, Annotations-Hintergründe) */
   rect: boolean
+  /** Rechteck nur als interaktive Trefferfläche rendern. */
+  hitboxOnly?: boolean
   /** Balken über der Ellipse (für halbe Noten) */
   hasbarover: boolean
   /** Rückverweis auf die zugehörige Note oder Pause */
@@ -104,6 +106,8 @@ export interface Annotation extends Drawable {
   style: string
   /** Textausrichtung wie im Legacy-SVG. */
   align?: 'left' | 'right' | 'center'
+  /** Erzeugt für die interaktive Auswahl eine Hintergrundfläche. */
+  selectionBackground?: boolean
   size?: [number, number]
   origin?: PlayableEntity
 }

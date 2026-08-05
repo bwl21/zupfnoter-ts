@@ -236,6 +236,7 @@ export function renderWorkbenchPreviews(
         ? options.playerQrJpegUrl
         : resolveResourceUrl(resources, imageName),
       flowconf: options.flowconf ?? DEFAULT_WORKBENCH_CONFIG.flowconf,
+      interactive: true,
     }
     const sheet = new HarpnotesLayout(config, layoutOptions).layout(transformedSong, extractNr, 'A3')
     activeVoiceIds = resolveActiveVoiceIdsFromSheet(sheet)

@@ -43,6 +43,24 @@ function addAnnotationSelectionBox(element: HTMLElement): void {
   try {
     const bounds = toRootBounds(annotationShapes, svg)
     if (bounds === undefined) return
+
+    const confKey = element.dataset.confKey
+    if (confKey !== undefined) {
+      const backgroundGroup = [...svg.querySelectorAll<HTMLElement>('.zupfnoter-element')].find((candidate) => (
+        candidate !== element
+        && candidate.classList.contains('zupfnoter-role--barover')
+        && candidate.dataset.confKey === confKey
+      ))
+      const background = backgroundGroup?.querySelector<SVGRectElement>('rect.zupfnoter-shape--rect')
+      const hitbox = backgroundGroup?.querySelector<SVGRectElement>('.zupfnoter-hitbox')
+      for (const rect of [background, hitbox]) {
+        if (rect === null || rect === undefined) continue
+        rect.setAttribute('x', `${bounds.x}`)
+        rect.setAttribute('y', `${bounds.y}`)
+        rect.setAttribute('width', `${bounds.width}`)
+        rect.setAttribute('height', `${bounds.height}`)
+      }
+    }
     const box = element.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'rect')
     box.setAttribute('class', SELECTION_BOX_CLASS)
     box.setAttribute('x', `${bounds.x}`)
@@ -76,6 +94,7 @@ function syncAnnotationHitboxes(root: HTMLElement): void {
     if (backgroundGroup === undefined) continue
     const background = backgroundGroup.querySelector<SVGRectElement>('rect.zupfnoter-shape--rect')
     if (background === null) continue
+    const hitbox = backgroundGroup.querySelector<SVGRectElement>('.zupfnoter-hitbox')
 
     const bounds = toRootBounds(annotationShapes, svg)
     if (bounds === undefined || bounds.width <= 0 || bounds.height <= 0) continue
@@ -83,6 +102,12 @@ function syncAnnotationHitboxes(root: HTMLElement): void {
     background.setAttribute('y', `${bounds.y}`)
     background.setAttribute('width', `${bounds.width}`)
     background.setAttribute('height', `${bounds.height}`)
+    if (hitbox !== null) {
+      hitbox.setAttribute('x', `${bounds.x}`)
+      hitbox.setAttribute('y', `${bounds.y}`)
+      hitbox.setAttribute('width', `${bounds.width}`)
+      hitbox.setAttribute('height', `${bounds.height}`)
+    }
   }
 }
 function applyHighlightClass(element: HTMLElement): void {

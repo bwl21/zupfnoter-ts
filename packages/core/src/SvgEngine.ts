@@ -577,7 +577,14 @@ export class SvgEngine {
 
     const parts: string[] = []
 
-    if (el.fill === 'filled') {
+    if (el.hitboxOnly === true) {
+      // The wrapper below still receives the normal hitbox; no visible shape
+      // must be painted over notation underneath the annotation.
+      parts.push(svgRect(cx - rx, cy - ry, 2 * rx, 2 * ry, 'none', 'none', 0, {
+        class: `zupfnoter-shape ${shapeClass} zupfnoter-shape--hitbox-only`,
+        'pointer-events': 'none',
+      }))
+    } else if (el.fill === 'filled') {
       if (el.rect) {
         parts.push(svgRect(cx - rx, cy - ry, 2 * rx, 2 * ry, color, color, this._useLegacyFrame ? 0 : el.lineWidth, {
           class: `zupfnoter-shape ${shapeClass} zupfnoter-shape--filled`,
@@ -613,15 +620,18 @@ export class SvgEngine {
       parts.push(this._drawBarover(cx, cy, rx, ry, color, el.lineWidth))
     }
 
-    const hitboxRx = rx * 0.75
-    const hitboxRy = ry * 0.75
+    // Annotation/background rectangles already describe the complete
+    // selectable area. Do not shrink them like notehead hitboxes; otherwise
+    // the pointer target no longer matches the visible selection rectangle.
+    const hitboxRx = el.rect ? rx : rx * 0.75
+    const hitboxRy = el.rect ? ry : ry * 0.75
     return this._wrapElement(meta, parts.join('\n'), this._hitboxRect(
       cx - hitboxRx,
       cy - hitboxRy,
       hitboxRx * 2,
       hitboxRy * 2,
       meta,
-      1,
+      el.rect ? 0 : 1,
     ))
   }
 

@@ -25,6 +25,8 @@ export interface HarpnotesLayoutOptions {
   imageResolver?: (imageName: string) => string | undefined
   /** Erzeugt nicht konfigurierte Flusslinien als editierbare Bézier-Pfade. */
   flowconf?: boolean
+  /** Erzeugt interaktive Trefferflächen für die Web-Vorschau. */
+  interactive?: boolean
 }
 
 type JsPdfOrientation = 'p' | 'l'
