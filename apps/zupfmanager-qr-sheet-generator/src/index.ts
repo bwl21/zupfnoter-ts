@@ -258,7 +258,7 @@ function splitQrGroups(entries: QrEntry[]): QrGroup[] {
   ].filter((group) => group.entries.length > 0)
 }
 
-function createAbc(project: Project, entries: QrEntry[], perPage: number): string {
+function createAbc(project: Project, group: QrGroup['suffix'], entries: QrEntry[], perPage: number): string {
   const pages: QrEntry[][] = []
   for (let index = 0; index < entries.length; index += perPage) {
     pages.push(entries.slice(index, index + perPage))
@@ -317,7 +317,7 @@ function createAbc(project: Project, entries: QrEntry[], perPage: number): strin
   }
   return [
     'X:999',
-    'F:' + project.short_name + '_player_qr',
+    'F:' + project.short_name + '_player_qr_' + group,
     'T:' + project.title,
     'M:4/4',
     'L:1/4',
@@ -375,7 +375,7 @@ async function main(): Promise<void> {
     await mkdir(dirname(groupOutput), { recursive: true })
     await writeFile(
       groupOutput,
-      createAbc(project, group.entries, options.perPage),
+      createAbc(project, group.suffix, group.entries, options.perPage),
       'utf8',
     )
     console.log('ABC-Datei geschrieben: ' + groupOutput)
