@@ -380,7 +380,26 @@ async function main(): Promise<void> {
     )
     console.log('ABC-Datei geschrieben: ' + groupOutput)
     console.log('Seiten: ' + Math.ceil(group.entries.length / options.perPage))
+    await renderWithZupfnoterCli(groupOutput)
   }
+}
+
+async function renderWithZupfnoterCli(abcFile: string): Promise<void> {
+  const targetFolder = dirname(abcFile)
+  const result = await execFile('pnpm', [
+    '--filter',
+    '@zupfnoter/cli',
+    'exec',
+    'node',
+    'dist/index.js',
+    abcFile,
+    targetFolder,
+    '--format',
+    'A3',
+  ])
+  if (result.stdout.trim() !== '') console.log(result.stdout.trim())
+  if (result.stderr.trim() !== '') console.error(result.stderr.trim())
+  console.log('PDF-Datei(en) mit zupfnoter CLI erzeugt für: ' + abcFile)
 }
 
 await main()

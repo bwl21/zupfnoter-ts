@@ -10,7 +10,7 @@
   "scripts": {
     "build": "pnpm --filter @zupfnoter/core build && pnpm --filter @zupfnoter/playback build && tsc",
     "type-check": "tsc --noEmit",
-    "generate": "pnpm run build && node dist/index.js"
+    "generate": "pnpm --filter @zupfnoter/cli build && pnpm run build && node dist/index.js"
   },
   "dependencies": {
     "@zupfnoter/core": "workspace:*",
