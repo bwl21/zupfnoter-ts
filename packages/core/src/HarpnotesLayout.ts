@@ -1388,18 +1388,23 @@ export class HarpnotesLayout {
       : align === 'right'
         ? -halfSize[0]
         : 0
-    const lineCount = Math.max(1, annotation.text.split('\n').length)
-    const lineHeight = size[1] / lineCount
-    // SVG text uses the baseline as its y coordinate. The metrics describe
-    // the complete text block, so move the rectangle upward by the ascent
-    // portion instead of placing its top edge on the baseline.
-    let backgroundY = (size[1] - lineHeight) * 0.5 - lineHeight * 0.3
-    if (shiftEu) backgroundY -= padding * 0.7
+    const backgroundSize: [number, number] = [...paddedSize]
+    let backgroundY = halfSize[1]
+    if (shiftEu) {
+      // Legacy shortens the background for countnote text whose baseline is
+      // shifted upward (for example u, a, o, v and e).
+      backgroundY = halfSize[1] - padding * 0.7
+      backgroundSize[1] *= 0.5
+    } else if (!/[|gyqp]/.test(annotation.text)) {
+      // Legacy leaves descenders at full height and shortens all other text.
+      backgroundY = halfSize[1] - padding * 0.5
+      backgroundSize[1] *= 0.7
+    }
 
     return {
       type: 'Ellipse',
       center: [annotation.center[0] + backgroundX, annotation.center[1] + backgroundY],
-      size: paddedSize,
+      size: backgroundSize,
       fill: 'filled',
       dotted: false,
       rect: true,
@@ -2334,6 +2339,7 @@ export class HarpnotesLayout {
         const shiftY = shiftEu ? fontSize * layout.MM_PER_POINT * 0.25 : 0
         const align: 'left' | 'right' = side === 'l' ? 'right' : 'left'
         const countnoteAlignKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}.align`
+        const countnotePosKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}.pos`
         const countnoteConfKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}.*`
         const annotation: Annotation = {
           type: 'Annotation',
@@ -2359,7 +2365,7 @@ export class HarpnotesLayout {
               value: 'r',
             },
           ],
-          draginfo: this._annotationDraginfo(),
+          draginfo: this._annotationDraginfo(undefined, countnotePosKey),
         }
         countnoteBackgrounds.push(
           this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, -0.05, shiftEu),
@@ -2376,6 +2382,7 @@ export class HarpnotesLayout {
         const side = this._barnumberSide(playable, voiceNr, extractNr, conf)
         const barnumber = playable.measureCount
         const barnumberAlignKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}.align`
+        const barnumberPosKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}.pos`
         const barnumberConfKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}.*`
 
         const annotation: Annotation = {
@@ -2402,7 +2409,7 @@ export class HarpnotesLayout {
               value: 'r',
             },
           ],
-          draginfo: this._annotationDraginfo(),
+          draginfo: this._annotationDraginfo(undefined, barnumberPosKey),
         }
         barnumberBackgrounds.push(this._annotationBackground(annotation, side === 'l' ? 'right' : 'left', layout, 0.2))
         barnumbers.push(annotation)

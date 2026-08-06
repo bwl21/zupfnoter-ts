@@ -618,6 +618,9 @@ V:V1 clef=treble-8
       )
       expect(annotations.length).toBeGreaterThanOrEqual(2)
       expect(annotations.every((entry) => /^\d+$/.test(entry.text))).toBe(true)
+      expect(annotations[0]?.draginfo).toMatchObject({
+        conf_key: expect.stringMatching(/^extract\.0\.notebound\.barnumber\.v_1\.t_\d+\.pos$/),
+      })
       const annotationBackground = sheet.children.find((child) => (
         child.type === 'Ellipse'
         && child.rect === true
@@ -705,6 +708,9 @@ V:V1 clef=treble-8
 
       expect(countnotes.map((entry) => entry.text)).toEqual(['1', '2', '3', '4'])
       expect(countnotes.length).toBe(notes.length)
+      expect(countnotes[0]?.draginfo).toMatchObject({
+        conf_key: expect.stringMatching(/^extract\.0\.notebound\.countnote\.v_1\.t_\d+\.pos$/),
+      })
       for (const [index, countnote] of countnotes.entries()) {
         const note = notes[index]
         expect(note).toBeDefined()

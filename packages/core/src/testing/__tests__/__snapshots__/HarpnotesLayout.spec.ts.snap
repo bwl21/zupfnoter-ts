@@ -118,7 +118,7 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
   {
     "center": [
       347.1921111111111,
-      4.883333333333333,
+      10.527777777777779,
     ],
     "color": "white",
     "confKey": "extract.0.legend.pos",
@@ -146,7 +146,7 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
   {
     "center": [
       337.84138333333334,
-      32.461,
+      35.85166666666667,
     ],
     "color": "white",
     "confKey": "extract.0.legend.spos",
@@ -161,7 +161,7 @@ exports[`HarpnotesLayout > single_note > matches snapshot 1`] = `
     "rect": true,
     "size": [
       18.34138333333333,
-      9.601666666666665,
+      6.721166666666665,
     ],
     "type": "Ellipse",
     "visible": true,
