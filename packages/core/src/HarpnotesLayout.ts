@@ -2447,7 +2447,7 @@ export class HarpnotesLayout {
     extractNr: number | string,
     conf: Confstack,
   ): [number, number] {
-    const overrideKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}`
+    const overrideKey = `notebound.countnote.v_${voiceNr}.t_${playable.time}`
     const overridePos = conf.get(`${overrideKey}.pos`) as [number, number] | undefined
     if (overridePos) return overridePos
 
@@ -2478,7 +2478,7 @@ export class HarpnotesLayout {
     extractNr: number | string,
     conf: Confstack,
   ): 'l' | 'r' {
-    const overrideKey = `extract.${extractNr}.notebound.countnote.v_${voiceNr}.t_${playable.time}`
+    const overrideKey = `notebound.countnote.v_${voiceNr}.t_${playable.time}`
     const overrideAlign = conf.get(`${overrideKey}.align`) as 'l' | 'r' | 'auto' | undefined
     if (overrideAlign && overrideAlign !== 'auto') return overrideAlign
 
@@ -2502,7 +2502,7 @@ export class HarpnotesLayout {
     extractNr: number | string,
     conf: Confstack,
   ): [number, number] {
-    const overrideKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}`
+    const overrideKey = `notebound.barnumber.v_${voiceNr}.t_${playable.time}`
     const overridePos = conf.get(`${overrideKey}.pos`) as [number, number] | undefined
     if (overridePos) return overridePos
 
@@ -2537,7 +2537,7 @@ export class HarpnotesLayout {
     extractNr: number | string,
     conf: Confstack,
   ): 'l' | 'r' {
-    const overrideKey = `extract.${extractNr}.notebound.barnumber.v_${voiceNr}.t_${playable.time}`
+    const overrideKey = `notebound.barnumber.v_${voiceNr}.t_${playable.time}`
     const overrideAlign = conf.get(`${overrideKey}.align`) as 'l' | 'r' | 'auto' | undefined
     if (overrideAlign && overrideAlign !== 'auto') return overrideAlign
 
