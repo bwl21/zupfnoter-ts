@@ -28,7 +28,7 @@ function pipelineWithConfig(abcText: string, config: ZupfnoterConfig) {
   const parser = new AbcParser()
   const model = parser.parse(abcText)
   const song = new AbcToSong().transform(model, config)
-  const sheet = new HarpnotesLayout(config).layout(song, 0, 'A4')
+  const sheet = new HarpnotesLayout(config, { interactive: true }).layout(song, 0, 'A4')
   return { song, sheet }
 }
 

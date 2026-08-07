@@ -1426,9 +1426,7 @@ export class HarpnotesLayout {
     padding: number,
   ): Ellipse[] {
     return annotations
-      .filter((annotation) => annotation.confKey !== undefined && (
-        annotation.selectionBackground !== false || this._interactive
-      ))
+      .filter((annotation) => annotation.confKey !== undefined && this._interactive)
       .map((annotation) => this._annotationBackground(annotation, annotation.align ?? 'left', layout, padding))
   }
 
