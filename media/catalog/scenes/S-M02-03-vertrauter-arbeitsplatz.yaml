@@ -1,0 +1,21 @@
+id: S-M02-03-vertrauter-arbeitsplatz
+module: M02
+title: Der vertraute Ausgangspunkt
+goal: ABC-Text und direkte Vorschau als zusammenhängenden Arbeitsplatz zeigen.
+fixture: krippen-demo
+entryState: demo-open-no-selection
+actions:
+  - Titel und Stimmen im ABC-Editor zeigen
+  - eine kleine musikalische Stelle aufsuchen
+  - zur zugehörigen Stelle in der Vorschau wechseln
+exitState: demo-open-focused-passage
+overlay: Dein ABC bleibt der Ausgangspunkt.
+narration:
+  promo: >-
+    Der Ausgangspunkt bleibt vertraut: dein ABC-Text. Du öffnest ein Stück,
+    bearbeitest die Notation und siehst direkt, wie sich deine Arbeit auf das
+    Notenblatt auswirkt.
+durationSeconds:
+  promo: 18
+featureTags: [abc-editor, preview, navigation]
+status: planned

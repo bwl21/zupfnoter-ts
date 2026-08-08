@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900"><rect width="1600" height="900" fill="#102a43"/>
+  <text x="100" y="120" font-family="Verdana" font-size="58" font-weight="bold" fill="white">Vom Notenblatt direkt zum Üben</text>
+  <g font-family="Verdana" text-anchor="middle"><rect x="130" y="230" width="330" height="440" rx="18" fill="white"/><path d="M185 320h220M185 370h220M185 420h220M185 470h220" stroke="#102a43" stroke-width="9"/><rect x="310" y="520" width="95" height="95" fill="#102a43"/><path d="M325 535h25v25h-25zM370 535h20v20h-20zM325 575h20v25h-20zM360 570h30v30h-30z" fill="white"/>
+  <path d="M500 450h170" stroke="#f8c15c" stroke-width="12"/><path d="m650 420 45 30-45 30" fill="#f8c15c"/>
+  <rect x="730" y="190" width="360" height="540" rx="52" fill="#087f8c" stroke="white" stroke-width="9"/><rect x="770" y="260" width="280" height="350" rx="18" fill="white"/><circle cx="910" cy="670" r="26" fill="white"/><path d="M820 395h180M820 440h180M820 485h180" stroke="#68b9bd" stroke-width="11"/><path d="M885 330l80 48-80 48z" fill="#f8c15c"/>
+  <path d="M1130 450h120" stroke="#f8c15c" stroke-width="12"/><path d="m1230 420 45 30-45 30" fill="#f8c15c"/>
+  <circle cx="1390" cy="450" r="120" fill="#f8c15c"/><path d="M1390 355v95l65 35" fill="none" stroke="#102a43" stroke-width="16" stroke-linecap="round"/><text x="1390" y="635" font-size="34" fill="white">Player · Metronom</text></g></svg>

@@ -56,6 +56,7 @@ fixtures/reports/song-gap-report.json
 fixtures/cases/**/output.extract-*_a3.pdf
 !fixtures/cases/public/3015_reference_sheet/output.extract-0_a3.pdf
 /docs/phase-5/000_raw/
+/media-work/
 fixtures/openImplementations.js
 fixtures/openImplementations.d.ts
 fixtures/openImplementations.js.map

@@ -1,0 +1,72 @@
+id: P-promotion-legacy-4min
+title: Zupfnoter-ts für Legacy-Anwender
+audience: legacy-users
+language: de-DE
+addressStyle: du
+targetDurationSeconds: 240
+aspectRatio: 16:9
+captureProfile: web-16x9
+demoFixture: krippen-demo
+outputPath: apps/web/public/media/videos/promotion/zupfnoter-ts-legacy-4min.mp4
+audio:
+  narration: de-du
+  backgroundMusic:
+    source: zupfnoter-player
+    fixture: krippen-demo
+    mix: continuous-under-narration
+  interactionClicks: audible-and-visible
+timeline:
+  - type: transition
+    id: T-welcome
+    durationSeconds: 7
+    title: Willkommen bei Zupfnoter-ts
+  - type: scene
+    id: S-M01-01-warum-zupfnoter-ts
+    variant: promo
+    durationSeconds: 15
+  - type: scene
+    id: S-M02-01-bestand-bleibt
+    variant: promo
+    durationSeconds: 18
+  - type: scene
+    id: S-M02-02-vergleichstests
+    variant: promo
+    durationSeconds: 10
+  - type: scene
+    id: S-M02-03-vertrauter-arbeitsplatz
+    variant: promo
+    durationSeconds: 20
+  - type: scene
+    id: S-M03-01-speicherorte
+    variant: promo
+    durationSeconds: 30
+  - type: scene
+    id: S-M04-01-geschwindigkeit
+    variant: promo
+    durationSeconds: 20
+  - type: scene
+    id: S-M04-02-auswahlumfang
+    variant: promo
+    durationSeconds: 29
+  - type: scene
+    id: S-M05-01-konfiguration
+    variant: promo
+    durationSeconds: 30
+  - type: scene
+    id: S-M06-01-musikalische-wiedergabe
+    variant: promo
+    durationSeconds: 31
+  - type: scene
+    id: S-M06-02-qr-ueben
+    variant: promo
+    durationSeconds: 25
+  - type: scene
+    id: S-M07-01-ausblick
+    variant: promo
+    durationSeconds: 5
+continuity:
+  opening: welcome-screen
+  chapterTransitions: short-overlay
+  primaryThread: krippen-demo-remains-open
+  closing: product-logo-and-claim
+status: planned

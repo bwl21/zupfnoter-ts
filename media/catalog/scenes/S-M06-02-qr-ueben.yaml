@@ -1,0 +1,21 @@
+id: S-M06-02-qr-ueben
+module: M06
+title: Mit dem Smartphone weiterüben
+goal: Den Übergang vom gedruckten Blatt zum mobilen Üben zeigen.
+fixture: krippen-demo
+entryState: rendered-sheet-visible
+actions:
+  - QR-Code auf dem Notenblatt hervorheben
+  - Scan mit Smartphone als kurze Animation zeigen
+  - mobilen Player mit Metronom zeigen
+exitState: mobile-player-visible
+overlay: Scannen und weiterüben.
+narration:
+  promo: >-
+    Mit einem QR-Code auf dem Notenblatt nimmst du das Stück auf dein
+    Smartphone mit und kannst dort weiterspielen – zum Beispiel mit Metronom.
+durationSeconds:
+  promo: 12
+featureTags: [player, qr-code, mobile, metronome]
+evidenceRequired: public-player-link-check
+status: planned

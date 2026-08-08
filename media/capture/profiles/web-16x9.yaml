@@ -1,0 +1,48 @@
+id: web-16x9
+title: Zupfnoter-ts Webaufnahme 16:9
+viewport:
+  width: 1600
+  height: 900
+deviceScaleFactor: 1
+language: de-DE
+colorScheme: light
+reducedMotion: false
+browserZoomPercent: 100
+applicationState:
+  startupStrategy: pending-start-url-requirements
+  storageCredentials: demo-only
+  privateDataVisible: false
+pointer:
+  visible: true
+  movement: calm
+clickFeedback:
+  visual:
+    style: expanding-ring
+    color: "#e48b2c"
+    durationMilliseconds: 420
+    diameterPixels: 34
+  audible:
+    enabled: true
+    style: soft-click
+    gainDecibels: -16
+audio:
+  narration:
+    addressStyle: du
+    targetLoudnessLufs: -16
+  backgroundMusic:
+    source: zupfnoter-player
+    fixture: krippen-demo
+    title: Ich steh an deiner Krippen hier
+    captureAsSeparateTrack: true
+    gainBelowNarrationDecibels: -20
+    fadeInSeconds: 2
+    fadeOutSeconds: 3
+handles:
+  beforeSeconds: 1.5
+  afterSeconds: 1.5
+output:
+  masterFormat: webm
+  productFormat: mp4
+  productVideoCodec: h264
+  productAudioCodec: aac
+  framesPerSecond: 30

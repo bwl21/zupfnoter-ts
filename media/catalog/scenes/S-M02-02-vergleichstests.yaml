@@ -1,0 +1,23 @@
+id: S-M02-02-vergleichstests
+module: M02
+title: Vergleichstests schaffen Sicherheit
+goal: Die Bestandszusage nachvollziehbar absichern.
+fixture: krippen-demo
+entryState: legacy-and-ts-output-visible
+actions:
+  - deckungsgleiche Überblendung kurz bewegen
+  - vereinfachtes Diagramm der Vergleichstests einblenden
+  - geprüften Status sichtbar machen
+exitState: ts-preview-visible
+overlay: Umfangreich geprüft.
+narration:
+  promo: >-
+    Umfangreiche Vergleichstests sichern diese Übereinstimmung ab. Künftig
+    sollen solche Prüfungen bei Bedarf auch für deinen eigenen Bestand
+    zugänglich werden. So kannst du kontrollieren, ob deine Stücke unverändert
+    übernommen werden.
+durationSeconds:
+  promo: 18
+featureTags: [legacy-parity, testing]
+evidenceRequired: fixture-parity-report
+status: planned

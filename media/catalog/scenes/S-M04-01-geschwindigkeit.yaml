@@ -1,0 +1,22 @@
+id: S-M04-01-geschwindigkeit
+module: M04
+title: Schnell vom Gedanken zum Ergebnis
+goal: Die zügige Reaktion anhand einer echten Änderung sichtbar machen.
+fixture: krippen-demo
+entryState: demo-open-editor-focused
+actions:
+  - kleine sichtbare ABC-Änderung eingeben
+  - Aktualisierung der Vorschau ohne Schnitt zeigen
+  - Änderung zurücknehmen
+exitState: demo-restored
+overlay: Ändern. Prüfen. Weiterarbeiten.
+narration:
+  promo: >-
+    Änderungen werden zügig verarbeitet und das Ergebnis erscheint unmittelbar
+    in der Vorschau. So bleibt mehr Zeit für die Musik und weniger Zeit für das
+    Warten auf den nächsten Arbeitsschritt.
+durationSeconds:
+  promo: 16
+featureTags: [performance, abc-editor, preview]
+evidenceRequired: uncut-browser-recording
+status: planned

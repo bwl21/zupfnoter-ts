@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#f4f7f9"/><text x="100" y="120" font-family="Verdana" font-size="58" font-weight="bold" fill="#102a43">Deine Stücke bleiben deine Stücke</text>
+  <g font-family="Verdana" text-anchor="middle"><rect x="100" y="270" width="380" height="290" rx="28" fill="white" stroke="#087f8c" stroke-width="5"/>
+  <text x="290" y="355" font-size="36" font-weight="bold" fill="#102a43">Deine ABC-Dateien</text><path d="M210 410h160M210 450h130M210 490h155" stroke="#68b9bd" stroke-width="16" stroke-linecap="round"/>
+  <path d="M520 415h165" stroke="#087f8c" stroke-width="12"/><path d="m665 385 45 30-45 30" fill="#087f8c"/>
+  <rect x="710" y="270" width="350" height="290" rx="28" fill="#102a43"/><text x="885" y="405" font-size="45" font-weight="bold" fill="white">Zupfnoter-ts</text><text x="885" y="470" font-size="29" fill="#80e1d1">ohne Umstellung</text>
+  <path d="M1100 415h165" stroke="#087f8c" stroke-width="12"/><path d="m1245 385 45 30-45 30" fill="#087f8c"/>
+  <rect x="1290" y="270" width="220" height="290" rx="28" fill="white" stroke="#087f8c" stroke-width="5"/><path d="M1345 345h110v150h-110zM1370 385h60M1370 420h60M1370 455h45" fill="none" stroke="#102a43" stroke-width="10"/>
+  <circle cx="800" cy="690" r="42" fill="#1e9c73"/><path d="m779 689 15 16 30-36" fill="none" stroke="white" stroke-width="10" stroke-linecap="round"/><text x="860" y="705" text-anchor="start" font-size="42" font-weight="bold" fill="#102a43">Ausgabe wie bisher</text></g>
+</svg>

@@ -1,0 +1,23 @@
+id: S-M02-01-bestand-bleibt
+module: M02
+title: Dein Bestand bleibt erhalten
+goal: Die wichtigste Zusage vor allen neuen Funktionen vermitteln.
+fixture: krippen-demo
+entryState: demo-open-no-selection
+actions:
+  - Legacy-Ausgabe des Demo-Stücks zeigen
+  - TS-Ausgabe deckungsgleich überblenden
+  - markanten Bereich vergrößern
+exitState: ts-preview-visible
+overlay: Keine Umstellung nötig.
+narration:
+  promo: >-
+    Die wichtigste Nachricht für dich: Deine bisherigen Stücke bleiben
+    erhalten. Du musst deine Sammlung nicht neu aufbauen und deine ABC-Dateien
+    nicht umstellen. Zupfnoter-ts gibt deine Notenblätter pixelgenau wie bisher
+    aus – jetzt in einer modernen Web-Oberfläche.
+durationSeconds:
+  promo: 28
+featureTags: [legacy-parity, svg, existing-files]
+evidenceRequired: fixture-parity-report
+status: planned

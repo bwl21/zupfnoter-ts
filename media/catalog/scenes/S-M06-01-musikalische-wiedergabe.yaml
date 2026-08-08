@@ -1,0 +1,25 @@
+id: S-M06-01-musikalische-wiedergabe
+module: M06
+title: Wiedergabe folgt dem musikalischen Ablauf
+goal: Die Playback-Linie als musikalischen Interpreten des Stückablaufs zeigen.
+fixture: krippen-demo
+entryState: demo-open-playback-stopped
+actions:
+  - Wiedergabe starten
+  - Wiedergabelinie verfolgen
+  - Wiederholung und Variantenende sichtbar durchlaufen
+  - Ablaufhinweise und Parts in einem kurzen Diagramm ergänzen
+exitState: playback-stopped
+overlay: Spielen wie ein Musiker.
+narration:
+  promo: >-
+    Die Wiedergabelinie folgt dem Stück so, wie es musikalisch gespielt wird –
+    nicht einfach nur Zeile für Zeile. Wiederholungen, Variantenenden,
+    Anweisungen wie D.C. al Fine und auch ein Ablauf nach Parts werden
+    berücksichtigt. So kannst du Notation und tatsächlichen Spielablauf
+    gemeinsam kontrollieren.
+durationSeconds:
+  promo: 30
+featureTags: [playback, repeats, variants, decorations, parts]
+evidenceRequired: playback-flow-browser-check
+status: planned

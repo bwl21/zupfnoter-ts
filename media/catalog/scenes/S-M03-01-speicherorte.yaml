@@ -1,0 +1,25 @@
+id: S-M03-01-speicherorte
+module: M03
+title: Speicherorte flexibel verwalten
+goal: Den Nutzen der neuen Speicherverwaltung ohne technische Begriffe zeigen.
+fixture: krippen-demo
+entryState: demo-open-no-dialog
+actions:
+  - Dialog für Speicherverbindungen öffnen
+  - mehrere benannte Speicherorte zeigen
+  - einen Speicherort nur zum Lesen öffnen
+  - abstrahierte Erweiterung um weitere Anbieter einblenden
+exitState: storage-dialog-open
+overlay: Deine Speicherorte auf einen Blick.
+narration:
+  promo: >-
+    Deine Cloud-Speicherung läuft weiterhin über Dropbox. Du kannst mehrere
+    Speicherorte voreinstellen, zum Beispiel für private Stücke, die Gruppe
+    oder ein Archiv. Einen Speicherort kannst du auch nur zum Lesen öffnen.
+    Und die neue Grundlage ist bereits für weitere Speicheranbieter
+    vorbereitet.
+durationSeconds:
+  promo: 28
+featureTags: [storage, dropbox, read-only]
+evidenceRequired: storage-dialog-browser-check
+status: planned

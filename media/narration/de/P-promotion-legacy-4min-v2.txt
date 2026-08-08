@@ -1,0 +1,35 @@
+## intro
+Willkommen bei Zupfnoter-ts.
+
+## warum
+Warum gibt es Zupfnoter-ts? Vor allem, damit du Zupfnoter noch viele Jahre zuverlässig nutzen kannst. Und damit auf einer stabilen Grundlage neue Möglichkeiten entstehen können.
+
+## bestand
+Das Wichtigste zuerst: Deine bisherigen Stücke bleiben erhalten. Du musst deine ABC-Dateien nicht umstellen. Das Notenblatt kommt so heraus wie bisher.
+
+## tests
+Umfangreiche Vergleichstests sichern diese Übereinstimmung ab. Später sollst du damit bei Bedarf auch deinen eigenen Bestand prüfen können.
+
+## arbeitsplatz
+Der Ausgangspunkt bleibt vertraut: dein ABC-Text. Du bearbeitest das Stück und siehst direkt das Notenbild. Für die Harfennoten kannst du das ganze Blatt groß und eingepasst anzeigen.
+
+## speicher
+Auch die Cloud-Speicherung bleibt bei Dropbox. Neu ist: Du kannst mehrere Speicherorte vorbereiten – zum Beispiel Privat, Gruppe und Archiv. Ein Archiv lässt sich auch nur zum Lesen öffnen. Weitere Speicheranbieter können später ergänzt werden.
+
+## tempo
+Änderungen werden zügig verarbeitet. Hier ergänzen wir sichtbar den Titel. Die Vorschau folgt sofort – und nach dem Rückgängig-Befehl ist auch dort wieder alles beim Alten.
+
+## auswahl
+Du markierst eine Stelle dort, wo du arbeitest. Danach bestimmst du, ob sie für eine Stimme, den aktuellen Auszug oder alle Stimmen gilt. Beim Umschalten siehst du die Wirkung direkt im vollständigen Harfenblatt.
+
+## konfiguration
+Auch die Konfiguration beginnt beim musikalischen Objekt. Von einer Note oder Anmerkung gelangst du zur passenden Einstellung. Dort helfen verständliche Bedienelemente; Einstellungen lassen sich außerdem zwischen Ebenen übernehmen.
+
+## wiedergabe
+Die Wiedergabelinie folgt dem Stück so, wie es musikalisch gespielt wird. Sie berücksichtigt Wiederholungen, Variantenenden, D. C. al Fine und einen Ablauf nach Parts. Auf dem vollständigen Harfenblatt kannst du den Weg unmittelbar verfolgen.
+
+## player
+Über den Playback-Link und den QR-Code kommt das Stück in den Zupfnoter-Player. Dort stellst du den Starttakt und das Tempo ein, schaltest das Metronom dazu und beginnst deine Übung.
+
+## outro
+Dein Bestand bleibt. Zupfnoter entwickelt sich weiter.

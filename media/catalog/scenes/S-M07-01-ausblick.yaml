@@ -1,0 +1,18 @@
+id: S-M07-01-ausblick
+module: M07
+title: Bewährtes sichern. Zukunft ermöglichen.
+goal: Bestandssicherheit und Weiterentwicklung zusammenführen.
+fixture: krippen-demo
+entryState: demo-sheet-visible
+actions:
+  - Notenblatt ruhig ausblenden
+  - Zupfnoter-ts-Logo und Leitidee einblenden
+exitState: closing-card-visible
+overlay: Bewährtes sichern. Zukunft ermöglichen.
+narration:
+  promo: >-
+    Dein Bestand bleibt. Zupfnoter entwickelt sich weiter.
+durationSeconds:
+  promo: 6
+featureTags: [closing, future]
+status: planned

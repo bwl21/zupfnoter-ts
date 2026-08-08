@@ -1,0 +1,24 @@
+id: S-M04-02-auswahlumfang
+module: M04
+title: Eine Auswahl in mehreren Ansichten
+goal: Auswahlperspektive und umschaltbaren Umfang verständlich zeigen.
+fixture: krippen-demo
+entryState: demo-open-no-selection
+actions:
+  - Passage in einer Stimme auswählen
+  - Hervorhebung in den verbundenen Ansichten zeigen
+  - Auswahl auf aktuellen Auszug umschalten
+  - Auswahl auf alle Stimmen umschalten
+exitState: passage-selected-all-voices
+overlay: Stimme. Auszug. Alle Stimmen.
+narration:
+  promo: >-
+    Du markierst eine Stelle dort, wo du sie gerade siehst – im Text, im
+    Notenblatt oder in der Harfenvorschau. Danach entscheidest du, ob die
+    Auswahl für eine Stimme, den aktuellen Auszug oder alle Stimmen gilt. Den
+    Umfang kannst du jederzeit umschalten.
+durationSeconds:
+  promo: 27
+featureTags: [selection, perspectives, extracts, voices]
+evidenceRequired: selection-browser-check
+status: planned

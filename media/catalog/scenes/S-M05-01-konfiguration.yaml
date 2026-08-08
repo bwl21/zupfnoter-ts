@@ -1,0 +1,24 @@
+id: S-M05-01-konfiguration
+module: M05
+title: Einstellungen verständlich bearbeiten
+goal: Objektbezug, Ebenen und passende Bedienelemente zeigen.
+fixture: krippen-demo
+entryState: demo-open-no-dialog
+actions:
+  - Konfigurationsdialog an einer sichtbaren Note öffnen
+  - vom Dialog zum betroffenen Objekt navigieren
+  - passende Bedienelemente zeigen
+  - Einstellung zwischen Ebenen kopieren
+exitState: config-dialog-open-object-focused
+overlay: Einstellungen am richtigen Objekt.
+narration:
+  promo: >-
+    Von einer Einstellung gelangst du direkt zum betroffenen Objekt – zum
+    Beispiel zu einer Note oder einer Anmerkung. Einstellungen kannst du
+    zwischen Ebenen übernehmen. Passende Bedienelemente machen die Bearbeitung
+    verständlicher und weniger technisch.
+durationSeconds:
+  promo: 27
+featureTags: [config, object-navigation, levels, controls]
+evidenceRequired: config-browser-check
+status: planned

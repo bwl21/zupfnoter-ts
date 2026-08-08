@@ -1,0 +1,23 @@
+id: S-M01-01-warum-zupfnoter-ts
+module: M01
+title: Warum Zupfnoter-ts?
+goal: Stabilisierung und Weiterentwicklung als Motivation vermitteln.
+fixture: krippen-demo
+entryState: welcome-screen-visible
+actions:
+  - Welcome-Screen ruhig zeigen
+  - Beispielstück öffnen
+  - neue Arbeitsoberfläche vollständig erscheinen lassen
+exitState: demo-open-no-selection
+overlay: Bewährtes sichern. Zukunft ermöglichen.
+narration:
+  promo: >-
+    Warum gibt es Zupfnoter-ts überhaupt? Nicht, weil das Bewährte plötzlich
+    schlecht wäre. Du hast über viele Jahre einen wertvollen Bestand an
+    Stücken aufgebaut. Zupfnoter-ts soll diesen Bestand langfristig sichern
+    und stabilisieren – und zugleich die Grundlage für die weitere Entwicklung
+    schaffen.
+durationSeconds:
+  promo: 22
+featureTags: [welcome, startup, demo]
+status: planned

@@ -1,0 +1,23 @@
+Willkommen bei Zupfnoter-ts. [[slnc 800]]
+
+Warum gibt es Zupfnoter-ts überhaupt? Nicht, weil das Bewährte plötzlich schlecht wäre. Du hast über viele Jahre einen wertvollen Bestand an Stücken aufgebaut. Zupfnoter-ts soll diesen Bestand langfristig sichern und stabilisieren – und zugleich die Grundlage für die weitere Entwicklung schaffen. [[slnc 1000]]
+
+Die wichtigste Nachricht für dich: Deine bisherigen Stücke bleiben erhalten. Du musst deine Sammlung nicht neu aufbauen und deine ABC-Dateien nicht umstellen. Zupfnoter-ts gibt deine Notenblätter pixelgenau wie bisher aus – jetzt in einer modernen Web-Oberfläche. [[slnc 1200]]
+
+Umfangreiche Vergleichstests sichern diese Übereinstimmung ab. Künftig sollen solche Prüfungen bei Bedarf auch für deinen eigenen Bestand zugänglich werden. So kannst du kontrollieren, ob deine Stücke unverändert übernommen werden. [[slnc 1000]]
+
+Der Ausgangspunkt bleibt vertraut: dein ABC-Text. Du öffnest ein Stück, bearbeitest die Notation und siehst direkt, wie sich deine Arbeit auf das Notenblatt auswirkt. [[slnc 1000]]
+
+Deine Cloud-Speicherung läuft weiterhin über Dropbox. Du kannst mehrere Speicherorte voreinstellen, zum Beispiel für private Stücke, deine Gruppe oder ein Archiv. Einen Speicherort kannst du auch nur zum Lesen öffnen. Und die neue Grundlage ist bereits für weitere Speicheranbieter vorbereitet. [[slnc 1000]]
+
+Änderungen werden zügig verarbeitet und das Ergebnis erscheint unmittelbar in der Vorschau. So bleibt mehr Zeit für die Musik und weniger Zeit für das Warten auf den nächsten Arbeitsschritt. [[slnc 800]]
+
+Du markierst eine Stelle dort, wo du sie gerade siehst – im Text, im Notenblatt oder in der Harfenvorschau. Danach entscheidest du, ob die Auswahl für eine Stimme, den aktuellen Auszug oder alle Stimmen gilt. Den Umfang kannst du jederzeit umschalten. [[slnc 1000]]
+
+Von einer Einstellung gelangst du direkt zum betroffenen Objekt – zum Beispiel zu einer Note oder einer Anmerkung. Einstellungen kannst du zwischen Ebenen übernehmen. Passende Bedienelemente machen die Bearbeitung verständlicher und weniger technisch. [[slnc 1000]]
+
+Die Wiedergabelinie folgt dem Stück so, wie es musikalisch gespielt wird – nicht einfach nur Zeile für Zeile. Wiederholungen, Variantenenden, Anweisungen wie D. C. al Fine und auch ein Ablauf nach Parts werden berücksichtigt. So kannst du Notation und tatsächlichen Spielablauf gemeinsam kontrollieren. [[slnc 1000]]
+
+Mit einem QR-Code auf dem Notenblatt nimmst du das Stück auf dein Smartphone mit und kannst dort weiterspielen – zum Beispiel mit Metronom. [[slnc 900]]
+
+Dein Bestand bleibt. Zupfnoter entwickelt sich weiter.
