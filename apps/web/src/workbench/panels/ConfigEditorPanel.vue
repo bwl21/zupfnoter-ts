@@ -11,7 +11,7 @@ import {
   CONFIG_EDITOR_TREE_DEFINITION,
   CONFIG_EDITOR_MENU_ITEMS,
   Confstack,
-  extractSongConfig,
+  inspectSongConfig,
   findConfigEditorTreeDefinition,
   formatConfigEditorValue,
   getConfigEditorNewEntryCommand,
@@ -51,6 +51,7 @@ interface ConfigIntent {
     | 'config.copyPathToExtract'
     | 'config.movePathToExtract'
     | 'config.openMenuAtPath'
+    | 'config.replaceRaw'
   path?: string
   value?: CommandArgumentValue
   extractId: number
@@ -75,6 +76,8 @@ interface ConfigTreeRow {
   editorOptions?: readonly ConfigEditorOption[]
   editorStrategy?: ConfigEditorStrategy
   valueType?: string
+  minimum?: number
+  maximum?: number
 }
 
 interface ConfigExtractOption {
@@ -125,6 +128,7 @@ const expandedPaths = ref<string[]>([
 const draftValues = ref<Record<string, string>>({})
 const inputErrors = ref<Record<string, string>>({})
 const enlargedResourceUrl = ref<string | undefined>(undefined)
+const rawConfigDraft = ref('')
 
 const fallbackSectionVisiblePaths: Record<string, string[]> = {
   layout: [
@@ -155,19 +159,16 @@ const fallbackSectionVisiblePaths: Record<string, string[]> = {
   ],
 }
 
-const parsedSongConfig = computed(() => {
-  try {
-    return {
-      config: { ...extractSongConfig(props.abcText), $resources: props.resources ?? {} } as ReturnType<typeof extractSongConfig>,
-      parseError: '',
-    }
-  } catch (error) {
-    return {
-      config: {},
-      parseError: error instanceof Error ? error.message : String(error),
-    }
-  }
-})
+const songConfigInspection = computed(() => inspectSongConfig(props.abcText))
+const parsedSongConfig = computed(() => ({
+  config: { ...(songConfigInspection.value.config ?? {}), $resources: props.resources ?? {} },
+  parseError: songConfigInspection.value.issues
+    .filter((issue) => issue.kind === 'syntax')
+    .map((issue) => issue.message)
+    .join('\n'),
+}))
+const configIssues = computed(() => songConfigInspection.value.issues)
+const showsValidationErrors = computed(() => resolvedActiveSection.value === 'validationerrors')
 
 const defaultConfig = computed(() => initConf(new Confstack()))
 const effectiveConfig = computed(() => mergeSongConfig(defaultConfig.value, parsedSongConfig.value.config))
@@ -225,6 +226,14 @@ watch(
     draftValues.value = {}
     inputErrors.value = {}
   },
+)
+
+watch(
+  () => songConfigInspection.value.rawText,
+  (rawText) => {
+    rawConfigDraft.value = rawText ?? ''
+  },
+  { immediate: true },
 )
 
 watch(
@@ -313,6 +322,13 @@ onBeforeUnmount(() => {
 })
 
 function buildVisibleRows(): ConfigTreeRow[] {
+  if (filteredSearch.value !== '') {
+    return flattenTree(buildConfigEditorAllParametersTree(
+      parsedSongConfig.value.config as unknown as Record<string, CommandArgumentValue>,
+      effectiveConfig.value as unknown as Record<string, CommandArgumentValue>,
+      props.currentExtract,
+    ), '', 0, false)
+  }
   if (activeSectionTreeDefinition.value !== undefined) {
     return flattenTree(activeSectionTreeDefinition.value, '', 0, false)
   }
@@ -491,6 +507,8 @@ function createRow(
     editorOptions: schema?.['x-zupfnoter-editor']?.options,
     editorStrategy: schema?.['x-zupfnoter-editor']?.strategy,
     valueType: typeof schema?.type === 'string' ? schema.type : undefined,
+    minimum: schema?.minimum,
+    maximum: schema?.maximum,
   }
 }
 
@@ -518,7 +536,7 @@ function resolveEffectivePath(path: string): string | undefined {
 
 function isConcreteConfigPath(path: string): boolean {
   if (!/^extract\.\d+\./.test(path)) return false
-  if (path.split('.').length <= 3) return false
+  if (path.split('.').length <= 2) return false
   return resolveConfigSchemaPath(path) !== undefined
     || getPathValue(parsedSongConfig.value.config, path) !== undefined
     || getPathValue(effectiveConfig.value, path) !== undefined
@@ -738,6 +756,10 @@ function isBooleanValue(row: ConfigTreeRow): boolean {
 
 function isTextareaValue(row: ConfigTreeRow): boolean {
   return row.editorStrategy === 'textarea'
+}
+
+function isNumericValue(row: ConfigTreeRow): boolean {
+  return row.valueType === 'integer' || row.valueType === 'number'
 }
 
 function isResourceValue(row: ConfigTreeRow): boolean {
@@ -1169,6 +1191,14 @@ function emitIntent(action: ConfigIntent['action'], path?: string): void {
   })
 }
 
+function applyRawConfig(): void {
+  emit('intent', {
+    action: 'config.replaceRaw',
+    value: rawConfigDraft.value,
+    extractId: props.currentExtract,
+  })
+}
+
 function selectAffectedObject(row: ConfigTreeRow): void {
   if (row.localPath === undefined) return
   emitIntent('config.selectAffectedObject', row.localPath)
@@ -1363,10 +1393,65 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
       </ZnToolbar>
 
       <div v-if="parsedSongConfig.parseError" class="config-panel__parse-error" role="alert">
-        {{ parsedSongConfig.parseError }}
+        Ungültiges JSON: {{ parsedSongConfig.parseError }}
       </div>
 
+      <section
+        v-if="showsValidationErrors"
+        class="config-panel__validation"
+        aria-label="Konfigurationsfehler"
+      >
+        <p v-if="configIssues.length === 0" class="config-panel__validation-empty">
+          Keine Konfigurationsfehler gefunden.
+        </p>
+        <article
+          v-for="(issue, index) in configIssues"
+          v-else
+          :key="`${issue.kind}-${issue.path ?? index}`"
+          class="config-panel__validation-issue"
+        >
+          <div>
+            <strong>{{ issue.kind === 'syntax' ? 'Ungültiges JSON' : 'Ungültiges Konfigurationsschema' }}</strong>
+            <code v-if="issue.path !== undefined">{{ issue.path }}</code>
+            <p>{{ issue.message }}</p>
+          </div>
+          <div v-if="issue.configPath !== undefined" class="config-panel__validation-actions">
+            <ZnButton
+              v-if="issue.repair !== 'delete-path'"
+              variant="ghost"
+              @click="emitIntent('config.editSection', issue.configPath)"
+            >
+              Bearbeiten
+            </ZnButton>
+            <ZnButton
+              v-if="issue.repair === 'delete-path'"
+              variant="ghost"
+              @click="emitIntent('config.deletePath', issue.configPath)"
+            >
+              Unbekannten Parameter löschen
+            </ZnButton>
+          </div>
+        </article>
+
+        <div v-if="songConfigInspection.config === undefined" class="config-panel__raw-editor">
+          <label for="config-raw-json">Rohe Konfiguration (JSON)</label>
+          <textarea
+            id="config-raw-json"
+            v-model="rawConfigDraft"
+            spellcheck="false"
+            aria-describedby="config-raw-json-hint"
+          />
+          <p id="config-raw-json-hint">
+            Beim Übernehmen wird nur der eingebettete Konfigurationsblock ersetzt.
+          </p>
+          <ZnButton variant="primary" @click="applyRawConfig">
+            Rohformat übernehmen
+          </ZnButton>
+        </div>
+      </section>
+
       <div
+        v-if="!showsValidationErrors"
         class="config-panel__tree"
         :class="{ 'config-panel__tree--compact': usesCompactShell }"
         :style="{ '--config-visible-rows': visibleRows.length }"
@@ -1507,7 +1592,10 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
               v-else-if="row.isLeaf"
               :value="getDraftValue(row)"
               class="config-row__input"
-              type="text"
+              :type="isNumericValue(row) ? 'number' : 'text'"
+              :min="isNumericValue(row) ? row.minimum : undefined"
+              :max="isNumericValue(row) ? row.maximum : undefined"
+              :step="row.valueType === 'integer' ? 1 : row.valueType === 'number' ? 'any' : undefined"
               :placeholder="getDraftPlaceholder(row)"
               :aria-invalid="inputErrors[row.path] !== undefined"
               :aria-describedby="inputErrors[row.path] !== undefined ? `config-error-${row.key}` : undefined"
@@ -1829,6 +1917,73 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
   background: color-mix(in srgb, var(--zn-danger) 10%, var(--zn-bg-surface));
   color: var(--zn-danger);
   font-size: 0.84rem;
+}
+
+.config-panel__validation {
+  display: grid;
+  gap: 0.65rem;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--zn-border) 82%, transparent);
+  border-radius: var(--zn-radius-md);
+  background: color-mix(in srgb, var(--zn-bg-surface) 92%, white);
+}
+
+.config-panel__validation-empty,
+.config-panel__validation-issue p,
+.config-panel__raw-editor p {
+  margin: 0;
+}
+
+.config-panel__validation-empty,
+.config-panel__raw-editor p {
+  color: var(--zn-text-muted);
+  font-size: 0.78rem;
+}
+
+.config-panel__validation-issue {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--zn-danger) 28%, transparent);
+  border-radius: var(--zn-radius-md);
+  background: color-mix(in srgb, var(--zn-danger) 7%, var(--zn-bg-surface));
+}
+
+.config-panel__validation-issue code {
+  display: block;
+  margin: 0.2rem 0;
+  color: var(--zn-text-muted);
+  font-size: 0.76rem;
+}
+
+.config-panel__validation-actions {
+  flex: 0 0 auto;
+}
+
+.config-panel__raw-editor {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.config-panel__raw-editor label {
+  font-weight: 650;
+}
+
+.config-panel__raw-editor textarea {
+  width: 100%;
+  min-height: 12rem;
+  resize: vertical;
+  padding: 0.65rem;
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-md);
+  background: var(--zn-bg-surface);
+  color: var(--zn-text);
+  font-family: var(--zn-font-mono);
+  font-size: 0.82rem;
 }
 
 .config-panel__tree {

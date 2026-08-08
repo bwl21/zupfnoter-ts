@@ -15,6 +15,7 @@ export interface PlaybackPositionMarker {
   timeMs: number
   position: PlaybackPosition
   meter?: PlaybackMeter
+  partName?: string
 }
 
 export interface PlaybackMeter {
@@ -30,6 +31,160 @@ export interface PlaybackLinkOptions {
   positionMarkers?: readonly PlaybackPositionMarker[]
   tempoBpm?: number
   tempoUnit?: number
+  metronome?: PlaybackMetronomeConfig
+}
+
+export type PlaybackMetronomeMode = 'off' | 'countIn' | 'playback' | 'always'
+export interface PlaybackMetronomeConfig {
+  mode: PlaybackMetronomeMode
+  minLeadIn?: number
+  bandPreCount?: boolean
+  division?: number
+  subdivision?: number
+}
+
+export interface PlaybackMetronomeClick {
+  timeMs: number
+  accent: boolean
+  kind: 'BAR_START' | 'MAIN_BEAT' | 'SUBDIVISION'
+  isLastBeforeEntry: boolean
+}
+
+export type PlaybackCountEventKind = 'PRE_COUNT' | 'BAR_START' | 'MAIN_BEAT' | 'SUBDIVISION'
+
+export interface PlaybackCountEvent {
+  /** Offset from the beginning of the complete count-in, in milliseconds. */
+  offsetMs: number
+  kind: PlaybackCountEventKind
+  /** Zero-based main-beat index within the displayed measure. */
+  beat: number
+  isLastBeforeEntry: boolean
+}
+
+export interface PlaybackCountInPlan {
+  durationMs: number
+  beatDurationMs: number
+  meter: PlaybackMeter
+  events: readonly PlaybackCountEvent[]
+}
+
+function nextMeasureMarker(
+  markers: readonly PlaybackPositionMarker[],
+  markerIndex: number,
+): PlaybackPositionMarker | undefined {
+  const marker = markers[markerIndex]
+  if (marker === undefined) return undefined
+  return markers.slice(markerIndex + 1).find((candidate) => (
+    candidate.position.measureNumber !== marker.position.measureNumber
+    || candidate.position.passIndex !== marker.position.passIndex
+    || candidate.meter !== marker.meter
+  ))
+}
+
+/** Plans count-in events backwards from the actual musical entry. */
+export function createPlaybackCountInPlan(
+  markers: readonly PlaybackPositionMarker[],
+  entryTimeMs: number,
+  settings: Pick<PlaybackMetronomeConfig, 'minLeadIn' | 'bandPreCount' | 'division' | 'subdivision'>,
+  tempoBpm?: number,
+  tempoUnit = 0.25,
+): PlaybackCountInPlan | undefined {
+  const minLeadIn = Math.max(1, Math.floor(settings.minLeadIn ?? 4))
+  const division = Math.max(1, Math.floor(settings.division ?? 4))
+  const subdivision = Math.max(1, Math.floor(settings.subdivision ?? 1))
+  const openingMarker = markers[0]
+  const delayedMeterMarker = markers.find((marker, index) => index > 0
+    && marker.meter !== undefined
+    && openingMarker !== undefined
+    && marker.position.measureNumber === openingMarker.position.measureNumber
+    && marker.position.passIndex === openingMarker.position.passIndex)
+  const isPickupEntry = openingMarker?.timeMs === entryTimeMs
+    && openingMarker.meter === undefined
+    && delayedMeterMarker?.meter !== undefined
+  const markerIndex = isPickupEntry
+    ? markers.indexOf(delayedMeterMarker)
+    : markers.findIndex((marker) => marker.timeMs === entryTimeMs && marker.meter !== undefined)
+  const marker = markerIndex < 0 ? undefined : markers[markerIndex]
+  const meter = marker?.meter
+  if (marker === undefined || meter === undefined) return undefined
+  const next = nextMeasureMarker(markers, markerIndex)
+  const measuredDurationMs = next === undefined ? 0 : next.timeMs - marker.timeMs
+  const tempoBeatDurationMs = tempoBpm !== undefined && tempoBpm > 0
+    ? 60000 / tempoBpm / (tempoUnit * meter.denominator) * meter.numerator / division
+    : 0
+  const beatDurationMs = measuredDurationMs > 0
+    ? measuredDurationMs / division
+    : tempoBeatDurationMs
+  if (!(beatDurationMs > 0)) return undefined
+
+  let partialBeats = 0
+  if (isPickupEntry && openingMarker !== undefined) {
+    const pickupDurationMs = marker.timeMs - openingMarker.timeMs
+    const pickupBeats = Math.max(1, Math.min(division, Math.round(pickupDurationMs / beatDurationMs)))
+    partialBeats = Math.max(0, division - pickupBeats)
+  }
+  const normalBeatCount = partialBeats >= minLeadIn
+    ? partialBeats
+    : partialBeats + Math.ceil((minLeadIn - partialBeats) / division) * division
+  const normalDurationMs = normalBeatCount * beatDurationMs
+  const bandDurationMs = settings.bandPreCount === true ? 4 * beatDurationMs : 0
+  const events: PlaybackCountEvent[] = []
+  if (settings.bandPreCount === true) {
+    events.push(
+      { offsetMs: 0, kind: 'PRE_COUNT', beat: 0, isLastBeforeEntry: false },
+      { offsetMs: 2 * beatDurationMs, kind: 'PRE_COUNT', beat: 2, isLastBeforeEntry: false },
+    )
+  }
+  for (let beatIndex = 0; beatIndex < normalBeatCount; beatIndex += 1) {
+    const beat = beatIndex % division
+    for (let subdivisionIndex = 0; subdivisionIndex < subdivision; subdivisionIndex += 1) {
+      const kind: PlaybackCountEventKind = subdivisionIndex > 0
+        ? 'SUBDIVISION'
+        : beat === 0 ? 'BAR_START' : 'MAIN_BEAT'
+      events.push({
+        offsetMs: bandDurationMs + (beatIndex + subdivisionIndex / subdivision) * beatDurationMs,
+        kind,
+        beat,
+        isLastBeforeEntry: beatIndex === normalBeatCount - 1 && subdivisionIndex === subdivision - 1,
+      })
+    }
+  }
+  return { durationMs: bandDurationMs + normalDurationMs, beatDurationMs, meter, events }
+}
+
+/** Creates metric clicks from the shared time-based position track. */
+export function createPlaybackMetronomeClicks(
+  markers: readonly PlaybackPositionMarker[],
+  durationMs: number,
+  division = 4,
+  subdivision = 1,
+): PlaybackMetronomeClick[] {
+  const clicks: PlaybackMetronomeClick[] = []
+  const safeDivision = Math.max(1, Math.floor(division))
+  const safeSubdivision = Math.max(1, Math.floor(subdivision))
+  for (let index = 0; index < markers.length; index += 1) {
+    const marker = markers[index]
+    if (marker === undefined || marker.meter === undefined) continue
+    const next = markers.slice(index + 1).find((candidate) => (
+      candidate.position.measureNumber !== marker.position.measureNumber
+      || candidate.position.passIndex !== marker.position.passIndex
+    ))
+    const endMs = Math.min(durationMs, next?.timeMs ?? durationMs)
+    const measureDurationMs = endMs - marker.timeMs
+    if (measureDurationMs <= 0) continue
+    const clickCount = safeDivision * safeSubdivision
+    for (let clickIndex = 0; clickIndex < clickCount; clickIndex += 1) {
+      const mainBeat = clickIndex % safeSubdivision === 0
+      const kind = clickIndex === 0 ? 'BAR_START' : mainBeat ? 'MAIN_BEAT' : 'SUBDIVISION'
+      clicks.push({
+        timeMs: marker.timeMs + clickIndex * measureDurationMs / clickCount,
+        accent: kind === 'BAR_START',
+        kind,
+        isLastBeforeEntry: false,
+      })
+    }
+  }
+  return clicks
 }
 
 export interface PlaybackLinkResult {
@@ -67,13 +222,17 @@ const MAGIC = new Uint8Array([0x5a, 0x4e, 0x50])
 const LEGACY_FORMAT_VERSION = 1
 const COMPACT_FORMAT_VERSION = 2
 const POSITION_FORMAT_VERSION = 3
-const FORMAT_VERSION = 4
+const TEMPO_FORMAT_VERSION = 4
+const PART_FORMAT_VERSION = 5
+const FORMAT_VERSION = 7
 const FLAG_DEFLATE_RAW = 1
 const FLAG_EVENTS_HAVE_VELOCITY = 2
 const FLAG_EVENTS_HAVE_PASS = 4
 const FLAG_HAS_POSITION_TRACK = 8
 const FLAG_POSITION_MARKERS_HAVE_METER = 16
 const FLAG_HAS_TEMPO = 32
+const FLAG_POSITION_MARKERS_HAVE_PART_NAME = 64
+const FLAG_HAS_METRONOME_CONFIG = 128
 const DEFAULT_TIME_RESOLUTION_MS = 10
 
 /** Platform adapter for the one compression method supported by format v1. */
@@ -89,6 +248,7 @@ export interface PlaybackDecodedData {
   positionMarkers: PlaybackPositionMarker[]
   tempoBpm?: number
   tempoUnit?: number
+  metronome?: PlaybackMetronomeConfig
 }
 
 function writeVarUInt(target: number[], value: number): void {
@@ -242,6 +402,7 @@ function normalizePositionMarkers(
     return {
       timeMs: quantize(marker.timeMs, resolutionMs) * resolutionMs,
       position: { ...marker.position },
+      partName: marker.partName === undefined || marker.partName.trim() === '' ? undefined : marker.partName,
       meter: marker.meter === undefined ? undefined : {
         numerator: marker.meter.numerator,
         denominator: marker.meter.denominator,
@@ -254,6 +415,9 @@ function normalizePositionMarkers(
     const previous = deduplicated[deduplicated.length - 1]
     if (previous !== undefined && previous.position.measureNumber === marker.position.measureNumber
       && previous.position.passIndex === marker.position.passIndex) {
+      if (previous.timeMs === marker.timeMs && previous.partName === undefined && marker.partName !== undefined) {
+        previous.partName = marker.partName
+      }
       if (previous.timeMs === marker.timeMs && previous.meter === undefined && marker.meter !== undefined) {
         previous.meter = marker.meter
       } else if (previous.meter === undefined && marker.meter !== undefined && marker.timeMs > previous.timeMs) {
@@ -268,7 +432,7 @@ function normalizePositionMarkers(
   return deduplicated
 }
 
-function encodePositionMarkers(markers: readonly PlaybackPositionMarker[], resolutionMs: number, includeMeter: boolean): { bytes: Uint8Array; markerBytes: number } {
+function encodePositionMarkers(markers: readonly PlaybackPositionMarker[], resolutionMs: number, includeMeter: boolean, includePartName: boolean): { bytes: Uint8Array; markerBytes: number } {
   const output: number[] = []
   let previousTime = 0
   for (const marker of markers) {
@@ -287,6 +451,18 @@ function encodePositionMarkers(markers: readonly PlaybackPositionMarker[], resol
         for (const value of grouping) writeVarUInt(output, value)
       }
     }
+    if (includePartName) {
+      const partName = marker.partName
+      if (partName === undefined || partName.trim() === '') {
+        output.push(0)
+      } else {
+        const bytes = new TextEncoder().encode(partName)
+        if (bytes.length > 1024) throw new Error('Playback part name is too long')
+        output.push(1)
+        writeVarUInt(output, bytes.length)
+        output.push(...bytes)
+      }
+    }
     previousTime = time
   }
   return { bytes: new Uint8Array(output), markerBytes: output.length }
@@ -302,7 +478,7 @@ interface EncodedPlaybackPayload {
 
 async function encodePayloadParts(
   events: readonly PlaybackEvent[],
-  options: Pick<PlaybackLinkOptions, 'timeResolutionMs' | 'positionMarkers' | 'tempoBpm' | 'tempoUnit'>,
+  options: Pick<PlaybackLinkOptions, 'timeResolutionMs' | 'positionMarkers' | 'tempoBpm' | 'tempoUnit' | 'metronome'>,
   codec: PlaybackCompressionCodec,
 ): Promise<EncodedPlaybackPayload> {
   const resolutionMs = options.timeResolutionMs ?? DEFAULT_TIME_RESOLUTION_MS
@@ -312,14 +488,38 @@ async function encodePayloadParts(
   const formatFlags = FLAG_DEFLATE_RAW | FLAG_HAS_POSITION_TRACK
     | (normalized.some((event) => (event.velocity ?? 127) !== 127) ? FLAG_EVENTS_HAVE_VELOCITY : 0)
     | (positionMarkers.some((marker) => marker.meter !== undefined) ? FLAG_POSITION_MARKERS_HAVE_METER : 0)
+    | (positionMarkers.some((marker) => marker.partName !== undefined && marker.partName.trim() !== '') ? FLAG_POSITION_MARKERS_HAVE_PART_NAME : 0)
+    | (options.metronome !== undefined ? FLAG_HAS_METRONOME_CONFIG : 0)
     | (options.tempoBpm !== undefined && options.tempoBpm > 0 ? FLAG_HAS_TEMPO : 0)
   const header = encodeHeader(normalized.length, positionMarkers.length, resolutionMs, formatFlags)
   const encodedEvents = encodeEvents(normalized, resolutionMs, formatFlags, false)
-  const encodedMarkers = encodePositionMarkers(positionMarkers, resolutionMs, (formatFlags & FLAG_POSITION_MARKERS_HAVE_METER) !== 0)
+  const encodedMarkers = encodePositionMarkers(positionMarkers, resolutionMs,
+    (formatFlags & FLAG_POSITION_MARKERS_HAVE_METER) !== 0,
+    (formatFlags & FLAG_POSITION_MARKERS_HAVE_PART_NAME) !== 0)
   const metadata: number[] = []
   if ((formatFlags & FLAG_HAS_TEMPO) !== 0) {
     writeVarUInt(metadata, Math.round((options.tempoBpm ?? 0) * 100))
     writeVarUInt(metadata, Math.round((options.tempoUnit ?? 0.25) * 100000))
+  }
+  if ((formatFlags & FLAG_HAS_METRONOME_CONFIG) !== 0) {
+    const metronome = options.metronome
+    if (metronome === undefined) throw new Error('Missing playback metronome config')
+    const modes: PlaybackMetronomeMode[] = ['off', 'countIn', 'playback', 'always']
+    const mode = modes.indexOf(metronome.mode)
+    if (mode < 0) throw new Error(`Invalid playback metronome mode: ${metronome.mode}`)
+    const minLeadIn = metronome.minLeadIn ?? 4
+    const division = metronome.division ?? 4
+    const subdivision = metronome.subdivision ?? 1
+    if (!Number.isSafeInteger(minLeadIn) || minLeadIn < 1
+      || !Number.isSafeInteger(division) || division < 1
+      || !Number.isSafeInteger(subdivision) || subdivision < 1) {
+      throw new Error('Invalid playback count settings')
+    }
+    metadata.push(mode)
+    writeVarUInt(metadata, minLeadIn)
+    writeVarUInt(metadata, metronome.bandPreCount === true ? 1 : 0)
+    writeVarUInt(metadata, division)
+    writeVarUInt(metadata, subdivision)
   }
   const eventAndMarkerBytes = new Uint8Array(metadata.length + encodedEvents.bytes.length + encodedMarkers.bytes.length)
   eventAndMarkerBytes.set(metadata)
@@ -380,7 +580,7 @@ function fromBase64Url(value: string): Uint8Array {
 /** Encodes audio events into the versioned compressed playback payload. */
 export async function encodePlaybackPayload(
   events: readonly PlaybackEvent[],
-  options: Pick<PlaybackLinkOptions, 'timeResolutionMs' | 'positionMarkers'>,
+  options: Pick<PlaybackLinkOptions, 'timeResolutionMs' | 'positionMarkers' | 'metronome'>,
   codec: PlaybackCompressionCodec,
 ): Promise<Uint8Array> {
   return (await encodePayloadParts(events, options, codec)).payload
@@ -435,7 +635,8 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
   if (payload.length < 6 || !MAGIC.every((value, index) => payload[index] === value)) throw new Error('Invalid playback payload magic')
   const version = payload[3]
   if (version !== LEGACY_FORMAT_VERSION && version !== COMPACT_FORMAT_VERSION
-    && version !== POSITION_FORMAT_VERSION && version !== FORMAT_VERSION) {
+    && version !== POSITION_FORMAT_VERSION && version !== TEMPO_FORMAT_VERSION
+    && version !== PART_FORMAT_VERSION && version !== FORMAT_VERSION) {
     throw new Error(`Unsupported playback format version: ${version}`)
   }
   const formatFlags = payload[4] ?? 0
@@ -448,8 +649,8 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
   if (version === COMPACT_FORMAT_VERSION && (formatFlags & ~(FLAG_DEFLATE_RAW | FLAG_EVENTS_HAVE_VELOCITY | FLAG_EVENTS_HAVE_PASS)) !== 0) {
     throw new Error(`Unsupported playback format flags: ${formatFlags}`)
   }
-  const isPositionFormat = version === POSITION_FORMAT_VERSION || version === FORMAT_VERSION
-  if (isPositionFormat && (formatFlags & ~(FLAG_DEFLATE_RAW | FLAG_EVENTS_HAVE_VELOCITY | FLAG_HAS_POSITION_TRACK | FLAG_POSITION_MARKERS_HAVE_METER | FLAG_HAS_TEMPO)) !== 0) {
+  const isPositionFormat = version >= POSITION_FORMAT_VERSION
+  if (isPositionFormat && (formatFlags & ~(FLAG_DEFLATE_RAW | FLAG_EVENTS_HAVE_VELOCITY | FLAG_HAS_POSITION_TRACK | FLAG_POSITION_MARKERS_HAVE_METER | FLAG_HAS_TEMPO | FLAG_POSITION_MARKERS_HAVE_PART_NAME | FLAG_HAS_METRONOME_CONFIG)) !== 0) {
     throw new Error(`Unsupported playback format flags: ${formatFlags}`)
   }
   const offset = { value: 5 }
@@ -459,10 +660,23 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
   if (eventCount > 1_000_000) throw new Error('Playback event count is too large')
   let tempoBpm: number | undefined
   let tempoUnit: number | undefined
-  if (version === FORMAT_VERSION && (formatFlags & FLAG_HAS_TEMPO) !== 0) {
+  let metronome: PlaybackMetronomeConfig | undefined
+  if (version >= TEMPO_FORMAT_VERSION && (formatFlags & FLAG_HAS_TEMPO) !== 0) {
     tempoBpm = readVarUInt(payload, offset) / 100
     tempoUnit = readVarUInt(payload, offset) / 100000
     if (!(tempoBpm > 0) || !(tempoUnit > 0)) throw new Error('Invalid playback tempo metadata')
+  }
+  if (version >= FORMAT_VERSION && (formatFlags & FLAG_HAS_METRONOME_CONFIG) !== 0) {
+    const modeValue = payload[offset.value]
+    if (modeValue === undefined || modeValue > 3) throw new Error('Invalid playback metronome mode')
+    offset.value += 1
+    const modes: PlaybackMetronomeMode[] = ['off', 'countIn', 'playback', 'always']
+    const minLeadIn = readVarUInt(payload, offset)
+    const bandPreCount = readVarUInt(payload, offset)
+    const division = readVarUInt(payload, offset)
+    const subdivision = readVarUInt(payload, offset)
+    if (minLeadIn < 1 || bandPreCount > 1 || division < 1 || subdivision < 1) throw new Error('Invalid playback count settings')
+    metronome = { mode: modes[modeValue] ?? 'off', minLeadIn, bandPreCount: bandPreCount === 1, division, subdivision }
   }
   const events: PlaybackEvent[] = []
   let startUnits = 0
@@ -546,7 +760,21 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
           meter = grouping.length > 0 ? { numerator, denominator, grouping } : { numerator, denominator }
         }
       }
-      positionMarkers.push({ timeMs: markerTimeUnits * timeResolutionMs, position, meter })
+      let partName: string | undefined
+      if (version >= 5 && (formatFlags & FLAG_POSITION_MARKERS_HAVE_PART_NAME) !== 0) {
+        const partFlags = payload[offset.value]
+        if (partFlags === undefined) throw new Error('Playback payload ends inside a position marker')
+        offset.value += 1
+        if ((partFlags & ~1) !== 0) throw new Error(`Unsupported playback part flags: ${partFlags}`)
+        if ((partFlags & 1) !== 0) {
+          const length = readVarUInt(payload, offset)
+          if (length > 1024 || offset.value + length > payload.length) throw new Error('Invalid playback part name')
+          const bytes = payload.slice(offset.value, offset.value + length)
+          offset.value += length
+          partName = new TextDecoder().decode(bytes)
+        }
+      }
+      positionMarkers.push({ timeMs: markerTimeUnits * timeResolutionMs, position, meter, partName })
     }
     let markerIndex = 0
     let currentPosition = positionMarkers[0]?.position ?? { measureNumber: 1, passIndex: 1 }
@@ -566,7 +794,7 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
     }
     positionMarkers.push(...deduplicated.values())
   }
-  return { timeResolutionMs, events, positionMarkers, tempoBpm, tempoUnit }
+  return { timeResolutionMs, events, positionMarkers, tempoBpm, tempoUnit, metronome }
 }
 
 /** Decodes a complete Base64URL playback fragment using the platform codec. */
@@ -575,7 +803,7 @@ export async function decodePlaybackFragment(value: string, codec: PlaybackCompr
   const headerOffset = { value: 5 }
   readVarUInt(encoded, headerOffset)
   readVarUInt(encoded, headerOffset)
-  if (encoded[3] === POSITION_FORMAT_VERSION || encoded[3] === FORMAT_VERSION) readVarUInt(encoded, headerOffset)
+  if (encoded[3] !== undefined && encoded[3] >= POSITION_FORMAT_VERSION) readVarUInt(encoded, headerOffset)
   if (headerOffset.value > encoded.length) throw new Error('Playback payload ends inside header')
   const decodedEvents = await codec.decompress(encoded.slice(headerOffset.value))
   const payload = new Uint8Array(headerOffset.value + decodedEvents.length)
@@ -583,3 +811,10 @@ export async function decodePlaybackFragment(value: string, codec: PlaybackCompr
   payload.set(decodedEvents, headerOffset.value)
   return decodePlaybackPayload(payload)
 }
+
+export {
+  resolvePlaybackCountEventSound,
+  resolvePlaybackMetronomeSound,
+  schedulePlaybackMetronomeClick,
+} from './metronomeSound.js'
+export type { PlaybackMetronomeSound, PlaybackMetronomeSoundKind } from './metronomeSound.js'

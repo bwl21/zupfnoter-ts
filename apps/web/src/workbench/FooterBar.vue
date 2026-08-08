@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<{
   dirty: boolean
   saveFormat: string
   speedFactor: number
+  metronomeMode: 'off' | 'countIn' | 'playback' | 'always'
   cursorPosition: string
   cursorUnicode?: string
   configHover?: string
@@ -23,6 +24,8 @@ const emit = defineEmits<{
   (event: 'speed-up'): void
   (event: 'speed-down'): void
   (event: 'speed-reset'): void
+  (event: 'metronome-mode-change', value: 'off' | 'countIn' | 'playback' | 'always'): void
+  (event: 'playback-config'): void
   (event: 'storage-connections'): void
   (event: 'selection-voice-scope-change', value: 'single-voice' | 'extract-voices' | 'all-voices'): void
 }>()
@@ -57,6 +60,16 @@ function handleSelectionVoiceScopeChange(event: Event): void {
     return
   }
   emit('selection-voice-scope-change', target.value)
+}
+
+function handleMetronomeModeChange(event: Event): void {
+  const target = event.target
+  if (!(target instanceof HTMLSelectElement)) return
+  if (target.value !== 'off'
+    && target.value !== 'countIn'
+    && target.value !== 'playback'
+    && target.value !== 'always') return
+  emit('metronome-mode-change', target.value)
 }
 </script>
 
@@ -111,6 +124,29 @@ function handleSelectionVoiceScopeChange(event: Event): void {
       </div>
       <div class="footer-bar__playback">
         <span class="footer-bar__meta">Playback:</span>
+        <label class="footer-bar__metronome-field">
+          <span class="footer-bar__metronome-symbol" aria-hidden="true">♫</span>
+          <select
+            class="footer-bar__metronome-select"
+            :value="metronomeMode"
+            aria-label="Metronom-Modus"
+            @change="handleMetronomeModeChange"
+          >
+            <option value="off">Metronom aus</option>
+            <option value="countIn">Einzählen</option>
+            <option value="playback">Playback</option>
+            <option value="always">Immer</option>
+          </select>
+        </label>
+        <button
+          class="footer-bar__playback-config"
+          type="button"
+          title="Wiedergabe für diesen Auszug konfigurieren"
+          aria-label="Wiedergabe konfigurieren"
+          @click="emit('playback-config')"
+        >
+          ⚙
+        </button>
         <ZnButton class="footer-bar__speed-button" variant="ghost" @click="emit('speed-down')">
           -
         </ZnButton>
@@ -223,7 +259,8 @@ function handleSelectionVoiceScopeChange(event: Event): void {
   align-items: center;
 }
 
-.footer-bar__scope-select {
+.footer-bar__scope-select,
+.footer-bar__metronome-select {
   min-width: 5.5rem;
   min-height: 2.1rem;
   padding: 0.35rem 1.9rem 0.35rem 0.75rem;
@@ -244,18 +281,47 @@ function handleSelectionVoiceScopeChange(event: Event): void {
   background-repeat: no-repeat;
 }
 
-.footer-bar__scope-select:focus-visible {
+.footer-bar__scope-select:focus-visible,
+.footer-bar__metronome-select:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--zn-accent) 65%, white);
   outline-offset: 2px;
 }
 
 .footer-bar__speed-button,
-.footer-bar__speed-value {
+.footer-bar__speed-value,
+.footer-bar__playback-config {
   min-width: 2.4rem;
   padding-inline: 0.4rem;
   border-radius: 999px;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
+}
+
+.footer-bar__playback-config {
+  min-height: 2.1rem;
+  border: 1px solid var(--zn-border);
+  background: var(--zn-bg-surface);
+  color: var(--zn-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.footer-bar__metronome-field {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-bar__metronome-symbol {
+  position: absolute;
+  left: 0.7rem;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.footer-bar__metronome-select {
+  min-width: 9.2rem;
+  padding-left: 1.75rem;
 }
 
 .footer-bar__speed-value {

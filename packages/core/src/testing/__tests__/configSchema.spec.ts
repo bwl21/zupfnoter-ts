@@ -28,6 +28,21 @@ import {
 } from '../../configSchema.js'
 
 describe('configSchema', () => {
+  it('resolves per-extract playback and metronome settings generically', () => {
+    const mode = resolveConfigSchemaPath('extract.2.playback.metronomeMode')
+    expect(mode?.enum).toEqual(['off', 'countIn', 'playback', 'always'])
+    expect(mode?.['x-zupfnoter-editor']?.options?.map((option) => option.label)).toEqual([
+      'Aus',
+      'Einzählen',
+      'Während der Wiedergabe',
+      'Immer',
+    ])
+    expect(resolveConfigSchemaPath('extract.2.playback.minLeadIn')?.type).toBe('integer')
+    expect(resolveConfigSchemaPath('extract.2.playback.bandPreCount')?.type).toBe('boolean')
+    expect(resolveConfigSchemaPath('extract.2.playback.division')?.minimum).toBe(1)
+    expect(resolveConfigSchemaPath('extract.2.playback.subdivision')?.minimum).toBe(1)
+  })
+
   it('exposes the legacy schema identifiers', () => {
     expect(ZUPFNOTER_CONFIG_SCHEMA_URI).toBe('https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json')
     expect(ZUPFNOTER_CONFIG_SCHEMA_DRAFT).toBe('http://json-schema.org/draft-04/schema#')

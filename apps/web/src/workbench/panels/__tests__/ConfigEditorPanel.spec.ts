@@ -4,6 +4,68 @@ import { describe, expect, it } from 'vitest'
 import ConfigEditorPanel from '../ConfigEditorPanel.vue'
 
 describe('ConfigEditorPanel', () => {
+  it('shows an unknown schema path and emits its generic deletion', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nK:C\nC\n%%%%zupfnoter.config\n{"extract":{"1":{"playback":{"strategy":{}}}}}',
+        currentExtract: 1,
+        activeSection: 'validationerrors',
+      },
+    })
+
+    expect(wrapper.text()).toContain('Ungültiges Konfigurationsschema')
+    expect(wrapper.text()).toContain('$.extract.1.playback.strategy')
+    const deleteButton = wrapper.findAll('button')
+      .find((button) => button.text() === 'Unbekannten Parameter löschen')
+    expect(deleteButton).toBeDefined()
+    await deleteButton?.trigger('click')
+    expect(wrapper.emitted('intent')).toContainEqual([{
+      action: 'config.deletePath',
+      path: 'extract.1.playback.strategy',
+      extractId: 1,
+    }])
+  })
+
+  it('offers malformed JSON as raw editable config text', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nK:C\nC\n%%%%zupfnoter.config\n{"extract":',
+        currentExtract: 0,
+        activeSection: 'validationerrors',
+      },
+    })
+
+    expect(wrapper.text()).toContain('Ungültiges JSON')
+    const textarea = wrapper.get('#config-raw-json')
+    expect((textarea.element as HTMLTextAreaElement).value).toBe('{"extract":')
+    await textarea.setValue('{"extract":{}}')
+    await wrapper.get('button.zn-button--primary').trigger('click')
+    expect(wrapper.emitted('intent')).toContainEqual([{
+      action: 'config.replaceRaw',
+      value: '{"extract":{}}',
+      extractId: 0,
+    }])
+  })
+
+  it('opens a known path with an invalid type in its generated editor', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: '%%%%zupfnoter.config\n{"extract":{"1":{"playback":{"division":"four"}}}}',
+        currentExtract: 1,
+        activeSection: 'validationerrors',
+      },
+    })
+
+    const editButton = wrapper.findAll('button').find((button) => button.text() === 'Bearbeiten')
+    expect(editButton).toBeDefined()
+    await editButton?.trigger('click')
+    expect(wrapper.emitted('intent')).toContainEqual([{
+      action: 'config.editSection',
+      path: 'extract.1.playback.division',
+      extractId: 1,
+    }])
+  })
+
   it('renders a tree-based config stub with effective values', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {
@@ -169,6 +231,7 @@ describe('ConfigEditorPanel', () => {
     })
 
     expect(wrapper.text()).toContain('Grundeinstellungen')
+    expect(wrapper.text()).toContain('Wiedergabe')
     expect(wrapper.text()).toContain('Layout')
     expect(wrapper.text()).toContain('Vorlage konfigurieren')
 
@@ -326,6 +389,26 @@ describe('ConfigEditorPanel', () => {
     expect(wrapper.find('.config-panel__tree').text()).toContain('n-Tolen')
     expect(wrapper.findAll('.config-row').some((row) => row.find('[data-help-key="extract.0.tuplets.text"]').exists())).toBe(true)
     expect(wrapper.findAll('.config-row').some((row) => row.find('[data-help-key="extract.0.tuplets.style"]').exists())).toBe(true)
+  })
+
+  it('searches all effective parameters independent of the selected form', async () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'basic_settings',
+      },
+    })
+
+    const search = wrapper.find('.config-panel__search-input')
+    await search.setValue('metronomeMode')
+
+    const modeRow = wrapper.findAll('.config-row').find((row) => (
+      row.find('[data-help-key="extract.0.playback.metronomeMode"]').exists()
+    ))
+    expect(modeRow).toBeDefined()
+    expect(modeRow?.find('.config-row__select').exists()).toBe(true)
+    expect(modeRow?.text()).toContain('Aus (off)')
   })
 
   it('filters the tree to the selected config edit section', () => {
@@ -1094,6 +1177,30 @@ describe('ConfigEditorPanel', () => {
 
   expect(wrapper.text()).toContain('cover_jpg')
   expect(wrapper.text()).not.toContain('other_png')
+    expect(wrapper.text()).not.toContain('Keine passenden Parameter')
+  })
+
+  it('opens a schema-defined extract object as a concrete configuration target', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nK:C\nC |]',
+        currentExtract: 0,
+        activeSection: 'extract.0.playback',
+      },
+    })
+
+    expect(wrapper.text()).toContain('Metronom-Modus')
+    expect(wrapper.text()).toContain('Mindestens einzählen')
+    expect(wrapper.text()).toContain('Band-Vorzähler')
+    expect(wrapper.text()).toContain('Zählschläge pro Takt')
+    expect(wrapper.text()).toContain('Unterteilungen')
+    const modeRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Metronom-Modus'))
+    const leadInRow = wrapper.findAll('.config-row').find((row) => row.text().includes('Mindestens einzählen'))
+    expect(modeRow?.find('.config-row__select').exists()).toBe(true)
+    expect(modeRow?.text()).toContain('Aus (off)')
+    expect(leadInRow?.find('input').attributes('type')).toBe('number')
+    expect(leadInRow?.find('input').attributes('min')).toBe('1')
+    expect(leadInRow?.find('input').attributes('step')).toBe('1')
     expect(wrapper.text()).not.toContain('Keine passenden Parameter')
   })
 

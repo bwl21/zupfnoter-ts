@@ -4,6 +4,7 @@ import {
   type PlaybackEvent,
   type PlaybackPositionMarker,
   type PlaybackLinkOptions,
+  type PlaybackMetronomeConfig,
 } from '@zupfnoter/playback'
 import { deflateSync, inflateSync } from 'fflate'
 import {
@@ -13,6 +14,7 @@ import {
 import type { PlaybackExportData } from '@zupfnoter/core'
 
 import type { PlaybackStep } from './playback'
+import type { PlaybackConfig } from '@zupfnoter/types'
 
 /** Browser compression adapter shared by web export and the player. */
 export const browserPlaybackCodec: PlaybackCompressionCodec = {
@@ -51,7 +53,19 @@ export function playbackPositionsFromTimeline(
     timeMs: marker.timeMs,
     position: marker.position,
     meter: marker.meter,
+    partName: marker.partName,
   }))
+}
+
+function toPlaybackMetronomeConfig(config: PlaybackConfig | undefined): PlaybackMetronomeConfig | undefined {
+  if (config === undefined || config.metronomeMode === undefined) return undefined
+  return {
+    mode: config.metronomeMode,
+    minLeadIn: config.minLeadIn,
+    bandPreCount: config.bandPreCount,
+    division: config.division,
+    subdivision: config.subdivision,
+  }
 }
 
 /** Creates one compressed playback link from the existing workbench timeline. */
@@ -62,6 +76,7 @@ export async function createPlaybackLinkFromTimeline(
   timeResolutionMs = 10,
   tempoBpm?: number,
   tempoUnit?: number,
+  playbackConfig?: PlaybackConfig,
 ) {
   return exportPlaybackLink(
     playbackEventsFromTimeline(timeline, activeVoiceIds),
@@ -71,6 +86,7 @@ export async function createPlaybackLinkFromTimeline(
       positionMarkers: playbackPositionsFromTimeline(timeline),
       tempoBpm,
       tempoUnit,
+      metronome: toPlaybackMetronomeConfig(playbackConfig),
     } satisfies PlaybackLinkOptions,
     browserPlaybackCodec,
   )
@@ -83,6 +99,7 @@ export async function createPlaybackLinkFromExportData(
   timeResolutionMs = 10,
   tempoBpm?: number,
   tempoUnit?: number,
+  playbackConfig?: PlaybackConfig,
 ) {
   return exportPlaybackLink(
     exportData.events.map((event) => ({
@@ -98,6 +115,7 @@ export async function createPlaybackLinkFromExportData(
       positionMarkers: exportData.positionMarkers,
       tempoBpm,
       tempoUnit,
+      metronome: toPlaybackMetronomeConfig(playbackConfig),
     } satisfies PlaybackLinkOptions,
     browserPlaybackCodec,
   )

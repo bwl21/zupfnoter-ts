@@ -8,12 +8,13 @@ import {
   createDefaultAnnotationTextMetrics,
   extractSongConfig,
   extractSongResources,
+  buildConfstack,
   initConf,
   mergeSongConfig,
   PLAYER_QR_IMAGE_NAME,
 } from '@zupfnoter/core'
 import type { AbcParseError } from '@zupfnoter/core'
-import type { SheetObjectIndex, SongDiagnostic, SongResources } from '@zupfnoter/types'
+import type { PlaybackConfig, SheetObjectIndex, SongDiagnostic, SongResources } from '@zupfnoter/types'
 import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
 import startupDemoAbc from '../../../../../fixtures/cases/public/krippen-demo/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
@@ -51,6 +52,7 @@ export interface WorkbenchRenderResult {
   playbackTimeline: PlaybackStep[]
   baseTempoFromQ?: number
   tempoUnitFromQ?: number
+  playbackConfig?: PlaybackConfig
   summary: string
   renderError?: string
 }
@@ -108,6 +110,7 @@ export async function renderPdfExport(
       10,
       resolveBaseTempoFromSong(song),
       resolveTempoUnitFromSong(song),
+      resolvePlaybackConfig(config, extractNr),
     )
     playerQrJpegUrl = await createPlayerQrJpeg(playbackLink.url)
     sheet = new HarpnotesLayout(config, {
@@ -165,6 +168,10 @@ function buildConfig(abcText: string) {
   const conf = new Confstack()
   const defaults = initConf(conf)
   return mergeSongConfig(defaults, extractSongConfig(abcText))
+}
+
+function resolvePlaybackConfig(config: ReturnType<typeof buildConfig>, extractNr: number): PlaybackConfig | undefined {
+  return buildConfstack(config, extractNr).get(`extract.${extractNr}.playback`) as PlaybackConfig | undefined
 }
 
 /** Meldet eine fehlende oder leere anfängliche Tonartzeile vor dem Konfigurationsblock. */
@@ -268,6 +275,7 @@ export function renderWorkbenchPreviews(
   const playbackTimeline = song === null ? [] : buildPlaybackTimeline(song as Song)
   const baseTempoFromQ = song === null ? undefined : resolveBaseTempoFromSong(song as Song)
   const tempoUnitFromQ = song === null ? undefined : resolveTempoUnitFromSong(song as Song)
+  const playbackConfig = resolvePlaybackConfig(config, extractNr)
 
   const renderError = scoreError ?? modelError
   const summary = song === null
@@ -290,6 +298,7 @@ export function renderWorkbenchPreviews(
     playbackTimeline,
     baseTempoFromQ,
     tempoUnitFromQ,
+    playbackConfig,
     summary,
     renderError,
   }

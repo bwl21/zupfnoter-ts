@@ -59,6 +59,8 @@ export type {
 export type {
   PlaybackStatus,
   PlaybackMode,
+  PlaybackMetronomeMode,
+  PlaybackConfig,
   PlaybackState,
   PlaybackHighlight,
   PlaybackFlowStep,

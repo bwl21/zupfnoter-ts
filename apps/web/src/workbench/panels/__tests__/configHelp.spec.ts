@@ -17,4 +17,22 @@ describe('configHelp', () => {
       globalThis.fetch = originalFetch
     }
   })
+
+  it('resolves playback help through extract inheritance candidates', async () => {
+    const originalFetch = globalThis.fetch
+    globalThis.fetch = async () => new Response(JSON.stringify({
+      'playback.metronomeMode': '<p>Metronom-Modus</p>',
+      'playback.subdivision': '<p>Positive ganze Zahl</p>',
+    }), { status: 200 })
+
+    try {
+      const helpTexts = await loadConfigHelpTexts()
+      expect(resolveConfigHelpHtml('extract.3.playback.metronomeMode', helpTexts))
+        .toContain('Metronom-Modus')
+      expect(resolveConfigHelpHtml('extract.3.playback.subdivision', helpTexts))
+        .toContain('Positive ganze Zahl')
+    } finally {
+      globalThis.fetch = originalFetch
+    }
+  })
 })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { extractSongConfig, extractSongFilebase, extractSongResources, replaceSongDocumentAbc, replaceSongDocumentResources, splitSongDocument } from '../../extractSongConfig.js'
+import { extractSongConfig, extractSongFilebase, extractSongResources, inspectSongConfig, replaceSongDocumentAbc, replaceSongDocumentConfigText, replaceSongDocumentResources, splitSongDocument } from '../../extractSongConfig.js'
 import {
   fixtureConfigFromAbc,
   fixtureAbcPath,
@@ -64,6 +64,65 @@ describe('fixtureLoader', () => {
     expect(config.extract?.['0']?.notebound?.decoration).toEqual({
       v_1: { t_22848: { '0': { show: false } } },
     })
+  })
+
+  it('inspects syntax and schema errors without throwing or accepting invalid values', () => {
+    const invalidJson = inspectSongConfig('X:1\nK:C\nC\n%%%%zupfnoter.config\n{"extract":')
+    expect(invalidJson.config).toBeUndefined()
+    expect(invalidJson.rawConfig).toBeUndefined()
+    expect(invalidJson.rawText).toBe('{"extract":')
+    expect(invalidJson.issues[0]).toMatchObject({ kind: 'syntax', repair: 'manual' })
+
+    const unknownPlaybackPath = inspectSongConfig([
+      'X:1',
+      'K:C',
+      'C',
+      '%%%%zupfnoter.config',
+      '{"extract":{"1":{"playback":{"strategy":{"subdivision":2}}}}}',
+    ].join('\n'))
+    expect(unknownPlaybackPath.config).toEqual({
+      extract: { '1': { playback: { strategy: { subdivision: 2 } } } },
+    })
+    expect(unknownPlaybackPath.validatedConfig).toBeUndefined()
+    expect(unknownPlaybackPath.rawConfig).toEqual({
+      extract: { '1': { playback: { strategy: { subdivision: 2 } } } },
+    })
+    expect(unknownPlaybackPath.issues).toEqual([{
+      kind: 'schema',
+      message: 'unknown key',
+      path: '$.extract.1.playback.strategy',
+      configPath: 'extract.1.playback.strategy',
+      repair: 'delete-path',
+    }])
+
+    const wrongType = inspectSongConfig('%%%%zupfnoter.config\n{"extract":{"1":{"playback":{"division":"four"}}}}')
+    expect(wrongType.issues[0]).toMatchObject({
+      kind: 'schema',
+      path: '$.extract.1.playback.division',
+      message: 'expected integer',
+      repair: 'manual',
+    })
+
+    const invalidValue = inspectSongConfig('%%%%zupfnoter.config\n{"extract":{"1":{"playback":{"division":0}}}}')
+    expect(invalidValue.issues[0]).toMatchObject({
+      kind: 'schema',
+      path: '$.extract.1.playback.division',
+      message: 'expected a value of at least 1',
+      repair: 'manual',
+    })
+  })
+
+  it('replaces malformed raw config text without touching notation or following sections', () => {
+    const original = 'X:1\nK:C\nC\n%%%%zupfnoter.config\n{"extract":\n%%%%zupfnoter.resources\n{"cover":"data"}\n'
+    const replaced = replaceSongDocumentConfigText(original, '{"extract":{}}')
+    expect(replaced).toBe('X:1\nK:C\nC\n%%%%zupfnoter.config\n{"extract":{}}\n\n%%%%zupfnoter.resources\n{"cover":"data"}\n')
+  })
+
+  it('parses schema-invalid objects like the legacy workbench but still rejects invalid JSON', () => {
+    expect(() => extractSongConfig('%%%%zupfnoter.config\n{"extract":'))
+      .toThrow('invalid JSON in %%%%zupfnoter.config block')
+    expect(extractSongConfig('%%%%zupfnoter.config\n{"extract":{"1":{"playback":{"strategy":{}}}}}'))
+      .toEqual({ extract: { '1': { playback: { strategy: {} } } } })
   })
 
   it('separates embedded configuration from the ABC editor text and preserves it on edits', () => {

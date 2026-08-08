@@ -10,11 +10,13 @@ import {
 } from './playback'
 import { textRangeKey } from './selectionIndex'
 import type { AudioPlayer, PlaybackScheduleCallbacks } from './useAudioPlayer'
+import type { PlaybackMetronomeConfig } from '@zupfnoter/playback'
 
 interface PlaybackDriverSource {
   timeline: PlaybackStep[]
   baseTempoFromQ?: number
   activeVoiceIds?: string[]
+  metronomeConfig?: PlaybackMetronomeConfig
 }
 
 export function usePlaybackDriver(
@@ -91,7 +93,7 @@ export function usePlaybackDriver(
         audioPlayer?.stop()
       },
     }
-    await audioPlayer?.schedule(steps, playbackStore.state.speedFactor, callbacks)
+    await audioPlayer?.schedule(steps, playbackStore.state.speedFactor, callbacks, source.metronomeConfig)
     if (audioPlayer === undefined) {
       timer = setTimeout(() => {
         stop()

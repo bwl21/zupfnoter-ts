@@ -6,26 +6,31 @@ export interface PlayerUiCallbacks {
   onReset: () => void
   onSpeedChange: (speed: number) => void
   onMetronomeChange: (enabled: boolean) => void
-  onMetronomeSubdivisionChange: (subdivision: 1 | 2) => void
-  onCountInStyleChange: (style: CountInStyle) => void
+  onMinLeadInChange: (value: number) => void
+  onBandPreCountChange: (enabled: boolean) => void
+  onDivisionChange: (value: number) => void
+  onSubdivisionChange: (value: number) => void
   onPlay: () => void
   onPause: () => void
   onStop: () => void
   onTakePosition: () => void
 }
 
-export type CountInStyle = 'none' | 'classic' | 'band' | 'last-beats' | 'pickup'
-
 export interface PlayerUiOptions {
   container: HTMLElement
   playerVersion: string
   identification?: string
   firstPosition: PlaybackPosition
+  firstPartName?: string
   maximumMeasure: number
   maximumPass: number
   hasMetronomeData: boolean
-  countInStyle?: CountInStyle
+  minLeadIn?: number
+  bandPreCount?: boolean
+  division?: number
+  subdivision?: number
   baseTempoBpm?: number
+  metronomeEnabled?: boolean
   callbacks: PlayerUiCallbacks
 }
 
@@ -36,7 +41,7 @@ export interface PlayerUiController {
   setPlaying(playing: boolean): void
   setRangeError(message: string): void
   setRangePosition(position: PlaybackPosition): void
-  setPosition(position: PlaybackPosition): void
+  setPosition(position: PlaybackPosition, partName?: string): void
   setPlaybackTime(elapsedMs: number): void
   setMetronome(meter: PlaybackMeter | undefined, beat: number, enabled: boolean): void
   setTempoBpm(bpm: number | undefined): void
@@ -53,36 +58,17 @@ function escapeHtml(value: string): string {
   })[character] ?? character)
 }
 
-function formatPosition(position: PlaybackPosition): string {
-  return `${position.measureNumber} : ${position.passIndex}`
+function formatPosition(position: PlaybackPosition, partName?: string): string {
+  return `Takt ${position.measureNumber}${partName === undefined || partName.trim() === '' ? '' : ` · '${partName.trim()}'`} · DL${position.passIndex}`
 }
 
-const countInStyleLabels: Record<CountInStyle, string> = {
-  none: 'Kein Einzählen',
-  classic: 'Klassisch: 1 2 3 4',
-  band: 'Band: 1 2 | 1 2 3 4',
-  'last-beats': 'Nur letzter Schlag: 3 4',
-  pickup: 'Nur Auftakt',
+function numberField(name: string, label: string, value: number, maximum: number): string {
+  return `<label class="range-control"><span class="wheel-label">${label}</span><input type="number" name="${name}" value="${value}" min="1" max="${maximum}" step="1" inputmode="numeric" aria-label="${label} eingeben" /></label>`
 }
 
-function wheelField(name: string, label: string, value: number, maximum: number): string {
-  if (maximum <= 1) return `<input type="hidden" name="${name}" value="1" />`
-  const options = Array.from({ length: maximum }, (_value, index) => {
-    const option = index + 1
-    return `<span class="wheel-option" data-value="${option}">${option}</span>`
-  }).join('')
-  return `<div class="wheel-control"><span class="wheel-label">${label}</span><div class="wheel" data-wheel="${name}" tabindex="0" role="spinbutton" aria-label="${label}" aria-valuemin="1" aria-valuemax="${maximum}" aria-valuenow="${value}"><div class="wheel-options">${options}</div><input class="wheel-entry" type="number" name="${name}" value="${value}" min="1" max="${maximum}" inputmode="numeric" aria-label="${label} eingeben" /></div></div>`
-}
-
-function setWheelValue(form: HTMLFormElement, name: string, value: number): void {
+function setNumberValue(form: HTMLFormElement, name: string, value: number): void {
   const hidden = form.querySelector<HTMLInputElement>(`input[name="${name}"]`)
-  const wheel = form.querySelector<HTMLElement>(`[data-wheel="${name}"]`)
   if (hidden !== null) hidden.value = String(value)
-  if (wheel !== null) {
-    const option = [...wheel.querySelectorAll<HTMLElement>('.wheel-option')][value - 1]
-    wheel.scrollTop = option?.offsetTop ?? 0
-    wheel.setAttribute('aria-valuenow', String(value))
-  }
 }
 
 function renderBeatStatus(status: HTMLOutputElement, meter: PlaybackMeter | undefined, beat: number, enabled: boolean): void {
@@ -107,7 +93,7 @@ function renderBeatStatus(status: HTMLOutputElement, meter: PlaybackMeter | unde
 
 export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const { container, callbacks } = options
-  const first = formatPosition(options.firstPosition)
+  const first = formatPosition(options.firstPosition, options.firstPartName)
   container.innerHTML = `
     <section class="card">
       <div class="player-title-row">
@@ -122,35 +108,32 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       <form id="range-form" class="range-form">
         <fieldset class="range-fieldset">
           <legend>Von</legend>
-          ${wheelField('from-measure', 'Takt', options.firstPosition.measureNumber, options.maximumMeasure)}
-          <span class="wheel-dot" aria-hidden="true">${options.maximumPass > 1 ? '.' : ''}</span>
-          ${wheelField('from-pass', 'Durchlauf', options.firstPosition.passIndex, options.maximumPass)}
+          ${numberField('from-measure', 'Takt', options.firstPosition.measureNumber, options.maximumMeasure)}
+          <span class="wheel-dot" aria-hidden="true">·</span>
+          ${numberField('from-pass', 'Durchlauf', options.firstPosition.passIndex, options.maximumPass)}
           <div class="range-actions"><button id="reset-range" type="button">Reset</button></div>
         </fieldset>
       </form>
       <p id="range-error" class="error-text" aria-live="polite"></p>
       <p id="loading-indicator" class="loading-indicator" role="status" aria-live="polite" hidden><span class="spinner" aria-hidden="true"></span> Harfenklang wird geladen …</p>
-      <label class="speed-control" for="speed-range">
-        <input id="speed-range" type="range" min="0.5" max="1.5" step="0.05" value="1" aria-label="Wiedergabegeschwindigkeit" aria-valuemin="0.5" aria-valuemax="1.5" aria-valuenow="1">
-        <output id="speed-value" for="speed-range">${options.baseTempoBpm === undefined ? '— BPM' : `${Math.round(options.baseTempoBpm)} BPM`}</output>
-      </label>
+      <div class="speed-control" aria-label="Wiedergabegeschwindigkeit">
+        <button id="speed-decrease" type="button" aria-label="5 BPM langsamer">−</button>
+        <input id="speed-input" type="number" min="1" max="999" step="1" value="${Math.round(options.baseTempoBpm ?? 120)}" inputmode="numeric" aria-label="Geschwindigkeit in BPM">
+        <span>BPM</span>
+        <button id="speed-increase" type="button" aria-label="5 BPM schneller">+</button>
+      </div>
       <div class="metronome-row" aria-label="Metronom">
         <label class="metronome-control" for="metronome-toggle">
           <span class="metronome-control__label">Metronom</span>
-          <span class="metronome-control__switch"><input id="metronome-toggle" type="checkbox" ${options.hasMetronomeData ? '' : 'disabled'}><span class="metronome-switch" aria-hidden="true"></span></span>
+          <span class="metronome-control__switch"><input id="metronome-toggle" type="checkbox" ${options.metronomeEnabled === true ? 'checked ' : ''}${options.hasMetronomeData ? '' : 'disabled'}><span class="metronome-switch" aria-hidden="true"></span></span>
         </label>
         <output id="metronome-status" class="metronome-status" aria-live="polite">${options.hasMetronomeData ? '<span class="metronome-beat" aria-hidden="true"></span><span>—</span><span>—</span>' : 'Metronomdaten fehlen in diesem Link'}</output>
-        <label class="metronome-subdivision" for="metronome-subdivision">
-          <span class="metronome-subdivision__label">Doppel</span>
-          <span class="metronome-subdivision__switch"><input id="metronome-subdivision" type="checkbox" ${options.hasMetronomeData ? '' : 'disabled'}><span aria-hidden="true"></span></span>
-        </label>
       </div>
       <div class="count-in-control">
-        <span class="count-in-label">Einzählen</span>
-        <button id="count-in-style" class="count-in-select" type="button" aria-label="Einzählstil" aria-haspopup="listbox" aria-expanded="false" ${options.hasMetronomeData ? '' : 'disabled'}><span class="count-in-select__label">${countInStyleLabels[options.countInStyle ?? 'classic']}</span><span aria-hidden="true">⌄</span></button>
-        <div id="count-in-menu" class="count-in-menu" role="listbox" aria-label="Einzählstil" hidden>
-          ${Object.entries(countInStyleLabels).map(([value, label]) => `<button type="button" role="option" data-count-in-style="${value}" aria-selected="${value === (options.countInStyle ?? 'classic')}">${label}</button>`).join('')}
-        </div>
+        <label>Mindestens einzählen <input id="min-lead-in" type="number" min="1" step="1" value="${options.minLeadIn ?? 4}"></label>
+        <label>Band-Vorzähler <input id="band-pre-count" type="checkbox" ${options.bandPreCount === true ? 'checked' : ''}></label>
+        <label>Zählschläge pro Takt <input id="count-division" type="number" min="1" step="1" value="${options.division ?? 4}"></label>
+        <label>Unterteilungen <input id="count-subdivision" type="number" min="1" step="1" value="${options.subdivision ?? 1}"></label>
       </div>
       <section class="transport" aria-label="Wiedergabe">
         <div class="position-row">
@@ -169,13 +152,14 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const rangeFieldset = container.querySelector<HTMLFieldSetElement>('.range-fieldset')
   const error = container.querySelector<HTMLParagraphElement>('#range-error')
   const loadingIndicator = container.querySelector<HTMLParagraphElement>('#loading-indicator')
-  const speedRange = container.querySelector<HTMLInputElement>('#speed-range')
-  const speedValue = container.querySelector<HTMLOutputElement>('#speed-value')
+  const speedInput = container.querySelector<HTMLInputElement>('#speed-input')
+  const speedDecrease = container.querySelector<HTMLButtonElement>('#speed-decrease')
+  const speedIncrease = container.querySelector<HTMLButtonElement>('#speed-increase')
   const metronomeToggle = container.querySelector<HTMLInputElement>('#metronome-toggle')
-  const metronomeSubdivision = container.querySelector<HTMLInputElement>('#metronome-subdivision')
-  const countInStyle = container.querySelector<HTMLButtonElement>('#count-in-style')
-  const countInLabel = container.querySelector<HTMLSpanElement>('.count-in-select__label')
-  const countInMenu = container.querySelector<HTMLDivElement>('#count-in-menu')
+  const minLeadIn = container.querySelector<HTMLInputElement>('#min-lead-in')
+  const bandPreCount = container.querySelector<HTMLInputElement>('#band-pre-count')
+  const countDivision = container.querySelector<HTMLInputElement>('#count-division')
+  const countSubdivision = container.querySelector<HTMLInputElement>('#count-subdivision')
   const metronomeStatus = container.querySelector<HTMLOutputElement>('#metronome-status')
   const position = container.querySelector<HTMLOutputElement>('#current-position')
   const playbackTime = container.querySelector<HTMLParagraphElement>('#playback-time')
@@ -187,9 +171,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   let playing = false
   let tempoBpm = options.baseTempoBpm
 
-  const formatTempo = (speed: number): string => tempoBpm === undefined
-    ? '— BPM'
-    : `${Math.round(tempoBpm * speed)} BPM`
+  const formatTempo = (speed: number): string => String(Math.max(1, Math.round((tempoBpm ?? 120) * speed)))
 
   const emitRange = (): void => {
     if (form === null) return
@@ -198,97 +180,46 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
     if (Number.isInteger(measure) && Number.isInteger(pass) && measure > 0 && pass > 0) callbacks.onRangeChange({ measureNumber: measure, passIndex: pass })
   }
 
-  for (const wheel of container.querySelectorAll<HTMLElement>('[data-wheel]')) {
-    const name = wheel.dataset.wheel
-    const hidden = name === undefined ? undefined : form?.querySelector<HTMLInputElement>(`input[name="${name}"]`)
-    const options = [...wheel.querySelectorAll<HTMLElement>('.wheel-option')]
-    const currentValue = Number(hidden?.value ?? 1)
-    const initialOption = options[currentValue - 1]
-    wheel.scrollTop = initialOption?.offsetTop ?? 0
-    const nearestOptionIndex = (): number => {
-      let nearestIndex = 0
-      let nearestDistance = Number.POSITIVE_INFINITY
-      for (const [index, option] of options.entries()) {
-        const distance = Math.abs(wheel.scrollTop - option.offsetTop)
-        if (distance < nearestDistance) {
-          nearestIndex = index
-          nearestDistance = distance
-        }
-      }
-      return nearestIndex
-    }
-    let snapTimer: number | undefined
-    const onInput = (): void => {
-      const value = Number(hidden?.value ?? 0)
-      if (!Number.isInteger(value) || value < 1 || value > options.length) return
-      const option = options[value - 1]
-      wheel.scrollTo({ top: option?.offsetTop ?? 0, behavior: 'smooth' })
-      wheel.setAttribute('aria-valuenow', String(value))
-      emitRange()
-    }
-    hidden?.addEventListener('input', onInput)
-    if (hidden !== undefined && hidden !== null) listeners.push(() => hidden.removeEventListener('input', onInput))
-    const onScroll = (): void => {
-      const option = options[nearestOptionIndex()]
-      if (option === undefined || hidden === undefined || hidden === null) return
-      hidden.value = option.dataset.value ?? '1'
-      wheel.setAttribute('aria-valuenow', hidden.value)
-      emitRange()
-      if (snapTimer !== undefined) window.clearTimeout(snapTimer)
-      snapTimer = window.setTimeout(() => {
-        const snappedOption = options[Math.max(0, Math.min(options.length - 1, nearestOptionIndex()))]
-        wheel.scrollTo({ top: snappedOption?.offsetTop ?? 0, behavior: 'smooth' })
-        if (snappedOption !== undefined && hidden !== null) {
-          hidden.value = snappedOption.dataset.value ?? '1'
-          wheel.setAttribute('aria-valuenow', hidden.value)
-          emitRange()
-        }
-      }, 90)
-    }
-    wheel.addEventListener('scroll', onScroll, { passive: true })
-    listeners.push(() => wheel.removeEventListener('scroll', onScroll))
+  for (const input of container.querySelectorAll<HTMLInputElement>('.range-control input')) {
+    input.addEventListener('change', emitRange)
+    listeners.push(() => input.removeEventListener('change', emitRange))
   }
 
   const onSpeed = (): void => {
-    const speed = Number(speedRange?.value ?? 1)
-    if (speedValue !== null) speedValue.value = formatTempo(speed)
-    speedRange?.setAttribute('aria-valuenow', String(speed))
-    callbacks.onSpeedChange(speed)
+    const bpm = Number(speedInput?.value ?? tempoBpm ?? 120)
+    if (!Number.isFinite(bpm) || bpm <= 0) return
+    if (speedInput !== null) speedInput.value = String(Math.round(bpm))
+    callbacks.onSpeedChange(bpm / (tempoBpm ?? 120))
   }
-  speedRange?.addEventListener('input', onSpeed)
-  if (speedRange !== null) listeners.push(() => speedRange.removeEventListener('input', onSpeed))
+  speedInput?.addEventListener('change', onSpeed)
+  if (speedInput !== null) listeners.push(() => speedInput.removeEventListener('change', onSpeed))
+  const adjustSpeed = (delta: number): void => {
+    if (speedInput === null) return
+    speedInput.value = String(Math.max(1, Number(speedInput.value || Math.round(tempoBpm ?? 120)) + delta))
+    onSpeed()
+  }
+  speedDecrease?.addEventListener('click', () => adjustSpeed(-5))
+  speedIncrease?.addEventListener('click', () => adjustSpeed(5))
   const onMetronome = (): void => callbacks.onMetronomeChange(metronomeToggle?.checked === true)
   metronomeToggle?.addEventListener('change', onMetronome)
   if (metronomeToggle !== null) listeners.push(() => metronomeToggle.removeEventListener('change', onMetronome))
-  const onMetronomeSubdivision = (): void => callbacks.onMetronomeSubdivisionChange(metronomeSubdivision?.checked === true ? 2 : 1)
-  metronomeSubdivision?.addEventListener('change', onMetronomeSubdivision)
-  if (metronomeSubdivision !== null) listeners.push(() => metronomeSubdivision.removeEventListener('change', onMetronomeSubdivision))
-  const closeCountInMenu = (): void => {
-    if (countInMenu !== null) countInMenu.hidden = true
-    countInStyle?.setAttribute('aria-expanded', 'false')
-  }
-  const onCountInButton = (): void => {
-    const button = countInStyle
-    if (countInMenu === null || button === null || button.disabled) return
-    countInMenu.hidden = !countInMenu.hidden
-    button.setAttribute('aria-expanded', String(!countInMenu.hidden))
-  }
-  countInStyle?.addEventListener('click', onCountInButton)
-  if (countInStyle !== null) listeners.push(() => countInStyle.removeEventListener('click', onCountInButton))
-  for (const option of countInMenu?.querySelectorAll<HTMLButtonElement>('[data-count-in-style]') ?? []) {
-    const onOption = (): void => {
-      const style = option.dataset.countInStyle
-      if (style !== 'none' && style !== 'classic' && style !== 'band' && style !== 'last-beats' && style !== 'pickup') return
-      if (countInLabel !== null) countInLabel.textContent = countInStyleLabels[style]
-      for (const sibling of countInMenu?.querySelectorAll<HTMLButtonElement>('[data-count-in-style]') ?? []) {
-        sibling.setAttribute('aria-selected', String(sibling === option))
-      }
-      closeCountInMenu()
-      callbacks.onCountInStyleChange(style)
+  const bindPositiveInteger = (element: HTMLInputElement | null, callback: (value: number) => void): void => {
+    if (element === null) return
+    const onChange = (): void => {
+      const value = Math.floor(Number(element.value))
+      if (!Number.isSafeInteger(value) || value < 1) return
+      element.value = String(value)
+      callback(value)
     }
-    option.addEventListener('click', onOption)
-    listeners.push(() => option.removeEventListener('click', onOption))
+    element.addEventListener('change', onChange)
+    listeners.push(() => element.removeEventListener('change', onChange))
   }
+  bindPositiveInteger(minLeadIn, callbacks.onMinLeadInChange)
+  bindPositiveInteger(countDivision, callbacks.onDivisionChange)
+  bindPositiveInteger(countSubdivision, callbacks.onSubdivisionChange)
+  const onBandPreCount = (): void => callbacks.onBandPreCountChange(bandPreCount?.checked === true)
+  bandPreCount?.addEventListener('change', onBandPreCount)
+  if (bandPreCount !== null) listeners.push(() => bandPreCount.removeEventListener('change', onBandPreCount))
   const bindClick = (element: HTMLButtonElement | null, callback: () => void): void => {
     if (element === null) return
     element.addEventListener('click', callback)
@@ -314,16 +245,13 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
     setRangeEnabled(enabled) {
       if (rangeFieldset !== null) rangeFieldset.disabled = !enabled
       if (form !== null) form.classList.toggle('range-form--disabled', !enabled)
-      for (const wheel of container.querySelectorAll<HTMLElement>('[data-wheel]')) {
-        wheel.tabIndex = enabled ? 0 : -1
-        wheel.setAttribute('aria-disabled', String(!enabled))
-      }
     },
     setSpeedEnabled(enabled) {
-      if (speedRange !== null) speedRange.disabled = !enabled
-      if (countInStyle !== null) {
-        countInStyle.disabled = !enabled || !options.hasMetronomeData
-        if (countInStyle.disabled) closeCountInMenu()
+      if (speedInput !== null) speedInput.disabled = !enabled
+      if (speedDecrease !== null) speedDecrease.disabled = !enabled
+      if (speedIncrease !== null) speedIncrease.disabled = !enabled
+      for (const input of [minLeadIn, bandPreCount, countDivision, countSubdivision]) {
+        if (input !== null) input.disabled = !enabled || !options.hasMetronomeData
       }
     },
     setPlaying(nextPlaying) {
@@ -338,11 +266,11 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
     },
     setRangePosition(nextPosition) {
       if (form === null) return
-      setWheelValue(form, 'from-measure', nextPosition.measureNumber)
-      setWheelValue(form, 'from-pass', nextPosition.passIndex)
+      setNumberValue(form, 'from-measure', nextPosition.measureNumber)
+      setNumberValue(form, 'from-pass', nextPosition.passIndex)
     },
-    setPosition(nextPosition) {
-      if (position !== null) position.value = formatPosition(nextPosition)
+    setPosition(nextPosition, partName) {
+      if (position !== null) position.value = formatPosition(nextPosition, partName)
     },
     setPlaybackTime(elapsedMs) {
       if (playbackTime === null) return
@@ -354,8 +282,8 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
     },
     setTempoBpm(bpm) {
       tempoBpm = bpm
-      const speed = Number(speedRange?.value ?? 1)
-      if (speedValue !== null) speedValue.value = formatTempo(speed)
+      const speed = Number(speedInput?.value ?? tempoBpm ?? 120) / (tempoBpm ?? 120)
+      if (speedInput !== null) speedInput.value = formatTempo(speed)
     },
     destroy() {
       for (const removeListener of listeners) removeListener()

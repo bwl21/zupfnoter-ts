@@ -11,6 +11,7 @@ import { promisify } from 'node:util'
 import {
   AbcParser,
   AbcToSong,
+  buildConfstack,
   Confstack,
   HarpnotesLayout,
   buildPlaybackExportData,
@@ -207,11 +208,25 @@ async function makeQrEntries(
     const tempo = song.metaData.tempo
     const tempoBpm = typeof tempo === 'number' ? tempo : tempo?.bpm
     const tempoUnit = typeof tempo === 'number' ? 0.25 : tempo?.duration[0]
+    const playbackConfig = buildConfstack(config, extractNr).get(`extract.${extractNr}.playback`) as {
+      metronomeMode?: 'off' | 'countIn' | 'playback' | 'always'
+      minLeadIn?: number
+      bandPreCount?: boolean
+      division?: number
+      subdivision?: number
+    } | undefined
     const link = await exportPlaybackLink(events, {
       playerUrl,
       positionMarkers: exportData.positionMarkers,
       tempoBpm,
       tempoUnit,
+      metronome: playbackConfig?.metronomeMode === undefined ? undefined : {
+        mode: playbackConfig.metronomeMode,
+        minLeadIn: playbackConfig.minLeadIn,
+        bandPreCount: playbackConfig.bandPreCount,
+        division: playbackConfig.division,
+        subdivision: playbackConfig.subdivision,
+      },
     }, nodePlaybackCodec)
     const label = String(number).padStart(3, '0') + '-' + extractLabel(config, extractNr)
     const playerLink = new URL(link.url)

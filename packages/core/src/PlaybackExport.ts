@@ -13,6 +13,7 @@ export interface PlaybackExportMarker {
   timeMs: number
   position: PlaybackPosition
   meter?: { numerator: number; denominator: number; grouping?: readonly number[] }
+  partName?: string
 }
 
 export interface PlaybackExportData {
@@ -28,11 +29,12 @@ function buildPositionMarkers(timeline: readonly PlaybackStep[]): PlaybackExport
     const changed = previous === undefined
       || previous.position.measureNumber !== step.position.measureNumber
       || previous.position.passIndex !== step.position.passIndex
+      || previous.partName !== step.partName
     if (changed) {
-      markers.push({ timeMs: step.playbackStartMs, position: step.position, meter: step.meter })
+      markers.push({ timeMs: step.playbackStartMs, position: step.position, meter: step.meter, partName: step.partName })
     } else if (previous !== undefined && step.meter !== undefined
       && previous.meter === undefined && step.playbackStartMs > previous.timeMs) {
-      markers.push({ timeMs: step.playbackStartMs, position: { ...step.position }, meter: step.meter })
+      markers.push({ timeMs: step.playbackStartMs, position: { ...step.position }, meter: step.meter, partName: step.partName })
     } else if (previous !== undefined && previous.meter === undefined && step.meter !== undefined) {
       previous.meter = step.meter
     }
@@ -44,7 +46,7 @@ function buildPositionMarkers(timeline: readonly PlaybackStep[]): PlaybackExport
   )
   const lastMarker = markers[markers.length - 1]
   if (lastMarker !== undefined && playbackEndMs > lastMarker.timeMs) {
-    markers.push({ timeMs: playbackEndMs, position: { ...lastMarker.position } })
+    markers.push({ timeMs: playbackEndMs, position: { ...lastMarker.position }, partName: lastMarker.partName })
   }
   return markers
 }

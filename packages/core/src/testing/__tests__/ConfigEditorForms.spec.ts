@@ -98,6 +98,7 @@ describe('ConfigEditorForms', () => {
       'notes',
       '|',
       'basic_settings',
+      'playback',
       'lyrics',
       'layout',
       'instrument_specific',
@@ -131,6 +132,7 @@ describe('ConfigEditorForms', () => {
       { id: 'extract_annotation', legacyText: 'Extract-Annotation', legacyIcon: 'fa fa-bars' },
       { id: 'notes', legacyText: 'page annotation', legacyIcon: 'fa fa-file-text-o' },
       { id: 'basic_settings', legacyText: 'basic settings', legacyIcon: 'fa fa-heartbeat' },
+      { id: 'playback', legacyText: 'playback', legacyIcon: 'fa fa-play-circle' },
       { id: 'lyrics', legacyText: 'lyrics', legacyIcon: 'fa fa-font' },
       { id: 'layout', legacyText: 'layout', legacyIcon: 'fa fa-align-center' },
       { id: 'instrument_specific', legacyText: 'instrument specific', legacyIcon: 'fa fa-pie-chart' },
@@ -183,6 +185,11 @@ describe('ConfigEditorForms', () => {
       toExtractConfigPath(LEGACY_STRINGNAMES_EXTRACT_PATH_SUFFIXES[0]),
       'extract.{extract}.sortmark',
     ])
+  })
+
+  it('exposes playback as a schema-driven extract form', () => {
+    expect(CONFIG_EDITOR_FORM_SETS.playback.keys).toEqual(['extract.{extract}.playback'])
+    expect(resolveConfigEditorFormId('extract.0.playback.metronomeMode')).toBe('playback')
   })
 
   it('defines productive sections for every formset', () => {

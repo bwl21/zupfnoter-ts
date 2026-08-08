@@ -364,5 +364,23 @@ export const CONFIG_EDITOR_OPTION_DOCUMENTATION: Readonly<Record<string, Readonl
       "label": "{{watermark}}",
       "description": "Wasserzeichen (mit `setsettings wartermark \"wasserzeichen\"` eingestellt)"
     }
+  },
+  "playback.metronomeMode": {
+    "off": {
+      "label": "Aus",
+      "description": "Weder beim Einzählen noch während der Wiedergabe erklingen Metronom-Klicks."
+    },
+    "countIn": {
+      "label": "Einzählen",
+      "description": "Klicks erklingen nur vor dem musikalischen Einsatz."
+    },
+    "playback": {
+      "label": "Während der Wiedergabe",
+      "description": "Klicks erklingen nur während der Wiedergabe."
+    },
+    "always": {
+      "label": "Immer",
+      "description": "Klicks erklingen beim Einzählen und während der Wiedergabe."
+    }
   }
 } as const

@@ -2,8 +2,11 @@ import { describe, expect, it } from 'vitest'
 import {
   decodePlaybackFragment,
   decodePlaybackPayload,
+  createPlaybackCountInPlan,
   encodePlaybackPayload,
   exportPlaybackLink,
+  resolvePlaybackCountEventSound,
+  resolvePlaybackMetronomeSound,
   type PlaybackCompressionCodec,
   type PlaybackEvent,
 } from './index.js'
@@ -12,6 +15,15 @@ const identityCodec: PlaybackCompressionCodec = {
   compress: async (value) => new Uint8Array(value),
   decompress: async (value) => new Uint8Array(value),
 }
+
+describe('shared metronome sound profile', () => {
+  it('uses one profile and gives the entry signal priority over the metric accent', () => {
+    expect(resolvePlaybackMetronomeSound('pre-count')).toEqual({ frequencyHz: 1800, gain: 0.1 })
+    expect(resolvePlaybackMetronomeSound('accent')).toEqual({ frequencyHz: 1200, gain: 0.18 })
+    expect(resolvePlaybackMetronomeSound('entry')).toEqual({ frequencyHz: 1500, gain: 0.16 })
+    expect(resolvePlaybackCountEventSound('BAR_START', true)).toBe('entry')
+  })
+})
 
 const events: PlaybackEvent[] = [
   {
@@ -38,6 +50,35 @@ const events: PlaybackEvent[] = [
 ]
 
 describe('playback link format', () => {
+  it('plans the minimum lead-in from the actual entry position', () => {
+    const barStart = createPlaybackCountInPlan([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 4000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+    ], 0, { minLeadIn: 2, bandPreCount: false, division: 4, subdivision: 1 })
+    expect(barStart?.events.map((event) => event.beat)).toEqual([0, 1, 2, 3])
+
+    const beatThreeEntry = createPlaybackCountInPlan([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 } },
+      { timeMs: 2000, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 6000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+    ], 0, { minLeadIn: 2, bandPreCount: false, division: 4, subdivision: 1 })
+    expect(beatThreeEntry?.events.map((event) => event.beat)).toEqual([0, 1])
+    expect(beatThreeEntry?.events.at(-1)?.isLastBeforeEntry).toBe(true)
+  })
+
+  it('keeps band pre-count and metric subdivisions semantically distinct', () => {
+    const plan = createPlaybackCountInPlan([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 6, denominator: 8 } },
+      { timeMs: 3000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 6, denominator: 8 } },
+    ], 0, { minLeadIn: 2, bandPreCount: true, division: 2, subdivision: 3 })
+    expect(plan?.events.slice(0, 2).map((event) => event.kind)).toEqual(['PRE_COUNT', 'PRE_COUNT'])
+    expect(plan?.events.slice(2).map((event) => event.kind)).toEqual([
+      'BAR_START', 'SUBDIVISION', 'SUBDIVISION',
+      'MAIN_BEAT', 'SUBDIVISION', 'SUBDIVISION',
+    ])
+    expect(plan?.events.at(-1)?.isLastBeforeEntry).toBe(true)
+  })
+
   it('round-trips simultaneous events and measure/pass positions', async () => {
     const payload = await encodePlaybackPayload(events, { timeResolutionMs: 10 }, identityCodec)
     const decoded = decodePlaybackPayload(payload)
@@ -129,6 +170,50 @@ describe('playback link format', () => {
     ])
   })
 
+  it('round-trips named parts in the position track', async () => {
+    const result = await exportPlaybackLink(events, {
+      playerUrl: 'https://play.zupfnoter.de/',
+      positionMarkers: [
+        { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, partName: ' A ' },
+        { timeMs: 480, position: { measureNumber: 2, passIndex: 1 }, partName: '   ' },
+      ],
+    }, identityCodec)
+
+    expect(decodePlaybackPayload(result.payload).positionMarkers).toEqual([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: undefined, partName: ' A ' },
+      { timeMs: 480, position: { measureNumber: 2, passIndex: 1 }, meter: undefined },
+    ])
+    expect(result.payload[3]).toBe(7)
+  })
+
+  it('round-trips the per-extract metronome settings', async () => {
+    const result = await exportPlaybackLink(events, {
+      playerUrl: 'https://play.zupfnoter.de/',
+      metronome: {
+        mode: 'always',
+        minLeadIn: 6,
+        bandPreCount: true,
+        division: 3,
+        subdivision: 2,
+      },
+    }, identityCodec)
+
+    expect(decodePlaybackPayload(result.payload).metronome).toEqual({
+      mode: 'always',
+      minLeadIn: 6,
+      bandPreCount: true,
+      division: 3,
+      subdivision: 2,
+    })
+  })
+
+  it('rejects invalid metronome counting values', async () => {
+    await expect(exportPlaybackLink(events, {
+      playerUrl: 'https://play.zupfnoter.de/',
+      metronome: { mode: 'always', minLeadIn: 0, division: 4, subdivision: 1 },
+    }, identityCodec)).rejects.toThrow('Invalid playback count settings')
+  })
+
   it('preserves a terminal marker for the final measure', async () => {
     const result = await exportPlaybackLink(events, {
       playerUrl: 'https://play.zupfnoter.de/',
@@ -180,6 +265,9 @@ describe('playback link format', () => {
     const unknownVersion = new Uint8Array(result.payload)
     unknownVersion[3] = 99
     expect(() => decodePlaybackPayload(unknownVersion)).toThrow('Unsupported playback format version')
+    const rejectedDraftVersion = new Uint8Array(result.payload)
+    rejectedDraftVersion[3] = 6
+    expect(() => decodePlaybackPayload(rejectedDraftVersion)).toThrow('Unsupported playback format version: 6')
     expect(() => decodePlaybackPayload(result.payload.slice(0, -1))).toThrow()
   })
 })

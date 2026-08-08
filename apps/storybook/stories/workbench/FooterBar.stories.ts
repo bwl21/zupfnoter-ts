@@ -13,6 +13,7 @@ const args = {
   dirty: false,
   saveFormat: 'A4',
   speedFactor: 1,
+  metronomeMode: 'off' as const,
   cursorPosition: 'Zeile 1, Spalte 1',
   selectionVoiceScope: 'extract-voices' as const,
   selectionVoiceScopeSummary: 'Auswahl im aktuellen Auszug',

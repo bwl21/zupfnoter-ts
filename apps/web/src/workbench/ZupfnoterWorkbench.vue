@@ -32,16 +32,17 @@ import {
   type WorkbenchRenderResult,
 } from './rendering/renderPipeline'
 import {
-  extractSongConfig,
   extractSongFilebase,
   extractSongResources,
+  inspectSongConfig,
   pdfOutputFilename,
   PLAYER_QR_IMAGE_NAME,
   replaceSongDocumentAbc,
+  replaceSongDocumentConfigText,
   replaceSongDocumentResources,
   splitSongDocument,
 } from '@zupfnoter/core'
-import type { SongResources } from '@zupfnoter/types'
+import type { PlaybackMetronomeMode, SongResources } from '@zupfnoter/types'
 import { createPlayerQrJpeg } from './playbackLink'
 import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
@@ -183,6 +184,8 @@ const harpScrollLeft = ref(0)
 const harpScrollTop = ref(0)
 const initialDocument = inject(INITIAL_DOCUMENT_KEY)
 const documentText = ref(initialDocument ?? DEFAULT_ABC)
+const songConfigInspection = computed(() => inspectSongConfig(documentText.value))
+const parsedSongConfig = computed(() => songConfigInspection.value.config ?? {})
 const documentResources = computed<SongResources>(() => extractSongResources(documentText.value))
 const savedDocumentText = ref(documentText.value)
 const documentDirty = computed(() => documentText.value !== savedDocumentText.value)
@@ -319,6 +322,8 @@ const playbackTimeline = ref<PlaybackStep[]>([])
 const playerQrJpegUrl = ref<string | undefined>()
 const baseTempoFromQ = ref<number | undefined>(undefined)
 const tempoUnitFromQ = ref<number | undefined>(undefined)
+const playbackConfig = ref<import('@zupfnoter/types').PlaybackConfig | undefined>(undefined)
+const metronomeMode = ref<PlaybackMetronomeMode>('off')
 const activeVoiceIds = ref<string[]>([])
 const allVoiceIds = ref<string[]>([])
 const commandBusy = ref(false)
@@ -364,6 +369,17 @@ const playbackScoreTextRanges = computed(() => resolvePlaybackScoreRanges(
   playbackStore.highlight,
 ))
 const audioPlayer = useAudioPlayer(playbackInstrument)
+const playbackMetronomeConfig = computed(() => {
+  const config = playbackConfig.value
+  if (config === undefined) return undefined
+  return {
+    mode: metronomeMode.value,
+    minLeadIn: config.minLeadIn,
+    bandPreCount: config.bandPreCount,
+    division: config.division,
+    subdivision: config.subdivision,
+  }
+})
 const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
   playbackStore,
   computed(() => selectionStore.selection),
@@ -372,6 +388,7 @@ const { toggle: togglePlayback, stop: stopPlayback } = usePlaybackDriver(
     timeline: playbackTimeline.value,
     baseTempoFromQ: baseTempoFromQ.value,
     activeVoiceIds: activeVoiceIds.value,
+    metronomeConfig: playbackMetronomeConfig.value,
     mode: 'all-score',
   })),
   audioPlayer,
@@ -409,7 +426,7 @@ function abcHeaderValue(text: string, header: string): string | undefined {
 }
 
 function resolvePlaybackIdentification(): string | undefined {
-  const songConfig = recordValue(extractSongConfig(documentText.value))
+  const songConfig = recordValue(parsedSongConfig.value)
   const extracts = recordValue(songConfig?.extract)
   const currentConfig = recordValue(extracts?.[String(currentExtract.value)])
   const defaultConfig = recordValue(extracts?.['0'])
@@ -458,6 +475,11 @@ const renderIssueTone = computed(() => {
 
 const renderIssueItems = computed<RenderIssueChipItem[]>(() => {
   const items: RenderIssueChipItem[] = [
+    ...songConfigInspection.value.issues.map((issue) => ({
+      severity: 'error' as const,
+      message: `${issue.path === undefined ? '' : `${issue.path}: `}${issue.message}`,
+      source: issue.kind === 'syntax' ? 'Konfigurations-JSON' : 'Konfigurationsprüfung',
+    })),
     ...(renderError.value === ''
       ? []
       : [{ severity: 'error' as const, message: renderError.value, source: 'Renderpipeline' }]),
@@ -525,7 +547,7 @@ const previewErrorMessage = computed(() => {
 })
 
 const extractMenuItems = computed(() => {
-  const extractConfig = extractSongConfig(documentText.value).extract ?? {}
+  const extractConfig = parsedSongConfig.value.extract ?? {}
   const extractNumbers = new Set<number>([currentExtract.value])
   Object.keys(extractConfig).forEach((key) => {
     const extractNumber = Number.parseInt(key, 10)
@@ -562,7 +584,7 @@ const currentExtractTooltip = computed(() => {
 })
 
 const produceExtracts = computed(() => {
-  const config = extractSongConfig(documentText.value)
+  const config = parsedSongConfig.value
   const produce = config.produce
   return Array.isArray(produce)
     ? new Set(produce.filter((value): value is number => typeof value === 'number'))
@@ -772,6 +794,8 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   playbackTimeline.value = result.playbackTimeline
   baseTempoFromQ.value = result.baseTempoFromQ
   tempoUnitFromQ.value = result.tempoUnitFromQ
+  playbackConfig.value = result.playbackConfig
+  metronomeMode.value = result.playbackConfig?.metronomeMode ?? 'off'
   syncDiagnostics(result.toastDiagnostics)
   for (const issue of result.issues) {
     const column = issue.column ?? 1
@@ -819,6 +843,7 @@ async function ensurePlayerQrForRenderedExtract(result: WorkbenchRenderResult): 
       10,
       result.baseTempoFromQ,
       result.tempoUnitFromQ,
+      result.playbackConfig,
     )
     const qrJpegUrl = await createPlayerQrJpeg(playbackLink.url)
     if (documentText.value !== sourceDocument || currentExtract.value !== sourceExtract) return
@@ -1043,6 +1068,13 @@ async function executeParsedToolbarCommand(
 }
 
 function handleConfigEditorIntent(intent: ConfigEditorIntent): void {
+  if (intent.action === 'config.replaceRaw' && typeof intent.value === 'string') {
+    documentText.value = replaceSongDocumentConfigText(documentText.value, intent.value)
+    configEntryMutationVersion.value += 1
+    renderNow()
+    return
+  }
+
   if (intent.action === 'config.selectAffectedObject' && intent.path !== undefined) {
     const confKey = resolveConfKeyForConfigPath(selectionStore.sheetObjectIndex, intent.path)
     const selectedIndexes = resolveIndexesByConfigPath(selectionStore.sheetObjectIndex, intent.path)
@@ -1587,6 +1619,7 @@ async function exportPlaybackLinkCommand(): Promise<void> {
     10,
     baseTempoFromQ.value,
     tempoUnitFromQ.value,
+    playbackConfig.value,
   )
   const qrCodeDataUrl = await QRCode.toDataURL(result.url, {
     errorCorrectionLevel: 'L',
@@ -2087,7 +2120,7 @@ function handleHarpResourceDrop(payload: {
     return
   }
 
-  const config = extractSongConfig(documentText.value)
+  const config = parsedSongConfig.value
   const extract = config.extract?.[String(currentExtract.value)]
   const images = extract?.images ?? {}
   const numericKeys = Object.keys(images)
@@ -2720,11 +2753,14 @@ function handleMirrorMessage(event: MessageEvent): void {
           :cursor-unicode="editorCursorUnicode"
           :config-hover="hoveredConfigKey"
           :speed-factor="playbackStore.state.speedFactor"
+          :metronome-mode="metronomeMode"
           :selection-voice-scope="selectionStore.selection.voiceScope"
           :selection-voice-scope-summary="selectionVoiceScopeSummary"
           @speed-down="playbackStore.decreaseSpeed"
           @speed-reset="playbackStore.resetSpeed"
           @speed-up="playbackStore.increaseSpeed"
+          @metronome-mode-change="metronomeMode = $event"
+          @playback-config="executeToolbarCommand(`editconf extract.${currentExtract}.playback`)"
           @storage-connections="handleFileToolbarAction('storage-connections')"
           @selection-voice-scope-change="handleSelectionVoiceScopeChange"
         />

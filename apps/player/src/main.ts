@@ -4,6 +4,12 @@ import {
   type PlaybackEvent,
   type PlaybackPosition,
   type PlaybackPositionMarker,
+  type PlaybackMetronomeConfig,
+  createPlaybackCountInPlan,
+  createPlaybackMetronomeClicks,
+  resolvePlaybackCountEventSound,
+  schedulePlaybackMetronomeClick,
+  type PlaybackMetronomeSoundKind,
 } from '@zupfnoter/playback'
 import { mountPlayerUi, type PlayerUiController } from '@zupfnoter/player-ui'
 import { BrowserQRCodeReader, type IScannerControls } from '@zxing/browser'
@@ -11,19 +17,16 @@ import { DecodeHintType } from '@zxing/library'
 import { deflateSync, inflateSync } from 'fflate'
 import '@zupfnoter/player-ui/style.css'
 import {
-  countInBeatIndexAtTime,
   findPositionMarker,
   nextPositionBoundaryMarker,
   parsePosition,
   positionAtTime,
   pickupMetronomeStateAtTime,
-  type PlaybackCountInStyle,
-  resolveCountIn,
   resolveRange,
   tempoBpmAtTime,
 } from './playerLogic'
 
-const PLAYER_VERSION = '0.2.1'
+const PLAYER_VERSION = '0.3.0'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -225,6 +228,7 @@ function renderPlayer(
   identification?: string,
   tempoBpm?: number,
   tempoUnit = 0.25,
+  metronomeConfig?: PlaybackMetronomeConfig,
 ): void {
   destroyCurrentPlayer()
   const firstPosition = positionMarkers[0]?.position ?? eventPosition(events[0])
@@ -233,8 +237,10 @@ function renderPlayer(
   let selectedEvents = events
   let selectedStartMs = positionMarkers[0]?.timeMs ?? events[0]?.startMs ?? 0
   let selectedRangePosition = firstPosition
-  let countInStyle: PlaybackCountInStyle = 'classic'
-  let metronomeSubdivision: 1 | 2 = 1
+  let minLeadIn = metronomeConfig?.minLeadIn ?? 4
+  let bandPreCount = metronomeConfig?.bandPreCount ?? false
+  let metronomeDivision = metronomeConfig?.division ?? 4
+  let metronomeSubdivision = metronomeConfig?.subdivision ?? 1
 
   function readRange(fromPosition: PlaybackPosition = firstPosition): [number, number] | undefined {
     const from = `${fromPosition.measureNumber}.${fromPosition.passIndex}`
@@ -255,10 +261,16 @@ function renderPlayer(
     playerVersion: PLAYER_VERSION,
     identification,
     firstPosition,
+    firstPartName: positionMarkers[0]?.partName,
     maximumMeasure,
     maximumPass,
     hasMetronomeData: positionMarkers.some((marker) => marker.meter !== undefined),
+    minLeadIn,
+    bandPreCount,
+    division: metronomeDivision,
+    subdivision: metronomeSubdivision,
     baseTempoBpm: tempoBpmAtTime(positionMarkers, selectedStartMs, tempoBpm),
+    metronomeEnabled: metronomeConfig?.mode !== undefined && metronomeConfig.mode !== 'off',
     callbacks: {
       onRangeChange: (position) => { readRange(position) },
       onReset: () => {
@@ -270,11 +282,13 @@ function renderPlayer(
       },
       onSpeedChange: (speed) => { setSpeed(speed) },
       onMetronomeChange: (enabled) => { handleMetronomeChange(enabled) },
-      onMetronomeSubdivisionChange: (subdivision) => {
-        metronomeSubdivision = subdivision
+      onMinLeadInChange: (value) => { minLeadIn = value },
+      onBandPreCountChange: (enabled) => { bandPreCount = enabled },
+      onDivisionChange: (value) => { metronomeDivision = value },
+      onSubdivisionChange: (value) => {
+        metronomeSubdivision = value
         if (metronomeEnabled) { handleMetronomeChange(false); handleMetronomeChange(true) }
       },
-      onCountInStyleChange: (style) => { countInStyle = style },
       onPlay: () => { if (readRange(selectedRangePosition) !== undefined) void playPlayback() },
       onPause: pausePlayback,
       onStop: () => { stopPlayback() },
@@ -289,11 +303,11 @@ function renderPlayer(
   let playbackStartedAtContextTime = 0
   let isPaused = false
   let speedFactor = 1
-  let metronomeEnabled = false
+  let metronomeEnabled = metronomeConfig?.mode !== undefined && metronomeConfig.mode !== 'off'
+  let metronomeMode = metronomeConfig?.mode ?? 'off'
   let harpPlayerPromise: Promise<SoundfontPlayer> | undefined
   let metronomeOscillators: OscillatorNode[] = []
   let scheduledMetronomeTimes = new Set<number>()
-  let metronomeDestination: AudioNode | undefined
 
   interface SoundfontPlayer {
     schedule(startTime: number, notes: readonly SoundfontNote[]): void
@@ -326,7 +340,11 @@ function renderPlayer(
   function updatePosition(elapsedMs: number): void {
     const absoluteTimeMs = selectedStartMs + elapsedMs
     const currentPosition = positionAtTime(positionMarkers, absoluteTimeMs)
-    ui.setPosition(currentPosition)
+    let currentMarker = positionMarkers[0]
+    for (const marker of positionMarkers) {
+      if (marker.timeMs <= absoluteTimeMs) currentMarker = marker
+    }
+    ui.setPosition(currentPosition, currentMarker?.partName)
     ui.setTempoBpm(tempoBpmAtTime(positionMarkers, absoluteTimeMs, tempoBpm))
     let markerIndex = -1
     for (const [index, marker] of positionMarkers.entries()) {
@@ -359,36 +377,22 @@ function renderPlayer(
     speedFactor = value
   }
 
-  function playMetronomeClick(context: AudioContext, accent: boolean, startTime: number, lead = false): void {
-    const oscillator = context.createOscillator()
-    const gain = context.createGain()
-    oscillator.frequency.value = lead ? 620 : accent ? 1200 : 850
-    gain.gain.setValueAtTime(lead ? 0.07 : accent ? 0.18 : 0.1, startTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.055)
-    oscillator.connect(gain)
-    gain.connect(metronomeDestination ?? context.destination)
-    oscillator.start(startTime)
-    oscillator.stop(startTime + 0.06)
+  function playMetronomeClick(context: AudioContext, soundKind: PlaybackMetronomeSoundKind, startTime: number): void {
+    const oscillator = schedulePlaybackMetronomeClick(context, startTime, soundKind)
     metronomeOscillators.push(oscillator)
   }
 
   function scheduleCountIn(
     context: AudioContext,
     audioStartAt: number,
-    countIn: ReturnType<typeof resolveCountIn>,
+    countIn: ReturnType<typeof createPlaybackCountInPlan>,
   ): number {
     if (countIn === undefined) return audioStartAt
     const countInStartAt = audioStartAt - countIn.durationMs / 1000 / speedFactor
-    const groupingStarts = new Set<number>()
-    let groupingOffset = 0
-    for (const group of countIn.meter.grouping ?? []) {
-      groupingStarts.add(groupingOffset)
-      groupingOffset += group
-    }
-    for (const [index, beat] of countIn.beats.entries()) {
-      const accent = index === 0 || groupingStarts.has(beat)
-      const clickAt = countInStartAt + (countIn.beatOffsetsMs[index] ?? 0) / 1000 / speedFactor
-      playMetronomeClick(context, accent, clickAt, index < countIn.leadBeatCount)
+    for (const event of countIn.events) {
+      const clickAt = countInStartAt + event.offsetMs / 1000 / speedFactor
+      const sound = resolvePlaybackCountEventSound(event.kind, event.isLastBeforeEntry)
+      playMetronomeClick(context, sound, clickAt)
     }
     return countInStartAt
   }
@@ -401,44 +405,23 @@ function renderPlayer(
     windowStartMs = 0,
     windowEndMs = durationMs,
   ): void {
-    if (!metronomeEnabled) return
+    if (!metronomeEnabled || metronomeMode === 'countIn') return
     const pickup = pickupMetronomeStateAtTime(positionMarkers, selectedStartMs, tempoBpm, tempoUnit)
     if (pickup !== undefined && selectedStartMs === (positionMarkers[0]?.timeMs ?? selectedStartMs)) {
-      playMetronomeClick(context, false, audioStartAt)
+      playMetronomeClick(context, 'regular', audioStartAt)
       scheduledMetronomeTimes.add(selectedStartMs)
     }
-    for (let markerIndex = 0; markerIndex < positionMarkers.length; markerIndex += 1) {
-      const marker = positionMarkers[markerIndex]
-      if (marker === undefined || marker.meter === undefined) continue
-      const nextMarker = nextPositionBoundaryMarker(positionMarkers, markerIndex)
-      const measureEnd = nextMarker?.timeMs ?? selectedStartMs + durationMs
-      const measureDuration = measureEnd - marker.timeMs
-      if (measureDuration <= 0 || marker.timeMs + measureDuration < selectedStartMs) continue
-      const beatCount = marker.meter.numerator
-      const beatDuration = tempoBpm !== undefined && tempoBpm > 0
-        ? 60000 / tempoBpm / (tempoUnit * marker.meter.denominator)
-        : measureDuration / beatCount
-      const clickDuration = beatDuration / metronomeSubdivision
-      const clickCount = beatCount * metronomeSubdivision
-      const grouping = marker.meter.grouping ?? []
-      const accentBeats = new Set<number>()
-      let groupingOffset = 0
-      for (const group of grouping) {
-        accentBeats.add(groupingOffset)
-        groupingOffset += group
-      }
-      for (let beat = 0; beat < clickCount; beat += 1) {
-        const clickTime = marker.timeMs + beat * clickDuration
+    for (const click of createPlaybackMetronomeClicks(positionMarkers, selectedStartMs + durationMs,
+      metronomeDivision, metronomeSubdivision)) {
+        const clickTime = click.timeMs
         if (clickTime < selectedStartMs || clickTime > selectedStartMs + durationMs) continue
         const relativeClickTime = clickTime - selectedStartMs
         if (relativeClickTime < windowStartMs || relativeClickTime >= windowEndMs) continue
         if (scheduledMetronomeTimes.has(clickTime)) continue
-        const accent = beat % metronomeSubdivision === 0
         const delaySec = (clickTime - selectedStartMs - playbackOffsetMsForSchedule) / 1000 / speedFactor
         if (delaySec < 0) continue
-        playMetronomeClick(context, accent, audioStartAt + delaySec)
+        playMetronomeClick(context, click.accent ? 'accent' : 'regular', audioStartAt + delaySec)
         scheduledMetronomeTimes.add(clickTime)
-      }
     }
   }
 
@@ -471,7 +454,6 @@ function renderPlayer(
     clearPlaybackTimers()
     if (audioContext !== undefined) void audioContext.close()
     audioContext = undefined
-    metronomeDestination = undefined
     harpPlayerPromise = undefined
     setLoading(false)
     ui.setRangeEnabled(true)
@@ -517,7 +499,6 @@ function renderPlayer(
     masterCompressor.release.value = 0.2
     outputGain.connect(masterCompressor)
     masterCompressor.connect(audioContext.destination)
-    metronomeDestination = outputGain
     isPaused = false
     const playerContext = audioContext
     const loadingTimer = window.setTimeout(() => {
@@ -542,8 +523,13 @@ function renderPlayer(
     window.clearTimeout(loadingTimer)
     if (audioContext !== playerContext) return
     setLoading(false)
-    const countIn = metronomeEnabled && playbackOffsetMs === 0
-      ? resolveCountIn(positionMarkers, selectedStartMs, countInStyle, tempoBpm, tempoUnit)
+    const countIn = metronomeEnabled && (metronomeMode === 'countIn' || metronomeMode === 'always') && playbackOffsetMs === 0
+      ? createPlaybackCountInPlan(positionMarkers, selectedStartMs, {
+        minLeadIn,
+        bandPreCount,
+        division: metronomeDivision,
+        subdivision: metronomeSubdivision,
+      }, tempoBpm, tempoUnit)
       : undefined
     const audioStartAt = playerContext.currentTime
       + AUDIO_START_LEAD_MS / 1000
@@ -616,8 +602,12 @@ function renderPlayer(
       if (playerContext.currentTime < audioStartAt) {
         if (countIn !== undefined) {
           const countInElapsedMs = Math.max(0, (playerContext.currentTime - countInStartAt) * 1000 * speedFactor)
-          const countInBeatIndex = countInBeatIndexAtTime(countIn, countInElapsedMs)
-          const beat = (countIn.beats[countInBeatIndex] ?? 0) + 1
+          let visibleEvent = countIn.events[0]
+          for (const event of countIn.events) {
+            if (event.offsetMs > countInElapsedMs) break
+            visibleEvent = event
+          }
+          const beat = (visibleEvent?.beat ?? 0) + 1
           ui.setPosition(selectedRangePosition)
           ui.setMetronome(countIn.meter, beat, true)
           ui.setPlaybackTime(0)
@@ -653,6 +643,7 @@ function renderPlayer(
 
   function handleMetronomeChange(enabled: boolean): void {
     metronomeEnabled = enabled
+    metronomeMode = enabled ? 'always' : 'off'
     updatePosition(playbackOffsetMs)
     if (!enabled || audioContext === undefined) return
     const elapsedMs = Math.max(0, (audioContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
@@ -714,7 +705,7 @@ async function loadPlaybackUrl(rawUrl: string): Promise<void> {
   const decoded = await decodePlaybackFragment(value, browserPlaybackCodec)
   history.replaceState(null, '', `${window.location.pathname}${pageUrl.search}${pageUrl.hash}`)
   renderPlayer(decoded.events, decoded.positionMarkers, identification,
-    decoded.tempoBpm ?? legacyTempoBpm, decoded.tempoUnit ?? legacyTempoUnit)
+    decoded.tempoBpm ?? legacyTempoBpm, decoded.tempoUnit ?? legacyTempoUnit, decoded.metronome)
 }
 
 async function main(): Promise<void> {

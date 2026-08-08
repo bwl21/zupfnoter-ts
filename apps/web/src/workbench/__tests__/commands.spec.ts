@@ -700,6 +700,27 @@ describe('legacy command registration', () => {
     expect(runtime.getAbcText()).not.toContain('"title": "NeuerTitel"')
   })
 
+  it('deletes an unknown path from a schema-invalid config without discarding the document', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    runtime.setAbcText([
+      'X:7',
+      'T:Schemafehler bleibt bearbeitbar',
+      'K:C',
+      'C |]',
+      '%%%%zupfnoter.config',
+      '{"extract":{"1":{"playback":{"strategy":{},"division":"four"}}}}',
+    ].join('\n'))
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('delconfig extract.1.playback.strategy')
+
+    expect(runtime.getAbcText()).toContain('T:Schemafehler bleibt bearbeitbar')
+    expect(runtime.getAbcText()).not.toContain('"strategy"')
+    expect(runtime.getAbcText()).toContain('"division": "four"')
+  })
+
   it('formats ABC in place and supports command undo', async () => {
     const log: string[] = []
     const runtime = createRuntime(log)

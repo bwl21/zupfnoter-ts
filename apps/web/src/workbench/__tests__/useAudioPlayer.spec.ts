@@ -12,6 +12,7 @@ const oscillatorFrequencySetValueAtTimeMock = vi.fn<(value: number, when: number
 const gainConnectMock = vi.fn<(target: unknown) => void>()
 const gainSetValueAtTimeMock = vi.fn<(value: number, when: number) => void>()
 const gainLinearRampToValueAtTimeMock = vi.fn<(value: number, when: number) => void>()
+const gainExponentialRampToValueAtTimeMock = vi.fn<(value: number, when: number) => void>()
 const stereoPannerConnectMock = vi.fn<(target: unknown) => void>()
 
 interface MockStereoPannerNode {
@@ -20,6 +21,7 @@ interface MockStereoPannerNode {
 }
 
 let createdPanners: MockStereoPannerNode[] = []
+let oscillatorFrequencyValues: number[] = []
 let mockCurrentTime = 10
 
 const instrumentMock = vi.fn(async (_context: unknown, _instrument: string, options?: { destination?: { pan?: { value: number } } }) => ({
@@ -43,6 +45,8 @@ class MockAudioContext {
     return {
       type: 'sine' as OscillatorType,
       frequency: {
+        get value() { return oscillatorFrequencyValues[oscillatorFrequencyValues.length - 1] ?? 0 },
+        set value(value: number) { oscillatorFrequencyValues.push(value) },
         setValueAtTime: oscillatorFrequencySetValueAtTimeMock,
       },
       connect: oscillatorConnectMock,
@@ -57,6 +61,7 @@ class MockAudioContext {
         value: 0,
         setValueAtTime: gainSetValueAtTimeMock,
         linearRampToValueAtTime: gainLinearRampToValueAtTimeMock,
+        exponentialRampToValueAtTime: gainExponentialRampToValueAtTimeMock,
       },
       connect: gainConnectMock,
     }
@@ -132,8 +137,10 @@ describe('useAudioPlayer', () => {
     gainConnectMock.mockReset()
     gainSetValueAtTimeMock.mockReset()
     gainLinearRampToValueAtTimeMock.mockReset()
+    gainExponentialRampToValueAtTimeMock.mockReset()
     stereoPannerConnectMock.mockReset()
     createdPanners = []
+    oscillatorFrequencyValues = []
     mockCurrentTime = 10
     Object.defineProperty(globalThis, 'AudioContext', {
       value: MockAudioContext,
@@ -229,6 +236,35 @@ describe('useAudioPlayer', () => {
     expect(createdPanners.some((panner) => panner.pan.value === -0.9)).toBe(true)
     expect(createdPanners.some((panner) => panner.pan.value === 0.9)).toBe(true)
     expect(oscillatorFrequencySetValueAtTimeMock).toHaveBeenCalledWith(261.6255653005986, 10.2)
+  })
+
+  it('uses a distinct signal tone for the last count-in event before entry', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const [firstStep, secondStep] = steps
+    if (firstStep === undefined || secondStep === undefined) throw new Error('Missing playback test steps')
+    const countInSteps: PlaybackStep[] = [
+      {
+        ...firstStep,
+        position: { measureNumber: 1, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+      },
+      {
+        ...secondStep,
+        playbackStartMs: 4000,
+        position: { measureNumber: 2, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+      },
+    ]
+
+    await player.schedule(countInSteps, 1, {}, {
+      mode: 'countIn',
+      minLeadIn: 4,
+      bandPreCount: false,
+      division: 4,
+      subdivision: 1,
+    })
+
+    expect(oscillatorFrequencyValues).toEqual([1200, 850, 850, 1500])
   })
 
   it('derives visual callbacks from the scheduled audio clock', async () => {

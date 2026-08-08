@@ -37,6 +37,33 @@ export interface SongDocumentParts {
   zupfnoterSections: string
 }
 
+export type SongConfigIssueKind = 'syntax' | 'schema'
+
+/** Ein einzelner, nicht werfend ermittelter Fehler der eingebetteten Konfiguration. */
+export interface SongConfigIssue {
+  kind: SongConfigIssueKind
+  message: string
+  /** JSON-Schemapfad, beispielsweise `$.extract.1.playback.strategy`. */
+  path?: string
+  /** Editierbarer Zupfnoter-Konfigurationspfad ohne führendes `$.`. */
+  configPath?: string
+  repair: 'delete-path' | 'manual'
+}
+
+/** Ergebnis der fehlertoleranten Inspektion eines Konfigurationsblocks. */
+export interface SongConfigInspection {
+  hasConfigBlock: boolean
+  /** Textinhalt des Config-Blocks ohne Abschnittsmarker. */
+  rawText?: string
+  /** Unverändertes, als Objekt lesbares JSON; auch bei Schemafehlern verfügbar. */
+  rawConfig?: Record<string, unknown>
+  /** Normalisierte, syntaktisch lesbare Konfiguration; Schemafehler bleiben in `issues`. */
+  config?: Partial<ZupfnoterConfig>
+  /** Dieselbe Konfiguration, jedoch nur vorhanden, wenn keine Schemafehler bestehen. */
+  validatedConfig?: Partial<ZupfnoterConfig>
+  issues: readonly SongConfigIssue[]
+}
+
 /**
  * Trennt die ABC-Notation von eingebetteten Zupfnoter-Abschnitten.
  *
@@ -85,33 +112,105 @@ export function extractSongFilebase(documentText: string): string | undefined {
  * @returns Partial<ZupfnoterConfig> aus dem `%%%%zupfnoter.config`-Block,
  *          oder `{}` wenn kein Block vorhanden
  */
-export function extractSongConfig(abcText: string): Partial<ZupfnoterConfig> {
+export function inspectSongConfig(abcText: string): SongConfigInspection {
   const parts = abcText.split(CONFIG_SEPARATOR)
-
-  // Suche den Teil, der mit ".config" beginnt
   const configPart = parts.find(p => p.startsWith('.config'))
-  if (!configPart) return {}
+  if (!configPart) return { hasConfigBlock: false, config: {}, validatedConfig: {}, issues: [] }
 
-  // Entferne das ".config"-Präfix und parse JSON
   const json = configPart.slice('.config'.length).trim()
-  if (!json) return {}
+  if (!json) return { hasConfigBlock: true, rawText: '', rawConfig: {}, config: {}, validatedConfig: {}, issues: [] }
 
   try {
-    const parsed = normalizeEmbeddedZupfnoterConfigTypes(JSON.parse(json) as unknown)
-    if (!isPlainObject(parsed)) {
-      throw new Error('zupfnoter config block must contain a JSON object')
+    const rawValue = JSON.parse(json) as unknown
+    if (!isPlainObject(rawValue)) {
+      return {
+        hasConfigBlock: true,
+        rawText: json,
+        issues: [{
+          kind: 'schema',
+          message: 'zupfnoter config block must contain a JSON object',
+          path: '$',
+          repair: 'manual',
+        }],
+      }
     }
-
-    const errors = validateEmbeddedZupfnoterConfigShape(parsed)
+    const normalized = normalizeEmbeddedZupfnoterConfigTypes(rawValue)
+    const config = normalized as Partial<ZupfnoterConfig>
+    const errors = validateEmbeddedZupfnoterConfigShape(normalized)
     if (errors.length > 0) {
-      throw new Error(`invalid zupfnoter config shape:\n${errors.join('\n')}`)
+      return {
+        hasConfigBlock: true,
+        rawText: json,
+        rawConfig: rawValue,
+        config,
+        issues: errors.map(toSongConfigSchemaIssue),
+      }
     }
+    return {
+      hasConfigBlock: true,
+      rawText: json,
+      rawConfig: rawValue,
+      config,
+      validatedConfig: config,
+      issues: [],
+    }
+  } catch (error) {
+    return {
+      hasConfigBlock: true,
+      rawText: json,
+      issues: [{
+        kind: 'syntax',
+        message: error instanceof Error ? error.message : String(error),
+        repair: 'manual',
+      }],
+    }
+  }
+}
 
-    return parsed as Partial<ZupfnoterConfig>
-  } catch (err) {
-    throw new Error(
-      `extractSongConfig: invalid JSON in %%%%zupfnoter.config block: ${err instanceof Error ? err.message : String(err)}`
-    )
+/** Ersetzt ausschließlich den Text des eingebetteten Konfigurationsblocks. */
+export function replaceSongDocumentConfigText(documentText: string, rawConfigText: string): string {
+  const marker = `${CONFIG_SEPARATOR}.config`
+  const markerIndex = documentText.indexOf(marker)
+  if (markerIndex < 0) {
+    return `${documentText.trimEnd()}\n\n${marker}\n${rawConfigText}\n`
+  }
+  const contentStart = markerIndex + marker.length
+  const followingText = documentText.slice(contentStart)
+  const nextSectionOffset = followingText.indexOf(CONFIG_SEPARATOR)
+  const followingSections = nextSectionOffset < 0 ? '' : followingText.slice(nextSectionOffset)
+  const beforeConfig = documentText.slice(0, contentStart)
+  return followingSections === ''
+    ? `${beforeConfig}\n${rawConfigText}\n`
+    : `${beforeConfig}\n${rawConfigText.trimEnd()}\n\n${followingSections.trimStart()}`
+}
+
+/**
+ * Parst die Song-Konfiguration ohne Schema-Validierung, entsprechend der
+ * Legacy-Workbench. Validierungsfehler liefert separat `inspectSongConfig()`.
+ */
+export function extractSongConfig(abcText: string): Partial<ZupfnoterConfig> {
+  const inspection = inspectSongConfig(abcText)
+  if (inspection.config !== undefined) return inspection.config
+  const syntaxIssue = inspection.issues.find((issue) => issue.kind === 'syntax')
+  if (syntaxIssue !== undefined) {
+    throw new Error(`extractSongConfig: invalid JSON in %%%%zupfnoter.config block: ${syntaxIssue.message}`)
+  }
+  throw new Error(`extractSongConfig: invalid %%%%zupfnoter.config block: ${inspection.issues
+    .map((issue) => issue.message)
+    .join('\n')}`)
+}
+
+function toSongConfigSchemaIssue(error: string): SongConfigIssue {
+  const separatorIndex = error.indexOf(':')
+  const path = separatorIndex < 0 ? '$' : error.slice(0, separatorIndex)
+  const message = separatorIndex < 0 ? error : error.slice(separatorIndex + 1).trim()
+  const configPath = path.startsWith('$.') ? path.slice(2) : undefined
+  return {
+    kind: 'schema',
+    message,
+    path,
+    configPath,
+    repair: message === 'unknown key' && configPath !== undefined ? 'delete-path' : 'manual',
   }
 }
 

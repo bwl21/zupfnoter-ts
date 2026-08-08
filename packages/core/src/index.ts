@@ -132,16 +132,18 @@ export type { ConfigEditorValueParseResult } from './configEditorValue.js'
 
 export {
   extractSongConfig,
+  inspectSongConfig,
   extractSongFilebase,
   extractSongResources,
   mergeSongConfig,
   replaceSongDocumentAbc,
+  replaceSongDocumentConfigText,
   replaceSongDocumentResources,
   splitSongDocument,
   CONFIG_SEPARATOR,
   RESOURCES_SECTION,
 } from './extractSongConfig.js'
-export type { SongDocumentParts } from './extractSongConfig.js'
+export type { SongConfigInspection, SongConfigIssue, SongConfigIssueKind, SongDocumentParts } from './extractSongConfig.js'
 
 export {
   CommandError,

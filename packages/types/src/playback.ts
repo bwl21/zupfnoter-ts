@@ -16,6 +16,22 @@ export type PlaybackStatus = 'stopped' | 'playing' | 'paused'
  */
 export type PlaybackMode = 'all-score' | 'from-note-harp' | 'range-harp'
 
+/** Controls whether the shared metronome clicks during count-in and playback. */
+export type PlaybackMetronomeMode = 'off' | 'countIn' | 'playback' | 'always'
+
+/** Per-extract playback recommendation and metronome settings. */
+export interface PlaybackConfig {
+  metronomeMode?: PlaybackMetronomeMode
+  /** Minimum number of audible main beats before the actual musical entry. */
+  minLeadIn?: number
+  /** Adds the explicit Zupfnoter band pre-count before normal entry counting. */
+  bandPreCount?: boolean
+  /** Number of main count beats per measure. */
+  division?: number
+  /** Number of audible subdivisions per main count beat. */
+  subdivision?: number
+}
+
 /**
  * Shared playback state for the workbench.
  */
@@ -60,6 +76,8 @@ export interface PlaybackFlowStep {
   measureNumber: number
   /** Taktart am Beginn dieses Taktes. */
   meter?: TimeSignature
+  /** Partname at the beginning of this playback step, if explicitly named. */
+  partName?: string
   /** Volta number of this step when it belongs to a variant ending. */
   voltaNumber?: number
 }
@@ -121,6 +139,8 @@ export interface PlaybackStep {
   position?: PlaybackPosition
   /** Time signature at the beginning of the measure. */
   meter?: TimeSignature
+  /** Partname at the beginning of this playback step, if explicitly named. */
+  partName?: string
   flowIndex: number
   passIndex: number
   voltaNumber?: number

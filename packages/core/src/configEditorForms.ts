@@ -32,6 +32,7 @@ export type ConfigEditorFormId =
   | 'extract_annotation'
   | 'notes'
   | 'basic_settings'
+  | 'playback'
   | 'lyrics'
   | 'layout'
   | 'instrument_specific'
@@ -199,6 +200,11 @@ const CONFIG_EDITOR_FORM_SECTIONS: Record<ConfigEditorFormId, ConfigEditorFormSe
       'restposition',
     ]),
   ],
+  playback: [
+    createFormSection('playback', 'Wiedergabe', [
+      'extract.{extract}.playback',
+    ]),
+  ],
   extract_annotation: [
     createFormSection('extract_annotation', 'Auszugsbeschriftung', [
       'produce',
@@ -303,6 +309,7 @@ export const CONFIG_EDITOR_MENU_ITEMS: ConfigEditorMenuItem[] = [
   { type: 'command', id: 'notes', legacyText: 'page annotation', legacyIcon: 'fa fa-file-text-o', label: 'Seitenbeschriftung', title: 'Einstellungen fuer Seitenbeschriftung im aktuellen Auszug bearbeiten' },
   { type: 'separator' },
   { type: 'command', id: 'basic_settings', legacyText: 'basic settings', legacyIcon: 'fa fa-heartbeat', label: 'Grundeinstellungen', title: 'Grundeinstellungen des Auszugs bearbeiten' },
+  { type: 'command', id: 'playback', legacyText: 'playback', legacyIcon: 'fa fa-play-circle', label: 'Wiedergabe', title: 'Wiedergabe und Metronom fuer den aktuellen Auszug konfigurieren' },
   { type: 'command', id: 'lyrics', legacyText: 'lyrics', legacyIcon: 'fa fa-font', label: 'Liedtexte', title: 'Einstellungen fuer Liedtexte im aktuellen Auszug bearbeiten' },
   { type: 'command', id: 'layout', legacyText: 'layout', legacyIcon: 'fa fa-align-center', label: 'Layout', title: 'Layout-Parameter im aktuellen Auszug bearbeiten' },
   { type: 'command', id: 'instrument_specific', legacyText: 'instrument specific', legacyIcon: 'fa fa-pie-chart', label: 'Intrumentspezifika', title: 'Instrumentenspezifische Groessen und Darstellung bearbeiten' },
@@ -347,6 +354,13 @@ export const CONFIG_EDITOR_FORM_SETS: Record<ConfigEditorFormId, ConfigEditorFor
       'restposition',
     ],
     sections: CONFIG_EDITOR_FORM_SECTIONS.basic_settings,
+  },
+  playback: {
+    id: 'playback',
+    scope: 'extract',
+    supportsNewEntry: false,
+    keys: ['extract.{extract}.playback'],
+    sections: CONFIG_EDITOR_FORM_SECTIONS.playback,
   },
   extract_annotation: {
     id: 'extract_annotation',

@@ -130,19 +130,19 @@ Bedeutung:
 - `dt`: Zeit seit dem vorherigen Ereignisstart
 - `d`: Dauer
 - `p`: MIDI-Tonhöhe, 0–127
-- `v`: Velocity, standardmäßig 127; Version 3 speichert Abweichungen optional
+- `v`: Velocity, standardmäßig 127; Version 5 speichert Abweichungen optional
 
 Mehrere gleichzeitig startende Töne erhalten `dt = 0`.
 
 Die Zeitwerte werden standardmäßig auf 10 ms quantisiert. Positive Dauern werden mindestens auf eine Zeiteinheit angehoben. Die Exportreihenfolge ist stabil: zuerst Startzeit, dann Pitch.
 
-## Binärformat Version 3
+## Binärformat Version 7
 
 Der Header ist unkomprimiert:
 
 ```text
 Magic             3 Bytes: ZNP
-Formatversion     1 Byte: 3
+Formatversion     1 Byte: 7
 Flags             1 Byte: Deflate Raw, optionale Velocity, Positionsspur
 Zeitauflösung     VarUInt, Millisekunden
 Event Count       VarUInt
@@ -160,14 +160,24 @@ optionale Velocity  1 Byte, nur wenn nicht überall 127
 ```
 
 Danach folgt die Positionsspur. Jeder Marker enthält Delta-Zeit seit dem
-vorherigen Marker, Taktnummer und Durchlaufnummer. Audio- und Markerbereiche
-werden gemeinsam mit Deflate Raw komprimiert.
+vorherigen Marker, Taktnummer und Durchlaufnummer. Ab Version 5 kann zusätzlich
+pro Marker einen nicht-leeren Partnamen übertragen. Der Player zeigt dann
+beispielsweise `15 · 'Refrain' · DL2`; ohne Partnamen bleibt die Anzeige bei
+`15 · DL2`. Audio- und Markerbereiche werden gemeinsam mit Deflate Raw
+komprimiert.
 
-Version 1 und Version 2 werden weiterhin gelesen; neue Links werden in Version 3
-geschrieben. In Version 2 werden Takt und Durchlauf noch als Zustand an den
+Version 7 überträgt zusätzlich die per Extrakt aufgelöste
+Metronom-Konfiguration mit `metronomeMode` (`off`, `countIn`, `playback`,
+`always`), `minLeadIn`, `bandPreCount`, `division` und `subdivision`. Dadurch
+bleibt die Blattvorgabe im Player reproduzierbar, während lokale
+Player-Overrides sie nicht verändern.
+
+Version 1 bis Version 5 werden weiterhin gelesen; neue Links werden in Version
+7 geschrieben. Die fehlerhafte, nie fachlich freigegebene Version 6 wird nicht
+unterstützt. In Version 2 werden Takt und Durchlauf noch als Zustand an den
 Audioereignissen fortgeschrieben.
 
-Das Format enthält keine ABC-Daten, Zupfnoter-IDs, Stimmen, Konfiguration, Layoutdaten, Wiederholungsobjekte, Bindungen, Annotationen oder Editorpositionen.
+Das Format enthält außer der reproduzierbaren Metronom-Blattvorgabe keine ABC-Daten, Zupfnoter-IDs, Stimmen, weitere Konfiguration, Layoutdaten, Wiederholungsobjekte, Bindungen, Annotationen oder Editorpositionen.
 
 Der Decoder validiert Magic, Version, Flags, VarUInt-Grenzen, Event-Anzahl, Pitch-/Velocity-Bereiche und eine maximale entpackte Payload-Größe.
 
@@ -349,8 +359,8 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 ## Annahmen
 
 - `p` ist eine MIDI-Tonhöhe.
-- `v` ist standardmäßig 127 und wird in Version 3 nur bei Bedarf gespeichert.
-- Deflate Raw ist die einzige Kompression in Version 3.
+- `v` ist standardmäßig 127 und wird in Version 5 nur bei Bedarf gespeichert.
+- Deflate Raw ist die einzige Kompression in Version 5.
 - Version-1-Payloads bleiben abwärtskompatibel lesbar.
 - Der Player wird als `apps/player` im selben Monorepo angelegt.
 - Takt und Durchlauf stehen in einer eigenen zeitbasierten Positionsspur.

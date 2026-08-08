@@ -1209,6 +1209,53 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
         "notes": {}
           
 
+## `extract.0.playback` - Wiedergabe {#extract.0.playback}
+
+Hier konfigurierst du Wiedergabe, Einzählen und Metronom für einen Auszug.
+Werte in `extract.0.playback` gelten als Blattvorgabe und werden von höheren
+Auszügen geerbt, solange sie dort nicht überschrieben werden. Beim Erzeugen
+eines Übungs-QR-Codes werden die wirksamen Werte in den Playback-Link
+übernommen.
+
+```json
+"playback": {
+  "metronomeMode": "off",
+  "minLeadIn": 4,
+  "bandPreCount": false,
+  "division": 4,
+  "subdivision": 1
+}
+```
+
+## `extract.0.playback.metronomeMode` - Metronom-Modus {#extract.0.playback.metronomeMode}
+
+- `off`: keine Metronom-Klicks
+- `countIn`: Klicks nur vor dem musikalischen Einsatz
+- `playback`: Klicks nur während der Wiedergabe
+- `always`: Klicks beim Einzählen und während der Wiedergabe
+
+## `extract.0.playback.minLeadIn` - Mindestens einzählen {#extract.0.playback.minLeadIn}
+
+Mindestanzahl hörbarer Hauptschläge vor dem musikalischen Einsatz. Reicht der
+aktuelle Takt nicht aus, wird über vorhergehende Takte zurückgezählt. Der Wert
+ist eine positive ganze Zahl; der Built-in-Wert ist `4`.
+
+## `extract.0.playback.bandPreCount` - Band-Vorzähler {#extract.0.playback.bandPreCount}
+
+Wenn aktiviert, erklingt vor dem normalen Einzählen zusätzlich ein 4/4-Takt
+mit Stick-Klicks auf den Zählzeiten 1 und 3.
+
+## `extract.0.playback.division` - Zählschläge pro Takt {#extract.0.playback.division}
+
+Anzahl der Hauptschläge pro Takt. Der Wert ist eine positive ganze Zahl; der
+Built-in-Wert ist `4`.
+
+## `extract.0.playback.subdivision` - Unterteilungen {#extract.0.playback.subdivision}
+
+Anzahl hörbarer Unterteilungen pro Zählschlag. Der Wert ist eine positive
+ganze Zahl. `1` erzeugt nur den Hauptschlag, `2` zusätzlich die Hälfte und `3`
+eine Dreierunterteilung.
+
 ## `extract.0.printer` - Drucker {#extract.0.printer}
 
 Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.

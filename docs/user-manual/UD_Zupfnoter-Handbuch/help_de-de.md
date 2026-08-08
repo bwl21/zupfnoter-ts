@@ -1234,7 +1234,44 @@ Hier siehst du eine Liste alle Bilder, die du geladen hast.
 > `Datei / Import`. Alternativ kannst du eine JPG Datei in Zupfnoter
 > hineinziehen.
 
-<!-- here we have some dummy entries-->
+## playback
+
+Hier konfigurierst du Wiedergabe, Einzählen und Metronom für den aktuellen
+Auszug. Die Einstellungen aus `extract.0.playback` sind die Blattvorgabe und
+werden von anderen Auszügen geerbt, solange sie dort nicht überschrieben
+werden. Sie werden auch in den Übungs-QR-Code übernommen.
+
+## playback.metronomeMode
+
+Der Metronom-Modus legt fest, in welchen Phasen Klicks hörbar sind.
+
+- **Aus: `off`** Weder beim Einzählen noch während der Wiedergabe erklingen Metronom-Klicks.
+- **Einzählen: `countIn`** Klicks erklingen nur vor dem musikalischen Einsatz.
+- **Während der Wiedergabe: `playback`** Klicks erklingen nur während der Wiedergabe.
+- **Immer: `always`** Klicks erklingen beim Einzählen und während der Wiedergabe.
+
+## playback.minLeadIn
+
+Mindestanzahl hörbarer Hauptschläge vor dem musikalischen Einsatz. Reicht der
+aktuelle Takt dafür nicht aus, wird über vorhergehende Takte zurückgezählt. Der
+Wert muss eine positive ganze Zahl sein.
+
+## playback.bandPreCount
+
+Schaltet einen zusätzlichen Band-Vorzähler vor dem normalen Einzählen ein. Er
+besteht aus einem 4/4-Takt mit Stick-Klicks auf den Zählzeiten 1 und 3.
+
+## playback.division
+
+Anzahl der Hauptschläge pro Takt. Damit kann ein Auszug eine von der
+Gesamtpartitur abweichende Zählweise festlegen. Der Wert muss eine positive
+ganze Zahl sein.
+
+## playback.subdivision
+
+Anzahl hörbarer Unterteilungen pro Zählschlag. `1` erzeugt nur den Hauptschlag,
+`2` zusätzlich die Hälfte und `3` eine Dreierunterteilung. Der Wert muss eine
+positive ganze Zahl sein.
 
 ## templates.extracts
 

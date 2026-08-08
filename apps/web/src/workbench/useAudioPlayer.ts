@@ -1,4 +1,13 @@
 import type { PlaybackStep } from './playback'
+import {
+  createPlaybackCountInPlan,
+  createPlaybackMetronomeClicks,
+  resolvePlaybackCountEventSound,
+  schedulePlaybackMetronomeClick,
+  type PlaybackMetronomeConfig,
+  type PlaybackMetronomeSoundKind,
+  type PlaybackPositionMarker,
+} from '@zupfnoter/playback'
 
 export interface PlaybackScheduleCallbacks {
   onStepStart?: (step: PlaybackStep) => void
@@ -192,6 +201,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     steps: PlaybackStep[],
     speedFactor: number,
     callbacks: PlaybackScheduleCallbacks = {},
+    metronomeConfig?: PlaybackMetronomeConfig,
   ): Promise<void> {
     const eventsBySide: Record<StereoSide, Array<{ time: number; note: number; duration: number; gain: number }>> = {
       left: [],
@@ -230,9 +240,55 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     const hasAudioEvents = eventsBySide.left.length > 0 || eventsBySide.right.length > 0
     if (!hasAudioEvents && callbacks.onStepStart === undefined && callbacks.onStepEnd === undefined) return
     const context = await ensureRunningContext()
+    const markers: PlaybackPositionMarker[] = []
+    for (const step of steps) {
+      if (step.meter === undefined || step.position === undefined) continue
+      const previous = markers[markers.length - 1]
+      if (previous?.position.measureNumber === step.position.measureNumber
+        && previous.position.passIndex === step.position.passIndex) continue
+      markers.push({ timeMs: step.playbackStartMs, position: step.position, meter: step.meter })
+    }
+    const division = Math.max(1, metronomeConfig?.division ?? 4)
+    const subdivision = Math.max(1, metronomeConfig?.subdivision ?? 1)
+    const minLeadIn = Math.max(1, metronomeConfig?.minLeadIn ?? 4)
+    const countInPlan = metronomeConfig !== undefined
+      && (metronomeConfig.mode === 'countIn' || metronomeConfig.mode === 'always')
+      ? createPlaybackCountInPlan(markers, markers[0]?.timeMs ?? 0, {
+        minLeadIn,
+        bandPreCount: metronomeConfig.bandPreCount,
+        division,
+        subdivision,
+      })
+      : undefined
+    const countInDurationMs = countInPlan?.durationMs ?? 0
+    function scheduleMetronomeClicks(baseStartTime: number): void {
+      if (metronomeConfig === undefined || metronomeConfig.mode === 'off') return
+      if (countInPlan !== undefined) {
+        const countInStart = baseStartTime - countInDurationMs / speedFactor / 1000
+        for (const event of countInPlan.events) {
+          const clickAt = countInStart + event.offsetMs / speedFactor / 1000
+          const sound = resolvePlaybackCountEventSound(event.kind, event.isLastBeforeEntry)
+          schedulePlaybackMetronomeClick(context, clickAt, sound)
+        }
+      }
+      if (metronomeConfig.mode === 'countIn') return
+      const lastStep = steps[steps.length - 1]
+      const playbackDurationMs = lastStep === undefined
+        ? 0
+        : lastStep.playbackStartMs + lastStep.durationMs
+      const clicks = createPlaybackMetronomeClicks(markers, playbackDurationMs, division, subdivision)
+      for (const clickEvent of clicks) {
+        const relativeMs = clickEvent.timeMs
+        const scheduleStart = baseStartTime + relativeMs / speedFactor / 1000
+        if (scheduleStart >= context.currentTime) {
+          schedulePlaybackMetronomeClick(context, scheduleStart, clickEvent.accent ? 'accent' : 'regular')
+        }
+      }
+    }
     if (instrument.value === 'oscillator') {
-      const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC
+      const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC + countInDurationMs / speedFactor / 1000
       scheduleStepCallbacks(steps, speedFactor, callbacks, context, baseStartTime)
+      scheduleMetronomeClicks(baseStartTime)
       if (!hasAudioEvents) return
       const masterGain = getMasterGainNode()
       for (const side of ['left', 'right'] as StereoSide[]) {
@@ -264,13 +320,15 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       return
     }
     if (!hasAudioEvents) {
-      const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC
+      const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC + countInDurationMs / speedFactor / 1000
       scheduleStepCallbacks(steps, speedFactor, callbacks, context, baseStartTime)
+      scheduleMetronomeClicks(baseStartTime)
       return
     }
     const players = await loadPlayer()
-    const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC
+    const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC + countInDurationMs / speedFactor / 1000
     scheduleStepCallbacks(steps, speedFactor, callbacks, context, baseStartTime)
+    scheduleMetronomeClicks(baseStartTime)
     for (const side of ['left', 'right'] as StereoSide[]) {
       const events = eventsBySide[side]
       if (events.length === 0) continue

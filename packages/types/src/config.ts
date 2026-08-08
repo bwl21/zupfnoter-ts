@@ -6,6 +6,7 @@
  */
 
 import type { FillStyle } from './drawing.js'
+import type { PlaybackConfig } from './playback.js'
 
 // ---------------------------------------------------------------------------
 // Schrift- und Darstellungsstile
@@ -333,6 +334,8 @@ export interface ExtractConfig {
   layout?: Partial<LayoutConfig>
   /** Drucker-Overrides für diesen Extrakt */
   printer?: Partial<PrinterConfig>
+  /** Playback and metronome settings for this extract. */
+  playback?: PlaybackConfig
 }
 
 // ---------------------------------------------------------------------------

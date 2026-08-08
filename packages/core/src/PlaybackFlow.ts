@@ -17,6 +17,7 @@ interface PlayableGroup {
   voltaNumber?: number
   measureNumber: number
   meter?: TimeSignature
+  partName?: string
 }
 
 function isPlayableEntity(entity: VoiceEntity): entity is PlayableEntity {
@@ -29,10 +30,17 @@ function isGotoEntity(entity: VoiceEntity): entity is Goto {
 
 function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
   const groups = new Map<number, PlayableGroup>()
+  const partNameByTime = new Map<number, string>()
   const measureByTime = new Map<number, { voiceIndex: number; measureNumber: number }>()
   let measureVoiceIndex: number | undefined
 
   for (const [voiceIndex, voice] of song.voices.entries()) {
+    for (const entity of voice.entities) {
+      if (entity.type === 'NoteBoundAnnotation' && entity.confKey?.includes('notebound.partname') === true
+        && entity.text.trim() !== '') {
+        partNameByTime.set(entity.companion.time, entity.text)
+      }
+    }
     for (const entity of voice.entities) {
       if (!isPlayableEntity(entity)) continue
 
@@ -59,6 +67,7 @@ function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
           activeStartChar: entity.sourceOffsets?.[0],
           voltaNumber: entity.variant > 0 ? entity.variant : undefined,
           meter: entity.meter,
+          partName: partNameByTime.get(entity.time),
           measureNumber: entity.measureCount > 0 ? entity.measureCount : 1,
         })
         continue
@@ -79,6 +88,7 @@ function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
           : Math.max(existing.voltaNumber, entity.variant) as 1 | 2
       }
       if (existing.meter === undefined && entity.meter !== undefined) existing.meter = entity.meter
+      if (existing.partName === undefined) existing.partName = partNameByTime.get(entity.time)
     }
   }
 
@@ -295,6 +305,7 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
         passIndex,
         measureNumber: group.measureNumber,
         meter: group.meter,
+        partName: group.partName,
         voltaNumber: group.voltaNumber,
       })
     }

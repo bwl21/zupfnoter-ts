@@ -107,6 +107,13 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
       a4_pages: [0, 1, 2],
       show_border: false,
     },
+    playback: {
+      metronomeMode: 'off',
+      minLeadIn: 4,
+      bandPreCount: false,
+      division: 4,
+      subdivision: 1,
+    },
     layout: {
       limit_a3: true,
       bottomup: false,

@@ -33,6 +33,8 @@ export interface JsonSchemaNode {
   enforceRequired?: boolean
   enum?: readonly string[]
   items?: JsonSchemaNode | JsonSchemaNode[]
+  maximum?: number
+  minimum?: number
   minItems?: number
   patternProperties?: Record<string, JsonSchemaNode>
   properties?: Record<string, JsonSchemaNode>
@@ -1330,6 +1332,17 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
     properties: {
       title: { type: 'string' },
       filenamepart: {},
+      playback: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          metronomeMode: { type: 'string', enum: ['off', 'countIn', 'playback', 'always'], ...editorSelection('playback.metronomeMode', ['off', 'countIn', 'playback', 'always']) },
+          minLeadIn: { type: 'integer', minimum: 1 },
+          bandPreCount: { type: 'boolean' },
+          division: { type: 'integer', minimum: 1 },
+          subdivision: { type: 'integer', minimum: 1 },
+        },
+      },
       startpos: { type: 'integer' },
       voices: integerArraySchema({ type: 'integer' }, 1),
       synchlines: {
@@ -1898,6 +1911,14 @@ function validateSchemaNode(
   }
 
   if (!isPlainObject(value)) {
+    if (typeof value === 'number') {
+      if (schema.minimum !== undefined && value < schema.minimum) {
+        errors.push(`${path}: expected a value of at least ${schema.minimum}`)
+      }
+      if (schema.maximum !== undefined && value > schema.maximum) {
+        errors.push(`${path}: expected a value of at most ${schema.maximum}`)
+      }
+    }
     return
   }
 
