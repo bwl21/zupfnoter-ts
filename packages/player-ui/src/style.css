@@ -24,8 +24,14 @@ input, button { box-sizing: border-box; min-height: 2.75rem; width: 100%; paddin
 button { background: #2f80ed; color: white; cursor: pointer; }
 .transport { margin-top: 0; text-align: center; }
 .position-label { margin: 0; color: #627d98; font-size: .9rem; }
-.position-row { display: flex; align-items: center; justify-content: center; gap: 2rem; margin-bottom: .45rem; }
-.position { display: block; margin: .25rem 0; color: #102a43; font-size: clamp(3rem, 14vw, 5.5rem); font-weight: 700; line-height: 1; }
+.position-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .5rem; width: 100%; margin-bottom: .45rem; }
+.position { display: flex; align-items: baseline; justify-content: center; min-width: 0; margin: .25rem 0; overflow: hidden; color: #102a43; font-size: clamp(1.15rem, 5.5vw, 1.65rem); font-weight: 700; line-height: 1.15; white-space: nowrap; }
+.position__field { display: inline-flex; align-items: baseline; justify-content: center; min-width: 0; }
+.position__field--measure { flex: 0 0 5.5rem; }
+.position__field--pass { flex: 0 0 4.25rem; }
+.position__field--part { flex: 1 1 8rem; max-width: 11rem; overflow: hidden; text-overflow: ellipsis; }
+.position__number { display: inline-block; min-width: 2.5ch; font-variant-numeric: tabular-nums; text-align: right; }
+.position__separator { flex: 0 0 1rem; color: #627d98; text-align: center; }
 .playback-time { margin: 0; color: #627d98; font-variant-numeric: tabular-nums; }
 .transport-buttons { display: flex; justify-content: center; gap: .75rem; margin-top: 1.25rem; }
 .transport-buttons button { width: 4rem; border-radius: 50%; font-size: 1.4rem; }
@@ -39,7 +45,7 @@ button { background: #2f80ed; color: white; cursor: pointer; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .speed-control { display: flex; align-items: center; justify-content: center; gap: .4rem; margin: 1rem auto 0; color: #627d98; font-size: .85rem; }
 .speed-control input { width: 5.5rem; min-height: 2.4rem; padding: .3rem; color: #243b53; font-variant-numeric: tabular-nums; text-align: center; }
-.speed-control button { width: 2.4rem; min-height: 2.4rem; padding: 0; font-size: 1.2rem; }
+.speed-control button { width: 2.4rem; min-height: 2.4rem; padding: 0; font-size: 1.2rem; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
 .metronome-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; min-height: 2.8rem; margin: .9rem 0 .75rem; color: #627d98; font-size: .9rem; font-variant-numeric: tabular-nums; }
 .metronome-control { display: inline-flex; flex-direction: column; align-items: center; gap: .35rem; cursor: pointer; }
 .metronome-control { justify-self: start; }

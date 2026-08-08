@@ -58,8 +58,22 @@ function escapeHtml(value: string): string {
   })[character] ?? character)
 }
 
-function formatPosition(position: PlaybackPosition, partName?: string): string {
-  return `Takt ${position.measureNumber}${partName === undefined || partName.trim() === '' ? '' : ` · '${partName.trim()}'`} · DL${position.passIndex}`
+function formatPosition(position: PlaybackPosition, partName?: string): { label: string; html: string } {
+  const part = partName?.trim() || undefined
+  const label = `Takt ${position.measureNumber}${part === undefined ? '' : ` · '${part}'`} · DL${position.passIndex}`
+  const partField = part === undefined
+    ? ''
+    : `<span class="position__separator" aria-hidden="true">·</span><span class="position__field position__field--part" title="${escapeHtml(part)}">'${escapeHtml(part)}'</span>`
+  return {
+    label,
+    html: `<span class="position__field position__field--measure"><span>Takt</span><span class="position__number">${position.measureNumber}</span></span>${partField}<span class="position__separator" aria-hidden="true">·</span><span class="position__field position__field--pass"><span>DL</span><span class="position__number">${position.passIndex}</span></span>`,
+  }
+}
+
+function renderPosition(output: HTMLOutputElement, position: PlaybackPosition, partName?: string): void {
+  const formatted = formatPosition(position, partName)
+  output.innerHTML = formatted.html
+  output.setAttribute('aria-label', formatted.label)
 }
 
 function numberField(name: string, label: string, value: number, maximum: number): string {
@@ -137,7 +151,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       </div>
       <section class="transport" aria-label="Wiedergabe">
         <div class="position-row">
-          <output id="current-position" class="position">${first}</output>
+          <output id="current-position" class="position" aria-label="${escapeHtml(first.label)}">${first.html}</output>
           <button id="take-position-button" class="take-position" type="button" title="Position übernehmen" aria-label="Position übernehmen"><span class="take-position__icon" aria-hidden="true">◎</span></button>
         </div>
         <p id="playback-time" class="playback-time">0:00</p>
@@ -270,7 +284,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       setNumberValue(form, 'from-pass', nextPosition.passIndex)
     },
     setPosition(nextPosition, partName) {
-      if (position !== null) position.value = formatPosition(nextPosition, partName)
+      if (position !== null) renderPosition(position, nextPosition, partName)
     },
     setPlaybackTime(elapsedMs) {
       if (playbackTime === null) return

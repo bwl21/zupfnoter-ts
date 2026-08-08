@@ -19,6 +19,7 @@ import '@zupfnoter/player-ui/style.css'
 import {
   findPositionMarker,
   nextPositionBoundaryMarker,
+  partNameAtTime,
   parsePosition,
   positionAtTime,
   pickupMetronomeStateAtTime,
@@ -261,7 +262,7 @@ function renderPlayer(
     playerVersion: PLAYER_VERSION,
     identification,
     firstPosition,
-    firstPartName: positionMarkers[0]?.partName,
+    firstPartName: partNameAtTime(positionMarkers, selectedStartMs),
     maximumMeasure,
     maximumPass,
     hasMetronomeData: positionMarkers.some((marker) => marker.meter !== undefined),
@@ -340,11 +341,7 @@ function renderPlayer(
   function updatePosition(elapsedMs: number): void {
     const absoluteTimeMs = selectedStartMs + elapsedMs
     const currentPosition = positionAtTime(positionMarkers, absoluteTimeMs)
-    let currentMarker = positionMarkers[0]
-    for (const marker of positionMarkers) {
-      if (marker.timeMs <= absoluteTimeMs) currentMarker = marker
-    }
-    ui.setPosition(currentPosition, currentMarker?.partName)
+    ui.setPosition(currentPosition, partNameAtTime(positionMarkers, absoluteTimeMs))
     ui.setTempoBpm(tempoBpmAtTime(positionMarkers, absoluteTimeMs, tempoBpm))
     let markerIndex = -1
     for (const [index, marker] of positionMarkers.entries()) {

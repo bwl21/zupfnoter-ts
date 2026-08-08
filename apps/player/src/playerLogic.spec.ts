@@ -4,6 +4,7 @@ import type { PlaybackEvent, PlaybackPositionMarker } from '@zupfnoter/playback'
 
 import {
   nextPositionBoundaryMarker,
+  partNameAtTime,
   parsePosition,
   positionAtTime,
   resolveRange,
@@ -46,5 +47,18 @@ describe('player logic', () => {
     expect(positionAtTime(markers, 4500)).toEqual({ measureNumber: 2, passIndex: 1 })
     expect(parsePosition('27.3')).toEqual({ measureNumber: 27, passIndex: 3 })
     expect(parsePosition('27')).toBeUndefined()
+  })
+
+  it('keeps a trimmed part name until a new non-empty part begins', () => {
+    const partMarkers: PlaybackPositionMarker[] = [
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, partName: '  Teil A  ' },
+      { timeMs: 1000, position: { measureNumber: 2, passIndex: 1 } },
+      { timeMs: 2000, position: { measureNumber: 3, passIndex: 1 }, partName: '   ' },
+      { timeMs: 3000, position: { measureNumber: 4, passIndex: 1 }, partName: 'Teil B' },
+    ]
+
+    expect(partNameAtTime(partMarkers, 0)).toBe('Teil A')
+    expect(partNameAtTime(partMarkers, 2500)).toBe('Teil A')
+    expect(partNameAtTime(partMarkers, 3000)).toBe('Teil B')
   })
 })

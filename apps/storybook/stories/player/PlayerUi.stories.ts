@@ -33,6 +33,7 @@ function renderPlayerUi(args: PlayerUiArgs) {
           playerVersion: '0.1.5',
           identification: 'T01 · Auszug 0',
           firstPosition: { measureNumber: 1, passIndex: 1 },
+          firstPartName: 'Strophe mit langem Namen',
           maximumMeasure: 16,
           maximumPass: args.maximumPass,
           hasMetronomeData: true,

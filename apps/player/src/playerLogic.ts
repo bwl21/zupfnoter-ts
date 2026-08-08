@@ -28,6 +28,20 @@ export function positionAtTime(
   return current
 }
 
+/** Keeps the latest non-empty, trimmed ABC part name active until another one starts. */
+export function partNameAtTime(
+  markers: readonly PlaybackPositionMarker[],
+  timeMs: number,
+): string | undefined {
+  let current: string | undefined
+  for (const marker of markers) {
+    if (marker.timeMs > timeMs) break
+    const partName = marker.partName?.trim()
+    if (partName !== undefined && partName !== '') current = partName
+  }
+  return current
+}
+
 /** Returns the next measure boundary, including a terminal marker of the same position. */
 export function nextPositionBoundaryMarker(
   markers: readonly PlaybackPositionMarker[],
