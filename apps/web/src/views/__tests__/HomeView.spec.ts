@@ -37,7 +37,7 @@ describe('HomeView', () => {
     const element = editor.element
     expect(element).toBeInstanceOf(HTMLElement)
     if (element instanceof HTMLElement) {
-      expect(element.textContent ?? '').toContain('F:3015_reference_sheet')
+      expect(element.textContent ?? '').toContain('F:zndemo_42_Ich_steh_an_deiner_krippen_hier')
     }
 
     await vi.advanceTimersByTimeAsync(300)

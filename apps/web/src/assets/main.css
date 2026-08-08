@@ -19,6 +19,157 @@ body {
   overflow: hidden;
 }
 
+.welcome-start {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 2rem;
+  color: #17324d;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(158, 216, 255, 0.55), transparent 34rem),
+    linear-gradient(135deg, #f4f8fb 0%, #e5eef5 100%);
+}
+
+.welcome-start__card {
+  width: min(100%, 780px);
+  padding: clamp(2rem, 5vw, 4.5rem);
+  border: 1px solid rgba(23, 50, 77, 0.12);
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1.5rem 4rem rgba(23, 50, 77, 0.16);
+}
+
+.welcome-start__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #28648e;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.welcome-start__logo {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.welcome-start__eyebrow {
+  margin: 3rem 0 0.7rem;
+  color: #58728a;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.welcome-start h1 {
+  margin: 0;
+  color: #17324d;
+  font-size: clamp(2.1rem, 5vw, 3.8rem);
+  line-height: 1.05;
+}
+
+.welcome-start__intro {
+  max-width: 58ch;
+  margin: 1.4rem 0 2rem;
+  color: #425d73;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+.welcome-start__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.welcome-start__action {
+  display: grid;
+  gap: 0.5rem;
+  min-height: 7.5rem;
+  padding: 1.2rem;
+  border: 1px solid #b8cad8;
+  border-radius: 0.9rem;
+  color: #17324d;
+  background: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.welcome-start__action:hover,
+.welcome-start__action:focus-visible {
+  border-color: #28648e;
+  box-shadow: 0 0.6rem 1.4rem rgba(23, 50, 77, 0.12);
+  transform: translateY(-2px);
+}
+
+.welcome-start__action--primary {
+  border-color: #28648e;
+  color: #fff;
+  background: #28648e;
+}
+
+.welcome-start__action strong {
+  font-size: 1.05rem;
+}
+
+.welcome-start__action span {
+  color: #58728a;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.welcome-start__action--primary span {
+  color: #d9f0ff;
+}
+
+.welcome-start__promise {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  margin-top: 2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid #d8e3eb;
+  color: #425d73;
+  line-height: 1.45;
+}
+
+.welcome-start__promise p {
+  margin: 0;
+}
+
+.welcome-start__check {
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: #3e8b68;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .welcome-start {
+    padding: 1rem;
+  }
+
+  .welcome-start__card {
+    padding: 1.5rem;
+  }
+
+  .welcome-start__eyebrow {
+    margin-top: 2rem;
+  }
+
+  .welcome-start__actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Legacy flowconf behavior: controls appear only while the flowline is hovered. */
 .zupfnoter-element[data-drag-handler='bezier'] .zupfnoter-bezier-controls {
   opacity: 0.08;

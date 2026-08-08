@@ -15,7 +15,7 @@ import {
 import type { AbcParseError } from '@zupfnoter/core'
 import type { SheetObjectIndex, SongDiagnostic, SongResources } from '@zupfnoter/types'
 import type { Sheet, Song, Voice, VoiceEntity } from '@zupfnoter/types'
-import referenceSheetAbc from '../../../../../fixtures/cases/public/3015_reference_sheet/input.abc?raw'
+import startupDemoAbc from '../../../../../fixtures/cases/public/krippen-demo/input.abc?raw'
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 import { DEFAULT_WORKBENCH_CONFIG } from '../../stores/workbenchConfigDefaults'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, resolveTempoUnitFromSong, type PlaybackStep } from '../playback'
@@ -77,7 +77,7 @@ export interface PdfExportVariant {
   filenamepart: string
 }
 
-export const DEFAULT_ABC = referenceSheetAbc
+export const DEFAULT_ABC = startupDemoAbc
 
 /** Erzeugt das PDF eines einzelnen Auszugs im gewünschten Seitenformat. */
 export async function renderPdfExport(

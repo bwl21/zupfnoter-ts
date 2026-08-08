@@ -114,6 +114,12 @@ import { createStorageConnection, loadStorageConnections, saveStorageConnections
 import { createStorageProviderRegistry } from './storage/providerRegistry'
 import { readLocalImport, resourceKeyFromFileName, UnsupportedImportError } from './fileImport'
 
+const props = withDefaults(defineProps<{
+  openStorageOnMount?: boolean
+}>(), {
+  openStorageOnMount: false,
+})
+
 interface ConfigEditorIntent {
   action: string
   path?: string
@@ -2268,6 +2274,10 @@ onMounted(async () => {
   savedDocumentText.value = documentText.value
   restorePlaybackInstrument()
   restoreStorageContext()
+  if (props.openStorageOnMount) {
+    prepareStorageOpenDocuments()
+    storageOpenDialogOpen.value = true
+  }
   if (storageState.connectionId !== undefined && storageState.system === 'dropbox') {
     void resumeDropboxLoginFromRedirect(storageState.connectionId).then((connected) => {
       if (!connected) return
