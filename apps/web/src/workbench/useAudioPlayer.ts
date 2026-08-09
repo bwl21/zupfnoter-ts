@@ -233,6 +233,8 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     speedFactor: number,
     callbacks: PlaybackScheduleCallbacks = {},
     metronomeConfig?: PlaybackMetronomeConfig,
+    tempoBpm?: number,
+    tempoUnit = 0.25,
   ): Promise<void> {
     const eventsBySide: Record<StereoSide, Array<{ time: number; note: number; duration: number; gain: number }>> = {
       left: [],
@@ -290,7 +292,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         bandPreCount: metronomeConfig.bandPreCount,
         division: configuredDivision,
         subdivision,
-      })
+      }, tempoBpm, tempoUnit)
       : undefined
     const countInDurationMs = countInPlan?.durationMs ?? 0
     const lastStep = steps[steps.length - 1]
@@ -299,7 +301,14 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       : lastStep.playbackStartMs + lastStep.durationMs
     const playbackClicks = metronomeConfig !== undefined
       && (metronomeConfig.mode === 'playback' || metronomeConfig.mode === 'always')
-      ? createPlaybackMetronomeClicks(markers, playbackDurationMs, configuredDivision, subdivision)
+      ? createPlaybackMetronomeClicks(
+        markers,
+        playbackDurationMs,
+        configuredDivision,
+        subdivision,
+        tempoBpm,
+        tempoUnit,
+      )
         .filter((click) => countInPlan === undefined || click.timeMs >= entryTimeMs)
       : []
     const countInDivision = Math.max(1, configuredDivision ?? countInPlan?.meter.numerator ?? 4)

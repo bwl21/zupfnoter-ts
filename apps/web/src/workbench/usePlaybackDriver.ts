@@ -16,6 +16,7 @@ import type { PlaybackMetronomeConfig } from '@zupfnoter/playback'
 interface PlaybackDriverSource {
   timeline: PlaybackStep[]
   baseTempoFromQ?: number
+  tempoUnitFromQ?: number
   activeVoiceIds?: string[]
   metronomeConfig?: PlaybackMetronomeConfig
 }
@@ -116,7 +117,14 @@ export function usePlaybackDriver(
         metronomeBeat.value = { ...beat, pulse: metronomePulse }
       },
     }
-    await audioPlayer?.schedule(steps, playbackStore.state.speedFactor, callbacks, source.metronomeConfig)
+    await audioPlayer?.schedule(
+      steps,
+      playbackStore.state.speedFactor,
+      callbacks,
+      source.metronomeConfig,
+      source.baseTempoFromQ,
+      source.tempoUnitFromQ,
+    )
     if (audioPlayer === undefined) {
       timer = setTimeout(() => {
         stop()

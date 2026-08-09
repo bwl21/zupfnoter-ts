@@ -75,21 +75,79 @@ export interface PlaybackCountInPlan {
   events: readonly PlaybackCountEvent[]
 }
 
-function nextMeasureMarker(
+function delayedMeterIndexFor(
   markers: readonly PlaybackPositionMarker[],
   markerIndex: number,
-): PlaybackPositionMarker | undefined {
+): number {
+  const pickupMarker = markers[markerIndex]
+  if (pickupMarker === undefined || pickupMarker.meter !== undefined) return -1
+  return markers.findIndex((candidate, index) => index > markerIndex
+    && candidate.meter !== undefined
+    && candidate.position.measureNumber === pickupMarker.position.measureNumber
+    && candidate.position.passIndex === pickupMarker.position.passIndex)
+}
+
+function measuredDurationFor(
+  markers: readonly PlaybackPositionMarker[],
+  durationMs: number,
+  markerIndex: number,
+): number | undefined {
   const marker = markers[markerIndex]
-  if (marker === undefined) return undefined
-  return markers.slice(markerIndex + 1).find((candidate) => (
+  if (marker?.meter === undefined) return undefined
+  const next = markers.slice(markerIndex + 1).find((candidate) => (
     candidate.position.measureNumber !== marker.position.measureNumber
     || candidate.position.passIndex !== marker.position.passIndex
-    || (candidate.meter !== undefined && marker.meter !== undefined && (
-      candidate.meter.numerator !== marker.meter.numerator
-      || candidate.meter.denominator !== marker.meter.denominator
-      || (candidate.meter.grouping ?? []).join(',') !== (marker.meter.grouping ?? []).join(',')
-    ))
   ))
+  const nextIndex = next === undefined ? -1 : markers.indexOf(next)
+  const delayedMeterIndex = nextIndex < 0 ? -1 : delayedMeterIndexFor(markers, nextIndex)
+  const delayedMeterMarker = delayedMeterIndex < 0 ? undefined : markers[delayedMeterIndex]
+  const pickupDurationMs = next !== undefined && next.meter === undefined && delayedMeterMarker !== undefined
+    ? delayedMeterMarker.timeMs - next.timeMs
+    : 0
+  const measuredDurationMs = (next?.timeMs ?? durationMs) - marker.timeMs + pickupDurationMs
+  return measuredDurationMs > 0 ? measuredDurationMs : undefined
+}
+
+function sameMeter(left: PlaybackMeter | undefined, right: PlaybackMeter): boolean {
+  return left?.numerator === right.numerator
+    && left.denominator === right.denominator
+    && (left.grouping ?? []).join(',') === (right.grouping ?? []).join(',')
+}
+
+function referenceMeasureDurationFor(
+  markers: readonly PlaybackPositionMarker[],
+  durationMs: number,
+  meter: PlaybackMeter,
+): number | undefined {
+  const durations = markers.flatMap((candidate, index) => {
+    if (!sameMeter(candidate.meter, meter)) return []
+    const measuredDurationMs = measuredDurationFor(markers, durationMs, index)
+    return measuredDurationMs === undefined ? [] : [measuredDurationMs]
+  })
+  if (durations.length === 0) return undefined
+  const frequencies = new Map<number, number>()
+  for (const duration of durations) {
+    const bucket = Math.round(duration)
+    frequencies.set(bucket, (frequencies.get(bucket) ?? 0) + 1)
+  }
+  return [...frequencies.entries()].sort(([leftDuration, leftCount], [rightDuration, rightCount]) => (
+    rightCount - leftCount || rightDuration - leftDuration
+  ))[0]?.[0]
+}
+
+function resolvePlaybackBeatDuration(
+  markers: readonly PlaybackPositionMarker[],
+  durationMs: number,
+  meter: PlaybackMeter,
+  division: number,
+  tempoBpm?: number,
+  tempoUnit = 0.25,
+): number {
+  const referenceMeasureDurationMs = referenceMeasureDurationFor(markers, durationMs, meter)
+  if (referenceMeasureDurationMs !== undefined) return referenceMeasureDurationMs / division
+  return tempoBpm !== undefined && tempoBpm > 0 && tempoUnit > 0
+    ? 60000 / tempoBpm / (tempoUnit * meter.denominator) * meter.numerator / division
+    : 0
 }
 
 /** Plans count-in events backwards from the actual musical entry. */
@@ -122,14 +180,15 @@ export function createPlaybackCountInPlan(
   const meter = marker?.meter
   if (marker === undefined || meter === undefined) return undefined
   const division = Math.max(1, Math.floor(settings.division ?? meter.numerator))
-  const next = nextMeasureMarker(markers, markerIndex)
-  const measuredDurationMs = next === undefined ? 0 : next.timeMs - marker.timeMs
-  const tempoBeatDurationMs = tempoBpm !== undefined && tempoBpm > 0
-    ? 60000 / tempoBpm / (tempoUnit * meter.denominator) * meter.numerator / division
-    : 0
-  const beatDurationMs = measuredDurationMs > 0
-    ? measuredDurationMs / division
-    : tempoBeatDurationMs
+  const timelineDurationMs = Math.max(entryTimeMs, markers[markers.length - 1]?.timeMs ?? 0)
+  const beatDurationMs = resolvePlaybackBeatDuration(
+    markers,
+    timelineDurationMs,
+    meter,
+    division,
+    tempoBpm,
+    tempoUnit,
+  )
   if (!(beatDurationMs > 0)) return undefined
 
   let pickupBeats = 0
@@ -141,7 +200,14 @@ export function createPlaybackCountInPlan(
   const selectionStartMs = openingMarker?.timeMs ?? entryTimeMs
   const actualClicks = isPickupEntry
     ? []
-    : createPlaybackMetronomeClicks(markers, entryTimeMs, settings.division, subdivision)
+    : createPlaybackMetronomeClicks(
+      markers,
+      entryTimeMs,
+      settings.division,
+      subdivision,
+      tempoBpm,
+      tempoUnit,
+    )
       .filter((click) => click.timeMs >= selectionStartMs && click.timeMs < entryTimeMs)
   const actualMainBeatCount = actualClicks.filter((click) => click.subdivision === 0).length
   const availableBeatCount = pickupBeats + actualMainBeatCount
@@ -193,41 +259,37 @@ export function createPlaybackMetronomeClicks(
   durationMs: number,
   division?: number,
   subdivision = 1,
+  tempoBpm?: number,
+  tempoUnit = 0.25,
 ): PlaybackMetronomeClick[] {
   const clicks: PlaybackMetronomeClick[] = []
   const safeSubdivision = Math.max(1, Math.floor(subdivision))
-  const openingMarker = markers[0]
-  const delayedMeterIndex = markers.findIndex((candidate, index) => index > 0
-    && openingMarker !== undefined
-    && openingMarker.meter === undefined
-    && candidate.meter !== undefined
-    && candidate.position.measureNumber === openingMarker.position.measureNumber
-    && candidate.position.passIndex === openingMarker.position.passIndex)
-  const delayedMeterMarker = delayedMeterIndex < 0 ? undefined : markers[delayedMeterIndex]
-  if (openingMarker !== undefined && delayedMeterMarker?.meter !== undefined) {
-    const next = nextMeasureMarker(markers, delayedMeterIndex)
+  for (const [pickupMarkerIndex, pickupMarker] of markers.entries()) {
+    const delayedMeterIndex = delayedMeterIndexFor(markers, pickupMarkerIndex)
+    const delayedMeterMarker = delayedMeterIndex < 0 ? undefined : markers[delayedMeterIndex]
+    if (pickupMarker.meter !== undefined || delayedMeterMarker?.meter === undefined) continue
     const safeDivision = Math.max(1, Math.floor(division ?? delayedMeterMarker.meter.numerator))
-    const fullMeasureDurationMs = (next?.timeMs ?? durationMs) - delayedMeterMarker.timeMs
-    const beatDurationMs = fullMeasureDurationMs / safeDivision
-    const pickupDurationMs = delayedMeterMarker.timeMs - openingMarker.timeMs
-    if (beatDurationMs > 0 && pickupDurationMs > 0) {
-      const pickupBeatCount = Math.max(1, Math.min(safeDivision, Math.round(pickupDurationMs / beatDurationMs)))
-      const pickupStartBeat = safeDivision - pickupBeatCount
-      for (let clickIndex = 0; clickIndex < pickupBeatCount * safeSubdivision; clickIndex += 1) {
-        const subdivisionIndex = clickIndex % safeSubdivision
-        const beat = pickupStartBeat + Math.floor(clickIndex / safeSubdivision)
-        const timeMs = openingMarker.timeMs + clickIndex * beatDurationMs / safeSubdivision
-        if (timeMs >= durationMs) continue
-        clicks.push({
-          timeMs,
-          accent: beat === 0 && subdivisionIndex === 0,
-          kind: subdivisionIndex > 0 ? 'SUBDIVISION' : beat === 0 ? 'BAR_START' : 'MAIN_BEAT',
-          beat: beat + 1,
-          division: safeDivision,
-          subdivision: subdivisionIndex,
-          isLastBeforeEntry: false,
-        })
-      }
+    const beatDurationMs = resolvePlaybackBeatDuration(
+      markers, durationMs, delayedMeterMarker.meter, safeDivision, tempoBpm, tempoUnit,
+    )
+    const pickupDurationMs = delayedMeterMarker.timeMs - pickupMarker.timeMs
+    if (!(beatDurationMs > 0) || !(pickupDurationMs > 0)) continue
+    const pickupBeatCount = Math.max(1, Math.min(safeDivision, Math.round(pickupDurationMs / beatDurationMs)))
+    const pickupStartBeat = safeDivision - pickupBeatCount
+    for (let clickIndex = 0; clickIndex < pickupBeatCount * safeSubdivision; clickIndex += 1) {
+      const subdivisionIndex = clickIndex % safeSubdivision
+      const beat = pickupStartBeat + Math.floor(clickIndex / safeSubdivision)
+      const timeMs = pickupMarker.timeMs + clickIndex * beatDurationMs / safeSubdivision
+      if (timeMs >= durationMs || timeMs >= delayedMeterMarker.timeMs) continue
+      clicks.push({
+        timeMs,
+        accent: beat === 0 && subdivisionIndex === 0,
+        kind: subdivisionIndex > 0 ? 'SUBDIVISION' : beat === 0 ? 'BAR_START' : 'MAIN_BEAT',
+        beat: beat + 1,
+        division: safeDivision,
+        subdivision: subdivisionIndex,
+        isLastBeforeEntry: false,
+      })
     }
   }
   for (let index = 0; index < markers.length; index += 1) {
@@ -238,14 +300,25 @@ export function createPlaybackMetronomeClicks(
       candidate.position.measureNumber !== marker.position.measureNumber
       || candidate.position.passIndex !== marker.position.passIndex
     ))
-    const measureDurationMs = (next?.timeMs ?? durationMs) - marker.timeMs
+    const nextIndex = next === undefined ? -1 : markers.indexOf(next)
+    const delayedMeterIndex = nextIndex < 0 ? -1 : delayedMeterIndexFor(markers, nextIndex)
+    const delayedMeterMarker = delayedMeterIndex < 0 ? undefined : markers[delayedMeterIndex]
+    const pickupDurationMs = next !== undefined && next.meter === undefined && delayedMeterMarker !== undefined
+      ? delayedMeterMarker.timeMs - next.timeMs
+      : 0
+    const measureEndMs = next?.timeMs ?? durationMs
+    const measureDurationMs = measureEndMs - marker.timeMs + pickupDurationMs
     if (measureDurationMs <= 0) continue
     const clickCount = safeDivision * safeSubdivision
+    const beatDurationMs = resolvePlaybackBeatDuration(
+      markers, durationMs, marker.meter, safeDivision, tempoBpm, tempoUnit,
+    )
+    if (!(beatDurationMs > 0)) continue
     for (let clickIndex = 0; clickIndex < clickCount; clickIndex += 1) {
       const mainBeat = clickIndex % safeSubdivision === 0
       const kind = clickIndex === 0 ? 'BAR_START' : mainBeat ? 'MAIN_BEAT' : 'SUBDIVISION'
-      const timeMs = marker.timeMs + clickIndex * measureDurationMs / clickCount
-      if (timeMs >= durationMs) continue
+      const timeMs = marker.timeMs + clickIndex * beatDurationMs / safeSubdivision
+      if (timeMs >= durationMs || timeMs >= measureEndMs) continue
       clicks.push({
         timeMs,
         accent: kind === 'BAR_START',
@@ -257,7 +330,7 @@ export function createPlaybackMetronomeClicks(
       })
     }
   }
-  return clicks
+  return clicks.sort((left, right) => left.timeMs - right.timeMs || left.subdivision - right.subdivision)
 }
 
 export interface PlaybackLinkResult {

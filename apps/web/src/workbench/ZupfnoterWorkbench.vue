@@ -388,6 +388,7 @@ const { metronomeBeat: playbackMetronomeBeat, toggle: togglePlayback, stop: stop
   computed(() => ({
     timeline: playbackTimeline.value,
     baseTempoFromQ: baseTempoFromQ.value,
+    tempoUnitFromQ: tempoUnitFromQ.value,
     activeVoiceIds: activeVoiceIds.value,
     metronomeConfig: playbackMetronomeConfig.value,
     mode: 'all-score',

@@ -5,6 +5,7 @@ import {
   type PlaybackPosition,
   type PlaybackPositionMarker,
   type PlaybackMetronomeConfig,
+  type PlaybackMetronomeClick,
   createPlaybackCountInPlan,
   createPlaybackMetronomeClicks,
   resolvePlaybackMetronomeEventSound,
@@ -18,7 +19,6 @@ import { deflateSync, inflateSync } from 'fflate'
 import '@zupfnoter/player-ui/style.css'
 import {
   findPositionMarker,
-  nextPositionBoundaryMarker,
   partNameAtTime,
   parsePosition,
   positionAtTime,
@@ -26,7 +26,7 @@ import {
   tempoBpmAtTime,
 } from './playerLogic'
 
-const PLAYER_VERSION = '0.3.6'
+const PLAYER_VERSION = '0.3.7'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -337,6 +337,7 @@ function renderPlayer(
   let metronomeOscillators: OscillatorNode[] = []
   let metronomeGain: GainNode | undefined
   let scheduledMetronomeTimes = new Set<number>()
+  let visualMetronomeCache: { key: string, clicks: PlaybackMetronomeClick[] } | undefined
 
   interface SoundfontPlayer {
     schedule(startTime: number, notes: readonly SoundfontNote[]): void
@@ -375,45 +376,33 @@ function renderPlayer(
     const currentPosition = positionAtTime(positionMarkers, absoluteTimeMs)
     ui.setPosition(currentPosition, partNameAtTime(positionMarkers, absoluteTimeMs))
     ui.setTempoBpm(tempoBpmAtTime(positionMarkers, absoluteTimeMs, tempoBpm))
-    let markerIndex = -1
-    for (const [index, marker] of positionMarkers.entries()) {
-      if (marker.timeMs <= absoluteTimeMs && marker.meter !== undefined) markerIndex = index
+    const selectedDurationMs = playbackDurationForSelection(selectedEvents, positionMarkers, selectedStartMs)
+    const visualCacheKey = `${selectedStartMs}:${selectedDurationMs}:${metronomeDivision ?? 'meter'}:${metronomeSubdivision}`
+    if (visualMetronomeCache?.key !== visualCacheKey) {
+      visualMetronomeCache = {
+        key: visualCacheKey,
+        clicks: createPlaybackMetronomeClicks(
+          positionMarkers,
+          selectedStartMs + selectedDurationMs,
+          metronomeDivision,
+          metronomeSubdivision,
+          tempoBpm,
+          tempoUnit,
+        ),
+      }
     }
-    const marker = markerIndex >= 0 ? positionMarkers[markerIndex] : undefined
-    const nextMarker = markerIndex >= 0 ? nextPositionBoundaryMarker(positionMarkers, markerIndex) : undefined
-    if (marker?.meter !== undefined) {
-      const selectedDurationMs = playbackDurationForSelection(selectedEvents, positionMarkers, selectedStartMs)
-      const playbackEndMs = selectedStartMs + selectedDurationMs
-      const measureDuration = (nextMarker?.timeMs ?? playbackEndMs) - marker.timeMs
-      const division = divisionForMeter(marker.meter)
-      const beatDuration = measureDuration / division
-      const beat = beatDuration > 0 ? Math.min(division, Math.floor((absoluteTimeMs - marker.timeMs) / beatDuration) + 1) : 1
+    let currentClick: PlaybackMetronomeClick | undefined
+    for (const click of visualMetronomeCache.clicks) {
+      if (click.timeMs > absoluteTimeMs) break
+      currentClick = click
+    }
+    const currentMeter = meterAtTime(absoluteTimeMs)
+    if (currentClick !== undefined && currentMeter !== undefined) {
       ui.setMetronome(
-        { ...marker.meter, numerator: division },
-        beat,
+        { ...currentMeter, numerator: currentClick.division },
+        currentClick.beat,
         metronomeEnabled && (metronomeMode === 'playback' || metronomeMode === 'always'),
       )
-    } else {
-      const selectedDurationMs = playbackDurationForSelection(selectedEvents, positionMarkers, selectedStartMs)
-      const pickupClicks = createPlaybackMetronomeClicks(
-        positionMarkers,
-        selectedStartMs + selectedDurationMs,
-        metronomeDivision,
-        metronomeSubdivision,
-      )
-      let pickupClick: (typeof pickupClicks)[number] | undefined
-      for (const click of pickupClicks) {
-        if (click.timeMs > absoluteTimeMs) break
-        pickupClick = click
-      }
-      const pickupMeter = meterAtTime(absoluteTimeMs)
-      if (pickupClick !== undefined && pickupMeter !== undefined) {
-        ui.setMetronome(
-          { ...pickupMeter, numerator: pickupClick.division },
-          pickupClick.beat,
-          metronomeEnabled && (metronomeMode === 'playback' || metronomeMode === 'always'),
-        )
-      }
     }
     ui.setPlaybackTime(elapsedMs)
   }
@@ -463,7 +452,7 @@ function renderPlayer(
   ): void {
     if (!metronomeEnabled || metronomeMode === 'countIn') return
     for (const click of createPlaybackMetronomeClicks(positionMarkers, selectedStartMs + durationMs,
-      metronomeDivision, metronomeSubdivision)) {
+      metronomeDivision, metronomeSubdivision, tempoBpm, tempoUnit)) {
         const clickTime = click.timeMs
         if (clickTime < metronomePlaybackStartMs || clickTime > selectedStartMs + durationMs) continue
         const relativeClickTime = clickTime - selectedStartMs

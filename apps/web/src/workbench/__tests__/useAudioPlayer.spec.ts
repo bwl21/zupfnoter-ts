@@ -434,6 +434,37 @@ describe('useAudioPlayer', () => {
     expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 2, division: 2, accent: false })
   })
 
+  it('keeps the configured tempo across multiple shortened repeat boundaries', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const firstStep = steps[0]
+    if (firstStep === undefined) throw new Error('Missing playback test step')
+    const durations = [3000, 4000, 3000, 4000]
+    let playbackStartMs = 0
+    const repeatSteps: PlaybackStep[] = durations.map((durationMs, index) => {
+      const step: PlaybackStep = {
+        ...firstStep,
+        playbackStartMs,
+        durationMs,
+        position: { measureNumber: index + 1, passIndex: index + 1 },
+        meter: { numerator: 4, denominator: 4 },
+        flowIndex: index,
+        passIndex: index + 1,
+      }
+      playbackStartMs += durationMs
+      return step
+    })
+
+    await player.schedule(repeatSteps, 1, {}, {
+      mode: 'playback',
+      division: 4,
+      subdivision: 1,
+    }, 1, 0.25)
+
+    expect(oscillatorStartMock.mock.calls.map(([when]) => when)).toEqual(
+      Array.from({ length: 14 }, (_, index) => 10.2 + index),
+    )
+  })
+
   it('keeps scheduling the music after the count-in in always mode', async () => {
     const player = useAudioPlayer({ value: 'harp' })
     const onStepStart = vi.fn<(step: PlaybackStep) => void>()

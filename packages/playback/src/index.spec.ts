@@ -91,6 +91,50 @@ describe('shared metronome sound profile', () => {
       { timeMs: 5000, beat: 4 },
     ])
   })
+
+  it('keeps a constant beat across a shortened repeat ending and the repeated pickup', () => {
+    const clicks = createPlaybackMetronomeClicks([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 } },
+      { timeMs: 1000, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 5000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 8000, position: { measureNumber: 1, passIndex: 2 } },
+      { timeMs: 9000, position: { measureNumber: 1, passIndex: 2 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 13000, position: { measureNumber: 2, passIndex: 2 }, meter: { numerator: 4, denominator: 4 } },
+    ], 13000, 4, 1)
+
+    expect(clicks
+      .filter((click) => click.timeMs >= 5000 && click.timeMs < 10000)
+      .map(({ timeMs, beat }) => ({ timeMs, beat }))).toEqual([
+      { timeMs: 5000, beat: 1 },
+      { timeMs: 6000, beat: 2 },
+      { timeMs: 7000, beat: 3 },
+      { timeMs: 8000, beat: 4 },
+      { timeMs: 9000, beat: 1 },
+    ])
+  })
+
+  it('keeps the tempo across any number of shortened repeat boundaries', () => {
+    const clicks = createPlaybackMetronomeClicks([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 } },
+      { timeMs: 1000, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 5000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 8000, position: { measureNumber: 1, passIndex: 2 } },
+      { timeMs: 9000, position: { measureNumber: 1, passIndex: 2 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 13000, position: { measureNumber: 2, passIndex: 2 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 16000, position: { measureNumber: 1, passIndex: 3 } },
+      { timeMs: 17000, position: { measureNumber: 1, passIndex: 3 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 21000, position: { measureNumber: 2, passIndex: 3 }, meter: { numerator: 4, denominator: 4 } },
+    ], 21000, 4, 1, 1, 0.25)
+
+    expect(clicks.map((click) => click.timeMs)).toEqual(
+      Array.from({ length: 21 }, (_, index) => index * 1000),
+    )
+    expect(clicks.filter((click) => click.timeMs === 8000 || click.timeMs === 16000)
+      .map(({ beat, kind }) => ({ beat, kind }))).toEqual([
+      { beat: 4, kind: 'MAIN_BEAT' },
+      { beat: 4, kind: 'MAIN_BEAT' },
+    ])
+  })
 })
 
 const events: PlaybackEvent[] = [
