@@ -7,11 +7,11 @@ import {
   type PlaybackMetronomeConfig,
   createPlaybackCountInPlan,
   createPlaybackMetronomeClicks,
-  resolvePlaybackCountEventSound,
+  resolvePlaybackMetronomeEventSound,
   schedulePlaybackMetronomeClick,
   type PlaybackMetronomeSoundKind,
 } from '@zupfnoter/playback'
-import { mountPlayerUi, type PlayerUiController } from '@zupfnoter/player-ui'
+import { mountPlayerUi, renderPlayerIcon, type PlayerUiController } from '@zupfnoter/player-ui'
 import { BrowserQRCodeReader, type IScannerControls } from '@zxing/browser'
 import { DecodeHintType } from '@zxing/library'
 import { deflateSync, inflateSync } from 'fflate'
@@ -27,7 +27,7 @@ import {
   tempoBpmAtTime,
 } from './playerLogic'
 
-const PLAYER_VERSION = '0.3.0'
+const PLAYER_VERSION = '0.3.4'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -62,7 +62,7 @@ function renderPlaybackDataError(error: unknown): void {
 function renderWelcome(): void {
   destroyCurrentPlayer()
   app.innerHTML = `<section class="card welcome-card">
-    <div class="player-title-row"><h1>Zupfnoter Player</h1><button id="welcome-scan" class="scan-button" type="button">Scan</button></div>
+    <div class="player-title-row"><h1>Zupfnoter Player</h1><button id="welcome-scan" class="scan-button" type="button">${renderPlayerIcon('scan', 'player-icon scan-button__icon')}<span>Scan</span></button></div>
     <p class="summary">Öffne einen Player-Link oder scanne einen Zupfnoter-QR-Code.</p>
   </section>`
   app.querySelector<HTMLButtonElement>('#welcome-scan')?.addEventListener('click', openQrScanner)
@@ -82,7 +82,7 @@ function openQrScanner(): void {
     <div class="qr-scanner-dialog" role="dialog" aria-modal="true" aria-labelledby="qr-scanner-title">
       <div class="qr-scanner-header">
         <h2 id="qr-scanner-title">Player-QR-Code scannen</h2>
-        <button class="qr-scanner-close" type="button" aria-label="Scanner schließen">×</button>
+        <button class="qr-scanner-close" type="button" aria-label="Scanner schließen">${renderPlayerIcon('close')}</button>
       </div>
       <div class="qr-scanner-viewfinder">
         <video class="qr-scanner-video" autoplay muted playsinline></video>
@@ -242,6 +242,14 @@ function renderPlayer(
   let bandPreCount = metronomeConfig?.bandPreCount ?? false
   let metronomeDivision = metronomeConfig?.division ?? 4
   let metronomeSubdivision = metronomeConfig?.subdivision ?? 1
+  let metronomeVolume = 1
+  let selectedMetronomeMode: Exclude<PlaybackMetronomeConfig['mode'], 'off'> = metronomeConfig?.mode === 'countIn'
+    || metronomeConfig?.mode === 'playback'
+    || metronomeConfig?.mode === 'always'
+    ? metronomeConfig.mode
+    : 'always'
+  let metronomeEnabled = metronomeConfig?.mode !== undefined && metronomeConfig.mode !== 'off'
+  let metronomeMode: PlaybackMetronomeConfig['mode'] = metronomeEnabled ? selectedMetronomeMode : 'off'
 
   function readRange(fromPosition: PlaybackPosition = firstPosition): [number, number] | undefined {
     const from = `${fromPosition.measureNumber}.${fromPosition.passIndex}`
@@ -263,6 +271,7 @@ function renderPlayer(
     identification,
     firstPosition,
     firstPartName: partNameAtTime(positionMarkers, selectedStartMs),
+    hasParts: positionMarkers.some((marker) => (marker.partName?.trim().length ?? 0) > 0),
     maximumMeasure,
     maximumPass,
     hasMetronomeData: positionMarkers.some((marker) => marker.meter !== undefined),
@@ -271,7 +280,8 @@ function renderPlayer(
     division: metronomeDivision,
     subdivision: metronomeSubdivision,
     baseTempoBpm: tempoBpmAtTime(positionMarkers, selectedStartMs, tempoBpm),
-    metronomeEnabled: metronomeConfig?.mode !== undefined && metronomeConfig.mode !== 'off',
+    metronomeEnabled,
+    metronomeMode: selectedMetronomeMode,
     callbacks: {
       onRangeChange: (position) => { readRange(position) },
       onReset: () => {
@@ -283,12 +293,17 @@ function renderPlayer(
       },
       onSpeedChange: (speed) => { setSpeed(speed) },
       onMetronomeChange: (enabled) => { handleMetronomeChange(enabled) },
+      onMetronomeModeChange: (mode) => { handleMetronomeModeChange(mode) },
       onMinLeadInChange: (value) => { minLeadIn = value },
       onBandPreCountChange: (enabled) => { bandPreCount = enabled },
       onDivisionChange: (value) => { metronomeDivision = value },
       onSubdivisionChange: (value) => {
         metronomeSubdivision = value
         if (metronomeEnabled) { handleMetronomeChange(false); handleMetronomeChange(true) }
+      },
+      onMetronomeVolumeChange: (value) => {
+        metronomeVolume = value
+        if (metronomeGain !== undefined) metronomeGain.gain.value = value
       },
       onPlay: () => { if (readRange(selectedRangePosition) !== undefined) void playPlayback() },
       onPause: pausePlayback,
@@ -304,10 +319,9 @@ function renderPlayer(
   let playbackStartedAtContextTime = 0
   let isPaused = false
   let speedFactor = 1
-  let metronomeEnabled = metronomeConfig?.mode !== undefined && metronomeConfig.mode !== 'off'
-  let metronomeMode = metronomeConfig?.mode ?? 'off'
   let harpPlayerPromise: Promise<SoundfontPlayer> | undefined
   let metronomeOscillators: OscillatorNode[] = []
+  let metronomeGain: GainNode | undefined
   let scheduledMetronomeTimes = new Set<number>()
 
   interface SoundfontPlayer {
@@ -327,6 +341,10 @@ function renderPlayer(
     playbackTimers = []
     if (animationFrame !== undefined) window.cancelAnimationFrame(animationFrame)
     animationFrame = undefined
+    clearMetronomeSchedule()
+  }
+
+  function clearMetronomeSchedule(): void {
     for (const oscillator of metronomeOscillators) {
       try {
         oscillator.stop()
@@ -375,7 +393,12 @@ function renderPlayer(
   }
 
   function playMetronomeClick(context: AudioContext, soundKind: PlaybackMetronomeSoundKind, startTime: number): void {
-    const oscillator = schedulePlaybackMetronomeClick(context, startTime, soundKind)
+    if (metronomeGain === undefined) {
+      metronomeGain = context.createGain()
+      metronomeGain.gain.value = metronomeVolume
+      metronomeGain.connect(context.destination)
+    }
+    const oscillator = schedulePlaybackMetronomeClick(context, startTime, soundKind, metronomeGain)
     metronomeOscillators.push(oscillator)
   }
 
@@ -388,7 +411,7 @@ function renderPlayer(
     const countInStartAt = audioStartAt - countIn.durationMs / 1000 / speedFactor
     for (const event of countIn.events) {
       const clickAt = countInStartAt + event.offsetMs / 1000 / speedFactor
-      const sound = resolvePlaybackCountEventSound(event.kind, event.isLastBeforeEntry)
+      const sound = resolvePlaybackMetronomeEventSound(event.kind, event.isLastBeforeEntry)
       playMetronomeClick(context, sound, clickAt)
     }
     return countInStartAt
@@ -417,7 +440,8 @@ function renderPlayer(
         if (scheduledMetronomeTimes.has(clickTime)) continue
         const delaySec = (clickTime - selectedStartMs - playbackOffsetMsForSchedule) / 1000 / speedFactor
         if (delaySec < 0) continue
-        playMetronomeClick(context, click.accent ? 'accent' : 'regular', audioStartAt + delaySec)
+        const sound = resolvePlaybackMetronomeEventSound(click.kind)
+        playMetronomeClick(context, sound, audioStartAt + delaySec)
         scheduledMetronomeTimes.add(clickTime)
     }
   }
@@ -451,6 +475,7 @@ function renderPlayer(
     clearPlaybackTimers()
     if (audioContext !== undefined) void audioContext.close()
     audioContext = undefined
+    metronomeGain = undefined
     harpPlayerPromise = undefined
     setLoading(false)
     ui.setRangeEnabled(true)
@@ -640,9 +665,23 @@ function renderPlayer(
 
   function handleMetronomeChange(enabled: boolean): void {
     metronomeEnabled = enabled
-    metronomeMode = enabled ? 'always' : 'off'
+    metronomeMode = enabled ? selectedMetronomeMode : 'off'
+    clearMetronomeSchedule()
     updatePosition(playbackOffsetMs)
-    if (!enabled || audioContext === undefined) return
+    scheduleMetronomeFromCurrentPosition()
+  }
+
+  function handleMetronomeModeChange(mode: Exclude<PlaybackMetronomeConfig['mode'], 'off'>): void {
+    selectedMetronomeMode = mode
+    if (!metronomeEnabled) return
+    metronomeMode = mode
+    clearMetronomeSchedule()
+    updatePosition(playbackOffsetMs)
+    scheduleMetronomeFromCurrentPosition()
+  }
+
+  function scheduleMetronomeFromCurrentPosition(): void {
+    if (!metronomeEnabled || metronomeMode === 'countIn' || audioContext === undefined) return
     const elapsedMs = Math.max(0, (audioContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
     const durationMs = playbackDurationForSelection(selectedEvents, positionMarkers, selectedStartMs)
     scheduleMetronome(
@@ -714,3 +753,7 @@ async function main(): Promise<void> {
 }
 
 void main()
+
+window.addEventListener('hashchange', () => {
+  void main()
+})

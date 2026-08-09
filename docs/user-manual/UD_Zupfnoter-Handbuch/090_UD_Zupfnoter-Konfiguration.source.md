@@ -1234,27 +1234,28 @@ eines Übungs-QR-Codes werden die wirksamen Werte in den Playback-Link
 - `playback`: Klicks nur während der Wiedergabe
 - `always`: Klicks beim Einzählen und während der Wiedergabe
 
-## `extract.0.playback.minLeadIn` - Mindestens einzählen {#extract.0.playback.minLeadIn}
+## `extract.0.playback.minLeadIn` - Einzählen: Mindestschläge {#extract.0.playback.minLeadIn}
 
-Mindestanzahl hörbarer Hauptschläge vor dem musikalischen Einsatz. Reicht der
-aktuelle Takt nicht aus, wird über vorhergehende Takte zurückgezählt. Der Wert
-ist eine positive ganze Zahl; der Built-in-Wert ist `4`.
+Das Einzählen umfasst mindestens diese Anzahl hörbarer Hauptschläge vor dem
+musikalischen Einsatz. Reicht der aktuelle Takt nicht aus, wird über vorhergehende
+Takte zurückgezählt. Der Wert ist eine positive ganze Zahl; der Built-in-Wert ist
+`4`.
 
-## `extract.0.playback.bandPreCount` - Band-Vorzähler {#extract.0.playback.bandPreCount}
+## `extract.0.playback.bandPreCount` - Vorzählen {#extract.0.playback.bandPreCount}
 
-Wenn aktiviert, erklingt vor dem normalen Einzählen zusätzlich ein 4/4-Takt
-mit Stick-Klicks auf den Zählzeiten 1 und 3.
+Wenn aktiviert, erklingt vor dem Einzählen zusätzlich das Zupfnoter-Vorzählmuster:
+ein 4/4-Takt mit Stick-Klicks auf den Zählzeiten 1 und 3.
 
-## `extract.0.playback.division` - Zählschläge pro Takt {#extract.0.playback.division}
+## `extract.0.playback.division` - Schläge/Takt {#extract.0.playback.division}
 
-Anzahl der Hauptschläge pro Takt. Der Wert ist eine positive ganze Zahl; der
-Built-in-Wert ist `4`.
+Anzahl der Hauptschläge pro Takt beim Zählen. Der Wert ist eine positive ganze
+Zahl; der Built-in-Wert ist `4`.
 
-## `extract.0.playback.subdivision` - Unterteilungen {#extract.0.playback.subdivision}
+## `extract.0.playback.subdivision` - Klicks/Schlag {#extract.0.playback.subdivision}
 
-Anzahl hörbarer Unterteilungen pro Zählschlag. Der Wert ist eine positive
-ganze Zahl. `1` erzeugt nur den Hauptschlag, `2` zusätzlich die Hälfte und `3`
-eine Dreierunterteilung.
+Anzahl hörbarer Unterteilungen pro Zählschlag beim Zählen. Der Wert ist eine
+positive ganze Zahl. `1` erzeugt nur den Hauptschlag, `2` zusätzlich die Hälfte
+und `3` eine Dreierunterteilung.
 
 ## `extract.0.printer` - Drucker {#extract.0.printer}
 

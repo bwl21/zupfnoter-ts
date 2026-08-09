@@ -1,4 +1,5 @@
-export type PlaybackMetronomeSoundKind = 'regular' | 'accent' | 'pre-count' | 'entry'
+export type PlaybackMetronomeSoundKind = 'regular' | 'accent' | 'subdivision' | 'pre-count' | 'entry'
+export type PlaybackMetronomeEventKind = 'PRE_COUNT' | 'BAR_START' | 'MAIN_BEAT' | 'SUBDIVISION'
 
 export interface PlaybackMetronomeSound {
   /** Oscillator frequency in hertz. */
@@ -12,10 +13,11 @@ const CLICK_DURATION_SECONDS = 0.06
 const CLICK_END_GAIN = 0.001
 
 const METRONOME_SOUNDS: Record<PlaybackMetronomeSoundKind, PlaybackMetronomeSound> = {
-  regular: { frequencyHz: 850, gain: 0.1 },
-  accent: { frequencyHz: 1200, gain: 0.18 },
-  entry: { frequencyHz: 1500, gain: 0.16 },
-  'pre-count': { frequencyHz: 1800, gain: 0.1 },
+  regular: { frequencyHz: 850, gain: 0.22 },
+  accent: { frequencyHz: 1200, gain: 0.34 },
+  subdivision: { frequencyHz: 650, gain: 0.11 },
+  entry: { frequencyHz: 1500, gain: 0.3 },
+  'pre-count': { frequencyHz: 1800, gain: 0.22 },
 }
 
 /** Returns the shared oscillator profile used by Player and Workbench. */
@@ -43,13 +45,14 @@ export function schedulePlaybackMetronomeClick(
   return oscillator
 }
 
-/** Maps a semantic count event to its audible role; the entry signal has priority. */
-export function resolvePlaybackCountEventSound(
-  kind: 'PRE_COUNT' | 'BAR_START' | 'MAIN_BEAT' | 'SUBDIVISION',
-  isLastBeforeEntry: boolean,
+/** Maps a semantic metronome event to its audible role; the entry signal has priority. */
+export function resolvePlaybackMetronomeEventSound(
+  kind: PlaybackMetronomeEventKind,
+  isLastBeforeEntry = false,
 ): PlaybackMetronomeSoundKind {
   if (isLastBeforeEntry) return 'entry'
   if (kind === 'PRE_COUNT') return 'pre-count'
   if (kind === 'BAR_START') return 'accent'
+  if (kind === 'SUBDIVISION') return 'subdivision'
   return 'regular'
 }

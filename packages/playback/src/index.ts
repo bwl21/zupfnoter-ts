@@ -50,7 +50,7 @@ export interface PlaybackMetronomeClick {
   isLastBeforeEntry: boolean
 }
 
-export type PlaybackCountEventKind = 'PRE_COUNT' | 'BAR_START' | 'MAIN_BEAT' | 'SUBDIVISION'
+export type PlaybackCountEventKind = import('./metronomeSound.js').PlaybackMetronomeEventKind
 
 export interface PlaybackCountEvent {
   /** Offset from the beginning of the complete count-in, in milliseconds. */
@@ -77,7 +77,11 @@ function nextMeasureMarker(
   return markers.slice(markerIndex + 1).find((candidate) => (
     candidate.position.measureNumber !== marker.position.measureNumber
     || candidate.position.passIndex !== marker.position.passIndex
-    || candidate.meter !== marker.meter
+    || (candidate.meter !== undefined && marker.meter !== undefined && (
+      candidate.meter.numerator !== marker.meter.numerator
+      || candidate.meter.denominator !== marker.meter.denominator
+      || (candidate.meter.grouping ?? []).join(',') !== (marker.meter.grouping ?? []).join(',')
+    ))
   ))
 }
 
@@ -813,8 +817,8 @@ export async function decodePlaybackFragment(value: string, codec: PlaybackCompr
 }
 
 export {
-  resolvePlaybackCountEventSound,
+  resolvePlaybackMetronomeEventSound,
   resolvePlaybackMetronomeSound,
   schedulePlaybackMetronomeClick,
 } from './metronomeSound.js'
-export type { PlaybackMetronomeSound, PlaybackMetronomeSoundKind } from './metronomeSound.js'
+export type { PlaybackMetronomeEventKind, PlaybackMetronomeSound, PlaybackMetronomeSoundKind } from './metronomeSound.js'

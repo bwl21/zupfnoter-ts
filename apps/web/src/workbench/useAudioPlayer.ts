@@ -2,7 +2,7 @@ import type { PlaybackStep } from './playback'
 import {
   createPlaybackCountInPlan,
   createPlaybackMetronomeClicks,
-  resolvePlaybackCountEventSound,
+  resolvePlaybackMetronomeEventSound,
   schedulePlaybackMetronomeClick,
   type PlaybackMetronomeConfig,
   type PlaybackMetronomeSoundKind,
@@ -267,7 +267,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         const countInStart = baseStartTime - countInDurationMs / speedFactor / 1000
         for (const event of countInPlan.events) {
           const clickAt = countInStart + event.offsetMs / speedFactor / 1000
-          const sound = resolvePlaybackCountEventSound(event.kind, event.isLastBeforeEntry)
+          const sound = resolvePlaybackMetronomeEventSound(event.kind, event.isLastBeforeEntry)
           schedulePlaybackMetronomeClick(context, clickAt, sound)
         }
       }
@@ -281,7 +281,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         const relativeMs = clickEvent.timeMs
         const scheduleStart = baseStartTime + relativeMs / speedFactor / 1000
         if (scheduleStart >= context.currentTime) {
-          schedulePlaybackMetronomeClick(context, scheduleStart, clickEvent.accent ? 'accent' : 'regular')
+          schedulePlaybackMetronomeClick(context, scheduleStart, resolvePlaybackMetronomeEventSound(clickEvent.kind))
         }
       }
     }

@@ -18,6 +18,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.3.0",
+    "@fortawesome/free-solid-svg-icons": "^7.3.0",
     "@zupfnoter/playback": "workspace:*"
   }
 }

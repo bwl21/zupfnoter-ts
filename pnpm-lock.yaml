@@ -523,6 +523,12 @@ importers:
 
   packages/player-ui:
     dependencies:
+      '@fortawesome/fontawesome-svg-core':
+        specifier: ^7.3.0
+        version: 7.3.0
+      '@fortawesome/free-solid-svg-icons':
+        specifier: ^7.3.0
+        version: 7.3.0
       '@zupfnoter/playback':
         specifier: workspace:*
         version: link:../playback

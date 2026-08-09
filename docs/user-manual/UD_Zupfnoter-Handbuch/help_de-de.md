@@ -1252,26 +1252,27 @@ Der Metronom-Modus legt fest, in welchen Phasen Klicks hörbar sind.
 
 ## playback.minLeadIn
 
-Mindestanzahl hörbarer Hauptschläge vor dem musikalischen Einsatz. Reicht der
-aktuelle Takt dafür nicht aus, wird über vorhergehende Takte zurückgezählt. Der
-Wert muss eine positive ganze Zahl sein.
+Das Einzählen umfasst mindestens diese Anzahl hörbarer Hauptschläge vor dem
+musikalischen Einsatz. Reicht der aktuelle Takt dafür nicht aus, wird über
+vorhergehende Takte zurückgezählt. Der Wert muss eine positive ganze Zahl sein.
 
 ## playback.bandPreCount
 
-Schaltet einen zusätzlichen Band-Vorzähler vor dem normalen Einzählen ein. Er
-besteht aus einem 4/4-Takt mit Stick-Klicks auf den Zählzeiten 1 und 3.
+Schaltet ein zusätzliches Vorzählen vor dem Einzählen ein. Das
+Zupfnoter-Vorzählmuster besteht aus einem 4/4-Takt mit Stick-Klicks auf den
+Zählzeiten 1 und 3.
 
 ## playback.division
 
-Anzahl der Hauptschläge pro Takt. Damit kann ein Auszug eine von der
-Gesamtpartitur abweichende Zählweise festlegen. Der Wert muss eine positive
-ganze Zahl sein.
+Anzahl der Hauptschläge pro Takt beim Zählen. Damit kann ein Auszug eine von
+der Gesamtpartitur abweichende Zählweise festlegen. Der Wert muss eine
+positive ganze Zahl sein.
 
 ## playback.subdivision
 
-Anzahl hörbarer Unterteilungen pro Zählschlag. `1` erzeugt nur den Hauptschlag,
-`2` zusätzlich die Hälfte und `3` eine Dreierunterteilung. Der Wert muss eine
-positive ganze Zahl sein.
+Anzahl hörbarer Unterteilungen pro Zählschlag beim Zählen. `1` erzeugt nur den
+Hauptschlag, `2` zusätzlich die Hälfte und `3` eine Dreierunterteilung. Der
+Wert muss eine positive ganze Zahl sein.
 
 ## templates.extracts
 

@@ -267,6 +267,38 @@ describe('useAudioPlayer', () => {
     expect(oscillatorFrequencyValues).toEqual([1200, 850, 850, 1500])
   })
 
+  it('schedules audibly distinct main beats and subdivisions during playback', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const [firstStep, secondStep] = steps
+    if (firstStep === undefined || secondStep === undefined) throw new Error('Missing playback test steps')
+    const metronomeSteps: PlaybackStep[] = [
+      {
+        ...firstStep,
+        durationMs: 4000,
+        position: { measureNumber: 1, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+      },
+      {
+        ...secondStep,
+        playbackStartMs: 4000,
+        durationMs: 4000,
+        position: { measureNumber: 2, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+      },
+    ]
+
+    await player.schedule(metronomeSteps, 1, {}, {
+      mode: 'playback',
+      minLeadIn: 4,
+      bandPreCount: false,
+      division: 2,
+      subdivision: 2,
+    })
+
+    expect(oscillatorFrequencyValues.slice(0, 4)).toEqual([1200, 650, 850, 650])
+    expect(gainSetValueAtTimeMock.mock.calls.slice(0, 4).map(([gain]) => gain)).toEqual([0.34, 0.11, 0.22, 0.11])
+  })
+
   it('derives visual callbacks from the scheduled audio clock', async () => {
     const player = useAudioPlayer({ value: 'harp' })
     const onStepStart = vi.fn<(step: PlaybackStep) => void>()

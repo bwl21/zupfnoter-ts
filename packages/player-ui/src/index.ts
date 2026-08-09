@@ -1,4 +1,9 @@
-import type { PlaybackMeter, PlaybackPosition } from '@zupfnoter/playback'
+import type { PlaybackMeter, PlaybackMetronomeMode, PlaybackPosition } from '@zupfnoter/playback'
+import { renderPlayerIcon } from './icons.js'
+
+export { renderPlayerIcon, type PlayerIconName } from './icons.js'
+
+export type PlayerMetronomeMode = Exclude<PlaybackMetronomeMode, 'off'>
 
 export interface PlayerUiCallbacks {
   onScan: () => void
@@ -6,10 +11,12 @@ export interface PlayerUiCallbacks {
   onReset: () => void
   onSpeedChange: (speed: number) => void
   onMetronomeChange: (enabled: boolean) => void
+  onMetronomeModeChange: (mode: PlayerMetronomeMode) => void
   onMinLeadInChange: (value: number) => void
   onBandPreCountChange: (enabled: boolean) => void
   onDivisionChange: (value: number) => void
   onSubdivisionChange: (value: number) => void
+  onMetronomeVolumeChange: (value: number) => void
   onPlay: () => void
   onPause: () => void
   onStop: () => void
@@ -22,6 +29,7 @@ export interface PlayerUiOptions {
   identification?: string
   firstPosition: PlaybackPosition
   firstPartName?: string
+  hasParts?: boolean
   maximumMeasure: number
   maximumPass: number
   hasMetronomeData: boolean
@@ -29,8 +37,10 @@ export interface PlayerUiOptions {
   bandPreCount?: boolean
   division?: number
   subdivision?: number
+  metronomeVolume?: number
   baseTempoBpm?: number
   metronomeEnabled?: boolean
+  metronomeMode?: PlaybackMetronomeMode
   callbacks: PlayerUiCallbacks
 }
 
@@ -60,13 +70,19 @@ function escapeHtml(value: string): string {
 
 function formatPosition(position: PlaybackPosition, partName?: string): { label: string; html: string } {
   const part = partName?.trim() || undefined
-  const label = `Takt ${position.measureNumber}${part === undefined ? '' : ` · '${part}'`} · DL${position.passIndex}`
+  const label = `${part === undefined ? '' : `Abschnitt ${part} · `}Takt ${position.measureNumber} · Durchlauf ${position.passIndex}`
+  const partCharacters = part === undefined ? [] : Array.from(part)
+  const partContent = part === undefined
+    ? ''
+    : partCharacters.length <= 18
+      ? escapeHtml(part)
+      : `<span class="position__part-start">${escapeHtml(partCharacters.slice(0, 9).join(''))}</span><span class="position__part-ellipsis" aria-hidden="true">…</span><span class="position__part-end">${escapeHtml(partCharacters.slice(-9).join(''))}</span>`
   const partField = part === undefined
     ? ''
-    : `<span class="position__separator" aria-hidden="true">·</span><span class="position__field position__field--part" title="${escapeHtml(part)}">'${escapeHtml(part)}'</span>`
+    : `<span class="position__field position__field--part" title="${escapeHtml(part)}">${partContent}</span><span class="position__separator" aria-hidden="true">·</span>`
   return {
     label,
-    html: `<span class="position__field position__field--measure"><span>Takt</span><span class="position__number">${position.measureNumber}</span></span>${partField}<span class="position__separator" aria-hidden="true">·</span><span class="position__field position__field--pass"><span>DL</span><span class="position__number">${position.passIndex}</span></span>`,
+    html: `${partField}<span class="position__field position__field--measure"><span aria-hidden="true">|</span><span class="position__number">${position.measureNumber}</span><span aria-hidden="true">|</span></span><span class="position__separator" aria-hidden="true">·</span><span class="position__field position__field--pass"><span aria-hidden="true">#</span><span class="position__number">${position.passIndex}</span></span>`,
   }
 }
 
@@ -108,12 +124,17 @@ function renderBeatStatus(status: HTMLOutputElement, meter: PlaybackMeter | unde
 export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const { container, callbacks } = options
   const first = formatPosition(options.firstPosition, options.firstPartName)
+  const initialMetronomeMode: PlayerMetronomeMode = options.metronomeMode === 'countIn'
+    || options.metronomeMode === 'playback'
+    || options.metronomeMode === 'always'
+    ? options.metronomeMode
+    : 'always'
   container.innerHTML = `
     <section class="card">
       <div class="player-title-row">
         <h1>Zupfnoter Übung</h1>
         <button id="scan-button" class="scan-button" type="button" aria-label="Player-QR-Code scannen">
-          <svg class="scan-button__icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4h6v2H6v4H4V4Zm10 0h6v6h-2V6h-4V4ZM4 14h2v4h4v2H4v-6Zm14 0h2v6h-6v-2h4v-4ZM8 8h3v3H8V8Zm5 0h3v3h-3V8Zm-5 5h3v3H8v-3Zm5 0h3v3h-3v-3Z"/></svg>
+          ${renderPlayerIcon('scan', 'player-icon scan-button__icon')}
           <span>Scan</span>
         </button>
       </div>
@@ -131,10 +152,10 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       <p id="range-error" class="error-text" aria-live="polite"></p>
       <p id="loading-indicator" class="loading-indicator" role="status" aria-live="polite" hidden><span class="spinner" aria-hidden="true"></span> Harfenklang wird geladen …</p>
       <div class="speed-control" aria-label="Wiedergabegeschwindigkeit">
-        <button id="speed-decrease" type="button" aria-label="5 BPM langsamer">−</button>
+        <button id="speed-decrease" type="button" aria-label="5 BPM langsamer">${renderPlayerIcon('decrease')}</button>
         <input id="speed-input" type="number" min="1" max="999" step="1" value="${Math.round(options.baseTempoBpm ?? 120)}" inputmode="numeric" aria-label="Geschwindigkeit in BPM">
         <span>BPM</span>
-        <button id="speed-increase" type="button" aria-label="5 BPM schneller">+</button>
+        <button id="speed-increase" type="button" aria-label="5 BPM schneller">${renderPlayerIcon('increase')}</button>
       </div>
       <div class="metronome-row" aria-label="Metronom">
         <label class="metronome-control" for="metronome-toggle">
@@ -142,22 +163,44 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
           <span class="metronome-control__switch"><input id="metronome-toggle" type="checkbox" ${options.metronomeEnabled === true ? 'checked ' : ''}${options.hasMetronomeData ? '' : 'disabled'}><span class="metronome-switch" aria-hidden="true"></span></span>
         </label>
         <output id="metronome-status" class="metronome-status" aria-live="polite">${options.hasMetronomeData ? '<span class="metronome-beat" aria-hidden="true"></span><span>—</span><span>—</span>' : 'Metronomdaten fehlen in diesem Link'}</output>
+        <button id="metronome-settings-toggle" class="metronome-settings-toggle" type="button" aria-label="Metronom-Einstellungen" aria-controls="metronome-settings" aria-expanded="false" ${options.hasMetronomeData ? '' : 'disabled'}>${renderPlayerIcon('settings')}</button>
       </div>
-      <div class="count-in-control">
-        <label>Mindestens einzählen <input id="min-lead-in" type="number" min="1" step="1" value="${options.minLeadIn ?? 4}"></label>
-        <label>Band-Vorzähler <input id="band-pre-count" type="checkbox" ${options.bandPreCount === true ? 'checked' : ''}></label>
-        <label>Zählschläge pro Takt <input id="count-division" type="number" min="1" step="1" value="${options.division ?? 4}"></label>
-        <label>Unterteilungen <input id="count-subdivision" type="number" min="1" step="1" value="${options.subdivision ?? 1}"></label>
+      <div id="metronome-settings-overlay" class="metronome-settings-overlay" hidden>
+        <section id="metronome-settings" class="metronome-settings" role="dialog" aria-modal="true" aria-labelledby="metronome-settings-title">
+          <header class="metronome-settings__header">
+            <h2 id="metronome-settings-title">Metronom-Einstellungen</h2>
+            <button id="metronome-settings-close" class="metronome-settings__close" type="button" aria-label="Metronom-Einstellungen schließen">${renderPlayerIcon('close')}</button>
+          </header>
+          <label class="metronome-mode">
+            <span>Modus</span>
+            <select id="metronome-mode" aria-label="Metronom-Modus" ${options.metronomeEnabled === true && options.hasMetronomeData ? '' : 'disabled'}>
+              <option value="countIn" ${initialMetronomeMode === 'countIn' ? 'selected' : ''}>Einzählen</option>
+              <option value="playback" ${initialMetronomeMode === 'playback' ? 'selected' : ''}>Wiedergabe</option>
+              <option value="always" ${initialMetronomeMode === 'always' ? 'selected' : ''}>Immer</option>
+            </select>
+          </label>
+          <div class="count-in-control">
+            <label>Schläge/Takt <input id="count-division" type="number" min="1" step="1" value="${options.division ?? 4}" inputmode="numeric"></label>
+            <label>Klicks/Schlag <input id="count-subdivision" type="number" min="1" step="1" value="${options.subdivision ?? 1}" inputmode="numeric"></label>
+            <label>Einzählen: Mindestschläge <input id="min-lead-in" type="number" min="1" step="1" value="${options.minLeadIn ?? 4}" inputmode="numeric"></label>
+            <label class="count-in-switch" for="band-pre-count">
+              <span>Vorzählen</span>
+              <span class="metronome-control__switch"><input id="band-pre-count" type="checkbox" ${options.bandPreCount === true ? 'checked' : ''}><span class="metronome-switch" aria-hidden="true"></span></span>
+            </label>
+            <label class="metronome-volume">Klicklautstärke <span><input id="metronome-volume" type="range" min="0" max="150" step="5" value="${options.metronomeVolume ?? 100}"><output id="metronome-volume-value">${options.metronomeVolume ?? 100}%</output></span></label>
+          </div>
+        </section>
       </div>
       <section class="transport" aria-label="Wiedergabe">
+        <p class="position-label">${options.hasParts === true ? 'Abschnitt · Takt · Durchlauf' : 'Takt · Durchlauf'}</p>
         <div class="position-row">
           <output id="current-position" class="position" aria-label="${escapeHtml(first.label)}">${first.html}</output>
-          <button id="take-position-button" class="take-position" type="button" title="Position übernehmen" aria-label="Position übernehmen"><span class="take-position__icon" aria-hidden="true">◎</span></button>
+          <button id="take-position-button" class="take-position" type="button" title="Position übernehmen" aria-label="Position übernehmen">${renderPlayerIcon('takePosition', 'player-icon take-position__icon')}</button>
         </div>
         <p id="playback-time" class="playback-time">0:00</p>
         <div class="transport-buttons">
-          <button id="play-pause-button" type="button" aria-label="Wiedergabe starten">▶</button>
-          <button id="stop-button" type="button" aria-label="Wiedergabe stoppen">■</button>
+          <button id="play-pause-button" type="button" aria-label="Wiedergabe starten">${renderPlayerIcon('play')}</button>
+          <button id="stop-button" type="button" aria-label="Wiedergabe stoppen">${renderPlayerIcon('stop')}</button>
         </div>
       </section>
     </section>`
@@ -170,10 +213,17 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   const speedDecrease = container.querySelector<HTMLButtonElement>('#speed-decrease')
   const speedIncrease = container.querySelector<HTMLButtonElement>('#speed-increase')
   const metronomeToggle = container.querySelector<HTMLInputElement>('#metronome-toggle')
+  const metronomeSettingsToggle = container.querySelector<HTMLButtonElement>('#metronome-settings-toggle')
+  const metronomeSettingsOverlay = container.querySelector<HTMLElement>('#metronome-settings-overlay')
+  const metronomeSettings = container.querySelector<HTMLElement>('#metronome-settings')
+  const metronomeSettingsClose = container.querySelector<HTMLButtonElement>('#metronome-settings-close')
+  const metronomeMode = container.querySelector<HTMLSelectElement>('#metronome-mode')
   const minLeadIn = container.querySelector<HTMLInputElement>('#min-lead-in')
   const bandPreCount = container.querySelector<HTMLInputElement>('#band-pre-count')
   const countDivision = container.querySelector<HTMLInputElement>('#count-division')
   const countSubdivision = container.querySelector<HTMLInputElement>('#count-subdivision')
+  const metronomeVolume = container.querySelector<HTMLInputElement>('#metronome-volume')
+  const metronomeVolumeValue = container.querySelector<HTMLOutputElement>('#metronome-volume-value')
   const metronomeStatus = container.querySelector<HTMLOutputElement>('#metronome-status')
   const position = container.querySelector<HTMLOutputElement>('#current-position')
   const playbackTime = container.querySelector<HTMLParagraphElement>('#playback-time')
@@ -214,9 +264,42 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   }
   speedDecrease?.addEventListener('click', () => adjustSpeed(-5))
   speedIncrease?.addEventListener('click', () => adjustSpeed(5))
-  const onMetronome = (): void => callbacks.onMetronomeChange(metronomeToggle?.checked === true)
+  const onMetronome = (): void => {
+    const enabled = metronomeToggle?.checked === true
+    if (metronomeMode !== null) metronomeMode.disabled = !enabled || !options.hasMetronomeData
+    callbacks.onMetronomeChange(enabled)
+  }
   metronomeToggle?.addEventListener('change', onMetronome)
   if (metronomeToggle !== null) listeners.push(() => metronomeToggle.removeEventListener('change', onMetronome))
+  const onMetronomeMode = (): void => {
+    const mode = metronomeMode?.value
+    if (mode === 'countIn' || mode === 'playback' || mode === 'always') callbacks.onMetronomeModeChange(mode)
+  }
+  metronomeMode?.addEventListener('change', onMetronomeMode)
+  if (metronomeMode !== null) listeners.push(() => metronomeMode.removeEventListener('change', onMetronomeMode))
+  const setMetronomeSettingsOpen = (open: boolean): void => {
+    if (metronomeSettingsOverlay === null || metronomeSettingsToggle === null) return
+    metronomeSettingsOverlay.hidden = !open
+    metronomeSettingsToggle.setAttribute('aria-expanded', String(open))
+    if (open) metronomeSettingsClose?.focus()
+    else metronomeSettingsToggle.focus()
+  }
+  const onMetronomeSettings = (): void => setMetronomeSettingsOpen(metronomeSettingsOverlay?.hidden === true)
+  metronomeSettingsToggle?.addEventListener('click', onMetronomeSettings)
+  if (metronomeSettingsToggle !== null) listeners.push(() => metronomeSettingsToggle.removeEventListener('click', onMetronomeSettings))
+  const onMetronomeSettingsClose = (): void => setMetronomeSettingsOpen(false)
+  metronomeSettingsClose?.addEventListener('click', onMetronomeSettingsClose)
+  if (metronomeSettingsClose !== null) listeners.push(() => metronomeSettingsClose.removeEventListener('click', onMetronomeSettingsClose))
+  const onMetronomeSettingsOverlay = (event: MouseEvent): void => {
+    if (event.target === metronomeSettingsOverlay) setMetronomeSettingsOpen(false)
+  }
+  metronomeSettingsOverlay?.addEventListener('click', onMetronomeSettingsOverlay)
+  if (metronomeSettingsOverlay !== null) listeners.push(() => metronomeSettingsOverlay.removeEventListener('click', onMetronomeSettingsOverlay))
+  const onMetronomeSettingsKeydown = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape') setMetronomeSettingsOpen(false)
+  }
+  metronomeSettings?.addEventListener('keydown', onMetronomeSettingsKeydown)
+  if (metronomeSettings !== null) listeners.push(() => metronomeSettings.removeEventListener('keydown', onMetronomeSettingsKeydown))
   const bindPositiveInteger = (element: HTMLInputElement | null, callback: (value: number) => void): void => {
     if (element === null) return
     const onChange = (): void => {
@@ -231,6 +314,14 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
   bindPositiveInteger(minLeadIn, callbacks.onMinLeadInChange)
   bindPositiveInteger(countDivision, callbacks.onDivisionChange)
   bindPositiveInteger(countSubdivision, callbacks.onSubdivisionChange)
+  const onMetronomeVolume = (): void => {
+    const value = Number(metronomeVolume?.value ?? 100)
+    if (!Number.isFinite(value) || value < 0 || value > 150) return
+    if (metronomeVolumeValue !== null) metronomeVolumeValue.textContent = `${value}%`
+    callbacks.onMetronomeVolumeChange(value / 100)
+  }
+  metronomeVolume?.addEventListener('input', onMetronomeVolume)
+  if (metronomeVolume !== null) listeners.push(() => metronomeVolume.removeEventListener('input', onMetronomeVolume))
   const onBandPreCount = (): void => callbacks.onBandPreCountChange(bandPreCount?.checked === true)
   bandPreCount?.addEventListener('change', onBandPreCount)
   if (bandPreCount !== null) listeners.push(() => bandPreCount.removeEventListener('change', onBandPreCount))
@@ -264,14 +355,16 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       if (speedInput !== null) speedInput.disabled = !enabled
       if (speedDecrease !== null) speedDecrease.disabled = !enabled
       if (speedIncrease !== null) speedIncrease.disabled = !enabled
-      for (const input of [minLeadIn, bandPreCount, countDivision, countSubdivision]) {
+      if (metronomeSettingsToggle !== null) metronomeSettingsToggle.disabled = !enabled || !options.hasMetronomeData
+      if (metronomeMode !== null) metronomeMode.disabled = !enabled || !options.hasMetronomeData || metronomeToggle?.checked !== true
+      for (const input of [minLeadIn, bandPreCount, countDivision, countSubdivision, metronomeVolume]) {
         if (input !== null) input.disabled = !enabled || !options.hasMetronomeData
       }
     },
     setPlaying(nextPlaying) {
       playing = nextPlaying
       if (playPauseButton !== null) {
-        playPauseButton.textContent = nextPlaying ? 'Ⅱ' : '▶'
+        playPauseButton.innerHTML = renderPlayerIcon(nextPlaying ? 'pause' : 'play')
         playPauseButton.setAttribute('aria-label', nextPlaying ? 'Wiedergabe pausieren' : 'Wiedergabe starten')
       }
     },

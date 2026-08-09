@@ -3,9 +3,10 @@ import {
   decodePlaybackFragment,
   decodePlaybackPayload,
   createPlaybackCountInPlan,
+  createPlaybackMetronomeClicks,
   encodePlaybackPayload,
   exportPlaybackLink,
-  resolvePlaybackCountEventSound,
+  resolvePlaybackMetronomeEventSound,
   resolvePlaybackMetronomeSound,
   type PlaybackCompressionCodec,
   type PlaybackEvent,
@@ -18,10 +19,38 @@ const identityCodec: PlaybackCompressionCodec = {
 
 describe('shared metronome sound profile', () => {
   it('uses one profile and gives the entry signal priority over the metric accent', () => {
-    expect(resolvePlaybackMetronomeSound('pre-count')).toEqual({ frequencyHz: 1800, gain: 0.1 })
-    expect(resolvePlaybackMetronomeSound('accent')).toEqual({ frequencyHz: 1200, gain: 0.18 })
-    expect(resolvePlaybackMetronomeSound('entry')).toEqual({ frequencyHz: 1500, gain: 0.16 })
-    expect(resolvePlaybackCountEventSound('BAR_START', true)).toBe('entry')
+    expect(resolvePlaybackMetronomeSound('pre-count')).toEqual({ frequencyHz: 1800, gain: 0.22 })
+    expect(resolvePlaybackMetronomeSound('accent')).toEqual({ frequencyHz: 1200, gain: 0.34 })
+    expect(resolvePlaybackMetronomeSound('regular')).toEqual({ frequencyHz: 850, gain: 0.22 })
+    expect(resolvePlaybackMetronomeSound('subdivision')).toEqual({ frequencyHz: 650, gain: 0.11 })
+    expect(resolvePlaybackMetronomeSound('entry')).toEqual({ frequencyHz: 1500, gain: 0.3 })
+    expect(resolvePlaybackMetronomeEventSound('PRE_COUNT')).toBe('pre-count')
+    expect(resolvePlaybackMetronomeEventSound('BAR_START')).toBe('accent')
+    expect(resolvePlaybackMetronomeEventSound('MAIN_BEAT')).toBe('regular')
+    expect(resolvePlaybackMetronomeEventSound('SUBDIVISION')).toBe('subdivision')
+    expect(resolvePlaybackMetronomeEventSound('BAR_START', true)).toBe('entry')
+    expect(resolvePlaybackMetronomeEventSound('SUBDIVISION', true)).toBe('entry')
+  })
+
+  it('preserves distinct sound roles in count-in and playback scheduling', () => {
+    const markers = [
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 4000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+    ]
+    const countIn = createPlaybackCountInPlan(markers, 0, {
+      minLeadIn: 2,
+      bandPreCount: false,
+      division: 2,
+      subdivision: 2,
+    })
+    expect(countIn?.events.map((event) => resolvePlaybackMetronomeEventSound(event.kind, event.isLastBeforeEntry))).toEqual([
+      'accent', 'subdivision', 'regular', 'entry',
+    ])
+
+    const playback = createPlaybackMetronomeClicks(markers, 4000, 2, 2)
+    expect(playback.slice(0, 4).map((event) => resolvePlaybackMetronomeEventSound(event.kind))).toEqual([
+      'accent', 'subdivision', 'regular', 'subdivision',
+    ])
   })
 })
 
@@ -77,6 +106,18 @@ describe('playback link format', () => {
       'MAIN_BEAT', 'SUBDIVISION', 'SUBDIVISION',
     ])
     expect(plan?.events.at(-1)?.isLastBeforeEntry).toBe(true)
+  })
+
+  it('does not shorten count-in timing at a part marker inside the entry measure', () => {
+    const plan = createPlaybackCountInPlan([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 }, partName: 'Teil A' },
+      { timeMs: 1000, position: { measureNumber: 1, passIndex: 1 }, partName: 'Teil B' },
+      { timeMs: 4000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+    ], 0, { minLeadIn: 4, bandPreCount: true, division: 4, subdivision: 1 })
+
+    expect(plan?.beatDurationMs).toBe(1000)
+    expect(plan?.durationMs).toBe(8000)
+    expect(plan?.events.map((event) => event.offsetMs)).toEqual([0, 2000, 4000, 5000, 6000, 7000])
   })
 
   it('round-trips simultaneous events and measure/pass positions', async () => {

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "pnpm --filter @zupfnoter/playback build && pnpm --filter @zupfnoter/player-ui build && vite build",
     "type-check": "pnpm --filter @zupfnoter/playback build && pnpm --filter @zupfnoter/player-ui build && tsc --noEmit",
     "test:unit": "vitest run"
   },
