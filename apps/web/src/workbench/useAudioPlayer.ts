@@ -282,8 +282,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     const subdivision = Math.max(1, metronomeConfig?.subdivision ?? 1)
     const minLeadIn = Math.max(1, metronomeConfig?.minLeadIn ?? 4)
     const timelineStartMs = steps[0]?.playbackStartMs ?? 0
-    const entryTimeMs = steps.find((step) => step.activeNotes.some((note) => note.attack))?.playbackStartMs
-      ?? timelineStartMs
+    const entryTimeMs = timelineStartMs
     const entryOffsetMs = Math.max(0, entryTimeMs - timelineStartMs)
     const countInPlan = metronomeConfig !== undefined
       && (metronomeConfig.mode === 'countIn' || metronomeConfig.mode === 'always')

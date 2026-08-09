@@ -565,10 +565,7 @@ function renderPlayer(
     window.clearTimeout(loadingTimer)
     if (audioContext !== playerContext) return
     setLoading(false)
-    const entryTimeMs = selectedEvents.reduce(
-      (earliest, event) => Math.min(earliest, event.startMs),
-      selectedEvents[0]?.startMs ?? selectedStartMs,
-    )
+    const entryTimeMs = selectedStartMs
     const entryOffsetMs = Math.max(0, entryTimeMs - selectedStartMs)
     const countIn = metronomeEnabled && (metronomeMode === 'countIn' || metronomeMode === 'always') && playbackOffsetMs === 0
       ? createPlaybackCountInPlan(positionMarkers, entryTimeMs, {

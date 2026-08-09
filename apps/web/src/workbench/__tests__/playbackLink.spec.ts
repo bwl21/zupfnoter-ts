@@ -42,6 +42,21 @@ describe('playback position export', () => {
       { timeMs: 6000, position: { measureNumber: 2, passIndex: 1 }, meter: undefined },
     ])
   })
+
+  it('keeps the effective part name on later position markers', () => {
+    const markers = playbackPositionsFromTimeline([
+      { ...step(0, 1000, 1, 1, { numerator: 4, denominator: 4 }), partName: '  Teil A  ' },
+      step(1000, 1000, 2, 1),
+      { ...step(2000, 1000, 3, 1), partName: 'Teil B' },
+    ])
+
+    expect(markers.map((marker) => marker.partName)).toEqual([
+      'Teil A',
+      'Teil A',
+      'Teil B',
+      'Teil B',
+    ])
+  })
 })
 
 describe('player QR export', () => {

@@ -21,20 +21,52 @@ export interface PlaybackExportData {
   positionMarkers: PlaybackExportMarker[]
 }
 
+function hasDelayedMeterAtSamePosition(
+  timeline: readonly PlaybackStep[],
+  stepIndex: number,
+  position: PlaybackPosition,
+): boolean {
+  for (let index = stepIndex + 1; index < timeline.length; index += 1) {
+    const candidate = timeline[index]
+    if (candidate?.position === undefined) continue
+    if (candidate.position.measureNumber !== position.measureNumber
+      || candidate.position.passIndex !== position.passIndex) return false
+    if (candidate.meter !== undefined) return true
+  }
+  return false
+}
+
 function buildPositionMarkers(timeline: readonly PlaybackStep[]): PlaybackExportMarker[] {
   const markers: PlaybackExportMarker[] = []
-  for (const step of timeline) {
+  let effectiveMeter: PlaybackExportMarker['meter']
+  let effectivePartName: string | undefined
+  for (const [stepIndex, step] of timeline.entries()) {
     if (step.position === undefined) continue
+    if (step.meter !== undefined) effectiveMeter = step.meter
+    const nextPartName = step.partName?.trim()
+    if (nextPartName !== undefined && nextPartName !== '') effectivePartName = nextPartName
     const previous = markers[markers.length - 1]
-    const changed = previous === undefined
+    const positionChanged = previous === undefined
       || previous.position.measureNumber !== step.position.measureNumber
       || previous.position.passIndex !== step.position.passIndex
-      || previous.partName !== step.partName
+    const changed = positionChanged || previous.partName !== effectivePartName
+    const hasDelayedMeter = step.meter === undefined
+      && hasDelayedMeterAtSamePosition(timeline, stepIndex, step.position)
     if (changed) {
-      markers.push({ timeMs: step.playbackStartMs, position: step.position, meter: step.meter, partName: step.partName })
+      markers.push({
+        timeMs: step.playbackStartMs,
+        position: step.position,
+        meter: positionChanged && !hasDelayedMeter ? effectiveMeter : step.meter,
+        partName: effectivePartName,
+      })
     } else if (previous !== undefined && step.meter !== undefined
       && previous.meter === undefined && step.playbackStartMs > previous.timeMs) {
-      markers.push({ timeMs: step.playbackStartMs, position: { ...step.position }, meter: step.meter, partName: step.partName })
+      markers.push({
+        timeMs: step.playbackStartMs,
+        position: { ...step.position },
+        meter: step.meter,
+        partName: effectivePartName,
+      })
     } else if (previous !== undefined && previous.meter === undefined && step.meter !== undefined) {
       previous.meter = step.meter
     }

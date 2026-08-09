@@ -143,11 +143,12 @@ function resolvePlaybackBeatDuration(
   tempoBpm?: number,
   tempoUnit = 0.25,
 ): number {
+  if (tempoBpm !== undefined && tempoBpm > 0 && tempoUnit > 0) {
+    return 60000 / tempoBpm / (tempoUnit * meter.denominator) * meter.numerator / division
+  }
   const referenceMeasureDurationMs = referenceMeasureDurationFor(markers, durationMs, meter)
   if (referenceMeasureDurationMs !== undefined) return referenceMeasureDurationMs / division
-  return tempoBpm !== undefined && tempoBpm > 0 && tempoUnit > 0
-    ? 60000 / tempoBpm / (tempoUnit * meter.denominator) * meter.numerator / division
-    : 0
+  return 0
 }
 
 /** Plans count-in events backwards from the actual musical entry. */

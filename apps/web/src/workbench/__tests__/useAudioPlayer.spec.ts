@@ -320,7 +320,7 @@ describe('useAudioPlayer', () => {
     expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 2, division: 4, accent: false })
   })
 
-  it('counts written rests without delaying an entry on beat three', async () => {
+  it('finishes count-in before a written opening rest begins', async () => {
     const player = useAudioPlayer({ value: 'harp' })
     const onMetronomeBeat = vi.fn()
     const [firstStep, secondStep] = steps
@@ -357,15 +357,15 @@ describe('useAudioPlayer', () => {
       subdivision: 1,
     })
 
-    expect(oscillatorFrequencyValues.slice(0, 4)).toEqual([1200, 1500, 850, 850])
-    expect(oscillatorStartMock.mock.calls.slice(0, 3)).toEqual([[10.2], [11.2], [12.2]])
-    expect(leftScheduleMock).toHaveBeenCalledWith(10.2, expect.arrayContaining([
+    expect(oscillatorFrequencyValues.slice(0, 4)).toEqual([1200, 850, 850, 1500])
+    expect(oscillatorStartMock.mock.calls.slice(0, 4)).toEqual([[10.2], [11.2], [12.2], [13.2]])
+    expect(leftScheduleMock).toHaveBeenCalledWith(14.2, expect.arrayContaining([
       expect.objectContaining({ time: 2, note: 60 }),
     ]))
 
-    mockCurrentTime = 11.2
+    mockCurrentTime = 13.2
     vi.advanceTimersByTime(16)
-    expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 2, division: 4, accent: false })
+    expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 4, division: 4, accent: false })
   })
 
   it('shows the band pre-count before the normal count-in', async () => {
@@ -458,11 +458,102 @@ describe('useAudioPlayer', () => {
       mode: 'playback',
       division: 4,
       subdivision: 1,
-    }, 1, 0.25)
+    }, 60, 0.25)
 
     expect(oscillatorStartMock.mock.calls.map(([when]) => when)).toEqual(
       Array.from({ length: 14 }, (_, index) => 10.2 + index),
     )
+  })
+
+  it('keeps clicking when a volta jumps to a position without an explicit meter', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const firstStep = steps[0]
+    if (firstStep === undefined) throw new Error('Missing playback test step')
+    const voltaSteps: PlaybackStep[] = [
+      {
+        ...firstStep,
+        playbackStartMs: 0,
+        durationMs: 1800,
+        position: { measureNumber: 3, passIndex: 2 },
+        meter: { numerator: 3, denominator: 4 },
+        flowIndex: 0,
+        passIndex: 2,
+        voltaNumber: 1,
+      },
+      {
+        ...firstStep,
+        playbackStartMs: 1800,
+        durationMs: 1800,
+        position: { measureNumber: 2, passIndex: 3 },
+        meter: undefined,
+        flowIndex: 1,
+        passIndex: 3,
+      },
+      {
+        ...firstStep,
+        playbackStartMs: 3600,
+        durationMs: 1800,
+        position: { measureNumber: 4, passIndex: 3 },
+        meter: { numerator: 3, denominator: 4 },
+        flowIndex: 2,
+        passIndex: 3,
+        voltaNumber: 2,
+      },
+    ]
+
+    await player.schedule(voltaSteps, 1, {}, {
+      mode: 'playback',
+      subdivision: 1,
+    }, 100, 0.25)
+
+    expect(oscillatorStartMock.mock.calls.map(([when]) => Math.round((when ?? 0) * 10) / 10)).toEqual([
+      10.2, 10.8, 11.4,
+      12, 12.6, 13.2,
+      13.8, 14.4, 15,
+    ])
+  })
+
+  it('follows changing ABC meters without a configured division', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const firstStep = steps[0]
+    if (firstStep === undefined) throw new Error('Missing playback test step')
+    const meterSteps: PlaybackStep[] = [
+      {
+        ...firstStep,
+        playbackStartMs: 0,
+        durationMs: 4000,
+        position: { measureNumber: 1, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+        flowIndex: 0,
+      },
+      {
+        ...firstStep,
+        playbackStartMs: 4000,
+        durationMs: 3000,
+        position: { measureNumber: 2, passIndex: 1 },
+        meter: { numerator: 6, denominator: 8, grouping: [3, 3] },
+        flowIndex: 1,
+      },
+      {
+        ...firstStep,
+        playbackStartMs: 7000,
+        durationMs: 3000,
+        position: { measureNumber: 3, passIndex: 1 },
+        meter: { numerator: 3, denominator: 4 },
+        flowIndex: 2,
+      },
+    ]
+
+    await player.schedule(meterSteps, 1, {}, {
+      mode: 'playback',
+      subdivision: 1,
+    }, 60, 0.25)
+
+    expect(oscillatorStartMock.mock.calls.map(([when]) => when)).toEqual([
+      10.2, 11.2, 12.2, 13.2,
+      14.2, 14.7, 15.2, 15.7, 16.2, 16.7,
+      17.2, 18.2, 19.2,
+    ])
   })
 
   it('keeps scheduling the music after the count-in in always mode', async () => {

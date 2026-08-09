@@ -441,6 +441,9 @@ export class AbcToSong {
       case 'meter':
         if (typeName === 'meter' && sym.a_meter !== undefined) {
           state.meter = timeSignatureFromAbcMeter({ a_meter: sym.a_meter })
+          if (typeof sym.wmeasure === 'number' && sym.wmeasure > 0) {
+            state.wmeasure = sym.wmeasure
+          }
         }
       case 'staves':
       case 'yspace':

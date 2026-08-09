@@ -75,6 +75,51 @@ describe('shared metronome sound profile', () => {
     expect(playback.map((click) => click.division)).toEqual([3, 3, 3, 2, 2])
   })
 
+  it('changes click division and duration with each ABC meter', () => {
+    const markers = [
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 4000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 6, denominator: 8, grouping: [3, 3] } },
+      { timeMs: 7000, position: { measureNumber: 3, passIndex: 1 }, meter: { numerator: 3, denominator: 4 } },
+      { timeMs: 10000, position: { measureNumber: 4, passIndex: 1 }, meter: { numerator: 12, denominator: 8, grouping: [3, 3, 3, 3] } },
+      { timeMs: 16000, position: { measureNumber: 4, passIndex: 1 } },
+    ]
+
+    const clicks = createPlaybackMetronomeClicks(markers, 16000, undefined, 1, 60, 0.25)
+    const byMeasureStart = [0, 4000, 7000, 10000].map((startMs, index, starts) => {
+      const endMs = starts[index + 1] ?? 16000
+      return clicks.filter((click) => click.timeMs >= startMs && click.timeMs < endMs)
+    })
+
+    expect(byMeasureStart.map((measure) => measure.map((click) => click.timeMs))).toEqual([
+      [0, 1000, 2000, 3000],
+      [4000, 4500, 5000, 5500, 6000, 6500],
+      [7000, 8000, 9000],
+      [10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500, 15000, 15500],
+    ])
+    expect(byMeasureStart.map((measure) => measure[0]?.division)).toEqual([4, 6, 3, 12])
+
+    const countInAfterMeterChange = createPlaybackCountInPlan(markers, 7000, {
+      minLeadIn: 3,
+      bandPreCount: false,
+      subdivision: 1,
+    }, 60, 0.25)
+    expect(countInAfterMeterChange?.meter).toEqual({ numerator: 3, denominator: 4 })
+    expect(countInAfterMeterChange?.beatDurationMs).toBe(1000)
+  })
+
+  it('uses the Q unit correctly when no complete reference measure exists', () => {
+    const plan = createPlaybackCountInPlan([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 6, denominator: 8 } },
+    ], 0, {
+      minLeadIn: 2,
+      bandPreCount: false,
+      division: 6,
+      subdivision: 1,
+    }, 120, 0.25)
+
+    expect(plan?.beatDurationMs).toBe(250)
+  })
+
   it('continues playback clicks on the entry beat of an opening pickup', () => {
     const clicks = createPlaybackMetronomeClicks([
       { timeMs: 0, position: { measureNumber: 1, passIndex: 1 } },
@@ -89,6 +134,21 @@ describe('shared metronome sound profile', () => {
       { timeMs: 3000, beat: 2 },
       { timeMs: 4000, beat: 3 },
       { timeMs: 5000, beat: 4 },
+    ])
+  })
+
+  it('uses Q tempo for a pickup that begins with a written rest', () => {
+    const clicks = createPlaybackMetronomeClicks([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 } },
+      { timeMs: 1800, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 4200, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 9000, position: { measureNumber: 3, passIndex: 2 }, meter: { numerator: 4, denominator: 4 } },
+    ], 1800, undefined, 1, 100, 0.25)
+
+    expect(clicks.map(({ timeMs, beat }) => ({ timeMs, beat }))).toEqual([
+      { timeMs: 0, beat: 2 },
+      { timeMs: 600, beat: 3 },
+      { timeMs: 1200, beat: 4 },
     ])
   })
 
@@ -124,7 +184,7 @@ describe('shared metronome sound profile', () => {
       { timeMs: 16000, position: { measureNumber: 1, passIndex: 3 } },
       { timeMs: 17000, position: { measureNumber: 1, passIndex: 3 }, meter: { numerator: 4, denominator: 4 } },
       { timeMs: 21000, position: { measureNumber: 2, passIndex: 3 }, meter: { numerator: 4, denominator: 4 } },
-    ], 21000, 4, 1, 1, 0.25)
+    ], 21000, 4, 1, 60, 0.25)
 
     expect(clicks.map((click) => click.timeMs)).toEqual(
       Array.from({ length: 21 }, (_, index) => index * 1000),
