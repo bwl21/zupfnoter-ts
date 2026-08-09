@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 
-import { ZnBadge, ZnButton, ZnStatusBar } from '@zupfnoter/design-system'
+import { ZnBadge, ZnButton, ZnIcon, ZnStatusBar } from '@zupfnoter/design-system'
 
 const props = withDefaults(defineProps<{
   extractLabel: string
@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
   storageReadOnly: boolean
   dirty: boolean
   saveFormat: string
-  speedFactor: number
+  speedBpm: number
   metronomeMode: 'off' | 'countIn' | 'playback' | 'always'
   cursorPosition: string
   cursorUnicode?: string
@@ -23,14 +23,13 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   (event: 'speed-up'): void
   (event: 'speed-down'): void
-  (event: 'speed-reset'): void
+  (event: 'speed-change', value: number): void
   (event: 'metronome-mode-change', value: 'off' | 'countIn' | 'playback' | 'always'): void
   (event: 'playback-config'): void
   (event: 'storage-connections'): void
   (event: 'selection-voice-scope-change', value: 'single-voice' | 'extract-voices' | 'all-voices'): void
 }>()
 
-const speedLabel = computed(() => `${props.speedFactor.toFixed(1)}x`)
 const storageChipElement = ref<HTMLElement | null>(null)
 let storageChipTooltip: TippyInstance | undefined
 
@@ -70,6 +69,17 @@ function handleMetronomeModeChange(event: Event): void {
     && target.value !== 'playback'
     && target.value !== 'always') return
   emit('metronome-mode-change', target.value)
+}
+
+function handleSpeedChange(event: Event): void {
+  const target = event.target
+  if (!(target instanceof HTMLInputElement)) return
+  const value = Number(target.value)
+  if (!Number.isFinite(value) || value <= 0) {
+    target.value = String(props.speedBpm)
+    return
+  }
+  emit('speed-change', Math.round(value))
 }
 </script>
 
@@ -125,7 +135,6 @@ function handleMetronomeModeChange(event: Event): void {
       <div class="footer-bar__playback">
         <span class="footer-bar__meta">Playback:</span>
         <label class="footer-bar__metronome-field">
-          <span class="footer-bar__metronome-symbol" aria-hidden="true">♫</span>
           <select
             class="footer-bar__metronome-select"
             :value="metronomeMode"
@@ -145,14 +154,23 @@ function handleMetronomeModeChange(event: Event): void {
           aria-label="Wiedergabe konfigurieren"
           @click="emit('playback-config')"
         >
-          ⚙
+          <ZnIcon name="settings" />
         </button>
+        <span class="footer-bar__speed-label">BPM:</span>
         <ZnButton class="footer-bar__speed-button" variant="ghost" @click="emit('speed-down')">
           -
         </ZnButton>
-        <button class="footer-bar__speed-value" type="button" @click="emit('speed-reset')">
-          {{ speedLabel }}
-        </button>
+        <input
+          class="footer-bar__speed-value"
+          type="number"
+          min="1"
+          step="5"
+          inputmode="numeric"
+          aria-label="Wiedergabegeschwindigkeit in BPM"
+          :value="speedBpm"
+          @change="handleSpeedChange"
+          @wheel.prevent
+        >
         <ZnButton class="footer-bar__speed-button" variant="ghost" @click="emit('speed-up')">
           +
         </ZnButton>
@@ -164,6 +182,13 @@ function handleMetronomeModeChange(event: Event): void {
 <style scoped>
 :deep(.zn-status-bar) {
   position: relative;
+}
+
+:deep(.zn-badge),
+.footer-bar__storage-chip {
+  box-sizing: border-box;
+  height: 1.55rem;
+  min-height: 1.55rem;
 }
 
 .footer-bar__meta {
@@ -262,13 +287,15 @@ function handleMetronomeModeChange(event: Event): void {
 .footer-bar__scope-select,
 .footer-bar__metronome-select {
   min-width: 5.5rem;
-  min-height: 2.1rem;
-  padding: 0.35rem 1.9rem 0.35rem 0.75rem;
+  height: 1.55rem;
+  min-height: 1.55rem;
+  padding: 0.15rem 1.9rem 0.15rem 0.65rem;
   border: 1px solid var(--zn-border);
   border-radius: 999px;
   background: var(--zn-bg-surface);
   color: var(--zn-text);
   font: inherit;
+  font-size: 0.78rem;
   cursor: pointer;
   appearance: none;
   background-image:
@@ -290,7 +317,9 @@ function handleMetronomeModeChange(event: Event): void {
 .footer-bar__speed-button,
 .footer-bar__speed-value,
 .footer-bar__playback-config {
-  min-width: 2.4rem;
+  min-width: 1.8rem;
+  height: 1.55rem;
+  min-height: 1.55rem;
   padding-inline: 0.4rem;
   border-radius: 999px;
   font-variant-numeric: tabular-nums;
@@ -298,7 +327,9 @@ function handleMetronomeModeChange(event: Event): void {
 }
 
 .footer-bar__playback-config {
-  min-height: 2.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--zn-border);
   background: var(--zn-bg-surface);
   color: var(--zn-text);
@@ -312,23 +343,27 @@ function handleMetronomeModeChange(event: Event): void {
   align-items: center;
 }
 
-.footer-bar__metronome-symbol {
-  position: absolute;
-  left: 0.7rem;
-  z-index: 1;
-  pointer-events: none;
-}
-
 .footer-bar__metronome-select {
   min-width: 9.2rem;
-  padding-left: 1.75rem;
+}
+
+.footer-bar__speed-label {
+  color: var(--zn-text-muted);
+  font-size: 0.75rem;
 }
 
 .footer-bar__speed-value {
+  width: 4.5rem;
   border: 1px solid var(--zn-border);
   background: var(--zn-bg-surface);
   color: var(--zn-text);
   font: inherit;
-  cursor: pointer;
+  text-align: center;
+}
+
+:deep(.footer-bar__speed-button.zn-button) {
+  height: 1.55rem;
+  min-height: 1.55rem;
+  padding: 0 0.4rem;
 }
 </style>

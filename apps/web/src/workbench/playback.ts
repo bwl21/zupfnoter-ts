@@ -93,9 +93,25 @@ export function createPlaybackHighlightFromEvent(event: PlaybackPlayerEvent): Pl
     activeTextRanges: event.activeTextRanges,
     activeStartChar: event.activeStartChar,
     activeTime: event.activeTime,
+    measureNumber: event.measureNumber,
+    partName: event.partName,
     passIndex: event.passIndex,
     voltaNumber: event.voltaNumber,
   }
+}
+
+/** Keeps each playback step associated with the latest non-empty, trimmed ABC part name. */
+export function resolveEffectivePlaybackPartNames(
+  timeline: readonly PlaybackStep[],
+): ReadonlyMap<number, string | undefined> {
+  const partNames = new Map<number, string | undefined>()
+  let currentPartName: string | undefined
+  for (const step of timeline) {
+    const nextPartName = step.partName?.trim()
+    if (nextPartName !== undefined && nextPartName !== '') currentPartName = nextPartName
+    partNames.set(step.flowIndex, currentPartName)
+  }
+  return partNames
 }
 
 export { buildPlaybackTimeline, resolveBaseTempoFromSong, resolveTempoUnitFromSong } from '@zupfnoter/core'

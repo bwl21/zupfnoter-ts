@@ -1,15 +1,16 @@
-import { onBeforeUnmount, type Ref } from 'vue'
+import { onBeforeUnmount, ref, type Ref } from 'vue'
 
 import type { SelectionState, SelectionTextRange, SheetObjectIndex } from '@zupfnoter/types'
 
 import { usePlaybackStore } from '../stores/playback'
 import {
   resolvePlaybackSteps,
+  resolveEffectivePlaybackPartNames,
   updateActivePlaybackRanges,
   type PlaybackStep,
 } from './playback'
 import { textRangeKey } from './selectionIndex'
-import type { AudioPlayer, PlaybackScheduleCallbacks } from './useAudioPlayer'
+import type { AudioPlayer, PlaybackMetronomeVisualBeat, PlaybackScheduleCallbacks } from './useAudioPlayer'
 import type { PlaybackMetronomeConfig } from '@zupfnoter/playback'
 
 interface PlaybackDriverSource {
@@ -28,6 +29,8 @@ export function usePlaybackDriver(
 ) {
   let timer: ReturnType<typeof setTimeout> | undefined
   let activePlaybackRanges = new Map<string, { textRange: SelectionTextRange, endTimeMs: number }>()
+  let metronomePulse = 0
+  const metronomeBeat = ref<(PlaybackMetronomeVisualBeat & { pulse: number }) | undefined>()
 
   function clearTimer(): void {
     if (timer === undefined) return
@@ -38,6 +41,7 @@ export function usePlaybackDriver(
   function stop(immediateAudioStop = true): void {
     clearTimer()
     activePlaybackRanges = new Map()
+    metronomeBeat.value = undefined
     if (immediateAudioStop) {
       audioPlayer?.stop()
     }
@@ -46,6 +50,7 @@ export function usePlaybackDriver(
 
   async function play(): Promise<void> {
     const source = timelineSource.value
+    const partNames = resolveEffectivePlaybackPartNames(source.timeline)
     const steps = resolvePlaybackSteps(
       selection.value,
       sheetObjectIndex.value,
@@ -66,10 +71,22 @@ export function usePlaybackDriver(
 
     clearTimer()
     activePlaybackRanges = new Map()
+    metronomeBeat.value = undefined
     playbackStore.startPlayback(source.baseTempoFromQ, totalPassCount > 0 ? totalPassCount : undefined)
+    const firstStep = steps[0]
+    playbackStore.handlePlayerEvent({
+      kind: 'current-notes',
+      activeTextRanges: [],
+      activeTime: firstStep?.activeTime,
+      measureNumber: firstStep?.position?.measureNumber,
+      partName: firstStep === undefined ? undefined : partNames.get(firstStep.flowIndex),
+      passIndex: firstStep?.passIndex,
+      voltaNumber: firstStep?.voltaNumber,
+    })
     const lastStep = steps[steps.length - 1]
     const callbacks: PlaybackScheduleCallbacks = {
       onStepStart: (step) => {
+        if (source.metronomeConfig?.mode === 'countIn') metronomeBeat.value = undefined
         activePlaybackRanges = updateActivePlaybackRanges(activePlaybackRanges, step)
         const activeTextRanges = [...new Map(
           [...activePlaybackRanges.values()].map((range) => [
@@ -82,6 +99,8 @@ export function usePlaybackDriver(
           activeTextRanges,
           activeStartChar: step.activeStartChar,
           activeTime: step.activeTime,
+          measureNumber: step.position?.measureNumber,
+          partName: partNames.get(step.flowIndex),
           passIndex: step.passIndex,
           voltaNumber: step.voltaNumber,
         })
@@ -91,6 +110,10 @@ export function usePlaybackDriver(
         clearTimer()
         playbackStore.handlePlayerEvent({ kind: 'stop' })
         audioPlayer?.stop()
+      },
+      onMetronomeBeat: (beat) => {
+        metronomePulse += 1
+        metronomeBeat.value = { ...beat, pulse: metronomePulse }
       },
     }
     await audioPlayer?.schedule(steps, playbackStore.state.speedFactor, callbacks, source.metronomeConfig)
@@ -114,6 +137,7 @@ export function usePlaybackDriver(
   })
 
   return {
+    metronomeBeat,
     play,
     stop,
     toggle,

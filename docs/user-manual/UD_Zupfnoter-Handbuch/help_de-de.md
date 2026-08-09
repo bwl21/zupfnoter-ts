@@ -1266,7 +1266,8 @@ Zählzeiten 1 und 3.
 
 Anzahl der Hauptschläge pro Takt beim Zählen. Damit kann ein Auszug eine von
 der Gesamtpartitur abweichende Zählweise festlegen. Der Wert muss eine
-positive ganze Zahl sein.
+positive ganze Zahl sein. Ohne expliziten Wert wird für jede Taktart der
+Zähler der gültigen `M:`-Angabe verwendet, zum Beispiel `3` bei `M:3/4`.
 
 ## playback.subdivision
 

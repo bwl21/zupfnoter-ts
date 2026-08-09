@@ -240,6 +240,7 @@ describe('useAudioPlayer', () => {
 
   it('uses a distinct signal tone for the last count-in event before entry', async () => {
     const player = useAudioPlayer({ value: 'harp' })
+    const onMetronomeBeat = vi.fn()
     const [firstStep, secondStep] = steps
     if (firstStep === undefined || secondStep === undefined) throw new Error('Missing playback test steps')
     const countInSteps: PlaybackStep[] = [
@@ -256,7 +257,7 @@ describe('useAudioPlayer', () => {
       },
     ]
 
-    await player.schedule(countInSteps, 1, {}, {
+    await player.schedule(countInSteps, 1, { onMetronomeBeat }, {
       mode: 'countIn',
       minLeadIn: 4,
       bandPreCount: false,
@@ -265,10 +266,136 @@ describe('useAudioPlayer', () => {
     })
 
     expect(oscillatorFrequencyValues).toEqual([1200, 850, 850, 1500])
+
+    mockCurrentTime = 10.2
+    vi.advanceTimersByTime(16)
+    expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 1, division: 4, accent: true })
+  })
+
+  it('ends count-in on beat two when an opening pickup enters on beat three', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const onMetronomeBeat = vi.fn()
+    const [firstStep, secondStep] = steps
+    if (firstStep === undefined || secondStep === undefined) throw new Error('Missing playback test steps')
+    const pickupSteps: PlaybackStep[] = [
+      {
+        ...firstStep,
+        position: { measureNumber: 1, passIndex: 1 },
+      },
+      {
+        ...secondStep,
+        activeNotes: [],
+        playbackStartMs: 2000,
+        durationMs: 4000,
+        position: { measureNumber: 1, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+      },
+      {
+        ...secondStep,
+        activeNotes: [],
+        playbackStartMs: 6000,
+        durationMs: 4000,
+        position: { measureNumber: 2, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+      },
+    ]
+
+    await player.schedule(pickupSteps, 1, { onMetronomeBeat }, {
+      mode: 'always',
+      minLeadIn: 4,
+      bandPreCount: false,
+      division: 4,
+      subdivision: 1,
+    })
+
+    expect(oscillatorFrequencyValues.slice(0, 6)).toEqual([1200, 850, 850, 850, 1200, 1500])
+    expect(oscillatorFrequencyValues[6]).toBe(850)
+    expect(oscillatorStartMock.mock.calls[6]).toEqual([16.2])
+    expect(leftScheduleMock).toHaveBeenCalledWith(16.2, expect.arrayContaining([
+      expect.objectContaining({ time: 0, note: 60 }),
+    ]))
+
+    mockCurrentTime = 15.2
+    vi.advanceTimersByTime(16)
+    expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 2, division: 4, accent: false })
+  })
+
+  it('counts written rests without delaying an entry on beat three', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const onMetronomeBeat = vi.fn()
+    const [firstStep, secondStep] = steps
+    if (firstStep === undefined || secondStep === undefined) throw new Error('Missing playback test steps')
+    const restEntrySteps: PlaybackStep[] = [
+      {
+        ...firstStep,
+        activeNotes: [],
+        durationMs: 2000,
+        position: { measureNumber: 1, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+      },
+      {
+        ...secondStep,
+        playbackStartMs: 2000,
+        durationMs: 2000,
+        position: { measureNumber: 1, passIndex: 1 },
+      },
+      {
+        ...secondStep,
+        activeNotes: [],
+        playbackStartMs: 4000,
+        durationMs: 4000,
+        position: { measureNumber: 2, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+      },
+    ]
+
+    await player.schedule(restEntrySteps, 1, { onMetronomeBeat }, {
+      mode: 'always',
+      minLeadIn: 2,
+      bandPreCount: false,
+      division: 4,
+      subdivision: 1,
+    })
+
+    expect(oscillatorFrequencyValues.slice(0, 4)).toEqual([1200, 1500, 850, 850])
+    expect(oscillatorStartMock.mock.calls.slice(0, 3)).toEqual([[10.2], [11.2], [12.2]])
+    expect(leftScheduleMock).toHaveBeenCalledWith(10.2, expect.arrayContaining([
+      expect.objectContaining({ time: 2, note: 60 }),
+    ]))
+
+    mockCurrentTime = 11.2
+    vi.advanceTimersByTime(16)
+    expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 2, division: 4, accent: false })
+  })
+
+  it('shows the band pre-count before the normal count-in', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const onMetronomeBeat = vi.fn()
+    const [firstStep, secondStep] = steps
+    if (firstStep === undefined || secondStep === undefined) throw new Error('Missing playback test steps')
+    const countInSteps: PlaybackStep[] = [
+      { ...firstStep, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { ...secondStep, playbackStartMs: 4000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+    ]
+
+    await player.schedule(countInSteps, 1, { onMetronomeBeat }, {
+      mode: 'countIn', minLeadIn: 4, bandPreCount: true, division: 4, subdivision: 1,
+    })
+
+    mockCurrentTime = 10.2
+    vi.advanceTimersByTime(16)
+    expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 1, division: 4, accent: false })
+    mockCurrentTime = 12.2
+    vi.advanceTimersByTime(16)
+    expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 3, division: 4, accent: false })
+    mockCurrentTime = 14.2
+    vi.advanceTimersByTime(16)
+    expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 1, division: 4, accent: true })
   })
 
   it('schedules audibly distinct main beats and subdivisions during playback', async () => {
     const player = useAudioPlayer({ value: 'harp' })
+    const onMetronomeBeat = vi.fn()
     const [firstStep, secondStep] = steps
     if (firstStep === undefined || secondStep === undefined) throw new Error('Missing playback test steps')
     const metronomeSteps: PlaybackStep[] = [
@@ -287,7 +414,7 @@ describe('useAudioPlayer', () => {
       },
     ]
 
-    await player.schedule(metronomeSteps, 1, {}, {
+    await player.schedule(metronomeSteps, 1, { onMetronomeBeat }, {
       mode: 'playback',
       minLeadIn: 4,
       bandPreCount: false,
@@ -297,6 +424,54 @@ describe('useAudioPlayer', () => {
 
     expect(oscillatorFrequencyValues.slice(0, 4)).toEqual([1200, 650, 850, 650])
     expect(gainSetValueAtTimeMock.mock.calls.slice(0, 4).map(([gain]) => gain)).toEqual([0.34, 0.11, 0.22, 0.11])
+
+    mockCurrentTime = 10.2
+    vi.advanceTimersByTime(16)
+    expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 1, division: 2, accent: true })
+
+    mockCurrentTime = 12.2
+    vi.advanceTimersByTime(16)
+    expect(onMetronomeBeat).toHaveBeenLastCalledWith({ beat: 2, division: 2, accent: false })
+  })
+
+  it('keeps scheduling the music after the count-in in always mode', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const onStepStart = vi.fn<(step: PlaybackStep) => void>()
+    const [firstStep, secondStep] = steps
+    if (firstStep === undefined || secondStep === undefined) throw new Error('Missing playback test steps')
+    const metronomeSteps: PlaybackStep[] = [
+      {
+        ...firstStep,
+        durationMs: 4000,
+        position: { measureNumber: 1, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+      },
+      {
+        ...secondStep,
+        playbackStartMs: 4000,
+        durationMs: 4000,
+        position: { measureNumber: 2, passIndex: 1 },
+        meter: { numerator: 4, denominator: 4 },
+      },
+    ]
+
+    await player.schedule(metronomeSteps, 1, { onStepStart }, {
+      mode: 'always',
+      minLeadIn: 4,
+      bandPreCount: false,
+      subdivision: 1,
+    })
+
+    expect(leftScheduleMock).toHaveBeenCalledWith(14.2, expect.arrayContaining([
+      expect.objectContaining({ time: 0, note: 60 }),
+    ]))
+    expect(rightScheduleMock).toHaveBeenCalledWith(14.2, expect.arrayContaining([
+      expect.objectContaining({ time: 4, note: 64 }),
+    ]))
+
+    mockCurrentTime = 14.2
+    vi.advanceTimersByTime(16)
+    expect(onStepStart).toHaveBeenCalledWith(metronomeSteps[0])
   })
 
   it('derives visual callbacks from the scheduled audio clock', async () => {

@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest'
 
 import type { SelectionState, SheetObjectIndex } from '@zupfnoter/types'
 
-import { buildPlaybackTimeline, resolvePlaybackSteps, type PlaybackStep, updateActivePlaybackRanges } from '../playback'
+import {
+  buildPlaybackTimeline,
+  resolveEffectivePlaybackPartNames,
+  resolvePlaybackSteps,
+  type PlaybackStep,
+  updateActivePlaybackRanges,
+} from '../playback'
 
 const timeline: PlaybackStep[] = [
   {
@@ -524,5 +530,24 @@ describe('resolvePlaybackSteps', () => {
     expect(steps).toHaveLength(1)
     expect(steps[0]?.originVoiceIds).toEqual(['1', '2', '3'])
     expect(steps[0]?.activeNotes).toHaveLength(3)
+  })
+})
+
+describe('resolveEffectivePlaybackPartNames', () => {
+  it('keeps a trimmed part name until the next non-empty name', () => {
+    const [first, second, third, fourth] = timeline
+    if (first === undefined || second === undefined || third === undefined || fourth === undefined) {
+      throw new Error('Playback test timeline is incomplete')
+    }
+    const namedTimeline = [
+      { ...first, partName: '  Teil A  ' },
+      second,
+      { ...third, partName: '   ' },
+      { ...fourth, partName: 'Teil B' },
+    ]
+
+    const names = resolveEffectivePlaybackPartNames(namedTimeline)
+
+    expect(namedTimeline.map((step) => names.get(step.flowIndex))).toEqual(['Teil A', 'Teil A', 'Teil A', 'Teil B'])
   })
 })

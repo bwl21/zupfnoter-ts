@@ -1222,7 +1222,6 @@ eines Übungs-QR-Codes werden die wirksamen Werte in den Playback-Link
   "metronomeMode": "off",
   "minLeadIn": 4,
   "bandPreCount": false,
-  "division": 4,
   "subdivision": 1
 }
 ```
@@ -1248,8 +1247,9 @@ ein 4/4-Takt mit Stick-Klicks auf den Zählzeiten 1 und 3.
 
 ## `extract.0.playback.division` - Schläge/Takt {#extract.0.playback.division}
 
-Anzahl der Hauptschläge pro Takt beim Zählen. Der Wert ist eine positive ganze
-Zahl; der Built-in-Wert ist `4`.
+Anzahl der Hauptschläge pro Takt beim Zählen. Ohne expliziten Wert wird der
+Zähler der jeweils gültigen `M:`-Taktart verwendet. Ein positiver ganzzahliger
+Wert überschreibt diese Vorgabe für den Auszug.
 
 ## `extract.0.playback.subdivision` - Klicks/Schlag {#extract.0.playback.subdivision}
 

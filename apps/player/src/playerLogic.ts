@@ -1,4 +1,4 @@
-import type { PlaybackEvent, PlaybackMeter, PlaybackPosition, PlaybackPositionMarker } from '@zupfnoter/playback'
+import type { PlaybackEvent, PlaybackPosition, PlaybackPositionMarker } from '@zupfnoter/playback'
 
 export function parsePosition(value: string): PlaybackPosition | undefined {
   const match = value.trim().match(/^(\d+)\.(\d+)$/)
@@ -79,41 +79,6 @@ export function tempoBpmAtTime(
   const quarterDurationMs = beatDurationMs * marker.meter.denominator / 4
   if (quarterDurationMs <= 0) return undefined
   return 60000 / quarterDurationMs
-}
-
-export interface PickupMetronomeState {
-  meter: PlaybackMeter
-  beat: number
-  beatDurationMs: number
-}
-
-/** Resolves the metrical phase of an unmetered opening pickup. */
-export function pickupMetronomeStateAtTime(
-  markers: readonly PlaybackPositionMarker[],
-  timeMs: number,
-  tempoBpm?: number,
-  tempoUnit = 0.25,
-): PickupMetronomeState | undefined {
-  const opening = markers[0]
-  const firstMeterIndex = markers.findIndex((marker, index) => index > 0
-    && marker.meter !== undefined
-    && opening !== undefined
-    && marker.position.measureNumber === opening.position.measureNumber
-    && marker.position.passIndex === opening.position.passIndex)
-  const metered = firstMeterIndex >= 0 ? markers[firstMeterIndex] : undefined
-  if (opening === undefined || opening.meter !== undefined || metered?.meter === undefined
-    || timeMs < opening.timeMs || timeMs >= metered.timeMs) return undefined
-  const beatDurationMs = tempoBpm !== undefined && tempoBpm > 0
-    ? 60000 / tempoBpm / (tempoUnit * metered.meter.denominator)
-    : metered.timeMs - opening.timeMs
-  if (beatDurationMs <= 0) return undefined
-  const pickupBeatCount = Math.max(1, Math.min(metered.meter.numerator,
-    Math.round((metered.timeMs - opening.timeMs) / beatDurationMs)))
-  return {
-    meter: metered.meter,
-    beat: Math.max(1, metered.meter.numerator - pickupBeatCount + 1),
-    beatDurationMs,
-  }
 }
 
 export function resolveRange(

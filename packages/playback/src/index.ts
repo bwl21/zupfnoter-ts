@@ -39,6 +39,7 @@ export interface PlaybackMetronomeConfig {
   mode: PlaybackMetronomeMode
   minLeadIn?: number
   bandPreCount?: boolean
+  /** Number of main beats per measure; defaults to the current meter numerator. */
   division?: number
   subdivision?: number
 }
@@ -47,6 +48,12 @@ export interface PlaybackMetronomeClick {
   timeMs: number
   accent: boolean
   kind: 'BAR_START' | 'MAIN_BEAT' | 'SUBDIVISION'
+  /** One-based main beat within the configured measure division. */
+  beat: number
+  /** Number of main beats in the measure containing this click. */
+  division: number
+  /** Zero-based subdivision within the main beat. */
+  subdivision: number
   isLastBeforeEntry: boolean
 }
 
@@ -94,7 +101,6 @@ export function createPlaybackCountInPlan(
   tempoUnit = 0.25,
 ): PlaybackCountInPlan | undefined {
   const minLeadIn = Math.max(1, Math.floor(settings.minLeadIn ?? 4))
-  const division = Math.max(1, Math.floor(settings.division ?? 4))
   const subdivision = Math.max(1, Math.floor(settings.subdivision ?? 1))
   const openingMarker = markers[0]
   const delayedMeterMarker = markers.find((marker, index) => index > 0
@@ -102,15 +108,20 @@ export function createPlaybackCountInPlan(
     && openingMarker !== undefined
     && marker.position.measureNumber === openingMarker.position.measureNumber
     && marker.position.passIndex === openingMarker.position.passIndex)
-  const isPickupEntry = openingMarker?.timeMs === entryTimeMs
+  const isPickupEntry = openingMarker !== undefined
+    && openingMarker.timeMs === entryTimeMs
     && openingMarker.meter === undefined
     && delayedMeterMarker?.meter !== undefined
-  const markerIndex = isPickupEntry
-    ? markers.indexOf(delayedMeterMarker)
-    : markers.findIndex((marker) => marker.timeMs === entryTimeMs && marker.meter !== undefined)
+  let markerIndex = -1
+  for (const [index, candidate] of markers.entries()) {
+    if (candidate.timeMs > entryTimeMs) break
+    if (candidate.meter !== undefined) markerIndex = index
+  }
+  if (isPickupEntry && delayedMeterMarker !== undefined) markerIndex = markers.indexOf(delayedMeterMarker)
   const marker = markerIndex < 0 ? undefined : markers[markerIndex]
   const meter = marker?.meter
   if (marker === undefined || meter === undefined) return undefined
+  const division = Math.max(1, Math.floor(settings.division ?? meter.numerator))
   const next = nextMeasureMarker(markers, markerIndex)
   const measuredDurationMs = next === undefined ? 0 : next.timeMs - marker.timeMs
   const tempoBeatDurationMs = tempoBpm !== undefined && tempoBpm > 0
@@ -121,16 +132,26 @@ export function createPlaybackCountInPlan(
     : tempoBeatDurationMs
   if (!(beatDurationMs > 0)) return undefined
 
-  let partialBeats = 0
+  let pickupBeats = 0
   if (isPickupEntry && openingMarker !== undefined) {
     const pickupDurationMs = marker.timeMs - openingMarker.timeMs
-    const pickupBeats = Math.max(1, Math.min(division, Math.round(pickupDurationMs / beatDurationMs)))
-    partialBeats = Math.max(0, division - pickupBeats)
+    const soundingPickupBeats = Math.max(1, Math.min(division, Math.round(pickupDurationMs / beatDurationMs)))
+    pickupBeats = Math.max(0, division - soundingPickupBeats)
   }
-  const normalBeatCount = partialBeats >= minLeadIn
-    ? partialBeats
-    : partialBeats + Math.ceil((minLeadIn - partialBeats) / division) * division
-  const normalDurationMs = normalBeatCount * beatDurationMs
+  const selectionStartMs = openingMarker?.timeMs ?? entryTimeMs
+  const actualClicks = isPickupEntry
+    ? []
+    : createPlaybackMetronomeClicks(markers, entryTimeMs, settings.division, subdivision)
+      .filter((click) => click.timeMs >= selectionStartMs && click.timeMs < entryTimeMs)
+  const actualMainBeatCount = actualClicks.filter((click) => click.subdivision === 0).length
+  const availableBeatCount = pickupBeats + actualMainBeatCount
+  const precedingFullBeats = availableBeatCount >= minLeadIn
+    ? 0
+    : Math.ceil((minLeadIn - availableBeatCount) / division) * division
+  const virtualBeatCount = precedingFullBeats + pickupBeats
+  const virtualDurationMs = virtualBeatCount * beatDurationMs
+  const actualDurationMs = isPickupEntry ? 0 : Math.max(0, entryTimeMs - selectionStartMs)
+  const normalDurationMs = virtualDurationMs + actualDurationMs
   const bandDurationMs = settings.bandPreCount === true ? 4 * beatDurationMs : 0
   const events: PlaybackCountEvent[] = []
   if (settings.bandPreCount === true) {
@@ -139,7 +160,7 @@ export function createPlaybackCountInPlan(
       { offsetMs: 2 * beatDurationMs, kind: 'PRE_COUNT', beat: 2, isLastBeforeEntry: false },
     )
   }
-  for (let beatIndex = 0; beatIndex < normalBeatCount; beatIndex += 1) {
+  for (let beatIndex = 0; beatIndex < virtualBeatCount; beatIndex += 1) {
     const beat = beatIndex % division
     for (let subdivisionIndex = 0; subdivisionIndex < subdivision; subdivisionIndex += 1) {
       const kind: PlaybackCountEventKind = subdivisionIndex > 0
@@ -149,10 +170,20 @@ export function createPlaybackCountInPlan(
         offsetMs: bandDurationMs + (beatIndex + subdivisionIndex / subdivision) * beatDurationMs,
         kind,
         beat,
-        isLastBeforeEntry: beatIndex === normalBeatCount - 1 && subdivisionIndex === subdivision - 1,
+        isLastBeforeEntry: false,
       })
     }
   }
+  for (const click of actualClicks) {
+    events.push({
+      offsetMs: bandDurationMs + virtualDurationMs + click.timeMs - selectionStartMs,
+      kind: click.kind,
+      beat: click.beat - 1,
+      isLastBeforeEntry: false,
+    })
+  }
+  const lastEvent = events[events.length - 1]
+  if (lastEvent !== undefined && lastEvent.kind !== 'PRE_COUNT') lastEvent.isLastBeforeEntry = true
   return { durationMs: bandDurationMs + normalDurationMs, beatDurationMs, meter, events }
 }
 
@@ -160,30 +191,68 @@ export function createPlaybackCountInPlan(
 export function createPlaybackMetronomeClicks(
   markers: readonly PlaybackPositionMarker[],
   durationMs: number,
-  division = 4,
+  division?: number,
   subdivision = 1,
 ): PlaybackMetronomeClick[] {
   const clicks: PlaybackMetronomeClick[] = []
-  const safeDivision = Math.max(1, Math.floor(division))
   const safeSubdivision = Math.max(1, Math.floor(subdivision))
+  const openingMarker = markers[0]
+  const delayedMeterIndex = markers.findIndex((candidate, index) => index > 0
+    && openingMarker !== undefined
+    && openingMarker.meter === undefined
+    && candidate.meter !== undefined
+    && candidate.position.measureNumber === openingMarker.position.measureNumber
+    && candidate.position.passIndex === openingMarker.position.passIndex)
+  const delayedMeterMarker = delayedMeterIndex < 0 ? undefined : markers[delayedMeterIndex]
+  if (openingMarker !== undefined && delayedMeterMarker?.meter !== undefined) {
+    const next = nextMeasureMarker(markers, delayedMeterIndex)
+    const safeDivision = Math.max(1, Math.floor(division ?? delayedMeterMarker.meter.numerator))
+    const fullMeasureDurationMs = (next?.timeMs ?? durationMs) - delayedMeterMarker.timeMs
+    const beatDurationMs = fullMeasureDurationMs / safeDivision
+    const pickupDurationMs = delayedMeterMarker.timeMs - openingMarker.timeMs
+    if (beatDurationMs > 0 && pickupDurationMs > 0) {
+      const pickupBeatCount = Math.max(1, Math.min(safeDivision, Math.round(pickupDurationMs / beatDurationMs)))
+      const pickupStartBeat = safeDivision - pickupBeatCount
+      for (let clickIndex = 0; clickIndex < pickupBeatCount * safeSubdivision; clickIndex += 1) {
+        const subdivisionIndex = clickIndex % safeSubdivision
+        const beat = pickupStartBeat + Math.floor(clickIndex / safeSubdivision)
+        const timeMs = openingMarker.timeMs + clickIndex * beatDurationMs / safeSubdivision
+        if (timeMs >= durationMs) continue
+        clicks.push({
+          timeMs,
+          accent: beat === 0 && subdivisionIndex === 0,
+          kind: subdivisionIndex > 0 ? 'SUBDIVISION' : beat === 0 ? 'BAR_START' : 'MAIN_BEAT',
+          beat: beat + 1,
+          division: safeDivision,
+          subdivision: subdivisionIndex,
+          isLastBeforeEntry: false,
+        })
+      }
+    }
+  }
   for (let index = 0; index < markers.length; index += 1) {
     const marker = markers[index]
     if (marker === undefined || marker.meter === undefined) continue
+    const safeDivision = Math.max(1, Math.floor(division ?? marker.meter.numerator))
     const next = markers.slice(index + 1).find((candidate) => (
       candidate.position.measureNumber !== marker.position.measureNumber
       || candidate.position.passIndex !== marker.position.passIndex
     ))
-    const endMs = Math.min(durationMs, next?.timeMs ?? durationMs)
-    const measureDurationMs = endMs - marker.timeMs
+    const measureDurationMs = (next?.timeMs ?? durationMs) - marker.timeMs
     if (measureDurationMs <= 0) continue
     const clickCount = safeDivision * safeSubdivision
     for (let clickIndex = 0; clickIndex < clickCount; clickIndex += 1) {
       const mainBeat = clickIndex % safeSubdivision === 0
       const kind = clickIndex === 0 ? 'BAR_START' : mainBeat ? 'MAIN_BEAT' : 'SUBDIVISION'
+      const timeMs = marker.timeMs + clickIndex * measureDurationMs / clickCount
+      if (timeMs >= durationMs) continue
       clicks.push({
-        timeMs: marker.timeMs + clickIndex * measureDurationMs / clickCount,
+        timeMs,
         accent: kind === 'BAR_START',
         kind,
+        beat: Math.floor(clickIndex / safeSubdivision) + 1,
+        division: safeDivision,
+        subdivision: clickIndex % safeSubdivision,
         isLastBeforeEntry: false,
       })
     }
@@ -228,7 +297,8 @@ const COMPACT_FORMAT_VERSION = 2
 const POSITION_FORMAT_VERSION = 3
 const TEMPO_FORMAT_VERSION = 4
 const PART_FORMAT_VERSION = 5
-const FORMAT_VERSION = 7
+const METRONOME_FORMAT_VERSION = 7
+const FORMAT_VERSION = 8
 const FLAG_DEFLATE_RAW = 1
 const FLAG_EVENTS_HAVE_VELOCITY = 2
 const FLAG_EVENTS_HAVE_PASS = 4
@@ -512,10 +582,10 @@ async function encodePayloadParts(
     const mode = modes.indexOf(metronome.mode)
     if (mode < 0) throw new Error(`Invalid playback metronome mode: ${metronome.mode}`)
     const minLeadIn = metronome.minLeadIn ?? 4
-    const division = metronome.division ?? 4
+    const division = metronome.division ?? 0
     const subdivision = metronome.subdivision ?? 1
     if (!Number.isSafeInteger(minLeadIn) || minLeadIn < 1
-      || !Number.isSafeInteger(division) || division < 1
+      || !Number.isSafeInteger(division) || division < 0
       || !Number.isSafeInteger(subdivision) || subdivision < 1) {
       throw new Error('Invalid playback count settings')
     }
@@ -640,7 +710,7 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
   const version = payload[3]
   if (version !== LEGACY_FORMAT_VERSION && version !== COMPACT_FORMAT_VERSION
     && version !== POSITION_FORMAT_VERSION && version !== TEMPO_FORMAT_VERSION
-    && version !== PART_FORMAT_VERSION && version !== FORMAT_VERSION) {
+    && version !== PART_FORMAT_VERSION && version !== METRONOME_FORMAT_VERSION && version !== FORMAT_VERSION) {
     throw new Error(`Unsupported playback format version: ${version}`)
   }
   const formatFlags = payload[4] ?? 0
@@ -670,7 +740,7 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
     tempoUnit = readVarUInt(payload, offset) / 100000
     if (!(tempoBpm > 0) || !(tempoUnit > 0)) throw new Error('Invalid playback tempo metadata')
   }
-  if (version >= FORMAT_VERSION && (formatFlags & FLAG_HAS_METRONOME_CONFIG) !== 0) {
+  if (version >= METRONOME_FORMAT_VERSION && (formatFlags & FLAG_HAS_METRONOME_CONFIG) !== 0) {
     const modeValue = payload[offset.value]
     if (modeValue === undefined || modeValue > 3) throw new Error('Invalid playback metronome mode')
     offset.value += 1
@@ -679,8 +749,16 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
     const bandPreCount = readVarUInt(payload, offset)
     const division = readVarUInt(payload, offset)
     const subdivision = readVarUInt(payload, offset)
-    if (minLeadIn < 1 || bandPreCount > 1 || division < 1 || subdivision < 1) throw new Error('Invalid playback count settings')
-    metronome = { mode: modes[modeValue] ?? 'off', minLeadIn, bandPreCount: bandPreCount === 1, division, subdivision }
+    if (minLeadIn < 1 || bandPreCount > 1
+      || (version === METRONOME_FORMAT_VERSION ? division < 1 : division < 0)
+      || subdivision < 1) throw new Error('Invalid playback count settings')
+    metronome = {
+      mode: modes[modeValue] ?? 'off',
+      minLeadIn,
+      bandPreCount: bandPreCount === 1,
+      division: division === 0 ? undefined : division,
+      subdivision,
+    }
   }
   const events: PlaybackEvent[] = []
   let startUnits = 0

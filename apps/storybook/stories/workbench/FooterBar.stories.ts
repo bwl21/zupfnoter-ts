@@ -12,7 +12,7 @@ const args = {
   storageReadOnly: false,
   dirty: false,
   saveFormat: 'A4',
-  speedFactor: 1,
+  speedBpm: 100,
   metronomeMode: 'off' as const,
   cursorPosition: 'Zeile 1, Spalte 1',
   selectionVoiceScope: 'extract-voices' as const,

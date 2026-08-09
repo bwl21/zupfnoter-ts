@@ -45,7 +45,12 @@ function cutStringNames(stringNames: string, from: number, to: number): string {
  * @param conf  Die Confstack-Instanz, über die Preset-Closures auflösen.
  *              Closures werden erst bei Zugriff ausgewertet (lazy).
  */
-export function initConf(conf: Confstack): ZupfnoterConfig {
+export interface InitConfOptions {
+  /** Contextual main-beat count derived from the initial ABC `M:` numerator. */
+  playbackDivision?: number
+}
+
+export function initConf(conf: Confstack, options: InitConfOptions = {}): ZupfnoterConfig {
   const extract0 = {
     title: 'alle Stimmen',
     startpos: 15,
@@ -111,7 +116,7 @@ export function initConf(conf: Confstack): ZupfnoterConfig {
       metronomeMode: 'off',
       minLeadIn: 4,
       bandPreCount: false,
-      division: 4,
+      ...(options.playbackDivision === undefined ? {} : { division: options.playbackDivision }),
       subdivision: 1,
     },
     layout: {

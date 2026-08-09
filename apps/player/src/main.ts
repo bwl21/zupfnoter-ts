@@ -22,12 +22,11 @@ import {
   partNameAtTime,
   parsePosition,
   positionAtTime,
-  pickupMetronomeStateAtTime,
   resolveRange,
   tempoBpmAtTime,
 } from './playerLogic'
 
-const PLAYER_VERSION = '0.3.4'
+const PLAYER_VERSION = '0.3.6'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -240,7 +239,7 @@ function renderPlayer(
   let selectedRangePosition = firstPosition
   let minLeadIn = metronomeConfig?.minLeadIn ?? 4
   let bandPreCount = metronomeConfig?.bandPreCount ?? false
-  let metronomeDivision = metronomeConfig?.division ?? 4
+  let metronomeDivision = metronomeConfig?.division
   let metronomeSubdivision = metronomeConfig?.subdivision ?? 1
   let metronomeVolume = 1
   let selectedMetronomeMode: Exclude<PlaybackMetronomeConfig['mode'], 'off'> = metronomeConfig?.mode === 'countIn'
@@ -250,6 +249,19 @@ function renderPlayer(
     : 'always'
   let metronomeEnabled = metronomeConfig?.mode !== undefined && metronomeConfig.mode !== 'off'
   let metronomeMode: PlaybackMetronomeConfig['mode'] = metronomeEnabled ? selectedMetronomeMode : 'off'
+
+  function divisionForMeter(meter?: { numerator: number }): number {
+    return Math.max(1, metronomeDivision ?? meter?.numerator ?? 4)
+  }
+
+  function meterAtTime(timeMs: number): PlaybackPositionMarker['meter'] {
+    let meter = positionMarkers.find((marker) => marker.meter !== undefined)?.meter
+    for (const marker of positionMarkers) {
+      if (marker.timeMs > timeMs) break
+      if (marker.meter !== undefined) meter = marker.meter
+    }
+    return meter
+  }
 
   function readRange(fromPosition: PlaybackPosition = firstPosition): [number, number] | undefined {
     const from = `${fromPosition.measureNumber}.${fromPosition.passIndex}`
@@ -262,6 +274,7 @@ function renderPlayer(
     selectedEvents = events.slice(range.range[0], range.range[1] + 1)
     selectedStartMs = range.startMs
     selectedRangePosition = fromPosition
+    if (metronomeDivision === undefined) ui.setDivision(divisionForMeter(meterAtTime(selectedStartMs)))
     return range.range
   }
   let ui: PlayerUiController
@@ -277,7 +290,7 @@ function renderPlayer(
     hasMetronomeData: positionMarkers.some((marker) => marker.meter !== undefined),
     minLeadIn,
     bandPreCount,
-    division: metronomeDivision,
+    division: divisionForMeter(meterAtTime(selectedStartMs)),
     subdivision: metronomeSubdivision,
     baseTempoBpm: tempoBpmAtTime(positionMarkers, selectedStartMs, tempoBpm),
     metronomeEnabled,
@@ -317,6 +330,7 @@ function renderPlayer(
   let animationFrame: number | undefined
   let playbackOffsetMs = 0
   let playbackStartedAtContextTime = 0
+  let metronomePlaybackStartMs = selectedStartMs
   let isPaused = false
   let speedFactor = 1
   let harpPlayerPromise: Promise<SoundfontPlayer> | undefined
@@ -371,14 +385,35 @@ function renderPlayer(
       const selectedDurationMs = playbackDurationForSelection(selectedEvents, positionMarkers, selectedStartMs)
       const playbackEndMs = selectedStartMs + selectedDurationMs
       const measureDuration = (nextMarker?.timeMs ?? playbackEndMs) - marker.timeMs
-      const beatDuration = tempoBpm !== undefined && tempoBpm > 0
-        ? 60000 / tempoBpm / (tempoUnit * marker.meter.denominator)
-        : measureDuration / marker.meter.numerator
-      const beat = beatDuration > 0 ? Math.min(marker.meter.numerator, Math.floor((absoluteTimeMs - marker.timeMs) / beatDuration) + 1) : 1
-      ui.setMetronome(marker.meter, beat, metronomeEnabled)
+      const division = divisionForMeter(marker.meter)
+      const beatDuration = measureDuration / division
+      const beat = beatDuration > 0 ? Math.min(division, Math.floor((absoluteTimeMs - marker.timeMs) / beatDuration) + 1) : 1
+      ui.setMetronome(
+        { ...marker.meter, numerator: division },
+        beat,
+        metronomeEnabled && (metronomeMode === 'playback' || metronomeMode === 'always'),
+      )
     } else {
-      const pickup = pickupMetronomeStateAtTime(positionMarkers, absoluteTimeMs, tempoBpm, tempoUnit)
-      if (pickup !== undefined) ui.setMetronome(pickup.meter, pickup.beat, metronomeEnabled)
+      const selectedDurationMs = playbackDurationForSelection(selectedEvents, positionMarkers, selectedStartMs)
+      const pickupClicks = createPlaybackMetronomeClicks(
+        positionMarkers,
+        selectedStartMs + selectedDurationMs,
+        metronomeDivision,
+        metronomeSubdivision,
+      )
+      let pickupClick: (typeof pickupClicks)[number] | undefined
+      for (const click of pickupClicks) {
+        if (click.timeMs > absoluteTimeMs) break
+        pickupClick = click
+      }
+      const pickupMeter = meterAtTime(absoluteTimeMs)
+      if (pickupClick !== undefined && pickupMeter !== undefined) {
+        ui.setMetronome(
+          { ...pickupMeter, numerator: pickupClick.division },
+          pickupClick.beat,
+          metronomeEnabled && (metronomeMode === 'playback' || metronomeMode === 'always'),
+        )
+      }
     }
     ui.setPlaybackTime(elapsedMs)
   }
@@ -404,11 +439,12 @@ function renderPlayer(
 
   function scheduleCountIn(
     context: AudioContext,
-    audioStartAt: number,
+    timelineStartAt: number,
+    entryOffsetMs: number,
     countIn: ReturnType<typeof createPlaybackCountInPlan>,
   ): number {
-    if (countIn === undefined) return audioStartAt
-    const countInStartAt = audioStartAt - countIn.durationMs / 1000 / speedFactor
+    if (countIn === undefined) return timelineStartAt
+    const countInStartAt = timelineStartAt + (entryOffsetMs - countIn.durationMs) / 1000 / speedFactor
     for (const event of countIn.events) {
       const clickAt = countInStartAt + event.offsetMs / 1000 / speedFactor
       const sound = resolvePlaybackMetronomeEventSound(event.kind, event.isLastBeforeEntry)
@@ -426,15 +462,10 @@ function renderPlayer(
     windowEndMs = durationMs,
   ): void {
     if (!metronomeEnabled || metronomeMode === 'countIn') return
-    const pickup = pickupMetronomeStateAtTime(positionMarkers, selectedStartMs, tempoBpm, tempoUnit)
-    if (pickup !== undefined && selectedStartMs === (positionMarkers[0]?.timeMs ?? selectedStartMs)) {
-      playMetronomeClick(context, 'regular', audioStartAt)
-      scheduledMetronomeTimes.add(selectedStartMs)
-    }
     for (const click of createPlaybackMetronomeClicks(positionMarkers, selectedStartMs + durationMs,
       metronomeDivision, metronomeSubdivision)) {
         const clickTime = click.timeMs
-        if (clickTime < selectedStartMs || clickTime > selectedStartMs + durationMs) continue
+        if (clickTime < metronomePlaybackStartMs || clickTime > selectedStartMs + durationMs) continue
         const relativeClickTime = clickTime - selectedStartMs
         if (relativeClickTime < windowStartMs || relativeClickTime >= windowEndMs) continue
         if (scheduledMetronomeTimes.has(clickTime)) continue
@@ -545,22 +576,30 @@ function renderPlayer(
     window.clearTimeout(loadingTimer)
     if (audioContext !== playerContext) return
     setLoading(false)
+    const entryTimeMs = selectedEvents.reduce(
+      (earliest, event) => Math.min(earliest, event.startMs),
+      selectedEvents[0]?.startMs ?? selectedStartMs,
+    )
+    const entryOffsetMs = Math.max(0, entryTimeMs - selectedStartMs)
     const countIn = metronomeEnabled && (metronomeMode === 'countIn' || metronomeMode === 'always') && playbackOffsetMs === 0
-      ? createPlaybackCountInPlan(positionMarkers, selectedStartMs, {
+      ? createPlaybackCountInPlan(positionMarkers, entryTimeMs, {
         minLeadIn,
         bandPreCount,
         division: metronomeDivision,
         subdivision: metronomeSubdivision,
       }, tempoBpm, tempoUnit)
       : undefined
+    const preRollDurationMs = Math.max(0, (countIn?.durationMs ?? 0) - entryOffsetMs)
     const audioStartAt = playerContext.currentTime
       + AUDIO_START_LEAD_MS / 1000
-      + (countIn?.durationMs ?? 0) / 1000 / speedFactor
+      + preRollDurationMs / 1000 / speedFactor
     playbackStartedAtContextTime = audioStartAt - playbackOffsetMs / 1000 / speedFactor
     const elapsed = () => Math.max(0, (playerContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
     const countInStartAt = countIn === undefined
       ? audioStartAt
-      : scheduleCountIn(playerContext, audioStartAt, countIn)
+      : scheduleCountIn(playerContext, audioStartAt, entryOffsetMs, countIn)
+    const countInEndAt = audioStartAt + entryOffsetMs / 1000 / speedFactor
+    metronomePlaybackStartMs = countIn === undefined ? selectedStartMs : entryTimeMs
     const chordSizes = new Map<number, number>()
     for (const event of selectedEvents) {
       chordSizes.set(event.startMs, (chordSizes.get(event.startMs) ?? 0) + 1)
@@ -621,7 +660,7 @@ function renderPlayer(
     scheduleWindow()
     const update = () => {
       if (audioContext !== playerContext) return
-      if (playerContext.currentTime < audioStartAt) {
+      if (playerContext.currentTime < countInEndAt) {
         if (countIn !== undefined) {
           const countInElapsedMs = Math.max(0, (playerContext.currentTime - countInStartAt) * 1000 * speedFactor)
           let visibleEvent = countIn.events[0]
@@ -630,8 +669,8 @@ function renderPlayer(
             visibleEvent = event
           }
           const beat = (visibleEvent?.beat ?? 0) + 1
-          ui.setPosition(selectedRangePosition)
-          ui.setMetronome(countIn.meter, beat, true)
+          ui.setPosition(selectedRangePosition, partNameAtTime(positionMarkers, selectedStartMs))
+          ui.setMetronome({ ...countIn.meter, numerator: divisionForMeter(countIn.meter) }, beat, true)
           ui.setPlaybackTime(0)
         }
         animationFrame = window.requestAnimationFrame(update)
@@ -663,11 +702,16 @@ function renderPlayer(
     isPaused = true
   }
 
+  function currentPlaybackElapsedMs(): number {
+    if (audioContext === undefined || playbackStartedAtContextTime <= 0) return playbackOffsetMs
+    return Math.max(0, (audioContext.currentTime - playbackStartedAtContextTime) * 1000 * speedFactor)
+  }
+
   function handleMetronomeChange(enabled: boolean): void {
     metronomeEnabled = enabled
     metronomeMode = enabled ? selectedMetronomeMode : 'off'
     clearMetronomeSchedule()
-    updatePosition(playbackOffsetMs)
+    updatePosition(currentPlaybackElapsedMs())
     scheduleMetronomeFromCurrentPosition()
   }
 
@@ -676,7 +720,7 @@ function renderPlayer(
     if (!metronomeEnabled) return
     metronomeMode = mode
     clearMetronomeSchedule()
-    updatePosition(playbackOffsetMs)
+    updatePosition(currentPlaybackElapsedMs())
     scheduleMetronomeFromCurrentPosition()
   }
 

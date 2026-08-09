@@ -113,6 +113,8 @@ describe('playback store', () => {
       activeTextRanges: [{ startpos: 41, endpos: 46 }],
       activeStartChar: 41,
       activeTime: '1:2',
+      measureNumber: 15,
+      partName: 'Teil A',
       passIndex: 2,
       voltaNumber: 2,
     })
@@ -120,6 +122,8 @@ describe('playback store', () => {
     expect(playbackStore.highlight.activeTextRanges).toEqual([{ startpos: 41, endpos: 46 }])
     expect(playbackStore.highlight.activeStartChar).toBe(41)
     expect(playbackStore.highlight.activeTime).toBe('1:2')
+    expect(playbackStore.highlight.measureNumber).toBe(15)
+    expect(playbackStore.highlight.partName).toBe('Teil A')
     expect(playbackStore.highlight.passIndex).toBe(2)
     expect(playbackStore.highlight.voltaNumber).toBe(2)
 

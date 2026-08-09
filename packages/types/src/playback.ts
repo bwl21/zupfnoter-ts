@@ -26,7 +26,7 @@ export interface PlaybackConfig {
   minLeadIn?: number
   /** Adds the explicit Zupfnoter band pre-count before normal entry counting. */
   bandPreCount?: boolean
-  /** Number of main count beats per measure. */
+  /** Number of main count beats per measure; defaults to the current ABC meter numerator. */
   division?: number
   /** Number of audible subdivisions per main count beat. */
   subdivision?: number
@@ -52,6 +52,10 @@ export interface PlaybackHighlight {
   activeTextRanges: SelectionTextRange[]
   activeStartChar?: number
   activeTime?: string
+  /** Canonical one-based measure number at the current playback position. */
+  measureNumber?: number
+  /** Latest non-empty, trimmed ABC part name at the current playback position. */
+  partName?: string
   passIndex?: number
   voltaNumber?: number
 }
@@ -91,6 +95,10 @@ export type PlaybackPlayerEvent =
       activeTextRanges: SelectionTextRange[]
       activeStartChar?: number
       activeTime?: string
+      /** Canonical one-based measure number at the current playback position. */
+      measureNumber?: number
+      /** Latest non-empty, trimmed ABC part name at the current playback position. */
+      partName?: string
       passIndex?: number
       voltaNumber?: number
     }

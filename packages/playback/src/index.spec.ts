@@ -48,8 +48,47 @@ describe('shared metronome sound profile', () => {
     ])
 
     const playback = createPlaybackMetronomeClicks(markers, 4000, 2, 2)
+    expect(playback.slice(0, 4).map(({ beat, division, subdivision }) => ({ beat, division, subdivision }))).toEqual([
+      { beat: 1, division: 2, subdivision: 0 },
+      { beat: 1, division: 2, subdivision: 1 },
+      { beat: 2, division: 2, subdivision: 0 },
+      { beat: 2, division: 2, subdivision: 1 },
+    ])
     expect(playback.slice(0, 4).map((event) => resolvePlaybackMetronomeEventSound(event.kind))).toEqual([
       'accent', 'subdivision', 'regular', 'subdivision',
+    ])
+  })
+
+  it('uses each ABC meter numerator when division is not configured', () => {
+    const markers = [
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 3, denominator: 4 } },
+      { timeMs: 3000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 2, denominator: 4 } },
+      { timeMs: 5000, position: { measureNumber: 3, passIndex: 1 }, meter: { numerator: 2, denominator: 4 } },
+    ]
+
+    const countIn = createPlaybackCountInPlan(markers, 0, {
+      minLeadIn: 1, bandPreCount: false, subdivision: 1,
+    })
+    const playback = createPlaybackMetronomeClicks(markers, 5000, undefined, 1)
+
+    expect(countIn?.events.map((event) => event.beat)).toEqual([0, 1, 2])
+    expect(playback.map((click) => click.division)).toEqual([3, 3, 3, 2, 2])
+  })
+
+  it('continues playback clicks on the entry beat of an opening pickup', () => {
+    const clicks = createPlaybackMetronomeClicks([
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 } },
+      { timeMs: 2000, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 6000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+    ], 6000, 4, 1)
+
+    expect(clicks.map(({ timeMs, beat }) => ({ timeMs, beat }))).toEqual([
+      { timeMs: 0, beat: 3 },
+      { timeMs: 1000, beat: 4 },
+      { timeMs: 2000, beat: 1 },
+      { timeMs: 3000, beat: 2 },
+      { timeMs: 4000, beat: 3 },
+      { timeMs: 5000, beat: 4 },
     ])
   })
 })
@@ -93,6 +132,30 @@ describe('playback link format', () => {
     ], 0, { minLeadIn: 2, bandPreCount: false, division: 4, subdivision: 1 })
     expect(beatThreeEntry?.events.map((event) => event.beat)).toEqual([0, 1])
     expect(beatThreeEntry?.events.at(-1)?.isLastBeforeEntry).toBe(true)
+  })
+
+  it('counts through written rests to an entry on beat three', () => {
+    const markers = [
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+      { timeMs: 4000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
+    ]
+
+    const beatThreeEntry = createPlaybackCountInPlan(
+      markers,
+      2000,
+      { minLeadIn: 2, bandPreCount: false, division: 4, subdivision: 1 },
+    )
+    const beatTwoEntry = createPlaybackCountInPlan(
+      markers,
+      1000,
+      { minLeadIn: 2, bandPreCount: false, division: 4, subdivision: 1 },
+    )
+
+    expect(beatThreeEntry?.durationMs).toBe(2000)
+    expect(beatThreeEntry?.events.map((event) => event.beat)).toEqual([0, 1])
+    expect(beatThreeEntry?.events.at(-1)?.isLastBeforeEntry).toBe(true)
+    expect(beatTwoEntry?.durationMs).toBe(5000)
+    expect(beatTwoEntry?.events.map((event) => event.beat)).toEqual([0, 1, 2, 3, 0])
   })
 
   it('keeps band pre-count and metric subdivisions semantically distinct', () => {
@@ -224,7 +287,7 @@ describe('playback link format', () => {
       { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: undefined, partName: ' A ' },
       { timeMs: 480, position: { measureNumber: 2, passIndex: 1 }, meter: undefined },
     ])
-    expect(result.payload[3]).toBe(7)
+    expect(result.payload[3]).toBe(8)
   })
 
   it('round-trips the per-extract metronome settings', async () => {
@@ -245,6 +308,17 @@ describe('playback link format', () => {
       bandPreCount: true,
       division: 3,
       subdivision: 2,
+    })
+  })
+
+  it('round-trips a meter-derived metronome division', async () => {
+    const result = await exportPlaybackLink(events, {
+      playerUrl: 'https://play.zupfnoter.de/',
+      metronome: { mode: 'always', minLeadIn: 4, bandPreCount: false, subdivision: 1 },
+    }, identityCodec)
+
+    expect(decodePlaybackPayload(result.payload).metronome).toEqual({
+      mode: 'always', minLeadIn: 4, bandPreCount: false, division: undefined, subdivision: 1,
     })
   })
 

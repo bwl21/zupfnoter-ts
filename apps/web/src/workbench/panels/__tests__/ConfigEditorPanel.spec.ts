@@ -1204,6 +1204,26 @@ describe('ConfigEditorPanel', () => {
     expect(wrapper.text()).not.toContain('Keine passenden Parameter')
   })
 
+  it('shows meter-derived and inherited playback values as effective values', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: 'X:1\nT:Config Demo\nM:3/4\nK:C\nC |]',
+        currentExtract: 1,
+        playbackDivisionDefault: 3,
+        activeSection: 'extract.1.playback',
+      },
+    })
+    const divisionRow = wrapper.findAll('.config-row').find(
+      (row) => row.find('.config-row__label').text() === 'Schläge/Takt',
+    )
+    const subdivisionRow = wrapper.findAll('.config-row').find(
+      (row) => row.find('.config-row__label').text() === 'Klicks/Schlag',
+    )
+
+    expect(divisionRow?.find('input').attributes('placeholder')).toBe('3')
+    expect(subdivisionRow?.find('input').attributes('placeholder')).toBe('1')
+  })
+
   it('disables quick settings when the active section has none', () => {
     const wrapper = mount(ConfigEditorPanel, {
       props: {

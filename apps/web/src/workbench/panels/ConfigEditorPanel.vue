@@ -4,6 +4,7 @@ import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 
 import {
+  buildConfstack,
   buildConfigEditorAllParametersTree,
   buildConfigEditorSectionTree,
   buildConfigEditorTargetTree,
@@ -95,6 +96,7 @@ const props = withDefaults(defineProps<{
   abcText: string
   resources?: SongResources
   currentExtract: number
+  playbackDivisionDefault?: number
   activeSection: string
   canUndo?: boolean
   canRedo?: boolean
@@ -170,8 +172,11 @@ const parsedSongConfig = computed(() => ({
 const configIssues = computed(() => songConfigInspection.value.issues)
 const showsValidationErrors = computed(() => resolvedActiveSection.value === 'validationerrors')
 
-const defaultConfig = computed(() => initConf(new Confstack()))
+const defaultConfig = computed(() => initConf(new Confstack(), {
+  playbackDivision: props.playbackDivisionDefault,
+}))
 const effectiveConfig = computed(() => mergeSongConfig(defaultConfig.value, parsedSongConfig.value.config))
+const effectiveConfstack = computed(() => buildConfstack(effectiveConfig.value, props.currentExtract))
 const filteredSearch = computed(() => searchText.value.trim().toLowerCase())
 const dynamicFormPath = computed(() => resolveConfigEditorDynamicFormPath(props.activeSection))
 const concreteConfigPath = computed(() => isConcreteConfigPath(props.activeSection)
@@ -476,7 +481,10 @@ function createRow(
     : resolveLocalPath(configPath)
   const directEffectivePath = localPath === undefined ? undefined : resolveEffectivePath(configPath)
   const localValue = localPath === undefined ? undefined : getPathValue(parsedSongConfig.value.config, localPath)
-  const directEffectiveValue = directEffectivePath === undefined ? undefined : getPathValue(effectiveConfig.value, directEffectivePath)
+  const directEffectiveValue = directEffectivePath === undefined
+    ? undefined
+    : getPathValue(effectiveConfig.value, directEffectivePath)
+      ?? effectiveConfstack.value.get(directEffectivePath)
   const inheritedFlowlinePath = localPath === undefined ? undefined : resolveInheritedFlowlinePath(localPath)
   const effectivePath = directEffectiveValue === undefined ? inheritedFlowlinePath ?? directEffectivePath : directEffectivePath
   const inheritedValue = directEffectiveValue === undefined && inheritedFlowlinePath !== undefined

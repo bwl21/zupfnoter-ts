@@ -12,7 +12,7 @@ describe('FooterBar', () => {
         storageReadOnly: false,
         dirty: false,
         saveFormat: 'ABC',
-        speedFactor: 1,
+        speedBpm: 120,
         metronomeMode: 'off',
         cursorPosition: '1:1',
         selectionVoiceScope: 'single-voice',
@@ -31,5 +31,21 @@ describe('FooterBar', () => {
 
     await select.setValue('playback')
     expect(wrapper.emitted('metronome-mode-change')).toEqual([['playback']])
+    expect(wrapper.find('.footer-bar__metronome-symbol').exists()).toBe(false)
+  })
+
+  it('edits playback speed as BPM', async () => {
+    const wrapper = mount(FooterBar, {
+      props: {
+        extractLabel: 'Extract 0', storageLocation: 'Lokal', storageReadOnly: false,
+        dirty: false, saveFormat: 'ABC', speedBpm: 96, metronomeMode: 'off',
+        cursorPosition: '1:1', selectionVoiceScope: 'single-voice',
+        selectionVoiceScopeSummary: 'Aktuelle Stimme',
+      },
+    })
+    const input = wrapper.get<HTMLInputElement>('[aria-label="Wiedergabegeschwindigkeit in BPM"]')
+    expect(input.element.value).toBe('96')
+    await input.setValue('105')
+    expect(wrapper.emitted('speed-change')).toEqual([[105]])
   })
 })

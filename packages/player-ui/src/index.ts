@@ -54,6 +54,7 @@ export interface PlayerUiController {
   setPosition(position: PlaybackPosition, partName?: string): void
   setPlaybackTime(elapsedMs: number): void
   setMetronome(meter: PlaybackMeter | undefined, beat: number, enabled: boolean): void
+  setDivision(division: number): void
   setTempoBpm(bpm: number | undefined): void
   destroy(): void
 }
@@ -82,7 +83,7 @@ function formatPosition(position: PlaybackPosition, partName?: string): { label:
     : `<span class="position__field position__field--part" title="${escapeHtml(part)}">${partContent}</span><span class="position__separator" aria-hidden="true">·</span>`
   return {
     label,
-    html: `${partField}<span class="position__field position__field--measure"><span aria-hidden="true">|</span><span class="position__number">${position.measureNumber}</span><span aria-hidden="true">|</span></span><span class="position__separator" aria-hidden="true">·</span><span class="position__field position__field--pass"><span aria-hidden="true">#</span><span class="position__number">${position.passIndex}</span></span>`,
+    html: `${partField}<span class="position__field position__field--measure"><span aria-hidden="true">|&nbsp;</span><span class="position__number">${position.measureNumber}</span><span aria-hidden="true">&nbsp;|</span></span><span class="position__separator" aria-hidden="true">·</span><span class="position__field position__field--pass"><span aria-hidden="true">#</span><span class="position__number">${position.passIndex}</span></span>`,
   }
 }
 
@@ -386,6 +387,9 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
     },
     setMetronome(meter, beat, enabled) {
       if (metronomeStatus !== null) renderBeatStatus(metronomeStatus, meter, beat, enabled)
+    },
+    setDivision(division) {
+      if (countDivision !== null) countDivision.value = String(division)
     },
     setTempoBpm(bpm) {
       tempoBpm = bpm
