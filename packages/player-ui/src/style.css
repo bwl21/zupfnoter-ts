@@ -24,19 +24,22 @@ h1 { margin: .25rem 0 1.25rem; font-size: clamp(1.6rem, 5vw, 2.25rem); }
 input, button { box-sizing: border-box; min-height: 2.75rem; width: 100%; padding: .5rem .65rem; border: 1px solid #9fb3c8; border-radius: .4rem; font: inherit; }
 button { background: #2f80ed; color: white; cursor: pointer; }
 .transport { margin-top: 0; text-align: center; }
-.position-label { margin: 0 0 .15rem; color: #627d98; font-size: .8rem; text-align: left; }
 .position-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .5rem; width: 100%; margin-bottom: .45rem; }
-.position { display: flex; align-items: baseline; justify-content: flex-start; min-width: 0; margin: .25rem 0; overflow: hidden; color: #102a43; font-size: clamp(1.15rem, 5.5vw, 1.65rem); font-weight: 700; line-height: 1.15; white-space: nowrap; }
-.position__field { display: inline-flex; align-items: baseline; justify-content: center; min-width: 0; }
+.position { display: flex; align-items: flex-end; justify-content: flex-start; min-width: 0; margin: .25rem 0; overflow: hidden; color: #102a43; font-size: clamp(1.15rem, 5.5vw, 1.65rem); font-weight: 700; line-height: 1.15; white-space: nowrap; }
+.position__field { display: inline-flex; flex-direction: column; align-items: stretch; justify-content: flex-end; min-width: 0; }
+.position__field-label { margin-bottom: .15rem; color: #627d98; font-size: .8rem; font-weight: 400; line-height: 1.2; text-align: center; }
+.position__field-value { display: inline-flex; align-items: baseline; justify-content: center; min-width: 0; }
 .position__field--measure { flex: 0 0 4rem; }
 .position__field--pass { flex: 0 0 3.25rem; }
 .position__field--part { flex: 1 1 8rem; overflow: hidden; }
+.position__field--part .position__field-label { text-align: left; }
+.position__field--part .position__field-value { justify-content: flex-start; overflow: hidden; }
+.position__field--pass .position__number { min-width: 0; text-align: left; }
 .position__part-start, .position__part-end { min-width: 0; overflow: hidden; white-space: nowrap; }
 .position__part-start { text-align: left; }
 .position__part-end { text-align: right; }
 .position__part-ellipsis { flex: 0 0 auto; }
 .position__number { display: inline-block; min-width: 2.5ch; font-variant-numeric: tabular-nums; text-align: center; }
-.position__separator { flex: 0 0 1rem; color: #627d98; text-align: center; }
 .playback-time { margin: 0; color: #627d98; font-variant-numeric: tabular-nums; }
 .transport-buttons { display: flex; justify-content: center; gap: .75rem; margin-top: 1.25rem; }
 .transport-buttons button { display: inline-flex; align-items: center; justify-content: center; width: 4rem; border-radius: 50%; font-size: 1.2rem; }

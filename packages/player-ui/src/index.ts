@@ -80,10 +80,10 @@ function formatPosition(position: PlaybackPosition, partName?: string): { label:
       : `<span class="position__part-start">${escapeHtml(partCharacters.slice(0, 9).join(''))}</span><span class="position__part-ellipsis" aria-hidden="true">…</span><span class="position__part-end">${escapeHtml(partCharacters.slice(-9).join(''))}</span>`
   const partField = part === undefined
     ? ''
-    : `<span class="position__field position__field--part" title="${escapeHtml(part)}">${partContent}</span><span class="position__separator" aria-hidden="true">·</span>`
+    : `<span class="position__field position__field--part" title="${escapeHtml(part)}"><span class="position__field-label">Abschnitt</span><span class="position__field-value">${partContent}</span></span>`
   return {
     label,
-    html: `${partField}<span class="position__field position__field--measure"><span aria-hidden="true">|&nbsp;</span><span class="position__number">${position.measureNumber}</span><span aria-hidden="true">&nbsp;|</span></span><span class="position__separator" aria-hidden="true">·</span><span class="position__field position__field--pass"><span aria-hidden="true">#</span><span class="position__number">${position.passIndex}</span></span>`,
+    html: `${partField}<span class="position__field position__field--measure"><span class="position__field-label">Takt</span><span class="position__field-value"><span aria-hidden="true">|&nbsp;</span><span class="position__number">${position.measureNumber}</span><span aria-hidden="true">&nbsp;|</span></span></span><span class="position__field position__field--pass"><span class="position__field-label">Durchlauf</span><span class="position__field-value"><span aria-hidden="true">#&nbsp;</span><span class="position__number">${position.passIndex}</span></span></span>`,
   }
 }
 
@@ -153,9 +153,9 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       <p id="range-error" class="error-text" aria-live="polite"></p>
       <p id="loading-indicator" class="loading-indicator" role="status" aria-live="polite" hidden><span class="spinner" aria-hidden="true"></span> Harfenklang wird geladen …</p>
       <div class="speed-control" aria-label="Wiedergabegeschwindigkeit">
+        <span class="speed-control__label">BPM:</span>
         <button id="speed-decrease" type="button" aria-label="5 BPM langsamer">${renderPlayerIcon('decrease')}</button>
         <input id="speed-input" type="number" min="1" max="999" step="1" value="${Math.round(options.baseTempoBpm ?? 120)}" inputmode="numeric" aria-label="Geschwindigkeit in BPM">
-        <span>BPM</span>
         <button id="speed-increase" type="button" aria-label="5 BPM schneller">${renderPlayerIcon('increase')}</button>
       </div>
       <div class="metronome-row" aria-label="Metronom">
@@ -193,7 +193,6 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
         </section>
       </div>
       <section class="transport" aria-label="Wiedergabe">
-        <p class="position-label">${options.hasParts === true ? 'Abschnitt · Takt · Durchlauf' : 'Takt · Durchlauf'}</p>
         <div class="position-row">
           <output id="current-position" class="position" aria-label="${escapeHtml(first.label)}">${first.html}</output>
           <button id="take-position-button" class="take-position" type="button" title="Position übernehmen" aria-label="Position übernehmen">${renderPlayerIcon('takePosition', 'player-icon take-position__icon')}</button>
