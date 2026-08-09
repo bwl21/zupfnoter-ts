@@ -428,6 +428,8 @@ Mindestens folgende Fälle testen:
 * erster Spieleinsatz erst nach mehreren Takten
 * Band-Vorzähler an/aus
 * `isLastBeforeEntry`
+* Taktwechsel nach einem verkürzten Wiederholungsendtakt: Der alte Takt endet
+  auf Schlag 1, der Auftakt der neuen Taktart setzt auf Schlag 2 ein
 
 ### Zählen
 
@@ -467,3 +469,81 @@ Bevor zusätzliche Strategy-Klassen, Modi oder Parameter eingeführt werden, bit
 `subdivision`
 
 nicht ausreichen.
+
+---
+
+# 13. Taktwechsel nach einem verkürzten Wiederholungsendtakt
+
+Dieser Fall ist für die spätere Übernahme in das Benutzerhandbuch festgehalten.
+Er betrifft nicht die Metronom-Konfiguration, sondern die Interpretation der
+ABC-Taktstruktur.
+
+## Fachlich gewünschte Schreibweise
+
+```abc
+M:4/4
+[P:A – Auftakt und Wiederholung] z2 G2 A2 | C2 D2 E2 F2 | B2 :]
+[M:3/4] [P:B – Dreier- und Zweiertakt] D2 E2 |: F2 G2 A2 |
+```
+
+Die Schlagfolge lautet:
+
+```text
+4/4: 2 3 4 | 1 2 3 4 | 1 :]
+3/4:                         2 3 | 1 2 3 |
+```
+
+Dabei gelten folgende Regeln:
+
+1. `z2 G2 A2` ist ein dreischlägiger 4/4-Auftakt auf den Schlägen 2, 3 und 4.
+2. `B2` ist der ein-schlägige 4/4-Schlusstakt und ergänzt diesen Auftakt.
+3. Der Wiederholungssprung nach `B2` führt zum Anfang zurück. Dort gilt wieder
+   die quellpositionsabhängige Taktart `M:4/4` aus dem Kopf des Stücks.
+4. `M:3/4` steht außerhalb des wiederholten Bereichs und wird deshalb erst nach
+   dem letzten Wiederholungsdurchlauf wirksam.
+5. `D2 E2` ist ein zweischlägiger 3/4-Auftakt auf den Schlägen 2 und 3.
+6. Mit `F2 G2 A2` beginnt der folgende vollständige 3/4-Takt auf Schlag 1.
+7. Falls eine Positionsanzeige die lineare Taktnummer zeigt, muss sie nach
+   `B2` auf die nächste Taktnummer wechseln. `D2 E2` gehören dabei zum selben
+   angezeigten Takt wie der nachfolgende vollständige Takt `F2 G2 A2`, analog
+   zum Auftakt am Beginn eines Stücks.
+
+## Nicht äquivalente Alternative
+
+```abc
+... | [M:3/4] B2 :]
+[P:B – Dreier- und Zweiertakt] D2 E2 | ...
+```
+
+Diese Schreibweise ist nicht gleichbedeutend. Der Taktwechsel liegt hier im
+wiederholten Bereich, sodass bereits `B2` unter 3/4 steht. Beim Sprung zum
+Anfang muss wieder die dort gültige Quell-Taktart 4/4 verwendet werden. Diese
+Variante beschreibt nicht den oben festgelegten Fall, in dem `B2` den alten
+4/4-Takt abschließt.
+
+## Legacy und aktueller TypeScript-Stand
+
+Legacy aktualisiert bei dem nach `:]` notierten `M:3/4` sofort `wmeasure` und
+`countby`, ohne die bisherige Schlagphase zurückzusetzen. Dadurch erhalten
+`D2 E2` die Zählwerte 2 und 3. Weil der verkürzte Wiederholungsendtakt intern
+nicht als regulärer Taktanfang gilt, meldet Legacy zusätzlich die Warnung
+„Taktänderung mitten im Takt“.
+
+Der aktuelle TypeScript-Stand berechnet für die Noten ebenfalls die Zählwerte
+2 und 3. Die Playback-Positionsspur überträgt die neue Taktart und die nächste
+lineare Taktnummer jedoch erst beim folgenden vollständigen Takt
+`F2 G2 A2`. Während `D2 E2` kann deshalb in Workbench und Player noch die alte
+4/4-Taktart beziehungsweise die vorherige Taktnummer wirksam erscheinen.
+Das ist eine bekannte Abweichung und wird hier nur dokumentiert; eine
+Codeänderung ist mit dieser Festlegung nicht verbunden.
+
+## Hinweis für das Benutzerhandbuch
+
+Bei der späteren Übernahme soll das Handbuch die fachlich gewünschte
+Schreibweise empfehlen und beide Teilauftakte grafisch oder als Schlagfolge
+erklären. Die technische Legacy-Warnung und interne Playback-Datenstrukturen
+gehören nicht in die Benutzeranleitung; relevant ist dort nur:
+
+- Taktwechsel nach dem Wiederholungsende schreiben,
+- verkürzten 4/4-Schlusstakt und folgenden 3/4-Auftakt getrennt verstehen,
+- `B2` als Schlag 1 in 4/4 sowie `D2 E2` als Schläge 2 und 3 in 3/4 zählen.
