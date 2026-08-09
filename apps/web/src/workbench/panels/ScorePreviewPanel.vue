@@ -185,17 +185,15 @@ useTextRangeSvgHighlight(
 .preview-stage__svg :deep(.zn-score-hitbox.zn-selection-highlight-range) {
   fill: color-mix(in srgb, var(--zn-danger) 38%, transparent);
   fill-opacity: 1;
-  stroke: color-mix(in srgb, var(--zn-danger) 88%, white);
-  stroke-width: 2.2;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--zn-danger) 45%, transparent));
+  stroke: none;
+  filter: none;
 }
 
 .preview-stage__svg :deep(.zn-score-hitbox.zn-selection-highlight-range.zn-playback-highlight) {
   fill: color-mix(in srgb, var(--zn-accent) 22%, transparent);
   fill-opacity: 1;
-  stroke: color-mix(in srgb, var(--zn-danger) 88%, white);
-  stroke-width: 2.2;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--zn-danger) 45%, transparent));
+  stroke: none;
+  filter: none;
 }
 
 .preview-stage__error {

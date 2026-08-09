@@ -37,6 +37,7 @@ function formatValue(schema: JsonSchemaNode | undefined, value: unknown): string
   if (!Array.isArray(value)) return typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value)
 
   const valueFormat = schema?.['x-zupfnoter-editor']?.valueFormat
+  if (valueFormat === 'json') return JSON.stringify(value)
   if (valueFormat === 'pair-array' && value.every(isNumericPair)) {
     return value.map((pair) => pair.join('-')).join(', ')
   }
@@ -71,6 +72,12 @@ function parseValue(schema: JsonSchemaNode, input: string): CommandArgumentValue
 
 function parseArray(schema: JsonSchemaNode, input: string): CommandArgumentValue[] {
   const trimmed = input.trim()
+  if (schema['x-zupfnoter-editor']?.valueFormat === 'json') {
+    const parsed = parseJson(trimmed, 'Listen müssen gültiges JSON sein.')
+    if (!Array.isArray(parsed)) throw new Error('Bitte eine JSON-Liste eingeben.')
+    validateArrayEntries(schema, parsed)
+    return parsed as CommandArgumentValue[]
+  }
   if (trimmed.startsWith('[')) {
     const parsed = parseJson(trimmed, 'Listen müssen gültiges JSON sein.')
     if (!Array.isArray(parsed)) throw new Error('Bitte eine JSON-Liste eingeben.')

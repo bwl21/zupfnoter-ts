@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 import type { SheetObjectIndex } from '@zupfnoter/types'
 
@@ -33,7 +33,68 @@ const sheetObjectIndex: SheetObjectIndex = {
   ],
 }
 
+const originalGetScreenCTM = SVGSVGElement.prototype.getScreenCTM
+const originalDOMPoint = globalThis.DOMPoint
+const identityMatrix = {
+  inverse: () => identityMatrix,
+  a: 1,
+  b: 0,
+  c: 0,
+  d: 1,
+  e: 0,
+  f: 0,
+} as unknown as DOMMatrix
+
+class TestDOMPoint {
+  constructor(
+    public readonly x: number,
+    public readonly y: number,
+  ) {}
+
+  matrixTransform(): TestDOMPoint {
+    return this
+  }
+}
+
 describe('HarpPreviewPanel selection', () => {
+  beforeAll(() => {
+    SVGSVGElement.prototype.getScreenCTM = () => identityMatrix
+    globalThis.DOMPoint = TestDOMPoint as unknown as typeof DOMPoint
+  })
+
+  afterAll(() => {
+    SVGSVGElement.prototype.getScreenCTM = originalGetScreenCTM
+    globalThis.DOMPoint = originalDOMPoint
+  })
+
+  it('renders one rectangular selection box for a selected note', async () => {
+    const wrapper = mount(HarpPreviewPanel, {
+      props: {
+        svg: '<svg width="80" height="40"><g id="note" class="zupfnoter-element zupfnoter-role--notehead" data-conf-key="extract.0.note-1"><ellipse class="zupfnoter-shape zupfnoter-shape--ellipse" cx="20" cy="20" rx="5" ry="3" /><rect class="zupfnoter-hitbox" data-conf-key="extract.0.note-1" x="10" y="10" width="20" height="20" /></g></svg>',
+        selection: { znIds: [], confKeys: ['extract.0.note-1'], textRanges: [] },
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('.zupfnoter-element.zn-selection-highlight').exists()).toBe(true)
+    expect(wrapper.findAll('.zn-selection-box')).toHaveLength(1)
+  })
+
+  it('highlights the jumpline hitbox and creates one selection box', async () => {
+    const wrapper = mount(HarpPreviewPanel, {
+      props: {
+        svg: '<svg width="120" height="60"><g id="jumpline" class="zupfnoter-element zupfnoter-role--path-outline" data-conf-key="extract.0.notebound.c_jumplines.v_1.5760.p_repeat" data-drag-handler="jumpline"><path class="zupfnoter-shape zupfnoter-shape--path" d="M10 10 L100 40" /><path class="zupfnoter-jumpline-hitbox" data-drag-hitbox="true" d="M10 10 L100 40" /></g><g class="zupfnoter-element zupfnoter-role--path-filled" data-conf-key="extract.0.notebound.c_jumplines.v_1.5760.p_repeat"><path class="zupfnoter-shape zupfnoter-shape--path" d="M100 40 L95 35 L95 45 Z" /></g></svg>',
+        selection: { znIds: [], confKeys: ['extract.0.notebound.c_jumplines.v_1.5760.p_repeat'], textRanges: [] },
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('.zupfnoter-jumpline-hitbox.zn-selection-highlight').exists()).toBe(true)
+    expect(wrapper.findAll('.zn-selection-box')).toHaveLength(1)
+  })
+
   it('clears the selection when clicking outside a harp hitbox', async () => {
     const wrapper = mount(HarpPreviewPanel, {
       props: {

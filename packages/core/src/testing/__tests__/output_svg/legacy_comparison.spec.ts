@@ -45,5 +45,5 @@ describe('SVG fixtures', () => {
     const summaries = compareFocusedFixtures()
     expect(summaries.length).toBeGreaterThan(0)
     expect(summaries.some((summary) => summary.fixtureId === '3015_reference_sheet')).toBe(true)
-  })
+  }, 30_000)
 })

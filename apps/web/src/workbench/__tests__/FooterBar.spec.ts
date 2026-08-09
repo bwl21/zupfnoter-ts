@@ -23,15 +23,34 @@ describe('FooterBar', () => {
     const select = wrapper.get<HTMLSelectElement>('[aria-label="Metronom-Modus"]')
     expect(select.element.value).toBe('off')
     expect(select.findAll('option').map((option) => option.text())).toEqual([
-      'Metronom aus',
+      'Aus',
       'Einzählen',
-      'Playback',
+      'Während der Wiedergabe',
       'Immer',
     ])
 
     await select.setValue('playback')
     expect(wrapper.emitted('metronome-mode-change')).toEqual([['playback']])
     expect(wrapper.find('.footer-bar__metronome-symbol').exists()).toBe(false)
+  })
+
+  it('marks the configured mode without changing the configuration value', () => {
+    const wrapper = mount(FooterBar, {
+      props: {
+        extractLabel: 'Extract 0', storageLocation: 'Lokal', storageReadOnly: false,
+        dirty: false, saveFormat: 'ABC', speedBpm: 120, metronomeMode: 'always',
+        configuredMetronomeMode: 'countIn', cursorPosition: '1:1',
+        selectionVoiceScope: 'single-voice', selectionVoiceScopeSummary: 'Aktuelle Stimme',
+      },
+    })
+    const select = wrapper.get<HTMLSelectElement>('[aria-label="Metronom-Modus"]')
+    expect(select.element.value).toBe('always')
+    expect(select.findAll('option').map((option) => option.text())).toEqual([
+      'Aus',
+      'Einzählen (Blattvorgabe)',
+      'Während der Wiedergabe',
+      'Immer',
+    ])
   })
 
   it('edits playback speed as BPM', async () => {

@@ -2768,6 +2768,7 @@ function handleMirrorMessage(event: MessageEvent): void {
           :config-hover="hoveredConfigKey"
           :speed-bpm="playbackTempoBpm"
           :metronome-mode="metronomeMode"
+          :configured-metronome-mode="playbackConfig?.metronomeMode ?? 'off'"
           :selection-voice-scope="selectionStore.selection.voiceScope"
           :selection-voice-scope-summary="selectionVoiceScopeSummary"
           @speed-change="setPlaybackTempoBpm"

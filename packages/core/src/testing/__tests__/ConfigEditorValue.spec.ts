@@ -24,11 +24,25 @@ describe('config editor value conversion', () => {
     expect(formatConfigEditorValue('extract.0.lyrics.0.pos', [10, 20])).toBe('10, 20')
   })
 
+  it('uses JSON notation for voice selections and chord positions', () => {
+    expect(formatConfigEditorValue('extract.0.barnumbers.voices', [1, 2])).toBe('[1,2]')
+    expect(formatConfigEditorValue('extract.0.countnotes.voices', [1, 2])).toBe('[1,2]')
+    expect(formatConfigEditorValue('extract.0.chords.voices', [1, 2])).toBe('[1,2]')
+    expect(formatConfigEditorValue('extract.0.chords.pos', [3, -2])).toBe('[3,-2]')
+    expect(formatConfigEditorValue('extract.0.countnotes.apbase', [1, -0.5])).toBe('[1,-0.5]')
+  })
+
   it('derives scalar and nested array values from the schema', () => {
     expect(parseConfigEditorValue('produce', '0, 2')).toEqual({ value: [0, 2] })
     expect(parseConfigEditorValue('extract.0.synchlines', '1-2, 2-3')).toEqual({ value: [[1, 2], [2, 3]] })
     expect(parseConfigEditorValue('extract.0.lyrics.0.verses', '1, 3')).toEqual({ value: [1, 3] })
     expect(parseConfigEditorValue('extract.0.lyrics.0.pos', '10, 20')).toEqual({ value: [10, 20] })
+    expect(parseConfigEditorValue('extract.0.barnumbers.voices', '[1, 2]')).toEqual({ value: [1, 2] })
+    expect(parseConfigEditorValue('extract.0.chords.pos', '[3, -2]')).toEqual({ value: [3, -2] })
+    expect(parseConfigEditorValue('extract.0.countnotes.apbase', '[1, -0.5]')).toEqual({ value: [1, -0.5] })
+    expect(parseConfigEditorValue('extract.0.barnumbers.voices', '1, 2')).toEqual({
+      error: 'Listen müssen gültiges JSON sein.',
+    })
   })
 
   it('rejects malformed values instead of coercing them', () => {

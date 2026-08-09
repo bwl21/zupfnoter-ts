@@ -69,7 +69,7 @@ export interface ConfigEditorSchemaMetadata {
   /** Spezialisierte Bearbeitungsoberfläche für diesen Wert. */
   strategy?: ConfigEditorStrategy
   /** Darstellung eines Listenwerts im kompakten Konfigurationseditor. */
-  valueFormat?: 'array' | 'pair-array'
+  valueFormat?: 'array' | 'pair-array' | 'json'
 }
 
 export interface ConfigSchemaValidationOptions {
@@ -265,6 +265,14 @@ const POSITION_SCHEMA: JsonSchemaNode = {
   'x-zupfnoter-editor': { valueFormat: 'array' },
 }
 
+/** Chord positions use the canonical JSON array notation in the editor. */
+const JSON_POSITION_SCHEMA: JsonSchemaNode = {
+  type: 'array',
+  minItems: 2,
+  items: { type: 'number' },
+  'x-zupfnoter-editor': { valueFormat: 'json' },
+}
+
 const STRING_ARRAY_SCHEMA: JsonSchemaNode = {
   type: 'array',
   items: { type: 'string' },
@@ -275,6 +283,13 @@ const INTEGER_ARRAY_SCHEMA: JsonSchemaNode = {
   type: 'array',
   items: { type: 'integer' },
   'x-zupfnoter-editor': { valueFormat: 'array' },
+}
+
+/** Voice selections use the canonical JSON array notation in the editor. */
+const VOICE_SELECTION_SCHEMA: JsonSchemaNode = {
+  type: 'array',
+  items: { type: 'integer' },
+  'x-zupfnoter-editor': { valueFormat: 'json' },
 }
 
 const NUMBER_ARRAY_SCHEMA: JsonSchemaNode = {
@@ -619,11 +634,11 @@ const BARNUMBERS_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    voices: INTEGER_ARRAY_SCHEMA,
-    pos: POSITION_SCHEMA,
+    voices: VOICE_SELECTION_SCHEMA,
+    pos: JSON_POSITION_SCHEMA,
     autopos: { type: 'boolean' },
     apanchor: { type: 'string', enum: ['manual', 'box', 'center'], ...editorSelection('apanchor', ['box', 'center']) },
-    apbase: POSITION_SCHEMA,
+    apbase: JSON_POSITION_SCHEMA,
     style: fontStyleSchema(),
     prefix: { type: 'string' },
   },
@@ -633,11 +648,11 @@ const COUNTNOTES_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    voices: INTEGER_ARRAY_SCHEMA,
-    pos: POSITION_SCHEMA,
+    voices: VOICE_SELECTION_SCHEMA,
+    pos: JSON_POSITION_SCHEMA,
     autopos: { type: 'boolean' },
     apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
-    apbase: POSITION_SCHEMA,
+    apbase: JSON_POSITION_SCHEMA,
     style: fontStyleSchema(),
     cntextleft: { type: 'string' },
     cntextright: { type: 'string' },
@@ -648,11 +663,11 @@ const NB_ANNOTATION_SCHEMA: JsonSchemaNode = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    voices: INTEGER_ARRAY_SCHEMA,
-    pos: POSITION_SCHEMA,
+    voices: VOICE_SELECTION_SCHEMA,
+    pos: JSON_POSITION_SCHEMA,
     autopos: { type: 'boolean' },
     apanchor: { type: 'string', enum: ['manual', 'box', 'center'] },
-    apbase: POSITION_SCHEMA,
+    apbase: JSON_POSITION_SCHEMA,
     style: fontStyleSchema(),
   },
 }
@@ -1195,13 +1210,14 @@ function legacyDefinitions(): Record<string, JsonSchemaNode> {
       type: 'object',
       required: ['voices', 'pos', 'autopos', 'style'],
       properties: {
-        voices: integerArraySchema({}, 0),
-        pos: legacyPosRef(),
+        voices: VOICE_SELECTION_SCHEMA,
+        pos: JSON_POSITION_SCHEMA,
         autopos: { type: 'boolean' },
         apanchor: legacyApanchorRef(),
         style: fontStyleSchema(),
       },
     },
+    nb_annotations: { ref: '#/definitions/nb_annotation_xx' },
     minc_entry: {
       type: 'object',
       required: ['minc_f'],
@@ -1411,12 +1427,12 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
       barnumbers: {
         type: 'object',
         required: ['voices', 'pos', 'autopos', 'style', 'prefix'],
-        properties: { voices: integerArraySchema({}, 0), pos: legacyPosRef(), autopos: { type: 'boolean' }, apanchor: legacyApanchorRef(), style: fontStyleSchema(), prefix: { type: 'string' } },
+        properties: { voices: VOICE_SELECTION_SCHEMA, pos: JSON_POSITION_SCHEMA, autopos: { type: 'boolean' }, apanchor: legacyApanchorRef(), apbase: JSON_POSITION_SCHEMA, style: fontStyleSchema(), prefix: { type: 'string' } },
       },
       countnotes: {
         type: 'object',
         required: ['voices', 'pos', 'autopos', 'style'],
-        properties: { voices: integerArraySchema({}, 0), pos: legacyPosRef(), autopos: { type: 'boolean' }, apanchor: legacyApanchorRef(), style: fontStyleSchema() },
+        properties: { voices: VOICE_SELECTION_SCHEMA, pos: JSON_POSITION_SCHEMA, autopos: { type: 'boolean' }, apanchor: legacyApanchorRef(), apbase: JSON_POSITION_SCHEMA, style: fontStyleSchema() },
         cntextleft: { type: 'string' },
         cntextright: { type: 'string' },
       },

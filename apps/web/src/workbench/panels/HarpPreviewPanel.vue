@@ -1240,6 +1240,19 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
+.harp-preview__svg :deep(.zupfnoter-jumpline-hitbox.zn-selection-highlight) {
+  fill: none;
+  stroke: var(--zn-danger);
+  stroke-opacity: 0.32;
+  opacity: 1;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.harp-preview__svg :deep(.zupfnoter-element[data-conf-key*="c_jumplines"].zn-selection-highlight > .zupfnoter-shape) {
+  stroke: none;
+}
+
 .harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight .zupfnoter-bezier-controls) {
   opacity: 1;
   stroke: var(--zn-danger);
@@ -1249,6 +1262,12 @@ onBeforeUnmount(() => {
 .harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight > .zupfnoter-shape) {
   stroke: var(--zn-danger);
   stroke-width: 1.5;
+}
+
+.harp-preview__svg :deep(.zupfnoter-element.zupfnoter-role--notehead.zn-selection-highlight > .zupfnoter-shape),
+.harp-preview__svg :deep(.zupfnoter-element.zupfnoter-role--rest.zn-selection-highlight > .zupfnoter-shape) {
+  stroke: none;
+  stroke-width: 0;
 }
 
 .harp-preview__svg :deep(.zupfnoter-element.zn-selection-highlight > .zupfnoter-shape--rect.zupfnoter-shape--filled) {

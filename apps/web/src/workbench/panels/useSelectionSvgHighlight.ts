@@ -52,10 +52,19 @@ function annotationBackground(
   return backgroundGroup?.querySelector<SVGRectElement>('rect.zupfnoter-shape--rect') ?? undefined
 }
 
-function addAnnotationSelectionBox(element: HTMLElement): void {
-  const annotationShapes = [...element.querySelectorAll<SVGGraphicsElement>('.zupfnoter-shape--annotation')]
-  if (annotationShapes.length === 0) return
-  const svg = annotationShapes[0]?.ownerSVGElement
+function addSelectionBox(element: HTMLElement): void {
+  // Background drawables share the annotation confKey. The annotation's
+  // box already uses the background bounds, so the background must not add a
+  // second visible selection box of its own.
+  if (element.classList.contains('zupfnoter-role--barover')) return
+  if (element.dataset.confKey?.includes('.c_jumplines.') === true
+    && element.dataset.dragHandler !== 'jumpline') return
+
+  const selectionShapes = [...element.querySelectorAll<SVGGraphicsElement>(
+    '.zupfnoter-shape:not(.zupfnoter-shape--background)',
+  )]
+  if (selectionShapes.length === 0) return
+  const svg = selectionShapes[0]?.ownerSVGElement
   if (svg === null || svg === undefined) return
   const selectionId = element.getAttribute('id')
   if (selectionId === null) return
@@ -66,7 +75,7 @@ function addAnnotationSelectionBox(element: HTMLElement): void {
   try {
     const background = annotationBackground(element, svg)
     const bounds = background === undefined
-      ? toRootBounds(annotationShapes, svg)
+      ? toRootBounds(selectionShapes, svg)
       : rectBounds(background)
     if (bounds === undefined) return
 
@@ -90,10 +99,11 @@ function applyHighlightClass(element: HTMLElement): void {
     ? element.closest<HTMLElement>('.zupfnoter-element')
     : element
   parent?.classList.add(SELECTION_HIGHLIGHT_CLASS)
-  if (parent !== null && parent !== undefined) addAnnotationSelectionBox(parent)
-  const hitboxes = element.matches('.zupfnoter-hitbox')
+  if (parent !== null && parent !== undefined) addSelectionBox(parent)
+  const hitboxSelector = '.zupfnoter-hitbox, .zupfnoter-jumpline-hitbox'
+  const hitboxes = element.matches(hitboxSelector)
     ? [element]
-    : [...element.querySelectorAll<HTMLElement>('.zupfnoter-hitbox')]
+    : [...element.querySelectorAll<HTMLElement>(hitboxSelector)]
 
   if (hitboxes.length === 0) return
 

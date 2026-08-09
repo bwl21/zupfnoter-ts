@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
   saveFormat: string
   speedBpm: number
   metronomeMode: 'off' | 'countIn' | 'playback' | 'always'
+  configuredMetronomeMode?: 'off' | 'countIn' | 'playback' | 'always'
   cursorPosition: string
   cursorUnicode?: string
   configHover?: string
@@ -81,6 +82,13 @@ function handleSpeedChange(event: Event): void {
   }
   emit('speed-change', Math.round(value))
 }
+
+function metronomeOptionLabel(
+  mode: 'off' | 'countIn' | 'playback' | 'always',
+  label: string,
+): string {
+  return props.configuredMetronomeMode === mode ? `${label} (Blattvorgabe)` : label
+}
 </script>
 
 <template>
@@ -133,7 +141,7 @@ function handleSpeedChange(event: Event): void {
         </label>
       </div>
       <div class="footer-bar__playback">
-        <span class="footer-bar__meta">Playback:</span>
+        <span class="footer-bar__meta">Metronom:</span>
         <label class="footer-bar__metronome-field">
           <select
             class="footer-bar__metronome-select"
@@ -141,10 +149,10 @@ function handleSpeedChange(event: Event): void {
             aria-label="Metronom-Modus"
             @change="handleMetronomeModeChange"
           >
-            <option value="off">Metronom aus</option>
-            <option value="countIn">Einzählen</option>
-            <option value="playback">Playback</option>
-            <option value="always">Immer</option>
+            <option value="off">{{ metronomeOptionLabel('off', 'Aus') }}</option>
+            <option value="countIn">{{ metronomeOptionLabel('countIn', 'Einzählen') }}</option>
+            <option value="playback">{{ metronomeOptionLabel('playback', 'Während der Wiedergabe') }}</option>
+            <option value="always">{{ metronomeOptionLabel('always', 'Immer') }}</option>
           </select>
         </label>
         <button
@@ -269,14 +277,14 @@ function handleSpeedChange(event: Event): void {
 .footer-bar__playback {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 .footer-bar__selection {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  margin-inline-end: 0.75rem;
+  gap: 0.5rem;
+  margin-inline-end: 1rem;
 }
 
 .footer-bar__scope-field {
@@ -348,6 +356,7 @@ function handleSpeedChange(event: Event): void {
 }
 
 .footer-bar__speed-label {
+  margin-inline-start: 0.15rem;
   color: var(--zn-text-muted);
   font-size: 0.75rem;
 }
