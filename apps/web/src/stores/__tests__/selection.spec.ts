@@ -458,7 +458,7 @@ describe('selection store', () => {
     expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({
         znIds: [],
-        confKeys: [],
+        confKeys: ['extract.0.note-1'],
         textRanges: [{ startpos: 4, endpos: 6 }],
       })
     expect(selectionStore.selection.voiceScope).toBe('single-voice')
@@ -687,7 +687,7 @@ describe('selection store', () => {
     expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({
         znIds: [],
-        confKeys: [],
+        confKeys: ['extract.0.note-1'],
         textRanges: [{ startpos: 4, endpos: 6 }],
       })
   })
@@ -702,7 +702,7 @@ describe('selection store', () => {
     expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({
         znIds: [],
-        confKeys: [],
+        confKeys: ['extract.0.note-3', 'extract.0.note-4'],
         textRanges: [{ startpos: 10, endpos: 12 }],
       })
   })
@@ -746,7 +746,7 @@ describe('selection store', () => {
     expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({
         znIds: [],
-        confKeys: [],
+        confKeys: ['extract.0.note-3', 'extract.0.notebound.nconf.v_1.t_384.n_0.***', 'extract.0.note-4'],
         textRanges: [{ startpos: 10, endpos: 12 }],
       })
   })
@@ -790,7 +790,7 @@ describe('selection store', () => {
     expect(resolveSvgSelection(selectionStore.sheetObjectIndex, selectionStore.selection))
       .toEqual({
         znIds: [],
-        confKeys: [],
+        confKeys: ['extract.0.note-1'],
         textRanges: [{ startpos: 4, endpos: 6 }],
       })
   })

@@ -449,6 +449,11 @@ function resolveScopedPaneEntries(
   allowedVoiceIds?: Set<string>
 } {
   const context = resolveScopedSelectionContext(index, selection, options)
+  // A single-voice selection still needs the music-entity → SVG-object
+  // projection. The selected voice is applied below, after expansion.
+  const editorOrScoreDriven = selection.source === 'abc-editor' || selection.source === 'score-preview'
+  const shouldExpandByMusicTime = context.shouldExpandByMusicTime || (pane === 'svg' && editorOrScoreDriven)
+  const shouldExpandByZnId = context.shouldExpandByZnId || (pane === 'svg' && editorOrScoreDriven)
   const textResolvedEntries = resolvePaneEntriesFromTextRanges(index, context.selectedTextRanges, undefined)
     .filter((entry) => entry.addressableIn[pane])
     .filter((entry) => {
@@ -459,7 +464,7 @@ function resolveScopedPaneEntries(
         context.editorSelectionLineWindow.endLine,
       )
     })
-  const musicTimeExpandedEntries = context.shouldExpandByMusicTime
+  const musicTimeExpandedEntries = shouldExpandByMusicTime
     ? dedupeEntries(
         [
           ...context.selectedEntries,
@@ -471,7 +476,7 @@ function resolveScopedPaneEntries(
           .flatMap((musicTime) => projectIndexesToEntries(index, resolveIndexesByMusicTime(index, musicTime, pane))),
       )
     : []
-  const znIdExpandedEntries = context.shouldExpandByZnId
+  const znIdExpandedEntries = shouldExpandByZnId
     ? dedupeEntries(
         [...context.selectedEntries, ...textResolvedEntries, ...musicTimeExpandedEntries]
           .map((entry) => entry.znId)

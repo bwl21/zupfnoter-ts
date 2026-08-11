@@ -116,7 +116,7 @@ describe('selectionManager', () => {
         selectedIndexes: [1],
         textRanges: [{ startpos: 4, endpos: 6 }],
         znIds: [],
-        confKeys: [],
+        confKeys: ['extract.0.note-1'],
       })
   })
 
@@ -133,7 +133,7 @@ describe('selectionManager', () => {
         selectedIndexes: [3],
         textRanges: [{ startpos: 10, endpos: 12 }],
         znIds: [],
-        confKeys: [],
+        confKeys: ['extract.0.notebound.nconf.v_1.t_384.n_0.***'],
       })
   })
 
