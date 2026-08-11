@@ -26,7 +26,7 @@ import {
   tempoBpmAtTime,
 } from './playerLogic'
 
-const PLAYER_VERSION = '0.3.7'
+const PLAYER_VERSION = '0.3.8'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -237,7 +237,8 @@ function renderPlayer(
   let selectedEvents = events
   let selectedStartMs = positionMarkers[0]?.timeMs ?? events[0]?.startMs ?? 0
   let selectedRangePosition = firstPosition
-  let minLeadIn = metronomeConfig?.minLeadIn ?? 4
+  const defaultMinLeadIn = positionMarkers.find((marker) => marker.meter !== undefined)?.meter?.numerator ?? 4
+  let minLeadIn = metronomeConfig?.minLeadIn ?? defaultMinLeadIn
   let bandPreCount = metronomeConfig?.bandPreCount ?? false
   let metronomeDivision = metronomeConfig?.division
   let metronomeSubdivision = metronomeConfig?.subdivision ?? 1
@@ -532,13 +533,15 @@ function renderPlayer(
     // iOS requires resume to start while the play button's gesture is active.
     void audioContext.resume().catch(() => undefined)
     const outputGain = audioContext.createGain()
-    outputGain.gain.value = 3.2
+    outputGain.gain.value = 2.6
     const masterCompressor = audioContext.createDynamicsCompressor()
-    masterCompressor.threshold.value = -18
-    masterCompressor.knee.value = 18
+    // Keep the increased sample level loud without letting the compressor
+    // continuously turn down dense passages.
+    masterCompressor.threshold.value = -6
+    masterCompressor.knee.value = 6
     masterCompressor.ratio.value = 6
     masterCompressor.attack.value = 0.003
-    masterCompressor.release.value = 0.2
+    masterCompressor.release.value = 0.15
     outputGain.connect(masterCompressor)
     masterCompressor.connect(audioContext.destination)
     isPaused = false

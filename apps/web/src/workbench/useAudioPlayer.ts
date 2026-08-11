@@ -280,7 +280,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       ? undefined
       : Math.max(1, metronomeConfig.division)
     const subdivision = Math.max(1, metronomeConfig?.subdivision ?? 1)
-    const minLeadIn = Math.max(1, metronomeConfig?.minLeadIn ?? 4)
+    const minLeadIn = metronomeConfig?.minLeadIn
     const timelineStartMs = steps[0]?.playbackStartMs ?? 0
     const entryTimeMs = timelineStartMs
     const entryOffsetMs = Math.max(0, entryTimeMs - timelineStartMs)

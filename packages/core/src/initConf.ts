@@ -114,7 +114,6 @@ export function initConf(conf: Confstack, options: InitConfOptions = {}): Zupfno
     },
     playback: {
       metronomeMode: 'off',
-      minLeadIn: 4,
       bandPreCount: false,
       ...(options.playbackDivision === undefined ? {} : { division: options.playbackDivision }),
       subdivision: 1,

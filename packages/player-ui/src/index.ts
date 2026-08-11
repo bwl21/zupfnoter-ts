@@ -183,7 +183,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
           <div class="count-in-control">
             <label>Schläge/Takt <input id="count-division" type="number" min="1" step="1" value="${options.division ?? 4}" inputmode="numeric"></label>
             <label>Klicks/Schlag <input id="count-subdivision" type="number" min="1" step="1" value="${options.subdivision ?? 1}" inputmode="numeric"></label>
-            <label>Einzählen: Mindestschläge <input id="min-lead-in" type="number" min="1" step="1" value="${options.minLeadIn ?? 4}" inputmode="numeric"></label>
+            <label>Einzählen: Mindestschläge <input id="min-lead-in" type="number" min="1" step="1" value="${options.minLeadIn ?? options.division ?? 4}" inputmode="numeric"></label>
             <label class="count-in-switch" for="band-pre-count">
               <span>Vorzählen</span>
               <span class="metronome-control__switch"><input id="band-pre-count" type="checkbox" ${options.bandPreCount === true ? 'checked' : ''}><span class="metronome-switch" aria-hidden="true"></span></span>

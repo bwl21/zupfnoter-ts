@@ -159,7 +159,6 @@ export function createPlaybackCountInPlan(
   tempoBpm?: number,
   tempoUnit = 0.25,
 ): PlaybackCountInPlan | undefined {
-  const minLeadIn = Math.max(1, Math.floor(settings.minLeadIn ?? 4))
   const subdivision = Math.max(1, Math.floor(settings.subdivision ?? 1))
   const openingMarker = markers[0]
   const delayedMeterMarker = markers.find((marker, index) => index > 0
@@ -180,6 +179,7 @@ export function createPlaybackCountInPlan(
   const marker = markerIndex < 0 ? undefined : markers[markerIndex]
   const meter = marker?.meter
   if (marker === undefined || meter === undefined) return undefined
+  const minLeadIn = Math.max(1, Math.floor(settings.minLeadIn ?? meter.numerator))
   const division = Math.max(1, Math.floor(settings.division ?? meter.numerator))
   const timelineDurationMs = Math.max(entryTimeMs, markers[markers.length - 1]?.timeMs ?? 0)
   const beatDurationMs = resolvePlaybackBeatDuration(
@@ -655,10 +655,11 @@ async function encodePayloadParts(
     const modes: PlaybackMetronomeMode[] = ['off', 'countIn', 'playback', 'always']
     const mode = modes.indexOf(metronome.mode)
     if (mode < 0) throw new Error(`Invalid playback metronome mode: ${metronome.mode}`)
-    const minLeadIn = metronome.minLeadIn ?? 4
+    // Zero encodes the dynamic default (the current meter numerator).
+    const minLeadIn = metronome.minLeadIn ?? 0
     const division = metronome.division ?? 0
     const subdivision = metronome.subdivision ?? 1
-    if (!Number.isSafeInteger(minLeadIn) || minLeadIn < 1
+    if (!Number.isSafeInteger(minLeadIn) || minLeadIn < 0
       || !Number.isSafeInteger(division) || division < 0
       || !Number.isSafeInteger(subdivision) || subdivision < 1) {
       throw new Error('Invalid playback count settings')
@@ -819,16 +820,16 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
     if (modeValue === undefined || modeValue > 3) throw new Error('Invalid playback metronome mode')
     offset.value += 1
     const modes: PlaybackMetronomeMode[] = ['off', 'countIn', 'playback', 'always']
-    const minLeadIn = readVarUInt(payload, offset)
+    const encodedMinLeadIn = readVarUInt(payload, offset)
     const bandPreCount = readVarUInt(payload, offset)
     const division = readVarUInt(payload, offset)
     const subdivision = readVarUInt(payload, offset)
-    if (minLeadIn < 1 || bandPreCount > 1
+    if (encodedMinLeadIn < 0 || bandPreCount > 1
       || (version === METRONOME_FORMAT_VERSION ? division < 1 : division < 0)
       || subdivision < 1) throw new Error('Invalid playback count settings')
     metronome = {
       mode: modes[modeValue] ?? 'off',
-      minLeadIn,
+      minLeadIn: encodedMinLeadIn === 0 ? undefined : encodedMinLeadIn,
       bandPreCount: bandPreCount === 1,
       division: division === 0 ? undefined : division,
       subdivision,

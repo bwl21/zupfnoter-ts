@@ -75,6 +75,20 @@ describe('shared metronome sound profile', () => {
     expect(playback.map((click) => click.division)).toEqual([3, 3, 3, 2, 2])
   })
 
+  it('uses the current meter numerator as the default minimum count-in', () => {
+    const markers = [
+      { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 3, denominator: 4 } },
+      { timeMs: 3000, position: { measureNumber: 2, passIndex: 1 }, meter: { numerator: 3, denominator: 4 } },
+    ]
+
+    const countIn = createPlaybackCountInPlan(markers, 3000, {
+      bandPreCount: false,
+      subdivision: 1,
+    })
+
+    expect(countIn?.events.map((event) => event.beat)).toEqual([0, 1, 2])
+  })
+
   it('changes click division and duration with each ABC meter', () => {
     const markers = [
       { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
@@ -429,7 +443,7 @@ describe('playback link format', () => {
   it('rejects invalid metronome counting values', async () => {
     await expect(exportPlaybackLink(events, {
       playerUrl: 'https://play.zupfnoter.de/',
-      metronome: { mode: 'always', minLeadIn: 0, division: 4, subdivision: 1 },
+      metronome: { mode: 'always', minLeadIn: -1, division: 4, subdivision: 1 },
     }, identityCodec)).rejects.toThrow('Invalid playback count settings')
   })
 
