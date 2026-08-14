@@ -35,6 +35,7 @@ nicht überschrieben.
 | `extract.*.notebound.*.show` | Runtime behandelt fehlendes `show` bei sichtbaren notengebundenen Objekten als `true`; der Legacy-Editor zeigt den impliziten Wert leer an. | Editor zeigt den wirksamen Wert `Ja`, ohne einen lokalen Wert zu schreiben. | Verhindert die irreführende Anzeige eines unbekannten oder ausgeschalteten Zustands. |
 | „Alle Parameter“ | Legacy-Suche basiert auf den verfügbaren Config-Schlüsseln und kann schema-definierte, noch nicht gespeicherte Felder übersehen. | Baum wird schema-getrieben aufgebaut; dynamische Einträge kommen aus aktueller und wirksamer Konfiguration. | Suche findet auch `n-Tolen`, wenn im ABC noch kein Tuplet-Override gespeichert ist. |
 | Standardvorlage | Eingebaute Vorlage enthält einen eingebetteten `%%%%zupfnoter.config`-Block, unter anderem für Tuplets. | Vollständige Legacy-Standardvorlage ist noch nicht als TS-Vorlagenquelle portiert. | Vorlagenparität bleibt ein eigener offener Arbeitsbereich. |
+| Partfolge und Part-ID-Zuordnung | Legacy verarbeitet `[P:...]` als sichtbare `notebound.partname`-Marker über `part_table`; eine gleichwertige konfigurationsbasierte Zuordnung zu Header-IDs ist dort nicht vorhanden. | TS liest und expandiert die Headerfolge im Parser, ordnet sichtbare Parttexte aber ausschließlich über `extract.<nr>.playback.parts` zu. Playback führt die Parts stimmenübergreifend und erhöht `passIndex` bei erneutem Part-Auftreten. | Bewusste TS-Erweiterung; die sichtbare Darstellung der `[P:...]`-Marker bleibt erhalten. |
 
 ## Detail: implizites `show`
 
@@ -58,6 +59,32 @@ Es müssen drei Quellen unterschieden werden:
 
 Diese Werte dürfen nicht zu einem einzigen globalen Default zusammengeführt
 werden.
+
+## Detail: Partfolge und Part-ID-Zuordnung
+
+Der Legacy-Beleg liegt in
+`../200_zupfnoter/30_sources/SRC_Zupfnoter/src/abc2svg_to_harpnotes.rb`:
+`[P:...]`-Marker werden in einer `part_table` gesammelt und als
+`notebound.partname`-Annotationen in die Harpennoten übernommen. Eine
+konfigurationsbasierte Zuordnung von sichtbarem Parttext zu einer Header-ID
+für eine Playback-Partfolge ist dort nicht belegt.
+
+Zupfnoter-TS weicht an dieser Stelle bewusst ab:
+
+1. `AbcParser` expandiert nur die Headerfolge und vergibt keine IDs für
+   sichtbare Markertexte.
+2. `extract.<nr>.playback.parts` ist die Quelle der Zuordnung von Header-ID zu
+   sichtbarem Parttext.
+3. Der generische Config-Editor bietet die sichtbaren Markerwerte zur
+   Zuordnung an.
+4. Playback, Seitenbeschriftung und Player verwenden dieselbe Zuordnung.
+5. Wird ein Part in der konfigurierten Folge erneut abgespielt, wird sein
+   `passIndex` erhöht; der vorhandene Zähler aus normalen ABC-Wiederholungen
+   bleibt dabei erhalten.
+
+Die Abweichung ist durch die gemeinsame TS-Partfolge für Konfiguration,
+Notenbild und Playback begründet. Die sichtbaren `[P:...]`-Marker selbst
+bleiben zur Legacy-Kompatibilität erhalten.
 
 ## Pflegekonvention
 

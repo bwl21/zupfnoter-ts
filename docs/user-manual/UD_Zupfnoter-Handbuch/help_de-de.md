@@ -1158,6 +1158,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
     "extract.\*.filenamepart"},
 -   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
     die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{part_keys}}`: expandierte Part-Schlüsselfolge aus der `P:`-Zeile.
+-   `{{part_names}}`: expandierte Partnamensfolge aus der `P:`-Zeile und der Partkonfiguration.
+-   `{{parts}}`: Alias für `{{part_names}}`.
 -   `{{watermark}}`: Wasserzeichen (mit
     `setsettings wartermark "wasserzeichen"` eingestellt)
 

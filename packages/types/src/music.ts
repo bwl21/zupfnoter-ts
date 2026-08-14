@@ -259,8 +259,29 @@ export interface SongMetaData {
   tempo_display?: string
   tempoDisplay?: string
   checksum?: string
+  /** Playback-Partfolge und Zuordnung der sichtbaren Partnamen zu ihren IDs. */
+  partSequence?: PartSequence
   /** Diagnosen aus der ABC-zu-Song-Transformation */
   diagnostics?: SongDiagnostic[]
+}
+
+/**
+ * Normalisierte Partfolge aus dem ABC-Header `P:`.
+ * `order` enthält die expandierte Reihenfolge, `markers` die
+ * stimmenübergreifenden Partgrenzen in abc2svg-Zeiteinheiten.
+ */
+export interface PartSequence {
+  /** Expandierte Header-IDs, z. B. `['A', 'B', 'A', 'B', 'C']`. */
+  order: string[]
+  /** Partmarker mit sichtbarem Namen und gemeinsamer Quellzeit. */
+  markers: Array<{
+    /** Header-ID des Parts. */
+    id: string
+    /** Sichtbarer Name aus `[P:<Text>]`. */
+    displayName: string
+    /** ABC-Zeitposition des Partbeginns. */
+    time: number
+  }>
 }
 
 export interface SongDiagnostic {

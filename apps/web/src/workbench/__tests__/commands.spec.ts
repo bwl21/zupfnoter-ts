@@ -751,6 +751,35 @@ describe('legacy command registration', () => {
     expect(log).toContain('render')
   })
 
+  it('adds the next unused part key for the part mapping editor', async () => {
+    const log: string[] = []
+    const runtime = createRuntime(log)
+    runtime.setAbcText([
+      'X:1',
+      'T:Part mapping',
+      '  P: A B A B C D3',
+      'M:4/4',
+      'L:1/4',
+      'K:C',
+      'V:1 treble',
+      'V:1',
+      'C D | [P:Teil A] E F | [P:Teil B] G A | [P:Teil C] B c |]',
+      '',
+      '%%%%zupfnoter.config',
+      '{"extract":{"0":{"playback":{"parts":{"A":"Teil A"}}}}}',
+    ].join('\n'))
+    const stack = new CommandStack({ log: (message) => log.push(message) })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('addconf parts')
+
+    expect(runtime.getAbcText()).toContain('"A": "Teil A"')
+    expect(runtime.getAbcText()).toContain('"B": ""')
+    expect(runtime.getAbcText()).toContain('"C": ""')
+    expect(runtime.getAbcText()).toContain('"D": ""')
+    expect(log).toContain('render')
+  })
+
   it('adds page annotation entries through the legacy notes template', async () => {
     const log: string[] = []
     const runtime = createRuntime(log)

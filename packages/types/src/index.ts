@@ -31,6 +31,7 @@ export type {
   Voice,
   BeatMap,
   SongMetaData,
+  PartSequence,
   SongDiagnostic,
   PlaybackDirective,
   TimeSignature,

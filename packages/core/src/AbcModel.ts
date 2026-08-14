@@ -178,6 +178,8 @@ export interface AbcModel {
   music_type_ids: Record<string, number>
   /** ABC header fields: T, C, M, K, Q, etc. (newline-separated if multiple) */
   info: Record<string, string>
+  /** Expanded ABC header P: sequence, if present. */
+  partSequence?: string[]
   /** Legacy checksum over the stripped ABC source, used in sheet footer annotations. */
   checksum: string
 }

@@ -8,6 +8,9 @@ import {
 import { Confstack } from './Confstack.js'
 import { initConf } from './initConf.js'
 import { formatAbcSource } from './SongToAbc.js'
+import { inspectSongConfig } from './extractSongConfig.js'
+import { parsePartSequence } from './PartSequence.js'
+import { AbcParser } from './AbcParser.js'
 
 export interface WorkbenchCommandRuntime {
   getAbcText(): string
@@ -751,6 +754,17 @@ function applyAddConfig(
   const templates = readObjectValue(defaults, 'templates')
   const currentExtract = runtime.getCurrentExtract()
 
+  if (addKey === 'parts') {
+    const missingPartKeys = resolveMissingPartConfigKeys(runtime.getAbcText())
+    patchConfigValues(
+      runtime,
+      state,
+      Object.fromEntries(missingPartKeys.map((key) => [key, ''])),
+      `addconf ${addKey}`,
+    )
+    return
+  }
+
   const values: Record<string, { key: string; value: CommandArgumentValue | undefined }> = {
     notes: {
       key: `extract.${currentExtract}.notes.x`,
@@ -780,6 +794,35 @@ function applyAddConfig(
   }
 
   patchConfig(runtime, state, entry.key, entry.value, `addconf ${addKey}`)
+}
+
+function resolveMissingPartConfigKeys(abcText: string): string[] {
+  const abcSource = abcText.split('%%%%zupfnoter')[0] ?? abcText
+  let headerValue: string | undefined
+  try {
+    headerValue = new AbcParser().parse(abcSource).info.P
+  } catch {
+    headerValue = undefined
+  }
+  headerValue ??= abcSource.match(/^\s*P\s*:\s*(.*)$/im)?.[1]
+  const parsed = headerValue === undefined ? undefined : parsePartSequence(headerValue)
+  const partIds = [...new Set(parsed?.order ?? [])]
+  if (partIds.length === 0) throw new CommandError('Keine Partfolge im ABC-Header gefunden')
+  const inspection = inspectSongConfig(abcText)
+  const configured = readRawObjectPath(inspection.rawConfig, ['extract', '0', 'playback', 'parts'])
+  const used = new Set(Object.keys(configured))
+  const missingIds = partIds.filter((partId) => !used.has(partId))
+  if (missingIds.length === 0) throw new CommandError('Alle Part-Schlüssel sind bereits konfiguriert')
+  return missingIds.map((partId) => `extract.0.playback.parts.${partId}`)
+}
+
+function readRawObjectPath(source: Record<string, unknown> | undefined, path: string[]): Record<string, unknown> {
+  let current: unknown = source
+  for (const segment of path) {
+    if (!isPlainObject(current)) return {}
+    current = current[segment]
+  }
+  return isPlainObject(current) ? current : {}
 }
 
 function applyQuickSetting(
@@ -880,9 +923,20 @@ function patchConfig(
   value: CommandArgumentValue | undefined,
   title: string,
 ): void {
+  patchConfigValues(runtime, state, { [key]: value }, title)
+}
+
+function patchConfigValues(
+  runtime: WorkbenchCommandRuntime,
+  state: LegacyCommandState,
+  values: Record<string, CommandArgumentValue | undefined>,
+  title: string,
+): void {
   const previousAbcText = runtime.getAbcText()
   const config = readConfig(previousAbcText)
-  setConfigPath(config, key, value, key.endsWith('.x'))
+  Object.entries(values).forEach(([key, value]) => {
+    setConfigPath(config, key, value, key.endsWith('.x'))
+  })
   const nextAbcText = writeConfig(previousAbcText, config)
   pushConfigHistory(runtime, state, title, previousAbcText, nextAbcText)
   runtime.setAbcText(nextAbcText)

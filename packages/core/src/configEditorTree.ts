@@ -476,7 +476,8 @@ function buildSchemaTreeNode(
     ? []
     : buildSchemaTreeChildren(schema, treePath, schemaPath, currentConfig, effectiveConfig, extractId)
 
-  return children.length === 0
+  const isSchemaObject = schema?.properties !== undefined || schema?.patternProperties !== undefined
+  return children.length === 0 && !isSchemaObject
     ? { key, label, configPath: treePath }
     : { key, label, children, configPath: treePath }
 }
@@ -520,9 +521,40 @@ function buildSectionChildren(
         : path.slice(ancestor.length + 1)
 
     insertSectionPath(children, relativePath, path)
+    markEmptySchemaObjectBranch(children, relativePath, path, extractId)
   }
 
   return children
+}
+
+function markEmptySchemaObjectBranch(
+  definitions: ConfigEditorTreeDefinition[],
+  relativePath: string,
+  fullPath: string,
+  extractId: number,
+): void {
+  const definition = findRelativeTreeDefinition(definitions, relativePath)
+  if (definition?.children !== undefined) return
+  const schemaPath = fullPath
+    .replace(/^extract\.current(?=\.|$)/, `extract.${extractId}`)
+  const schema = resolveConfigSchemaPath(schemaPath)
+  if (schema?.properties !== undefined || schema?.patternProperties !== undefined) {
+    if (definition !== undefined) definition.children = []
+  }
+}
+
+function findRelativeTreeDefinition(
+  definitions: ConfigEditorTreeDefinition[],
+  relativePath: string,
+): ConfigEditorTreeDefinition | undefined {
+  let current = definitions
+  let definition: ConfigEditorTreeDefinition | undefined
+  for (const part of relativePath.split('.')) {
+    definition = current.find((entry) => entry.key === part)
+    if (definition === undefined) return undefined
+    current = definition.children ?? []
+  }
+  return definition
 }
 
 function resolveSectionAncestor(formId: string, sectionPaths: readonly string[]): string {

@@ -1,0 +1,6 @@
+{
+  "compactSlurClose": {
+    "sourceLines": [3],
+    "reason": "The standard P: sequence uses compact closing parentheses as part-sequence syntax."
+  }
+}

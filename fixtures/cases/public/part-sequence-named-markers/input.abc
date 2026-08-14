@@ -1,0 +1,12 @@
+X:part-sequence-named-markers
+T:Partfolge mit benannten Markern
+P:(AB)2C
+M:4/4
+L:1/4
+K:C
+V:1 treble
+V:2 bass
+V:1
+C D | [P:A] E F | [P:Teil 1] G A | [P:] B c | [P:Teil 2] d e |]
+V:2
+C, D, | E, F, | G, A, | B, c, | d, e, |]

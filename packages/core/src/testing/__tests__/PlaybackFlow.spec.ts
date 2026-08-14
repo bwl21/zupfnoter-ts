@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 import type { PlaybackFlowStep } from '@zupfnoter/types'
 
@@ -62,6 +64,90 @@ function buildTimeline(abcText: string) {
 }
 
 describe('expandPlaybackFlow', () => {
+  it('maps named part markers to the header sequence and keeps voices synchronized', () => {
+    const abc = readFileSync(resolve(
+      __dirname,
+      '../../../../../fixtures/cases/public/part-sequence-named-markers/input.abc',
+    ), 'utf8')
+    const parser = new AbcParser()
+    const model = parser.parse(abc)
+    const configuredTestConfig = {
+      ...defaultTestConfig,
+      extract: {
+        ...defaultTestConfig.extract,
+        '0': {
+          ...defaultTestConfig.extract['0'],
+          playback: {
+            ...(defaultTestConfig.extract['0'].playback ?? {}),
+            parts: { A: 'A', B: 'Teil 1', C: 'Teil 2' },
+          },
+        },
+      },
+    }
+    const song = new AbcToSong().transform(model, configuredTestConfig)
+    for (const voice of song.voices) {
+      voice.entities = voice.entities.filter(entity => entity.type !== 'NoteBoundAnnotation')
+    }
+
+    expect(song.metaData.partSequence).toEqual({
+      order: ['A', 'B', 'A', 'B', 'C'],
+      markers: [
+        { id: 'A', displayName: 'A', time: 768 },
+        { id: 'B', displayName: 'Teil 1', time: 1536 },
+        { id: 'C', displayName: 'Teil 2', time: 3072 },
+      ],
+    })
+
+    const flow = expandPlaybackFlow(song)
+    let activePart: string | undefined
+    const partNames = flow.map((step) => {
+      if (step.partName !== undefined && step.partName.trim() !== '') activePart = step.partName.trim()
+      return activePart
+    })
+    expect(partNames.filter((name, index) => index === 0 || name !== partNames[index - 1])).toEqual([
+      'A', 'Teil 1', 'A', 'Teil 1', 'Teil 2',
+    ])
+    expect(flow[0]?.partId).toBe('A')
+    expect(song.voices.slice(1).map((voice) => voice.entities
+      .filter((entity) => entity.type === 'Note' || entity.type === 'Pause' || entity.type === 'SynchPoint')
+      .map((entity) => entity.time))).toEqual([
+      [0, 384, 768, 1152, 1536, 1920, 2304, 2688, 3072, 3456],
+      [0, 384, 768, 1152, 1536, 1920, 2304, 2688, 3072, 3456],
+    ])
+    expect(flow.some((step) => step.sourceTime < 768)).toBe(false)
+    expect(flow.find((step) => step.sourceTime === 768)?.passIndex).toBe(1)
+    expect(flow.filter((step) => step.sourceTime === 768)[1]?.passIndex).toBe(2)
+
+    const timeline = buildPlaybackTimeline(song)
+    expect(timeline[0]?.sourceTime).toBe(768)
+    let timelinePart: string | undefined
+    const timelinePartNames = timeline.map((step) => {
+      if (step.partName !== undefined && step.partName.trim() !== '') timelinePart = step.partName.trim()
+      return timelinePart
+    })
+    expect(timelinePartNames.filter((name, index) => index === 0 || name !== timelinePartNames[index - 1])).toEqual([
+      'A', 'Teil 1', 'A', 'Teil 1', 'Teil 2',
+    ])
+
+    const configuredConfig = {
+      ...defaultTestConfig,
+      extract: {
+        ...defaultTestConfig.extract,
+        '0': { ...defaultTestConfig.extract['0'] },
+      },
+    }
+    configuredConfig.extract['0'].playback = {
+      ...(configuredConfig.extract['0'].playback ?? {}),
+      parts: { A: 'Teil 1', B: 'A', C: 'Teil 2' },
+    }
+    const configuredSong = new AbcToSong().transform(model, configuredConfig)
+    expect(configuredSong.metaData.partSequence?.markers).toEqual([
+      { id: 'B', displayName: 'A', time: 768 },
+      { id: 'A', displayName: 'Teil 1', time: 1536 },
+      { id: 'C', displayName: 'Teil 2', time: 3072 },
+    ])
+  })
+
   it('duplicates a simple repeat into a second pass', () => {
     const flow = expandFlow(`X:1
 T:Repeat

@@ -31,8 +31,9 @@ import {
   type ConfigEditorStrategy,
   type ConfigEditorMenuCommand,
   type ConfigEditorTreeDefinition,
+  resolveConfigEditorOptions,
 } from '@zupfnoter/core'
-import type { SongResources } from '@zupfnoter/types'
+import type { Song, SongResources } from '@zupfnoter/types'
 
 import { ZnBadge, ZnButton, ZnIconButton, ZnIcon, ZnPanel, ZnToolbar } from '@zupfnoter/design-system'
 import { loadConfigHelpTexts, resolveConfigHelpHtml, type ConfigHelpTexts } from './configHelp'
@@ -75,6 +76,7 @@ interface ConfigTreeRow {
   canSelect: boolean
   menuKind: string
   editorOptions?: readonly ConfigEditorOption[]
+  editorOptionsSource?: 'part'
   editorStrategy?: ConfigEditorStrategy
   valueType?: string
   minimum?: number
@@ -97,6 +99,7 @@ const props = withDefaults(defineProps<{
   resources?: SongResources
   currentExtract: number
   playbackDivisionDefault?: number
+  song?: Song
   activeSection: string
   canUndo?: boolean
   canRedo?: boolean
@@ -131,6 +134,8 @@ const draftValues = ref<Record<string, string>>({})
 const inputErrors = ref<Record<string, string>>({})
 const enlargedResourceUrl = ref<string | undefined>(undefined)
 const rawConfigDraft = ref('')
+const focusedBranchPath = ref<string | undefined>(undefined)
+const focusedBranchConfigPath = ref<string | undefined>(undefined)
 
 const fallbackSectionVisiblePaths: Record<string, string[]> = {
   layout: [
@@ -191,11 +196,26 @@ const activeSectionSearch = computed(() => getConfigEditorFormSet(resolvedActive
   : '')
 const effectiveSearch = computed(() => filteredSearch.value === '' ? activeSectionSearch.value : filteredSearch.value)
 const newEntryCommand = computed(() => getConfigEditorNewEntryCommand(resolvedActiveSection.value, props.currentExtract))
-const canAddEntry = computed(() => newEntryCommand.value !== undefined)
+const focusedSchemaMetadata = computed(() => {
+  const path = focusedBranchPath.value
+  const configPath = focusedBranchConfigPath.value
+    ?? (path === undefined ? undefined : resolveFocusedSchemaPath(path))
+  if (configPath === undefined) return undefined
+  return resolveConfigSchemaPath(configPath)?.['x-zupfnoter-editor']
+})
+const focusedNewEntryCommand = computed(() => {
+  return focusedSchemaMetadata.value?.newEntryCommand ?? newEntryCommand.value
+})
+const hasDeferredNewEntryTarget = computed(() => containsDynamicNewEntryTarget(activeSectionTreeDefinition.value))
+const canAddEntry = computed(() => focusedNewEntryCommand.value !== undefined
+  && (newEntryCommand.value === undefined || focusedBranchPath.value === undefined
+    || resolveDynamicEntryCommand(focusedBranchPath.value) !== undefined
+    || newEntryCommand.value !== undefined))
 const quickSettings = computed<QuickSettingMenuItem[]>(() => {
   const formSet = getConfigEditorFormSet(resolvedActiveSection.value)
   const presets = defaultConfig.value.presets as unknown as Record<string, unknown>
-  return (formSet?.quicksettingCommands ?? []).flatMap((command) => {
+  const commands = focusedSchemaMetadata.value?.quicksettingCommands ?? formSet?.quicksettingCommands ?? []
+  return commands.flatMap((command) => {
     if (command === 'stdextract') {
       return [{ type: 'command' as const, id: command, label: getConfigEditorQuickSettingLabel(command) }]
     }
@@ -226,10 +246,12 @@ const pendingNewEntryBranchPaths = ref<ReadonlySet<string> | undefined>(undefine
 
 
 watch(
-  [() => props.currentExtract, () => props.abcText],
+  [() => props.currentExtract, () => props.abcText, () => props.activeSection],
   () => {
     draftValues.value = {}
     inputErrors.value = {}
+    focusedBranchPath.value = undefined
+    focusedBranchConfigPath.value = undefined
   },
 )
 
@@ -354,7 +376,7 @@ function flattenTree(
     if (respectActiveSectionFilter && !isVisibleInActiveSection(path)) {
       continue
     }
-    const branch = definition.children !== undefined && definition.children.length > 0
+    const branch = definition.children !== undefined
     const row = createRow(definition, path, depth, branch)
     const matches = forceVisible || matchesRow(row)
     const children = branch
@@ -419,7 +441,7 @@ function collectBranchPaths(
 
   for (const definition of definitions) {
     const path = joinPath(parentPath, definition.key)
-    if (definition.children !== undefined && definition.children.length > 0) {
+    if (definition.children !== undefined) {
       branchPaths.push(path, ...collectBranchPaths(definition.children, path))
     }
   }
@@ -513,6 +535,7 @@ function createRow(
     canSelect: actionProfile.canSelect,
     menuKind: actionProfile.menuKind,
     editorOptions: schema?.['x-zupfnoter-editor']?.options,
+    editorOptionsSource: schema?.['x-zupfnoter-editor']?.optionsSource,
     editorStrategy: schema?.['x-zupfnoter-editor']?.strategy,
     valueType: typeof schema?.type === 'string' ? schema.type : undefined,
     minimum: schema?.minimum,
@@ -672,10 +695,43 @@ function isExpanded(path: string): boolean {
   return expandedPaths.value.includes(path)
 }
 
-function toggleExpanded(path: string): void {
+function toggleExpanded(path: string, configPath?: string): void {
+  focusedBranchPath.value = path
+  focusedBranchConfigPath.value = configPath
   expandedPaths.value = isExpanded(path)
     ? expandedPaths.value.filter(entry => entry !== path)
     : [...expandedPaths.value, path]
+}
+
+function focusBranch(path: string, configPath?: string): void {
+  focusedBranchPath.value = path
+  focusedBranchConfigPath.value = configPath
+}
+
+function isFocusedBranch(path: string): boolean {
+  return focusedBranchPath.value === path
+}
+
+function resolveDynamicEntryCommand(path: string): string | undefined {
+  return resolveConfigSchemaPath(resolveFocusedSchemaPath(path))?.['x-zupfnoter-editor']?.newEntryCommand
+}
+
+function resolveFocusedSchemaPath(path: string): string {
+  return path
+    .replace(/^section:[^.]+\./, '')
+    .replace(/^extract\.current\./, `extract.${props.currentExtract}.`)
+}
+
+function containsDynamicNewEntryTarget(
+  definitions: ConfigEditorTreeDefinition[] | undefined,
+): boolean {
+  if (definitions === undefined) return false
+  return definitions.some((definition) => {
+    const command = definition.configPath === undefined
+      ? undefined
+      : resolveDynamicEntryCommand(definition.configPath)
+    return command !== undefined || containsDynamicNewEntryTarget(definition.children)
+  })
 }
 
 function getDraftValue(row: ConfigTreeRow): string {
@@ -734,8 +790,26 @@ function hasEditorOptions(row: ConfigTreeRow): boolean {
   return getEditorOptions(row).length > 0
 }
 
+function getEditorOptionLabel(row: ConfigTreeRow, option: ConfigEditorOption): string {
+  return row.editorOptionsSource === 'part'
+    ? option.label
+    : `${option.label} (${option.value})`
+}
+
 function getEditorOptions(row: ConfigTreeRow): readonly ConfigEditorOption[] {
   const baseOptions = row.editorOptions ?? []
+  if (row.editorOptionsSource === 'part') {
+    const currentValue = typeof row.localValue === 'string' ? row.localValue.trim() : ''
+    return resolveConfigEditorOptions(
+      row.editorOptionsSource,
+      props.song,
+      (() => {
+        const parts = getPathValue(effectiveConfig.value, 'extract.0.playback.parts')
+        return isRecord(parts) ? parts : undefined
+      })(),
+      currentValue,
+    )
+  }
   if (row.localPath?.endsWith('.imagename') ?? false) {
     const resources = getPathValue(effectiveConfig.value, '$resources')
     if (!isRecord(resources)) return baseOptions
@@ -840,7 +914,8 @@ function getSelectDraftValue(row: ConfigTreeRow): string {
 function getSelectedOptionLabel(row: ConfigTreeRow): string {
   const value = getSelectDraftValue(row)
   const option = getEditorOptions(row).find((entry) => entry.value === value)
-  return option === undefined ? 'Bitte auswählen' : `${option.label} (${option.value})`
+  if (option === undefined) return 'Bitte auswählen'
+  return row.editorOptionsSource === 'part' ? option.label : `${option.label} (${option.value})`
 }
 
 function getImagePreviewUrl(row: ConfigTreeRow, value: string): string | undefined {
@@ -1262,10 +1337,10 @@ function isCommandArgumentValue(value: unknown): value is CommandArgumentValue {
 }
 
 function handleAddEntry(): void {
-  if (newEntryCommand.value === undefined) return
+  if (focusedNewEntryCommand.value === undefined) return
   const definitions = activeSectionTreeDefinition.value
   pendingNewEntryBranchPaths.value = new Set(definitions === undefined ? [] : collectBranchPaths(definitions))
-  emitIntent('config.addEntry', newEntryCommand.value)
+  emitIntent('config.addEntry', focusedNewEntryCommand.value)
 }
 
 function selectConfigMenuItem(item: ConfigEditorMenuCommand): void {
@@ -1357,6 +1432,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
             </ZnButton>
           </span>
           <ZnButton
+            v-if="newEntryCommand !== undefined || focusedNewEntryCommand !== undefined || !hasDeferredNewEntryTarget"
             variant="ghost"
             :disabled="!canAddEntry"
             data-toolbar-tooltip="Neuen Eintrag im aktuellen Bereich anlegen"
@@ -1475,20 +1551,25 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
           class="config-row"
           :class="{
             'config-row--branch': row.isBranch,
+            'config-row--focused': row.isBranch && isFocusedBranch(row.path),
             'config-row--leaf': row.isLeaf,
             'config-row--multiline': isTextareaValue(row),
           }"
           :style="{ '--config-depth': row.depth }"
           role="treeitem"
           :aria-expanded="row.isBranch ? isExpanded(row.path) : undefined"
+          :aria-current="row.isBranch && isFocusedBranch(row.path) ? 'true' : undefined"
         >
-          <div class="config-row__name" @click="row.isLeaf && selectAffectedObject(row)">
+          <div
+            class="config-row__name"
+            @click="row.isLeaf ? selectAffectedObject(row) : focusBranch(row.path, row.localPath)"
+          >
             <ZnIconButton
               v-if="row.isBranch"
               class="config-row__toggle"
               :label="isExpanded(row.path) ? 'Teilbaum einklappen' : 'Teilbaum ausklappen'"
               variant="ghost"
-              @click="toggleExpanded(row.path)"
+              @click="toggleExpanded(row.path, row.localPath)"
             >
               <ZnIcon :name="isExpanded(row.path) ? 'collapse' : 'expand'" />
             </ZnIconButton>
@@ -1553,6 +1634,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
                   role="option"
                   :aria-selected="option.value === getSelectDraftValue(row)"
                   :data-option-description="option.description"
+                  :disabled="option.disabled"
                   @click="selectEditorOption(row, option.value, $event)"
                 >
                   <img
@@ -1561,7 +1643,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
                     :src="getImagePreviewUrl(row, option.value)"
                     alt=""
                   >
-                  {{ option.label }} ({{ option.value }})
+                  {{ getEditorOptionLabel(row, option) }}
                 </button>
               </div>
             </details>
@@ -2038,6 +2120,15 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
 
 .config-row--branch {
   background: color-mix(in srgb, var(--zn-accent) 4%, var(--zn-bg-surface));
+}
+
+.config-row--focused {
+  background: color-mix(in srgb, var(--zn-accent) 14%, var(--zn-bg-surface));
+  box-shadow: inset 0.18rem 0 0 var(--zn-accent);
+}
+
+.config-row--focused .config-row__label {
+  color: var(--zn-accent);
 }
 
 .config-row--multiline {

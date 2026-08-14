@@ -21,6 +21,8 @@ export type PlaybackMetronomeMode = 'off' | 'countIn' | 'playback' | 'always'
 
 /** Per-extract playback recommendation and metronome settings. */
 export interface PlaybackConfig {
+  /** Explicit mapping from header Part-ID to visible `[P:...]` text. */
+  parts?: Record<string, string>
   metronomeMode?: PlaybackMetronomeMode
   /** Minimum number of audible main beats before the actual musical entry. */
   minLeadIn?: number
@@ -82,6 +84,8 @@ export interface PlaybackFlowStep {
   meter?: TimeSignature
   /** Partname at the beginning of this playback step, if explicitly named. */
   partName?: string
+  /** Header-Part-ID at the beginning of this playback step, if available. */
+  partId?: string
   /** Volta number of this step when it belongs to a variant ending. */
   voltaNumber?: number
 }

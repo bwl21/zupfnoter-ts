@@ -360,6 +360,18 @@ export const CONFIG_EDITOR_OPTION_DOCUMENTATION: Readonly<Record<string, Readonl
       "label": "{{printed_extracts}}",
       "description": "erstellte Auszüge aus \"produce\". Es werden die entsprechneden Filenamenzusätze ausgegeben."
     },
+    "{{part_keys}}": {
+      "label": "{{part_keys}}",
+      "description": "expandierte Part-Schlüsselfolge aus der `P:`-Zeile."
+    },
+    "{{part_names}}": {
+      "label": "{{part_names}}",
+      "description": "expandierte Partnamensfolge aus der `P:`-Zeile und der Partkonfiguration."
+    },
+    "{{parts}}": {
+      "label": "{{parts}}",
+      "description": "Alias für `{{part_names}}`."
+    },
     "{{watermark}}": {
       "label": "{{watermark}}",
       "description": "Wasserzeichen (mit `setsettings wartermark \"wasserzeichen\"` eingestellt)"

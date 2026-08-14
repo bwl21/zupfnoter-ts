@@ -50,6 +50,7 @@ export interface WorkbenchRenderResult {
   toastDiagnostics: WorkbenchDiagnostic[]
   editorDiagnostics: EditorDiagnostic[]
   playbackTimeline: PlaybackStep[]
+  song?: Song
   baseTempoFromQ?: number
   tempoUnitFromQ?: number
   playbackConfig?: PlaybackConfig
@@ -296,6 +297,7 @@ export function renderWorkbenchPreviews(
     toastDiagnostics,
     editorDiagnostics,
     playbackTimeline,
+    song: song ?? undefined,
     baseTempoFromQ,
     tempoUnitFromQ,
     playbackConfig,

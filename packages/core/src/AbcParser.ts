@@ -9,6 +9,7 @@
 import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
 import { ABC_TYPE } from './AbcModel.js'
 import { abc2svgTextrans } from './localization/de-de.js'
+import { parsePartSequence } from './PartSequence.js'
 
 // ---------------------------------------------------------------------------
 // Load the vendored abc2svg module directly. The vendor file exposes ESM
@@ -422,6 +423,7 @@ export class AbcParser {
       if (primaryTune !== null) {
         model.info = primaryTune[2]
       }
+      AbcParser._extractPartSequence(model)
       this._model = model
     }
 
@@ -609,6 +611,15 @@ export class AbcParser {
       sourceLineStarts: buildLineStarts(source),
       source,
     }
+  }
+
+  private static _extractPartSequence(model: AbcModel): void {
+    const headerValue = model.info['P']
+    if (typeof headerValue !== 'string' || headerValue.trim() === '') return
+    const parsed = parsePartSequence(headerValue)
+    if (parsed.error !== undefined) return
+    model.partSequence = parsed.order
+
   }
 
   /** Walk the linked-list of symbols in a voice and collect them into an array */

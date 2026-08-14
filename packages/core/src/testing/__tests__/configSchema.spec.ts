@@ -41,6 +41,7 @@ describe('configSchema', () => {
     expect(resolveConfigSchemaPath('extract.2.playback.bandPreCount')?.type).toBe('boolean')
     expect(resolveConfigSchemaPath('extract.2.playback.division')?.minimum).toBe(1)
     expect(resolveConfigSchemaPath('extract.2.playback.subdivision')?.minimum).toBe(1)
+    expect(resolveConfigSchemaPath('extract.2.playback.parts.B')?.type).toBe('string')
   })
 
   it('exposes the legacy schema identifiers', () => {

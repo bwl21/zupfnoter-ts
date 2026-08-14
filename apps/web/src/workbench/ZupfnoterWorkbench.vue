@@ -43,7 +43,7 @@ import {
   replaceSongDocumentResources,
   splitSongDocument,
 } from '@zupfnoter/core'
-import type { PlaybackMetronomeMode, SongResources } from '@zupfnoter/types'
+import type { PlaybackMetronomeMode, Song, SongResources } from '@zupfnoter/types'
 import { createPlayerQrJpeg } from './playbackLink'
 import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
@@ -320,6 +320,7 @@ const editorCursorOffset = ref(0)
 const renderError = ref('')
 const renderSummary = ref('not rendered')
 const playbackTimeline = ref<PlaybackStep[]>([])
+const song = ref<Song | undefined>(undefined)
 const playerQrJpegUrl = ref<string | undefined>()
 const baseTempoFromQ = ref<number | undefined>(undefined)
 const tempoUnitFromQ = ref<number | undefined>(undefined)
@@ -805,6 +806,7 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   workbenchDiagnostics.value = result.diagnostics
   editorDiagnostics.value = result.editorDiagnostics
   playbackTimeline.value = result.playbackTimeline
+  song.value = result.song
   baseTempoFromQ.value = result.baseTempoFromQ
   tempoUnitFromQ.value = result.tempoUnitFromQ
   playbackConfig.value = result.playbackConfig
@@ -2676,6 +2678,7 @@ function handleMirrorMessage(event: MessageEvent): void {
                   :resources="documentResources"
                   :current-extract="currentExtract"
                   :playback-division-default="playbackDivisionDefault"
+                  :song="song"
                   :extract-options="extractMenuItems"
                   :active-section="activeConfigSection"
                   :entry-mutation-version="configEntryMutationVersion"

@@ -2263,6 +2263,15 @@ export class HarpnotesLayout {
       .join(' ')
     const extractFilename = extractOptions.filenamepart ?? ''
     const extractTitle = extractOptions.title ?? String(extractNr)
+    const partSequence = metaData.partSequence
+    const partNameById = new Map<string, string>()
+    for (const marker of partSequence?.markers ?? []) {
+      if (!partNameById.has(marker.id)) partNameById.set(marker.id, marker.displayName)
+    }
+    const partKeys = partSequence?.order.join(' : ') ?? ''
+    const partNames = partSequence?.order
+      .map(id => partNameById.get(id) ?? id)
+      .join(' : ') ?? ''
     const placeholders: Record<string, string> = {
       composer: metaData.composer ?? '',
       key: metaData.key ?? '',
@@ -2273,6 +2282,9 @@ export class HarpnotesLayout {
       extract_title: extractTitle,
       extract_filename: extractFilename,
       printed_extracts: printedExtracts,
+      part_keys: partKeys,
+      part_names: partNames,
+      parts: partNames,
       watermark: '',
       current_year: String(new Date().getFullYear()),
     }

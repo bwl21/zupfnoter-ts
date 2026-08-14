@@ -143,6 +143,7 @@ bewusst aktualisieren; copyright-geschützte Fixtures bleiben außerhalb des
   bearbeiten.
 - Neue Architekturentscheidungen als ADR oder Fachspezifikation unter
   `docs/` dokumentieren.
+- Dokumentierte Abweichungen zum legeacy unger `docs/user-manual/UD_Zupfnoter-Handbuch/config-parity.md
 
 ## Git
 

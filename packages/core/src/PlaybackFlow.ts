@@ -7,6 +7,7 @@ import type {
   Song,
   VoiceEntity,
   TimeSignature,
+  PartSequence,
 } from '@zupfnoter/types'
 
 interface PlayableGroup {
@@ -18,6 +19,7 @@ interface PlayableGroup {
   measureNumber: number
   meter?: TimeSignature
   partName?: string
+  partId?: string
 }
 
 function isPlayableEntity(entity: VoiceEntity): entity is PlayableEntity {
@@ -31,6 +33,11 @@ function isGotoEntity(entity: VoiceEntity): entity is Goto {
 function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
   const groups = new Map<number, PlayableGroup>()
   const partNameByTime = new Map<number, string>()
+  const partIdByTime = new Map<number, string>()
+  for (const marker of song.metaData.partSequence?.markers ?? []) {
+    partNameByTime.set(marker.time, marker.displayName)
+    partIdByTime.set(marker.time, marker.id)
+  }
   const measureByTime = new Map<number, { voiceIndex: number; measureNumber: number }>()
   let measureVoiceIndex: number | undefined
 
@@ -68,6 +75,7 @@ function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
           voltaNumber: entity.variant > 0 ? entity.variant : undefined,
           meter: entity.meter,
           partName: partNameByTime.get(entity.time),
+          partId: partIdByTime.get(entity.time),
           measureNumber: entity.measureCount > 0 ? entity.measureCount : 1,
         })
         continue
@@ -89,6 +97,7 @@ function collectPlayableGroups(song: Song): Map<number, PlayableGroup> {
       }
       if (existing.meter === undefined && entity.meter !== undefined) existing.meter = entity.meter
       if (existing.partName === undefined) existing.partName = partNameByTime.get(entity.time)
+      if (existing.partId === undefined) existing.partId = partIdByTime.get(entity.time)
     }
   }
 
@@ -248,6 +257,43 @@ function collectVariantFollowDecisions(song: Song): Map<number, number> {
   return decisions
 }
 
+function applyPartSequence(flow: PlaybackFlowStep[], partSequence: PartSequence | undefined): PlaybackFlowStep[] {
+  if (partSequence === undefined || partSequence.order.length === 0 || partSequence.markers.length === 0) return flow
+
+  const firstIndexBySourceTime = new Map<number, number>()
+  const sourceFlow = flow.filter((step, index) => {
+    if (firstIndexBySourceTime.has(step.sourceTime)) return false
+    firstIndexBySourceTime.set(step.sourceTime, index)
+    return true
+  })
+  const markers = [...partSequence.markers].sort((left, right) => left.time - right.time)
+  const segmentsById = new Map<string, PlaybackFlowStep[]>()
+  for (const [markerIndex, marker] of markers.entries()) {
+    const nextMarker = markers[markerIndex + 1]
+    const segment = sourceFlow.filter(step => step.sourceTime >= marker.time
+      && (nextMarker === undefined || step.sourceTime < nextMarker.time))
+    if (segment.length === 0) continue
+    if (segmentsById.has(marker.id)) continue
+    segmentsById.set(marker.id, segment)
+  }
+
+  const reordered: PlaybackFlowStep[] = []
+  const occurrenceById = new Map<string, number>()
+  for (const id of partSequence.order) {
+    const segment = segmentsById.get(id)
+    if (segment === undefined) continue
+    const occurrence = (occurrenceById.get(id) ?? 0) + 1
+    occurrenceById.set(id, occurrence)
+    reordered.push(...segment.map(step => ({
+      ...step,
+      passIndex: step.passIndex + occurrence - 1,
+    })))
+  }
+  return reordered.length === 0
+    ? flow
+    : reordered.map((step, flowIndex) => ({ ...step, flowIndex }))
+}
+
 /**
  * Expand the notated song into a playback flow that follows repeats and voltas.
  */
@@ -306,6 +352,7 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
         measureNumber: group.measureNumber,
         meter: group.meter,
         partName: group.partName,
+        partId: group.partId,
         voltaNumber: group.voltaNumber,
       })
     }
@@ -388,5 +435,5 @@ export function expandPlaybackFlow(song: Song): PlaybackFlowStep[] {
     index += 1
   }
 
-  return flow
+  return applyPartSequence(flow, song.metaData.partSequence)
 }

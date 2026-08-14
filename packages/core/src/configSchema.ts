@@ -55,6 +55,8 @@ export interface ConfigEditorOption {
   label: string
   /** Kurzbeschreibung aus der User-Dokumentation. */
   description: Markdown
+  /** Auswahl ist wegen der 1:1-Zuordnung bereits durch einen anderen Eintrag belegt. */
+  disabled?: boolean
 }
 
 /** Darstellungsstrategie eines Konfigurationswerts im Editor. */
@@ -66,6 +68,12 @@ export interface ConfigEditorSchemaMetadata {
   helpKey?: string
   /** Statische, im Editor als Auswahl darzustellende Werte. */
   options?: readonly ConfigEditorOption[]
+  /** Quelle für dynamische Auswahlwerte im ABC-Kontext. */
+  optionsSource?: 'part'
+  /** Legacy-Konfigurationsbefehl zum Anlegen eines Eintrags unter diesem Objekt. */
+  newEntryCommand?: string
+  /** Schnelleinstellungen für den aktiven dynamischen Objektast. */
+  quicksettingCommands?: readonly string[]
   /** Spezialisierte Bearbeitungsoberfläche für diesen Wert. */
   strategy?: ConfigEditorStrategy
   /** Darstellung eines Listenwerts im kompakten Konfigurationseditor. */
@@ -1357,6 +1365,14 @@ function legacyExtractPatternSchema(): JsonSchemaNode {
           bandPreCount: { type: 'boolean' },
           division: { type: 'integer', minimum: 1 },
           subdivision: { type: 'integer', minimum: 1 },
+          parts: {
+            type: 'object',
+            additionalProperties: false,
+            'x-zupfnoter-editor': { newEntryCommand: 'parts' },
+            patternProperties: {
+              '.*': { type: 'string', 'x-zupfnoter-editor': { optionsSource: 'part' } },
+            },
+          },
         },
       },
       startpos: { type: 'integer' },

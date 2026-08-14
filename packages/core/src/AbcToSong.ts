@@ -27,6 +27,7 @@ import type {
   RestPositionConfig,
   RestPositionMode,
   TimeSignature,
+  PartSequence,
 } from '@zupfnoter/types'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
 import type { AbcModel, AbcVoice, AbcSymbol } from './AbcModel.js'
@@ -213,12 +214,69 @@ export class AbcToSong {
 
     const beatMaps = this._buildBeatMaps(voices)
     const metaData = this._extractMetaData(model)
+    const partSequence = this._extractPartSequence(model, config)
+    if (partSequence !== undefined) metaData.partSequence = partSequence
     if (this._diagnostics.length > 0) {
       metaData.diagnostics = this._diagnostics
     }
     const harpnoteOptions = this._extractHarpnoteOptions(model, config)
 
     return { voices, beatMaps, metaData, playbackDirectives: this._playbackDirectives, harpnoteOptions }
+  }
+
+  private _extractPartSequence(model: AbcModel, config: ZupfnoterConfig): PartSequence | undefined {
+    const order = model.partSequence
+    if (order === undefined || order.length === 0) return undefined
+    const markers: PartSequence['markers'] = []
+    const firstVoice = model.voices[0]
+    const configuredParts = config.extract['0']?.playback?.parts ?? {}
+    const configuredIdByName = new Map(
+      Object.entries(configuredParts)
+        .map(([id, text]) => [text.trim(), id] as const)
+        .filter(([text]) => text !== ''),
+    )
+
+    for (const symbol of firstVoice?.symbols ?? []) {
+      const partText = this._partTextFromSymbol(symbol)
+      if (partText === undefined || partText.trim() === '') continue
+      const normalizedText = partText.trim()
+      const id = configuredIdByName.get(normalizedText)
+      if (id === undefined) {
+        this._diagnostics.push({
+          severity: 'warning',
+          message: `P:-Partname „${normalizedText}“ besitzt keine Header-ID`,
+          source: 'part-sequence',
+        })
+        continue
+      }
+      markers.push({ id, displayName: normalizedText, time: symbol.time })
+    }
+
+    if (markers.length === 0) {
+      this._diagnostics.push({
+        severity: 'warning',
+        message: 'P:-Header-Partfolge enthält keine eingebetteten Partmarker',
+        source: 'part-sequence',
+      })
+    }
+    for (const id of new Set(order)) {
+      if (!markers.some(marker => marker.id === id)) {
+        this._diagnostics.push({
+          severity: 'warning',
+          message: `P:-Header-ID ${id} besitzt keinen Partmarker`,
+          source: 'part-sequence',
+        })
+      }
+    }
+
+    return { order: [...order], markers }
+  }
+
+  private _partTextFromSymbol(symbol: AbcSymbol): string | undefined {
+    const part = symbol.part
+    if (typeof part !== 'object' || part === null) return undefined
+    const text = (part as { text?: unknown }).text
+    return typeof text === 'string' ? text : undefined
   }
 
   private _collectPlaybackDirectives(model: AbcModel): PlaybackDirective[] {
