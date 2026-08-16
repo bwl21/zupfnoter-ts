@@ -1428,7 +1428,7 @@ async function activateStorageConnection(connectionId: string): Promise<void> {
     return
   }
   const activated = await executeToolbarCommand(`sconnection ${connectionId}`)
-  if (activated) closeStorageConnectionsDialog()
+  if (!activated) return
 }
 
 function updateStorageConnectionRoot(connectionId: string, rootPath: string): void {
