@@ -112,7 +112,6 @@ import {
   type HarpPreviewDragEnd,
 } from './multiWindow/harpMirrorChannel'
 import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
-import { createNextcloudProvider } from './storage/nextcloudProvider'
 import { createLocalFsProvider } from './storage/localFsProvider'
 import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
 import { createStorageProviderRegistry } from './storage/providerRegistry'
@@ -220,7 +219,6 @@ const dropboxProvider = createDropboxProvider({
     logger.info(`storage access renewed: ${connection?.label ?? connectionId}`)
   },
 })
-const nextcloudProvider = createNextcloudProvider()
 const localFsProvider = createLocalFsProvider()
 const activeStorageConnection = computed(() => storageConnections.value.find((connection) => connection.id === storageState.connectionId))
 const activeStorageReadOnly = computed(() => activeStorageConnection.value?.readOnly === true)
@@ -252,19 +250,6 @@ const storageProviderRegistry = createStorageProviderRegistry([{
   listDocuments: (state) => dropboxProvider.listDocuments(state),
   openPreview: (state, path) => dropboxProvider.openPreview(state, path),
   removeConnection: async (connectionId) => removeDropboxConnection(connectionId),
-}, {
-  descriptor: { id: 'nextcloud', label: 'Nextcloud', availability: 'available' },
-  login: (state) => nextcloudProvider.login(state),
-  logout: (state) => nextcloudProvider.logout(state),
-  list: (state, recursive) => nextcloudProvider.list(state, recursive),
-  search: (state, query) => nextcloudProvider.search(state, query),
-  open: (state, filename) => nextcloudProvider.open(state, filename),
-  save: (state, filename, content) => nextcloudProvider.save(state, filename, content),
-  cleanup: (state) => nextcloudProvider.cleanup(state),
-  listFolders: (state, path) => nextcloudProvider.listFolders(state, path),
-  listDocuments: (state) => nextcloudProvider.listDocuments(state),
-  openPreview: (state, path) => nextcloudProvider.openPreview(state, path),
-  removeConnection: (connectionId) => nextcloudProvider.removeConnection(connectionId),
 }, {
   descriptor: { id: 'local', label: 'Lokaler Ordner', availability: 'available' },
   login: (state) => localFsProvider.login(state),
