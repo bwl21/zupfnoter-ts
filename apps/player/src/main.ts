@@ -55,7 +55,25 @@ function renderError(message: string): void {
 
 function renderPlaybackDataError(error: unknown): void {
   console.error('Playback-Daten konnten nicht geladen werden.', error)
-  renderError(INVALID_PLAYBACK_MESSAGE)
+  renderError(describePlaybackDataError(error))
+}
+
+function describePlaybackDataError(error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error)
+  const unsupportedVersion = /^Unsupported playback format version: (\d+)$/.exec(message)?.[1]
+  if (unsupportedVersion !== undefined) {
+    return `Dieser Player unterstützt das Playback-Datenformat ${unsupportedVersion} nicht. Bitte aktualisiere oder deploye den Player erneut.`
+  }
+  if (message.startsWith('Unsupported playback compression flags:')) {
+    return 'Dieser Player unterstützt die im Link verwendete Kompression nicht. Bitte aktualisiere oder deploye den Player erneut.'
+  }
+  if (message === 'Invalid playback Base64URL' || message === 'Invalid playback payload magic') {
+    return 'Der Player-Link ist beschädigt oder unvollständig. Bitte erzeuge den Link beziehungsweise den QR-Code erneut.'
+  }
+  if (message.includes('payload ends') || message.includes('Invalid compressed playback data')) {
+    return 'Die Playback-Daten sind unvollständig oder konnten nicht dekomprimiert werden. Bitte erzeuge den Link beziehungsweise den QR-Code erneut.'
+  }
+  return INVALID_PLAYBACK_MESSAGE
 }
 
 function renderWelcome(): void {
