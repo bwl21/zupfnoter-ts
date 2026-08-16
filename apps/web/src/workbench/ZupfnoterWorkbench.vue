@@ -113,6 +113,7 @@ import {
 } from './multiWindow/harpMirrorChannel'
 import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
 import { createNextcloudProvider } from './storage/nextcloudProvider'
+import { createLocalFsProvider } from './storage/localFsProvider'
 import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
 import { createStorageProviderRegistry } from './storage/providerRegistry'
 import { readLocalImport, resourceKeyFromFileName, UnsupportedImportError } from './fileImport'
@@ -220,6 +221,7 @@ const dropboxProvider = createDropboxProvider({
   },
 })
 const nextcloudProvider = createNextcloudProvider()
+const localFsProvider = createLocalFsProvider()
 const activeStorageConnection = computed(() => storageConnections.value.find((connection) => connection.id === storageState.connectionId))
 const activeStorageReadOnly = computed(() => activeStorageConnection.value?.readOnly === true)
 const storageLocation = computed(() => {
@@ -263,10 +265,28 @@ const storageProviderRegistry = createStorageProviderRegistry([{
   listDocuments: (state) => nextcloudProvider.listDocuments(state),
   openPreview: (state, path) => nextcloudProvider.openPreview(state, path),
   removeConnection: (connectionId) => nextcloudProvider.removeConnection(connectionId),
+}, {
+  descriptor: { id: 'local', label: 'Lokaler Ordner', availability: 'available' },
+  login: (state) => localFsProvider.login(state),
+  logout: (state) => localFsProvider.logout(state),
+  list: (state, recursive) => localFsProvider.list(state, recursive),
+  search: (state, query) => localFsProvider.search(state, query),
+  open: (state, filename) => localFsProvider.open(state, filename),
+  save: (state, filename, content) => localFsProvider.save(state, filename, content),
+  cleanup: (state) => localFsProvider.cleanup(state),
+  listFolders: (state, path) => localFsProvider.listFolders(state, path),
+  listDocuments: (state) => localFsProvider.listDocuments(state),
+  openPreview: (state, path) => localFsProvider.openPreview(state, path),
+  removeConnection: (connectionId) => localFsProvider.removeConnection(connectionId),
 }])
 const storageProviderDescriptors: StorageProviderDescriptor[] = [
   ...storageProviderRegistry.descriptors,
 ]
+
+function rootPickerProviderLabel(): string {
+  const providerId = storageConnections.value.find((connection) => connection.id === rootPickerConnectionId.value)?.providerId
+  return storageProviderDescriptors.find((provider) => provider.id === providerId)?.label ?? providerId ?? 'Speicher'
+}
 const playbackInstrument = ref<PlaybackInstrument>('harp')
 const logLevel = ref('warning')
 const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
@@ -2866,7 +2886,7 @@ function handleMirrorMessage(event: MessageEvent): void {
 
   <StorageRootPickerDialog
     :open="rootPickerConnectionId !== undefined"
-    :provider-label="storageConnections.find((connection) => connection.id === rootPickerConnectionId)?.providerId === 'nextcloud' ? 'Nextcloud' : 'Dropbox'"
+    :provider-label="rootPickerProviderLabel()"
     :path="rootPickerPath"
     :folders="rootPickerFolders"
     :loading="rootPickerLoading"
