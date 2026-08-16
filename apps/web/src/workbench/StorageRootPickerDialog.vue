@@ -4,6 +4,7 @@ import { ZnButton, ZnIconButton } from '@zupfnoter/design-system'
 
 const props = defineProps<{
   open: boolean
+  providerLabel: string
   path: string
   folders: Array<{ name: string; path: string }>
   loading: boolean
@@ -54,7 +55,7 @@ function parentPath(path: string): string {
           <button type="button" class="root-picker__up" aria-label="Eine Ebene höher" :disabled="path === '' || loading" @click="emit('browse', parentPath(path))">↑</button>
           <button type="button" class="root-picker__up" aria-label="Ordner neu laden" :disabled="loading" @click="emit('refresh')">↻</button>
           <nav class="root-picker__breadcrumbs" aria-label="Ordnerpfad">
-            <button type="button" class="root-picker__crumb" :disabled="loading" @click="emit('browse', '')">Dropbox</button>
+            <button type="button" class="root-picker__crumb" :disabled="loading" @click="emit('browse', '')">{{ props.providerLabel }}</button>
             <template v-for="part in pathParts" :key="part.path">
               <span aria-hidden="true">/</span>
               <button type="button" class="root-picker__crumb" :disabled="loading" @click="emit('browse', part.path)">{{ part.name }}</button>

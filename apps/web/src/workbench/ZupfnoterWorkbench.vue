@@ -112,6 +112,7 @@ import {
   type HarpPreviewDragEnd,
 } from './multiWindow/harpMirrorChannel'
 import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
+import { createNextcloudProvider } from './storage/nextcloudProvider'
 import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
 import { createStorageProviderRegistry } from './storage/providerRegistry'
 import { readLocalImport, resourceKeyFromFileName, UnsupportedImportError } from './fileImport'
@@ -218,6 +219,7 @@ const dropboxProvider = createDropboxProvider({
     logger.info(`storage access renewed: ${connection?.label ?? connectionId}`)
   },
 })
+const nextcloudProvider = createNextcloudProvider()
 const activeStorageConnection = computed(() => storageConnections.value.find((connection) => connection.id === storageState.connectionId))
 const activeStorageReadOnly = computed(() => activeStorageConnection.value?.readOnly === true)
 const storageLocation = computed(() => {
@@ -248,10 +250,22 @@ const storageProviderRegistry = createStorageProviderRegistry([{
   listDocuments: (state) => dropboxProvider.listDocuments(state),
   openPreview: (state, path) => dropboxProvider.openPreview(state, path),
   removeConnection: async (connectionId) => removeDropboxConnection(connectionId),
+}, {
+  descriptor: { id: 'nextcloud', label: 'Nextcloud', availability: 'available' },
+  login: (state) => nextcloudProvider.login(state),
+  logout: (state) => nextcloudProvider.logout(state),
+  list: (state, recursive) => nextcloudProvider.list(state, recursive),
+  search: (state, query) => nextcloudProvider.search(state, query),
+  open: (state, filename) => nextcloudProvider.open(state, filename),
+  save: (state, filename, content) => nextcloudProvider.save(state, filename, content),
+  cleanup: (state) => nextcloudProvider.cleanup(state),
+  listFolders: (state, path) => nextcloudProvider.listFolders(state, path),
+  listDocuments: (state) => nextcloudProvider.listDocuments(state),
+  openPreview: (state, path) => nextcloudProvider.openPreview(state, path),
+  removeConnection: (connectionId) => nextcloudProvider.removeConnection(connectionId),
 }])
 const storageProviderDescriptors: StorageProviderDescriptor[] = [
   ...storageProviderRegistry.descriptors,
-  { id: 'nextcloud', label: 'Nextcloud', availability: 'planned' },
 ]
 const playbackInstrument = ref<PlaybackInstrument>('harp')
 const logLevel = ref('warning')
@@ -2852,6 +2866,7 @@ function handleMirrorMessage(event: MessageEvent): void {
 
   <StorageRootPickerDialog
     :open="rootPickerConnectionId !== undefined"
+    :provider-label="storageConnections.find((connection) => connection.id === rootPickerConnectionId)?.providerId === 'nextcloud' ? 'Nextcloud' : 'Dropbox'"
     :path="rootPickerPath"
     :folders="rootPickerFolders"
     :loading="rootPickerLoading"
