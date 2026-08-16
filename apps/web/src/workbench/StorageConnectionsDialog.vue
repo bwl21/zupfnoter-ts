@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import type { StorageConnection, StorageProviderDescriptor } from '@zupfnoter/types'
-import { ZnButton, ZnIcon, ZnIconButton } from '@zupfnoter/design-system'
+import { ZnButton, ZnIconButton } from '@zupfnoter/design-system'
 
 const props = defineProps<{
   open: boolean
@@ -16,6 +16,7 @@ const emit = defineEmits<{
   activate: [connectionId: string]
   update: [connectionId: string, label: string]
   remove: [connectionId: string]
+  reconnect: [connectionId: string]
   disconnect: [connectionId: string]
   root: [connectionId: string]
   readonly: [connectionId: string, readOnly: boolean]
@@ -49,6 +50,17 @@ function statusLabel(status: StorageConnection['status']): string {
     planned: 'Geplant',
   }
   return labels[status]
+}
+
+type ConnectionAction = 'activate' | 'reconnect' | 'disconnect' | 'remove'
+
+function runConnectionAction(event: MouseEvent, action: ConnectionAction, connectionId: string): void {
+  const target = event.currentTarget
+  if (target instanceof HTMLElement) target.closest('details')?.removeAttribute('open')
+  if (action === 'activate') emit('activate', connectionId)
+  if (action === 'reconnect') emit('reconnect', connectionId)
+  if (action === 'disconnect') emit('disconnect', connectionId)
+  if (action === 'remove') emit('remove', connectionId)
 }
 
 function handleDialogKeydown(event: KeyboardEvent): void {
@@ -127,19 +139,18 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleWindowKeydown,
                   </td>
                   <td class="storage-dialog__status">
                     <span>{{ statusLabel(connection.status) }}</span>
-                    <ZnButton v-if="connection.status === 'connected'" class="storage-dialog__disconnect" variant="ghost" @click="emit('disconnect', connection.id)">Trennen</ZnButton>
                   </td>
                   <td class="storage-dialog__actions">
                     <span v-if="connection.id === props.activeConnectionId" class="storage-dialog__active-label">Aktiv</span>
-                    <ZnButton v-else variant="ghost" @click="emit('activate', connection.id)">Aktivieren</ZnButton>
-                    <ZnIconButton
-                      class="storage-dialog__delete-action"
-                      :label="`Verbindung ${connection.label} löschen`"
-                      variant="ghost"
-                      @click="emit('remove', connection.id)"
-                    >
-                      <ZnIcon name="delete" />
-                    </ZnIconButton>
+                    <details class="storage-dialog__action-menu">
+                      <summary aria-haspopup="menu" :aria-label="`Aktionen für Verbindung ${connection.label}`">⋯</summary>
+                      <div class="storage-dialog__action-menu-items" role="menu">
+                        <button v-if="connection.id !== props.activeConnectionId" type="button" role="menuitem" @click="runConnectionAction($event, 'activate', connection.id)">Aktivieren</button>
+                        <button type="button" role="menuitem" @click="runConnectionAction($event, 'reconnect', connection.id)">{{ connection.status === 'connected' ? 'Erneuern' : 'Anmelden' }}</button>
+                        <button v-if="connection.status === 'connected'" type="button" role="menuitem" @click="runConnectionAction($event, 'disconnect', connection.id)">Trennen</button>
+                        <button type="button" role="menuitem" @click="runConnectionAction($event, 'remove', connection.id)">Löschen</button>
+                      </div>
+                    </details>
                   </td>
                 </tr>
                 <tr v-if="newConnectionVisible" class="storage-dialog__new-row">
@@ -177,23 +188,34 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleWindowKeydown,
 .storage-dialog__hint { color:var(--zn-text-soft); font-size:.78rem; white-space:nowrap; }
 .storage-dialog__body { display:grid; gap:.55rem; padding:.65rem .75rem .75rem; }
 .storage-dialog__table-wrap { overflow-x:auto; }
-.storage-dialog__table { width:100%; min-width:50rem; border-collapse:collapse; font-size:.82rem; }
+.storage-dialog__table { width:100%; min-width:50rem; table-layout:fixed; border-collapse:collapse; font-size:.82rem; }
 .storage-dialog__table th,.storage-dialog__table td { padding:.32rem .4rem; border-bottom:1px solid var(--zn-border); text-align:left; vertical-align:middle; }
+.storage-dialog__table th:first-child,.storage-dialog__table td:first-child { width:18%; min-width:12rem; }
+.storage-dialog__table th:nth-child(2),.storage-dialog__table td:nth-child(2) { width:12%; }
+.storage-dialog__table th:nth-child(3),.storage-dialog__table td:nth-child(3) { width:22%; }
+.storage-dialog__table th:nth-child(4),.storage-dialog__table td:nth-child(4) { width:18%; }
+.storage-dialog__table th:nth-child(5),.storage-dialog__table td:nth-child(5) { width:18%; }
+.storage-dialog__table th:nth-child(6),.storage-dialog__table td:nth-child(6) { width:12%; }
 .storage-dialog__table th { color:var(--zn-text-soft); font-size:.72rem; font-weight:600; }
 .storage-dialog__row--active { background:color-mix(in srgb, var(--zn-accent) 15%, transparent); box-shadow:inset .22rem 0 0 var(--zn-accent); }
 .storage-dialog__new-row { background:var(--zn-bg-surface-soft); }
-.storage-dialog__actions { display:flex; align-items:center; gap:.2rem; min-width:12.2rem; }
-.storage-dialog__actions > * { inline-size:5.8rem; justify-content:center; }
-.storage-dialog__actions > .storage-dialog__delete-action { inline-size:2.1rem; margin-inline-start:.55rem; }
-.storage-dialog__delete-action { color:color-mix(in srgb, var(--zn-danger) 82%, white); }
+.storage-dialog__actions { display:flex; align-items:center; flex-wrap:wrap; gap:.2rem; min-width:0; }
+.storage-dialog__actions > * { inline-size:5.2rem; justify-content:center; }
+.storage-dialog__actions > .storage-dialog__action-menu { inline-size:1.8rem; }
 .storage-dialog__active-label { display:inline-flex; align-items:center; min-height:1.8rem; padding:.22rem .55rem; border-radius:var(--zn-radius-sm); background:var(--zn-accent); color:var(--zn-bg-elevated); font-weight:700; }
-.storage-dialog__root { display:flex; align-items:center; gap:.25rem; min-width:15rem; max-width:28rem; white-space:nowrap; }
+.storage-dialog__action-menu { position:relative; }
+.storage-dialog__action-menu summary { display:grid; place-items:center; inline-size:1.8rem; block-size:1.8rem; border:1px solid var(--zn-border); border-radius:var(--zn-radius-sm); color:var(--zn-text); cursor:pointer; font-size:1.2rem; line-height:1; list-style:none; }
+.storage-dialog__action-menu summary::-webkit-details-marker { display:none; }
+.storage-dialog__action-menu summary:hover,.storage-dialog__action-menu[open] summary { background:var(--zn-bg-surface-soft); }
+.storage-dialog__action-menu-items { position:absolute; z-index:2; inset-block-end:calc(100% + .25rem); inset-inline-end:0; display:grid; min-inline-size:8rem; padding:.25rem; border:1px solid var(--zn-border-strong); border-radius:var(--zn-radius-sm); background:var(--zn-bg-elevated); box-shadow:0 .35rem 1rem rgb(15 23 42 / .2); }
+.storage-dialog__action-menu-items button { padding:.35rem .5rem; border:0; border-radius:var(--zn-radius-sm); background:transparent; color:var(--zn-text); cursor:pointer; font:inherit; text-align:left; white-space:nowrap; }
+.storage-dialog__action-menu-items button:hover,.storage-dialog__action-menu-items button:focus-visible { background:var(--zn-bg-surface-soft); }
+.storage-dialog__root { display:flex; align-items:center; gap:.25rem; min-width:0; max-width:none; white-space:nowrap; }
 .storage-dialog__root > span { overflow:hidden; text-overflow:ellipsis; }
 .storage-dialog__root-button { inline-size:1.45rem; block-size:1.45rem; }
 .storage-dialog__root-button svg { inline-size:.85rem; block-size:.85rem; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .storage-dialog__readonly { position:relative; display:flex; align-items:center; gap:.35rem; white-space:nowrap; cursor:pointer; }
-.storage-dialog__status { white-space:nowrap; }
-.storage-dialog__disconnect { min-height:1.45rem; margin-inline-start:.3rem; padding:.08rem .3rem; font-size:.72rem; }
+.storage-dialog__status { white-space:normal; line-height:1.45; }
 .storage-dialog__switch-input { position:absolute; inline-size:1px; block-size:1px; overflow:hidden; clip-path:inset(50%); }
 .storage-dialog__switch { position:relative; inline-size:1.75rem; block-size:1rem; flex:0 0 auto; border-radius:999px; background:var(--zn-border-strong); transition:background .15s ease; }
 .storage-dialog__switch::after { position:absolute; inset-block-start:.14rem; inset-inline-start:.14rem; inline-size:.72rem; block-size:.72rem; border-radius:50%; background:var(--zn-bg-elevated); content:''; transition:transform .15s ease; }

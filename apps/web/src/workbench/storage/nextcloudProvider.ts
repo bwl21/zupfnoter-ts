@@ -33,10 +33,40 @@ export function createNextcloudProvider(options: NextcloudProviderOptions = {}):
     system: 'nextcloud',
     async login(state?: StorageCommandState): Promise<void> {
       const connectionId = connectionKey(state)
-      const serverUrl = normalizeServerUrl(window.prompt('Nextcloud-Server-URL', 'https://cloud.example.org') ?? '')
-      const username = window.prompt('Nextcloud-Benutzername')?.trim() || ''
-      const password = window.prompt('Nextcloud-App-Passwort (nicht das normale Passwort)') ?? ''
-      if (serverUrl === '' || username === '' || password === '') throw new Error('Nextcloud-Zugangsdaten sind unvollständig')
+      const serverUrlInput = window.prompt('Nextcloud-Server-URL', 'https://cloud.example.org')
+      const usernameInput = window.prompt('Nextcloud-Benutzername')
+      const passwordInput = window.prompt('Nextcloud-App-Passwort (nicht das normale Passwort)')
+      const serverUrl = normalizeServerUrl(serverUrlInput ?? '')
+      const username = usernameInput?.trim() ?? ''
+      const password = passwordInput ?? ''
+      const validationProblems: string[] = []
+
+      if (serverUrlInput === null) {
+        validationProblems.push('• Server-URL: Eingabe abgebrochen.')
+      } else if (serverUrlInput.trim() === '') {
+        validationProblems.push('• Server-URL: Es wurde keine URL eingegeben.')
+      } else if (serverUrl === '') {
+        validationProblems.push('• Server-URL: Ungültig. Bitte die vollständige Adresse mit http:// oder https:// eingeben, zum Beispiel https://cloud.example.org.')
+      }
+      if (usernameInput === null) {
+        validationProblems.push('• Benutzername: Eingabe abgebrochen.')
+      } else if (username === '') {
+        validationProblems.push('• Benutzername: Es wurde kein Benutzername eingegeben. Verwende den tatsächlichen Nextcloud-Loginnamen, nicht zwingend den Anzeigenamen oder die E-Mail-Adresse.')
+      }
+      if (passwordInput === null) {
+        validationProblems.push('• App-Passwort: Eingabe abgebrochen.')
+      } else if (password === '') {
+        validationProblems.push('• App-Passwort: Es wurde kein App-Passwort eingegeben. Verwende ein in Nextcloud erzeugtes App-Passwort, nicht das normale Konto-Passwort.')
+      }
+      if (validationProblems.length > 0) {
+        throw new Error([
+          'Nextcloud-Anmeldung kann nicht gestartet werden.',
+          '',
+          ...validationProblems,
+          '',
+          'Es wurde noch keine Verbindung zu Nextcloud hergestellt.',
+        ].join('\n'))
+      }
       const credentials = { serverUrl, username, password }
       const response = await request(credentials, 'PROPFIND', '', { Depth: '0' })
       if (!response.ok) throw new Error(`Nextcloud-Anmeldung fehlgeschlagen: ${response.status}`)

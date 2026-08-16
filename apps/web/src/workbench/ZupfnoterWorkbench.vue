@@ -2879,6 +2879,7 @@ function handleMirrorMessage(event: MessageEvent): void {
     @activate="activateStorageConnection"
     @update="renameStorageConnection"
     @remove="removeStorageConnection"
+    @reconnect="connectStorageConnection"
     @disconnect="disconnectStorageConnection"
     @root="openRootPicker"
     @readonly="updateStorageConnectionReadOnly"
