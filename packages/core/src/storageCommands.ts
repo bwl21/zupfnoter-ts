@@ -108,6 +108,7 @@ export function registerStorageCommands(
       state.path = normalizeRelativeStoragePath(state.path)
       await runtime.login(state)
       state.loggedIn = true
+      if (state.connectionId !== undefined) runtime.updateConnectionStatus?.(state.connectionId, 'connected')
     },
   })
 
@@ -148,6 +149,7 @@ export function registerStorageCommands(
     perform: async () => {
       state.loggedIn = false
       await runtime.logout(state)
+      if (state.connectionId !== undefined) runtime.updateConnectionStatus?.(state.connectionId, 'disconnected')
     },
   })
 
@@ -179,6 +181,7 @@ export function registerStorageCommands(
     perform: async () => {
       await runtime.login(state)
       state.loggedIn = true
+      if (state.connectionId !== undefined) runtime.updateConnectionStatus?.(state.connectionId, 'connected')
     },
   })
 

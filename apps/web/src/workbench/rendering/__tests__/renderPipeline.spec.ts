@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { renderWorkbenchPreviews, resolvePdfExportVariants } from '../renderPipeline'
+import { renderWorkbenchComparison, renderWorkbenchPreviews, resolvePdfExportVariants } from '../renderPipeline'
 
 const amMoargoAbc = `X:799
 Z:
@@ -42,6 +42,39 @@ V:4
 `
 
 describe('renderWorkbenchPreviews', () => {
+  it('renders comparison candidates with their own extract configuration', () => {
+    const referenceText = `X:1
+T:Referenz
+M:4/4
+L:1/4
+K:C
+V:1
+C D E F |
+V:2
+G, A, B, C |
+
+%%%%zupfnoter.config
+{"extract":{"1":{"voices":[1]}}}`
+    const comparisonText = `X:1
+T:Vergleich
+M:4/4
+L:1/4
+K:C
+V:1
+C D E F |
+V:2
+G, A, B, C |
+
+%%%%zupfnoter.config
+{"extract":{"1":{"voices":[2]}}}`
+
+    const result = renderWorkbenchComparison(referenceText, comparisonText, 1)
+
+    expect(result.reference.activeVoiceIds).toEqual(['1'])
+    expect(result.comparison.activeVoiceIds).toEqual(['2'])
+    expect(result.reference.harpSvg).not.toBe(result.comparison.harpSvg)
+  })
+
   it('enables editable flowline handles by default', () => {
     const result = renderWorkbenchPreviews(`X:1
 T:Flowconf default

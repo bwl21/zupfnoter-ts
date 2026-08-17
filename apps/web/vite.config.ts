@@ -43,7 +43,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      buffer: fileURLToPath(new URL('./node_modules/buffer/index.js', import.meta.url)),
     },
     // Resolve workspace packages via their TypeScript source in dev mode
     conditions: ['source', 'import', 'module', 'browser', 'default'],

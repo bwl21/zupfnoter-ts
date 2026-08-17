@@ -53,6 +53,7 @@ import ToolbarFileIcon from './ToolbarFileIcon.vue'
 import StorageConnectionsDialog from './StorageConnectionsDialog.vue'
 import StorageRootPickerDialog from './StorageRootPickerDialog.vue'
 import StorageOpenDialog from './StorageOpenDialog.vue'
+import GitDialog from './GitDialog.vue'
 import {
   FILE_TOOLBAR_MENU_ITEMS,
   fileToolbarPlaceholderMessage,
@@ -64,6 +65,7 @@ import WorkbenchLayout from './WorkbenchLayout.vue'
 import { usePlaybackStore } from '../stores/playback'
 import { useSelectionStore } from '../stores/selection'
 import { useWorkbenchConfigStore } from '../stores/workbenchConfig'
+import { useGitStore } from '../stores/git'
 import { usePlaybackDriver } from './usePlaybackDriver'
 import { useAudioPlayer, type PlaybackInstrument } from './useAudioPlayer'
 import { resolvePlaybackInstrument } from './sound'
@@ -86,7 +88,9 @@ import {
   CURRENT_DOCUMENT_LOCAL_STORAGE_KEY,
   INITIAL_DOCUMENT_KEY,
   loadCurrentDocumentFromIndexedDb,
+  loadSavedDocumentSnapshot,
   saveCurrentDocumentToIndexedDb,
+  saveSavedDocumentSnapshot,
 } from './documentPersistence'
 import {
   canTargetCreateSelection,
@@ -112,9 +116,10 @@ import {
   type HarpPreviewDragEnd,
 } from './multiWindow/harpMirrorChannel'
 import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
-import { createLocalFsProvider } from './storage/localFsProvider'
+import { createLocalFsProvider, getLocalWorkspaceFileSystem } from './storage/localFsProvider'
 import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
 import { createStorageProviderRegistry } from './storage/providerRegistry'
+import { createGitService } from './git/gitService'
 import { readLocalImport, resourceKeyFromFileName, UnsupportedImportError } from './fileImport'
 
 const props = withDefaults(defineProps<{
@@ -190,6 +195,8 @@ const songConfigInspection = computed(() => inspectSongConfig(documentText.value
 const parsedSongConfig = computed(() => songConfigInspection.value.config ?? {})
 const documentResources = computed<SongResources>(() => extractSongResources(documentText.value))
 const savedDocumentText = ref(documentText.value)
+const workingVersionTimestamp = ref(Math.floor(Date.now() / 1000))
+const savedVersionTimestamp = ref<number>()
 const documentDirty = computed(() => documentText.value !== savedDocumentText.value)
 const abcText = computed({
   get: () => splitSongDocument(documentText.value).abcText,
@@ -197,6 +204,7 @@ const abcText = computed({
     documentText.value = replaceSongDocumentAbc(documentText.value, value)
   },
 })
+const savedAbcText = computed(() => splitSongDocument(savedDocumentText.value).abcText)
 const currentExtract = ref(0)
 const activeConfigSection = ref('basic_settings')
 const hoveredConfigKey = ref<string>()
@@ -211,6 +219,12 @@ const storageState = reactive({
   path: '',
   loggedIn: false,
   pendingCandidates: [] as string[],
+})
+const activeDocumentPath = computed(() => {
+  const filebase = extractSongFilebase(abcText.value)
+  if (filebase === undefined || filebase === '') return ''
+  const folder = storageState.path.replace(/^\/+|\/+$/g, '')
+  return [folder, `${filebase}.abc`].filter((part) => part !== '').join('/')
 })
 const storageConnections = ref<StorageConnection[]>(loadStorageConnections())
 const dropboxProvider = createDropboxProvider({
@@ -276,6 +290,7 @@ const playbackInstrument = ref<PlaybackInstrument>('harp')
 const logLevel = ref('warning')
 const autoRefresh = ref<'on' | 'off' | 'remote'>('on')
 const workbenchConfig = useWorkbenchConfigStore()
+const gitStore = useGitStore()
 const runtimeSettings = ref<Record<string, string>>({
   autoscroll: 'true',
   follow: 'true',
@@ -290,6 +305,7 @@ const playbackInstrumentKey = 'zupfnoter.playback.instrument'
 const extractPickerOpen = ref(false)
 const aboutDialogOpen = ref(false)
 const storageConnectionsDialogOpen = ref(false)
+const gitDialogOpen = ref(false)
 const returnToStorageOpenDialog = ref(false)
 const storageOpenDialogOpen = ref(false)
 const storageOpenDocuments = ref<StorageDocument[]>([])
@@ -635,6 +651,9 @@ let pendingRenderRequestId: number | undefined
 let renderTimer: ReturnType<typeof setTimeout> | undefined
 let pdfPreviewRequestId = 0
 let documentPersistenceQueue = Promise.resolve()
+let gitWorkspaceRequest = 0
+let savedVersionTimestampRequest = 0
+let savedDocumentSnapshotRequest = 0
 
 function appendDiagnosticLine(message: string, severity: 'warning' | 'error', source?: string): void {
   const prefix = source === undefined || source === ''
@@ -724,6 +743,48 @@ function persistStorageContext(): void {
   }))
 }
 
+function savedDocumentSnapshotKey(): string | undefined {
+  const path = activeDocumentPath.value
+  if (path === '') return undefined
+  const connection = activeStorageConnection.value
+  const provider = connection?.providerId ?? storageState.system
+  const connectionId = connection?.id ?? storageState.connectionId ?? 'default'
+  return `${provider}:${connectionId}:${path}`
+}
+
+async function persistSavedDocumentSnapshot(value: string = documentText.value): Promise<void> {
+  const key = savedDocumentSnapshotKey()
+  if (key === undefined) return
+  try {
+    await saveSavedDocumentSnapshot(key, value)
+  } catch (error) {
+    logger.warning(`Gespeicherter Versionsstand konnte nicht gemerkt werden: ${error instanceof Error ? error.message : String(error)}`)
+  }
+}
+
+async function restoreSavedDocumentSnapshot(): Promise<void> {
+  const request = ++savedDocumentSnapshotRequest
+  const key = savedDocumentSnapshotKey()
+  if (key === undefined) {
+    savedDocumentText.value = documentText.value
+    return
+  }
+  try {
+    const snapshot = await loadSavedDocumentSnapshot(key)
+    if (request !== savedDocumentSnapshotRequest) return
+    if (snapshot === undefined) {
+      savedDocumentText.value = documentText.value
+      await persistSavedDocumentSnapshot(documentText.value)
+      return
+    }
+    savedDocumentText.value = snapshot
+  } catch (error) {
+    if (request !== savedDocumentSnapshotRequest) return
+    savedDocumentText.value = documentText.value
+    logger.warning(`Gespeicherter Versionsstand konnte nicht geladen werden: ${error instanceof Error ? error.message : String(error)}`)
+  }
+}
+
 async function persistCurrentAbcText(value: string): Promise<void> {
   try {
     await saveCurrentDocumentToIndexedDb(value)
@@ -762,11 +823,26 @@ watch(storageConnections, (connections) => {
   saveStorageConnections(connections)
 }, { deep: true })
 
+watch([
+  () => storageState.connectionId,
+  () => storageState.rootPath,
+  () => activeStorageConnection.value?.providerId,
+  () => activeStorageConnection.value?.status,
+], () => {
+  void configureGitWorkspace()
+  void refreshSavedVersionTimestamp()
+}, { immediate: true })
+
+watch(activeDocumentPath, () => {
+  void refreshSavedVersionTimestamp()
+})
+
 watch(saveTooltip, () => {
   void nextTick().then(setupFileToolbarTooltips)
 })
 
 watch(documentText, (value) => {
+  workingVersionTimestamp.value = Math.floor(Date.now() / 1000)
   documentPersistenceQueue = documentPersistenceQueue.then(() => persistCurrentAbcText(value))
 })
 
@@ -1192,6 +1268,10 @@ function closeFileMenu(): void {
 
 function handleFileToolbarAction(action: FileToolbarAction): void {
   closeFileMenu()
+  if (action === 'versions') {
+    void openGitDialog()
+    return
+  }
   if (action === 'open') {
     prepareStorageOpenDocuments()
     storageOpenDialogOpen.value = true
@@ -1230,6 +1310,49 @@ function handleFileToolbarAction(action: FileToolbarAction): void {
   }
 }
 
+async function configureGitWorkspace(): Promise<void> {
+  const request = ++gitWorkspaceRequest
+  const connection = activeStorageConnection.value
+  if (connection?.providerId !== 'local' || connection.status !== 'connected') {
+    gitStore.configure(undefined)
+    return
+  }
+  try {
+    const workspace = await getLocalWorkspaceFileSystem(connection.id, connection.rootPath)
+    if (request !== gitWorkspaceRequest) return
+    gitStore.configure(createGitService(workspace))
+    if (gitDialogOpen.value) await gitStore.refresh({ loadRepositoryHistory: false, loadBranchInfo: false })
+  } catch (error) {
+    if (request !== gitWorkspaceRequest) return
+    gitStore.configure(undefined)
+    if (gitDialogOpen.value) gitStore.error = error instanceof Error ? error.message : String(error)
+  }
+}
+
+async function refreshSavedVersionTimestamp(): Promise<void> {
+  const request = ++savedVersionTimestampRequest
+  const connection = activeStorageConnection.value
+  const path = activeDocumentPath.value
+  if (connection?.providerId !== 'local' || connection.status !== 'connected' || path === '') {
+    savedVersionTimestamp.value = undefined
+    return
+  }
+  try {
+    const workspace = await getLocalWorkspaceFileSystem(connection.id, connection.rootPath)
+    const stat = await workspace.stat(path)
+    if (request !== savedVersionTimestampRequest) return
+    savedVersionTimestamp.value = stat.kind === 'file' ? Math.floor(stat.mtimeMs / 1000) : undefined
+  } catch {
+    if (request === savedVersionTimestampRequest) savedVersionTimestamp.value = undefined
+  }
+}
+
+async function openGitDialog(): Promise<void> {
+  await configureGitWorkspace()
+  await refreshSavedVersionTimestamp()
+  gitDialogOpen.value = true
+}
+
 function hasFiles(event: DragEvent): boolean {
   return event.dataTransfer?.types.includes('Files') === true
 }
@@ -1255,6 +1378,7 @@ async function importLocalFile(file: File): Promise<void> {
     if (imported.kind === 'abc') {
       documentText.value = imported.text
       savedDocumentText.value = imported.text
+      workingVersionTimestamp.value = Math.floor(Date.now() / 1000)
       renderNow()
       pushToast({ severity: 'success', title: 'Datei importiert', message: `„${file.name}“ wurde geöffnet.` })
       return
@@ -1378,6 +1502,8 @@ async function openStorageDocument(document: StorageDocument): Promise<void> {
     )
     if (opened) {
       savedDocumentText.value = documentText.value
+      await persistSavedDocumentSnapshot()
+      await refreshSavedVersionTimestamp()
       storageOpenDialogOpen.value = false
     }
   } finally {
@@ -1527,7 +1653,12 @@ function connectStorageConnection(connectionId: string): void {
   updateStorageConnection(connectionId, { status: 'connecting' })
   storageState.connectionId = connectionId
   storageState.system = connection.providerId
+  storageState.rootPath = connection.rootPath
+  storageState.path = connection.relativePath
   storageState.loggedIn = false
+  storageOpenDocumentCache.clear()
+  storageOpenDocuments.value = []
+  storageOpenDocumentsLoaded.value = false
   localStorage.setItem(storageDialogResumeKey, 'true')
   persistStorageContext()
   void executeToolbarCommand(`sprovider ${connection.providerId}`)
@@ -1834,7 +1965,11 @@ registerStorageCommands(commandStack, storageState, {
     for (const [index, plan] of plans.entries()) {
       await saveArtifact(plan, index)
     }
-    if (!saveResultHasFailures.value) savedDocumentText.value = content
+    if (!saveResultHasFailures.value) {
+      savedDocumentText.value = content
+      await persistSavedDocumentSnapshot(content)
+      await refreshSavedVersionTimestamp()
+    }
     saveResultComplete.value = true
     saveResultDialogOpen.value = true
     return { saved: names, failed: failedNames }
@@ -2338,9 +2473,12 @@ function isExtractProduced(extractNumber: number): boolean {
 onMounted(async () => {
   await restoreCurrentAbcText()
   restoreWorkbenchUiState()
-  savedDocumentText.value = documentText.value
-  restorePlaybackInstrument()
   restoreStorageContext()
+  await restoreSavedDocumentSnapshot()
+  const loadedTimestamp = Math.floor(Date.now() / 1000)
+  workingVersionTimestamp.value = loadedTimestamp
+  void refreshSavedVersionTimestamp()
+  restorePlaybackInstrument()
   if (props.openStorageOnMount) {
     prepareStorageOpenDocuments()
     storageOpenDialogOpen.value = true
@@ -2868,6 +3006,17 @@ function handleMirrorMessage(event: MessageEvent): void {
     @disconnect="disconnectStorageConnection"
     @root="openRootPicker"
     @readonly="updateStorageConnectionReadOnly"
+  />
+
+  <GitDialog
+    :open="gitDialogOpen"
+    :current-path="activeDocumentPath"
+    :current-document-text="documentText"
+    :saved-document-text="savedDocumentText"
+    :working-timestamp="workingVersionTimestamp"
+    :saved-timestamp="savedVersionTimestamp"
+    :current-extract="currentExtract"
+    @close="gitDialogOpen = false"
   />
 
   <StorageRootPickerDialog

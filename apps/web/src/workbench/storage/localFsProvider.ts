@@ -1,23 +1,15 @@
 import type { StorageCommandState } from '@zupfnoter/core'
 import type { StorageDocument } from '@zupfnoter/types'
-
-interface LocalFileHandle {
-  kind: 'file'
-  getFile(): Promise<File>
-  createWritable(): Promise<{ write(data: string | Blob): Promise<void>; close(): Promise<void> }>
-}
-
-interface LocalDirectoryHandle {
-  kind: 'directory'
-  name: string
-  getDirectoryHandle(name: string, options?: { create?: boolean }): Promise<LocalDirectoryHandle>
-  getFileHandle(name: string, options?: { create?: boolean }): Promise<LocalFileHandle>
-  entries(): AsyncIterableIterator<[string, LocalFileHandle | LocalDirectoryHandle]>
-  queryPermission?(descriptor: { mode: 'readwrite' }): Promise<'granted' | 'denied' | 'prompt'>
-}
+import {
+  createWorkspaceFileSystem,
+  type WorkspaceDirectoryHandle,
+  type WorkspaceFileHandle,
+  type WorkspaceFileSystem,
+  WorkspaceFileSystemError,
+} from './workspaceFileSystem'
 
 interface FileSystemPickerWindow extends Window {
-  showDirectoryPicker?: () => Promise<LocalDirectoryHandle>
+  showDirectoryPicker?: () => Promise<WorkspaceDirectoryHandle>
 }
 
 interface LocalFsProvider {
@@ -35,7 +27,7 @@ interface LocalFsProvider {
   removeConnection(connectionId: string): Promise<void>
 }
 
-const directoriesByConnection = new Map<string, LocalDirectoryHandle>()
+const directoriesByConnection = new Map<string, WorkspaceDirectoryHandle>()
 const DIRECTORY_DATABASE = 'zupfnoter-local-storage'
 const DIRECTORY_STORE = 'directories'
 
@@ -68,7 +60,7 @@ export function createLocalFsProvider(): LocalFsProvider {
     },
     async open(state: StorageCommandState, filename: string): Promise<string | undefined> {
       try {
-        const file = await fileForPath(state, joinPath(state.path, filename))
+        const file = await fileForPath(state, resolveLocalTargetPath(state.path, filename))
         return file.getFile().then((value) => value.text())
       } catch (error) {
         if (isNotFoundError(error)) return undefined
@@ -76,7 +68,7 @@ export function createLocalFsProvider(): LocalFsProvider {
       }
     },
     async save(state: StorageCommandState, filename: string, content: string | Blob): Promise<void> {
-      const file = await fileForPath(state, joinPath(state.path, filename), true)
+      const file = await fileForPath(state, resolveLocalTargetPath(state.path, filename), true)
       const writable = await file.createWritable()
       await writable.write(content)
       await writable.close()
@@ -102,7 +94,7 @@ export function createLocalFsProvider(): LocalFsProvider {
     },
     async openPreview(state: StorageCommandState, path: string): Promise<Blob | undefined> {
       try {
-        const file = await fileForPath(state, path)
+        const file = await fileForPath(state, resolveLocalTargetPath(state.path, path))
         return file.getFile()
       } catch (error) {
         if (isNotFoundError(error)) return undefined
@@ -116,6 +108,15 @@ export function createLocalFsProvider(): LocalFsProvider {
   }
 }
 
+/** Returns the same selected local folder through the shared workspace contract. */
+export async function getLocalWorkspaceFileSystem(connectionId: string, rootPath = ''): Promise<WorkspaceFileSystem> {
+  const directory = directoriesByConnection.get(connectionId) ?? await loadDirectory(connectionId)
+  if (directory === undefined) throw new WorkspaceFileSystemError('ENOTCONN', rootPath, 'Kein lokaler Zielordner ausgewählt')
+  let workspaceRoot = directory
+  for (const part of normalizePath(rootPath).split('/').filter(Boolean)) workspaceRoot = await workspaceRoot.getDirectoryHandle(part)
+  return createWorkspaceFileSystem(workspaceRoot)
+}
+
 interface LocalEntry {
   name: string
   path: string
@@ -123,7 +124,7 @@ interface LocalEntry {
 }
 
 async function collectEntries(
-  directory: LocalDirectoryHandle,
+  directory: WorkspaceDirectoryHandle,
   basePath: string,
   recursive: boolean,
   predicate: (entry: LocalEntry) => boolean,
@@ -132,7 +133,7 @@ async function collectEntries(
   return entries.filter(predicate).map((entry) => entry.path).sort()
 }
 
-async function collectEntryDetails(directory: LocalDirectoryHandle, basePath: string, recursive: boolean): Promise<LocalEntry[]> {
+async function collectEntryDetails(directory: WorkspaceDirectoryHandle, basePath: string, recursive: boolean): Promise<LocalEntry[]> {
   const result: LocalEntry[] = []
   for await (const [name, entry] of directory.entries()) {
     const path = joinPath(basePath, name)
@@ -145,17 +146,18 @@ async function collectEntryDetails(directory: LocalDirectoryHandle, basePath: st
   return result
 }
 
-async function directoryForPath(state: StorageCommandState, path: string): Promise<LocalDirectoryHandle> {
+async function directoryForPath(state: StorageCommandState, path: string): Promise<WorkspaceDirectoryHandle> {
   const key = connectionKey(state)
   let directory = directoriesByConnection.get(key)
   directory ??= await loadDirectory(key)
   if (directory !== undefined) directoriesByConnection.set(key, directory)
   if (directory === undefined) throw new Error('Kein lokaler Zielordner ausgewählt')
-  for (const part of normalizePath(path).split('/').filter(Boolean)) directory = await directory.getDirectoryHandle(part)
+  const combinedPath = [state.rootPath ?? '', path].filter(Boolean).join('/')
+  for (const part of normalizePath(combinedPath).split('/').filter(Boolean)) directory = await directory.getDirectoryHandle(part)
   return directory
 }
 
-async function fileForPath(state: StorageCommandState, path: string, create = false): Promise<LocalFileHandle> {
+async function fileForPath(state: StorageCommandState, path: string, create = false): Promise<WorkspaceFileHandle> {
   const parts = normalizePath(path).split('/').filter(Boolean)
   const name = parts.pop()
   if (name === undefined) throw new Error('Dateiname fehlt')
@@ -177,11 +179,19 @@ function joinPath(left: string, right: string): string {
   return normalizePath([left, right].filter(Boolean).join('/'))
 }
 
-function isNotFoundError(error: unknown): boolean {
-  return error instanceof DOMException && error.name === 'NotFoundError'
+export function resolveLocalTargetPath(currentPath: string, targetPath: string): string {
+  const current = normalizePath(currentPath)
+  const target = normalizePath(targetPath)
+  if (current === '' || target === current || target.startsWith(`${current}/`)) return target
+  return joinPath(current, target)
 }
 
-async function loadDirectory(key: string): Promise<LocalDirectoryHandle | undefined> {
+function isNotFoundError(error: unknown): boolean {
+  return (error instanceof DOMException && error.name === 'NotFoundError')
+    || (error instanceof WorkspaceFileSystemError && error.code === 'ENOENT')
+}
+
+async function loadDirectory(key: string): Promise<WorkspaceDirectoryHandle | undefined> {
   if (typeof indexedDB === 'undefined') return undefined
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DIRECTORY_DATABASE, 1)
@@ -191,12 +201,12 @@ async function loadDirectory(key: string): Promise<LocalDirectoryHandle | undefi
       const transaction = request.result.transaction(DIRECTORY_STORE, 'readonly')
       const read = transaction.objectStore(DIRECTORY_STORE).get(key)
       read.onerror = () => reject(read.error ?? new Error('Lokaler Ordner konnte nicht gelesen werden'))
-      read.onsuccess = () => resolve(read.result as LocalDirectoryHandle | undefined)
+      read.onsuccess = () => resolve(read.result as WorkspaceDirectoryHandle | undefined)
     }
   })
 }
 
-async function saveDirectory(key: string, directory: LocalDirectoryHandle): Promise<void> {
+async function saveDirectory(key: string, directory: WorkspaceDirectoryHandle): Promise<void> {
   if (typeof indexedDB === 'undefined') return
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DIRECTORY_DATABASE, 1)

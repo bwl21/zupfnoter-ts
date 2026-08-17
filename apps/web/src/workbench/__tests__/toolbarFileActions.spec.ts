@@ -17,6 +17,7 @@ describe('file toolbar actions', () => {
       'import',
       'download',
       'separator',
+      'versions',
       'storage-connections',
     ])
   })

@@ -29,6 +29,9 @@ defineProps<{
     <template v-else-if="name === 'download'">
       <path d="M6 3.5h7l5 5V20.5H6zM13 3.5v5h5M12 10v7M9.5 14.5 12 17l2.5-2.5" />
     </template>
+    <template v-else-if="name === 'history'">
+      <path d="M4 12a8 8 0 1 0 2.35-5.65M4 5v4h4M12 7v5l3 2" />
+    </template>
     <template v-else>
       <path d="M4 7h16v10H4zM7 10h4M7 14h7M17 14h.01" />
     </template>

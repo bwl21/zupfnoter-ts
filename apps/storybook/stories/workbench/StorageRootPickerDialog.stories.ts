@@ -12,5 +12,5 @@ const folders = [
   { name: 'Verein', path: 'Verein' },
 ]
 
-export const FolderSelection: Story = { args: { open: true, path: '', folders, loading: false } }
-export const Loading: Story = { args: { open: true, path: 'Privat', folders: [], loading: true } }
+export const FolderSelection: Story = { args: { open: true, providerLabel: 'Lokaler Ordner', path: '', folders, loading: false } }
+export const Loading: Story = { args: { open: true, providerLabel: 'Lokaler Ordner', path: 'Privat', folders: [], loading: true } }

@@ -4,9 +4,10 @@ export type FileToolbarAction =
   | 'save'
   | 'import'
   | 'download'
+  | 'versions'
   | 'storage-connections'
 
-export type ToolbarFileIconName = 'file' | 'new' | 'open' | 'save' | 'import' | 'format' | 'download' | 'storage'
+export type ToolbarFileIconName = 'file' | 'new' | 'open' | 'save' | 'import' | 'format' | 'download' | 'storage' | 'history'
 
 export interface FileToolbarMenuAction {
   type: 'action'
@@ -41,6 +42,7 @@ export const FILE_TOOLBAR_MENU_ITEMS: FileToolbarMenuItem[] = [
   { type: 'action', action: 'import', label: 'Importieren', tooltip: 'ABC oder MusicXML vom Gerät importieren', icon: 'import' },
   { type: 'action', action: 'download', label: 'ABC herunterladen', tooltip: 'Aktuelles Dokument als ABC herunterladen', icon: 'download' },
   { type: 'separator' },
+  { type: 'action', action: 'versions', label: 'Versionen …', tooltip: 'Änderungen und Versionsverlauf anzeigen', icon: 'history' },
   { type: 'action', action: 'storage-connections', label: 'Speicherverbindungen …', tooltip: 'Speicherverbindungen verwalten', icon: 'storage' },
 ]
 

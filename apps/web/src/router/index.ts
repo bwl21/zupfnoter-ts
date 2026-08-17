@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import('../views/MirrorNotesView.vue'),
     },
     {
+      path: '/compare',
+      name: 'version-compare',
+      component: () => import('../views/VersionCompareView.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),

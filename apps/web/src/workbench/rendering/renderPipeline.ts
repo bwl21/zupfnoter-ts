@@ -58,6 +58,11 @@ export interface WorkbenchRenderResult {
   renderError?: string
 }
 
+export interface WorkbenchComparisonResult {
+  reference: WorkbenchRenderResult
+  comparison: WorkbenchRenderResult
+}
+
 export interface WorkbenchRenderOptions {
   /** Separat vom Konfigurations-JSON gespeicherte Bildressourcen. */
   resources?: SongResources
@@ -304,4 +309,31 @@ export function renderWorkbenchPreviews(
     summary,
     renderError,
   }
+}
+
+/** Rendert beide Vergleichskandidaten unabhängig voneinander aus ihrem ABC. */
+export function renderWorkbenchComparison(
+  referenceText: string,
+  comparisonText: string,
+  extractNr: number,
+): WorkbenchComparisonResult {
+  return {
+    // Der Vergleich ist eine statische Ausgabe. Interaktive Flusslinien würden
+    // zusätzlich Bearbeitungshilfen rendern und vom eigentlichen Layout ablenken.
+    reference: renderWorkbenchPreviews(referenceText, extractNr, { flowconf: false }),
+    comparison: renderWorkbenchPreviews(comparisonText, extractNr, { flowconf: false }),
+  }
+}
+
+/** Erzeugt die beiden PDF-Vergleichskandidaten unabhängig voneinander. */
+export async function renderPdfComparison(
+  referenceText: string,
+  comparisonText: string,
+  extractNr: number,
+  pageFormat: 'A3' | 'A4',
+): Promise<[Blob, Blob]> {
+  return Promise.all([
+    renderPdfExport(referenceText, extractNr, pageFormat),
+    renderPdfExport(comparisonText, extractNr, pageFormat),
+  ])
 }
