@@ -68,6 +68,8 @@ watch([() => props.open, () => props.currentPath], ([open]) => {
     actionError.value = ''
     referenceCandidate.value = ''
     comparisonCandidate.value = ''
+    referenceCandidate.value = WORKING_VERSION_ID
+    comparisonCandidate.value = STORAGE_VERSION_ID
     selectedCommit.value = undefined
     selectedCommitFiles.value = []
     void refresh()
@@ -158,8 +160,8 @@ async function openComparisonTab(): Promise<void> {
     storeVersionCompareRequest({
       path: props.currentPath,
       extract: props.currentExtract,
-      referenceLabel: reference?.label ?? 'Referenz',
-      comparisonLabel: comparison?.label ?? 'Vergleich',
+      referenceLabel: versionCompareLabel(reference, 'Referenz'),
+      comparisonLabel: versionCompareLabel(comparison, 'Vergleich'),
       referenceText,
       comparisonText,
     })
@@ -212,6 +214,12 @@ function versionDate(timestamp: number | undefined): string {
   const date = new Date(timestamp * 1000)
   const pad = (value: number): string => String(value).padStart(2, '0')
   return `${pad(date.getDate())}.${pad(date.getMonth() + 1)}. ${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+function versionCompareLabel(candidate: VersionCandidate | undefined, fallback: string): string {
+  if (candidate === undefined) return fallback
+  const date = versionDate(candidate.timestamp)
+  return date === '' ? candidate.label : `${date} · ${candidate.label}`
 }
 
 function versionDatetime(timestamp: number | undefined): string | undefined {
@@ -427,8 +435,11 @@ onBeforeUnmount(destroyHistoryTooltips)
             </div>
             <label v-if="gitStore.available && gitStore.repository">Nachricht <textarea v-model="commitMessage" rows="2" placeholder="Was wurde geändert?" /></label>
             <div v-if="gitStore.available && gitStore.repository" class="git-dialog__commit-actions">
-              <span>{{ gitStore.changeCount }} {{ gitStore.changeCount === 1 ? 'Datei' : 'Dateien' }} werden festgeschrieben</span>
-              <ZnButton variant="primary" :disabled="gitStore.changeCount === 0 || commitMessage.trim() === '' || gitStore.loading" @click="commit">Versionsstand festschreiben</ZnButton>
+              <span class="git-dialog__commit-progress">
+                <span v-if="gitStore.loading" class="git-dialog__spinner" role="status" aria-label="Versionsstand wird festgeschrieben"></span>
+                <span>{{ gitStore.loading ? 'Versionsstand wird festgeschrieben …' : `${gitStore.changeCount} ${gitStore.changeCount === 1 ? 'Datei' : 'Dateien'} werden festgeschrieben` }}</span>
+              </span>
+              <ZnButton variant="primary" :disabled="gitStore.changeCount === 0 || commitMessage.trim() === '' || gitStore.loading" @click="commit">{{ gitStore.loading ? 'Wird festgeschrieben …' : 'Versionsstand festschreiben' }}</ZnButton>
             </div>
           </section>
         </div>

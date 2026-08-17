@@ -157,10 +157,19 @@ export const useGitStore = defineStore('git', () => {
   async function commitAll(message: string): Promise<string> {
     if (service.value === undefined) throw new Error('Git ist nur mit einem aktiven lokalen Workspace verfügbar')
     if (statuses.value.length === 0) throw new Error('Es gibt keine ungespeicherten Änderungen')
-    await service.value.stage(statuses.value.map((entry) => entry.path))
-    const oid = await service.value.commit(message)
-    await refresh({ loadRepositoryHistory: false })
-    return oid
+    loading.value = true
+    error.value = ''
+    try {
+      await service.value.stage(statuses.value.map((entry) => entry.path))
+      const oid = await service.value.commit(message)
+      await refresh({ loadRepositoryHistory: false })
+      return oid
+    } catch (cause) {
+      error.value = toErrorMessage(cause)
+      throw cause
+    } finally {
+      loading.value = false
+    }
   }
 
   async function createBranch(name: string): Promise<void> {
