@@ -37,7 +37,8 @@ export interface WorkspaceDirectoryHandle {
   getFileHandle(name: string, options?: { create?: boolean }): Promise<WorkspaceFileHandle>
   removeEntry(name: string, options?: { recursive?: boolean }): Promise<void>
   entries(): AsyncIterableIterator<[string, WorkspaceFileHandle | WorkspaceDirectoryHandle]>
-  queryPermission?(descriptor: { mode: 'readwrite' }): Promise<'granted' | 'denied' | 'prompt'>
+  queryPermission?(descriptor: { mode: 'read' | 'readwrite' }): Promise<'granted' | 'denied' | 'prompt'>
+  requestPermission?(descriptor: { mode: 'read' | 'readwrite' }): Promise<'granted' | 'denied' | 'prompt'>
 }
 
 export class WorkspaceFileSystemError extends Error {

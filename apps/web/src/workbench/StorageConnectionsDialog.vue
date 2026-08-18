@@ -16,6 +16,7 @@ const emit = defineEmits<{
   activate: [connectionId: string]
   update: [connectionId: string, label: string]
   remove: [connectionId: string]
+  initializeProject: [connectionId: string]
   reconnect: [connectionId: string]
   disconnect: [connectionId: string]
   root: [connectionId: string]
@@ -56,7 +57,7 @@ function statusClass(status: StorageConnection['status']): string {
   return `storage-dialog__status-dot--${status}`
 }
 
-type ConnectionAction = 'reconnect' | 'disconnect' | 'remove'
+type ConnectionAction = 'reconnect' | 'disconnect' | 'remove' | 'initialize-project'
 
 function runConnectionAction(event: MouseEvent, action: ConnectionAction, connectionId: string): void {
   const target = event.currentTarget
@@ -64,6 +65,7 @@ function runConnectionAction(event: MouseEvent, action: ConnectionAction, connec
   if (action === 'reconnect') emit('reconnect', connectionId)
   if (action === 'disconnect') emit('disconnect', connectionId)
   if (action === 'remove') emit('remove', connectionId)
+  if (action === 'initialize-project') emit('initializeProject', connectionId)
 }
 
 function positionConnectionActionMenu(event: Event): void {
@@ -177,6 +179,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleWindowKeydown,
                       <div class="storage-dialog__action-menu-items" role="menu">
                         <button type="button" role="menuitem" @click="runConnectionAction($event, 'reconnect', connection.id)">{{ connection.status === 'connected' ? 'Erneuern' : 'Anmelden' }}</button>
                         <button v-if="connection.status === 'connected'" type="button" role="menuitem" @click="runConnectionAction($event, 'disconnect', connection.id)">Trennen</button>
+                        <button v-if="connection.providerId === 'local' && connection.status !== 'connected'" type="button" role="menuitem" @click="runConnectionAction($event, 'initialize-project', connection.id)">Als Zupfnoter-Projekt einrichten</button>
                         <button type="button" role="menuitem" @click="runConnectionAction($event, 'remove', connection.id)">Löschen</button>
                       </div>
                     </details>

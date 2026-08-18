@@ -11,17 +11,18 @@ Es gibt keine zweite Repository-Kopie in IndexedDB oder LightningFS.
 LocalFsProvider / GitService
           │
           ▼
-WorkspaceFileSystem
+ProjectFileSystem
           │
           ▼
 File System Access API
 ```
 
-`apps/web/src/workbench/storage/workspaceFileSystem.ts` kapselt relative,
-verschachtelte Dateioperationen wie `readFile`, `writeFile`, `mkdir`, `stat`,
-`rename` und Löschen. `localFsProvider.ts` verwendet dieselbe Pfadauflösung
-für das normale Öffnen und Speichern und stellt dem GitService den ausgewählten
-Workspace bereit.
+`apps/web/src/workbench/storage/workspaceFileSystem.ts` ist der technische
+Adapter für einen einzelnen Browser-Handle. Darüber liegt
+`projectFileSystem.ts` als Sicherheitsgrenze: Projektmarker, relative
+Pfadvalidierung und Schreib-Policy werden dort zentral geprüft.
+`localFsProvider.ts` verwendet diese Grenze für das normale Öffnen und
+Speichern und stellt dem GitService nur das validierte Projekt bereit.
 
 `apps/web/src/workbench/git/isomorphicGitFs.ts` bildet diese Abstraktion auf die
 Promise-FS-Schnittstelle von `isomorphic-git` ab. `gitService.ts` bleibt von Vue

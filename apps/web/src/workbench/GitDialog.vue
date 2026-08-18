@@ -346,19 +346,19 @@ onBeforeUnmount(destroyHistoryTooltips)
         <div class="git-dialog__tab-panel">
           <div class="git-dialog__toolbar">
             <span class="git-dialog__summary">{{ gitStore.available ? `${statusLabel} im Workspace` : 'Arbeitsstand im Speicher' }}</span>
-            <span class="git-dialog__toolbar-actions">
-              <span class="git-dialog__hint">Die aktuelle Stückspeicherung bleibt davon getrennt.</span>
-              <ZnButton variant="ghost" :disabled="referenceCandidate === '' || comparisonCandidate === ''" @click="openComparisonTab">Vergleichen</ZnButton>
-            </span>
+            <span class="git-dialog__hint">Die aktuelle Stückspeicherung bleibt davon getrennt.</span>
           </div>
 
           <div class="git-dialog__piece-grid">
             <section ref="historyElement" class="git-dialog__piece-history" aria-labelledby="git-history-title">
               <div class="git-dialog__section-heading">
                 <h3 id="git-history-title">Versionen dieses Stückes: <span class="git-dialog__piece-title">{{ pieceTitle }}</span></h3>
-                <span class="git-dialog__history-heading-status">
+                <span class="git-dialog__history-heading-actions">
+                  <ZnButton variant="ghost" :disabled="referenceCandidate === '' || comparisonCandidate === ''" @click="openComparisonTab">Vergleichen</ZnButton>
+                  <span class="git-dialog__history-heading-status">
                   <span v-if="gitDataLoading || gitStore.loading" class="git-dialog__loading" role="status" aria-live="polite"><span class="git-dialog__spinner" aria-hidden="true"></span><span class="git-dialog__loading-label">Laden</span></span>
                   <span>{{ versionCandidates.length }}</span>
+                  </span>
                 </span>
               </div>
               <div class="git-dialog__history-selector-labels" aria-hidden="true"><span title="Referenz">R</span><span title="Vergleich">V</span></div>
@@ -376,8 +376,8 @@ onBeforeUnmount(destroyHistoryTooltips)
                         </span>
                       </span>
                     </button>
-                    <label class="git-dialog__history-check"><input type="checkbox" :checked="referenceCandidate === candidate.id" :aria-label="`Referenzversion: ${candidate.label}`" @change="toggleReference(candidate, $event)"></label>
-                    <label class="git-dialog__history-check"><input type="checkbox" :checked="comparisonCandidate === candidate.id" :aria-label="`Vergleichsversion: ${candidate.label}`" @change="toggleComparison(candidate, $event)"></label>
+                    <label class="git-dialog__history-check"><input type="radio" name="version-reference" :checked="referenceCandidate === candidate.id" :aria-label="`Referenzversion: ${candidate.label}`" @change="toggleReference(candidate, $event)"></label>
+                    <label class="git-dialog__history-check"><input type="radio" name="version-comparison" :checked="comparisonCandidate === candidate.id" :aria-label="`Vergleichsversion: ${candidate.label}`" @change="toggleComparison(candidate, $event)"></label>
                   </div>
                 </li>
               </ol>
@@ -479,5 +479,6 @@ onBeforeUnmount(destroyHistoryTooltips)
 .git-dialog__tab-panel--compare .git-dialog__compare{width:100%;max-height:none;border-top:0}
 .git-dialog__intro--compact{padding:.4rem 0;color:var(--zn-text-soft)}
 .git-dialog__intro--compact p{margin:.2rem 0 .6rem}
+.git-dialog__history-heading-actions{display:flex;align-items:center;gap:.45rem}
 .git-dialog__commit-panel>.git-dialog__intro--compact{padding:0}
 </style>

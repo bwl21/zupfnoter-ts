@@ -3,13 +3,22 @@ import type { StorageDocument } from '@zupfnoter/types'
 import {
   createWorkspaceFileSystem,
   type WorkspaceDirectoryHandle,
-  type WorkspaceFileHandle,
   type WorkspaceFileSystem,
   WorkspaceFileSystemError,
 } from './workspaceFileSystem'
+import {
+  createProjectFileSystem,
+  createProjectMarker,
+  readProjectMarker,
+  type ProjectFileSystem,
+  type ProjectMarker,
+  type ProjectEntry,
+  validateProjectPath,
+  validateProjectRootName,
+} from './projectFileSystem'
 
 interface FileSystemPickerWindow extends Window {
-  showDirectoryPicker?: () => Promise<WorkspaceDirectoryHandle>
+  showDirectoryPicker?: (options?: { mode?: 'read' | 'readwrite' }) => Promise<WorkspaceDirectoryHandle>
 }
 
 interface LocalFsProvider {
@@ -28,6 +37,7 @@ interface LocalFsProvider {
 }
 
 const directoriesByConnection = new Map<string, WorkspaceDirectoryHandle>()
+const projectsByConnection = new Map<string, ProjectFileSystem>()
 const DIRECTORY_DATABASE = 'zupfnoter-local-storage'
 const DIRECTORY_STORE = 'directories'
 
@@ -39,63 +49,68 @@ export function createLocalFsProvider(): LocalFsProvider {
       if (picker === undefined) throw new Error('Dieser Browser unterstützt keinen lokalen Ordnerzugriff. Bitte einen Chromium-basierten Browser verwenden.')
       const key = connectionKey(state)
       const savedDirectory = await loadDirectory(key)
-      const savedPermission = await savedDirectory?.queryPermission?.({ mode: 'readwrite' })
-      const directory = savedDirectory !== undefined && savedPermission === 'granted' ? savedDirectory : await picker()
+      const savedPermission = await savedDirectory?.queryPermission?.({ mode: 'read' })
+      const directory = savedDirectory !== undefined && savedPermission === 'granted' ? savedDirectory : await picker({ mode: 'read' })
       directoriesByConnection.set(connectionKey(state), directory)
+      clearProjects(connectionKey(state))
       await saveDirectory(key, directory)
+      await validateSelectedProject(directory)
     },
     async logout(state?: StorageCommandState): Promise<void> {
       directoriesByConnection.delete(connectionKey(state))
+      clearProjects(connectionKey(state))
     },
     async list(state: StorageCommandState, recursive = false): Promise<string[]> {
-      const directory = await directoryForPath(state, state.path)
-      return collectEntries(directory, normalizePath(state.path), recursive, (entry) => !entry.isFolder && entry.path.toLowerCase().endsWith('.abc'))
+      const project = await projectForState(state)
+      return collectEntries(project, normalizePath(state.path), recursive, (entry) => entry.kind === 'file' && entry.path.toLowerCase().endsWith('.abc'))
     },
     async search(state: StorageCommandState, query: string): Promise<string[]> {
-      const directory = await directoryForPath(state, state.path)
+      const project = await projectForState(state)
       const normalizedQuery = query.toLocaleLowerCase()
-      return collectEntries(directory, normalizePath(state.path), true, (entry) => !entry.isFolder
+      return collectEntries(project, normalizePath(state.path), true, (entry) => entry.kind === 'file'
         && entry.path.toLocaleLowerCase().endsWith('.abc')
         && entry.path.toLocaleLowerCase().includes(normalizedQuery))
     },
     async open(state: StorageCommandState, filename: string): Promise<string | undefined> {
       try {
-        const file = await fileForPath(state, resolveLocalTargetPath(state.path, filename))
-        return file.getFile().then((value) => value.text())
+        const project = await projectForState(state)
+        const data = await project.readFile(resolveLocalTargetPath(state.path, filename))
+        return new TextDecoder().decode(data)
       } catch (error) {
         if (isNotFoundError(error)) return undefined
         throw error
       }
     },
     async save(state: StorageCommandState, filename: string, content: string | Blob): Promise<void> {
-      const file = await fileForPath(state, resolveLocalTargetPath(state.path, filename), true)
-      const writable = await file.createWritable()
-      await writable.write(content)
-      await writable.close()
+      const project = await projectForState(state)
+      const data = typeof content === 'string' ? content : new Uint8Array(await content.arrayBuffer())
+      await project.writeFile(resolveLocalTargetPath(state.path, filename), data)
     },
     async cleanup(state?: StorageCommandState): Promise<void> {
       directoriesByConnection.delete(connectionKey(state))
+      clearProjects(connectionKey(state))
     },
     async listFolders(state: StorageCommandState, path: string): Promise<Array<{ name: string; path: string }>> {
-      const directory = await directoryForPath(state, path)
+      const project = await projectForState(state)
       const folders: Array<{ name: string; path: string }> = []
-      for await (const [name, entry] of directory.entries()) {
-        if (entry.kind === 'directory') folders.push({ name, path: joinPath(path, name) })
+      for (const entry of await project.listDirectory(normalizePath(path))) {
+        if (entry.kind === 'directory') folders.push({ name: entry.name, path: joinPath(path, entry.name) })
       }
       return folders.sort((left, right) => left.name.localeCompare(right.name))
     },
     async listDocuments(state: StorageCommandState): Promise<StorageDocument[]> {
-      const directory = await directoryForPath(state, state.path)
-      const entries = await collectEntryDetails(directory, normalizePath(state.path), false)
+      const project = await projectForState(state)
+      const entries = await collectEntryDetails(project, normalizePath(state.path), false)
       return entries
-        .filter((entry) => !entry.isFolder && !entry.name.startsWith('.') && entry.name.toLowerCase().endsWith('.abc'))
+        .filter((entry) => entry.kind === 'file' && !entry.name.startsWith('.') && entry.name.toLowerCase().endsWith('.abc'))
         .map((entry) => ({ path: entry.path, name: entry.name, previewPdfPaths: [], previewHtmlPaths: [] }))
         .sort((left, right) => left.name.localeCompare(right.name))
     },
     async openPreview(state: StorageCommandState, path: string): Promise<Blob | undefined> {
       try {
-        const file = await fileForPath(state, resolveLocalTargetPath(state.path, path))
-        return file.getFile()
+        const project = await projectForState(state)
+        const data = await project.readFile(resolveLocalTargetPath(state.path, path))
+        return new Blob([toArrayBuffer(data)])
       } catch (error) {
         if (isNotFoundError(error)) return undefined
         throw error
@@ -103,66 +118,51 @@ export function createLocalFsProvider(): LocalFsProvider {
     },
     async removeConnection(connectionId: string): Promise<void> {
       directoriesByConnection.delete(connectionId)
+      clearProjects(connectionId)
       await deleteDirectory(connectionId)
     },
   }
 }
 
 /** Returns the same selected local folder through the shared workspace contract. */
-export async function getLocalWorkspaceFileSystem(connectionId: string, rootPath = ''): Promise<WorkspaceFileSystem> {
+export async function getLocalWorkspaceFileSystem(connectionId: string, rootPath = ''): Promise<ProjectFileSystem> {
+  const cacheKey = projectKey(connectionId, rootPath)
+  const cached = projectsByConnection.get(cacheKey)
+  if (cached !== undefined) return cached
   const directory = directoriesByConnection.get(connectionId) ?? await loadDirectory(connectionId)
   if (directory === undefined) throw new WorkspaceFileSystemError('ENOTCONN', rootPath, 'Kein lokaler Zielordner ausgewählt')
-  let workspaceRoot = directory
-  for (const part of normalizePath(rootPath).split('/').filter(Boolean)) workspaceRoot = await workspaceRoot.getDirectoryHandle(part)
-  return createWorkspaceFileSystem(workspaceRoot)
-}
-
-interface LocalEntry {
-  name: string
-  path: string
-  isFolder: boolean
+  directoriesByConnection.set(connectionId, directory)
+  await validateSelectedProject(directory)
+  const project = await projectFileSystemForDirectory(directory, rootPath)
+  projectsByConnection.set(cacheKey, project)
+  return project
 }
 
 async function collectEntries(
-  directory: WorkspaceDirectoryHandle,
+  project: ProjectFileSystem,
   basePath: string,
   recursive: boolean,
-  predicate: (entry: LocalEntry) => boolean,
+  predicate: (entry: ProjectEntry) => boolean,
 ): Promise<string[]> {
-  const entries = await collectEntryDetails(directory, basePath, recursive)
+  const entries = await collectEntryDetails(project, basePath, recursive)
   return entries.filter(predicate).map((entry) => entry.path).sort()
 }
 
-async function collectEntryDetails(directory: WorkspaceDirectoryHandle, basePath: string, recursive: boolean): Promise<LocalEntry[]> {
-  const result: LocalEntry[] = []
-  for await (const [name, entry] of directory.entries()) {
-    const path = joinPath(basePath, name)
-    const detail = { name, path, isFolder: entry.kind === 'directory' }
+async function collectEntryDetails(project: ProjectFileSystem, basePath: string, recursive: boolean): Promise<ProjectEntry[]> {
+  const result: ProjectEntry[] = []
+  for (const entry of await project.listDirectory(basePath)) {
+    const path = joinPath(basePath, entry.name)
+    const detail = { ...entry, path: path as ProjectEntry['path'] }
     result.push(detail)
     if (recursive && entry.kind === 'directory') {
-      result.push(...await collectEntryDetails(entry, path, true))
+      result.push(...await collectEntryDetails(project, path, true))
     }
   }
   return result
 }
 
-async function directoryForPath(state: StorageCommandState, path: string): Promise<WorkspaceDirectoryHandle> {
-  const key = connectionKey(state)
-  let directory = directoriesByConnection.get(key)
-  directory ??= await loadDirectory(key)
-  if (directory !== undefined) directoriesByConnection.set(key, directory)
-  if (directory === undefined) throw new Error('Kein lokaler Zielordner ausgewählt')
-  const combinedPath = [state.rootPath ?? '', path].filter(Boolean).join('/')
-  for (const part of normalizePath(combinedPath).split('/').filter(Boolean)) directory = await directory.getDirectoryHandle(part)
-  return directory
-}
-
-async function fileForPath(state: StorageCommandState, path: string, create = false): Promise<WorkspaceFileHandle> {
-  const parts = normalizePath(path).split('/').filter(Boolean)
-  const name = parts.pop()
-  if (name === undefined) throw new Error('Dateiname fehlt')
-  const directory = await directoryForPath(state, parts.join('/'))
-  return directory.getFileHandle(name, { create })
+async function projectForState(state: StorageCommandState): Promise<ProjectFileSystem> {
+  return getLocalWorkspaceFileSystem(connectionKey(state), state.rootPath ?? '')
 }
 
 function connectionKey(state?: StorageCommandState): string {
@@ -170,13 +170,65 @@ function connectionKey(state?: StorageCommandState): string {
 }
 
 function normalizePath(path: string): string {
-  const parts = path.replace(/\\/g, '/').split('/').filter((part) => part !== '' && part !== '.')
-  if (parts.some((part) => part === '..')) throw new Error('Lokaler Pfad darf den Zielordner nicht verlassen')
-  return parts.join('/')
+  if (path === '') return ''
+  return validateProjectPath(path)
 }
 
 function joinPath(left: string, right: string): string {
   return normalizePath([left, right].filter(Boolean).join('/'))
+}
+
+function toArrayBuffer(data: Uint8Array): ArrayBuffer {
+  const copy = new ArrayBuffer(data.byteLength)
+  new Uint8Array(copy).set(data)
+  return copy
+}
+
+async function validateSelectedProject(directory: WorkspaceDirectoryHandle): Promise<ProjectMarker> {
+  validateProjectRootName(directory.name)
+  const project = createProjectFileSystem(createWorkspaceFileSystem(directory))
+  return readProjectMarker(project)
+}
+
+async function requestDirectoryWritePermission(directory: WorkspaceDirectoryHandle): Promise<void> {
+  const current = await directory.queryPermission?.({ mode: 'readwrite' })
+  if (current === 'granted') return
+  const requested = await directory.requestPermission?.({ mode: 'readwrite' })
+  if (requested !== 'granted') throw new Error('Schreibberechtigung für das Zupfnoter-Projekt wurde nicht erteilt')
+}
+
+async function projectFileSystemForDirectory(directory: WorkspaceDirectoryHandle, rootPath: string): Promise<ProjectFileSystem> {
+  let root = directory
+  for (const part of normalizePath(rootPath).split('/').filter(Boolean)) root = await root.getDirectoryHandle(part)
+  return createProjectFileSystem(createWorkspaceFileSystem(root), { requestWritePermission: () => requestDirectoryWritePermission(directory) })
+}
+
+export async function createLocalProject(connectionId: string, id: string): Promise<ProjectMarker> {
+  const directory = directoriesByConnection.get(connectionId) ?? await loadDirectory(connectionId)
+  if (directory === undefined) throw new WorkspaceFileSystemError('ENOTCONN', '', 'Kein lokaler Zielordner ausgewählt')
+  await requestDirectoryWritePermission(directory)
+  const project = createProjectFileSystem(createWorkspaceFileSystem(directory), { requestWritePermission: () => requestDirectoryWritePermission(directory) })
+  const marker = await createProjectMarker(project, id)
+  clearProjects(connectionId)
+  return marker
+}
+
+/** Forgets the persisted local project capability and its in-memory wrapper. */
+export async function forgetProject(projectId: string): Promise<void> {
+  directoriesByConnection.delete(projectId)
+  clearProjects(projectId)
+  await deleteDirectory(projectId)
+}
+
+function projectKey(connectionId: string, rootPath: string): string {
+  return `${connectionId}:${normalizePath(rootPath)}`
+}
+
+function clearProjects(connectionId: string): void {
+  const prefix = `${connectionId}:`
+  for (const key of projectsByConnection.keys()) {
+    if (key.startsWith(prefix)) projectsByConnection.delete(key)
+  }
 }
 
 export function resolveLocalTargetPath(currentPath: string, targetPath: string): string {

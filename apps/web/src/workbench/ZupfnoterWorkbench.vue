@@ -116,7 +116,7 @@ import {
   type HarpPreviewDragEnd,
 } from './multiWindow/harpMirrorChannel'
 import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
-import { createLocalFsProvider, getLocalWorkspaceFileSystem } from './storage/localFsProvider'
+import { createLocalFsProvider, createLocalProject, getLocalWorkspaceFileSystem } from './storage/localFsProvider'
 import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
 import { createStorageProviderRegistry } from './storage/providerRegistry'
 import { createGitService } from './git/gitService'
@@ -1318,7 +1318,10 @@ async function configureGitWorkspace(): Promise<void> {
     return
   }
   try {
-    const workspace = await getLocalWorkspaceFileSystem(connection.id, connection.rootPath)
+    // Git betrachtet immer den gesamten ausgewählten Projektordner. Der
+    // optionale rootPath gehört nur zur Dateiansicht und darf Git nicht auf
+    // einen Unterordner begrenzen, in dem .git nicht liegt.
+    const workspace = await getLocalWorkspaceFileSystem(connection.id)
     if (request !== gitWorkspaceRequest) return
     gitStore.configure(createGitService(workspace))
     if (gitDialogOpen.value) await gitStore.refresh({ loadRepositoryHistory: false, loadBranchInfo: false })
@@ -1666,6 +1669,17 @@ function connectStorageConnection(connectionId: string): void {
 
 function disconnectStorageConnection(connectionId: string): void {
   void executeToolbarCommand(`sdisconnect ${connectionId}`)
+}
+
+async function initializeLocalProject(connectionId: string): Promise<void> {
+  const connection = storageConnections.value.find((entry) => entry.id === connectionId)
+  if (connection?.providerId !== 'local') return
+  try {
+    await createLocalProject(connectionId, crypto.randomUUID())
+    pushToast({ severity: 'success', title: 'Lokales Projekt', message: 'Der Ordner ist jetzt als Zupfnoter-Projekt eingerichtet. Verbinde ihn anschließend erneut.' })
+  } catch (error) {
+    pushToast({ severity: 'warning', title: 'Lokales Projekt', message: error instanceof Error ? error.message : String(error) })
+  }
 }
 
 function renameStorageConnection(connectionId: string, label: string): void {
@@ -3002,6 +3016,7 @@ function handleMirrorMessage(event: MessageEvent): void {
     @activate="activateStorageConnection"
     @update="renameStorageConnection"
     @remove="removeStorageConnection"
+    @initialize-project="initializeLocalProject"
     @reconnect="connectStorageConnection"
     @disconnect="disconnectStorageConnection"
     @root="openRootPicker"
