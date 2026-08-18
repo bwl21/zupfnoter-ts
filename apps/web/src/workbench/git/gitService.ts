@@ -79,6 +79,9 @@ export function createGitService(workspace: WorkspaceFileSystem, options: GitSer
       }
     },
     async init(): Promise<void> {
+      if (await this.isRepository()) {
+        throw new Error('Im Workspace existiert bereits ein Git-Repository. Es wird nicht überschrieben.')
+      }
       await git.init({ fs, dir: WORKTREE, gitdir: GITDIR, defaultBranch })
       await git.setConfig({ fs, dir: WORKTREE, gitdir: GITDIR, path: 'user.name', value: author.name })
       await git.setConfig({ fs, dir: WORKTREE, gitdir: GITDIR, path: 'user.email', value: author.email })

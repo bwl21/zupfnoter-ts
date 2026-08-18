@@ -78,6 +78,19 @@ describe('GitService', () => {
     expect(await service.currentBranch()).toBe('experiment')
   })
 
+  it('does not initialize over an existing repository', async () => {
+    const workspace = createWorkspaceFileSystem(createFakeWorkspaceDirectory())
+    const service = createGitService(workspace)
+    await service.init()
+    await workspace.writeFile('keep.txt', 'keep')
+    await service.stage(['keep.txt'])
+    await service.commit('Existing repository')
+
+    await expect(service.init()).rejects.toThrow('nicht überschrieben')
+    expect(await service.isRepository()).toBe(true)
+    expect(new TextDecoder().decode(await service.getFileAtRevision('HEAD', 'keep.txt'))).toBe('keep')
+  })
+
   it('allows committing only the selected subset of changes', async () => {
     const workspace = createWorkspaceFileSystem(createFakeWorkspaceDirectory())
     const service = createGitService(workspace)

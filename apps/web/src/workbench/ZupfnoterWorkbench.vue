@@ -119,7 +119,6 @@ import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromR
 import { createLocalFsProvider, createLocalProject, getLocalWorkspaceFileSystem } from './storage/localFsProvider'
 import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
 import { createStorageProviderRegistry } from './storage/providerRegistry'
-import { createGitService } from './git/gitService'
 import { readLocalImport, resourceKeyFromFileName, UnsupportedImportError } from './fileImport'
 
 const props = withDefaults(defineProps<{
@@ -1318,6 +1317,8 @@ async function configureGitWorkspace(): Promise<void> {
     return
   }
   try {
+    const { createGitService } = await import('./git/gitService')
+    if (request !== gitWorkspaceRequest) return
     // Git betrachtet immer den gesamten ausgewählten Projektordner. Der
     // optionale rootPath gehört nur zur Dateiansicht und darf Git nicht auf
     // einen Unterordner begrenzen, in dem .git nicht liegt.

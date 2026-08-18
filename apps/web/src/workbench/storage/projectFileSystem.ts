@@ -129,14 +129,13 @@ export function createProjectFileSystem(
     readdir: (value) => workspace.readdir(path(value)),
     listDirectory: async (value) => {
       const normalized = path(value)
-      const names = await workspace.readdir(normalized)
-      const entries: ProjectEntry[] = []
-      for (const name of names) {
-        const child = validateProjectPath(normalized === '' ? name : `${normalized}/${name}`)
-        const stat = await workspace.stat(child)
-        entries.push({ name, path: child, kind: stat.kind })
-      }
-      return entries
+      const entries = workspace.listDirectory !== undefined
+        ? await workspace.listDirectory(normalized)
+        : await Promise.all((await workspace.readdir(normalized)).map(async (name) => ({ name, kind: (await workspace.stat(validateProjectPath(normalized === '' ? name : `${normalized}/${name}`))).kind })))
+      return entries.map((entry) => {
+        const child = validateProjectPath(normalized === '' ? entry.name : `${normalized}/${entry.name}`)
+        return { name: entry.name, path: child, kind: entry.kind }
+      })
     },
     stat: (value) => workspace.stat(path(value)),
     exists: (value) => workspace.exists(path(value)),

@@ -25,6 +25,7 @@ const commitMessage = ref('')
 const actionError = ref('')
 const referenceCandidate = ref('')
 const comparisonCandidate = ref('')
+const useGitSavedVersion = ref(false)
 const selectedCommit = ref<GitCommit>()
 const selectedCommitFiles = ref<GitCommitFile[]>([])
 const selectedCommitBusy = ref(false)
@@ -45,8 +46,12 @@ interface VersionCandidate {
 
 const versionCandidates = computed<VersionCandidate[]>(() => [
   { id: WORKING_VERSION_ID, label: 'Arbeitsstand', timestamp: props.workingTimestamp },
-  { id: STORAGE_VERSION_ID, label: 'Gespeichert', timestamp: props.savedTimestamp },
-  ...(gitStore.repository ? gitStore.pieceHistory : []).map((commit) => ({
+  {
+    id: STORAGE_VERSION_ID,
+    label: 'Gespeichert',
+    timestamp: props.savedTimestamp,
+  },
+  ...(useGitSavedVersion.value && gitStore.repository ? gitStore.pieceHistory : []).map((commit) => ({
     id: commit.oid,
     label: commit.message,
     timestamp: commitTimestamp(commit),
@@ -70,6 +75,7 @@ watch([() => props.open, () => props.currentPath], ([open]) => {
     comparisonCandidate.value = ''
     referenceCandidate.value = WORKING_VERSION_ID
     comparisonCandidate.value = STORAGE_VERSION_ID
+    useGitSavedVersion.value = false
     selectedCommit.value = undefined
     selectedCommitFiles.value = []
     void refresh()
@@ -81,12 +87,48 @@ async function refresh(): Promise<void> {
     gitDataLoading.value = false
     return
   }
+  if (!useGitSavedVersion.value) {
+    selectedCommit.value = undefined
+    selectedCommitFiles.value = []
+    gitDataLoading.value = false
+    return
+  }
   gitDataLoading.value = true
   try {
     await gitStore.refresh({ loadRepositoryHistory: false, loadBranchInfo: false })
-    await gitStore.loadPieceHistory(props.currentPath)
-    const firstCommit = gitStore.pieceHistory[0]
-    if (firstCommit !== undefined) void selectCommit(firstCommit)
+    await loadGitVersions()
+  } catch (error) {
+    actionError.value = errorMessage(error)
+  } finally {
+    gitDataLoading.value = false
+  }
+}
+
+async function loadGitVersions(): Promise<void> {
+  await gitStore.loadPieceHistory(props.currentPath)
+  const firstCommit = gitStore.pieceHistory[0]
+  if (firstCommit !== undefined) await selectCommit(firstCommit)
+  else {
+    selectedCommit.value = undefined
+    selectedCommitFiles.value = []
+  }
+}
+
+async function toggleGitSavedVersions(event: Event): Promise<void> {
+  const target = event.target
+  if (!(target instanceof HTMLInputElement)) return
+  useGitSavedVersion.value = target.checked
+  if (!target.checked) {
+    selectedCommit.value = undefined
+    selectedCommitFiles.value = []
+    return
+  }
+  gitDataLoading.value = true
+  try {
+    // Beim Einschalten zuerst den Repository-Status des aktuellen Workspace
+    // lesen. Der Store kann nach dem Öffnen des Dialogs noch repository=false
+    // halten, obwohl .git vorhanden ist.
+    await refresh()
   } catch (error) {
     actionError.value = errorMessage(error)
   } finally {
@@ -338,29 +380,23 @@ onBeforeUnmount(destroyHistoryTooltips)
             <h2 id="git-dialog-title">Versionen</h2>
           </div>
           <div class="git-dialog__header-actions">
-            <ZnButton v-if="gitStore.repository" variant="ghost" :disabled="gitStore.loading" @click="refresh">Aktualisieren</ZnButton>
+            <label class="git-dialog__git-toggle"><input type="checkbox" :checked="useGitSavedVersion" role="switch" :aria-checked="useGitSavedVersion" @change="toggleGitSavedVersions"><span class="git-dialog__git-toggle-track" aria-hidden="true"><span class="git-dialog__git-toggle-thumb"></span></span><span>Git-Versionen</span></label>
+            <ZnButton variant="ghost" :disabled="referenceCandidate === '' || comparisonCandidate === ''" @click="openComparisonTab">Vergleichen</ZnButton>
+            <ZnButton variant="ghost" :disabled="!gitStore.repository || gitStore.loading" @click="refresh">Aktualisieren</ZnButton>
             <ZnIconButton label="Versionsdialog schließen" variant="ghost" @click="emit('close')">×</ZnIconButton>
           </div>
         </header>
 
         <div class="git-dialog__tab-panel">
-          <div class="git-dialog__toolbar">
+          <section class="git-dialog__versions-area" aria-labelledby="git-history-title">
+            <div class="git-dialog__toolbar">
             <span class="git-dialog__summary">{{ gitStore.available ? `${statusLabel} im Workspace` : 'Arbeitsstand im Speicher' }}</span>
             <span class="git-dialog__hint">Die aktuelle Stückspeicherung bleibt davon getrennt.</span>
-          </div>
+              <span v-if="gitDataLoading || gitStore.loading" class="git-dialog__loading" role="status" aria-live="polite"><span class="git-dialog__spinner" aria-hidden="true"></span><span class="git-dialog__loading-label">Laden</span></span>
+            </div>
 
-          <div class="git-dialog__piece-grid">
+            <div class="git-dialog__piece-grid">
             <section ref="historyElement" class="git-dialog__piece-history" aria-labelledby="git-history-title">
-              <div class="git-dialog__section-heading">
-                <h3 id="git-history-title">Versionen dieses Stückes: <span class="git-dialog__piece-title">{{ pieceTitle }}</span></h3>
-                <span class="git-dialog__history-heading-actions">
-                  <ZnButton variant="ghost" :disabled="referenceCandidate === '' || comparisonCandidate === ''" @click="openComparisonTab">Vergleichen</ZnButton>
-                  <span class="git-dialog__history-heading-status">
-                  <span v-if="gitDataLoading || gitStore.loading" class="git-dialog__loading" role="status" aria-live="polite"><span class="git-dialog__spinner" aria-hidden="true"></span><span class="git-dialog__loading-label">Laden</span></span>
-                  <span>{{ versionCandidates.length }}</span>
-                  </span>
-                </span>
-              </div>
               <div class="git-dialog__history-selector-labels" aria-hidden="true"><span title="Referenz">R</span><span title="Vergleich">V</span></div>
               <ol v-if="versionCandidates.length > 0" class="git-dialog__history">
                 <li v-for="(candidate, index) in versionCandidates" :key="candidate.id" :data-selected="candidate.commit !== undefined && selectedCommit?.oid === candidate.commit.oid" :data-workspace-version="candidate.commit === undefined" :data-git-version-start="candidate.commit !== undefined && index === 2">
@@ -382,6 +418,7 @@ onBeforeUnmount(destroyHistoryTooltips)
                 </li>
               </ol>
               <p v-else class="git-dialog__empty">Für dieses Stück gibt es noch keinen Versionsstand.</p>
+              <p class="git-dialog__history-count">{{ versionCandidates.length }} Versionen</p>
             </section>
 
             <section class="git-dialog__commit-files" aria-labelledby="git-files-title">
@@ -389,25 +426,26 @@ onBeforeUnmount(destroyHistoryTooltips)
                 <h3 id="git-files-title">Geänderte Dateien im Versionsstand<span v-if="selectedCommit"> am {{ commitDay(commitTimestamp(selectedCommit)) }}</span></h3>
                 <span v-if="selectedCommit">{{ selectedCommit.shortOid }}</span>
               </div>
-              <div v-if="!gitStore.available" class="git-dialog__intro git-dialog__intro--compact">
+              <div v-if="useGitSavedVersion && !gitStore.available" class="git-dialog__intro git-dialog__intro--compact">
                 <p>Für diesen Speicher sind keine Git-Versionen verfügbar. Arbeitsstand und gespeicherte Version können trotzdem verglichen werden.</p>
               </div>
-              <div v-else-if="!gitStore.repository" class="git-dialog__intro git-dialog__intro--compact">
+              <div v-else-if="useGitSavedVersion && !gitStore.repository" class="git-dialog__intro git-dialog__intro--compact">
                 <p>Für historische Versionen muss Git im lokalen Workspace aktiviert werden.</p>
                 <ZnButton variant="primary" :disabled="gitStore.loading" @click="initRepository">Git aktivieren</ZnButton>
               </div>
-              <p v-else-if="selectedCommit === undefined" class="git-dialog__empty">Wähle links einen Versionsstand.</p>
-              <p v-else-if="selectedCommitBusy" class="git-dialog__empty">Dateien werden gelesen …</p>
-              <ul v-else-if="selectedCommitAbcFiles.length > 0">
+              <p v-else-if="useGitSavedVersion && selectedCommit === undefined" class="git-dialog__empty">Wähle links einen Versionsstand.</p>
+              <p v-else-if="useGitSavedVersion && selectedCommitBusy" class="git-dialog__empty">Dateien werden gelesen …</p>
+              <ul v-else-if="useGitSavedVersion && selectedCommitAbcFiles.length > 0">
                 <li v-for="file in selectedCommitAbcFiles" :key="file.path">
                   <span><span :data-state="file.state">{{ stateLetter(file.state) }}</span><span :title="file.path">{{ fileName(file.path) }}</span></span>
                 </li>
               </ul>
-              <p v-else class="git-dialog__empty">Keine geänderte ABC-Datei in diesem Versionsstand.</p>
+              <p v-else-if="useGitSavedVersion" class="git-dialog__empty">Keine geänderte ABC-Datei in diesem Versionsstand.</p>
             </section>
-          </div>
+            </div>
+          </section>
 
-          <section class="git-dialog__workspace-changes" aria-labelledby="git-changes-title">
+          <section v-if="useGitSavedVersion" class="git-dialog__workspace-changes" aria-labelledby="git-changes-title">
             <div class="git-dialog__section-heading">
               <h3 id="git-changes-title">Aktuelle Arbeitsänderungen</h3>
               <span>{{ statusLabel }}</span>
@@ -424,7 +462,7 @@ onBeforeUnmount(destroyHistoryTooltips)
             </div>
           </section>
 
-          <section class="git-dialog__commit-panel" aria-labelledby="git-commit-title">
+          <section v-if="useGitSavedVersion" class="git-dialog__commit-panel" aria-labelledby="git-commit-title">
             <div v-if="gitStore.available && gitStore.repository">
               <h3 id="git-commit-title">Versionsstand festschreiben</h3>
               <p>Alle aktuellen Arbeitsänderungen werden gemeinsam als ein Versionsstand festgeschrieben.</p>
@@ -436,7 +474,6 @@ onBeforeUnmount(destroyHistoryTooltips)
             <label v-if="gitStore.available && gitStore.repository">Nachricht <textarea v-model="commitMessage" rows="2" placeholder="Was wurde geändert?" /></label>
             <div v-if="gitStore.available && gitStore.repository" class="git-dialog__commit-actions">
               <span class="git-dialog__commit-progress">
-                <span v-if="gitStore.loading" class="git-dialog__spinner" role="status" aria-label="Versionsstand wird festgeschrieben"></span>
                 <span>{{ gitStore.loading ? 'Versionsstand wird festgeschrieben …' : `${gitStore.changeCount} ${gitStore.changeCount === 1 ? 'Datei' : 'Dateien'} werden festgeschrieben` }}</span>
               </span>
               <ZnButton variant="primary" :disabled="gitStore.changeCount === 0 || commitMessage.trim() === '' || gitStore.loading" @click="commit">{{ gitStore.loading ? 'Wird festgeschrieben …' : 'Versionsstand festschreiben' }}</ZnButton>
@@ -480,5 +517,19 @@ onBeforeUnmount(destroyHistoryTooltips)
 .git-dialog__intro--compact{padding:.4rem 0;color:var(--zn-text-soft)}
 .git-dialog__intro--compact p{margin:.2rem 0 .6rem}
 .git-dialog__history-heading-actions{display:flex;align-items:center;gap:.45rem}
+.git-dialog__git-toggle{display:flex;align-items:center;gap:.25rem;color:var(--zn-text-soft);font-size:.72rem;white-space:nowrap}
+.git-dialog__git-toggle input{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.git-dialog__git-toggle-track{position:relative;display:inline-flex;width:2rem;height:1.1rem;align-items:center;padding:.12rem;box-sizing:border-box;border-radius:999px;background:var(--zn-border-strong);cursor:pointer;transition:background-color .15s ease}
+.git-dialog__git-toggle-thumb{width:.86rem;height:.86rem;border-radius:50%;background:var(--zn-bg-elevated);box-shadow:0 1px 2px rgb(15 23 42 / .25);transform:translateX(0);transition:transform .15s ease}
+.git-dialog__git-toggle input:checked + .git-dialog__git-toggle-track{background:var(--zn-accent-strong)}
+.git-dialog__git-toggle input:checked + .git-dialog__git-toggle-track .git-dialog__git-toggle-thumb{transform:translateX(.76rem)}
+.git-dialog__git-toggle input:focus-visible + .git-dialog__git-toggle-track{outline:2px solid var(--zn-accent-strong);outline-offset:2px}
+.git-dialog__versions-area{border-bottom:1px solid var(--zn-border)}
+.git-dialog__versions-area>.git-dialog__piece-grid{border-bottom:0}
+.git-dialog__versions-area .git-dialog__toolbar{min-height:3.05rem}
+.git-dialog__history-count{margin:.45rem .3rem 0;color:var(--zn-text-soft);font-size:.72rem;text-align:right}
+.git-dialog__backdrop{place-items:start center;padding:5rem .75rem .75rem;overflow:auto}
+.git-dialog{max-height:min(52rem,calc(100vh - 5.75rem))}
 .git-dialog__commit-panel>.git-dialog__intro--compact{padding:0}
+.git-dialog__commit-files li>button span:last-child,.git-dialog__commit-files li>span span:last-child{width:auto;min-width:0}
 </style>

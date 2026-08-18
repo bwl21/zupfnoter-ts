@@ -5,6 +5,11 @@ export interface WorkspaceFileStat {
   mtimeMs: number
 }
 
+export interface WorkspaceDirectoryEntry {
+  name: string
+  kind: 'file' | 'directory'
+}
+
 /**
  * The small filesystem contract shared by storage and local Git.
  * Paths are always slash-separated and relative to the selected workspace.
@@ -16,6 +21,8 @@ export interface WorkspaceFileSystem {
   removeDirectory(path: string, recursive?: boolean): Promise<void>
   mkdir(path: string): Promise<void>
   readdir(path: string): Promise<string[]>
+  /** Lists immediate children without an additional stat call per child. */
+  listDirectory?(path: string): Promise<WorkspaceDirectoryEntry[]>
   stat(path: string): Promise<WorkspaceFileStat>
   exists(path: string): Promise<boolean>
   rename(oldPath: string, newPath: string): Promise<void>
@@ -92,6 +99,12 @@ export function createWorkspaceFileSystem(root: WorkspaceDirectoryHandle): Works
       const names: string[] = []
       for await (const [name] of directory.entries()) names.push(name)
       return names.sort((left, right) => left.localeCompare(right))
+    },
+    listDirectory: async (path) => {
+      const directory = await directoryAt(root, path)
+      const entries: WorkspaceDirectoryEntry[] = []
+      for await (const [name, entry] of directory.entries()) entries.push({ name, kind: entry.kind })
+      return entries.sort((left, right) => left.name.localeCompare(right.name))
     },
     stat: (path) => statAt(root, path),
     exists: async (path) => {
