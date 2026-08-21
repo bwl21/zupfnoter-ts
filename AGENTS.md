@@ -44,10 +44,10 @@ ABC → @zupfnoter/core Song → Sheet → SVG/PDF
 - `packages/core`: ABC-Parser, Song-/Layout-Pipeline, SVG/PDF und gemeinsame
   fachliche Logik.
 - `packages/types`: gemeinsame Datenmodelle.
-- `packages/playback`: versioniertes, player-only Playback-Link-Format.
+- `packages/playback`: versioniertes, nur für Practice bestimmtes Playback-Link-Format.
 - `packages/design-system`: wiederverwendbare Vue-Komponenten (`Zn*`).
 - `apps/web`: Vue-Workbench, Commands, Editor, Vorschauen und Storage-UI.
-- `apps/player`: eigenständiger, mobiler Playback-Link-Player.
+- `apps/practice`: eigenständige, mobile Practice-Anwendung für Playback-Links.
 - `apps/viewsvg`: eigenständige SVG-/Vergleichsansicht.
 - `apps/cli`: Node-CLI ohne Browser-Abhängigkeiten.
 - `apps/storybook`: isolierte Stories und visuelle Komponentenfälle.
@@ -100,7 +100,7 @@ Externe Stimmennummern sind 1-basiert, interne Array-Indizes 0-basiert.
 `Sheet.activeVoices` und `extract.*.voices` verwenden die externe 1-basierte
 Konvention.
 
-## Web, Player und Design-System
+## Web, Practice und Design-System
 
 - Produktive Komponenten bleiben unabhängig von Storybook.
 - Storybook bildet die produktive Komponente oder Renderfunktion ab und darf
@@ -111,9 +111,9 @@ Konvention.
   dargestellte Komponente sie tatsächlich benötigt.
 - Web-UI-Änderungen mit Browser MCP oder lokalem Playwright prüfen, wenn der
   Workflow ausführbar ist.
-- Beim Player mobile Nutzung, AudioContext-Gesten, Ladezustände und öffentliche
+- Bei Practice mobile Nutzung, AudioContext-Gesten, Ladezustände und öffentliche
   FLink-Deployments berücksichtigen.
-- Änderungen an gemeinsam genutzten Komponenten in Web, Player und ViewSvg
+- Änderungen an gemeinsam genutzten Komponenten in Web, Practice und ViewSvg
   auf alle Verbraucher prüfen.
 
 ## Tests und Validierung

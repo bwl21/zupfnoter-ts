@@ -20,7 +20,7 @@
     "@zupfnoter/core": "workspace:*",
     "@zupfnoter/design-system": "workspace:*",
     "@zupfnoter/playback": "workspace:*",
-    "@zupfnoter/player-ui": "workspace:*",
+    "@zupfnoter/practice-ui": "workspace:*",
     "@zupfnoter/types": "workspace:*",
     "fflate": "^0.8.2",
     "jspdf": "^4.2.1",

@@ -1,19 +1,19 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import { mountPlayerUi, type PlayerUiController } from '@zupfnoter/player-ui'
-import '@zupfnoter/player-ui/style.css'
+import { mountPracticeUi, type PracticeUiController } from '@zupfnoter/practice-ui'
+import '@zupfnoter/practice-ui/style.css'
 
 const meta = {
-  title: 'Player/UI',
+  title: 'Practice/UI',
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },
-} satisfies Meta<PlayerUiArgs>
+} satisfies Meta<PracticeUiArgs>
 
 export default meta
-type Story = StoryObj<PlayerUiArgs>
+type Story = StoryObj<PracticeUiArgs>
 
-interface PlayerUiArgs {
+interface PracticeUiArgs {
   loading: boolean
   metronome: boolean
   meterNumerator: number
@@ -21,18 +21,18 @@ interface PlayerUiArgs {
   rangeError: string
 }
 
-function renderPlayerUi(args: PlayerUiArgs) {
+function renderPracticeUi(args: PracticeUiArgs) {
   return {
     setup() {
       const host = ref<HTMLElement>()
-      let controller: PlayerUiController | undefined
+      let controller: PracticeUiController | undefined
       onMounted(() => {
         const container = host.value
         if (container === undefined) return
         const meter = { numerator: args.meterNumerator, denominator: args.meterNumerator === 12 ? 8 : 4 }
-        controller = mountPlayerUi({
+        controller = mountPracticeUi({
           container,
-          playerVersion: '0.1.5',
+          practiceVersion: '0.1.5',
           identification: 'T01 · Auszug 0',
           firstPosition: { measureNumber: 1, passIndex: 1 },
           firstPartName: 'Strophe mit langem Namen',
@@ -77,25 +77,25 @@ function renderPlayerUi(args: PlayerUiArgs) {
 
 export const Default: Story = {
   args: { loading: false, metronome: false, meterNumerator: 4, maximumPass: 1, rangeError: '' },
-  render: renderPlayerUi,
+  render: renderPracticeUi,
 }
 
 export const MetronomeActive: Story = {
   args: { loading: false, metronome: true, meterNumerator: 4, maximumPass: 2, rangeError: '' },
-  render: renderPlayerUi,
+  render: renderPracticeUi,
 }
 
 export const Loading: Story = {
   args: { loading: true, metronome: false, meterNumerator: 4, maximumPass: 2, rangeError: '' },
-  render: renderPlayerUi,
+  render: renderPracticeUi,
 }
 
 export const RangeError: Story = {
   args: { loading: false, metronome: false, meterNumerator: 4, maximumPass: 2, rangeError: 'Der Bereich wurde im Playback nicht gefunden.' },
-  render: renderPlayerUi,
+  render: renderPracticeUi,
 }
 
 export const LongMeter: Story = {
   args: { loading: false, metronome: true, meterNumerator: 12, maximumPass: 2, rangeError: '' },
-  render: renderPlayerUi,
+  render: renderPracticeUi,
 }

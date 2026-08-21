@@ -5,7 +5,7 @@ export interface RenderWorkerRequest {
   id: number
   abcText: string
   extractNr: number
-  playerQrJpegUrl?: string
+  practiceQrJpegUrl?: string
   resources?: SongResources
   flowconf?: boolean
 }
@@ -36,7 +36,7 @@ export interface RenderWorkerResponse {
 type RenderWorkerMessage = RenderWorkerRequest | RenderWorkerProgress | RenderWorkerPerf | RenderWorkerResponse
 
 self.onmessage = (event: MessageEvent<RenderWorkerRequest>) => {
-  const { id, abcText, extractNr, playerQrJpegUrl, resources, flowconf } = event.data
+  const { id, abcText, extractNr, practiceQrJpegUrl, resources, flowconf } = event.data
   const postProgress = (message: string): void => {
     const progress: RenderWorkerProgress = { id, kind: 'progress', message }
     self.postMessage(progress satisfies RenderWorkerMessage)
@@ -45,7 +45,7 @@ self.onmessage = (event: MessageEvent<RenderWorkerRequest>) => {
   try {
     const startedAt = performance.now()
     postProgress(`worker: render extract ${extractNr}`)
-    const result = renderWorkbenchPreviews(abcText, extractNr, { playerQrJpegUrl, resources, flowconf })
+    const result = renderWorkbenchPreviews(abcText, extractNr, { practiceQrJpegUrl, resources, flowconf })
     const totalMs = performance.now() - startedAt
     postProgress(`worker: render complete in ${totalMs.toFixed(3)} ms`)
     const perf: RenderWorkerPerf = {

@@ -1,17 +1,17 @@
 {
-  "name": "@zupfnoter/player",
+  "name": "@zupfnoter/practice",
   "version": "0.2.1",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "pnpm --filter @zupfnoter/playback build && pnpm --filter @zupfnoter/player-ui build && vite build",
-    "type-check": "pnpm --filter @zupfnoter/playback build && pnpm --filter @zupfnoter/player-ui build && tsc --noEmit",
+    "build": "pnpm --filter @zupfnoter/playback build && pnpm --filter @zupfnoter/practice-ui build && vite build",
+    "type-check": "pnpm --filter @zupfnoter/playback build && pnpm --filter @zupfnoter/practice-ui build && tsc --noEmit",
     "test:unit": "vitest run"
   },
   "dependencies": {
     "@zupfnoter/playback": "workspace:*",
-    "@zupfnoter/player-ui": "workspace:*",
+    "@zupfnoter/practice-ui": "workspace:*",
     "@zxing/browser": "^0.2.1",
     "@zxing/library": "^0.23.0",
     "fflate": "^0.8.2",

@@ -36,8 +36,18 @@ export type { JumplinePathData, JumplinePathInfo } from './jumplinePath.js'
 export { bezierControlToLegacyValue, makeBezierPathData } from './bezierPath.js'
 export type { BezierPathInfo } from './bezierPath.js'
 export { PdfEngine } from './PdfEngine.js'
-export { PLAYER_QR_IMAGE_NAME, isPlayerQrImageName } from './imageResources.js'
-export { createPlayerQrJpeg, playerQrJpegDataUrl } from './playerQr.js'
+export {
+  PRACTICE_QR_IMAGE_NAME,
+  isPracticeQrImageName,
+  PLAYER_QR_IMAGE_NAME,
+  isPlayerQrImageName,
+} from './imageResources.js'
+export {
+  createPracticeQrJpeg,
+  practiceQrJpegDataUrl,
+  createPlayerQrJpeg,
+  playerQrJpegDataUrl,
+} from './practiceQr.js'
 export { pdfOutputFilename } from './PdfOutputName.js'
 export type { PdfPageFormat } from './PdfOutputName.js'
 

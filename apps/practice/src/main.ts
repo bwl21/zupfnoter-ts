@@ -12,11 +12,11 @@ import {
   schedulePlaybackMetronomeClick,
   type PlaybackMetronomeSoundKind,
 } from '@zupfnoter/playback'
-import { mountPlayerUi, renderPlayerIcon, type PlayerUiController } from '@zupfnoter/player-ui'
+import { mountPracticeUi, renderPracticeIcon, type PracticeUiController } from '@zupfnoter/practice-ui'
 import { BrowserQRCodeReader, type IScannerControls } from '@zxing/browser'
 import { DecodeHintType } from '@zxing/library'
 import { deflateSync, inflateSync } from 'fflate'
-import '@zupfnoter/player-ui/style.css'
+import '@zupfnoter/practice-ui/style.css'
 import {
   findPositionMarker,
   partNameAtTime,
@@ -24,9 +24,9 @@ import {
   positionAtTime,
   resolveRange,
   tempoBpmAtTime,
-} from './playerLogic'
+} from './practiceLogic'
 
-const PLAYER_VERSION = '0.3.8'
+const PRACTICE_VERSION = '0.3.8'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -34,9 +34,9 @@ const AUDIO_START_LEAD_MS = 200
 const INVALID_PLAYBACK_MESSAGE = 'Die Daten sind fehlerhaft, bitte wende dich an den Herausgeber.'
 
 const appElement = document.querySelector<HTMLDivElement>('#app')
-if (appElement === null) throw new Error('Player root is missing')
+if (appElement === null) throw new Error('Practice root is missing')
 const app = appElement
-let destroyCurrentPlayer: () => void = () => undefined
+let destroyCurrentPractice: () => void = () => undefined
 let closeQrScanner: (() => void) | undefined
 
 const browserPlaybackCodec: PlaybackCompressionCodec = {
@@ -49,8 +49,8 @@ const browserPlaybackCodec: PlaybackCompressionCodec = {
 }
 
 function renderError(message: string): void {
-  destroyCurrentPlayer()
-  app.innerHTML = `<section class="card error"><h1>Zupfnoter Übung</h1><p>${message}</p></section>`
+  destroyCurrentPractice()
+  app.innerHTML = `<section class="card error"><h1>Zupfnoter Practice</h1><p>${message}</p></section>`
 }
 
 function renderPlaybackDataError(error: unknown): void {
@@ -62,13 +62,13 @@ function describePlaybackDataError(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error)
   const unsupportedVersion = /^Unsupported playback format version: (\d+)$/.exec(message)?.[1]
   if (unsupportedVersion !== undefined) {
-    return `Dieser Player unterstützt das Playback-Datenformat ${unsupportedVersion} nicht. Bitte aktualisiere oder deploye den Player erneut.`
+    return `Zupfnoter Practice unterstützt das Playback-Datenformat ${unsupportedVersion} nicht. Bitte aktualisiere oder deploye die Practice-App erneut.`
   }
   if (message.startsWith('Unsupported playback compression flags:')) {
-    return 'Dieser Player unterstützt die im Link verwendete Kompression nicht. Bitte aktualisiere oder deploye den Player erneut.'
+    return 'Zupfnoter Practice unterstützt die im Link verwendete Kompression nicht. Bitte aktualisiere oder deploye die Practice-App erneut.'
   }
   if (message === 'Invalid playback Base64URL' || message === 'Invalid playback payload magic') {
-    return 'Der Player-Link ist beschädigt oder unvollständig. Bitte erzeuge den Link beziehungsweise den QR-Code erneut.'
+    return 'Der Übungslink ist beschädigt oder unvollständig. Bitte erzeuge den Link beziehungsweise den QR-Code erneut.'
   }
   if (message.includes('payload ends') || message.includes('Invalid compressed playback data')) {
     return 'Die Playback-Daten sind unvollständig oder konnten nicht dekomprimiert werden. Bitte erzeuge den Link beziehungsweise den QR-Code erneut.'
@@ -77,10 +77,10 @@ function describePlaybackDataError(error: unknown): string {
 }
 
 function renderWelcome(): void {
-  destroyCurrentPlayer()
+  destroyCurrentPractice()
   app.innerHTML = `<section class="card welcome-card">
-    <div class="player-title-row"><h1>Zupfnoter Player</h1><button id="welcome-scan" class="scan-button" type="button">${renderPlayerIcon('scan', 'player-icon scan-button__icon')}<span>Scan</span></button></div>
-    <p class="summary">Öffne einen Player-Link oder scanne einen Zupfnoter-QR-Code.</p>
+    <div class="practice-title-row"><h1>Zupfnoter Practice</h1><button id="welcome-scan" class="scan-button" type="button">${renderPracticeIcon('scan', 'practice-icon scan-button__icon')}<span>Scan</span></button></div>
+    <p class="summary">Öffne einen Übungslink oder scanne einen Zupfnoter-Übungs-QR-Code.</p>
   </section>`
   app.querySelector<HTMLButtonElement>('#welcome-scan')?.addEventListener('click', openQrScanner)
 }
@@ -98,8 +98,8 @@ function openQrScanner(): void {
   overlay.innerHTML = `
     <div class="qr-scanner-dialog" role="dialog" aria-modal="true" aria-labelledby="qr-scanner-title">
       <div class="qr-scanner-header">
-        <h2 id="qr-scanner-title">Player-QR-Code scannen</h2>
-        <button class="qr-scanner-close" type="button" aria-label="Scanner schließen">${renderPlayerIcon('close')}</button>
+        <h2 id="qr-scanner-title">Übungs-QR-Code scannen</h2>
+        <button class="qr-scanner-close" type="button" aria-label="Scanner schließen">${renderPracticeIcon('close')}</button>
       </div>
       <div class="qr-scanner-viewfinder">
         <video class="qr-scanner-video" autoplay muted playsinline></video>
@@ -240,7 +240,7 @@ function midiToSoundfontNote(midi: number): string {
   return `${names[[0, 2, 4, 5, 7, 9, 11].indexOf(pitch.note % 12)] ?? 'C'}${Math.floor(pitch.note / 12) - 1}`
 }
 
-function renderPlayer(
+function renderPractice(
   events: PlaybackEvent[],
   positionMarkers: PlaybackPositionMarker[],
   identification?: string,
@@ -248,7 +248,7 @@ function renderPlayer(
   tempoUnit = 0.25,
   metronomeConfig?: PlaybackMetronomeConfig,
 ): void {
-  destroyCurrentPlayer()
+  destroyCurrentPractice()
   const firstPosition = positionMarkers[0]?.position ?? eventPosition(events[0])
   const maximumMeasure = Math.max(1, ...positionMarkers.map((marker) => marker.position.measureNumber))
   const maximumPass = Math.max(1, ...positionMarkers.map((marker) => marker.position.passIndex))
@@ -296,10 +296,10 @@ function renderPlayer(
     if (metronomeDivision === undefined) ui.setDivision(divisionForMeter(meterAtTime(selectedStartMs)))
     return range.range
   }
-  let ui: PlayerUiController
-  ui = mountPlayerUi({
+  let ui: PracticeUiController
+  ui = mountPracticeUi({
     container: app,
-    playerVersion: PLAYER_VERSION,
+    practiceVersion: PRACTICE_VERSION,
     identification,
     firstPosition,
     firstPartName: partNameAtTime(positionMarkers, selectedStartMs),
@@ -768,9 +768,9 @@ function renderPlayer(
   const destroy = (): void => {
     stopPlayback()
     ui.destroy()
-    if (destroyCurrentPlayer === destroy) destroyCurrentPlayer = () => undefined
+    if (destroyCurrentPractice === destroy) destroyCurrentPractice = () => undefined
   }
-  destroyCurrentPlayer = destroy
+  destroyCurrentPractice = destroy
 }
 
 async function loadPlaybackUrl(rawUrl: string): Promise<void> {
@@ -791,7 +791,7 @@ async function loadPlaybackUrl(rawUrl: string): Promise<void> {
     : undefined
   const decoded = await decodePlaybackFragment(value, browserPlaybackCodec)
   history.replaceState(null, '', `${window.location.pathname}${pageUrl.search}${pageUrl.hash}`)
-  renderPlayer(decoded.events, decoded.positionMarkers, identification,
+  renderPractice(decoded.events, decoded.positionMarkers, identification,
     decoded.tempoBpm ?? legacyTempoBpm, decoded.tempoUnit ?? legacyTempoUnit, decoded.metronome)
 }
 

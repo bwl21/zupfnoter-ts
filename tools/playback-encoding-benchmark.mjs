@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { deflateSync } from '../apps/web/node_modules/fflate/esm/browser.js'
 import { exportPlaybackLink } from '../packages/playback/dist/index.js'
 
-const playerUrl = 'https://zupfnoter-player.csweichel.dev/'
+const playerUrl = 'https://practice.zupfnoter.de/'
 const resolutionMs = 10
 
 function writeVarUInt(output, value) {

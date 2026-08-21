@@ -3,18 +3,18 @@ import { describe, expect, it } from 'vitest'
 import { AbcParser } from '../../AbcParser.js'
 import { AbcToSong } from '../../AbcToSong.js'
 import { HarpnotesLayout } from '../../HarpnotesLayout.js'
-import { playerQrJpegDataUrl } from '../../playerQr.js'
+import { practiceQrJpegDataUrl } from '../../practiceQr.js'
 import { SvgEngine } from '../../SvgEngine.js'
 import { loadFixture } from '../fixtureLoader.js'
 import { extractSongResources } from '../../extractSongConfig.js'
 
-describe('Player QR image fixture', () => {
+describe('Practice QR image fixture', () => {
   it('keeps the configured top-edge position through the full render pipeline', () => {
     const fixture = loadFixture('player-qr-position')
     const song = new AbcToSong().transform(new AbcParser().parse(fixture.input.abc), fixture.config)
     const sheet = new HarpnotesLayout(fixture.config, {
       imageResolver: (imageName) => imageName === '$player_qr'
-        ? playerQrJpegDataUrl('https://player.example.test/song')
+        ? practiceQrJpegDataUrl('https://practice.example.test/song')
         : extractSongResources(fixture.input.abc)[imageName]?.join(''),
     }).layout(song, 0, 'A4')
     const svg = new SvgEngine().draw(sheet)

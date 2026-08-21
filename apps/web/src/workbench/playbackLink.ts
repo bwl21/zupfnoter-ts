@@ -9,14 +9,14 @@ import {
 import { deflateSync, inflateSync } from 'fflate'
 import {
   buildPlaybackExportDataFromTimeline,
-  playerQrJpegDataUrl,
+  practiceQrJpegDataUrl,
 } from '@zupfnoter/core'
 import type { PlaybackExportData } from '@zupfnoter/core'
 
 import type { PlaybackStep } from './playback'
 import type { PlaybackConfig } from '@zupfnoter/types'
 
-/** Browser compression adapter shared by web export and the player. */
+/** Browser compression adapter shared by web export and Practice. */
 export const browserPlaybackCodec: PlaybackCompressionCodec = {
   async compress(value) {
     return new Uint8Array(deflateSync(new Uint8Array(value)))
@@ -26,9 +26,9 @@ export const browserPlaybackCodec: PlaybackCompressionCodec = {
   },
 }
 
-/** Erzeugt das virtuelle Player-Bild als JPG-Daten-URL für SVG/PDF-Exporte. */
-export async function createPlayerQrJpeg(playbackUrl: string): Promise<string> {
-  return playerQrJpegDataUrl(playbackUrl)
+/** Erzeugt das virtuelle Übungsbild als JPG-Daten-URL für SVG/PDF-Exporte. */
+export async function createPracticeQrJpeg(playbackUrl: string): Promise<string> {
+  return practiceQrJpegDataUrl(playbackUrl)
 }
 
 /** Converts the existing complete workbench timeline into portable note events. */
@@ -71,7 +71,7 @@ function toPlaybackMetronomeConfig(config: PlaybackConfig | undefined): Playback
 /** Creates one compressed playback link from the existing workbench timeline. */
 export async function createPlaybackLinkFromTimeline(
   timeline: readonly PlaybackStep[],
-  playerUrl: string,
+  practiceUrl: string,
   activeVoiceIds?: ReadonlySet<string>,
   timeResolutionMs = 10,
   tempoBpm?: number,
@@ -81,7 +81,7 @@ export async function createPlaybackLinkFromTimeline(
   return exportPlaybackLink(
     playbackEventsFromTimeline(timeline, activeVoiceIds),
     {
-      playerUrl,
+      playerUrl: practiceUrl,
       timeResolutionMs,
       positionMarkers: playbackPositionsFromTimeline(timeline),
       tempoBpm,
@@ -95,7 +95,7 @@ export async function createPlaybackLinkFromTimeline(
 /** Erzeugt denselben Auszugs-Link wie der Node-CLI-Renderer aus Core-Daten. */
 export async function createPlaybackLinkFromExportData(
   exportData: PlaybackExportData,
-  playerUrl: string,
+  practiceUrl: string,
   timeResolutionMs = 10,
   tempoBpm?: number,
   tempoUnit?: number,
@@ -110,7 +110,7 @@ export async function createPlaybackLinkFromExportData(
       position: event.position,
     })),
     {
-      playerUrl,
+      playerUrl: practiceUrl,
       timeResolutionMs,
       positionMarkers: exportData.positionMarkers,
       tempoBpm,

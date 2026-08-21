@@ -12,10 +12,10 @@ Transformationskette:
 
 ```text
 ABC → Song → Sheet → SVG/PDF
-             ↘ Playback-Timeline → Playback-Link → apps/player
+             ↘ Playback-Timeline → Playback-Link → apps/practice
 ```
 
-Die Vue-Workbench ist die aktive Produktanwendung. Der eigenständige Player,
+Die Vue-Workbench ist die aktive Produktanwendung. Die eigenständige Practice-App,
 das gemeinsame Design-System und Storybook sind vorhanden und werden separat
 gebaut bzw. deployed.
 
@@ -24,14 +24,14 @@ gebaut bzw. deployed.
 - `packages/types`: gemeinsame Datenmodelle ohne Laufzeitlogik
 - `packages/core`: ABC-Parser, Song-/Layout-Pipeline, SVG/PDF und Konfiguration
 - `packages/playback`: versioniertes Binärformat für Playback-Links
-- `packages/player-ui`: gemeinsame imperative Player-Oberfläche und Styles
+- `packages/practice-ui`: gemeinsame imperative Practice-Oberfläche und Styles
 - `packages/design-system`: wiederverwendbare `Zn*`-Vue-Komponenten
 - `apps/web`: Workbench mit Editor, Vorschauen, Commands, Storage und Playback
-- `apps/player`: mobile Playback-Link-Anwendung
+- `apps/practice`: mobile Playback-Link-Anwendung
 - `apps/viewsvg`: eigenständige SVG-/Vergleichsansicht
 - `apps/demo`: kleinere Pipeline-Demo
 - `apps/cli`: CLI-Grundlage; der geplante Endausbau ist noch offen
-- `apps/storybook`: Storybook für Design-System, Web- und Player-Stories
+- `apps/storybook`: Storybook für Design-System, Web- und Practice-Stories
 
 ## Implementierter Kern
 
@@ -70,16 +70,16 @@ Noch nicht vollständig konsolidiert sind insbesondere die Trennung der
 Selection-Projektionen, der weitere Ausbau des Konfigurationseditors und die
 vollständige lokale Datei-Integration.
 
-## Playback und Player
+## Playback und Practice
 
 `packages/playback` kodiert die bereits erzeugte Timeline in ein versioniertes,
 komprimiertes URL-Fragment. Der Payload enthält Audioereignisse und eine
 separate zeitbasierte Positionsspur für Takt, Durchlauf und Metrum.
 
-`apps/player` decodiert diese Links ohne ABC- oder Serverzugriff. Die produktive
-Player-UI kommt aus `packages/player-ui`; Storybook verwendet dieselbe UI-
+`apps/practice` decodiert diese Links ohne ABC- oder Serverzugriff. Die produktive
+Practice-UI kommt aus `packages/practice-ui`; Storybook verwendet dieselbe UI-
 Renderfunktion und dasselbe CSS. Die Positionsübernahme funktioniert auch
-während der Wiedergabe und nach einer Pause. Der Player ist öffentlich über
+während der Wiedergabe und nach einer Pause. Practice ist öffentlich über
 FLink deploybar.
 
 Die Workbench verwendet für Teilen und PDF-QR-Erzeugung dieselbe Web-
@@ -93,7 +93,7 @@ CLI-Exportweg für Playback-Links.
 
 `apps/storybook` ist eine eigene Workspace-App. Stories liegen unter
 `apps/storybook/stories/` und verwenden die produktiven Komponenten bzw. die
-gemeinsame Player-UI. Storybook dient als isolierte Darstellung, Accessibility-
+gemeinsame Practice-UI. Storybook dient als isolierte Darstellung, Accessibility-
 Prüfung und Grundlage für visuelle Regressionstests; es enthält keine zweite
 Produktionsdarstellung.
 
@@ -105,8 +105,8 @@ Produktionsdarstellung.
 - Phase 3: Song → Sheet, Konfiguration und Layout weitgehend umgesetzt
 - Phase 4: SVG- und PDF-Ausgabe umgesetzt; Paritätsausbau läuft weiter
 - Phase 5: aktive Produktphase; Workbench und Storage sind weit fortgeschritten
-- Phase 5/Storybook: Design-System- und Player-Stories eingerichtet
-- Phase 6: Playback-Link, Player und FLink-Deployment umgesetzt; CLI-Ausbau offen
+- Phase 5/Storybook: Design-System- und Practice-Stories eingerichtet
+- Phase 6: Playback-Link, Practice und FLink-Deployment umgesetzt; CLI-Ausbau offen
 - Phase 7: Worker-Architektur weiterhin offen
 
 ## Verbindliche offene Themen

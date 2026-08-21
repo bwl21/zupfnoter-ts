@@ -1,13 +1,13 @@
 # Phase 6 – Playback-Link für Zupfnoter-TS
 
-**Status: weitgehend umgesetzt.** Web-Workbench, Player, Positionsspur,
+**Status: weitgehend umgesetzt.** Web-Workbench, Practice, Positionsspur,
 Metronomdaten, QR-Einbettung und öffentliche FLink-Bereitstellung sind
 implementiert. Offen bleibt die vollständige Konsolidierung des eigenständigen
 CLI-Playback-Link-Exports.
 
 ## Ziel
 
-Zupfnoter-TS erzeugt einen kompakten, versionierten Datensatz für eine eigenständige Player-Webanwendung. Der Datensatz dient ausschließlich der Wiedergabe. Er ist kein Austauschformat für ABC, MIDI oder Zupfnoter-Dokumente.
+Zupfnoter-TS erzeugt einen kompakten, versionierten Datensatz für die eigenständige Practice-Webanwendung. Der Datensatz dient ausschließlich dem Üben und der Wiedergabe. Er ist kein Austauschformat für ABC, MIDI oder Zupfnoter-Dokumente.
 
 Der Link wird vollständig ohne Serverzustand übertragen:
 
@@ -22,10 +22,10 @@ Deflate Raw
         ↓
 Base64URL
         ↓
-https://zupfnoter-player.csweichel.dev/#p=...
+https://practice.zupfnoter.de/#p=...
 ```
 
-Der Player stellt eine Timeline mit Taktnummer und Durchlauf dar. Die Anzeige
+Practice stellt eine Timeline mit Taktnummer und Durchlauf dar. Die Anzeige
 verwendet beispielsweise `27 : 1`; ein Bereich wie `27.1-3.2` kann direkt zur
 Wiedergabe ausgewählt werden. Die zweite Zahl ist die Durchlaufnummer.
 
@@ -94,7 +94,7 @@ interface PlaybackPositionMarker {
 
 Die Marker werden aus allen positionierten `PlaybackStep`-Einträgen erzeugt,
 einschließlich stiller Schritte. Optional tragen sie die am Taktanfang geltende
-Taktart und deren Gruppierung, etwa `2+2+3` für `7/8`. Der Player verwendet den
+Taktart und deren Gruppierung, etwa `2+2+3` für `7/8`. Practice verwendet den
 letzten Marker mit `timeMs <= aktuelle Wiedergabezeit` für die Positionsanzeige
 und kann daraus den Metronomschlag berechnen.
 
@@ -161,7 +161,7 @@ optionale Velocity  1 Byte, nur wenn nicht überall 127
 
 Danach folgt die Positionsspur. Jeder Marker enthält Delta-Zeit seit dem
 vorherigen Marker, Taktnummer und Durchlaufnummer. Ab Version 5 kann zusätzlich
-pro Marker einen nicht-leeren Partnamen übertragen. Der Player zeigt dann
+pro Marker einen nicht-leeren Partnamen übertragen. Practice zeigt dann
 beispielsweise `15 · 'Refrain' · DL2`; ohne Partnamen bleibt die Anzeige bei
 `15 · DL2`. Audio- und Markerbereiche werden gemeinsam mit Deflate Raw
 komprimiert.
@@ -169,8 +169,8 @@ komprimiert.
 Version 7 überträgt zusätzlich die per Extrakt aufgelöste
 Metronom-Konfiguration mit `metronomeMode` (`off`, `countIn`, `playback`,
 `always`), `minLeadIn`, `bandPreCount`, `division` und `subdivision`. Dadurch
-bleibt die Blattvorgabe im Player reproduzierbar, während lokale
-Player-Overrides sie nicht verändern.
+bleibt die Blattvorgabe in Practice reproduzierbar, während lokale
+Practice-Overrides sie nicht verändern.
 
 Version 1 bis Version 5 werden weiterhin gelesen; neue Links werden in Version
 7 geschrieben. Die fehlerhafte, nie fachlich freigegebene Version 6 wird nicht
@@ -191,7 +191,7 @@ zweite ABC-/Song-/Playback-Transformation einführen:
 ```text
 zupfnoter playback-link \
   --events timeline.json \
-  --player-url https://zupfnoter-player.csweichel.dev/ \
+  --practice-url https://practice.zupfnoter.de/ \
   --output playback-url.txt
 ```
 
@@ -233,11 +233,11 @@ bestehende Timeline pro Auszug und erzeugen keine neue Timeline.
 
 Deflate Raw wird im Browser über `CompressionStream`/`DecompressionStream` und im CLI über `node:zlib` bereitgestellt. Beide Implementierungen lesen und schreiben denselben Payload.
 
-## Player-App
+## Practice-App
 
-Eine neue Anwendung `apps/player` liest `location.hash` im Format `#p=<base64url>`.
+Eine neue Anwendung `apps/practice` liest `location.hash` im Format `#p=<base64url>`.
 
-Der Player:
+Practice:
 
 1. liest den Parameter `p`,
 2. decodiert Base64URL,
@@ -247,7 +247,7 @@ Der Player:
 6. baut daraus die Timeline,
 7. spielt die MIDI-Tonhöhen über WebAudio/Soundfont ab.
 
-Die Player-Timeline zeigt mindestens:
+Die Practice-Timeline zeigt mindestens:
 
 - Position `Taktnummer.Durchlauf`, beispielsweise `27.1`,
 - relative oder absolute Zeit,
@@ -285,7 +285,7 @@ Der CLI-Befehl für einen eigenständigen Playback-Link lautet:
 
 ```text
 zupfnoter playback-link <input.abc> \\
-  --player-url https://zupfnoter-player.csweichel.dev/ \\
+  --practice-url https://practice.zupfnoter.de/ \\
   --output <target-folder> \\
   [--extract <number>] \\
   [--qr svg|png|pdf]
@@ -304,7 +304,7 @@ Playback-Link erzeugt und als JPG über die bestehende Bildpipeline in SVG/PDF
 eingebettet. Teilen und PDF verwenden dabei dieselbe Web-Timeline. Der QR-Code
 wird nicht als Ressource gespeichert oder hochgeladen.
 
-Der CLI-Batch-Export kann einen `$player_qr` mit `--player-url` ebenfalls
+Der CLI-Batch-Export kann einen `$player_qr` mit `--practice-url` ebenfalls
 temporär erzeugen. Der eigenständige `playback-link`-Befehl schreibt derzeit
 noch keinen separaten QR-Artefakt-Export; dieser Ausbau bleibt offen.
 
@@ -334,7 +334,7 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 - Base64URL ohne Padding
 - unbekannte Versionen und beschädigte Payloads
 
-### Player
+### Practice
 
 - gültiger Link wird geladen und abgespielt
 - Timeline zeigt `measure.pass` aus der Positionsspur
@@ -343,7 +343,7 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 - Wiederholungen bleiben in Playback-Reihenfolge sichtbar
 - mehrere Ereignisse mit `dt = 0` starten gemeinsam
 - ungültige Links und ungültige Bereiche werden angezeigt
-- Player benötigt keine ABC- oder Konfigurationsdaten
+- Practice benötigt keine ABC- oder Konfigurationsdaten
 
 ### QR und CLI
 
@@ -362,7 +362,7 @@ Bei zu großer QR-Payload bleibt die URL verfügbar; nur das QR-Artefakt erhält
 - `v` ist standardmäßig 127 und wird in Version 5 nur bei Bedarf gespeichert.
 - Deflate Raw ist die einzige Kompression in Version 5.
 - Version-1-Payloads bleiben abwärtskompatibel lesbar.
-- Der Player wird als `apps/player` im selben Monorepo angelegt.
+- Practice wird als `apps/practice` im selben Monorepo angelegt.
 - Takt und Durchlauf stehen in einer eigenen zeitbasierten Positionsspur.
 - Die Ablaufordnung wird durch die Ereignisreihenfolge bestimmt.
 - `27.1-3.2` ist inklusiv.

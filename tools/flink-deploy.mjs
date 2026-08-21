@@ -5,7 +5,7 @@ import { execFileSync, spawnSync } from 'node:child_process'
 const ROOT = resolve(new URL('..', import.meta.url).pathname)
 const apps = {
   web: { directory: 'apps/web', packageName: '@zupfnoter/web' },
-  player: { directory: 'apps/player', packageName: '@zupfnoter/player' },
+  practice: { directory: 'apps/practice', packageName: '@zupfnoter/practice' },
 }
 
 function loadRootEnv() {
@@ -37,7 +37,7 @@ function findFlink() {
 const appName = process.argv[2]
 const app = appName === undefined ? undefined : apps[appName]
 if (app === undefined) {
-  console.error('Verwendung: node tools/flink-deploy.mjs <web|player>')
+  console.error('Verwendung: node tools/flink-deploy.mjs <web|practice>')
   process.exit(2)
 }
 

@@ -64,7 +64,7 @@ Run at minimum:
 ```bash
 pnpm --filter @zupfnoter/core run type-check
 pnpm --filter @zupfnoter/core exec vitest run \\
-  src/testing/__tests__/playerQrPosition.spec.ts \\
+  src/testing/__tests__/practiceQrPosition.spec.ts \\
   src/testing/__tests__/SvgEngine.spec.ts \\
   src/testing/__tests__/PdfEngine.spec.ts --reporter=dot
 pnpm --filter @zupfnoter/core exec vitest run \\

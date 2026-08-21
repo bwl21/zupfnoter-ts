@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { createPlayerQrJpeg, playbackPositionsFromTimeline } from '../playbackLink'
+import { createPracticeQrJpeg, playbackPositionsFromTimeline } from '../playbackLink'
 import type { PlaybackStep } from '../playback'
 
 function step(
@@ -59,12 +59,12 @@ describe('playback position export', () => {
   })
 })
 
-describe('player QR export', () => {
-  it('creates a JPG data URL from the complete player link', async () => {
+describe('practice QR export', () => {
+  it('creates a JPG data URL from the complete practice link', async () => {
     if (typeof HTMLCanvasElement === 'undefined' || typeof HTMLCanvasElement.prototype.toDataURL !== 'function') return
     let dataUrl: string
     try {
-      dataUrl = await createPlayerQrJpeg('https://zupfnoter-player.example/#p=test')
+      dataUrl = await createPracticeQrJpeg('https://practice.example/#p=test')
     } catch (error) {
       if (error instanceof Error && error.message.includes('ohne Canvas')) return
       throw error

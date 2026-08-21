@@ -273,7 +273,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     const hasAudioEvents = eventsBySide.left.length > 0 || eventsBySide.right.length > 0
     if (!hasAudioEvents && callbacks.onStepStart === undefined && callbacks.onStepEnd === undefined) return
     const context = await ensureRunningContext()
-    // Use the same complete position track as export/player. In particular,
+    // Use the same complete position track as export/Practice. In particular,
     // the unmetered opening marker carries the phase of an opening pickup.
     const markers: PlaybackPositionMarker[] = buildPlaybackExportDataFromTimeline(steps).positionMarkers
     const configuredDivision = metronomeConfig?.division === undefined

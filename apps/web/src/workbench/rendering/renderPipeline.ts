@@ -11,7 +11,7 @@ import {
   buildConfstack,
   initConf,
   mergeSongConfig,
-  PLAYER_QR_IMAGE_NAME,
+  PRACTICE_QR_IMAGE_NAME,
 } from '@zupfnoter/core'
 import type { AbcParseError } from '@zupfnoter/core'
 import type { PlaybackConfig, SheetObjectIndex, SongDiagnostic, SongResources } from '@zupfnoter/types'
@@ -20,7 +20,7 @@ import startupDemoAbc from '../../../../../fixtures/cases/public/krippen-demo/in
 import type { EditorDiagnostic } from '../panels/abcEditorCodeMirror'
 import { DEFAULT_WORKBENCH_CONFIG } from '../../stores/workbenchConfigDefaults'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, resolveTempoUnitFromSong, type PlaybackStep } from '../playback'
-import { createPlaybackLinkFromTimeline, createPlayerQrJpeg } from '../playbackLink'
+import { createPlaybackLinkFromTimeline, createPracticeQrJpeg } from '../playbackLink'
 import { isUserVisibleVoice, resolveActiveVoiceIdsFromSheet, resolveUserVisibleVoiceIds } from '../songVoiceIdentity'
 import {
   parserErrorToWorkbenchDiagnostic,
@@ -66,10 +66,10 @@ export interface WorkbenchComparisonResult {
 export interface WorkbenchRenderOptions {
   /** Separat vom Konfigurations-JSON gespeicherte Bildressourcen. */
   resources?: SongResources
-  /** Temporär erzeugtes JPG für das reservierte Player-QR-Bild. */
-  playerQrJpegUrl?: string
-  /** Basis-URL des Players; wird beim PDF-Export pro Auszug aufgelöst. */
-  playerUrl?: string
+  /** Temporär erzeugtes JPG für das reservierte Übungs-QR-Bild. */
+  practiceQrJpegUrl?: string
+  /** Basis-URL von Zupfnoter Practice; wird beim PDF-Export pro Auszug aufgelöst. */
+  practiceUrl?: string
   /** Aktiviert editierbare Bézier-Handles an nicht konfigurierten Flusslinien. */
   flowconf?: boolean
 }
@@ -99,30 +99,30 @@ export async function renderPdfExport(
   const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
   let sheet = new HarpnotesLayout(config, {
     annotationTextMetrics: createDefaultAnnotationTextMetrics(),
-    imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME
-      ? options.playerQrJpegUrl
+    imageResolver: (imageName) => imageName === PRACTICE_QR_IMAGE_NAME
+      ? options.practiceQrJpegUrl
       : resolveResourceUrl(resources, imageName),
     flowconf: false,
   }).layout(song, extractNr, pageFormat)
-  let playerQrJpegUrl = options.playerQrJpegUrl
-  if (playerQrJpegUrl === undefined && options.playerUrl !== undefined && abcText.includes(PLAYER_QR_IMAGE_NAME)) {
+  let practiceQrJpegUrl = options.practiceQrJpegUrl
+  if (practiceQrJpegUrl === undefined && options.practiceUrl !== undefined && abcText.includes(PRACTICE_QR_IMAGE_NAME)) {
     // Use the same web timeline as the Share/Playback-Link command. A second
     // export calculation can differ for ties, repeats and extract voice sets.
     const playbackTimeline = buildPlaybackTimeline(song, sheet.activeVoices)
     const playbackLink = await createPlaybackLinkFromTimeline(
       playbackTimeline,
-      options.playerUrl,
+      options.practiceUrl,
       undefined,
       10,
       resolveBaseTempoFromSong(song),
       resolveTempoUnitFromSong(song),
       resolvePlaybackConfig(config, extractNr),
     )
-    playerQrJpegUrl = await createPlayerQrJpeg(playbackLink.url)
+    practiceQrJpegUrl = await createPracticeQrJpeg(playbackLink.url)
     sheet = new HarpnotesLayout(config, {
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
-      imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME
-        ? playerQrJpegUrl
+      imageResolver: (imageName) => imageName === PRACTICE_QR_IMAGE_NAME
+        ? practiceQrJpegUrl
         : resolveResourceUrl(resources, imageName),
       flowconf: false,
     }).layout(song, extractNr, pageFormat)
@@ -245,8 +245,8 @@ export function renderWorkbenchPreviews(
     allVoiceIds = resolveUserVisibleVoiceIds(transformedSong)
     const layoutOptions: ConstructorParameters<typeof HarpnotesLayout>[1] = {
       annotationTextMetrics: createDefaultAnnotationTextMetrics(),
-      imageResolver: (imageName) => imageName === PLAYER_QR_IMAGE_NAME
-        ? options.playerQrJpegUrl
+      imageResolver: (imageName) => imageName === PRACTICE_QR_IMAGE_NAME
+        ? options.practiceQrJpegUrl
         : resolveResourceUrl(resources, imageName),
       flowconf: options.flowconf ?? DEFAULT_WORKBENCH_CONFIG.flowconf,
       interactive: true,

@@ -11,7 +11,7 @@ zusammengefasst.
 Das Projekt benötigte ursprünglich eine Monorepo-Struktur mit PNPM Workspaces,
 damit die Kern-, App- und UI-Pakete eigenständig entwickelt und lokal verknüpft
 werden können. Die Struktur ist inzwischen vorhanden und wurde um Playback,
-Player-UI, Design-System, ViewSvg und Storybook erweitert.
+Practice-UI, Design-System, ViewSvg und Storybook erweitert.
 
 ## Ist-Zustand
 
@@ -22,7 +22,7 @@ Player-UI, Design-System, ViewSvg und Storybook erweitert.
 | `apps/web/` | ✅ vorhanden und aktiv |
 | `apps/cli/` | ✅ Workspace vorhanden, fachlicher Ausbau offen |
 | `apps/storybook/` | ✅ eigene Storybook-App |
-| `apps/player/` | ✅ eigenständiger Player |
+| `apps/practice/` | ✅ eigenständige Practice-App |
 | `src/` (Vue-Scaffold) | ✅ aus dem Root entfernt |
 | `pnpm-workspace.yaml` | ✅ vorhanden |
 | `tsconfig.base.json` | ✅ vorhanden |

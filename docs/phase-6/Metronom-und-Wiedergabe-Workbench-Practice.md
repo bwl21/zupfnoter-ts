@@ -1,4 +1,4 @@
-# Metronom und Wiedergabe in Workbench und Player
+# Metronom und Wiedergabe in Workbench und Practice
 
 ## Zweck und Geltungsbereich
 
@@ -7,7 +7,7 @@ Dieses Dokument beschreibt den technischen Stand der Wiedergabe am 9. August
 
 - die expandierte Wiedergabereihenfolge mit Wiederholungen und Volten,
 - Takt, Durchlauf, Abschnitt und die Zuordnung zum ABC-Quelltext,
-- die gemeinsame Metronomlogik für Workbench und eigenständigen Player,
+- die gemeinsame Metronomlogik für Workbench und die eigenständige Practice-App,
 - die Übertragung der Blattvorgabe im Playback-Link,
 - die tatsächlich gemeinsame und die weiterhin doppelte Implementierung.
 
@@ -29,14 +29,14 @@ Die zentrale fachliche Berechnung ist geteilt:
 5. `packages/playback/src/metronomeSound.ts` definiert die gemeinsame
    Klangklassifikation und Klangfarben.
 
-Damit gibt es keine zweite fachliche Timeline im Player und keine eigene
+Damit gibt es keine zweite fachliche Timeline in Practice und keine eigene
 Metronom-Mathematik pro Plattform.
 
 Es gibt allerdings weiterhin zwei technische Scheduler:
 
 - die Workbench in
   `apps/web/src/workbench/useAudioPlayer.ts`,
-- der eigenständige Player in `apps/player/src/main.ts`.
+- die eigenständige Practice-App in `apps/practice/src/main.ts`.
 
 Beide verwenden die gemeinsamen Funktionen aus `@zupfnoter/playback`, haben
 aber eigene Audio-Context-Verwaltung, Lookahead-/Refill-Logik, Pause-/Stop-
@@ -55,7 +55,7 @@ flowchart LR
     EXPORT[PlaybackExport<br/>Events + Positionsmarker]
     WEB[Workbench-Scheduler]
     LINK[Playback-Link<br/>Version 7]
-    PLAYER[Eigenständiger Player]
+    PLAYER[Eigenständige Practice-App]
     METRO[packages/playback<br/>Metronomplan + Klicks]
     SOUND[metronomeSound<br/>gemeinsame Klangprofile]
 
@@ -78,10 +78,10 @@ expandierter Ablauf (Reihenfolge)
         ↓
 zeitbasierte Timeline (Dauer und Position)
         ↓
-Workbench-Audio     oder     Playback-Link/Player
+Workbench-Audio     oder     Playback-Link/Practice
 ```
 
-Der Player rekonstruiert aus dem Link nicht die ABC-Musik und nicht die
+Practice rekonstruiert aus dem Link nicht die ABC-Musik und nicht die
 Wiederholungslogik. Er liest die bereits materialisierten Audioereignisse und
 Positionsmarker.
 
@@ -138,7 +138,7 @@ sequenceDiagram
     participant T as PlaybackTimeline
     participant W as Workbench
     participant E as PlaybackExport
-    participant P as Player
+    participant P as Practice
 
     A->>F: Notierte Entities und Gotos
     F->>F: Wiederholung / Volte / Sprung expandieren
@@ -212,11 +212,11 @@ Für `partName` gilt:
 2. Ein solcher Name bleibt für folgende Schritte wirksam.
 3. Leere oder nur aus Leerzeichen bestehende Partnamen löschen den aktuellen
    Abschnitt nicht.
-4. Workbench und Player verwenden dieselbe Regel über
+4. Workbench und Practice verwenden dieselbe Regel über
    `resolveEffectivePlaybackPartNames` beziehungsweise die Marker-
    Fortschreibung im Export.
 
-Der Player zeigt den Abschnitt nur, wenn überhaupt ein nicht-leerer Partname
+Practice zeigt den Abschnitt nur, wenn überhaupt ein nicht-leerer Partname
 übertragen wurde. Takt und Durchlauf bleiben unabhängig davon sichtbar.
 
 ## Metronommodell
@@ -231,7 +231,7 @@ extract.<nummer>.playback
 
 Der wirksame Wert wird über Confstack aufgelöst. Die Web-Workbench verwendet
 ihn für die lokale Wiedergabe und übergibt dieselben Werte beim Erzeugen des
-Playback-Links. Der Link trägt die aufgelöste Vorgabe mit, damit der Player
+Playback-Links. Der Link trägt die aufgelöste Vorgabe mit, damit Practice
 ohne Zugriff auf das Blatt korrekt starten kann.
 
 ```ts
@@ -389,7 +389,7 @@ notierte Quelle.
 
 ### Volten
 
-Volten sind Ablaufentscheidungen in `PlaybackFlow`. Player und Workbench
+Volten sind Ablaufentscheidungen in `PlaybackFlow`. Practice und Workbench
 erhalten danach nur die ausgewählte lineare Folge. Ein Metronomklick darf
 nicht aus der notierten Taktfolge rekonstruiert werden, sondern muss der
 expandierten Timeline folgen. Dadurch können beliebig viele
@@ -428,7 +428,7 @@ Die Editorposition wird nicht durch eine zweite Suche im ABC erzeugt. `source`
 und `sourceOffsets` werden über `activeTextRanges` sowie `activeStartChar`
 weitergereicht.
 
-## Player-Ablauf
+## Practice-Ablauf
 
 ```mermaid
 flowchart TD
@@ -438,9 +438,9 @@ flowchart TD
     MARKERS[Positionsmarker<br/>Takt / Durchlauf / Abschnitt / M:]
     CONFIG[Metronom-Blattvorgabe]
     RANGE[Bereich aus Markerposition]
-    AUDIO[Player-Audioscheduler]
+    AUDIO[Practice-Audioscheduler]
     METRO[Gemeinsamer Metronomplaner]
-    UI[Player-UI]
+    UI[Practice-UI]
 
     URL --> DECODE
     DECODE --> EVENTS
@@ -455,7 +455,7 @@ flowchart TD
     MARKERS --> UI
 ```
 
-Der Player:
+Practice:
 
 1. liest `#p=...`,
 2. validiert und decodiert den versionierten Payload,
@@ -467,7 +467,7 @@ Der Player:
 7. verwendet `resolvePlaybackMetronomeEventSound` und
    `schedulePlaybackMetronomeClick` für die Audioausgabe.
 
-Der Player braucht deshalb keine Sonderbehandlung für eine konkrete
+Practice braucht deshalb keine Sonderbehandlung für eine konkrete
 Wiederholungsnummer oder einen konkreten Takt. Er arbeitet auf der
 materialisierten Zeitspur.
 
@@ -480,7 +480,7 @@ sequenceDiagram
     participant E as Core Export
     participant L as playback Encoder
     participant Q as QR / URL
-    participant P as Player Decoder
+    participant P as Practice-Decoder
 
     C->>W: extract.N.playback auflösen
     W->>E: vollständige PlaybackStep[]
@@ -493,7 +493,7 @@ sequenceDiagram
 
 Die Metronomwerte werden nicht aus der UI-Anzeige „erraten“. Sie kommen aus
 `extract.N.playback`, werden beim Export als `PlaybackMetronomeConfig`
-übergeben und im Payload gespeichert. Der Player darf die Blattvorgabe durch
+übergeben und im Payload gespeichert. Practice darf die Blattvorgabe durch
 lokale Bedienung ändern, aber beim erneuten Laden eines Links wird wieder die
 gespeicherte Vorgabe als Ausgangspunkt verwendet.
 
@@ -506,10 +506,10 @@ gespeicherte Vorgabe als Ausgangspunkt verwendet.
 | Wiederholungs-/Voltenexpansion | `expandPlaybackFlow` | Core-Timeline |
 | Gruppierung nach Quellzeit | `buildPlaybackTimeline` | Workbench und Export |
 | Stimme erst nach Timeline filtern | `buildPlaybackExportDataFromTimeline` | Link/QR/CLI |
-| Metronomklicks | `createPlaybackMetronomeClicks` | Workbench und Player |
-| Einzählplan | `createPlaybackCountInPlan` | Workbench und Player |
-| Klick-Klangfarbe | `metronomeSound.ts` | Workbench und Player |
-| Blattvorgabe | `extract.N.playback` / Payload | Workbench und Player |
+| Metronomklicks | `createPlaybackMetronomeClicks` | Workbench und Practice |
+| Einzählplan | `createPlaybackCountInPlan` | Workbench und Practice |
+| Klick-Klangfarbe | `metronomeSound.ts` | Workbench und Practice |
+| Blattvorgabe | `extract.N.playback` / Payload | Workbench und Practice |
 | Part-Fortschreibung | letzter getrimmter nicht-leerer Partname | Timeline/Export/UI |
 
 ### Bewusst verbleibende Sonderfälle
@@ -527,29 +527,29 @@ Diese Regeln sind fachlich begründet und keine versehentlichen Duplikate:
 - `PlaybackFlow` enthält eine Sicherheitsgrenze gegen endlose
   Wiederholungsexpansion. Das ist eine Schutzmaßnahme, keine alternative
   Ablaufberechnung.
-- Der Player liest ältere Payload-Versionen. Das ist Formatkompatibilität,
+- Practice liest ältere Payload-Versionen. Das ist Formatkompatibilität,
   keine zweite aktuelle Fachlogik.
 
 ### Tatsächliche Duplikate / Konsolidierungsrisiken
 
 Diese Stellen sind nicht vollständig vereinheitlicht:
 
-1. **Audio-Scheduling:** Workbench und Player schedulen Noten und Klicks in
+1. **Audio-Scheduling:** Workbench und Practice schedulen Noten und Klicks in
    getrennten Dateien. Der Klickplan ist geteilt, der Audio-Lookahead nicht.
-2. **Positionstraversierung im Player:** Der Player besitzt eigene Hilfen wie
+2. **Positionstraversierung in Practice:** Practice besitzt eigene Hilfen wie
    `positionAtTime`, `partNameAtTime` und Bereichssuche über Marker. Das ist
-   nötig, weil der Player nur den kompakten Link kennt, muss aber bei jeder
+   nötig, weil Practice nur den kompakten Link kennt, muss aber bei jeder
    Änderung der Markersemantik mit der Workbench geprüft werden.
 3. **Metronom-Laufzeitstatus:** `metronomeEnabled`, Modus, Lautstärke und
    Auswahlzustand werden in beiden Anwendungen separat gehalten. Die
    gespeicherte Konfiguration und die Planer sind geteilt, der lokale
    Bedienzustand nicht.
-4. **Visualisierung:** Workbench und Player zeichnen ihren aktuellen Schlag
+4. **Visualisierung:** Workbench und Practice zeichnen ihren aktuellen Schlag
    mit eigenen UI-Komponenten. Sie erhalten jedoch dieselbe semantische
    Klickfolge; die Darstellung ist nicht die Berechnung.
 
 Diese Punkte sind konkrete, begrenzte Adapterduplikate. Eine Behauptung, dass
-Player und Workbench bereits denselben Scheduler-Code verwenden, wäre falsch.
+Practice und Workbench bereits denselben Scheduler-Code verwenden, wäre falsch.
 Die fachliche Timeline- und Metronomduplizierung ist dagegen beseitigt.
 
 ## Invarianten für Änderungen
@@ -565,7 +565,7 @@ Die fachliche Timeline- und Metronomduplizierung ist dagegen beseitigt.
    ABC-Quelle bezogen, auch wenn der Ursprung wiederholt wird.
 7. Ein leerer getrimmter Partname überschreibt keinen zuvor wirksamen Namen.
 8. Taktart und Gruppierung kommen aus dem jeweiligen Markerbereich.
-9. Workbench und Player rufen dieselben Funktionen für Klickplan und
+9. Workbench und Practice rufen dieselben Funktionen für Klickplan und
    Klangklassifikation auf.
 10. Die Blattvorgabe liegt unter `extract.N.playback` und wird unverändert in
     den Playback-Link übernommen.
@@ -594,7 +594,7 @@ Für jede Fixture sollte mindestens verglichen werden:
 - Einzähl-Dauer und Markierung des letzten Klicks vor dem Einsatz,
 - dekodierte Metronomkonfiguration.
 
-Ein Browser-Test kann anschließend prüfen, dass Workbench und Player dieselbe
+Ein Browser-Test kann anschließend prüfen, dass Workbench und Practice dieselbe
 Fixture an denselben Zeitpunkten mit demselben Abschnitt, Takt, Durchlauf und
 Metronomschlag anzeigen. Er prüft damit die Adapter, nicht eine zweite
 fachliche Implementierung.
@@ -605,7 +605,7 @@ Wenn künftig auch die letzten Scheduler-Duplikate entfernt werden sollen,
 sollte der nächste Schritt nicht eine weitere Sonderbehandlung in einer UI
 sein. Stattdessen sollte ein gemeinsames, UI-neutrales Scheduling-Modul
 entstehen, das aus `PlaybackStep[]`, Marker-Spur und Metronomplan eine Folge
-zeitgestempelter Audio- und Visual-Events liefert. Workbench und Player würden
+zeitgestempelter Audio- und Visual-Events liefert. Workbench und Practice würden
 dann nur noch ihre jeweilige Audioausgabe und Darstellung adaptieren.
 
 Das ist eine zukünftige Architekturarbeit. Für den aktuellen Stand gilt:

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Erzeugt Player-QR-ABC-Dateien aus Zupfmanager-Projekten.",
+  "description": "Erzeugt Übungs-QR-ABC-Dateien aus Zupfmanager-Projekten.",
   "bin": {
     "zupfmanager-qr-sheet-generator": "./dist/index.js"
   },

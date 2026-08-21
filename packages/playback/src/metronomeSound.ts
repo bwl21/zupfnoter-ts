@@ -20,7 +20,7 @@ const METRONOME_SOUNDS: Record<PlaybackMetronomeSoundKind, PlaybackMetronomeSoun
   'pre-count': { frequencyHz: 1800, gain: 0.22 },
 }
 
-/** Returns the shared oscillator profile used by Player and Workbench. */
+/** Returns the shared oscillator profile used by Practice and Workbench. */
 export function resolvePlaybackMetronomeSound(kind: PlaybackMetronomeSoundKind): PlaybackMetronomeSound {
   return METRONOME_SOUNDS[kind]
 }

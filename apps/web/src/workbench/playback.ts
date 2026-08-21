@@ -71,7 +71,7 @@ export interface PlaybackResolutionOptions {
 /**
  * Resolve the playback mode from the shared selection state.
  *
- * This keeps the decision logic outside of the view layer so the player,
+ * This keeps the decision logic outside of the view layer so Practice,
  * future worker bridge and any command handlers use the same rule set.
  */
 export function resolvePlaybackMode(selection: SelectionState, index: SheetObjectIndex | undefined, activeExtract: number): PlaybackMode {

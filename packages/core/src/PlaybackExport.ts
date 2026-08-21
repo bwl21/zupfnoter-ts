@@ -83,7 +83,7 @@ function buildPositionMarkers(timeline: readonly PlaybackStep[]): PlaybackExport
   return markers
 }
 
-/** Projects the shared timeline into the compact player export model. */
+/** Projects the shared timeline into the compact Practice export model. */
 export function buildPlaybackExportDataFromTimeline(
   timeline: readonly PlaybackStep[],
   activeVoiceIds?: ReadonlySet<string>,

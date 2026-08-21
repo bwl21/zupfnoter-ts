@@ -77,7 +77,7 @@ Zupfnoter-TS weicht an dieser Stelle bewusst ab:
    sichtbarem Parttext.
 3. Der generische Config-Editor bietet die sichtbaren Markerwerte zur
    Zuordnung an.
-4. Playback, Seitenbeschriftung und Player verwenden dieselbe Zuordnung.
+4. Playback, Seitenbeschriftung und Practice verwenden dieselbe Zuordnung.
 5. Wird ein Part in der konfigurierten Folge erneut abgespielt, wird sein
    `passIndex` erhöht; der vorhandene Zähler aus normalen ABC-Wiederholungen
    bleibt dabei erhalten.

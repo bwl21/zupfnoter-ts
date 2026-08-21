@@ -9,7 +9,7 @@ import {
   positionAtTime,
   resolveRange,
   tempoBpmAtTime,
-} from './playerLogic'
+} from './practiceLogic'
 
 const markers: PlaybackPositionMarker[] = [
   { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },
@@ -22,7 +22,7 @@ const events: PlaybackEvent[] = [
   { startMs: 4000, durationMs: 500, pitch: 62, velocity: 127, position: { measureNumber: 2, passIndex: 1 } },
 ]
 
-describe('player logic', () => {
+describe('practice logic', () => {
   it('resolves the selected start position instead of resetting to the first measure', () => {
     expect(resolveRange(events, markers, '2.1')).toEqual({ range: [1, 1], startMs: 4000 })
   })

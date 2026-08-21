@@ -37,14 +37,14 @@ import {
   extractSongResources,
   inspectSongConfig,
   pdfOutputFilename,
-  PLAYER_QR_IMAGE_NAME,
+  PRACTICE_QR_IMAGE_NAME,
   replaceSongDocumentAbc,
   replaceSongDocumentConfigText,
   replaceSongDocumentResources,
   splitSongDocument,
 } from '@zupfnoter/core'
 import type { PlaybackMetronomeMode, Song, SongResources } from '@zupfnoter/types'
-import { createPlayerQrJpeg } from './playbackLink'
+import { createPracticeQrJpeg } from './playbackLink'
 import type { WorkbenchDiagnostic } from './diagnostics'
 import type { EditorDiagnostic } from './panels/abcEditorCodeMirror'
 import WorkbenchToastStack from './toasts/WorkbenchToastStack.vue'
@@ -355,7 +355,7 @@ const renderError = ref('')
 const renderSummary = ref('not rendered')
 const playbackTimeline = ref<PlaybackStep[]>([])
 const song = ref<Song | undefined>(undefined)
-const playerQrJpegUrl = ref<string | undefined>()
+const practiceQrJpegUrl = ref<string | undefined>()
 const baseTempoFromQ = ref<number | undefined>(undefined)
 const tempoUnitFromQ = ref<number | undefined>(undefined)
 const playbackConfig = ref<import('@zupfnoter/types').PlaybackConfig | undefined>(undefined)
@@ -932,34 +932,34 @@ function applyRenderResult(result: WorkbenchRenderResult): void {
   renderSummary.value = result.summary
   renderError.value = result.renderError ?? ''
   publishHarpMirrorSnapshot()
-  void ensurePlayerQrForRenderedExtract(result)
+  void ensurePracticeQrForRenderedExtract(result)
 }
 
-async function ensurePlayerQrForRenderedExtract(result: WorkbenchRenderResult): Promise<void> {
-  if (playerQrJpegUrl.value !== undefined || !documentText.value.includes(PLAYER_QR_IMAGE_NAME)) return
+async function ensurePracticeQrForRenderedExtract(result: WorkbenchRenderResult): Promise<void> {
+  if (practiceQrJpegUrl.value !== undefined || !documentText.value.includes(PRACTICE_QR_IMAGE_NAME)) return
 
   const sourceDocument = documentText.value
   const sourceExtract = currentExtract.value
-  const playerUrl = new URL('https://zupfnoter-player.csweichel.dev/')
+  const practiceUrl = new URL('https://practice.zupfnoter.de/')
   const identification = resolvePlaybackIdentification()
-  if (identification !== undefined) playerUrl.searchParams.set('id', identification)
+  if (identification !== undefined) practiceUrl.searchParams.set('id', identification)
 
   try {
     const playbackLink = await createPlaybackLinkFromTimeline(
       result.playbackTimeline,
-      playerUrl.toString(),
+      practiceUrl.toString(),
       result.activeVoiceIds.length > 0 ? new Set(result.activeVoiceIds) : undefined,
       10,
       result.baseTempoFromQ,
       result.tempoUnitFromQ,
       result.playbackConfig,
     )
-    const qrJpegUrl = await createPlayerQrJpeg(playbackLink.url)
+    const qrJpegUrl = await createPracticeQrJpeg(playbackLink.url)
     if (documentText.value !== sourceDocument || currentExtract.value !== sourceExtract) return
-    playerQrJpegUrl.value = qrJpegUrl
+    practiceQrJpegUrl.value = qrJpegUrl
     renderNow()
   } catch (error) {
-    logger.error(`player QR render skipped: ${error instanceof Error ? error.message : String(error)}`)
+    logger.error(`practice QR render skipped: ${error instanceof Error ? error.message : String(error)}`)
   }
 }
 
@@ -974,15 +974,15 @@ async function refreshHarpPdfPreview(): Promise<void> {
 
   if (previousUrl !== undefined) URL.revokeObjectURL(previousUrl)
 
-  const playerUrl = new URL('https://zupfnoter-player.csweichel.dev/')
+  const practiceUrl = new URL('https://practice.zupfnoter.de/')
   const identification = resolvePlaybackIdentification()
-  if (identification !== undefined) playerUrl.searchParams.set('id', identification)
+  if (identification !== undefined) practiceUrl.searchParams.set('id', identification)
 
   try {
     const pdf = await renderPdfExport(documentText.value, currentExtract.value, 'A3', {
       resources: documentResources.value,
-      playerQrJpegUrl: playerQrJpegUrl.value,
-      playerUrl: playerUrl.toString(),
+      practiceQrJpegUrl: practiceQrJpegUrl.value,
+      practiceUrl: practiceUrl.toString(),
     })
     if (requestId !== pdfPreviewRequestId) return
     harpPdfPreviewUrl.value = URL.createObjectURL(pdf)
@@ -1003,7 +1003,7 @@ function renderNow(): void {
         id: requestId,
         abcText: documentText.value,
         extractNr: currentExtract.value,
-        playerQrJpegUrl: playerQrJpegUrl.value,
+        practiceQrJpegUrl: practiceQrJpegUrl.value,
         resources: documentResources.value,
         flowconf: flowconfEnabled.value,
       })
@@ -1011,7 +1011,7 @@ function renderNow(): void {
     }
     logger.info(`worker: render extract ${currentExtract.value}`)
     const result = renderWorkbenchPreviews(documentText.value, currentExtract.value, {
-      playerQrJpegUrl: playerQrJpegUrl.value,
+      practiceQrJpegUrl: practiceQrJpegUrl.value,
       resources: documentResources.value,
       flowconf: flowconfEnabled.value,
     })
@@ -1789,12 +1789,12 @@ async function copyTextToClipboard(value: string): Promise<boolean> {
 }
 
 async function exportPlaybackLinkCommand(): Promise<void> {
-  const playerUrl = new URL('https://zupfnoter-player.csweichel.dev/')
+  const practiceUrl = new URL('https://practice.zupfnoter.de/')
   const identification = resolvePlaybackIdentification()
-  if (identification !== undefined) playerUrl.searchParams.set('id', identification)
+  if (identification !== undefined) practiceUrl.searchParams.set('id', identification)
   const result = await createPlaybackLinkFromTimeline(
     playbackTimeline.value,
-    playerUrl.toString(),
+    practiceUrl.toString(),
     activeVoiceIds.value.length > 0 ? new Set(activeVoiceIds.value) : undefined,
     10,
     baseTempoFromQ.value,
@@ -1806,7 +1806,7 @@ async function exportPlaybackLinkCommand(): Promise<void> {
     margin: 4,
     width: 320,
   })
-  playerQrJpegUrl.value = await createPlayerQrJpeg(result.url)
+  practiceQrJpegUrl.value = await createPracticeQrJpeg(result.url)
   renderNow()
   const urlLength = result.url.length
   const qrAssessment = urlLength < 1500
@@ -1919,9 +1919,9 @@ registerStorageCommands(commandStack, storageState, {
   saveArtifacts: async (path, filebase, content) => {
     const adapter = storageProviderRegistry.adapterFor(path, storageConnections.value)
     const extracts = resolvePdfExportVariants(content, currentExtract.value)
-    const playerUrl = new URL('https://zupfnoter-player.csweichel.dev/')
+    const practiceUrl = new URL('https://practice.zupfnoter.de/')
     const identification = resolvePlaybackIdentification()
-    if (identification !== undefined) playerUrl.searchParams.set('id', identification)
+    if (identification !== undefined) practiceUrl.searchParams.set('id', identification)
     const abcName = `${filebase}.abc`
     const htmlName = `${filebase}.html`
     const plans: SaveArtifactPlan[] = [
@@ -1933,13 +1933,13 @@ registerStorageCommands(commandStack, storageState, {
       if (saveFormat.value.includes('A3')) {
         const name = pdfOutputFilename(filebase, suffix, 'A3')
         plans.push({ name, create: async () => renderPdfExport(content, extract.extractNr, 'A3', {
-          playerUrl: playerUrl.toString(),
+          practiceUrl: practiceUrl.toString(),
         }) })
       }
       if (saveFormat.value.includes('A4')) {
         const name = pdfOutputFilename(filebase, suffix, 'A4')
         plans.push({ name, create: async () => renderPdfExport(content, extract.extractNr, 'A4', {
-          playerUrl: playerUrl.toString(),
+          practiceUrl: practiceUrl.toString(),
         }) })
       }
     }
@@ -2218,7 +2218,7 @@ function handleSelectionVoiceScopeChange(voiceScope: 'single-voice' | 'extract-v
 }
 
 watch([documentText, currentExtract], () => {
-  playerQrJpegUrl.value = undefined
+  practiceQrJpegUrl.value = undefined
   playbackStore.markDocumentChanged()
   stopPlayback()
   if (autoRefresh.value === 'off') return
@@ -2421,7 +2421,7 @@ watch(harpPreviewMode, (mode) => {
   if (mode === 'pdf') void refreshHarpPdfPreview()
 })
 
-watch([documentText, currentExtract, playerQrJpegUrl], () => {
+watch([documentText, currentExtract, practiceQrJpegUrl], () => {
   if (harpPreviewMode.value === 'pdf') void refreshHarpPdfPreview()
 })
 

@@ -1,17 +1,17 @@
 import type { PlaybackMeter, PlaybackMetronomeMode, PlaybackPosition } from '@zupfnoter/playback'
-import { renderPlayerIcon } from './icons.js'
+import { renderPracticeIcon } from './icons.js'
 
-export { renderPlayerIcon, type PlayerIconName } from './icons.js'
+export { renderPracticeIcon, type PracticeIconName } from './icons.js'
 
-export type PlayerMetronomeMode = Exclude<PlaybackMetronomeMode, 'off'>
+export type PracticeMetronomeMode = Exclude<PlaybackMetronomeMode, 'off'>
 
-export interface PlayerUiCallbacks {
+export interface PracticeUiCallbacks {
   onScan: () => void
   onRangeChange: (position: PlaybackPosition) => void
   onReset: () => void
   onSpeedChange: (speed: number) => void
   onMetronomeChange: (enabled: boolean) => void
-  onMetronomeModeChange: (mode: PlayerMetronomeMode) => void
+  onMetronomeModeChange: (mode: PracticeMetronomeMode) => void
   onMinLeadInChange: (value: number) => void
   onBandPreCountChange: (enabled: boolean) => void
   onDivisionChange: (value: number) => void
@@ -23,9 +23,9 @@ export interface PlayerUiCallbacks {
   onTakePosition: () => void
 }
 
-export interface PlayerUiOptions {
+export interface PracticeUiOptions {
   container: HTMLElement
-  playerVersion: string
+  practiceVersion: string
   identification?: string
   firstPosition: PlaybackPosition
   firstPartName?: string
@@ -41,10 +41,10 @@ export interface PlayerUiOptions {
   baseTempoBpm?: number
   metronomeEnabled?: boolean
   metronomeMode?: PlaybackMetronomeMode
-  callbacks: PlayerUiCallbacks
+  callbacks: PracticeUiCallbacks
 }
 
-export interface PlayerUiController {
+export interface PracticeUiController {
   setLoading(loading: boolean): void
   setRangeEnabled(enabled: boolean): void
   setSpeedEnabled(enabled: boolean): void
@@ -122,24 +122,24 @@ function renderBeatStatus(status: HTMLOutputElement, meter: PlaybackMeter | unde
   status.innerHTML = `<span class="metronome-beats" aria-hidden="true">${beatDots}</span><span class="metronome-count">${beat}</span><span>${meter.numerator}/${meter.denominator}</span>`
 }
 
-export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
+export function mountPracticeUi(options: PracticeUiOptions): PracticeUiController {
   const { container, callbacks } = options
   const first = formatPosition(options.firstPosition, options.firstPartName)
-  const initialMetronomeMode: PlayerMetronomeMode = options.metronomeMode === 'countIn'
+  const initialMetronomeMode: PracticeMetronomeMode = options.metronomeMode === 'countIn'
     || options.metronomeMode === 'playback'
     || options.metronomeMode === 'always'
     ? options.metronomeMode
     : 'always'
   container.innerHTML = `
     <section class="card">
-      <div class="player-title-row">
-        <h1>Zupfnoter Übung</h1>
-        <button id="scan-button" class="scan-button" type="button" aria-label="Player-QR-Code scannen">
-          ${renderPlayerIcon('scan', 'player-icon scan-button__icon')}
+      <div class="practice-title-row">
+        <h1>Zupfnoter Practice</h1>
+        <button id="scan-button" class="scan-button" type="button" aria-label="Übungs-QR-Code scannen">
+          ${renderPracticeIcon('scan', 'practice-icon scan-button__icon')}
           <span>Scan</span>
         </button>
       </div>
-      <p class="player-version">Player v${escapeHtml(options.playerVersion)}</p>
+      <p class="practice-version">Practice v${escapeHtml(options.practiceVersion)}</p>
       ${options.identification === undefined ? '' : `<p class="identification" aria-label="Stücknummer">${escapeHtml(options.identification)}</p>`}
       <form id="range-form" class="range-form">
         <fieldset class="range-fieldset">
@@ -154,9 +154,9 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       <p id="loading-indicator" class="loading-indicator" role="status" aria-live="polite" hidden><span class="spinner" aria-hidden="true"></span> Harfenklang wird geladen …</p>
       <div class="speed-control" aria-label="Wiedergabegeschwindigkeit">
         <span class="speed-control__label">BPM:</span>
-        <button id="speed-decrease" type="button" aria-label="5 BPM langsamer">${renderPlayerIcon('decrease')}</button>
+        <button id="speed-decrease" type="button" aria-label="5 BPM langsamer">${renderPracticeIcon('decrease')}</button>
         <input id="speed-input" type="number" min="1" max="999" step="1" value="${Math.round(options.baseTempoBpm ?? 120)}" inputmode="numeric" aria-label="Geschwindigkeit in BPM">
-        <button id="speed-increase" type="button" aria-label="5 BPM schneller">${renderPlayerIcon('increase')}</button>
+        <button id="speed-increase" type="button" aria-label="5 BPM schneller">${renderPracticeIcon('increase')}</button>
       </div>
       <div class="metronome-row" aria-label="Metronom">
         <label class="metronome-control" for="metronome-toggle">
@@ -164,13 +164,13 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
           <span class="metronome-control__switch"><input id="metronome-toggle" type="checkbox" ${options.metronomeEnabled === true ? 'checked ' : ''}${options.hasMetronomeData ? '' : 'disabled'}><span class="metronome-switch" aria-hidden="true"></span></span>
         </label>
         <output id="metronome-status" class="metronome-status" aria-live="polite">${options.hasMetronomeData ? '<span class="metronome-beat" aria-hidden="true"></span><span>—</span><span>—</span>' : 'Metronomdaten fehlen in diesem Link'}</output>
-        <button id="metronome-settings-toggle" class="metronome-settings-toggle" type="button" aria-label="Metronom-Einstellungen" aria-controls="metronome-settings" aria-expanded="false" ${options.hasMetronomeData ? '' : 'disabled'}>${renderPlayerIcon('settings')}</button>
+        <button id="metronome-settings-toggle" class="metronome-settings-toggle" type="button" aria-label="Metronom-Einstellungen" aria-controls="metronome-settings" aria-expanded="false" ${options.hasMetronomeData ? '' : 'disabled'}>${renderPracticeIcon('settings')}</button>
       </div>
       <div id="metronome-settings-overlay" class="metronome-settings-overlay" hidden>
         <section id="metronome-settings" class="metronome-settings" role="dialog" aria-modal="true" aria-labelledby="metronome-settings-title">
           <header class="metronome-settings__header">
             <h2 id="metronome-settings-title">Metronom-Einstellungen</h2>
-            <button id="metronome-settings-close" class="metronome-settings__close" type="button" aria-label="Metronom-Einstellungen schließen">${renderPlayerIcon('close')}</button>
+            <button id="metronome-settings-close" class="metronome-settings__close" type="button" aria-label="Metronom-Einstellungen schließen">${renderPracticeIcon('close')}</button>
           </header>
           <label class="metronome-mode">
             <span>Modus</span>
@@ -195,12 +195,12 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
       <section class="transport" aria-label="Wiedergabe">
         <div class="position-row">
           <output id="current-position" class="position" aria-label="${escapeHtml(first.label)}">${first.html}</output>
-          <button id="take-position-button" class="take-position" type="button" title="Position übernehmen" aria-label="Position übernehmen">${renderPlayerIcon('takePosition', 'player-icon take-position__icon')}</button>
+          <button id="take-position-button" class="take-position" type="button" title="Position übernehmen" aria-label="Position übernehmen">${renderPracticeIcon('takePosition', 'practice-icon take-position__icon')}</button>
         </div>
         <p id="playback-time" class="playback-time">0:00</p>
         <div class="transport-buttons">
-          <button id="play-pause-button" type="button" aria-label="Wiedergabe starten">${renderPlayerIcon('play')}</button>
-          <button id="stop-button" type="button" aria-label="Wiedergabe stoppen">${renderPlayerIcon('stop')}</button>
+          <button id="play-pause-button" type="button" aria-label="Wiedergabe starten">${renderPracticeIcon('play')}</button>
+          <button id="stop-button" type="button" aria-label="Wiedergabe stoppen">${renderPracticeIcon('stop')}</button>
         </div>
       </section>
     </section>`
@@ -364,7 +364,7 @@ export function mountPlayerUi(options: PlayerUiOptions): PlayerUiController {
     setPlaying(nextPlaying) {
       playing = nextPlaying
       if (playPauseButton !== null) {
-        playPauseButton.innerHTML = renderPlayerIcon(nextPlaying ? 'pause' : 'play')
+        playPauseButton.innerHTML = renderPracticeIcon(nextPlaying ? 'pause' : 'play')
         playPauseButton.setAttribute('aria-label', nextPlaying ? 'Wiedergabe pausieren' : 'Wiedergabe starten')
       }
     },

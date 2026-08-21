@@ -8,7 +8,7 @@ import {
   buildPlaybackExportDataFromTimeline,
 } from '../../PlaybackExport.js'
 import { buildPlaybackTimeline } from '../../PlaybackTimeline.js'
-import { createPlayerQrJpeg } from '../../playerQr.js'
+import { createPracticeQrJpeg } from '../../practiceQr.js'
 import { defaultTestConfig } from '../defaultConfig.js'
 import { loadFixture } from '../fixtureLoader.js'
 
@@ -164,8 +164,8 @@ z2 G2 | C8 | B2 c2 :|
     })
   })
 
-  it('erzeugt ein decodierbares JPG für den Player-Link', () => {
-    const bytes = createPlayerQrJpeg('https://zupfnoter-player.example/#p=test')
+  it('erzeugt ein decodierbares JPG für den Übungslink', () => {
+    const bytes = createPracticeQrJpeg('https://practice.example/#p=test')
     const image = jpeg.decode(bytes)
 
     expect(bytes[0]).toBe(0xff)

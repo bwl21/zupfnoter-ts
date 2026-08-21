@@ -70,9 +70,9 @@ pnpm lint
 `pnpm dev:web` startet `@zupfnoter/web`.
 `pnpm dev:all` startet beide Apps parallel.
 
-### Produktions-Deployment des Players
+### Produktions-Deployment von Practice
 
-Der produktive Webserver oder CDN muss die Cache-Regeln für den Player so
+Der produktive Webserver oder CDN muss die Cache-Regeln für Practice so
 setzen, dass `index.html` bei jedem Start revalidiert wird:
 
 ```http
@@ -88,7 +88,7 @@ können deshalb dauerhaft gecacht werden. `index.html` darf dagegen nicht
 dauerhaft aus dem Cache eines eingebetteten iOS-Browsers kommen, weil sie auf
 die jeweils aktuelle Bundle-Datei verweist. Beim Deployment ist zusätzlich
 eine Invalidierung des CDN-Caches für `index.html` erforderlich, sofern der
-Hoster dies nicht automatisch erledigt. Die Player-URLs und bereits erzeugten
+Hoster dies nicht automatisch erledigt. Die Practice-URLs und bereits erzeugten
 QR-Codes bleiben dadurch stabil.
 
 Für Fixture- und Legacy-Vergleichsarbeit:

@@ -16,9 +16,9 @@ import {
   HarpnotesLayout,
   PdfEngine,
   SvgEngine,
-  PLAYER_QR_IMAGE_NAME,
+  PRACTICE_QR_IMAGE_NAME,
   buildPlaybackExportData,
-  createPlayerQrJpeg,
+  createPracticeQrJpeg,
   extractSongConfig,
   extractSongFilebase,
   extractSongResources,
@@ -194,8 +194,8 @@ function printUsage(): void {
   log('  zupfnoter --export-fixtures <sourcepattern> <targetfolder> [config.json]')
   log('  zupfnoter --command "view 2"')
   log('  zupfnoter --repl')
-  log('  zupfnoter playback-link --events timeline.json --player-url https://play.zupfnoter.de/')
-  log('  zupfnoter <sourcepattern> <targetfolder> [config.json] [--player-url <url>] [--format A3|A4|A3-A4]')
+  log('  zupfnoter playback-link --events timeline.json --practice-url https://practice.zupfnoter.de/')
+  log('  zupfnoter <sourcepattern> <targetfolder> [config.json] [--practice-url <url>] [--format A3|A4|A3-A4]')
 }
 
 function parseOption(args: readonly string[], name: string): string | undefined {
@@ -218,8 +218,8 @@ function isPlaybackEvent(value: unknown): value is PlaybackEvent {
 
 async function runPlaybackLink(args: string[]): Promise<number> {
   const eventsFile = parseOption(args, '--events')
-  const playerUrl = parseOption(args, '--player-url')
-  if (eventsFile === undefined || playerUrl === undefined) {
+  const practiceUrl = parseOption(args, '--practice-url') ?? parseOption(args, '--player-url')
+  if (eventsFile === undefined || practiceUrl === undefined) {
     printUsage()
     return 1
   }
@@ -228,7 +228,7 @@ async function runPlaybackLink(args: string[]): Promise<number> {
   if (!Array.isArray(parsed) || !parsed.every(isPlaybackEvent)) {
     throw new Error('timeline.json muss ein Array von Playback-Ereignissen enthalten')
   }
-  const result = await exportPlaybackLink(parsed, { playerUrl }, nodePlaybackCodec)
+  const result = await exportPlaybackLink(parsed, { playerUrl: practiceUrl }, nodePlaybackCodec)
   const outputFile = parseOption(args, '--output')
   if (outputFile === undefined) {
     log(result.url)
@@ -302,14 +302,14 @@ function extractFilenamePart(config: ReturnType<typeof mergeSongConfig>, extract
   return extract?.filenamepart?.trim() || extract?.title?.trim() || String(extractNr)
 }
 
-function containsPlayerQr(config: ReturnType<typeof mergeSongConfig>): boolean {
-  return JSON.stringify(config).includes(PLAYER_QR_IMAGE_NAME)
+function containsPracticeQr(config: ReturnType<typeof mergeSongConfig>): boolean {
+  return JSON.stringify(config).includes(PRACTICE_QR_IMAGE_NAME)
 }
 
 async function renderBatchFile(
   inputFile: string,
   targetFolder: string,
-  playerUrl: string | undefined,
+  practiceUrl: string | undefined,
   format: 'A3' | 'A4' | 'A3-A4',
 ): Promise<void> {
   const abcText = await readFile(inputFile, 'utf8')
@@ -324,9 +324,9 @@ async function renderBatchFile(
   for (const extractNr of resolveBatchExtracts(config)) {
     const filenamePart = extractFilenamePart(config, extractNr)
     let sheet = new HarpnotesLayout(config).layout(song, extractNr, formats[0] ?? 'A3')
-    let playerLink: string | undefined
+    let practiceLink: string | undefined
 
-    if (containsPlayerQr(config) && playerUrl !== undefined) {
+    if (containsPracticeQr(config) && practiceUrl !== undefined) {
       const exportData = buildPlaybackExportData(song, sheet.activeVoices)
       const events: PlaybackEvent[] = exportData.events.map((event) => ({
         startMs: event.startMs,
@@ -336,17 +336,17 @@ async function renderBatchFile(
         position: event.position,
       }))
       const link = await exportPlaybackLink(events, {
-        playerUrl,
+        playerUrl: practiceUrl,
         positionMarkers: exportData.positionMarkers,
       }, nodePlaybackCodec)
-      playerLink = link.url
-    } else if (containsPlayerQr(config)) {
-      log(`${inputFile}: $player_qr übersprungen, --player-url fehlt`)
+      practiceLink = link.url
+    } else if (containsPracticeQr(config)) {
+      log(`${inputFile}: $player_qr übersprungen, --practice-url fehlt`)
     }
 
     for (const pageFormat of formats) {
       const imageResolver = (imageName: string): string | undefined => {
-        if (imageName === PLAYER_QR_IMAGE_NAME && playerLink !== undefined) return dataUrlFromJpeg(createPlayerQrJpeg(playerLink))
+        if (imageName === PRACTICE_QR_IMAGE_NAME && practiceLink !== undefined) return dataUrlFromJpeg(createPracticeQrJpeg(practiceLink))
         return resources[imageName]?.join('')
       }
       sheet = new HarpnotesLayout(config, { imageResolver }).layout(song, extractNr, pageFormat)
@@ -381,7 +381,7 @@ async function runLegacyBatch(args: string[]): Promise<number> {
     return 1
   }
 
-  const playerUrl = parseOption(args, '--player-url')
+  const practiceUrl = parseOption(args, '--practice-url') ?? parseOption(args, '--player-url')
   const requestedFormat = parseOption(args, '--format') ?? 'A3-A4'
   if (requestedFormat !== 'A3' && requestedFormat !== 'A4' && requestedFormat !== 'A3-A4') {
     throw new Error(`Ungültiges Batch-Format: ${requestedFormat}`)
@@ -400,7 +400,7 @@ async function runLegacyBatch(args: string[]): Promise<number> {
     log('fixture export mode requested')
   }
   for (const file of files) {
-    await renderBatchFile(file, targetfolder, playerUrl, requestedFormat)
+    await renderBatchFile(file, targetfolder, practiceUrl, requestedFormat)
     log(`rendered ${file}`)
   }
   return 0

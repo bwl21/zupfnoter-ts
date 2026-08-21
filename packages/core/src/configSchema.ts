@@ -599,7 +599,7 @@ const IMAGE_ENTRY_SCHEMA: JsonSchemaNode = {
           {
             value: '$player_qr',
             label: 'Übungs-QR-Code',
-            description: 'Erzeugt beim SVG- oder PDF-Export einen JPG-QR-Code für den aktuellen Player-Link.',
+            description: 'Erzeugt beim SVG- oder PDF-Export einen JPG-QR-Code für den aktuellen Übungslink.',
           },
         ],
       },

@@ -8,9 +8,11 @@
     "commit:gap": "node tools/commit-gap.mjs",
     "dev": "pnpm --filter @zupfnoter/demo dev",
     "dev:web": "pnpm --filter @zupfnoter/web dev",
-    "dev:player": "pnpm --filter @zupfnoter/player dev",
+    "dev:practice": "pnpm --filter @zupfnoter/practice dev",
+    "dev:player": "pnpm dev:practice",
     "deploy:flink:web": "pnpm --filter @zupfnoter/web build && node tools/flink-deploy.mjs web",
-    "deploy:flink:player": "pnpm --filter @zupfnoter/player build && node tools/flink-deploy.mjs player",
+    "deploy:flink:player": "pnpm deploy:practice:flink",
+    "deploy:practice:flink": "pnpm --filter @zupfnoter/practice build && node tools/flink-deploy.mjs practice",
     "storybook": "pnpm --filter @zupfnoter/storybook storybook",
     "build-storybook": "pnpm --filter @zupfnoter/storybook build-storybook",
     "serve:web": "pnpm --filter @zupfnoter/web run servedeploy",
@@ -48,7 +50,8 @@
     "format": "pnpm -r run format",
     "sync:conf-help": "node tools/generate-config-docs.mjs",
     "generate:config-docs": "node tools/generate-config-docs.mjs",
-    "generate:project-player-qr": "pnpm --filter @zupfnoter/zupfmanager-qr-sheet-generator generate --",
+    "generate:project-practice-qr": "pnpm --filter @zupfnoter/zupfmanager-qr-sheet-generator generate --",
+    "generate:project-player-qr": "pnpm generate:project-practice-qr --",
     "test:config-docs": "node --test tools/config-help-documentation.test.mjs"
   },
   "devDependencies": {

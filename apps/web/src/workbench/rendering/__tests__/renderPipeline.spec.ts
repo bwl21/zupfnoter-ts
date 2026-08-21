@@ -214,7 +214,7 @@ C, D, | E, F, |`
     expect(result.harpSvg).toMatch(/created \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} by Zupfnoter-TS/)
   })
 
-  it('resolves the reserved player QR image through the normal image configuration', () => {
+  it('resolves the reserved practice QR image through the normal image configuration', () => {
     const result = renderWorkbenchPreviews(`X:1
 F:qr-test
 T:QR
@@ -230,7 +230,7 @@ C
       }
     }
   }
-}`, 0, { playerQrJpegUrl: 'data:image/jpeg;base64,qr-test' })
+}`, 0, { practiceQrJpegUrl: 'data:image/jpeg;base64,qr-test' })
 
     expect(result.harpSvg).toContain('data:image/jpeg;base64,qr-test')
     expect(result.harpSvg).toContain('zupfnoter-shape--image')

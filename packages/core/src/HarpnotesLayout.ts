@@ -45,7 +45,7 @@ import { buildPrintOptions } from './buildConfstack.js'
 import { computeBeatCompression, type BeatCompressionMap } from './BeatPacker.js'
 import type { Confstack } from './Confstack.js'
 import { requireDefined } from './requireDefined.js'
-import { isPlayerQrImageName } from './imageResources.js'
+import { isPracticeQrImageName } from './imageResources.js'
 import { getSongVoiceByVoiceNumber } from './voiceIdentity.js'
 import {
   createDefaultAnnotationTextMetrics,
@@ -2580,7 +2580,7 @@ export class HarpnotesLayout {
       const img = entry as { show?: boolean; imagename?: string; pos?: [number, number]; height?: number }
       if (!img.show || !img.imagename || !img.pos || !img.height) continue
       const imageUrl = this._imageResolver?.(img.imagename)
-        ?? (isPlayerQrImageName(img.imagename) ? undefined : img.imagename)
+        ?? (isPracticeQrImageName(img.imagename) ? undefined : img.imagename)
       if (imageUrl === undefined) continue
 
       result.push({

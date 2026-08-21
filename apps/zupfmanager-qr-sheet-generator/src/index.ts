@@ -18,14 +18,14 @@ import {
   extractSongConfig,
   initConf,
   mergeSongConfig,
-  playerQrJpegDataUrl,
+  practiceQrJpegDataUrl,
 } from '@zupfnoter/core'
 import { exportPlaybackLink, type PlaybackCompressionCodec, type PlaybackEvent } from '@zupfnoter/playback'
 
 const execFile = promisify(execFileCallback)
 const deflateRawAsync = promisify(deflateRaw)
 const DEFAULT_DATABASE = '/Users/beweiche/beweiche_noTimeMachine/200_Zupfnotenprojekte/11_Zupfmanager/zupfmanager.db'
-const DEFAULT_PLAYER_URL = 'https://zupfnoter-player.csweichel.dev/'
+const DEFAULT_PRACTICE_URL = 'https://practice.zupfnoter.de/'
 const DEFAULT_PER_PAGE = 35
 
 interface Project {
@@ -45,7 +45,7 @@ interface Options {
   database: string
   project: string
   output?: string
-  playerUrl: string
+  practiceUrl: string
   abcRoot?: string
   perPage: number
 }
@@ -84,7 +84,7 @@ function option(args: string[], name: string): string | undefined {
 function showHelp(): void {
   console.log(`Zupfmanager QR Sheet Generator
 
-Erzeugt aus einem Zupfmanager-Projekt Player-QR-ABC-Dateien.
+Erzeugt aus einem Zupfmanager-Projekt Übungs-QR-ABC-Dateien.
 
 Aufruf:
   zupfmanager-qr-sheet-generator --project <id|kurzname> [Optionen]
@@ -93,8 +93,8 @@ Optionen:
   --project <id|kurzname>  Projekt aus der Datenbank
   --database <pfad>        Pfad zu zupfmanager.db
   --abc-root <pfad>        Optionaler Vorrang für ABC-Dateien
-  --output <pfad>          Ausgabebasis; standardmäßig <projekt>/player-qr/<projekt>_player-qr.abc
-  --player-url <url>       Player-Basis-URL
+  --output <pfad>          Ausgabebasis; standardmäßig <projekt>/practice-qr/<projekt>_practice-qr.abc
+  --practice-url <url>     Practice-Basis-URL
   --per-page <zahl>        Maximale QR-Anzahl pro Blatt (1–35)
   --help                   Diese Hilfe anzeigen
 `)
@@ -115,7 +115,7 @@ function parseOptions(args: string[]): Options {
     output: option(args, '--output') === undefined
       ? undefined
       : resolve(option(args, '--output') as string),
-    playerUrl: option(args, '--player-url') ?? DEFAULT_PLAYER_URL,
+    practiceUrl: option(args, '--practice-url') ?? option(args, '--player-url') ?? DEFAULT_PRACTICE_URL,
     abcRoot: option(args, '--abc-root'),
     perPage,
   }
@@ -187,7 +187,7 @@ function extractLabel(config: ReturnType<typeof mergeSongConfig>, extractNr: num
 async function makeQrEntries(
   number: number,
   abcFile: string,
-  playerUrl: string,
+  practiceUrl: string,
 ): Promise<QrEntry[]> {
   const abcText = await readFile(abcFile, 'utf8')
   const config = mergeSongConfig(initConf(new Confstack()), extractSongConfig(abcText))
@@ -216,7 +216,7 @@ async function makeQrEntries(
       subdivision?: number
     } | undefined
     const link = await exportPlaybackLink(events, {
-      playerUrl,
+      playerUrl: practiceUrl,
       positionMarkers: exportData.positionMarkers,
       tempoBpm,
       tempoUnit,
@@ -229,12 +229,12 @@ async function makeQrEntries(
       },
     }, nodePlaybackCodec)
     const label = String(number).padStart(3, '0') + '-' + extractLabel(config, extractNr)
-    const playerLink = new URL(link.url)
-    playerLink.searchParams.set('id', label)
+    const practiceLink = new URL(link.url)
+    practiceLink.searchParams.set('id', label)
     entries.push({
       label,
-      imageName: 'player_qr_' + label.replace(/[^a-zA-Z0-9_-]/g, '_'),
-      imageDataUrl: playerQrJpegDataUrl(playerLink.toString()),
+      imageName: 'practice_qr_' + label.replace(/[^a-zA-Z0-9_-]/g, '_'),
+      imageDataUrl: practiceQrJpegDataUrl(practiceLink.toString()),
     })
   }
   return entries
@@ -332,7 +332,7 @@ function createAbc(project: Project, group: QrGroup['suffix'], entries: QrEntry[
   }
   return [
     'X:999',
-    'F:' + project.short_name + '_player_qr_' + group,
+    'F:' + project.short_name + '_practice_qr_' + group,
     'T:' + project.title,
     'M:4/4',
     'L:1/4',
@@ -369,8 +369,8 @@ async function main(): Promise<void> {
   const output = options.output ?? resolve(
     dirname(options.database),
     project.short_name,
-    'player-qr',
-    project.short_name + '_player-qr.abc',
+    'practice-qr',
+    project.short_name + '_practice-qr.abc',
   )
   const songs = await loadPriorityOneSongs(options.database, project.id)
   if (songs.length === 0) throw new Error('Das Projekt enthält keine priority-1-Stücke.')
@@ -381,7 +381,7 @@ async function main(): Promise<void> {
   for (const [index, song] of songs.entries()) {
     const abcFile = await resolveAbcFile(project, song.filename, options)
     console.log((index + 1) + '/' + songs.length + ': ' + song.title + ' [' + abcFile + ']')
-    entries.push(...await makeQrEntries(index + 1, abcFile, options.playerUrl))
+    entries.push(...await makeQrEntries(index + 1, abcFile, options.practiceUrl))
   }
 
   const groups = splitQrGroups(entries)

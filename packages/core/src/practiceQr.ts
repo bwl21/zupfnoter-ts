@@ -53,8 +53,8 @@ function createCanvasJpeg(
   return separator < 0 ? undefined : decodeBase64(dataUrl.slice(separator + 1))
 }
 
-/** Erzeugt die QR-Pixel für einen Player-Link mit ausreichender Quiet Zone. */
-export function createPlayerQrJpeg(playbackUrl: string): Uint8Array {
+/** Erzeugt die QR-Pixel für einen Übungslink mit ausreichender Quiet Zone. */
+export function createPracticeQrJpeg(playbackUrl: string): Uint8Array {
   const qr = QRCode.create(playbackUrl, { errorCorrectionLevel: 'L' })
   const marginModules = 4
   const scale = 8
@@ -86,9 +86,9 @@ export function createPlayerQrJpeg(playbackUrl: string): Uint8Array {
   }, 92).data)
 }
 
-/** Wandelt einen erzeugten Player-QR in die für SVG/PDF benötigte Daten-URL um. */
-export function playerQrJpegDataUrl(playbackUrl: string): string {
-  const bytes = createPlayerQrJpeg(playbackUrl)
+/** Wandelt einen erzeugten Übungs-QR in die für SVG/PDF benötigte Daten-URL um. */
+export function practiceQrJpegDataUrl(playbackUrl: string): string {
+  const bytes = createPracticeQrJpeg(playbackUrl)
   let base64 = ''
   for (let index = 0; index < bytes.length; index += 3) {
     const first = bytes[index] ?? 0
@@ -101,3 +101,9 @@ export function playerQrJpegDataUrl(playbackUrl: string): string {
   }
   return `data:image/jpeg;base64,${base64}`
 }
+
+/** @deprecated Verwende createPracticeQrJpeg. */
+export const createPlayerQrJpeg = createPracticeQrJpeg
+
+/** @deprecated Verwende practiceQrJpegDataUrl. */
+export const playerQrJpegDataUrl = practiceQrJpegDataUrl
