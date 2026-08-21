@@ -1,4 +1,4 @@
-# Flink-Deploy für `apps/web`
+# Deployment von Zupfnoter und Practice
 
 ## Ziel
 
@@ -83,18 +83,19 @@ Der Weg ist aktuell noch nicht „ein Prompt, ein Deploy“, weil mehrere Dinge 
 - Der Site-Name wurde für diesen Deploy manuell gewählt.
 - Die Site war nach dem ersten Publish auf `owner`-Schutz gesetzt, also nicht öffentlich frei zugänglich.
 
-## Playback-Player
+## Practice auf Flink
 
-Der eigenständige Player wird aus `apps/player/dist` als eigene owner-only Site
+Die eigenständige Practice-App wird aus `apps/practice/dist` als eigene Site
 veröffentlicht:
 
 ```bash
-pnpm --filter @zupfnoter/player build
-cd apps/player
+pnpm --filter @zupfnoter/practice build
+cd apps/practice
 flink publish dist --public
 ```
 
-Die aktuelle Site ist:
+Die bestehende Flink-Site bleibt unter ihrer bisherigen Adresse erreichbar,
+damit bereits erzeugte QR-Codes weiterhin funktionieren:
 
 ```text
 https://zupfnoter-player.csweichel.dev/
@@ -104,7 +105,7 @@ Die Flink-Konfiguration liegt pro deploybarer App unter `.flink/site.json`:
 
 ```text
 apps/web/.flink/site.json
-apps/player/.flink/site.json
+apps/practice/.flink/site.json
 ```
 
 Der Publish wird aus dem jeweiligen App-Verzeichnis ausgeführt. Dadurch kann die
@@ -114,12 +115,73 @@ Vom Repository-Root stehen dafür Kurzbefehle zur Verfügung:
 
 ```bash
 pnpm deploy:flink:web
+pnpm deploy:web:flink
 pnpm deploy:flink:player
+pnpm deploy:zupfnoter:flink
+pnpm deploy:practice:flink
 ```
 
 Das gemeinsame Script liest die passende App-Konfiguration und die Zugangsdaten
 aus der Root-`.env`. Das Flink-CLI wird über `FLINK_BIN`, `.flink/bin/flink` oder
-den `PATH` gefunden.
+den `PATH` gefunden. Die app-zuerst benannten Befehle sind die kanonischen
+Produktbefehle; `deploy:flink:web` und `deploy:flink:player` bleiben als
+kompatible technische Aliase bestehen.
+
+## Produktive Deployments auf zupfnoter.de über SSH
+
+Die produktiven Apps verwenden dieselben Builds wie andere Plattformen und
+werden über eine feste Zuordnung unter `web/zupfnoter/` veröffentlicht:
+
+```text
+apps/web      → web/zupfnoter/znts/
+apps/practice → web/zupfnoter/practice/
+```
+
+Der aktuelle Hoster ist WebhostOne; der Name des Deployment-Ziels bleibt davon
+unabhängig. Die app-zuerst benannten Befehle lauten:
+
+```bash
+pnpm deploy:web:zupfnoter.de:check
+pnpm deploy:web:zupfnoter.de
+pnpm deploy:practice:zupfnoter.de:check
+pnpm deploy:practice:zupfnoter.de
+```
+
+Der erste Befehl prüft nur die schlüsselbasierte SSH-Verbindung und zeigt das
+Startverzeichnis des eingeschränkten Zugangs. Er verändert keine Serverdateien.
+
+Der SSH-Benutzer startet im virtuellen Verzeichnis `/home`; der öffentlich
+erreichbare Webspace liegt darunter in `web/zupfnoter/`. Deshalb wird kein
+absoluter Serverpfad benötigt. Das Script akzeptiert keinen frei wählbaren
+Zielpfad, sondern ausschließlich die im Code hinterlegten App-Zuordnungen.
+Diese Begrenzung schützt vor Bedienfehlern, ersetzt aber keine serverseitige
+Einschränkung des Deployment-Benutzers auf `/home/web/zupfnoter`.
+
+Die lokale Root-`.env` enthält:
+
+```dotenv
+ZUPFNOTER_DE_DEPLOY_HOST=server.example.org
+ZUPFNOTER_DE_DEPLOY_USER=deploy-zupfnoter
+ZUPFNOTER_DE_DEPLOY_PORT=22
+PRACTICE_PUBLIC_URL=https://practice.zupfnoter.de/
+ZUPFNOTER_WEB_PUBLIC_URL=https://znts.zupfnoter.de/
+```
+
+Optional kann mit `ZUPFNOTER_DE_DEPLOY_IDENTITY_FILE` ein privater SSH-Schlüssel
+ausgewählt werden. Ohne diese Variable verwendet das Script, sofern vorhanden,
+`~/.ssh/id_ed25519_zupfnoter_deploy`; andernfalls greift die normale
+SSH-Konfiguration. Passwörter und private Schlüssel gehören nicht in die
+`.env`.
+
+Vor dem ersten Deployment muss der vom Server gemeldete SSH-Fingerprint beim
+Hoster bestätigt werden. Das Prüf- und Deployment-Script umgeht eine
+Fingerprint-Warnung nicht und verändert `known_hosts` nicht automatisch.
+
+Jedes Deployment überträgt zunächst alle neuen Assets, danach `index.html` und
+entfernt erst abschließend veraltete Dateien. Die mitgebaute Apache-Konfiguration
+erzwingt Revalidierung für `index.html` und erlaubt langfristiges Caching der
+gehashten Dateien unter `assets/`. Für `apps/web` leitet sie zusätzlich
+Vue-Routen wie `/compare` auf `index.html` zurück.
 
 ## Was Flink verbessern muss
 
