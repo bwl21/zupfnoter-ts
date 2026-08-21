@@ -66,6 +66,7 @@ export interface GitServiceOptions {
 /** Local-only Git operations backed by the same workspace files as Zupfnoter. */
 export function createGitService(workspace: WorkspaceFileSystem, options: GitServiceOptions = {}): GitService {
   const fs = createIsomorphicGitFs(workspace)
+  const cache: Record<string, unknown> = {}
   const author = options.author ?? { name: 'Zupfnoter', email: 'zupfnoter@localhost' }
   const defaultBranch = options.defaultBranch ?? 'main'
 
@@ -141,7 +142,7 @@ export function createGitService(workspace: WorkspaceFileSystem, options: GitSer
     },
     async log(logOptions = {}): Promise<GitCommit[]> {
       await requireRepository(workspace, fs)
-      const entries = await git.log({ fs, dir: WORKTREE, gitdir: GITDIR, depth: logOptions.depth ?? 50, ref: logOptions.ref })
+      const entries = await git.log({ fs, dir: WORKTREE, gitdir: GITDIR, depth: logOptions.depth ?? 50, ref: logOptions.ref, cache })
       const tagsByCommit = await loadTagsByCommit(fs)
       return entries.map((entry) => toGitCommit(entry, tagsByCommit.get(entry.oid) ?? []))
     },
@@ -149,30 +150,24 @@ export function createGitService(workspace: WorkspaceFileSystem, options: GitSer
       await requireRepository(workspace, fs)
       const normalizedPath = path.replace(/^\/+/, '').replace(/\\/g, '/')
       if (normalizedPath === '' || normalizedPath.startsWith('.git/')) return []
-
-      let oid: string
       try {
-        oid = await resolveRevision(fs, logOptions.ref ?? 'HEAD')
+        const entries = await git.log({
+          fs,
+          dir: WORKTREE,
+          gitdir: GITDIR,
+          filepath: normalizedPath,
+          ref: logOptions.ref,
+          depth: logOptions.depth ?? 50,
+          follow: true,
+          force: true,
+          cache,
+        })
+        const tagsByCommit = await loadTagsByCommit(fs)
+        return entries.map((entry) => toGitCommit(entry, tagsByCommit.get(entry.oid) ?? []))
       } catch (error) {
         if (isMissingGitObjectError(error)) return []
         throw error
       }
-
-      const history: GitCommit[] = []
-      const maxDepth = Math.max(1, logOptions.depth ?? 50)
-      const tagsByCommit = await loadTagsByCommit(fs)
-      for (let index = 0; index < maxDepth; index += 1) {
-        const entry = await git.readCommit({ fs, dir: WORKTREE, gitdir: GITDIR, oid })
-        const parent = entry.commit.parent[0]
-        const [currentBlobOid, parentBlobOid] = await Promise.all([
-          readBlobOidAtRevision(fs, oid, normalizedPath),
-          parent === undefined ? Promise.resolve(undefined) : readBlobOidAtRevision(fs, parent, normalizedPath),
-        ])
-        if (currentBlobOid !== parentBlobOid) history.push(toGitCommit(entry, tagsByCommit.get(entry.oid) ?? []))
-        if (parent === undefined) break
-        oid = parent
-      }
-      return history
     },
     async filesChangedInCommit(revision: string): Promise<GitCommitFile[]> {
       await requireRepository(workspace, fs)
@@ -249,15 +244,6 @@ async function resolveRevision(fs: FsClient, revision: string): Promise<string> 
     return await git.resolveRef({ fs, dir: WORKTREE, gitdir: GITDIR, ref: revision })
   } catch {
     return git.expandOid({ fs, dir: WORKTREE, gitdir: GITDIR, oid: revision })
-  }
-}
-
-async function readBlobOidAtRevision(fs: FsClient, revision: string, path: string): Promise<string | undefined> {
-  try {
-    return (await git.readBlob({ fs, dir: WORKTREE, gitdir: GITDIR, oid: revision, filepath: path })).oid
-  } catch (error) {
-    if (isMissingGitObjectError(error)) return undefined
-    throw error
   }
 }
 

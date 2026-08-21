@@ -78,6 +78,30 @@ describe('GitService', () => {
     expect(await service.currentBranch()).toBe('experiment')
   })
 
+  it('finds an old file version behind unrelated commits and a rename', async () => {
+    const workspace = createWorkspaceFileSystem(createFakeWorkspaceDirectory())
+    const service = createGitService(workspace)
+    await service.init()
+    await workspace.writeFile('old.abc', 'X:1\nK:C\nC|')
+    await service.stage(['old.abc'])
+    await service.commit('Alte Stückversion')
+
+    for (let index = 0; index < 3; index += 1) {
+      await workspace.writeFile('unrelated.txt', String(index))
+      await service.stage(['unrelated.txt'])
+      await service.commit(`Andere Änderung ${index + 1}`)
+    }
+
+    await workspace.rename('old.abc', 'renamed.abc')
+    await service.stage((await service.status()).map((entry) => entry.path))
+    await service.commit('Stück umbenannt')
+
+    expect((await service.historyForPath('renamed.abc', { depth: 2 })).map((entry) => entry.message)).toEqual([
+      'Stück umbenannt',
+      'Alte Stückversion',
+    ])
+  })
+
   it('does not initialize over an existing repository', async () => {
     const workspace = createWorkspaceFileSystem(createFakeWorkspaceDirectory())
     const service = createGitService(workspace)
