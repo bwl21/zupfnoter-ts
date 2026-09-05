@@ -188,12 +188,12 @@ describe('resolvePlaybackSteps', () => {
     expect(steps[0]?.playbackStartMs).toBe(0)
   })
 
-  it('continues after one harp note when its SVG object is selected as well', () => {
+  it('continues after one selected harp beat with multiple notes and its SVG object', () => {
     const harpIndex: SheetObjectIndex = {
       ...sheetObjectIndex,
-      byZnId: { 'note-b-1': [0, 1] },
-      byTextRange: { '2:3': [0] },
-      byMusicTime: { '1': [0] },
+      byZnId: { 'note-b-1': [0, 2], 'note-b-2': [1] },
+      byTextRange: { '2:3': [0], '4:5': [1] },
+      byMusicTime: { '1': [0, 1] },
       entries: [
         {
           kind: 'music-entity',
@@ -204,6 +204,14 @@ describe('resolvePlaybackSteps', () => {
           addressableIn: { editor: true, score: true, svg: true },
         },
         {
+          kind: 'music-entity',
+          znId: 'note-b-2',
+          voiceId: '2',
+          musicTime: 1,
+          textRange: { startpos: 4, endpos: 5 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+        {
           kind: 'sheet-object',
           znId: 'note-b-1',
           addressableIn: { editor: false, score: false, svg: true },
@@ -211,8 +219,8 @@ describe('resolvePlaybackSteps', () => {
       ],
     }
     const selection: SelectionState = {
-      selectedIndexes: [0, 1],
-      originSelectedIndexes: [0, 1],
+      selectedIndexes: [0, 1, 2],
+      originSelectedIndexes: [0, 1, 2],
       source: 'harp-preview',
       voiceScope: 'single-voice',
     }

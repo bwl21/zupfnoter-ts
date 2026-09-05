@@ -151,6 +151,11 @@ export function resolvePlaybackSteps(
   const selectedPlaybackIds = resolveSelectedPlaybackIds(index, selection)
   const selectedEntries = projectIndexesToEntries(index, selection.selectedIndexes)
   const selectedMusicEntries = selectedEntries.filter((entry) => entry.kind === 'music-entity')
+  const selectedMusicTimes = [...new Set(
+    selectedMusicEntries
+      .map((entry) => entry.musicTime)
+      .filter((musicTime): musicTime is number => typeof musicTime === 'number'),
+  )]
   const selectedVoiceIds = [...new Set(
     selectedEntries
       .map((entry) => entry.voiceId)
@@ -216,13 +221,12 @@ export function resolvePlaybackSteps(
     }
   }
 
-  const selectedSingleNoteTime = selectedMusicEntries.length === 1
-    && typeof selectedMusicEntries[0]?.musicTime === 'number'
-    ? selectedMusicEntries[0].musicTime
+  const selectedSingleBeatTime = selectedMusicTimes.length === 1
+    ? selectedMusicTimes[0]
     : undefined
 
-  if (selectedSingleNoteTime !== undefined && activeVoiceIdSet.size > 0) {
-    const startIndex = timeline.findIndex((step) => step.sourceTime >= selectedSingleNoteTime)
+  if (selectedSingleBeatTime !== undefined && activeVoiceIdSet.size > 0) {
+    const startIndex = timeline.findIndex((step) => step.sourceTime >= selectedSingleBeatTime)
     if (startIndex < 0) return []
 
     const anchoredSteps = timeline
