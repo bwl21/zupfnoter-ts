@@ -614,4 +614,18 @@ describe('useAudioPlayer', () => {
     vi.advanceTimersByTime(16)
     expect(onStepEnd).toHaveBeenCalledWith(steps[0])
   })
+
+  it('catches up all visual callbacks after a delayed browser frame', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const onStepStart = vi.fn<(step: PlaybackStep) => void>()
+    const onStepEnd = vi.fn<(step: PlaybackStep) => void>()
+
+    await player.schedule(steps, 1, { onStepStart, onStepEnd })
+
+    mockCurrentTime = 11.7
+    vi.advanceTimersByTime(16)
+
+    expect(onStepStart.mock.calls.map(([step]) => step)).toEqual(steps)
+    expect(onStepEnd.mock.calls.map(([step]) => step)).toEqual(steps)
+  })
 })

@@ -187,13 +187,16 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         nextMetronomeClick = metronomeClicks[nextMetronomeClickIndex]
       }
 
-      if (activeStep !== undefined && elapsedMs >= activeStep.playbackStartMs + activeStep.durationMs) {
-        callbacks.onStepEnd?.(activeStep)
-        activeStep = undefined
-      }
+      while (true) {
+        if (activeStep !== undefined) {
+          if (elapsedMs < activeStep.playbackStartMs + activeStep.durationMs) break
+          callbacks.onStepEnd?.(activeStep)
+          activeStep = undefined
+          continue
+        }
 
-      const nextStep = steps[nextStepIndex]
-      if (activeStep === undefined && nextStep !== undefined && elapsedMs >= nextStep.playbackStartMs) {
+        const nextStep = steps[nextStepIndex]
+        if (nextStep === undefined || elapsedMs < nextStep.playbackStartMs) break
         callbacks.onStepStart?.(nextStep)
         activeStep = nextStep
         nextStepIndex += 1
