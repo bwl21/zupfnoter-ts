@@ -135,6 +135,24 @@ export function usePlaybackDriver(
         playbackStore.handlePlayerEvent({ kind: 'stop' })
         audioPlayer?.stop()
       },
+      onNoteOff: (playbackTimeMs) => {
+        if (playbackStore.state.status !== 'playing') return
+        activePlaybackRanges = expireActivePlaybackRanges(activePlaybackRanges, playbackTimeMs)
+        const activeTextRanges = [...new Map(
+          [...activePlaybackRanges.values()].map((range) => [
+            textRangeKey(range.textRange),
+            range.textRange,
+          ] as const),
+        ).values()]
+        playbackStore.handlePlayerEvent({
+          kind: 'current-notes',
+          ...playbackStore.highlight,
+          activeTextRanges,
+          activeStartChar: activeTextRanges.length === 0
+            ? undefined
+            : playbackStore.highlight.activeStartChar,
+        })
+      },
       onMetronomeBeat: (beat) => {
         metronomePulse += 1
         metronomeBeat.value = { ...beat, pulse: metronomePulse }

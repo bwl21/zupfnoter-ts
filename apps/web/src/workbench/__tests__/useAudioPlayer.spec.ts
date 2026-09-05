@@ -628,4 +628,26 @@ describe('useAudioPlayer', () => {
     expect(onStepStart.mock.calls.map(([step]) => step)).toEqual(steps)
     expect(onStepEnd.mock.calls.map(([step]) => step)).toEqual(steps)
   })
+
+  it('emits visual note-off at the scheduled note end without ending the step', async () => {
+    const player = useAudioPlayer({ value: 'harp' })
+    const onNoteOff = vi.fn<(playbackTimeMs: number) => void>()
+    const onStepEnd = vi.fn<(step: PlaybackStep) => void>()
+    const firstStep = steps[0]
+    if (firstStep === undefined) throw new Error('Missing first playback test step')
+    const firstNote = firstStep.activeNotes[0]
+    if (firstNote === undefined) throw new Error('Missing first playback test note')
+    const stepWithShortNote: PlaybackStep = {
+      ...firstStep,
+      activeNotes: [{ ...firstNote, durationMs: 250 }],
+    }
+
+    await player.schedule([stepWithShortNote], 1, { onNoteOff, onStepEnd })
+
+    mockCurrentTime = 10.45
+    vi.advanceTimersByTime(16)
+
+    expect(onNoteOff).toHaveBeenCalledWith(250)
+    expect(onStepEnd).not.toHaveBeenCalled()
+  })
 })

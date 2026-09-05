@@ -14,6 +14,7 @@ import {
 export interface PlaybackScheduleCallbacks {
   onStepStart?: (step: PlaybackStep) => void
   onStepEnd?: (step: PlaybackStep) => void
+  onNoteOff?: (playbackTimeMs: number) => void
   onMetronomeBeat?: (beat: PlaybackMetronomeVisualBeat) => void
 }
 
@@ -164,9 +165,20 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   ): void {
     if (callbacks.onStepStart === undefined
       && callbacks.onStepEnd === undefined
+      && callbacks.onNoteOff === undefined
       && callbacks.onMetronomeBeat === undefined) return
+    const lastStep = steps[steps.length - 1]
+    const playbackEndMs = lastStep === undefined
+      ? 0
+      : lastStep.playbackStartMs + lastStep.durationMs
+    const noteOffTimes = [...new Set(steps.flatMap((step) => step.activeNotes.map((note) => (
+      step.playbackStartMs + note.durationMs
+    ))))]
+      .filter((noteOffTime) => noteOffTime <= playbackEndMs)
+      .sort((left, right) => left - right)
     let nextStepIndex = 0
     let activeStep: PlaybackStep | undefined
+    let nextNoteOffIndex = 0
     let nextMetronomeClickIndex = 0
 
     const tick = (): void => {
@@ -206,8 +218,16 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         }
       }
 
+      let nextNoteOffTime = noteOffTimes[nextNoteOffIndex]
+      while (nextNoteOffTime !== undefined && elapsedMs >= nextNoteOffTime) {
+        callbacks.onNoteOff?.(nextNoteOffTime)
+        nextNoteOffIndex += 1
+        nextNoteOffTime = noteOffTimes[nextNoteOffIndex]
+      }
+
       if (nextStepIndex >= steps.length
         && activeStep === undefined
+        && nextNoteOffIndex >= noteOffTimes.length
         && nextMetronomeClickIndex >= metronomeClicks.length) return
       if (typeof requestAnimationFrame === 'function') {
         playbackFrame = requestAnimationFrame(tick)
