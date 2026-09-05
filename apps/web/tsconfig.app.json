@@ -10,6 +10,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@zupfnoter/playback-audio": ["../../packages/playback-audio/src/index.ts"],
+      "@zupfnoter/storage": ["../../packages/storage/src/index.ts"],
       "@zupfnoter/types": ["../../packages/types/src/index.ts"]
     },
 

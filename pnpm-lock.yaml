@@ -401,6 +401,9 @@ importers:
       '@zupfnoter/playback-audio':
         specifier: workspace:*
         version: link:../../packages/playback-audio
+      '@zupfnoter/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
       '@zupfnoter/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -618,6 +621,25 @@ importers:
       '@zupfnoter/playback':
         specifier: workspace:*
         version: link:../playback
+
+  packages/storage:
+    dependencies:
+      '@zupfnoter/core':
+        specifier: workspace:*
+        version: link:../core
+      '@zupfnoter/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.2(@types/node@24.12.2)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3)
+      vitest:
+        specifier: ^4.1.5
+        version: 4.1.5(@types/node@24.12.2)(jsdom@28.1.0)(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/types:
     devDependencies:

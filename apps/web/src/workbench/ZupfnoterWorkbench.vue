@@ -117,7 +117,7 @@ import {
 } from './multiWindow/harpMirrorChannel'
 import { createDropboxProvider, removeDropboxConnection, resumeDropboxLoginFromRedirect } from './storage/dropboxProvider'
 import { createLocalFsProvider, createLocalProject, getLocalWorkspaceFileSystem } from './storage/localFsProvider'
-import { createStorageConnection, loadStorageConnections, saveStorageConnections } from './storage/connections'
+import { createStorageConnection, loadStorageConnections, loadStorageContext, saveStorageConnections, saveStorageContext } from './storage/connections'
 import { createStorageProviderRegistry } from './storage/providerRegistry'
 import { readLocalImport, resourceKeyFromFileName, UnsupportedImportError } from './fileImport'
 
@@ -263,6 +263,7 @@ const storageProviderRegistry = createStorageProviderRegistry([{
   listDocuments: (state) => dropboxProvider.listDocuments(state),
   openPreview: (state, path) => dropboxProvider.openPreview(state, path),
   removeConnection: async (connectionId) => removeDropboxConnection(connectionId),
+  resumeLoginFromRedirect: (connectionId) => resumeDropboxLoginFromRedirect(connectionId),
 }, {
   descriptor: { id: 'local', label: 'Lokaler Ordner', availability: 'available' },
   login: (state) => localFsProvider.login(state),
@@ -296,7 +297,6 @@ const runtimeSettings = ref<Record<string, string>>({
   validate: 'true',
 })
 const flowconfEnabled = computed(() => workbenchConfig.config.flowconf)
-const storageStateKey = 'zupfnoter.storage.context'
 const storageDialogResumeKey = 'zupfnoter.storage.connections-dialog.resume'
 const abcTextKey = CURRENT_DOCUMENT_LOCAL_STORAGE_KEY
 const workbenchUiStateKey = 'zupfnoter.workbench.ui-state'
@@ -666,20 +666,7 @@ function appendDiagnosticLine(message: string, severity: 'warning' | 'error', so
 }
 
 function restoreStorageContext(): void {
-  const raw = localStorage.getItem(storageStateKey)
-  if (raw === null) return
-  try {
-    const parsed = JSON.parse(raw) as { system?: string; connectionId?: string; rootPath?: string; path?: string; loggedIn?: boolean }
-    if (typeof parsed.system !== 'string' || typeof parsed.path !== 'string' || typeof parsed.loggedIn !== 'boolean') return
-    storageState.system = parsed.system
-    storageState.connectionId = parsed.connectionId
-    storageState.rootPath = typeof parsed.rootPath === 'string' ? parsed.rootPath : ''
-    storageState.path = parsed.path
-    storageState.loggedIn = parsed.loggedIn
-    storageState.pendingCandidates = []
-  } catch {
-    // ignore malformed storage state
-  }
+  Object.assign(storageState, loadStorageContext())
 }
 
 async function restoreCurrentAbcText(): Promise<void> {
@@ -733,13 +720,7 @@ function restorePlaybackInstrument(): void {
 }
 
 function persistStorageContext(): void {
-  localStorage.setItem(storageStateKey, JSON.stringify({
-    system: storageState.system,
-    connectionId: storageState.connectionId,
-    rootPath: storageState.rootPath,
-    path: storageState.path,
-    loggedIn: storageState.loggedIn,
-  }))
+  saveStorageContext(storageState)
 }
 
 function savedDocumentSnapshotKey(): string | undefined {
@@ -2498,23 +2479,24 @@ onMounted(async () => {
     prepareStorageOpenDocuments()
     storageOpenDialogOpen.value = true
   }
-  if (storageState.connectionId !== undefined && storageState.system === 'dropbox') {
-    void resumeDropboxLoginFromRedirect(storageState.connectionId).then((connected) => {
-      if (!connected) return
-      storageState.loggedIn = true
-      updateStorageConnection(storageState.connectionId as string, { status: 'connected' })
-      const connection = storageConnections.value.find((entry) => entry.id === storageState.connectionId)
-      const resumeStorageDialog = localStorage.getItem(storageDialogResumeKey) === 'true'
-      localStorage.removeItem(storageDialogResumeKey)
-      if (connection !== undefined && (connection.rootPath === '' || resumeStorageDialog)) {
-        storageConnectionsDialogOpen.value = true
-        if (connection.rootPath === '') void openRootPicker(connection.id)
-      }
-    }).catch((error) => {
-      const message = error instanceof Error ? error.message : String(error)
-      pushToast({ severity: 'danger', title: 'Dropbox', message })
-    })
-  }
+  void storageProviderRegistry.resumeLoginFromRedirect(storageConnections.value, storageState.connectionId).then((connection) => {
+    if (connection === undefined) return
+    storageState.system = connection.providerId
+    storageState.connectionId = connection.id
+    storageState.rootPath = connection.rootPath
+    storageState.path = connection.relativePath
+    storageState.loggedIn = true
+    updateStorageConnection(connection.id, { status: 'connected' })
+    const resumeStorageDialog = localStorage.getItem(storageDialogResumeKey) === 'true'
+    localStorage.removeItem(storageDialogResumeKey)
+    if (connection.rootPath === '' || resumeStorageDialog) {
+      storageConnectionsDialogOpen.value = true
+      if (connection.rootPath === '') void openRootPicker(connection.id)
+    }
+  }).catch((error) => {
+    const message = error instanceof Error ? error.message : String(error)
+    pushToast({ severity: 'danger', title: 'Speicherverbindung', message })
+  })
   window.addEventListener('keydown', handleGlobalKeydown, true)
   window.addEventListener('message', handleMirrorMessage)
   try {

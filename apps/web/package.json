@@ -29,6 +29,7 @@
     "@zupfnoter/design-system": "workspace:*",
     "@zupfnoter/playback": "workspace:*",
     "@zupfnoter/playback-audio": "workspace:*",
+    "@zupfnoter/storage": "workspace:*",
     "@zupfnoter/types": "workspace:*",
     "buffer": "^6.0.3",
     "diff": "^9.0.0",
