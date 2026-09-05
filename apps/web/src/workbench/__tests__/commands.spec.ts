@@ -83,6 +83,76 @@ describe('parseCommandString', () => {
 })
 
 describe('legacy command registration', () => {
+  it('restores a deleted T06 note through its quick setting without inserting the value wrapper', async () => {
+    const runtime = createRuntime([])
+    const stack = new CommandStack({ log: () => {} })
+    registerLegacyCommands(stack, runtime)
+
+    await stack.runString('applyquicksetting notes.T06_legend')
+    await stack.runString('delconfig extract.0.notes.T06_legend')
+    await stack.runString('applyquicksetting notes.T06_legend')
+
+    const config = readRuntimeConfig(runtime)
+    expect(config).toMatchObject({ extract: { 0: { notes: {
+      T06_legend: {
+        pos: [360, 30],
+        text: '{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}',
+        style: 'small',
+      },
+    } } } })
+    const extract = (config.extract as Record<string, Record<string, unknown>>)['0']
+    expect(Object.keys(extract?.notes ?? {})).toEqual(['T06_legend'])
+  })
+
+  it('fills missing note fields while preserving existing values and other notes', async () => {
+    const runtime = createRuntime([])
+    const stack = new CommandStack({ log: () => {} })
+    registerLegacyCommands(stack, runtime)
+    await stack.runString('cconf extract.0.notes {"T06_legend":{"pos":[12,34]},"custom":{"text":"Behalten"}}')
+    await stack.runString('applyquicksetting notes.T06_legend')
+
+    expect(readRuntimeConfig(runtime)).toMatchObject({ extract: { 0: { notes: {
+      T06_legend: { pos: [12, 34], style: 'small' },
+      custom: { text: 'Behalten' },
+    } } } })
+  })
+
+  it('inserts the combined note quick setting under the individual preset names', async () => {
+    const runtime = createRuntime([])
+    const stack = new CommandStack({ log: () => {} })
+    registerLegacyCommands(stack, runtime)
+    await stack.runString('applyquicksetting notes.T01_T99')
+
+    const config = readRuntimeConfig(runtime)
+    const extract = (config.extract as Record<string, Record<string, unknown>>)['0']
+    expect(Object.keys(extract?.notes ?? {}).sort()).toEqual([
+      'T01_number', 'T01_number_extract', 'T02_copyright_music',
+      'T03_copyright_harpnotes', 'T04_to_order', 'T05_printed_extracts',
+      'T06_legend', 'T99_do_not_copy',
+    ])
+    expect(config).toMatchObject({ extract: { 0: { notes: {
+      T06_legend: { style: 'small' },
+      T01_number_extract: { pos: [411, 17] },
+    } } } })
+  })
+
+  it('uses an explicit note preset key in the active extract', async () => {
+    const runtime = createRuntime([])
+    runtime.getCurrentExtract = () => 1
+    const stack = new CommandStack({ log: () => {} })
+    registerLegacyCommands(stack, runtime)
+    await stack.runString('applyquicksetting notes.T01_number_extract_value')
+
+    const config = readRuntimeConfig(runtime)
+    expect(config).toMatchObject({ extract: {
+      0: { title: 'Old', voices: [1] },
+      1: { notes: { T01_number_extract: { text: '{{extract_filename}}' } } },
+    } })
+    const extracts = config.extract as Record<string, Record<string, unknown>>
+    expect(extracts['0']?.notes).toBeUndefined()
+    expect(Object.keys(extracts['1']?.notes ?? {})).toEqual(['T01_number_extract'])
+  })
+
   it('applies a schema-selected layout quick setting to the current extract', async () => {
     const log: string[] = []
     const runtime = createRuntime(log)

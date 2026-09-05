@@ -860,9 +860,25 @@ function applyQuickSetting(
   }
 
   const current = readConfig(runtime.getAbcText())
-  const nextValue = domain === 'notes' || domain === 'images'
-    ? mergeCommandValues(getConfigPath(current, target), presetValue)
-    : presetValue
+  let nextValue = presetValue
+  if (domain === 'notes') {
+    const notes: Record<string, CommandArgumentValue> = {}
+    const entries = name === 'T01_T99'
+      ? Object.entries(families).filter(([key]) => key !== 'T01_T99' && key !== 'T01_number_extract_value')
+      : [[name, presetValue] as const]
+    for (const [key, entry] of entries) {
+      if (!isPlainObject(entry) || entry.value === undefined) {
+        throw new CommandError(`Invalid note quick setting: ${key}`)
+      }
+      const noteKey = typeof entry.key === 'string' ? entry.key : key
+      notes[noteKey] = entry.value
+    }
+    // Legacy :patch keeps existing document values above the preset defaults.
+    const existing = getConfigPath(current, target)
+    nextValue = existing === undefined ? notes : mergeCommandValues(notes, existing)
+  } else if (domain === 'images') {
+    nextValue = mergeCommandValues(getConfigPath(current, target), presetValue)
+  }
   patchConfig(runtime, state, target, nextValue, `applyquicksetting ${presetId}`)
 }
 

@@ -9,6 +9,24 @@ User-Manual und die In-App-Hilfe abgeleitet werden können.
 
 ## Quellen
 
+### Notiz-Schnelleinstellungen: Zielschlüssel und bestehende Werte
+
+`applyquicksetting notes.T06_legend` fügt die Daten aus `value` unter
+`extract.<aktiver Auszug>.notes.T06_legend` ein, nicht unter `notes.value`.
+Allgemein gilt der explizite `key` einer Notizvorlage oder ihr Presetname.
+Die Sammelvorlage `T01_T99` enthält die regulären Notizvorlagen ohne sich
+selbst und ohne die alternative Vorlage `T01_number_extract_value`.
+Vorhandene Dokumentwerte haben Vorrang; fehlende Felder werden ergänzt.
+
+Legacy-Beleg: `src/controller_command_definitions.rb:526–536` (Zielschlüssel
+und Sammelvorlage), `:558–569` (Vorrang der Dokumentwerte bei `:patch`).
+Die bereits in TypeScript aufrufbare Einzelvorlage
+`T01_number_extract_value` berücksichtigt ebenfalls ihren expliziten `key`;
+Legacy schließt sie dagegen aus der erzeugten Einzelbefehlsliste aus.
+Regressionstests: `apps/web/src/workbench/__tests__/commands.spec.ts`
+(T06 löschen/wieder einfügen, vorhandene Werte, Sammelvorlage, expliziter
+Zielschlüssel und aktiver Auszug).
+
 ### Architekturklärung 2026-09-05: konkrete Editorpfade
 
 Konkrete Pfade werden unabhängig vom Bereich aus dem Built-in-Schema erzeugt.
