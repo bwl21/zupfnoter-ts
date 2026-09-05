@@ -15,7 +15,7 @@ Aktualisierung dieser Checkliste. Die Reihenfolge darf Abhängigkeiten folgen.
 - [x] B2 – Musikalische Startposition zentral auflösen; Durchlauf berücksichtigen.
 - [x] B3 – Konfigurationsfelder und wirksame Werte generisch aus Schema/Confstack beziehen.
 - [x] B4 – Gemeinsame Dokument-/Exportvorbereitung; identische Playback-Link-Metadaten.
-- [ ] B5 – Gemeinsamer Audio-Lebenszyklus und Scheduling für Practice sowie Web/Review.
+- [x] B5 – Gemeinsamer Audio-Lebenszyklus und Scheduling für Practice sowie Web/Review.
 - [x] B6 – Gemeinsame fachliche Typen eindeutig in `packages/types` besitzen.
 - [x] B7 – Design-System-Paketvertrag und Build/Typecheck konsistent machen.
 - [ ] B8 – UI-Abläufe durch verantwortliche Controller entkoppeln.
@@ -186,3 +186,17 @@ mit unveränderten Tests erhalten, ohne konkrete UI-Felder zu bestimmen.
 95 Core-Tests und 50 Panel-Tests sowie Web-Typecheck erfolgreich.
 Legacy-Belege und bewusste Erweiterung stehen in `config-parity.md`.
 Eine visuelle Browserprüfung ist in dieser Sitzung bisher nicht verfügbar.
+
+### B5 – Ergebnis
+
+`playback-audio/session` besitzt AudioContext, gestenzeitiges Resume,
+Sample-Cache/-Timeout/-Abbruch und audiozeitbasierte Scheduling-Fenster.
+Practice verwendet diesen Core-freien Einstieg mit Link-Ereignissen;
+Web/Review behalten ihren Timeline-Adapter. Gestoppte Sample-Ladevorgänge
+können keinen neuen Kontext mehr eröffnen. Die Ausgabestrategien bleiben
+bewusst erhalten: Web plant vorbereitete Stereo-Ereignisse vollständig,
+Practice füllt begrenzte mobile Fenster mit überlappenden Resume-Noten nach.
+Gain, Kompressor, Instrumentwahl und Metronommathematik bleiben unverändert.
+20 gemeinsame Audio-/Web-Tests, 12 Practice-Tests, Web-/Practice-Typechecks,
+Audio-Paketbuild und Practice-Produktionsbuild erfolgreich. Das sind keine
+akustischen iOS-/Android-Paritätsnachweise; Geräteprüfung bleibt erforderlich.

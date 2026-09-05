@@ -76,6 +76,9 @@ importers:
       '@zupfnoter/playback':
         specifier: workspace:*
         version: link:../../packages/playback
+      '@zupfnoter/playback-audio':
+        specifier: workspace:*
+        version: link:../../packages/playback-audio
       '@zupfnoter/practice-ui':
         specifier: workspace:*
         version: link:../../packages/practice-ui

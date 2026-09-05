@@ -1,3 +1,4 @@
+import { createAudioSession } from '@zupfnoter/playback-audio/session'
 import {
   decodePlaybackFragment,
   type PlaybackCompressionCodec,
@@ -347,21 +348,6 @@ interface SoundfontPitch {
   cents: number
 }
 
-interface WebkitAudioWindow extends Window {
-  webkitAudioContext?: typeof AudioContext
-}
-
-interface AudioSessionNavigator extends Navigator {
-  audioSession?: {
-    type: string
-  }
-}
-
-function configurePlaybackAudioSession(): void {
-  const audioSession = (navigator as AudioSessionNavigator).audioSession
-  if (audioSession !== undefined) audioSession.type = 'playback'
-}
-
 function resolveSoundfontPitch(midi: number): SoundfontPitch {
   const naturalPitches = [0, 2, 4, 5, 7, 9, 11]
   const octave = Math.floor(midi / 12)
@@ -486,15 +472,14 @@ function renderPractice(
       onScan: openQrScanner,
     },
   })
+  const audioSession = createAudioSession()
   let audioContext: AudioContext | undefined
-  let playbackTimers: number[] = []
   let animationFrame: number | undefined
   let playbackOffsetMs = 0
   let playbackStartedAtContextTime = 0
   let metronomePlaybackStartMs = selectedStartMs
   let isPaused = false
   let speedFactor = 1
-  let harpPlayerPromise: Promise<SoundfontPlayer> | undefined
   let metronomeOscillators: OscillatorNode[] = []
   let metronomeGain: GainNode | undefined
   let scheduledMetronomeTimes = new Set<number>()
@@ -513,8 +498,7 @@ function renderPractice(
   }
 
   function clearPlaybackTimers(): void {
-    for (const timer of playbackTimers) window.clearTimeout(timer)
-    playbackTimers = []
+    audioSession.clearSchedule()
     if (animationFrame !== undefined) window.cancelAnimationFrame(animationFrame)
     animationFrame = undefined
     clearMetronomeSchedule()
@@ -627,37 +611,18 @@ function renderPractice(
     }
   }
 
-  async function loadHarpPlayer(context: AudioContext, noteValues: readonly number[], destination: AudioNode): Promise<SoundfontPlayer> {
-    if (harpPlayerPromise !== undefined) return harpPlayerPromise
-    const loadPromise = import('soundfont-player').then((soundfont) => soundfont.instrument(
-      context,
-      'orchestral_harp',
-      {
-        soundfont: 'FluidR3_GM',
-        format: 'mp3',
-        gain: 1,
-        destination,
-        notes: [...new Set(noteValues.map(midiToSoundfontNote))],
-      },
-    ))
-    const timeoutPromise = new Promise<SoundfontPlayer>((_, reject) => {
-      window.setTimeout(() => reject(new Error('Harfenklang-Ladevorgang überschritten')), 15000)
+  function loadHarpPlayer(noteValues: readonly number[], destination: AudioNode): Promise<SoundfontPlayer> {
+    return audioSession.loadInstrument('harp', 'orchestral_harp', {
+      soundfont: 'FluidR3_GM', format: 'mp3', gain: 1, destination,
+      notes: [...new Set(noteValues.map(midiToSoundfontNote))],
     })
-    harpPlayerPromise = Promise.race([loadPromise, timeoutPromise])
-    try {
-      return await harpPlayerPromise
-    } catch (loadError) {
-      harpPlayerPromise = undefined
-      throw loadError
-    }
   }
 
   function stopPlayback(reset = true): void {
     clearPlaybackTimers()
-    if (audioContext !== undefined) void audioContext.close()
+    audioSession.stop()
     audioContext = undefined
     metronomeGain = undefined
-    harpPlayerPromise = undefined
     setLoading(false)
     ui.setRangeEnabled(true)
     ui.setSpeedEnabled(true)
@@ -676,22 +641,20 @@ function renderPractice(
     ui.setRangeEnabled(false)
     ui.setSpeedEnabled(false)
     ui.setPlaying(true)
-    configurePlaybackAudioSession()
     const base = selectedStartMs
     const durationMs = playbackDurationForSelection(selectedEvents, positionMarkers, base)
     if (playbackOffsetMs >= durationMs) playbackOffsetMs = 0
-    const AudioContextClass = window.AudioContext
-      ?? (window as WebkitAudioWindow).webkitAudioContext
-    if (AudioContextClass === undefined) {
-      ui.setRangeError('Dieser Browser unterstützt keine Audiowiedergabe.')
+    try {
+      audioContext = audioSession.getContext()
+      // Resume starts inside the play gesture, before loading the samples.
+      void audioSession.ensureRunning().catch(() => undefined)
+    } catch (error) {
+      ui.setRangeError(error instanceof Error ? error.message : 'Audiowiedergabe nicht verfügbar.')
       ui.setRangeEnabled(true)
       ui.setSpeedEnabled(true)
       ui.setPlaying(false)
       return
     }
-    audioContext = new AudioContextClass({ latencyHint: 'playback' })
-    // iOS requires resume to start while the play button's gesture is active.
-    void audioContext.resume().catch(() => undefined)
     const outputGain = audioContext.createGain()
     outputGain.gain.value = 2.6
     const masterCompressor = audioContext.createDynamicsCompressor()
@@ -711,7 +674,7 @@ function renderPractice(
     }, 150)
     let harpPlayer: SoundfontPlayer
     try {
-      harpPlayer = await loadHarpPlayer(playerContext, selectedEvents.map((event) => event.pitch), outputGain)
+      harpPlayer = await loadHarpPlayer(selectedEvents.map((event) => event.pitch), outputGain)
       if (playerContext.state !== 'running') {
         await playerContext.resume()
       }
@@ -720,6 +683,7 @@ function renderPractice(
       }
     } catch {
       window.clearTimeout(loadingTimer)
+      if (audioContext !== playerContext) return
       setLoading(false)
       ui.setRangeError('Der Harfenklang konnte nicht geladen werden.')
       stopPlayback()
@@ -763,58 +727,45 @@ function renderPractice(
         gain: (event.velocity ?? 127) / 127 * chordGain,
       }
     })
-    let nextWindowStartMs = playbackOffsetMs
-    let includeOverlappingEvents = true
-    const scheduleWindow = () => {
-      if (audioContext !== playerContext || nextWindowStartMs >= durationMs) return
-      // Keep a rolling audio-context lookahead. Android can delay timers while
-      // rendering, so the target is based on the audio clock, not wall time.
-      const currentElapsedMs = Math.max(playbackOffsetMs, elapsed())
-      const targetEndMs = Math.min(durationMs, currentElapsedMs + AUDIO_SCHEDULE_LOOKAHEAD_MS)
-      if (nextWindowStartMs < currentElapsedMs) nextWindowStartMs = currentElapsedMs
-      if (nextWindowStartMs >= targetEndMs) {
-        const timer = window.setTimeout(scheduleWindow, AUDIO_SCHEDULE_REFILL_MS)
-        playbackTimers.push(timer)
-        return
-      }
-      const windowEndMs = Math.min(targetEndMs, nextWindowStartMs + AUDIO_SCHEDULE_WINDOW_MS)
-      const windowAudioStart = audioStartAt
-        + (nextWindowStartMs - playbackOffsetMs) / 1000 / speedFactor
-      const windowNotes = scheduledNotes
-        .filter((event) => playbackEventInScheduleWindow(
-          event.eventOffset,
-          event.eventDuration,
+    audioSession.scheduleWindows({
+      startOffsetMs: playbackOffsetMs,
+      durationMs,
+      elapsedMs: elapsed,
+      lookaheadMs: AUDIO_SCHEDULE_LOOKAHEAD_MS,
+      windowMs: AUDIO_SCHEDULE_WINDOW_MS,
+      refillMs: AUDIO_SCHEDULE_REFILL_MS,
+      onWindow: (nextWindowStartMs, windowEndMs, includeOverlappingEvents) => {
+        const windowAudioStart = audioStartAt
+          + (nextWindowStartMs - playbackOffsetMs) / 1000 / speedFactor
+        const windowNotes = scheduledNotes
+          .filter((event) => playbackEventInScheduleWindow(
+            event.eventOffset,
+            event.eventDuration,
+            nextWindowStartMs,
+            windowEndMs,
+            includeOverlappingEvents,
+          ))
+          .map((event) => ({
+            note: event.note,
+            cents: event.cents,
+            time: Math.max(0, event.eventOffset - nextWindowStartMs) / 1000 / speedFactor,
+            duration: Math.max(
+              0.02,
+              (event.eventDuration - Math.max(0, nextWindowStartMs - event.eventOffset)) / 1000 / speedFactor,
+            ),
+            gain: event.gain,
+          }))
+        if (windowNotes.length > 0) harpPlayer.schedule(windowAudioStart, windowNotes)
+        scheduleMetronome(
+          playerContext,
+          durationMs,
+          audioStartAt,
+          playbackOffsetMs,
           nextWindowStartMs,
           windowEndMs,
-          includeOverlappingEvents,
-        ))
-        .map((event) => ({
-          note: event.note,
-          cents: event.cents,
-          time: Math.max(0, event.eventOffset - nextWindowStartMs) / 1000 / speedFactor,
-          duration: Math.max(
-            0.02,
-            (event.eventDuration - Math.max(0, nextWindowStartMs - event.eventOffset)) / 1000 / speedFactor,
-          ),
-          gain: event.gain,
-        }))
-      if (windowNotes.length > 0) harpPlayer.schedule(windowAudioStart, windowNotes)
-      scheduleMetronome(
-        playerContext,
-        durationMs,
-        audioStartAt,
-        playbackOffsetMs,
-        nextWindowStartMs,
-        windowEndMs,
-      )
-      includeOverlappingEvents = false
-      nextWindowStartMs = windowEndMs
-      if (nextWindowStartMs < durationMs) {
-        const timer = window.setTimeout(scheduleWindow, AUDIO_SCHEDULE_REFILL_MS)
-        playbackTimers.push(timer)
-      }
-    }
-    scheduleWindow()
+        )
+      },
+    })
     const update = () => {
       if (audioContext !== playerContext) return
       if (playerContext.currentTime < countInEndAt) {

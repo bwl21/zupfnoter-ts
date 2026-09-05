@@ -6,6 +6,11 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "./session": {
+      "source": "./src/AudioSession.ts",
+      "types": "./dist/AudioSession.d.ts",
+      "import": "./dist/AudioSession.js"
+    },
     ".": {
       "source": "./src/index.ts",
       "import": "./dist/index.js",

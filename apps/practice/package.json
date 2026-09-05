@@ -10,6 +10,7 @@
     "test:unit": "vitest run"
   },
   "dependencies": {
+    "@zupfnoter/playback-audio": "workspace:*",
     "@zupfnoter/playback": "workspace:*",
     "@zupfnoter/practice-ui": "workspace:*",
     "@zxing/browser": "^0.2.1",

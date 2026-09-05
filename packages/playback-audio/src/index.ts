@@ -1,4 +1,5 @@
 import type { PlaybackStep } from '@zupfnoter/types'
+import { createAudioSession, AudioSessionCancelledError } from './AudioSession.js'
 import { buildPlaybackExportDataFromTimeline } from '@zupfnoter/core'
 import {
   createPlaybackCountInPlan,
@@ -63,7 +64,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   type SoundfontPlayer = Awaited<ReturnType<SoundfontModule['instrument']>>
   type SoundfontPlayerSet = Record<StereoSide, SoundfontPlayer>
 
-  let ctx: AudioContext | null = null
+  const session = createAudioSession()
   let masterGainNode: GainNode | null = null
   let stereoPannerNodes: Record<StereoSide, StereoPannerNode> | null = null
   let playerPromise: Promise<SoundfontPlayerSet> | null = null
@@ -73,12 +74,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   let playbackFallbackTimer: ReturnType<typeof setTimeout> | undefined
 
   function getContext(): AudioContext {
-    if (ctx === null || ctx.state === 'closed') {
-      ctx = new AudioContext({ latencyHint: 'playback' })
-      masterGainNode = null
-      stereoPannerNodes = null
-    }
-    return ctx
+    return session.getContext()
   }
 
   function getMasterGainNode(): GainNode {
@@ -109,7 +105,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     return stereoPannerNodes
   }
 
-  function loadPlayer(): Promise<SoundfontPlayerSet> {
+  function loadPlayer(context: AudioContext): Promise<SoundfontPlayerSet> {
     if (loadedInstrument !== instrument.value) {
       playerPromise = null
     }
@@ -119,17 +115,18 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     }
     const currentInstrument = instrument.value
     loadedInstrument = currentInstrument
-    playerPromise = import('soundfont-player').then(async (Soundfont) => {
-      const context = getContext()
+    const loading = Promise.resolve().then(async () => {
+      if (!session.isCurrent(context)) throw new AudioSessionCancelledError()
       if (context.state === 'suspended') {
         await context.resume()
       }
+      if (!session.isCurrent(context)) throw new AudioSessionCancelledError()
       const config = INSTRUMENT_CONFIG[currentInstrument]
       const panners = getStereoPannerNodes()
       const playerEntries = await Promise.all(
         (['left', 'right'] as StereoSide[]).map(async (side) => {
-          const player = await Soundfont.instrument(
-            context,
+          const player = await session.loadInstrument(
+            `${currentInstrument}:${side}`,
             config.instrument as Parameters<SoundfontModule['instrument']>[1],
             {
               destination: panners[side],
@@ -141,11 +138,16 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         }),
       )
       return Object.fromEntries(playerEntries) as SoundfontPlayerSet
+    }).catch((error: unknown) => {
+      if (playerPromise === loading) playerPromise = null
+      throw error
     })
+    playerPromise = loading
     return playerPromise
   }
 
   function clearTimers(): void {
+    session.clearSchedule()
     for (const timer of timers) {
       clearTimeout(timer)
     }
@@ -258,11 +260,7 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   }
 
   async function ensureRunningContext(): Promise<AudioContext> {
-    const context = getContext()
-    if (context.state === 'suspended') {
-      await context.resume()
-    }
-    return context
+    return session.ensureRunning()
   }
 
   async function schedule(
@@ -314,7 +312,13 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     const hasAudioEvents = eventsBySide.left.length > 0 || eventsBySide.right.length > 0
     if (!hasAudioEvents && callbacks.onStepStart === undefined && callbacks.onStepEnd === undefined)
       return
-    const context = await ensureRunningContext()
+    let context: AudioContext
+    try {
+      context = await ensureRunningContext()
+    } catch (error) {
+      if (error instanceof AudioSessionCancelledError) return
+      throw error
+    }
     // Use the same complete position track as export/Practice. In particular,
     // the unmetered opening marker carries the phase of an opening pickup.
     const markers: PlaybackPositionMarker[] =
@@ -455,7 +459,14 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       scheduleMetronomeClicks(baseStartTime)
       return
     }
-    const players = await loadPlayer()
+    let players: SoundfontPlayerSet
+    try {
+      players = await loadPlayer(context)
+    } catch (error) {
+      if (error instanceof AudioSessionCancelledError) return
+      throw error
+    }
+    if (!session.isCurrent(context)) return
     const baseStartTime =
       context.currentTime + SCHEDULE_LOOKAHEAD_SEC + preRollDurationMs / speedFactor / 1000
     scheduleVisualCallbacks(
@@ -466,20 +477,22 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       context,
       baseStartTime,
     )
-    scheduleMetronomeClicks(baseStartTime)
-    for (const side of ['left', 'right'] as StereoSide[]) {
-      const events = eventsBySide[side]
-      if (events.length === 0) continue
-      players[side].schedule(baseStartTime, events)
-    }
+    session.scheduleWindows({
+      durationMs: Math.max(1, playbackDurationMs),
+      elapsedMs: () => 0,
+      onWindow: () => {
+        scheduleMetronomeClicks(baseStartTime)
+        for (const side of ['left', 'right'] as StereoSide[]) {
+          const events = eventsBySide[side]
+          if (events.length > 0) players[side].schedule(baseStartTime, events)
+        }
+      },
+    })
   }
 
   function stop(): void {
     clearTimers()
-    if (ctx !== null && ctx.state !== 'closed') {
-      ctx.close()
-      ctx = null
-    }
+    session.stop()
     masterGainNode = null
     stereoPannerNodes = null
     playerPromise = null
@@ -487,15 +500,11 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
   }
 
   function suspend(): void {
-    if (ctx !== null && ctx.state === 'running') {
-      ctx.suspend()
-    }
+    session.suspend()
   }
 
   function resume(): void {
-    if (ctx !== null && ctx.state === 'suspended') {
-      ctx.resume()
-    }
+    session.resume()
   }
 
   return { schedule, stop, suspend, resume }
