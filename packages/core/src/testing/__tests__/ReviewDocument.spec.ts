@@ -16,7 +16,7 @@ describe('renderReviewDocument', () => {
     const result = renderReviewDocument(ABC)
 
     expect(result.title).toBe('Mobiler Test')
-    expect(result.extracts).toEqual([{ number: 0, title: 'Alle Stimmen' }])
+    expect(result.extracts).toEqual([{ number: 0, title: 'alle Stimmen' }])
     expect(result.scoreSvg).toContain('<svg')
     expect(result.harpSvg).toContain('class="zupfnoter-svg"')
     expect(result.playbackTimeline.length).toBeGreaterThan(0)

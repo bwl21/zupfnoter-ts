@@ -33,7 +33,10 @@ export type PlaybackInstrument = 'harp' | 'piano' | 'western-guitar' | 'oscillat
 
 type SoundfontPlaybackInstrument = Exclude<PlaybackInstrument, 'oscillator'>
 
-const INSTRUMENT_CONFIG: Record<SoundfontPlaybackInstrument, { instrument: string, soundfont: string }> = {
+const INSTRUMENT_CONFIG: Record<
+  SoundfontPlaybackInstrument,
+  { instrument: string; soundfont: string }
+> = {
   harp: { instrument: 'orchestral_harp', soundfont: 'FluidR3_GM' },
   piano: { instrument: 'acoustic_grand_piano', soundfont: 'FluidR3_GM' },
   'western-guitar': { instrument: 'acoustic_guitar_steel', soundfont: 'FluidR3_GM' },
@@ -123,18 +126,20 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       }
       const config = INSTRUMENT_CONFIG[currentInstrument]
       const panners = getStereoPannerNodes()
-      const playerEntries = await Promise.all((['left', 'right'] as StereoSide[]).map(async (side) => {
-        const player = await Soundfont.instrument(
-          context,
-          config.instrument as Parameters<SoundfontModule['instrument']>[1],
-          {
-            destination: panners[side],
-            soundfont: config.soundfont,
-            gain: INSTRUMENT_GAIN,
-          },
-        )
-        return [side, player] as const
-      }))
+      const playerEntries = await Promise.all(
+        (['left', 'right'] as StereoSide[]).map(async (side) => {
+          const player = await Soundfont.instrument(
+            context,
+            config.instrument as Parameters<SoundfontModule['instrument']>[1],
+            {
+              destination: panners[side],
+              soundfont: config.soundfont,
+              gain: INSTRUMENT_GAIN,
+            },
+          )
+          return [side, player] as const
+        }),
+      )
       return Object.fromEntries(playerEntries) as SoundfontPlayerSet
     })
     return playerPromise
@@ -163,17 +168,23 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     context: AudioContext,
     baseStartTime: number,
   ): void {
-    if (callbacks.onStepStart === undefined
-      && callbacks.onStepEnd === undefined
-      && callbacks.onNoteOff === undefined
-      && callbacks.onMetronomeBeat === undefined) return
+    if (
+      callbacks.onStepStart === undefined &&
+      callbacks.onStepEnd === undefined &&
+      callbacks.onNoteOff === undefined &&
+      callbacks.onMetronomeBeat === undefined
+    )
+      return
     const lastStep = steps[steps.length - 1]
-    const playbackEndMs = lastStep === undefined
-      ? 0
-      : lastStep.playbackStartMs + lastStep.durationMs
-    const noteOffTimes = [...new Set(steps.flatMap((step) => step.activeNotes.map((note) => (
-      step.playbackStartMs + note.durationMs
-    ))))]
+    const playbackEndMs =
+      lastStep === undefined ? 0 : lastStep.playbackStartMs + lastStep.durationMs
+    const noteOffTimes = [
+      ...new Set(
+        steps.flatMap((step) =>
+          step.activeNotes.map((note) => step.playbackStartMs + note.durationMs),
+        ),
+      ),
+    ]
       .filter((noteOffTime) => noteOffTime <= playbackEndMs)
       .sort((left, right) => left - right)
     let nextStepIndex = 0
@@ -225,10 +236,13 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         nextNoteOffTime = noteOffTimes[nextNoteOffIndex]
       }
 
-      if (nextStepIndex >= steps.length
-        && activeStep === undefined
-        && nextNoteOffIndex >= noteOffTimes.length
-        && nextMetronomeClickIndex >= metronomeClicks.length) return
+      if (
+        nextStepIndex >= steps.length &&
+        activeStep === undefined &&
+        nextNoteOffIndex >= noteOffTimes.length &&
+        nextMetronomeClickIndex >= metronomeClicks.length
+      )
+        return
       if (typeof requestAnimationFrame === 'function') {
         playbackFrame = requestAnimationFrame(tick)
       } else {
@@ -259,7 +273,10 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     tempoBpm?: number,
     tempoUnit = 0.25,
   ): Promise<void> {
-    const eventsBySide: Record<StereoSide, Array<{ time: number; note: number; duration: number; gain: number }>> = {
+    const eventsBySide: Record<
+      StereoSide,
+      Array<{ time: number; note: number; duration: number; gain: number }>
+    > = {
       left: [],
       right: [],
     }
@@ -281,9 +298,10 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
           })
         }
       }
-      const chordGain = uniqueNotes.size === 0
-        ? MAX_CHORD_GAIN
-        : Math.min(MAX_CHORD_GAIN, MAX_CHORD_GAIN / Math.sqrt(uniqueNotes.size))
+      const chordGain =
+        uniqueNotes.size === 0
+          ? MAX_CHORD_GAIN
+          : Math.min(MAX_CHORD_GAIN, MAX_CHORD_GAIN / Math.sqrt(uniqueNotes.size))
       for (const { pitch, duration, side } of uniqueNotes.values()) {
         eventsBySide[side].push({
           time: stepOffsetMs / 1000,
@@ -294,51 +312,58 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
       }
     }
     const hasAudioEvents = eventsBySide.left.length > 0 || eventsBySide.right.length > 0
-    if (!hasAudioEvents && callbacks.onStepStart === undefined && callbacks.onStepEnd === undefined) return
+    if (!hasAudioEvents && callbacks.onStepStart === undefined && callbacks.onStepEnd === undefined)
+      return
     const context = await ensureRunningContext()
     // Use the same complete position track as export/Practice. In particular,
     // the unmetered opening marker carries the phase of an opening pickup.
-    const markers: PlaybackPositionMarker[] = buildPlaybackExportDataFromTimeline(steps).positionMarkers
-    const configuredDivision = metronomeConfig?.division === undefined
-      ? undefined
-      : Math.max(1, metronomeConfig.division)
+    const markers: PlaybackPositionMarker[] =
+      buildPlaybackExportDataFromTimeline(steps).positionMarkers
+    const configuredDivision =
+      metronomeConfig?.division === undefined ? undefined : Math.max(1, metronomeConfig.division)
     const subdivision = Math.max(1, metronomeConfig?.subdivision ?? 1)
     const minLeadIn = metronomeConfig?.minLeadIn
     const timelineStartMs = steps[0]?.playbackStartMs ?? 0
     const entryTimeMs = timelineStartMs
     const entryOffsetMs = Math.max(0, entryTimeMs - timelineStartMs)
-    const countInPlan = metronomeConfig !== undefined
-      && (metronomeConfig.mode === 'countIn' || metronomeConfig.mode === 'always')
-      ? createPlaybackCountInPlan(markers, entryTimeMs, {
-        minLeadIn,
-        bandPreCount: metronomeConfig.bandPreCount,
-        division: configuredDivision,
-        subdivision,
-      }, tempoBpm, tempoUnit)
-      : undefined
+    const countInPlan =
+      metronomeConfig !== undefined &&
+      (metronomeConfig.mode === 'countIn' || metronomeConfig.mode === 'always')
+        ? createPlaybackCountInPlan(
+            markers,
+            entryTimeMs,
+            {
+              minLeadIn,
+              bandPreCount: metronomeConfig.bandPreCount,
+              division: configuredDivision,
+              subdivision,
+            },
+            tempoBpm,
+            tempoUnit,
+          )
+        : undefined
     const countInDurationMs = countInPlan?.durationMs ?? 0
     const lastStep = steps[steps.length - 1]
-    const playbackDurationMs = lastStep === undefined
-      ? 0
-      : lastStep.playbackStartMs + lastStep.durationMs
-    const playbackClicks = metronomeConfig !== undefined
-      && (metronomeConfig.mode === 'playback' || metronomeConfig.mode === 'always')
-      ? createPlaybackMetronomeClicks(
-        markers,
-        playbackDurationMs,
-        configuredDivision,
-        subdivision,
-        tempoBpm,
-        tempoUnit,
-      )
-        .filter((click) => countInPlan === undefined || click.timeMs >= entryTimeMs)
-      : []
+    const playbackDurationMs =
+      lastStep === undefined ? 0 : lastStep.playbackStartMs + lastStep.durationMs
+    const playbackClicks =
+      metronomeConfig !== undefined &&
+      (metronomeConfig.mode === 'playback' || metronomeConfig.mode === 'always')
+        ? createPlaybackMetronomeClicks(
+            markers,
+            playbackDurationMs,
+            configuredDivision,
+            subdivision,
+            tempoBpm,
+            tempoUnit,
+          ).filter((click) => countInPlan === undefined || click.timeMs >= entryTimeMs)
+        : []
     const countInDivision = Math.max(1, configuredDivision ?? countInPlan?.meter.numerator ?? 4)
     const visualMetronomeClicks: PlaybackMetronomeClick[] = [
       ...(countInPlan?.events.map((event) => ({
         timeMs: entryOffsetMs + event.offsetMs - countInDurationMs,
         accent: event.kind === 'BAR_START',
-        kind: event.kind === 'PRE_COUNT' ? 'MAIN_BEAT' as const : event.kind,
+        kind: event.kind === 'PRE_COUNT' ? ('MAIN_BEAT' as const) : event.kind,
         beat: event.beat + 1,
         division: countInDivision,
         subdivision: event.kind === 'SUBDIVISION' ? 1 : 0,
@@ -349,7 +374,8 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
     function scheduleMetronomeClicks(baseStartTime: number): void {
       if (metronomeConfig === undefined || metronomeConfig.mode === 'off') return
       if (countInPlan !== undefined) {
-        const countInStart = baseStartTime + (entryOffsetMs - countInDurationMs) / speedFactor / 1000
+        const countInStart =
+          baseStartTime + (entryOffsetMs - countInDurationMs) / speedFactor / 1000
         for (const event of countInPlan.events) {
           const clickAt = countInStart + event.offsetMs / speedFactor / 1000
           const sound = resolvePlaybackMetronomeEventSound(event.kind, event.isLastBeforeEntry)
@@ -361,54 +387,85 @@ export function useAudioPlayer(instrument: { value: PlaybackInstrument }) {
         const relativeMs = clickEvent.timeMs
         const scheduleStart = baseStartTime + relativeMs / speedFactor / 1000
         if (scheduleStart >= context.currentTime) {
-          schedulePlaybackMetronomeClick(context, scheduleStart, resolvePlaybackMetronomeEventSound(clickEvent.kind))
+          schedulePlaybackMetronomeClick(
+            context,
+            scheduleStart,
+            resolvePlaybackMetronomeEventSound(clickEvent.kind),
+          )
         }
       }
     }
     const preRollDurationMs = Math.max(0, countInDurationMs - entryOffsetMs)
     if (instrument.value === 'oscillator') {
-      const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC + preRollDurationMs / speedFactor / 1000
-      scheduleVisualCallbacks(steps, visualMetronomeClicks, speedFactor, callbacks, context, baseStartTime)
+      const baseStartTime =
+        context.currentTime + SCHEDULE_LOOKAHEAD_SEC + preRollDurationMs / speedFactor / 1000
+      scheduleVisualCallbacks(
+        steps,
+        visualMetronomeClicks,
+        speedFactor,
+        callbacks,
+        context,
+        baseStartTime,
+      )
       scheduleMetronomeClicks(baseStartTime)
       if (!hasAudioEvents) return
       const masterGain = getMasterGainNode()
       for (const side of ['left', 'right'] as StereoSide[]) {
         const events = eventsBySide[side]
         for (const event of events) {
-        const gainNode = context.createGain()
-        const oscillator = context.createOscillator()
-        const panner = context.createStereoPanner()
-        const startTime = baseStartTime + event.time
-        const releaseSec = Math.min(OSCILLATOR_RELEASE_SEC, event.duration / 2)
-        const stopTime = startTime + event.duration + releaseSec
-        const peakGain = Math.min(OSCILLATOR_GAIN, event.gain * OSCILLATOR_GAIN)
-        const sustainTime = Math.max(startTime + OSCILLATOR_ATTACK_SEC, startTime + event.duration)
+          const gainNode = context.createGain()
+          const oscillator = context.createOscillator()
+          const panner = context.createStereoPanner()
+          const startTime = baseStartTime + event.time
+          const releaseSec = Math.min(OSCILLATOR_RELEASE_SEC, event.duration / 2)
+          const stopTime = startTime + event.duration + releaseSec
+          const peakGain = Math.min(OSCILLATOR_GAIN, event.gain * OSCILLATOR_GAIN)
+          const sustainTime = Math.max(
+            startTime + OSCILLATOR_ATTACK_SEC,
+            startTime + event.duration,
+          )
 
-        oscillator.type = 'triangle'
-        panner.pan.value = STEREO_PAN_BY_SIDE[side]
-        oscillator.frequency.setValueAtTime(midiToFrequency(event.note), startTime)
-        gainNode.gain.setValueAtTime(0.0001, startTime)
-        gainNode.gain.linearRampToValueAtTime(peakGain, startTime + OSCILLATOR_ATTACK_SEC)
-        gainNode.gain.setValueAtTime(peakGain, sustainTime)
-        gainNode.gain.linearRampToValueAtTime(0.0001, stopTime)
-        oscillator.connect(gainNode)
-        gainNode.connect(panner)
-        panner.connect(masterGain)
-        oscillator.start(startTime)
-        oscillator.stop(stopTime)
-      }
+          oscillator.type = 'triangle'
+          panner.pan.value = STEREO_PAN_BY_SIDE[side]
+          oscillator.frequency.setValueAtTime(midiToFrequency(event.note), startTime)
+          gainNode.gain.setValueAtTime(0.0001, startTime)
+          gainNode.gain.linearRampToValueAtTime(peakGain, startTime + OSCILLATOR_ATTACK_SEC)
+          gainNode.gain.setValueAtTime(peakGain, sustainTime)
+          gainNode.gain.linearRampToValueAtTime(0.0001, stopTime)
+          oscillator.connect(gainNode)
+          gainNode.connect(panner)
+          panner.connect(masterGain)
+          oscillator.start(startTime)
+          oscillator.stop(stopTime)
+        }
       }
       return
     }
     if (!hasAudioEvents) {
-      const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC + preRollDurationMs / speedFactor / 1000
-      scheduleVisualCallbacks(steps, visualMetronomeClicks, speedFactor, callbacks, context, baseStartTime)
+      const baseStartTime =
+        context.currentTime + SCHEDULE_LOOKAHEAD_SEC + preRollDurationMs / speedFactor / 1000
+      scheduleVisualCallbacks(
+        steps,
+        visualMetronomeClicks,
+        speedFactor,
+        callbacks,
+        context,
+        baseStartTime,
+      )
       scheduleMetronomeClicks(baseStartTime)
       return
     }
     const players = await loadPlayer()
-    const baseStartTime = context.currentTime + SCHEDULE_LOOKAHEAD_SEC + preRollDurationMs / speedFactor / 1000
-    scheduleVisualCallbacks(steps, visualMetronomeClicks, speedFactor, callbacks, context, baseStartTime)
+    const baseStartTime =
+      context.currentTime + SCHEDULE_LOOKAHEAD_SEC + preRollDurationMs / speedFactor / 1000
+    scheduleVisualCallbacks(
+      steps,
+      visualMetronomeClicks,
+      speedFactor,
+      callbacks,
+      context,
+      baseStartTime,
+    )
     scheduleMetronomeClicks(baseStartTime)
     for (const side of ['left', 'right'] as StereoSide[]) {
       const events = eventsBySide[side]

@@ -1,4 +1,5 @@
 import type { PlaybackStep } from './playback.js'
+import type { PlaybackConfig } from './playback.js'
 
 /** Ein in der Review-Anwendung auswählbarer Zupfnoter-Auszug. */
 export interface ReviewExtract {
@@ -22,6 +23,8 @@ export interface ReviewDocument {
   harpSvg: string
   /** Playback-Timeline der im Auszug aktiven, extern 1-basierten Stimmen. */
   playbackTimeline: PlaybackStep[]
+  /** Über den Confstack aufgelöste Wiedergabeempfehlung des Auszugs. */
+  playbackConfig?: PlaybackConfig
   /** Grundtempo aus dem ABC-Header in Schlägen pro Minute. */
   baseTempoBpm: number
   /** Notenwert eines Grundschlags als Bruchteil einer ganzen Note. */

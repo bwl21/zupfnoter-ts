@@ -6,7 +6,7 @@ import type { PlaybackMetronomeConfig } from '@zupfnoter/playback'
 import { useAudioPlayer, type PlaybackInstrument } from '@zupfnoter/playback-audio'
 import type { PlaybackStep, ReviewDocument } from '@zupfnoter/types'
 
-import defaultAbc from '../../../../fixtures/cases/public/krippen-demo/input.abc?raw'
+import defaultAbc from '../../../fixtures/cases/public/krippen-demo/input.abc?raw'
 
 type ReviewView = 'score' | 'harp'
 type PlaybackStatus = 'idle' | 'loading' | 'playing' | 'paused'
@@ -21,28 +21,35 @@ const playbackStatus = ref<PlaybackStatus>('idle')
 const currentStep = ref<PlaybackStep>()
 const startMeasure = ref(1)
 const tempoBpm = ref(document.value.baseTempoBpm)
-const metronomeEnabled = ref(false)
+const metronomeEnabled = ref(
+  document.value.playbackConfig?.metronomeMode !== undefined &&
+    document.value.playbackConfig.metronomeMode !== 'off',
+)
 const instrument = ref<PlaybackInstrument>('harp')
 const audioPlayer = useAudioPlayer(instrument)
 
-const currentSvg = computed(() => activeView.value === 'score'
-  ? document.value.scoreSvg
-  : document.value.harpSvg)
-const maximumMeasure = computed(() => document.value.playbackTimeline.reduce(
-  (maximum, step) => Math.max(maximum, step.position?.measureNumber ?? 1),
-  1,
-))
+const currentSvg = computed(() =>
+  activeView.value === 'score' ? document.value.scoreSvg : document.value.harpSvg,
+)
+const maximumMeasure = computed(() =>
+  document.value.playbackTimeline.reduce(
+    (maximum, step) => Math.max(maximum, step.position?.measureNumber ?? 1),
+    1,
+  ),
+)
 const speedFactor = computed(() => tempoBpm.value / document.value.baseTempoBpm)
 const currentPosition = computed(() => {
   const position = currentStep.value?.position
   if (position === undefined) return `Ab Takt ${startMeasure.value}`
   return `Takt ${position.measureNumber} · Durchlauf ${position.passIndex}`
 })
-const playLabel = computed(() => playbackStatus.value === 'playing' ? 'Pause' : 'Abspielen')
+const playLabel = computed(() => (playbackStatus.value === 'playing' ? 'Pause' : 'Abspielen'))
 
 function preparePlaybackSteps(): PlaybackStep[] {
   const timeline = document.value.playbackTimeline
-  const startIndex = timeline.findIndex((step) => (step.position?.measureNumber ?? 1) >= startMeasure.value)
+  const startIndex = timeline.findIndex(
+    (step) => (step.position?.measureNumber ?? 1) >= startMeasure.value,
+  )
   if (startIndex < 0) return []
   const steps = timeline.slice(startIndex)
   const firstTime = steps[0]?.playbackStartMs ?? 0
@@ -54,10 +61,16 @@ function preparePlaybackSteps(): PlaybackStep[] {
 
 function playbackMetronome(): PlaybackMetronomeConfig | undefined {
   if (!metronomeEnabled.value) return undefined
+  const config = document.value.playbackConfig
   return {
-    mode: 'always',
-    division: 4,
-    subdivision: 1,
+    mode:
+      config?.metronomeMode === undefined || config.metronomeMode === 'off'
+        ? 'always'
+        : config.metronomeMode,
+    minLeadIn: config?.minLeadIn,
+    bandPreCount: config?.bandPreCount,
+    division: config?.division,
+    subdivision: config?.subdivision,
   }
 }
 
@@ -115,6 +128,9 @@ function renderDocument(nextAbc: string, extractNumber = 0): void {
     abcText.value = nextAbc
     document.value = nextDocument
     tempoBpm.value = nextDocument.baseTempoBpm
+    metronomeEnabled.value =
+      nextDocument.playbackConfig?.metronomeMode !== undefined &&
+      nextDocument.playbackConfig.metronomeMode !== 'off'
     startMeasure.value = 1
     errorMessage.value = undefined
   } catch (error) {
@@ -198,14 +214,24 @@ onBeforeUnmount(stopPlayback)
           :value="document.extractNumber"
           @change="chooseExtract"
         >
-          <option v-for="extract in document.extracts" :key="extract.number" :value="extract.number">
+          <option
+            v-for="extract in document.extracts"
+            :key="extract.number"
+            :value="extract.number"
+          >
             {{ extract.title }}
           </option>
         </select>
         <button type="button" class="review-open" @click="fileInput?.click()">
           <span aria-hidden="true">＋</span><span class="review-open__label">ABC öffnen</span>
         </button>
-        <input ref="fileInput" class="visually-hidden" type="file" accept=".abc,text/plain" @change="openFile">
+        <input
+          ref="fileInput"
+          class="visually-hidden"
+          type="file"
+          accept=".abc,text/plain"
+          @change="openFile"
+        />
       </div>
     </header>
 
@@ -230,7 +256,11 @@ onBeforeUnmount(stopPlayback)
       </button>
     </nav>
 
-    <section ref="viewer" class="review-document" :aria-label="activeView === 'harp' ? 'Harfennoten' : 'Noten'">
+    <section
+      ref="viewer"
+      class="review-document"
+      :aria-label="activeView === 'harp' ? 'Harfennoten' : 'Noten'"
+    >
       <div v-if="errorMessage" class="review-error" role="alert">
         <strong>Das Stück konnte nicht angezeigt werden.</strong>
         <span>{{ errorMessage }}</span>
@@ -246,7 +276,13 @@ onBeforeUnmount(stopPlayback)
       <div class="review-player__controls">
         <label class="review-field">
           <span>Start</span>
-          <input v-model.number="startMeasure" type="number" min="1" :max="maximumMeasure" inputmode="numeric">
+          <input
+            v-model.number="startMeasure"
+            type="number"
+            min="1"
+            :max="maximumMeasure"
+            inputmode="numeric"
+          />
         </label>
         <button
           type="button"
@@ -257,16 +293,28 @@ onBeforeUnmount(stopPlayback)
         >
           <span aria-hidden="true">{{ playbackStatus === 'playing' ? 'Ⅱ' : '▶' }}</span>
         </button>
-        <button type="button" class="review-stop" aria-label="Wiedergabe stoppen" @click="stopPlayback">
+        <button
+          type="button"
+          class="review-stop"
+          aria-label="Wiedergabe stoppen"
+          @click="stopPlayback"
+        >
           <span aria-hidden="true">■</span>
         </button>
         <label class="review-field review-field--tempo">
           <span>Tempo</span>
-          <input v-model.number="tempoBpm" type="number" min="20" max="300" step="5" inputmode="numeric">
+          <input
+            v-model.number="tempoBpm"
+            type="number"
+            min="20"
+            max="300"
+            step="5"
+            inputmode="numeric"
+          />
           <span>BPM</span>
         </label>
         <label class="review-metronome">
-          <input v-model="metronomeEnabled" type="checkbox">
+          <input v-model="metronomeEnabled" type="checkbox" />
           <span>Metronom</span>
         </label>
       </div>

@@ -12,6 +12,7 @@ const reviewDocument: ReviewDocument = {
   scoreSvg: '<svg aria-label="score"><rect data-start-char="0" data-end-char="1" /></svg>',
   harpSvg: '<svg aria-label="harp"><rect data-zn-id="n1" /></svg>',
   playbackTimeline: [],
+  playbackConfig: undefined,
   baseTempoBpm: 120,
   tempoUnit: 0.25,
 }
