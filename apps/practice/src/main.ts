@@ -13,8 +13,8 @@ import {
   type PlaybackMetronomeSoundKind,
 } from '@zupfnoter/playback'
 import { mountPracticeUi, renderPracticeIcon, type PracticeUiController } from '@zupfnoter/practice-ui'
-import { BrowserQRCodeReader, type IScannerControls } from '@zxing/browser'
-import { DecodeHintType } from '@zxing/library'
+import { type IScannerControls } from '@zxing/browser'
+import { DecodeHintType, type ResultPointCallback } from '@zxing/library'
 import { deflateSync, inflateSync } from 'fflate'
 import '@zupfnoter/practice-ui/style.css'
 import {
@@ -25,12 +25,19 @@ import {
   resolveRange,
   tempoBpmAtTime,
 } from './practiceLogic'
+import {
+  decodeQrWithWasm,
+  enableContinuousFocus,
+  isQrPatternRecent,
+  ViewfinderQRCodeReader,
+} from './qrScanner'
 
-const PRACTICE_VERSION = '0.3.8'
+const PRACTICE_VERSION = '0.3.16'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
 const AUDIO_START_LEAD_MS = 200
+const QR_PATTERN_RETENTION_MS = 2500
 const INVALID_PLAYBACK_MESSAGE = 'Die Daten sind fehlerhaft, bitte wende dich an den Herausgeber.'
 
 const appElement = document.querySelector<HTMLDivElement>('#app')
@@ -105,76 +112,206 @@ function openQrScanner(): void {
         <video class="qr-scanner-video" autoplay muted playsinline></video>
         <div class="qr-scanner-frame" aria-hidden="true"></div>
       </div>
+      <div class="qr-scanner-detection" aria-hidden="true"><span></span><span></span><span></span></div>
       <p class="qr-scanner-status" role="status">Kamera wird geöffnet …</p>
-      <p class="qr-scanner-help">QR-Code vollständig in den Rahmen bringen und das Telefon ruhig halten.</p>
+      <p class="qr-scanner-help">Einen QR-Code vollständig in den Rahmen bringen. Sobald die Anzeige reagiert, das Telefon ruhig halten.</p>
+      <button class="qr-scanner-retry" type="button" hidden>Kamerazugriff erneut versuchen</button>
+      <button class="qr-scanner-snapshot" type="button">Scharfes Bild festhalten und auswerten</button>
     </div>`
   app.appendChild(overlay)
 
   const video = overlay.querySelector<HTMLVideoElement>('.qr-scanner-video')
   const status = overlay.querySelector<HTMLParagraphElement>('.qr-scanner-status')
   const closeButton = overlay.querySelector<HTMLButtonElement>('.qr-scanner-close')
-  if (video === null || status === null || closeButton === null) {
+  const frame = overlay.querySelector<HTMLDivElement>('.qr-scanner-frame')
+  const viewfinder = overlay.querySelector<HTMLDivElement>('.qr-scanner-viewfinder')
+  const help = overlay.querySelector<HTMLParagraphElement>('.qr-scanner-help')
+  const retryButton = overlay.querySelector<HTMLButtonElement>('.qr-scanner-retry')
+  const snapshotButton = overlay.querySelector<HTMLButtonElement>('.qr-scanner-snapshot')
+  if (video === null || status === null || closeButton === null || frame === null || viewfinder === null
+    || help === null || retryButton === null || snapshotButton === null) {
     overlay.remove()
     return
   }
 
   let controls: IScannerControls | undefined
+  let reader: ViewfinderQRCodeReader | undefined
   let closed = false
-  const close = (): void => {
-    if (closed) return
-    closed = true
+  let possiblePoints = 0
+  let detectionResetTimer: number | undefined
+  let robustDecodeInFlight = false
+  let lastRobustDecodeAt = 0
+  let lastPatternDetectedAt = Number.NEGATIVE_INFINITY
+  let robustDecodeAttempt = 0
+  let snapshotDecodeInFlight = false
+  let cameraStartInFlight = false
+  const showDetection = (state: 'searching' | 'partial' | 'detected'): void => {
+    viewfinder.dataset.detection = state
+    status.textContent = state === 'detected'
+      ? 'QR-Muster erkannt – Dekodierung läuft, bitte ruhig halten …'
+      : state === 'partial'
+        ? 'QR-Muster teilweise erkannt – Abstand langsam verändern …'
+        : 'QR-Code im Rahmen suchen …'
+  }
+  const resultPointCallback: ResultPointCallback = {
+    foundPossibleResultPoint() {
+      possiblePoints += 1
+      lastPatternDetectedAt = performance.now()
+      showDetection(possiblePoints >= 3 ? 'detected' : 'partial')
+      if (detectionResetTimer !== undefined) window.clearTimeout(detectionResetTimer)
+      detectionResetTimer = window.setTimeout(() => {
+        possiblePoints = 0
+        lastPatternDetectedAt = Number.NEGATIVE_INFINITY
+        robustDecodeAttempt = 0
+        showDetection('searching')
+      }, QR_PATTERN_RETENTION_MS)
+    },
+  }
+  const stopCamera = (): void => {
     controls?.stop()
+    controls = undefined
     const stream = video.srcObject
     if (stream instanceof MediaStream) {
       for (const track of stream.getTracks()) track.stop()
     }
     video.srcObject = null
+  }
+  const close = (): void => {
+    if (closed) return
+    closed = true
+    stopCamera()
+    if (detectionResetTimer !== undefined) window.clearTimeout(detectionResetTimer)
     overlay.remove()
     closeQrScanner = undefined
   }
   closeQrScanner = close
   closeButton.addEventListener('click', close, { once: true })
 
-  const reader = new BrowserQRCodeReader(
-    new Map<DecodeHintType, unknown>([[DecodeHintType.TRY_HARDER, true]]),
-    { delayBetweenScanAttempts: 100, delayBetweenScanSuccess: 1000 },
-  )
-  void reader.decodeFromConstraints(
-    {
-      audio: false,
-      video: {
-        facingMode: { ideal: 'environment' },
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-      },
-    },
-    video,
-    (result, error) => {
-      if (closed) return
-      if (result !== undefined) {
-        close()
-        void loadPlaybackUrl(result.getText()).catch((error: unknown) => {
-          renderPlaybackDataError(error)
-        })
-        return
-      }
-      if (error !== undefined && status.textContent === 'Kamera wird geöffnet …') {
-        status.textContent = 'QR-Code vor die Kamera halten …'
-      }
-    },
-  ).then((nextControls) => {
-    if (closed) {
-      nextControls.stop()
+  const openDecodedUrl = (url: string): void => {
+    if (closed) return
+    close()
+    void loadPlaybackUrl(url).catch((error: unknown) => {
+      renderPlaybackDataError(error)
+    })
+  }
+  snapshotButton.addEventListener('click', () => {
+    if (snapshotDecodeInFlight) return
+    const imageData = reader?.captureImageData(0.15)
+    if (imageData === undefined) {
+      viewfinder.dataset.detection = 'partial'
+      status.textContent = 'Das Kamerabild ist noch nicht bereit. Bitte kurz warten.'
       return
     }
-    controls = nextControls
-    status.textContent = 'QR-Code vor die Kamera halten …'
-  }).catch((error: unknown) => {
-    if (closed) return
-    status.textContent = error instanceof Error && error.name === 'NotAllowedError'
-      ? 'Kamerazugriff wurde nicht erlaubt.'
-      : 'Die Kamera konnte nicht geöffnet werden.'
+    snapshotDecodeInFlight = true
+    snapshotButton.disabled = true
+    viewfinder.dataset.detection = 'detected'
+    status.textContent = `Bild festgehalten (${imageData.width} × ${imageData.height}) – lokale Auswertung läuft …`
+    void decodeQrWithWasm(imageData).then((result) => {
+      if (result !== undefined) {
+        openDecodedUrl(result)
+        return
+      }
+      viewfinder.dataset.detection = 'partial'
+      status.textContent = 'Das festgehaltene Bild war nicht lesbar. Neu fokussieren und nochmals festhalten.'
+    }).catch((error: unknown) => {
+      console.warn('Festgehaltenes QR-Bild konnte nicht ausgewertet werden.', error)
+      viewfinder.dataset.detection = 'partial'
+      status.textContent = 'Das festgehaltene Bild konnte nicht ausgewertet werden. Bitte erneut versuchen.'
+    }).finally(() => {
+      snapshotDecodeInFlight = false
+      snapshotButton.disabled = false
+    })
   })
+  const tryRobustDecode = async (): Promise<void> => {
+    const now = performance.now()
+    if (closed || snapshotDecodeInFlight || robustDecodeInFlight || now - lastRobustDecodeAt < 300) return
+    const imageData = reader?.captureImageData(0.15)
+    if (imageData === undefined) return
+    robustDecodeInFlight = true
+    lastRobustDecodeAt = now
+    robustDecodeAttempt += 1
+    viewfinder.dataset.detection = 'detected'
+    status.textContent = `QR-Muster erkannt – Auswertung ${robustDecodeAttempt}, bitte ruhig halten …`
+    try {
+      const result = await decodeQrWithWasm(imageData)
+      if (result !== undefined) openDecodedUrl(result)
+    } catch (error: unknown) {
+      console.warn('Robuster QR-Decoder konnte nicht ausgeführt werden.', error)
+    } finally {
+      robustDecodeInFlight = false
+    }
+  }
+
+  reader = new ViewfinderQRCodeReader(
+    frame,
+    new Map<DecodeHintType, unknown>([
+      [DecodeHintType.TRY_HARDER, true],
+      [DecodeHintType.NEED_RESULT_POINT_CALLBACK, resultPointCallback],
+    ]),
+    { delayBetweenScanAttempts: 100, delayBetweenScanSuccess: 1000 },
+    () => {
+      possiblePoints = 0
+    },
+  )
+  const startCamera = async (): Promise<void> => {
+    if (closed || cameraStartInFlight) return
+    cameraStartInFlight = true
+    retryButton.hidden = true
+    snapshotButton.disabled = true
+    status.textContent = 'Kamerazugriff wird angefragt …'
+    help.textContent = 'Bitte eine Abfrage von Chrome beziehungsweise Android mit „Zulassen“ bestätigen.'
+    try {
+      const nextControls = await reader?.decodeFromConstraints(
+        {
+          audio: false,
+          video: {
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+          },
+        },
+        video,
+        (result, error) => {
+          if (closed) return
+          if (result !== undefined) {
+            openDecodedUrl(result.getText())
+            return
+          }
+          if (error !== undefined && isQrPatternRecent(
+            lastPatternDetectedAt,
+            performance.now(),
+            QR_PATTERN_RETENTION_MS,
+          )) void tryRobustDecode()
+        },
+      )
+      if (nextControls === undefined) throw new Error('QR-Leser ist nicht verfügbar.')
+      if (closed) {
+        nextControls.stop()
+        return
+      }
+      controls = nextControls
+      snapshotButton.disabled = false
+      help.textContent = 'Einen QR-Code vollständig in den Rahmen bringen. Sobald die Anzeige reagiert, das Telefon ruhig halten.'
+      showDetection('searching')
+      void enableContinuousFocus(video).catch(() => undefined)
+    } catch (error: unknown) {
+      if (closed) return
+      const permissionDenied = error instanceof Error && error.name === 'NotAllowedError'
+      status.textContent = permissionDenied
+        ? 'Chrome oder Android blockiert den Kamerazugriff.'
+        : 'Die Kamera konnte nicht geöffnet werden.'
+      help.textContent = permissionDenied
+        ? 'In Chrome bei practice.zupfnoter.de die Website-Einstellung „Kamera: Zulassen“ setzen. Falls sie dort erlaubt ist: Android-Einstellungen → Apps → Chrome → Berechtigungen → Kamera zulassen. Danach hier erneut versuchen.'
+        : 'Bitte prüfen, ob eine andere App die Kamera verwendet, und danach erneut versuchen.'
+      retryButton.hidden = false
+    } finally {
+      cameraStartInFlight = false
+    }
+  }
+  retryButton.addEventListener('click', () => {
+    void startCamera()
+  })
+  void startCamera()
 }
 
 function eventLabel(event: PlaybackEvent | undefined): string {

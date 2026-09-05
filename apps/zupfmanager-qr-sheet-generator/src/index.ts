@@ -48,16 +48,18 @@ interface Options {
   practiceUrl: string
   abcRoot?: string
   perPage: number
+  includeExtract0: boolean
 }
 
 interface QrEntry {
+  extractNr: number
   label: string
   imageName: string
   imageDataUrl: string
 }
 
 interface QrGroup {
-  suffix: 'AM' | 'B'
+  suffix: '0' | 'AM' | 'B'
   entries: QrEntry[]
 }
 
@@ -96,6 +98,7 @@ Optionen:
   --output <pfad>          Ausgabebasis; standardmäßig <projekt>/practice-qr/<projekt>_practice-qr.abc
   --practice-url <url>     Practice-Basis-URL
   --per-page <zahl>        Maximale QR-Anzahl pro Blatt (1–35)
+  --include-extract-0      Eigenes QR-Blatt für Auszug 0 erzeugen
   --help                   Diese Hilfe anzeigen
 `)
 }
@@ -118,6 +121,7 @@ function parseOptions(args: string[]): Options {
     practiceUrl: option(args, '--practice-url') ?? option(args, '--player-url') ?? DEFAULT_PRACTICE_URL,
     abcRoot: option(args, '--abc-root'),
     perPage,
+    includeExtract0: args.includes('--include-extract-0'),
   }
 }
 
@@ -188,12 +192,14 @@ async function makeQrEntries(
   number: number,
   abcFile: string,
   practiceUrl: string,
+  includeExtract0: boolean,
 ): Promise<QrEntry[]> {
   const abcText = await readFile(abcFile, 'utf8')
   const config = mergeSongConfig(initConf(new Confstack()), extractSongConfig(abcText))
   const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
   const configuredProduce = config.produce ?? []
-  const extractNumbers = configuredProduce.length > 0 ? [...new Set(configuredProduce)] : [0]
+  const producedExtracts = configuredProduce.length > 0 ? configuredProduce : [0]
+  const extractNumbers = [...new Set(includeExtract0 ? [0, ...producedExtracts] : producedExtracts)]
   const entries: QrEntry[] = []
   for (const extractNr of extractNumbers) {
     const sheet = new HarpnotesLayout(config).layout(song, extractNr, 'A3')
@@ -232,6 +238,7 @@ async function makeQrEntries(
     const practiceLink = new URL(link.url)
     practiceLink.searchParams.set('id', label)
     entries.push({
+      extractNr,
       label,
       imageName: 'practice_qr_' + label.replace(/[^a-zA-Z0-9_-]/g, '_'),
       imageDataUrl: practiceQrJpegDataUrl(practiceLink.toString()),
@@ -265,9 +272,12 @@ function split(value: string, size: number): string[] {
 }
 
 function splitQrGroups(entries: QrEntry[]): QrGroup[] {
-  const amEntries = entries.filter((entry) => /-(?:A|M)\d*$/.test(entry.label))
-  const bEntries = entries.filter((entry) => !/(?:-)(?:A|M)\d*$/.test(entry.label))
+  const extract0Entries = entries.filter((entry) => entry.extractNr === 0)
+  const producedEntries = entries.filter((entry) => entry.extractNr !== 0)
+  const amEntries = producedEntries.filter((entry) => /-(?:A|M)\d*$/.test(entry.label))
+  const bEntries = producedEntries.filter((entry) => !/(?:-)(?:A|M)\d*$/.test(entry.label))
   return [
+    { suffix: '0' as const, entries: extract0Entries },
     { suffix: 'AM' as const, entries: amEntries },
     { suffix: 'B' as const, entries: bEntries },
   ].filter((group) => group.entries.length > 0)
@@ -381,7 +391,12 @@ async function main(): Promise<void> {
   for (const [index, song] of songs.entries()) {
     const abcFile = await resolveAbcFile(project, song.filename, options)
     console.log((index + 1) + '/' + songs.length + ': ' + song.title + ' [' + abcFile + ']')
-    entries.push(...await makeQrEntries(index + 1, abcFile, options.practiceUrl))
+    entries.push(...await makeQrEntries(
+      index + 1,
+      abcFile,
+      options.practiceUrl,
+      options.includeExtract0,
+    ))
   }
 
   const groups = splitQrGroups(entries)
