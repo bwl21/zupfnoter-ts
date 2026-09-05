@@ -1,13 +1,13 @@
 # Zupfnoter Design-System
 
-Zentrales Nachschlage-Dokument für die `Zn*`-Basiskomponenten im `apps/web`-Frontend.
+Zentrales Nachschlage-Dokument für die `Zn*`-Basiskomponenten in `packages/design-system`.
 Das Design-System ist bewusst klein gehalten: Es liefert wiederverwendbare Bausteine
 für die Workbench, aber keine Fachlogik.
 
 ## Grundprinzipien
 
 - Tokens zuerst: Farben, Abstände, Schatten und Typografie kommen aus
-  [apps/web/src/design-system/tokens.css](/Users/beweiche/beweiche_noTimeMachine/zupfnoter-ts/apps/web/src/design-system/tokens.css).
+  [packages/design-system/src/tokens.css](../packages/design-system/src/tokens.css).
 - Komponenten bleiben generisch und bekommen Verhalten über Props und Slots.
 - Fachliche Besonderheiten gehören in Workbench- oder Panel-Komponenten, nicht in das
   Design-System selbst.
@@ -15,6 +15,18 @@ für die Workbench, aber keine Fachlogik.
   Wrapper-Markup, nicht weil die Komponente „von selbst“ Sonderfälle kennt.
 
 ## Komponenten-Index
+
+Das Paket ist ein privates Vue-/TypeScript-Quellpaket; sein `build` prüft die
+Komponenten mit `vue-tsc`. Verbraucher benötigen einen Vue-fähigen Bundler.
+Details: [Paketvertrag](../packages/design-system/README.md).
+`ZnPlaybackStatus` (Wiedergabepille) und `ZnPlaybackControls` gehören ebenfalls
+hierher; Web und Review importieren sie ohne gegenseitige App-Abhängigkeit.
+
+Storybook lädt global nur die Design-System-Basis. Die vorhandenen
+Workbench-Stories verwenden zustandslose Produktionskomponenten und brauchen
+weder Pinia noch die globale Web-Shell. Zukünftige Stories mit Store-Bedarf
+müssen ihre Umgebung lokal bereitstellen. Practice registriert die produktive
+UI und deren Styles in seiner eigenen Story.
 
 | Komponente | Zweck | Wichtige Props | Typische Verwendung |
 |---|---|---|---|

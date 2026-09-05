@@ -19,7 +19,7 @@ Aktualisierung dieser Checkliste. Die Reihenfolge darf Abhängigkeiten folgen.
 - [x] B6 – Gemeinsame fachliche Typen eindeutig in `packages/types` besitzen.
 - [x] B7 – Design-System-Paketvertrag und Build/Typecheck konsistent machen.
 - [x] B8 – UI-Abläufe durch verantwortliche Controller entkoppeln.
-- [ ] B9 – Storybook isolieren und Architekturdokumentation aktualisieren.
+- [x] B9 – Storybook isolieren und Architekturdokumentation aktualisieren.
 
 ## Befunde und Abnahmekriterien
 
@@ -215,3 +215,34 @@ Umbau sämtlicher Commands oder Ansichten.
 4 Review-Tests, 22 Worker-/Pipeline-Tests und Web-/Review-Typechecks erfolgreich.
 Keine Browser-/Geräteprüfung möglich; Controller-Cleanup und veraltete Antworten
 sind gezielt durch Tests abgesichert.
+
+### B9 – Ergebnis
+
+Storybook verwendet seine eigene TypeScript-/Vite-Konfiguration. Globale
+Web-Shell-Styles und Pinia-Installation entfallen; die vorhandenen
+Workbench-Stories benötigen keinen Store. Globale Basis sind die
+Design-System-Tokens; der Vue-Compiler bleibt explizit registriert.
+`current-state.md`, Design-System-Dokumentation und Paketrollen in `AGENTS.md`
+beschreiben nun Review, Audio, Storage, Quellpaketvertrag und vorhandenen Worker.
+Storybook-Typecheck und vollständiger Storybook-Produktionsbuild erfolgreich.
+Bekannte Vendor-eval-/Chunkgrößenwarnungen bleiben bestehen.
+
+## Abschlussprüfung der Implementierungsserie
+
+- [x] `pnpm test`: 1.082 Tests in 96 Dateien erfolgreich
+  (Core 691, Playback 31, Storage 2, ViewSvg 6, Practice 12, Review 4, Web 336).
+- [x] `pnpm type-check`: alle Workspace-Typechecks erfolgreich.
+- [x] `pnpm build`: alle regulären Workspace-Builds erfolgreich.
+- [x] `pnpm --filter @zupfnoter/storybook build-storybook`: erfolgreich.
+- [x] Frozen-Lockfile-Prüfung offline erfolgreich; keine Paketdownloads nötig.
+- [x] `git diff --check`: ohne Befund.
+- [ ] Visuelle Abnahme: Config-Editor, Storybook/Wiedergabepille und Review
+  in Hoch-/Querformat. Browser-Skill gelesen; Browserdienst dieser Sitzung
+  nicht erreichbar. Keine ersatzweise visuelle Abnahme behauptet.
+- [ ] Geräteabnahme: Play/Pause/Wiederaufnahme und Metronom auf iOS/Android;
+  gemeinsame technische Tests ersetzen keinen Hörtest.
+
+Die neun Code-/Dokumentationsbefunde sind umgesetzt. Die beiden letzten
+Punkte sind ausdrücklich noch offene Abnahmeprüfungen, keine grünen Tests.
+Vollständige Legacy-/PDF-Parität ist nicht Gegenstand dieser Zusage.
+Kein Push, Merge oder Deployment wurde durchgeführt.

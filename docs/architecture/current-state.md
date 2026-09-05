@@ -1,119 +1,114 @@
-# Aktueller Projektstand
+# Architektur und aktueller Projektstand
 
-Stand: 2026-07-20
+Stand: 2026-09-05. Dieser Ist-Bericht ergänzt die Fachspezifikationen.
+Befunde, Abnahmekriterien und Prüfergebnisse der Architekturklärung stehen im
+[Review mit Checkliste](../review/architecture-clarity-2026-09-05.md).
 
-Dieses Dokument beschreibt den tatsächlich vorhandenen Stand des Monorepos. Es
-ist ein Ist-Bericht und ersetzt keine Fachspezifikation.
+## Quelle der Wahrheit und Paketgrenzen
 
-## Kurzfassung
-
-`zupfnoter-ts` ist ein PNPM-Monorepo mit einer weitgehend implementierten
-Transformationskette:
+ABC bleibt die fachliche Quelle. Die Apps verbinden gemeinsame Bausteine;
+sie besitzen keine eigenen Song-Parser oder alternative Layout-Pipelines.
 
 ```text
-ABC → Song → Sheet → SVG/PDF
-             ↘ Playback-Timeline → Playback-Link → apps/practice
+ABC → core: DocumentPipeline → Song → Sheet → SVG/PDF
+                                  ↘ Playback-Timeline
+                                     ├→ playback-audio → Web / Review
+                                     └→ playback: Linkformat → Practice
+                                                              ↘ playback-audio/session
 ```
 
-Die Vue-Workbench ist die aktive Produktanwendung. Die eigenständige Practice-App,
-das gemeinsame Design-System und Storybook sind vorhanden und werden separat
-gebaut bzw. deployed.
+| Paket | Verantwortung und Grenze |
+|---|---|
+| `types` | Gemeinsame Datenmodelle, einschließlich Playback-Link- und Storage-Verträgen; nur Typen, keine Laufzeitlogik. |
+| `core` | ABC-Parser, Song/Layout, SVG/PDF, Confstack/Schema und gemeinsame fachliche Playback-Berechnungen. Kein App-Import. |
+| `playback` | Versioniertes Linkformat, Kompressionsschnittstelle und Metronommathematik; keine zweite aus Exportdaten rekonstruierte Timeline. |
+| `playback-audio` | Browser-Audio-Sitzung, Instrumentladen und Scheduling; Timeline-Adapter für Web/Review. Der Unterpfad `./session` importiert Core nicht und wird von Practice verwendet. |
+| `storage` | Verbindungen, Anbieterregistrierung, Dropbox/OAuth-Protokoll. Kein Core-Import für Zustandstypen; keine Vue-Dialoge. |
+| `design-system` | Gemeinsame Vue-Komponenten und Design-Tokens, einschließlich Wiedergabepille/-Controls. Privates Quellpaket; Build bedeutet Vue-Typecheck. |
+| `practice-ui` | Imperative produktive Practice-Oberfläche, Steuerungs-API und Styles. Keine Audio-Engine. |
 
-## Repository-Struktur
+Alle Apps sind eigenständige Einstiegspunkte. Produktionscode importiert
+weder Storybook noch eine andere App. Storybook darf Produktionskomponenten
+für deren Darstellung importieren.
 
-- `packages/types`: gemeinsame Datenmodelle ohne Laufzeitlogik
-- `packages/core`: ABC-Parser, Song-/Layout-Pipeline, SVG/PDF und Konfiguration
-- `packages/playback`: versioniertes Binärformat für Playback-Links
-- `packages/practice-ui`: gemeinsame imperative Practice-Oberfläche und Styles
-- `packages/design-system`: wiederverwendbare `Zn*`-Vue-Komponenten
-- `apps/web`: Workbench mit Editor, Vorschauen, Commands, Storage und Playback
-- `apps/practice`: mobile Playback-Link-Anwendung
-- `apps/viewsvg`: eigenständige SVG-/Vergleichsansicht
-- `apps/demo`: kleinere Pipeline-Demo
-- `apps/cli`: CLI-Grundlage; der geplante Endausbau ist noch offen
-- `apps/storybook`: Storybook für Design-System, Web- und Practice-Stories
+## Apps
 
-## Implementierter Kern
+- **Web:** vollständige Workbench mit Editor, Commands, Konfiguration,
+  Auswahl, Vorschauen, Storage, Export und Playback.
+- **Review:** schreibgeschützte ABC-Ansicht mit Auszügen, Storage-Öffnen,
+  Playback und Highlights; für mobile Geräte, Tablets und Desktop-Browser.
+  Ohne Notenauswahl wird der aktuelle Auszug gespielt.
+- **Practice:** eigenständige mobile Link-Wiedergabe und QR-Scanner;
+  benötigt weder ABC noch den Core-Parser zur Wiedergabe.
+- **CLI:** Node-Einstieg mit Commands und Batch-SVG-/PDF-Export samt
+  optionalem Practice-Link/QR. Datei-I/O und Kompression sind Node-Adapter.
+- **Zupfmanager-QR-Generator:** Projekt-/Datenbank-I/O und QR-Blatt-Zusammenstellung.
+- **ViewSvg:** eigenständige Vergleichs-/SVG-/PDF-Ansichten.
+- **Demo:** kleiner direkter Verbraucher der zentralen Dokument-Pipeline.
+- **Storybook:** isolierte Darstellungen produktiver Komponenten und
+  Practice-Renderfunktion, keine Ersatz-Mockups.
 
-`packages/core` implementiert:
+## Gemeinsame Dokument- und Konfigurationsverarbeitung
 
-1. `AbcParser` über die vendorte `abc2svg`-Bibliothek
-2. `AbcToSong` für ABC → Song
-3. `Confstack` und hierarchische Konfigurationsauflösung
-4. `BeatPacker` und vertikale Layoutberechnung
-5. `HarpnotesLayout` für Song → Sheet
-6. `SvgEngine` und `PdfEngine` für SVG-, A3- und segmentierte A4-Ausgabe
+`DocumentPipeline` bietet zentrale Einstiege für Konfiguration,
+ABC→Song, Layout mit einheitlichen Textmetriken und Playback-Link-Optionen.
+Web, Review, CLI, Demo und QR-Generator verwenden diese Verarbeitung.
+Ressourcen-I/O und Browser-/Node-Kompression werden vom Aufrufer bereitgestellt.
 
-Die Kernpipeline wird durch Unit-, Snapshot-, Fixture-, SVG- und PDF-
-Vergleichstests geprüft. Fixtures mit Copyright-Schutz bleiben außerhalb des
-öffentlichen Git-Repositories.
+`Confstack` bleibt generisch. Der Fachaufbau der Konfiguration liegt im
+Core. Für den Editor vereinigt `ConfigEditorContext` Built-in-Werte,
+globale Dokumentwerte, Auszug 0 und aktiven Auszug. Konkrete Formularpfade
+verwenden das Schema; Herkunftsinformationen kommen aus Confstack.
+Schema-Metadaten beschreiben Default-Verweise, nicht UI-Regex.
+Die dokumentierte Legacy-Formset-Kompatibilität ist keine Feldquelle für
+konkrete Formulare. Details und Grenzen:
+[Konfigurationsparität](../user-manual/UD_Zupfnoter-Handbuch/config-parity.md).
 
-## Web-Workbench
+## Playback und Lifecycle
 
-In `apps/web` sind vorhanden:
+Web und Review verwenden dieselbe Timeline-Audio-Implementierung und dieselbe
+fachliche Highlight-Zeitbasis. Die Startposition berücksichtigt Takt **und**
+Durchlauf. Gemeinsame fachliche Typen liegen in `types`; bisherige
+Typ-Importpfade werden teilweise kompatibel weitergereicht.
 
-- Workbench-Layout mit ABC-Editor, Score- und Harfennoten-Vorschau
-- zentrale Selection mit Scope für Einzelstimme, Auszug und alle Stimmen
-- Zoom, Pan, Lupe, Mirror-/Mehrfensteransichten und Highlighting
-- CodeMirror-Editor mit Diagnose- und Shortcut-Anbindung
-- CommandStack, Konsole, Undo/Redo-Grundlage und zentraler Logger
-- Datei-Menü mit Öffnen, Speichern, Storage-Verbindungsdialog und Dropbox-
-  Verbindungen
-- dauerhafte Storage-Profile mit Wurzelpfad und Schreibschutz
-- Playback-Timeline mit Repeat-/Volta-Flow, Takt-/Durchlauf-Positionsspur,
-  Metronom, Stereo-Panning und Soundfont-/Oszillator-Ausgabe
-- Playback-Link-Export einschließlich optionalem, temporär erzeugtem
-  Übungs-QR-Code als JPG in SVG/PDF
-- About-Dialog mit Build-Metadaten
+Practice und der Timeline-Adapter teilen AudioContext-Erzeugung,
+gestenzeitiges Resume, Laden/Timeout/Abbruch und Scheduling-Fenster über
+`playback-audio/session`. Die Adapter behalten absichtlich ihre
+Ausgabeeinstellungen: Web-Stereo und vollständig vorgeplante Ereignisse;
+Practice-Sampleauswahl, Kompressor und mobile Nachfüllfenster. Gleiche
+Audio-Infrastruktur bedeutet daher nicht automatisch identischen Klang.
 
-Noch nicht vollständig konsolidiert sind insbesondere die Trennung der
-Selection-Projektionen, der weitere Ausbau des Konfigurationseditors und die
-vollständige lokale Datei-Integration.
+Review besitzt einen Speichercontroller mit explizitem ABC-Übernahme-Callback.
+Verbindungswechsel und Unmount entwerten ausstehende Ergebnisse.
+Die Workbench besitzt einen separaten Rendercontroller für Worker, Request-IDs,
+Debounce und Cleanup; ihre Stores verbleiben bei der Workbench.
 
-## Playback und Practice
+## Worker und Storybook
 
-`packages/playback` kodiert die bereits erzeugte Timeline in ein versioniertes,
-komprimiertes URL-Fragment. Der Payload enthält Audioereignisse und eine
-separate zeitbasierte Positionsspur für Takt, Durchlauf und Metrum.
+Die Web-Renderpipeline läuft bereits in einem Modul-Worker
+(`apps/web/src/workbench/rendering/renderWorker.ts`). Ist Worker-Erzeugung
+nicht verfügbar, verwendet der Controller dieselbe Renderfunktion synchron.
+Veraltete Ergebnisse werden verworfen. Review verwendet derzeit den
+synchronen Core-Einstieg; eine Worker-Migration von Review ist nicht behauptet.
 
-`apps/practice` decodiert diese Links ohne ABC- oder Serverzugriff. Die produktive
-Practice-UI kommt aus `packages/practice-ui`; Storybook verwendet dieselbe UI-
-Renderfunktion und dasselbe CSS. Die Positionsübernahme funktioniert auch
-während der Wiedergabe und nach einer Pause. Practice ist öffentlich über
-FLink deploybar.
+Storybook hat eigene Vite-/TypeScript-Konfiguration und lädt global nur
+die Design-System-Basis. Die vorhandenen Workbench-Stories benötigen keine
+globale Pinia-Installation oder Web-Shell-Styles. App-spezifische Story-Umgebung
+gehört bei künftigem Bedarf an die jeweilige Story.
 
-Die Workbench verwendet für Teilen und PDF-QR-Erzeugung dieselbe Web-
-Playback-Timeline. Der QR-Code wird beim Export erzeugt und nicht als
-Ressource persistiert.
+## Validierung und verbleibende Grenzen
 
-Offen bleiben vor allem die weitere Audio-/Mobile-Politur und ein vollständiger
-CLI-Exportweg für Playback-Links.
-
-## Storybook und Design-System
-
-`apps/storybook` ist eine eigene Workspace-App. Stories liegen unter
-`apps/storybook/stories/` und verwenden die produktiven Komponenten bzw. die
-gemeinsame Practice-UI. Storybook dient als isolierte Darstellung, Accessibility-
-Prüfung und Grundlage für visuelle Regressionstests; es enthält keine zweite
-Produktionsdarstellung.
-
-## Phasenstand
-
-- Phase 0: Monorepo-Setup umgesetzt
-- Phase 1: gemeinsame Typen umgesetzt
-- Phase 2: ABC → Song umgesetzt und getestet
-- Phase 3: Song → Sheet, Konfiguration und Layout weitgehend umgesetzt
-- Phase 4: SVG- und PDF-Ausgabe umgesetzt; Paritätsausbau läuft weiter
-- Phase 5: aktive Produktphase; Workbench und Storage sind weit fortgeschritten
-- Phase 5/Storybook: Design-System- und Practice-Stories eingerichtet
-- Phase 6: Playback-Link, Practice und FLink-Deployment umgesetzt; CLI-Ausbau offen
-- Phase 7: Worker-Architektur weiterhin offen
-
-## Verbindliche offene Themen
-
-- Selection-Projektionen und Mehrfachauswahl weiter konsolidieren
-- lokale Datei-Integration abschließen
-- Konfigurationseditor und globale Stores weiter entkoppeln
-- CLI-Export und gemeinsame Browser-/CLI-Pipeline vervollständigen
-- Audio-/Mobile-Playback weiter gegen reale Geräte prüfen
-- Worker-Architektur nur bei nachgewiesenem UI-Thread-Bedarf einführen
+- Die Architekturklärung enthält pro Befund einen Implementierungscommit
+  und dokumentierte Tests; siehe verlinkte Checkliste.
+- Unit-Tests und Typechecks belegen ausschließlich das geprüfte Verhalten.
+  Vollständige Legacy-, Druck-, Klang- und Geräteparität sind keine daraus
+  ableitbaren Zusagen.
+- Reale iOS-/Android-Tests für Audio und QR-Erkennung bleiben notwendig.
+  Die integrierte Browserprüfung war in der Architekturklärung nicht erreichbar.
+- Große UI-Einstiege bestehen weiterhin als App-Komposition. Die Abgrenzung
+  einzelner Verantwortlichkeiten ist kein Anspruch auf einen vollständigen
+  Neuaufbau aller Commands und Stores.
+- Export-/Anbieterfehler und Netzunterbrechungen benötigen weiterhin
+  Integrationstests mit echten, ausdrücklich freigegebenen Verbindungen.
+- Deploy-Skripte für Web, Practice und Review sind vorhanden. Dieser
+  Architektur-Branch wurde nicht deployed oder gepusht.

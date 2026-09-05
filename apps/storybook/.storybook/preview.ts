@@ -1,12 +1,5 @@
-import { setup } from '@storybook/vue3-vite'
 import type { Preview } from '@storybook/vue3-vite'
-import { createPinia } from 'pinia'
-
-import '../../web/src/assets/main.css'
-
-setup((app) => {
-  app.use(createPinia())
-})
+import '@zupfnoter/design-system/tokens.css'
 
 const preview = {
   parameters: {

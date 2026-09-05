@@ -45,9 +45,16 @@ ABC → @zupfnoter/core Song → Sheet → SVG/PDF
   fachliche Logik.
 - `packages/types`: gemeinsame Datenmodelle.
 - `packages/playback`: versioniertes, nur für Practice bestimmtes Playback-Link-Format.
+- `packages/playback-audio`: Browser-Audio-Sitzung und Timeline-Adapter;
+  Practice nutzt den Core-freien `./session`-Einstieg für Link-Ereignisse.
+- `packages/storage`: gemeinsame Anbieterprotokolle und Verbindungsverwaltung;
+  die Apps besitzen ihre jeweiligen Dialogabläufe.
+- `packages/practice-ui`: imperative Practice-UI und zugehörige Styles.
 - `packages/design-system`: wiederverwendbare Vue-Komponenten (`Zn*`).
 - `apps/web`: Vue-Workbench, Commands, Editor, Vorschauen und Storage-UI.
 - `apps/practice`: eigenständige, mobile Practice-Anwendung für Playback-Links.
+- `apps/review`: schreibgeschützte ABC-Ansicht für mobile Geräte und Browser;
+  nutzt Core, Storage, Playback-Audio und Design-System ohne Web-App-Imports.
 - `apps/viewsvg`: eigenständige SVG-/Vergleichsansicht.
 - `apps/cli`: Node-CLI ohne Browser-Abhängigkeiten.
 - `apps/storybook`: isolierte Stories und visuelle Komponentenfälle.
