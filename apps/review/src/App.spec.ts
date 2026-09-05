@@ -125,6 +125,7 @@ describe('Review App', () => {
     expect(wrapper.get('[aria-label="Noten"]').html()).toContain('aria-label="score"')
 
     expect(wrapper.findAll('.review-actions > button')).toHaveLength(1)
+    expect(wrapper.get('[data-testid="open-storage"]').attributes('aria-label')).toBe('Öffnen')
     expect(wrapper.get('[aria-label="Starttakt"]').element).toBeInstanceOf(HTMLInputElement)
     expect(wrapper.get('[aria-label="Startdurchlauf"]').element).toBeInstanceOf(HTMLInputElement)
     expect(wrapper.get('[aria-label="Metronom-Modus"]').element).toBeInstanceOf(HTMLSelectElement)

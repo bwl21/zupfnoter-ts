@@ -321,7 +321,13 @@ onBeforeUnmount(stopPlayback)
             </button>
           </div>
         </details>
-        <button type="button" class="review-open" data-testid="open-storage" @click="openStorage">
+        <button
+          type="button"
+          class="review-open"
+          data-testid="open-storage"
+          aria-label="Öffnen"
+          @click="openStorage"
+        >
           <span aria-hidden="true">＋</span><span class="review-open__label">Öffnen</span>
         </button>
         <input
