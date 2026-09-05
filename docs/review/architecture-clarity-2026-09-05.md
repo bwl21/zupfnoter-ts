@@ -16,7 +16,7 @@ Aktualisierung dieser Checkliste. Die Reihenfolge darf Abhängigkeiten folgen.
 - [ ] B3 – Konfigurationsfelder und wirksame Werte generisch aus Schema/Confstack beziehen.
 - [ ] B4 – Gemeinsame Dokument-/Exportvorbereitung; identische Playback-Link-Metadaten.
 - [ ] B5 – Gemeinsamer Audio-Lebenszyklus und Scheduling für Practice sowie Web/Review.
-- [ ] B6 – Gemeinsame fachliche Typen eindeutig in `packages/types` besitzen.
+- [x] B6 – Gemeinsame fachliche Typen eindeutig in `packages/types` besitzen.
 - [ ] B7 – Design-System-Paketvertrag und Build/Typecheck konsistent machen.
 - [ ] B8 – UI-Abläufe durch verantwortliche Controller entkoppeln.
 - [ ] B9 – Storybook isolieren und Architekturdokumentation aktualisieren.
@@ -142,3 +142,14 @@ Fehlende Positionen liefern eine leere Timeline. Regressionstests prüfen den
 zweiten Durchlauf, fehlende Positionen und unveränderte Eingangsdaten.
 Core-Regressionstests (2), Review-Tests (2) und beide Typechecks erfolgreich.
 Keine akustische Änderung am Scheduler; keine Geräteprüfung durchgeführt.
+
+### B6 – Ergebnis
+
+Position, Ereignis, Metrum, Positionsmarker, Linkoptionen, Metronomkonfiguration
+und Linkergebnis samt Größenanalyse haben eine kanonische Definition in `types`.
+Playback und Core reichen die bisherigen Typ-Imports kompatibel weiter.
+`StorageCommandState` liegt ebenfalls in `types`; Storage benötigt Core nicht mehr.
+Rein formatinterne und plattformspezifische Adaptertypen bleiben beim Besitzer.
+Alle Workspace-Typechecks, 31 Playback- und 2 Storage-Tests erfolgreich.
+Workspace-Installation mit `--frozen-lockfile --offline --ignore-scripts`
+anschließend vollständig erfolgreich; keine Paketdownloads erforderlich.

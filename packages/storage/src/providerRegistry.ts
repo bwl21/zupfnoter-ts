@@ -3,7 +3,7 @@ import type {
   StorageDocument,
   StorageProviderDescriptor,
 } from '@zupfnoter/types'
-import type { StorageCommandState } from '@zupfnoter/core'
+import type { StorageCommandState } from '@zupfnoter/types'
 
 export interface StorageProviderAdapter {
   descriptor: StorageProviderDescriptor

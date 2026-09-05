@@ -598,7 +598,11 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
 
-  packages/playback: {}
+  packages/playback:
+    dependencies:
+      '@zupfnoter/types':
+        specifier: workspace:*
+        version: link:../types
 
   packages/playback-audio:
     dependencies:
@@ -633,9 +637,6 @@ importers:
 
   packages/storage:
     dependencies:
-      '@zupfnoter/core':
-        specifier: workspace:*
-        version: link:../core
       '@zupfnoter/types':
         specifier: workspace:*
         version: link:../types

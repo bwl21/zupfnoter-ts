@@ -1,5 +1,5 @@
 import type { StorageConnection } from '@zupfnoter/types'
-import type { StorageCommandState } from '@zupfnoter/core'
+import type { StorageCommandState } from '@zupfnoter/types'
 
 const CONNECTIONS_KEY = 'zupfnoter.storage.connections'
 const CONTEXT_KEY = 'zupfnoter.storage.context'

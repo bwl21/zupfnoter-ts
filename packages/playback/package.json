@@ -17,5 +17,7 @@
     "type-check": "tsc --noEmit",
     "test:unit": "pnpm --dir ../.. run test:playback"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@zupfnoter/types": "workspace:*"
+  }
 }

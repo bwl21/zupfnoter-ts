@@ -1,4 +1,4 @@
-import type { StorageCommandState } from '@zupfnoter/core'
+import type { StorageCommandState } from '@zupfnoter/types'
 import type { StorageDocument } from '@zupfnoter/types'
 
 interface DropboxTokenResponse {

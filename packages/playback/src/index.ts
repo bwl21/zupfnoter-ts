@@ -1,48 +1,5 @@
-export interface PlaybackPosition {
-  measureNumber: number
-  passIndex: number
-}
-
-export interface PlaybackEvent {
-  startMs: number
-  durationMs: number
-  pitch: number
-  velocity?: number
-  position: PlaybackPosition
-}
-
-export interface PlaybackPositionMarker {
-  timeMs: number
-  position: PlaybackPosition
-  meter?: PlaybackMeter
-  partName?: string
-}
-
-export interface PlaybackMeter {
-  numerator: number
-  denominator: number
-  grouping?: readonly number[]
-}
-
-export interface PlaybackLinkOptions {
-  playerUrl: string
-  timeResolutionMs?: number
-  compression?: 'deflate-raw'
-  positionMarkers?: readonly PlaybackPositionMarker[]
-  tempoBpm?: number
-  tempoUnit?: number
-  metronome?: PlaybackMetronomeConfig
-}
-
-export type PlaybackMetronomeMode = 'off' | 'countIn' | 'playback' | 'always'
-export interface PlaybackMetronomeConfig {
-  mode: PlaybackMetronomeMode
-  minLeadIn?: number
-  bandPreCount?: boolean
-  /** Number of main beats per measure; defaults to the current meter numerator. */
-  division?: number
-  subdivision?: number
-}
+import type { PlaybackPosition, PlaybackEvent, PlaybackPositionMarker, PlaybackMeter, PlaybackLinkOptions, PlaybackMetronomeMode, PlaybackMetronomeConfig } from "@zupfnoter/types"
+export type { PlaybackPosition, PlaybackEvent, PlaybackPositionMarker, PlaybackMeter, PlaybackLinkOptions, PlaybackMetronomeMode, PlaybackMetronomeConfig } from "@zupfnoter/types"
 
 export interface PlaybackMetronomeClick {
   timeMs: number
@@ -347,36 +304,8 @@ export function createPlaybackMetronomeClicks(
   return clicks.sort((left, right) => left.timeMs - right.timeMs || left.subdivision - right.subdivision)
 }
 
-export interface PlaybackLinkResult {
-  url: string
-  payload: Uint8Array
-  encodedPayload: string
-  analysis: PlaybackLinkAnalysis
-}
-
-export interface PlaybackByteBreakdown {
-  headerBytes: number
-  timeBytes: number
-  durationBytes: number
-  pitchBytes: number
-  velocityBytes: number
-  instrumentBytes: number
-  voiceBytes: number
-  flagsBytes: number
-  idsBytes: number
-  markerBytes: number
-  otherMetadataBytes: number
-}
-
-export interface PlaybackLinkAnalysis {
-  eventCount: number
-  binaryBytes: number
-  compressedBytes: number
-  base64UrlChars: number
-  bytesPerEvent: number
-  breakdown: PlaybackByteBreakdown
-  percentages: PlaybackByteBreakdown
-}
+import type { PlaybackLinkResult, PlaybackLinkAnalysis, PlaybackByteBreakdown } from '@zupfnoter/types'
+export type { PlaybackLinkResult, PlaybackLinkAnalysis, PlaybackByteBreakdown } from '@zupfnoter/types'
 
 const MAGIC = new Uint8Array([0x5a, 0x4e, 0x50])
 const LEGACY_FORMAT_VERSION = 1

@@ -74,9 +74,14 @@ export type {
 
 export type {
   PlaybackPosition,
+  PlaybackMeter,
+  PlaybackPositionMarker,
+  PlaybackMetronomeConfig,
   PlaybackEvent,
   PlaybackLinkOptions,
   PlaybackLinkResult,
+  PlaybackLinkAnalysis,
+  PlaybackByteBreakdown,
 } from './playbackLink.js'
 
 export type { ReviewDocument, ReviewExtract } from './review.js'
@@ -120,4 +125,5 @@ export type {
   StorageConnection,
   StorageProviderDescriptor,
   StorageDocument,
+  StorageCommandState,
 } from './storage.js'

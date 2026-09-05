@@ -14,17 +14,8 @@ export class StorageTargetUnavailableError extends CommandError {
   }
 }
 
-export interface StorageCommandState {
-  system: string
-  /** Aktive, persistierte Verbindungs-ID. */
-  connectionId?: string
-  /** Fester Anbieterpfad der aktiven Verbindungswurzel. */
-  rootPath?: string
-  /** Aktueller Pfad relativ zu rootPath. */
-  path: string
-  loggedIn: boolean
-  pendingCandidates: string[]
-}
+import type { StorageCommandState } from '@zupfnoter/types'
+export type { StorageCommandState } from '@zupfnoter/types'
 
 export interface StorageCommandRuntime {
   providers: string[]

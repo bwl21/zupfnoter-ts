@@ -1,3 +1,19 @@
+/** Aktiver, providerneutraler Kontext der Speicherkommandos. */
+export interface StorageCommandState {
+  /** Kennung des aktiven Anbieters. */
+  system: string
+  /** Aktive, persistierte Verbindungs-ID. */
+  connectionId?: string
+  /** Fester Anbieterpfad der aktiven Verbindungswurzel. */
+  rootPath?: string
+  /** Aktueller Pfad relativ zu rootPath. */
+  path: string
+  /** Bekannter Anmeldestatus der Verbindung. */
+  loggedIn: boolean
+  /** Kandidaten des zuletzt mehrdeutigen Öffnen-Kommandos. */
+  pendingCandidates: string[]
+}
+
 /** Sichtbarer Zustand einer gespeicherten Storage-Verbindung. */
 export type StorageConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'planned'
 
