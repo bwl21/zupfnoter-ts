@@ -1,0 +1,17 @@
+{
+  "name": "Zupfnoter Review",
+  "short_name": "ZN Review",
+  "description": "Noten ansehen und wiedergeben",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3eee3",
+  "theme_color": "#1f4c46",
+  "icons": [
+    {
+      "src": "/review-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

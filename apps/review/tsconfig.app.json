@@ -1,0 +1,15 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@zupfnoter/core": ["../../packages/core/src/index.ts"],
+      "@zupfnoter/playback": ["../../packages/playback/src/index.ts"],
+      "@zupfnoter/playback-audio": ["../../packages/playback-audio/src/index.ts"],
+      "@zupfnoter/types": ["../../packages/types/src/index.ts"]
+    },
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo"
+  }
+}

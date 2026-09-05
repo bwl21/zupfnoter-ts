@@ -15,6 +15,11 @@ const deployments = {
     remoteDirectory: 'web/zupfnoter/practice',
     publicUrl: 'https://practice.zupfnoter.de/',
   },
+  review: {
+    localDirectory: join(ROOT, 'apps/review/dist'),
+    remoteDirectory: 'web/zupfnoter/review',
+    publicUrl: 'https://znreview.zupfnoter.de/',
+  },
 }
 
 function loadRootEnv() {
@@ -59,7 +64,7 @@ const deploymentName = process.argv[2]
 const checkOnly = process.argv[3] === '--check'
 const deployment = deploymentName === undefined ? undefined : deployments[deploymentName]
 if (deployment === undefined) {
-  console.error('Verwendung: node tools/zupfnoter-de-deploy.mjs <web|practice>')
+  console.error('Verwendung: node tools/zupfnoter-de-deploy.mjs <web|practice|review>')
   process.exit(2)
 }
 
@@ -151,5 +156,7 @@ run('rsync', [
 
 const configuredPublicUrl = deploymentName === 'practice'
   ? process.env.PRACTICE_PUBLIC_URL
-  : process.env.ZUPFNOTER_WEB_PUBLIC_URL
+  : deploymentName === 'review'
+    ? process.env.REVIEW_PUBLIC_URL
+    : process.env.ZUPFNOTER_WEB_PUBLIC_URL
 console.log(`Deployment abgeschlossen: ${configuredPublicUrl ?? deployment.publicUrl}`)

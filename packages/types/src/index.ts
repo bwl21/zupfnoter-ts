@@ -78,6 +78,8 @@ export type {
   PlaybackLinkResult,
 } from './playbackLink.js'
 
+export type { ReviewDocument, ReviewExtract } from './review.js'
+
 export type {
   FillStyle,
   MoreConfKey,

@@ -1,0 +1,349 @@
+:root {
+  color: #22302d;
+  background: #d8d1c3;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+button,
+select {
+  min-height: 2.75rem;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+.review-shell {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  height: 100vh;
+  height: 100dvh;
+  padding:
+    env(safe-area-inset-top, 0)
+    env(safe-area-inset-right, 0)
+    env(safe-area-inset-bottom, 0)
+    env(safe-area-inset-left, 0);
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-width: 0;
+  padding: 0.65rem clamp(0.75rem, 2vw, 1.5rem);
+  background: #fffaf0;
+  border-bottom: 1px solid #c7bcaa;
+}
+
+.review-title {
+  min-width: 0;
+}
+
+.review-brand {
+  color: #57726c;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.review-title h1 {
+  margin: 0.1rem 0 0;
+  overflow: hidden;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.05rem, 2.5vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
+.review-extract,
+.review-open {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #9eaa9e;
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #1f4c46;
+  font-weight: 700;
+}
+
+.review-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.review-tabs {
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.3rem;
+  width: min(28rem, calc(100% - 1rem));
+  margin: 0.45rem auto;
+  padding: 0.25rem;
+  border-radius: 0.9rem;
+  background: rgb(255 250 240 / 92%);
+  box-shadow: 0 0.25rem 1rem rgb(54 45 34 / 12%);
+}
+
+.review-tabs button {
+  border-radius: 0.65rem;
+  background: transparent;
+  color: #596965;
+  font-weight: 750;
+}
+
+.review-tabs .review-tabs__button--active {
+  background: #1f4c46;
+  color: #fff;
+}
+
+.review-document {
+  min-width: 0;
+  min-height: 0;
+  margin: 0 clamp(0.35rem, 1.5vw, 1rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-radius: 0.8rem 0.8rem 0 0;
+  background: #fff;
+  box-shadow: 0 0.4rem 1.5rem rgb(54 45 34 / 18%);
+  -webkit-overflow-scrolling: touch;
+}
+
+.review-svg {
+  width: 100%;
+  min-height: 100%;
+  padding: clamp(0.2rem, 1.5vw, 1rem);
+}
+
+.review-svg > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.review-svg .zn-review-playback {
+  fill: #e7714d !important;
+  fill-opacity: 0.42 !important;
+  stroke: #b44128 !important;
+  stroke-width: 1.5px !important;
+  vector-effect: non-scaling-stroke;
+}
+
+.review-error {
+  display: grid;
+  place-content: center;
+  gap: 0.5rem;
+  min-height: 100%;
+  padding: 2rem;
+  color: #8c2e22;
+  text-align: center;
+}
+
+.review-player {
+  z-index: 2;
+  padding: 0.45rem max(0.75rem, env(safe-area-inset-right, 0)) max(0.45rem, env(safe-area-inset-bottom, 0)) max(0.75rem, env(safe-area-inset-left, 0));
+  border-top: 1px solid #c7bcaa;
+  background: rgb(255 250 240 / 96%);
+  box-shadow: 0 -0.35rem 1.4rem rgb(54 45 34 / 12%);
+  backdrop-filter: blur(12px);
+}
+
+.review-position {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 1.2rem;
+  color: #53635f;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.review-loading {
+  color: #a04c35;
+}
+
+.review-player__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.35rem, 1.5vw, 0.8rem);
+}
+
+.review-play,
+.review-stop {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  color: #fff;
+}
+
+.review-play {
+  background: #d56644;
+  font-size: 1.15rem;
+}
+
+.review-play:disabled {
+  opacity: 0.55;
+}
+
+.review-stop {
+  width: 2.75rem;
+  height: 2.75rem;
+  background: #6b7773;
+  font-size: 0.8rem;
+}
+
+.review-field,
+.review-metronome {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.75rem;
+  color: #4c5c58;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.review-field input {
+  width: 3.5rem;
+  min-height: 2.5rem;
+  padding: 0.3rem;
+  border: 1px solid #aeb7ae;
+  border-radius: 0.6rem;
+  background: #fff;
+  color: #22302d;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.review-field--tempo input {
+  width: 4rem;
+}
+
+.review-metronome input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: #1f4c46;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 42rem) {
+  .review-header {
+    padding-block: 0.45rem;
+  }
+
+  .review-brand,
+  .review-open__label {
+    display: none;
+  }
+
+  .review-open {
+    width: 2.75rem;
+    justify-content: center;
+    padding: 0;
+    font-size: 1.35rem;
+  }
+
+  .review-tabs {
+    margin-block: 0.3rem;
+  }
+
+  .review-document {
+    margin-inline: 0;
+    border-radius: 0;
+  }
+
+  .review-field > span,
+  .review-metronome > span,
+  .review-field--tempo > span:last-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .review-field input {
+    width: 3.25rem;
+  }
+
+  .review-field--tempo input {
+    width: 3.7rem;
+  }
+}
+
+@media (min-width: 60rem) and (orientation: landscape) {
+  .review-shell {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .review-header {
+    grid-column: 1 / -1;
+  }
+
+  .review-tabs {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+    grid-template-columns: 1fr;
+    width: 9rem;
+    margin: 1rem;
+  }
+
+  .review-document {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0 0 0 1rem;
+  }
+
+  .review-player {
+    grid-column: 1 / -1;
+  }
+}

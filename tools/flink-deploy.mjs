@@ -6,6 +6,7 @@ const ROOT = resolve(new URL('..', import.meta.url).pathname)
 const apps = {
   web: { directory: 'apps/web', packageName: '@zupfnoter/web' },
   practice: { directory: 'apps/practice', packageName: '@zupfnoter/practice' },
+  review: { directory: 'apps/review', packageName: '@zupfnoter/review' },
 }
 
 function loadRootEnv() {
@@ -37,7 +38,7 @@ function findFlink() {
 const appName = process.argv[2]
 const app = appName === undefined ? undefined : apps[appName]
 if (app === undefined) {
-  console.error('Verwendung: node tools/flink-deploy.mjs <web|practice>')
+  console.error('Verwendung: node tools/flink-deploy.mjs <web|practice|review>')
   process.exit(2)
 }
 

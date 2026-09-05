@@ -59,6 +59,7 @@ export { extractLyricsText, replaceLyricsText } from './lyrics.js'
 export { buildPlaybackTimeline, resolveBaseTempoFromSong, resolveTempoUnitFromSong } from './PlaybackTimeline.js'
 export { buildPlaybackExportData, buildPlaybackExportDataFromTimeline } from './PlaybackExport.js'
 export type { PlaybackExportData, PlaybackExportEvent, PlaybackExportMarker } from './PlaybackExport.js'
+export { renderReviewDocument } from './ReviewDocument.js'
 
 export { GLYPHS } from './glyphs.js'
 export type { GlyphDef } from './glyphs.js'
