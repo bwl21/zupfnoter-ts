@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { createRenderController } from './rendering/renderController'
 import { computed, inject, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import QRCode from 'qrcode'
@@ -26,7 +27,6 @@ import ScorePreviewPanel from './panels/ScorePreviewPanel.vue'
 import {
   DEFAULT_ABC,
   type RenderIssue,
-  renderWorkbenchPreviews,
   renderHtmlExport,
   renderPdfExport,
   resolvePdfExportVariants,
@@ -640,14 +640,10 @@ const produceExtracts = computed(() => {
 })
 
 let commandStack: CommandStack
-let renderWorker: Worker | undefined
 let harpMirrorWindow: Window | null = null
 const harpMirrorWindowName = 'zupfnoter-harp-duplicate'
 const harpMirrorChannel = createHarpMirrorChannel()
 const PLAYBACK_URL_WARNING_LENGTH = 1800
-let nextRenderRequestId = 0
-let pendingRenderRequestId: number | undefined
-let renderTimer: ReturnType<typeof setTimeout> | undefined
 let pdfPreviewRequestId = 0
 let documentPersistenceQueue = Promise.resolve()
 let gitWorkspaceRequest = 0
@@ -843,32 +839,6 @@ function appendUniqueDiagnosticLine(
   appendDiagnosticLine(diagnostic.message, diagnostic.severity, diagnostic.source ?? fallbackSource)
 }
 
-function handleRenderWorkerMessage(event: MessageEvent): void {
-  const data: unknown = event.data
-  if (typeof data !== 'object' || data === null) return
-  const record = data as { id?: number, kind?: string, message?: string, totalMs?: number, result?: WorkbenchRenderResult, error?: string }
-  if (record.kind === 'progress' && typeof record.message === 'string') {
-    logger.info(record.message)
-    return
-  }
-  if (record.kind === 'perf' && typeof record.totalMs === 'number') {
-    logger.info(`worker: perf total ${record.totalMs.toFixed(3)} ms`)
-    return
-  }
-  if (record.kind === 'result') {
-    if (pendingRenderRequestId !== record.id) return
-    pendingRenderRequestId = undefined
-    if (record.result !== undefined) {
-      applyRenderResult(record.result)
-    }
-    if (record.error !== undefined) {
-      logger.error(`worker: render failed: ${record.error}`)
-      renderError.value = record.error
-      renderSummary.value = 'render failed'
-    }
-  }
-}
-
 function applyRenderResult(result: WorkbenchRenderResult): void {
   const loggedDiagnostics = new Set<string>()
   scoreSvg.value = result.scoreSvg
@@ -975,34 +945,25 @@ async function refreshHarpPdfPreview(): Promise<void> {
   }
 }
 
-function renderNow(): void {
-  const requestId = ++nextRenderRequestId
-  try {
-    if (renderWorker !== undefined) {
-      pendingRenderRequestId = requestId
-      renderWorker.postMessage({
-        id: requestId,
-        abcText: documentText.value,
-        extractNr: currentExtract.value,
-        practiceQrJpegUrl: practiceQrJpegUrl.value,
-        resources: documentResources.value,
-        flowconf: flowconfEnabled.value,
-      })
-      return
-    }
-    logger.info(`worker: render extract ${currentExtract.value}`)
-    const result = renderWorkbenchPreviews(documentText.value, currentExtract.value, {
-      practiceQrJpegUrl: practiceQrJpegUrl.value,
-      resources: documentResources.value,
-      flowconf: flowconfEnabled.value,
-    })
-    applyRenderResult(result)
-    logger.info('worker: render complete in 0.000 sec')
-  } catch (error) {
-    logger.error(`worker: render failed: ${error instanceof Error ? error.message : String(error)}`)
-    renderError.value = error instanceof Error ? error.message : String(error)
+const renderController = createRenderController({
+  createWorker: () => new Worker(new URL('./rendering/renderWorker.ts', import.meta.url), { type: 'module' }),
+  readInput: () => ({
+    abcText: documentText.value, extractNr: currentExtract.value,
+    practiceQrJpegUrl: practiceQrJpegUrl.value, resources: documentResources.value,
+    flowconf: flowconfEnabled.value,
+  }),
+  onResult: applyRenderResult,
+  onInfo: (message) => logger.info(message),
+  onWarning: (message) => logger.warning(message),
+  onError: (message) => {
+    logger.error(`worker: render failed: ${message}`)
+    renderError.value = message
     renderSummary.value = 'render failed'
-  }
+  },
+})
+
+function renderNow(): void {
+  renderController.render()
 }
 
 function buildHarpMirrorSnapshot(): HarpMirrorSnapshot {
@@ -2203,10 +2164,7 @@ watch([documentText, currentExtract], () => {
   playbackStore.markDocumentChanged()
   stopPlayback()
   if (autoRefresh.value === 'off') return
-  if (renderTimer !== undefined) {
-    clearTimeout(renderTimer)
-  }
-  renderTimer = setTimeout(renderNow, 100)
+  renderController.schedule()
 }, { immediate: true })
 
 function handleHarpPreviewSelection(payload: {
@@ -2499,13 +2457,7 @@ onMounted(async () => {
   })
   window.addEventListener('keydown', handleGlobalKeydown, true)
   window.addEventListener('message', handleMirrorMessage)
-  try {
-    renderWorker = new Worker(new URL('./rendering/renderWorker.ts', import.meta.url), { type: 'module' })
-    renderWorker.onmessage = handleRenderWorkerMessage
-  } catch (error) {
-    logger.warning(`worker: unavailable: ${error instanceof Error ? error.message : String(error)}`)
-    renderWorker = undefined
-  }
+  renderController.start()
   void nextTick().then(setupFileToolbarTooltips)
 })
 
@@ -2514,15 +2466,11 @@ onBeforeUnmount(() => {
   if (harpPdfPreviewUrl.value !== undefined) URL.revokeObjectURL(harpPdfPreviewUrl.value)
   window.removeEventListener('keydown', handleGlobalKeydown, true)
   window.removeEventListener('message', handleMirrorMessage)
-  renderWorker?.terminate()
-  renderWorker = undefined
+  renderController.dispose()
   for (const tooltip of fileToolbarTooltips.values()) {
     tooltip.destroy()
   }
   fileToolbarTooltips.clear()
-  if (renderTimer !== undefined) {
-    clearTimeout(renderTimer)
-  }
   harpMirrorChannel?.close()
 })
 

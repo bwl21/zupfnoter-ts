@@ -18,7 +18,7 @@ Aktualisierung dieser Checkliste. Die Reihenfolge darf Abhängigkeiten folgen.
 - [x] B5 – Gemeinsamer Audio-Lebenszyklus und Scheduling für Practice sowie Web/Review.
 - [x] B6 – Gemeinsame fachliche Typen eindeutig in `packages/types` besitzen.
 - [x] B7 – Design-System-Paketvertrag und Build/Typecheck konsistent machen.
-- [ ] B8 – UI-Abläufe durch verantwortliche Controller entkoppeln.
+- [x] B8 – UI-Abläufe durch verantwortliche Controller entkoppeln.
 - [ ] B9 – Storybook isolieren und Architekturdokumentation aktualisieren.
 
 ## Befunde und Abnahmekriterien
@@ -200,3 +200,18 @@ Gain, Kompressor, Instrumentwahl und Metronommathematik bleiben unverändert.
 20 gemeinsame Audio-/Web-Tests, 12 Practice-Tests, Web-/Practice-Typechecks,
 Audio-Paketbuild und Practice-Produktionsbuild erfolgreich. Das sind keine
 akustischen iOS-/Android-Paritätsnachweise; Geräteprüfung bleibt erforderlich.
+
+### B8 – Ergebnis
+
+Review delegiert Speicherverbindungen, Dateiliste und Dokumentöffnung an
+`useReviewStorage`; die Übernahme von ABC ist ein expliziter Callback.
+Veraltete Ergebnisse nach Verbindungswechsel oder Unmount werden verworfen.
+Workbench delegiert Worker, Debounce, Request-Reihenfolge und Terminierung
+an `renderController`, ohne Stores in diesen Controller hineinzuziehen.
+Schon während des Debounce können alte Renderresultate nicht mehr gewinnen.
+Practice hat mit B5 den Audio-Ressourcenlebenszyklus abgegeben. Die übrige
+app-spezifische UI-Komposition bleibt bewusst in den Einstiegen; kein großer
+Umbau sämtlicher Commands oder Ansichten.
+4 Review-Tests, 22 Worker-/Pipeline-Tests und Web-/Review-Typechecks erfolgreich.
+Keine Browser-/Geräteprüfung möglich; Controller-Cleanup und veraltete Antworten
+sind gezielt durch Tests abgesichert.

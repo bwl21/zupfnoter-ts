@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
 import {
   expireActivePlaybackRanges,
@@ -14,33 +14,19 @@ import {
   type PlaybackInstrument,
   type PlaybackMetronomeVisualBeat,
 } from '@zupfnoter/playback-audio'
-import {
-  createDropboxProvider,
-  createStorageConnection,
-  createStorageProviderRegistry,
-  loadStorageConnections,
-  loadStorageContext,
-  removeDropboxConnection,
-  resumeDropboxLoginFromRedirect,
-  saveStorageConnections,
-  saveStorageContext,
-  storageContextForConnection,
-} from '@zupfnoter/storage'
+import { useReviewStorage } from './useReviewStorage'
 import type {
   ActivePlaybackRangeState,
   PlaybackMetronomeMode,
   PlaybackStep,
   ReviewDocument,
   SelectionTextRange,
-  StorageConnection,
-  StorageDocument,
 } from '@zupfnoter/types'
 
 import defaultAbc from '../../../fixtures/cases/public/krippen-demo/input.abc?raw'
 
 type ReviewView = 'score' | 'harp'
 type PlaybackStatus = 'idle' | 'loading' | 'playing' | 'paused'
-type StorageSheetView = 'documents' | 'connections'
 
 const abcText = ref(defaultAbc)
 const document = ref<ReviewDocument>(renderReviewDocument(defaultAbc))
@@ -64,41 +50,25 @@ let activePlaybackRanges = new Map<string, ActivePlaybackRangeState>()
 let metronomePulse = 0
 const extractPickerOpen = ref(false)
 
-const storageOpen = ref(false)
-const storageSheetView = ref<StorageSheetView>('documents')
-const storageConnections = ref<StorageConnection[]>(loadStorageConnections())
-const initialStorageContext = loadStorageContext()
-const activeStorageConnectionId = ref(
-  storageConnections.value.some(
-    (connection) => connection.id === initialStorageContext.connectionId,
-  )
-    ? initialStorageContext.connectionId
-    : storageConnections.value[0]?.id,
-)
-const storageDocuments = ref<StorageDocument[]>([])
-const storageQuery = ref('')
-const storageLoading = ref(false)
-const storageError = ref('')
-const dropboxProvider = createDropboxProvider({
-  onTokenRefreshed: (connectionId) => updateConnectionStatus(connectionId, 'connected'),
-})
-const storageProviderRegistry = createStorageProviderRegistry([
-  {
-    descriptor: { id: 'dropbox', label: 'Dropbox', availability: 'available' },
-    login: (state) => dropboxProvider.login(state),
-    logout: (state) => dropboxProvider.logout(state),
-    list: (state, recursive) => dropboxProvider.list(state, recursive),
-    search: (state, query) => dropboxProvider.search(state, query),
-    open: (state, filename) => dropboxProvider.open(state, filename),
-    save: (state, filename, content) => dropboxProvider.save(state, filename, content),
-    cleanup: (state) => dropboxProvider.cleanup(state),
-    listFolders: (state, path) => dropboxProvider.listFolders(state, path),
-    listDocuments: (state) => dropboxProvider.listDocuments(state),
-    openPreview: (state, path) => dropboxProvider.openPreview(state, path),
-    removeConnection: async (connectionId) => removeDropboxConnection(connectionId),
-    resumeLoginFromRedirect: (connectionId) => resumeDropboxLoginFromRedirect(connectionId),
-  },
-])
+const {
+  storageOpen,
+  storageSheetView,
+  storageConnections,
+  storageQuery,
+  storageLoading,
+  storageError,
+  activeStorageConnectionId,
+  activeStorageConnection,
+  filteredStorageDocuments,
+  openStorage,
+  loadStorageDocuments,
+  showStorageConnections,
+  showStorageDocuments,
+  selectStorageConnection,
+  connectStorage,
+  disconnectStorage,
+  openStorageDocument,
+} = useReviewStorage(renderDocument)
 
 const currentSvg = computed(() =>
   activeView.value === 'score' ? document.value.scoreSvg : document.value.harpSvg,
@@ -121,14 +91,6 @@ const currentPosition = computed(() => ({
   passIndex: currentStep.value?.position?.passIndex ?? startPass.value,
 }))
 const playLabel = computed(() => (playbackStatus.value === 'playing' ? 'Pause' : 'Abspielen'))
-const activeStorageConnection = computed(() =>
-  storageConnections.value.find((connection) => connection.id === activeStorageConnectionId.value),
-)
-const filteredStorageDocuments = computed(() => {
-  const query = storageQuery.value.trim().toLocaleLowerCase()
-  if (query === '') return storageDocuments.value
-  return storageDocuments.value.filter((entry) => entry.name.toLocaleLowerCase().includes(query))
-})
 const currentExtract = computed(() =>
   document.value.extracts.find((extract) => extract.number === document.value.extractNumber),
 )
@@ -312,126 +274,6 @@ watch([startMeasure, startPass], () => {
 })
 
 onBeforeUnmount(stopPlayback)
-
-function persistConnections(): void {
-  saveStorageConnections(storageConnections.value)
-}
-
-function activateStorageConnection(connection: StorageConnection): void {
-  activeStorageConnectionId.value = connection.id
-  saveStorageContext(storageContextForConnection(connection))
-}
-
-function updateConnectionStatus(connectionId: string, status: StorageConnection['status']): void {
-  const connection = storageConnections.value.find((entry) => entry.id === connectionId)
-  if (connection === undefined) return
-  connection.status = status
-  persistConnections()
-  if (connection.id === activeStorageConnectionId.value) activateStorageConnection(connection)
-}
-
-async function connectStorage(connection?: StorageConnection): Promise<void> {
-  const target = connection ?? createStorageConnection('dropbox', 'Dropbox')
-  if (connection === undefined) storageConnections.value.push(target)
-  activateStorageConnection(target)
-  updateConnectionStatus(target.id, 'connecting')
-  const adapter = storageProviderRegistry.adapterForConnection(target)
-  if (adapter === undefined) throw new Error(`${target.providerId} ist noch nicht verfügbar.`)
-  await adapter.login(storageContextForConnection(target))
-}
-
-async function loadStorageDocuments(connection = activeStorageConnection.value): Promise<void> {
-  if (connection === undefined || connection.status !== 'connected') return
-  storageLoading.value = true
-  storageError.value = ''
-  try {
-    const adapter = storageProviderRegistry.adapterForConnection(connection)
-    if (adapter?.listDocuments === undefined)
-      throw new Error(`${connection.providerId} unterstützt keine Dateiliste.`)
-    storageDocuments.value = await adapter.listDocuments(storageContextForConnection(connection))
-  } catch (error) {
-    storageError.value = error instanceof Error ? error.message : String(error)
-    if (storageError.value.includes('not logged in'))
-      updateConnectionStatus(connection.id, 'disconnected')
-  } finally {
-    storageLoading.value = false
-  }
-}
-
-async function openStorage(): Promise<void> {
-  storageSheetView.value = 'documents'
-  storageOpen.value = true
-  await loadStorageDocuments()
-}
-
-function showStorageConnections(): void {
-  storageSheetView.value = 'connections'
-}
-
-function showStorageDocuments(): void {
-  storageSheetView.value = 'documents'
-}
-
-async function selectStorageConnection(connection: StorageConnection): Promise<void> {
-  activateStorageConnection(connection)
-  storageDocuments.value = []
-  if (connection.status === 'connected') await loadStorageDocuments(connection)
-  storageSheetView.value = 'documents'
-}
-
-async function disconnectStorage(connection: StorageConnection): Promise<void> {
-  storageLoading.value = true
-  try {
-    const adapter = storageProviderRegistry.adapterForConnection(connection)
-    if (adapter === undefined) throw new Error(`${connection.providerId} ist noch nicht verfügbar.`)
-    await adapter.logout(storageContextForConnection(connection))
-    updateConnectionStatus(connection.id, 'disconnected')
-    storageDocuments.value = []
-  } finally {
-    storageLoading.value = false
-  }
-}
-
-async function openStorageDocument(storageDocument: StorageDocument): Promise<void> {
-  const connection = activeStorageConnection.value
-  if (connection === undefined) return
-  storageLoading.value = true
-  storageError.value = ''
-  try {
-    const adapter = storageProviderRegistry.adapterForConnection(connection)
-    if (adapter === undefined) throw new Error(`${connection.providerId} ist noch nicht verfügbar.`)
-    const content = await adapter.open(
-      storageContextForConnection(connection),
-      storageDocument.path,
-    )
-    if (content === undefined) throw new Error('Die ABC-Datei wurde nicht gefunden.')
-    renderDocument(content)
-    storageOpen.value = false
-  } catch (error) {
-    storageError.value = error instanceof Error ? error.message : String(error)
-  } finally {
-    storageLoading.value = false
-  }
-}
-
-onMounted(async () => {
-  try {
-    const connection = await storageProviderRegistry.resumeLoginFromRedirect(
-      storageConnections.value,
-      activeStorageConnectionId.value,
-    )
-    if (connection !== undefined) {
-      activateStorageConnection(connection)
-      updateConnectionStatus(connection.id, 'connected')
-      storageOpen.value = true
-      await loadStorageDocuments(connection)
-    }
-  } catch (error) {
-    storageError.value = error instanceof Error ? error.message : String(error)
-    const connectionId = activeStorageConnectionId.value
-    if (connectionId !== undefined) updateConnectionStatus(connectionId, 'disconnected')
-  }
-})
 </script>
 
 <template>
