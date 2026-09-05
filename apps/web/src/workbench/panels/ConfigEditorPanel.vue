@@ -4,26 +4,21 @@ import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 
 import {
-  buildConfstack,
+  createConfigEditorContext,
   buildConfigEditorAllParametersTree,
   buildConfigEditorSectionTree,
   buildConfigEditorTargetTree,
   configEditorKeyToTreePath,
   CONFIG_EDITOR_TREE_DEFINITION,
   CONFIG_EDITOR_MENU_ITEMS,
-  Confstack,
   inspectSongConfig,
   findConfigEditorTreeDefinition,
   formatConfigEditorValue,
   getConfigEditorNewEntryCommand,
-  getConfigEditorDynamicFields,
   getConfigEditorQuickSettingLabel,
   getConfigPathActionProfile,
   getConfigEditorFormSet,
   resolveConfigEditorFormId,
-  resolveConfigEditorDynamicFormPath,
-  initConf,
-  mergeSongConfig,
   parseConfigEditorValue,
   resolveConfigSchemaPath,
   type CommandArgumentValue,
@@ -177,13 +172,13 @@ const parsedSongConfig = computed(() => ({
 const configIssues = computed(() => songConfigInspection.value.issues)
 const showsValidationErrors = computed(() => resolvedActiveSection.value === 'validationerrors')
 
-const defaultConfig = computed(() => initConf(new Confstack(), {
-  playbackDivision: props.playbackDivisionDefault,
-}))
-const effectiveConfig = computed(() => mergeSongConfig(defaultConfig.value, parsedSongConfig.value.config))
-const effectiveConfstack = computed(() => buildConfstack(effectiveConfig.value, props.currentExtract))
+const configContext = computed(() => createConfigEditorContext(
+  parsedSongConfig.value.config, props.currentExtract,
+  { playbackDivision: props.playbackDivisionDefault },
+))
+const defaultConfig = computed(() => configContext.value.defaults)
+const effectiveConfig = computed(() => configContext.value.stack.getAll())
 const filteredSearch = computed(() => searchText.value.trim().toLowerCase())
-const dynamicFormPath = computed(() => resolveConfigEditorDynamicFormPath(props.activeSection))
 const concreteConfigPath = computed(() => isConcreteConfigPath(props.activeSection)
   ? props.activeSection
   : undefined)
@@ -191,7 +186,7 @@ const resolvedActiveSection = computed(() => concreteConfigPath.value
   ?? resolveConfigEditorFormId(props.activeSection)
   ?? props.activeSection)
 const activeSectionSearch = computed(() => getConfigEditorFormSet(resolvedActiveSection.value) === undefined
-  && dynamicFormPath.value === undefined
+  && concreteConfigPath.value === undefined
   ? resolvedActiveSection.value.trim().toLowerCase()
   : '')
 const effectiveSearch = computed(() => filteredSearch.value === '' ? activeSectionSearch.value : filteredSearch.value)
@@ -503,17 +498,10 @@ function createRow(
     : resolveLocalPath(configPath)
   const directEffectivePath = localPath === undefined ? undefined : resolveEffectivePath(configPath)
   const localValue = localPath === undefined ? undefined : getPathValue(parsedSongConfig.value.config, localPath)
-  const directEffectiveValue = directEffectivePath === undefined
-    ? undefined
-    : getPathValue(effectiveConfig.value, directEffectivePath)
-      ?? effectiveConfstack.value.get(directEffectivePath)
-  const inheritedFlowlinePath = localPath === undefined ? undefined : resolveInheritedFlowlinePath(localPath)
-  const effectivePath = directEffectiveValue === undefined ? inheritedFlowlinePath ?? directEffectivePath : directEffectivePath
-  const inheritedValue = directEffectiveValue === undefined && inheritedFlowlinePath !== undefined
-    ? getPathValue(effectiveConfig.value, inheritedFlowlinePath)
-    : directEffectiveValue
+  const resolved = directEffectivePath === undefined ? undefined : configContext.value.resolve(directEffectivePath)
+  const effectivePath = resolved?.path
   const schema = localPath === undefined ? undefined : resolveConfigSchemaPath(localPath)
-  const effectiveValue = inheritedValue
+  const effectiveValue = resolved?.value
   const actionProfile = getConfigPathActionProfile(localPath, {
     hasEffectiveValue: effectiveValue !== undefined,
     hasLocalValue: localValue !== undefined,
@@ -543,11 +531,6 @@ function createRow(
   }
 }
 
-function resolveInheritedFlowlinePath(path: string): string | undefined {
-  const match = path.match(/^extract\.\d+\.notebound\.(annotation|chord|partname|variantend|flowline|tuplet)\.v_\d+\.\d+\.(cp1|cp2|pos|shape|show)$/)
-  return match === null ? undefined : `defaults.notebound.${match[1]}.${match[2]}`
-}
-
 function joinPath(parentPath: string, key: string): string {
   return parentPath === '' ? key : `${parentPath}.${key}`
 }
@@ -566,8 +549,7 @@ function resolveEffectivePath(path: string): string | undefined {
 }
 
 function isConcreteConfigPath(path: string): boolean {
-  if (!/^extract\.\d+\./.test(path)) return false
-  if (path.split('.').length <= 2) return false
+  if (!path.includes('.')) return false
   return resolveConfigSchemaPath(path) !== undefined
     || getPathValue(parsedSongConfig.value.config, path) !== undefined
     || getPathValue(effectiveConfig.value, path) !== undefined
@@ -580,9 +562,6 @@ function buildActiveSectionTreeDefinition(): ConfigEditorTreeDefinition[] | unde
       effectiveConfig.value as unknown as Record<string, CommandArgumentValue>,
       props.currentExtract,
     )
-  }
-  if (dynamicFormPath.value !== undefined) {
-    return buildDynamicConfigTree(dynamicFormPath.value)
   }
   if (concreteConfigPath.value !== undefined) {
     return buildConfigEditorTargetTree(
@@ -626,66 +605,6 @@ function restrictTreeToConfigPath(
   })
 }
 
-function buildDynamicConfigTree(path: string): ConfigEditorTreeDefinition[] {
-  const normalizedPath = path.replace(/^extract\.\d+\./, 'extract.current.')
-  const dynamicFields = getConfigEditorDynamicFields(path)
-  const isSpecialDynamicForm = normalizedPath.includes('.notebound.minc.')
-    || normalizedPath.includes('.notebound.nconf.')
-  if (dynamicFields !== undefined && !isSpecialDynamicForm) {
-    const parts = normalizedPath.split('.')
-    const leafDefinitions = dynamicFields.map((key) => ({
-      key,
-      label: key,
-      configPath: `${path}.${key}`,
-    }))
-    const lastPart = parts[parts.length - 1] ?? path
-    let branch: ConfigEditorTreeDefinition = {
-      key: lastPart,
-      label: lastPart,
-      children: leafDefinitions,
-      configPath: path,
-    }
-    for (let index = parts.length - 2; index >= 0; index -= 1) {
-      const key = parts[index] ?? path
-      branch = {
-        key,
-        label: key,
-        children: [branch],
-        configPath: parts.slice(0, index + 1).join('.'),
-      }
-    }
-    return [branch]
-  }
-  const isMinc = normalizedPath.includes('.notebound.minc.')
-  const hasExplicitLeaf = normalizedPath.endsWith('.minc_f')
-  const leafKey = isMinc ? 'minc_f' : 'nshift'
-  const parts = (hasExplicitLeaf ? normalizedPath.slice(0, -'.minc_f'.length) : normalizedPath).split('.')
-  const leafPath = isMinc
-    ? (hasExplicitLeaf ? path : `${path}.minc_f`)
-    : `${path}.nshift`
-  const labels: Record<string, string> = {
-    nconf: 'Notenkonfiguration',
-    nshift: 'Verschiebung',
-    minc: 'extra Vorschub',
-    minc_f: 'minc_f',
-  }
-
-  let child: ConfigEditorTreeDefinition = {
-    key: leafKey,
-    label: labels[leafKey] ?? leafKey,
-    configPath: leafPath,
-  }
-  for (let index = parts.length - 1; index >= 0; index -= 1) {
-    const key = parts[index] ?? path
-    child = {
-      key,
-      label: labels[key] ?? key,
-      children: [child],
-      configPath: `${parts.slice(0, index + 1).join('.')}`,
-    }
-  }
-  return [child]
-}
 
 function matchesRow(row: ConfigTreeRow): boolean {
   return rowMatchesActiveSection(row) && rowMatchesTypedSearch(row)

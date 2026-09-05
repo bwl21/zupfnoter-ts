@@ -4,9 +4,8 @@
  * Port von `confstack.rb` aus dem Legacy-System.
  *
  * Jede Schicht ist ein eigenständiger Hash. `push(hash)` legt ihn oben auf
- * den Stack. `get(path?)` sucht von oben nach unten durch alle Schichten und
- * gibt den letzten (untersten) Treffer zurück — d.h. spätere pushes haben
- * niedrigere Priorität als frühere. `pop()` entfernt die oberste Schicht.
+ * den Stack. Spätere Overlays haben Vorrang vor früheren Werten.
+ * `pop()` entfernt die oberste Schicht.
  *
  * Late-Binding-Werte (Funktionen) werden beim Zugriff rekursiv aufgelöst.
  */
@@ -43,6 +42,7 @@ export interface ConfstackGetOptions {
 export class Confstack {
   strict = true
   private _stack: ConfigObject[] = [{}]
+  private _sources: Array<{ config: ConfigObject; name?: string }> = [{ config: {} }]
   private _resultFlat: ConfigObject = {}
   private _keysFlat: string[] = []
   private _lookupCache = new Map<string, unknown>()
@@ -52,11 +52,12 @@ export class Confstack {
    * Legt eine neue Konfigurationsschicht oben auf den Stack.
    * Entspricht `push(hash)` in `confstack.rb`.
    */
-  push(config: ConfigObject): void {
+  push(config: ConfigObject, source?: string): void {
     const base = this._stack.length === 0
       ? {}
       : this._stack[this._stack.length - 1]
     this._stack.push(deepMerge(base, config))
+    this._sources.push({ config: deepMerge({}, config), name: source })
     this._lookupCache.clear()
     this._resultCache = new WeakMap()
     this._flatten()
@@ -72,6 +73,7 @@ export class Confstack {
       throw new Error('Confstack.pop(): stack is empty')
     }
     this._stack.pop()
+    this._sources.pop()
     this._lookupCache.clear()
     this._resultCache = new WeakMap()
     this._flatten()
@@ -114,6 +116,23 @@ export class Confstack {
    */
   getAll(): ConfigObject {
     return this.get(undefined) as ConfigObject
+  }
+
+  /** Name der letzten explizit beitragenden Schicht für diesen Wert. */
+  getSource(path: string): string | undefined {
+    if (this._lookup(path) === undefined) return undefined
+    for (const layer of [...this._sources].reverse()) {
+      let value: unknown = layer.config
+      for (const part of path.split('.')) {
+        if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+          value = undefined
+          break
+        }
+        value = (value as ConfigObject)[part]
+      }
+      if (value !== undefined) return layer.name
+    }
+    return undefined
   }
 
   /**
@@ -182,6 +201,7 @@ export class Confstack {
   resetTo(level: number): void {
     if (level < 0) level = 0
     this._stack = this._stack.slice(0, level + 1)
+    this._sources = this._sources.slice(0, level + 1)
     this._lookupCache.clear()
     this._resultCache = new WeakMap()
     this._flatten()

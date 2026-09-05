@@ -181,6 +181,7 @@ export {
   registerLegacyCommands,
 } from './legacyCommands.js'
 export type { WorkbenchCommandRuntime } from './legacyCommands.js'
+export { createConfigEditorContext } from './ConfigEditorContext.js'
 
 export {
   registerStorageCommands,

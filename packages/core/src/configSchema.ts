@@ -45,6 +45,8 @@ export interface JsonSchemaNode {
   uniqueItems?: boolean
   /** Nicht-validierende Metadaten für den Konfigurationseditor. */
   'x-zupfnoter-editor'?: ConfigEditorSchemaMetadata
+  /** Default-Objektpfad; {n} bezeichnet das nullbasierte Segment des konkreten Pfads. */
+  'x-zupfnoter-default-path'?: string
 }
 
 /** Sichtbare Auswahl eines Konfigurationswerts im Editor. */
@@ -1109,6 +1111,7 @@ function legacyPositionedTextSchema(required: readonly string[] = ['text', 'pos'
 function legacyAnnotatedBezierSchema(): JsonSchemaNode {
   return {
     type: 'object',
+    'x-zupfnoter-default-path': 'defaults.notebound.{3}',
     properties: {
       cp1: legacyPosRef(),
       cp2: legacyPosRef(),
@@ -1129,6 +1132,7 @@ function legacyAnnotatedBezierSchema(): JsonSchemaNode {
 function legacyNoteboundPosSchema(): JsonSchemaNode {
   const timedEntry: JsonSchemaNode = {
     type: 'object',
+    'x-zupfnoter-default-path': 'defaults.notebound.{3}',
     additionalProperties: false,
     properties: {
       pos: legacyPosRef(),
@@ -1148,6 +1152,7 @@ function legacyNoteboundPosSchema(): JsonSchemaNode {
         patternProperties: {
           't_\\d*|\\d*': {
             type: 'object',
+            'x-zupfnoter-default-path': 'defaults.notebound.{3}',
             additionalProperties: false,
             properties: cloneSchemaMap(timedEntry.properties as Record<string, JsonSchemaNode>),
             patternProperties: {

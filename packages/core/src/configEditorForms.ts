@@ -554,6 +554,9 @@ export function getConfigEditorFormSections(formId: string): ConfigEditorFormSec
 /**
  * Liefert das Legacy-Formset für einen dynamischen Konfigurationspfad.
  * Die regulären Formsets werden vor den statischen Formularen geprüft.
+ * @deprecated Kompatibilitätsbeschreibung der Legacy-Formsets; konkrete
+ * Editorpfade verwenden ausschließlich buildConfigEditorTargetTree und Schema.
+ * Beleg und Abweichungen: docs/user-manual/UD_Zupfnoter-Handbuch/config-parity.md.
  */
 export function getConfigEditorDynamicFields(path: string): readonly string[] | undefined {
   if (/^extract\.(?:current|\d+)\.notebound\.flowline\.v_\d+\.\d+$/.test(path)) return ['cp1', 'cp2', 'show']

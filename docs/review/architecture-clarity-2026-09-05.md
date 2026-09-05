@@ -13,7 +13,7 @@ Aktualisierung dieser Checkliste. Die Reihenfolge darf Abhängigkeiten folgen.
 
 - [x] B1 – Lockdatei reparieren und reproduzierbare Workspace-Auflösung prüfen.
 - [x] B2 – Musikalische Startposition zentral auflösen; Durchlauf berücksichtigen.
-- [ ] B3 – Konfigurationsfelder und wirksame Werte generisch aus Schema/Confstack beziehen.
+- [x] B3 – Konfigurationsfelder und wirksame Werte generisch aus Schema/Confstack beziehen.
 - [x] B4 – Gemeinsame Dokument-/Exportvorbereitung; identische Playback-Link-Metadaten.
 - [ ] B5 – Gemeinsamer Audio-Lebenszyklus und Scheduling für Practice sowie Web/Review.
 - [x] B6 – Gemeinsame fachliche Typen eindeutig in `packages/types` besitzen.
@@ -174,3 +174,15 @@ Tempoeinheit und die über Confstack geerbten Metronomvorgaben.
 Die Konsistenztests vergleichen Song- und Timeline-Export und prüfen
 Tempoeinheit und Metronomvererbung. Keine vollständige Druck-/Legacy-Parität
 oder Geräteprüfung behauptet.
+
+### B3 – Ergebnis
+
+Konkrete Editorpfade verwenden generische Schema-Bäume. Die UI-eigenen
+dynamischen Formularbauer und Default-Regex entfallen. `ConfigEditorContext`
+vereinigt die Konfigurationsebenen zentral; Confstack kann die beitragende
+Schicht ausweisen. Notengebundene Default-Verweise stehen als Metadaten im
+Schema. Die alte Formset-API bleibt als dokumentierte Legacy-Kompatibilität
+mit unveränderten Tests erhalten, ohne konkrete UI-Felder zu bestimmen.
+95 Core-Tests und 50 Panel-Tests sowie Web-Typecheck erfolgreich.
+Legacy-Belege und bewusste Erweiterung stehen in `config-parity.md`.
+Eine visuelle Browserprüfung ist in dieser Sitzung bisher nicht verfügbar.

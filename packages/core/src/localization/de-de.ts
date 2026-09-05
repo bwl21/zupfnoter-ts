@@ -471,7 +471,7 @@ export const abc2svgTextrans = {
   "notes_small": "Noten klein",
   "notes_with_beams": "Noten mit Hals",
   "player_qr": "Übungs-QR-Code",
-  "nshift": "Verschbg.",
+  "nshift": "Verschiebung",
   "Okon-Harfe": "Okon-Harfe",
   "Open a demo sheet\n(Ich steh an deiner Kripen hier)": "Öffne ein neues\nZupfnoter-Fenster mit\neinem Demonstrationsstück\n(Ich steh an deiner Krippen hier)",
   "Open a detailed ABC tutorial (in German)": "ABC-Tutorial von Gerhard Schacherl öffnen (Deutsch)",

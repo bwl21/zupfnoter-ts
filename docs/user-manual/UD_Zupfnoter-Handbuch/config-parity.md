@@ -9,6 +9,30 @@ User-Manual und die In-App-Hilfe abgeleitet werden können.
 
 ## Quellen
 
+### Architekturklärung 2026-09-05: konkrete Editorpfade
+
+Konkrete Pfade werden unabhängig vom Bereich aus dem Built-in-Schema erzeugt.
+`ConfigEditorContext` liefert die vereinigte Sicht aus Defaults, globaler
+Dokumentkonfiguration, Auszug 0 und aktivem Auszug. Confstack liefert Werte
+und Schichtherkunft. Default-Verweise an Schemaobjekten ersetzen die bisherige
+UI-Regex für einzelne Notenparameter.
+
+Die historische Regex-Formset-API bleibt ausschließlich zur Kompatibilität
+und für die unveränderten Regressionstests erhalten; sie bestimmt keine
+konkreten Formularfelder mehr. Beleg: `controller_command_definitions.rb`,
+`regexp_form_sets`, Zeilen 751–764. Die damaligen Feldlisten sind bewusst
+nicht mehr die UI-Grenze: beispielsweise zeigt eine Flowline alle vom Schema
+beschriebenen Eigenschaften statt nur `cp1`/`cp2`. Die bereits vorhandene
+TS-Erweiterung `show` bleibt in der Kompatibilitätsbeschreibung erhalten.
+
+Belegte Default-Quellen: `harpnotes.rb:1680` (Flowline), `:2184` (Tuplet)
+und `abc2svg_to_harpnotes.rb:523/:871/:916/:939` (Positionen von Akkord,
+Annotation, Abschnitt und Voltenende). Eine vollständige Legacy-Parität aller
+Schemafelder wird damit nicht behauptet. Tests: `ConfigEditorContext.spec.ts`,
+`ConfigEditorForms.spec.ts` und `ConfigEditorPanel.spec.ts`.
+
+### Referenzdateien
+
 | Bereich | Quelle |
 |---|---|
 | Legacy-Builtin-Defaults | `../200_zupfnoter/30_sources/SRC_Zupfnoter/src/init_conf.rb` |
