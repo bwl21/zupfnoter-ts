@@ -3,10 +3,15 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ZnPlaybackStatus } from '@zupfnoter/design-system'
 
 const meta = {
-  title: 'Workbench/PlaybackStatusOverlay',
+  title: 'Design System/ZnPlaybackStatus',
   component: ZnPlaybackStatus,
   tags: ['autodocs'],
-  decorators: [() => ({ template: '<div style="position:relative;height:8rem;margin-top:3rem"><story /></div>' })],
+  decorators: [
+    () => ({
+      template:
+        '<div style="position:relative;height:8rem;margin-top:3rem"><story /></div>',
+    }),
+  ],
 } satisfies Meta<typeof ZnPlaybackStatus>
 
 export default meta
