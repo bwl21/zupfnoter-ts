@@ -17,7 +17,7 @@ Aktualisierung dieser Checkliste. Die Reihenfolge darf Abhängigkeiten folgen.
 - [ ] B4 – Gemeinsame Dokument-/Exportvorbereitung; identische Playback-Link-Metadaten.
 - [ ] B5 – Gemeinsamer Audio-Lebenszyklus und Scheduling für Practice sowie Web/Review.
 - [x] B6 – Gemeinsame fachliche Typen eindeutig in `packages/types` besitzen.
-- [ ] B7 – Design-System-Paketvertrag und Build/Typecheck konsistent machen.
+- [x] B7 – Design-System-Paketvertrag und Build/Typecheck konsistent machen.
 - [ ] B8 – UI-Abläufe durch verantwortliche Controller entkoppeln.
 - [ ] B9 – Storybook isolieren und Architekturdokumentation aktualisieren.
 
@@ -153,3 +153,12 @@ Rein formatinterne und plattformspezifische Adaptertypen bleiben beim Besitzer.
 Alle Workspace-Typechecks, 31 Playback- und 2 Storage-Tests erfolgreich.
 Workspace-Installation mit `--frozen-lockfile --offline --ignore-scripts`
 anschließend vollständig erfolgreich; keine Paketdownloads erforderlich.
+
+### B7 – Ergebnis
+
+Design-System ist explizit ein privates Vue-/TypeScript-Quellpaket. Manifest
+und README beschreiben denselben Vertrag; `build` validiert mit `vue-tsc`,
+einschließlich der Vue-Templates, statt ein nicht erzeugtes `dist` anzubieten.
+Frozen-Workspace-Installation, Design-System-Build, Storybook-Typecheck,
+4 Web-Komponententests und Review-Build inklusive Typecheck erfolgreich.
+Bekannte Vendor-eval-/Chunkgrößenwarnungen bleiben; keine visuelle Änderung.
