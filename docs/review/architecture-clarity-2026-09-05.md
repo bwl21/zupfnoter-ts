@@ -12,7 +12,7 @@ Aktualisierung dieser Checkliste. Die Reihenfolge darf Abhängigkeiten folgen.
 ## Checkliste
 
 - [x] B1 – Lockdatei reparieren und reproduzierbare Workspace-Auflösung prüfen.
-- [ ] B2 – Musikalische Startposition zentral auflösen; Durchlauf berücksichtigen.
+- [x] B2 – Musikalische Startposition zentral auflösen; Durchlauf berücksichtigen.
 - [ ] B3 – Konfigurationsfelder und wirksame Werte generisch aus Schema/Confstack beziehen.
 - [ ] B4 – Gemeinsame Dokument-/Exportvorbereitung; identische Playback-Link-Metadaten.
 - [ ] B5 – Gemeinsamer Audio-Lebenszyklus und Scheduling für Practice sowie Web/Review.
@@ -133,3 +133,12 @@ eingetragen. `pnpm install --lockfile-only --frozen-lockfile --offline
 Neuinstallation wurde nicht durchgeführt: pnpm wollte die vorhandenen
 Modulverzeichnisse ersetzen und brach ohne TTY ab. Die laufenden lokalen
 Entwicklungsserver behalten deshalb ihre vorhandene Installation.
+
+### B2 – Ergebnis
+
+`playbackTimelineFromPosition` in Core sucht die exakte Position und verschiebt
+die verbleibenden Schritte relativ zum neuen Start. Review nutzt diese Funktion.
+Fehlende Positionen liefern eine leere Timeline. Regressionstests prüfen den
+zweiten Durchlauf, fehlende Positionen und unveränderte Eingangsdaten.
+Core-Regressionstests (2), Review-Tests (2) und beide Typechecks erfolgreich.
+Keine akustische Änderung am Scheduler; keine Geräteprüfung durchgeführt.

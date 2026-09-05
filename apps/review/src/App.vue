@@ -3,6 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import {
   expireActivePlaybackRanges,
+  playbackTimelineFromPosition,
   renderReviewDocument,
   updateActivePlaybackRanges,
 } from '@zupfnoter/core'
@@ -144,20 +145,10 @@ function syncPlaybackTextRanges(): void {
 }
 
 function preparePlaybackSteps(): PlaybackStep[] {
-  const timeline = document.value.playbackTimeline
-  const startIndex = timeline.findIndex(
-    (step) =>
-      (step.position?.measureNumber ?? 1) > startMeasure.value ||
-      ((step.position?.measureNumber ?? 1) === startMeasure.value &&
-        (step.position?.passIndex ?? 1) >= startPass.value),
-  )
-  if (startIndex < 0) return []
-  const steps = timeline.slice(startIndex)
-  const firstTime = steps[0]?.playbackStartMs ?? 0
-  return steps.map((step) => ({
-    ...step,
-    playbackStartMs: step.playbackStartMs - firstTime,
-  }))
+  return playbackTimelineFromPosition(document.value.playbackTimeline, {
+    measureNumber: startMeasure.value,
+    passIndex: startPass.value,
+  })
 }
 
 function playbackMetronome(): PlaybackMetronomeConfig | undefined {

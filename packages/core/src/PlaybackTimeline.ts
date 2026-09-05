@@ -1,5 +1,6 @@
 import type {
   PlaybackNote,
+  PlaybackPosition,
   PlaybackStep,
   PlaybackStepTextRange,
   PlayableEntity,
@@ -9,6 +10,20 @@ import type {
   VoiceEntity,
 } from '@zupfnoter/types'
 import { expandPlaybackFlow } from './PlaybackFlow.js'
+
+/** Schneidet die expandierte Timeline ab der exakten Takt-/Durchlaufposition. */
+export function playbackTimelineFromPosition(
+  timeline: readonly PlaybackStep[],
+  position: PlaybackPosition,
+): PlaybackStep[] {
+  const startIndex = timeline.findIndex((step) =>
+    step.position?.measureNumber === position.measureNumber
+    && step.position?.passIndex === position.passIndex)
+  if (startIndex < 0) return []
+  const steps = timeline.slice(startIndex)
+  const firstTime = steps[0]?.playbackStartMs ?? 0
+  return steps.map((step) => ({ ...step, playbackStartMs: step.playbackStartMs - firstTime }))
+}
 
 function isPlayableEntity(entity: VoiceEntity): entity is PlayableEntity {
   return entity.type === 'Note' || entity.type === 'Pause' || entity.type === 'SynchPoint'

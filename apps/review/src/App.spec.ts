@@ -54,7 +54,8 @@ const reviewDocument: ReviewDocument = {
   tempoUnit: 0.25,
 }
 
-vi.mock('@zupfnoter/core', () => ({
+vi.mock('@zupfnoter/core', async (importOriginal) => ({
+  ...await importOriginal<typeof import('@zupfnoter/core')>(),
   renderReviewDocument: vi.fn(() => reviewDocument),
   updateActivePlaybackRanges: vi.fn(
     (_ranges: ReadonlyMap<string, unknown>, step: PlaybackStep) =>
