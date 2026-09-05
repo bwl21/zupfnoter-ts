@@ -7,70 +7,11 @@ import type {
   SheetObjectIndex,
 } from '@zupfnoter/types'
 import type { PlaybackStep } from '@zupfnoter/types'
+import { filterPlaybackTimelineToVoices } from '@zupfnoter/core'
+export { expireActivePlaybackRanges, updateActivePlaybackRanges } from '@zupfnoter/core'
 import { textRangeKey, projectIndexesToEntries, resolveSelectedPlaybackIds } from './selectionIndex'
 
 export type { PlaybackNote, PlaybackStep } from '@zupfnoter/types'
-
-interface ActivePlaybackRangeState {
-  textRange: SelectionTextRange
-  endTimeMs: number
-}
-
-export function expireActivePlaybackRanges(
-  activeRanges: ReadonlyMap<string, ActivePlaybackRangeState>,
-  playbackTimeMs: number,
-): Map<string, ActivePlaybackRangeState> {
-  const nextRanges = new Map(activeRanges)
-  for (const [key, range] of nextRanges) {
-    if (range.endTimeMs <= playbackTimeMs) nextRanges.delete(key)
-  }
-  return nextRanges
-}
-
-/**
- * Carries note highlights across shared timeline steps when voices overlap.
- * A timeline step ends at the next global event, not necessarily when every
- * note from the step has ended.
- */
-export function updateActivePlaybackRanges(
-  activeRanges: ReadonlyMap<string, ActivePlaybackRangeState>,
-  step: PlaybackStep,
-): Map<string, ActivePlaybackRangeState> {
-  const nextRanges = expireActivePlaybackRanges(activeRanges, step.playbackStartMs)
-  for (const playbackId of step.endedPlaybackIds ?? []) {
-    for (const key of nextRanges.keys()) {
-      if (key.startsWith(`${playbackId}:`)) nextRanges.delete(key)
-    }
-  }
-
-  const durationByPlaybackId = new Map<string, number>()
-  for (const note of step.activeNotes) {
-    const currentDuration = durationByPlaybackId.get(note.originPlaybackId) ?? 0
-    durationByPlaybackId.set(note.originPlaybackId, Math.max(currentDuration, note.durationMs))
-  }
-
-  const playbackRanges = step.activePlaybackTextRanges ?? []
-  if (playbackRanges.length > 0) {
-    for (const entry of playbackRanges) {
-      const key = `${entry.playbackId}:${textRangeKey(entry.textRange)}`
-      const durationMs = durationByPlaybackId.get(entry.playbackId) ?? step.durationMs
-      nextRanges.set(key, {
-        textRange: { ...entry.textRange },
-        endTimeMs: step.playbackStartMs + durationMs,
-      })
-    }
-  } else {
-    for (const textRange of step.activeTextRanges) {
-      const key = `range:${textRangeKey(textRange)}`
-      nextRanges.set(key, {
-        textRange: { ...textRange },
-        endTimeMs: step.playbackStartMs + step.durationMs,
-      })
-    }
-  }
-
-  return nextRanges
-}
 
 export interface PlaybackResolutionOptions {
   activeVoiceIds?: string[]
@@ -171,6 +112,7 @@ export function resolvePlaybackSteps(
       }),
   ).values()]
   const selectedPlaybackIdSet = new Set(selectedPlaybackIds)
+  const hasNoSelection = selection.selectedIndexes.length === 0
   const isEditorSingleVoiceSelection = selection.source === 'abc-editor'
     && selection.voiceScope === 'single-voice'
     && selectedVoiceIds.length > 0
@@ -181,44 +123,6 @@ export function resolvePlaybackSteps(
     return step.activeTextRanges.some((stepRange) => selectedTextRanges.some((selectedRange) => (
       stepRange.endpos > selectedRange.startpos && stepRange.startpos < selectedRange.endpos
     )))
-  }
-
-  function filterStepToAllowedVoices(step: PlaybackStep, allowedVoiceIds: Set<string>): PlaybackStep | undefined {
-    const matchingOriginPlaybackIds = step.originPlaybackIds.filter((_, index) => {
-      const originVoiceId = step.originVoiceIds[index]
-      return originVoiceId !== undefined && allowedVoiceIds.has(originVoiceId)
-    })
-    const matchingOriginVoiceIds = [...new Set(
-      matchingOriginPlaybackIds
-        .map((playbackId) => playbackId.split('::')[0])
-        .filter((voiceId): voiceId is string => voiceId !== undefined && voiceId !== ''),
-    )]
-    const matchingOriginZnIds = [...new Set(
-      matchingOriginPlaybackIds.map((playbackId) => playbackId.split('::').slice(1).join('::')),
-    )]
-    const matchingActiveNotes = step.activeNotes.filter((note) => allowedVoiceIds.has(note.originVoiceId))
-    const matchingPlaybackTextRanges = (step.activePlaybackTextRanges ?? []).filter((entry) => allowedVoiceIds.has(entry.voiceId))
-    const matchingTextRanges = [...new Map(
-      matchingPlaybackTextRanges.map((entry) => [textRangeKey(entry.textRange), entry.textRange] as const),
-    ).values()]
-
-    if (
-      matchingOriginPlaybackIds.length === 0
-      && matchingActiveNotes.length === 0
-      && matchingTextRanges.length === 0
-    ) {
-      return undefined
-    }
-
-    return {
-      ...step,
-      originVoiceIds: matchingOriginVoiceIds,
-      originPlaybackIds: matchingOriginPlaybackIds,
-      originZnIds: matchingOriginZnIds,
-      activeNotes: matchingActiveNotes,
-      activeTextRanges: matchingTextRanges,
-      activePlaybackTextRanges: matchingPlaybackTextRanges,
-    }
   }
 
   const selectedSingleBeatTime = selectedMusicTimes.length === 1
@@ -233,10 +137,7 @@ export function resolvePlaybackSteps(
     const startIndex = timeline.findIndex((step) => step.sourceTime >= selectedSingleBeatTime)
     if (startIndex < 0) return []
 
-    const anchoredSteps = timeline
-      .slice(startIndex)
-      .map((step) => filterStepToAllowedVoices(step, singleBeatVoiceIds))
-      .filter((step): step is PlaybackStep => step !== undefined)
+    const anchoredSteps = filterPlaybackTimelineToVoices(timeline.slice(startIndex), [...singleBeatVoiceIds])
     const firstStartMs = anchoredSteps[0]?.playbackStartMs ?? 0
 
     return anchoredSteps.map((step) => ({
@@ -246,10 +147,8 @@ export function resolvePlaybackSteps(
   }
 
   if (mode === 'all-score' || selectedPlaybackIds.length === 0) {
-    if (shouldRestrictToExtractVoices) {
-      return timeline
-        .map((step) => filterStepToAllowedVoices(step, activeVoiceIdSet))
-        .filter((step): step is PlaybackStep => step !== undefined)
+    if (activeVoiceIds.length > 0 && (hasNoSelection || shouldRestrictToExtractVoices)) {
+      return filterPlaybackTimelineToVoices(timeline, activeVoiceIds)
     }
 
     if (selection.source !== 'abc-editor' || selection.voiceScope !== 'single-voice' || selectedVoiceIds.length === 0) {
@@ -310,8 +209,7 @@ export function resolvePlaybackSteps(
     }
 
     if (shouldRestrictToExtractVoices) {
-      const extractFilteredStep = filterStepToAllowedVoices(nextStep, activeVoiceIdSet)
-      return extractFilteredStep === undefined ? [] : [extractFilteredStep]
+      return filterPlaybackTimelineToVoices([nextStep], activeVoiceIds)
     }
 
     return [nextStep]

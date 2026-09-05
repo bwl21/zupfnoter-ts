@@ -9,6 +9,7 @@ import { HarpnotesLayout } from './HarpnotesLayout.js'
 import { initConf } from './initConf.js'
 import {
   buildPlaybackTimeline,
+  filterPlaybackTimelineToVoices,
   resolveBaseTempoFromSong,
   resolveTempoUnitFromSong,
 } from './PlaybackTimeline.js'
@@ -53,7 +54,10 @@ export function renderReviewDocument(abcText: string, extractNumber = 0): Review
     extracts,
     scoreSvg: new AbcParser().renderSvg(abcText),
     harpSvg: previewSvg(new SvgEngine({ interactive: true }).draw(sheet)),
-    playbackTimeline: buildPlaybackTimeline(song, sheet.activeVoices),
+    playbackTimeline: filterPlaybackTimelineToVoices(
+      buildPlaybackTimeline(song),
+      sheet.activeVoices.map((voiceNumber) => `${voiceNumber}`),
+    ),
     playbackConfig,
     baseTempoBpm: resolveBaseTempoFromSong(song),
     tempoUnit: resolveTempoUnitFromSong(song),

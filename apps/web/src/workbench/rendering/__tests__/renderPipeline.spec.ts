@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
+import { filterPlaybackTimelineToVoices, renderReviewDocument } from '@zupfnoter/core'
+
 import { renderWorkbenchComparison, renderWorkbenchPreviews, resolvePdfExportVariants } from '../renderPipeline'
 
 const amMoargoAbc = `X:799
@@ -335,7 +337,7 @@ F
   })
 
   it('keeps all song voices in the playback timeline even when an extract narrows the rendered sheet', () => {
-    const result = renderWorkbenchPreviews(`X:1
+    const abc = `X:1
 T:Extract Playback
 L:1/4
 M:4/4
@@ -353,9 +355,14 @@ G, A,
     }
     }
 }
-`, 1)
+`
+    const result = renderWorkbenchPreviews(abc, 1)
+    const review = renderReviewDocument(abc, 1)
 
     expect(result.activeVoiceIds).toEqual(['1'])
+    expect(review.playbackTimeline).toEqual(
+      filterPlaybackTimelineToVoices(result.playbackTimeline, result.activeVoiceIds),
+    )
     expect(result.playbackTimeline).toHaveLength(2)
     expect(result.playbackTimeline[0]?.originVoiceIds).toContain('1')
     expect(result.playbackTimeline[0]?.originVoiceIds).toContain('2')

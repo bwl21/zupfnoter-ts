@@ -69,6 +69,7 @@ export type {
   PlaybackNote,
   PlaybackStepTextRange,
   PlaybackStep,
+  ActivePlaybackRangeState,
 } from './playback.js'
 
 export type {

@@ -1347,7 +1347,7 @@ export class AbcToSong {
 
     const rawQ = info['Q']?.split('\n')[0]
     const tempo = rawQ ? this._parseTempo(rawQ) : { duration: [0.25], bpm: 120 }
-    const parsedBpm = rawQ ? /^(\d+\/\d+)=(\d+)$/.exec(rawQ) : null
+    const parsedBpm = rawQ ? /^(\d+\/\d+)=(\d+(?:\.\d+)?)$/.exec(rawQ) : null
     const tempoDisplay = parsedBpm ? rawQ : (rawQ ? `${rawQ}=${tempo.bpm}` : '1/4=120')
 
     return {
@@ -1436,11 +1436,11 @@ export class AbcToSong {
     const trimmed = q.trim()
 
     // Full: "1/4=120"
-    const fullMatch = /^(\d+)\/(\d+)=(\d+)$/.exec(trimmed)
+    const fullMatch = /^(\d+)\/(\d+)=(\d+(?:\.\d+)?)$/.exec(trimmed)
     if (fullMatch) {
       const num = Number.parseInt(requireDefined(fullMatch[1], 'AbcToSong._parseTempo(): missing numerator'), 10)
       const den = Number.parseInt(requireDefined(fullMatch[2], 'AbcToSong._parseTempo(): missing denominator'), 10)
-      const bpm = Number.parseInt(requireDefined(fullMatch[3], 'AbcToSong._parseTempo(): missing BPM'), 10)
+      const bpm = Number.parseFloat(requireDefined(fullMatch[3], 'AbcToSong._parseTempo(): missing BPM'))
       return { duration: [num / den], bpm }
     }
 

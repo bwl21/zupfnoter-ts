@@ -529,12 +529,14 @@ describe('resolvePlaybackSteps', () => {
     expect(steps[0]?.activeNotes).toHaveLength(2)
   })
 
-  it('keeps all song voices when nothing is selected and the scope is all voices', () => {
+  it.each(['single-voice', 'all-voices'] as const)(
+    'limits no-selection playback to the active extract voices when the scope is %s',
+    (voiceScope) => {
     const selection: SelectionState = {
       selectedIndexes: [],
       originSelectedIndexes: [],
       source: 'command',
-      voiceScope: 'all-voices',
+      voiceScope,
     }
     const steps = resolvePlaybackSteps(selection, undefined, [
       {
@@ -561,9 +563,10 @@ describe('resolvePlaybackSteps', () => {
     })
 
     expect(steps).toHaveLength(1)
-    expect(steps[0]?.originVoiceIds).toEqual(['1', '2', '3', '4'])
-    expect(steps[0]?.activeNotes).toHaveLength(4)
-  })
+    expect(steps[0]?.originVoiceIds).toEqual(['1', '2', '3'])
+    expect(steps[0]?.activeNotes).toHaveLength(3)
+    },
+  )
 
   it('limits no-selection playback to the active extract voices when the scope is extract', () => {
     const selection: SelectionState = {

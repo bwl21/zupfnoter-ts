@@ -267,3 +267,45 @@ export function buildPlaybackTimeline(song: Song, activeVoices?: readonly number
     return step
   })
 }
+
+/** Begrenzung einer vollständig aufgebauten Timeline auf externe Stimmennummern. */
+export function filterPlaybackTimelineToVoices(
+  timeline: readonly PlaybackStep[],
+  activeVoiceIds: readonly string[],
+): PlaybackStep[] {
+  const allowedVoiceIds = new Set(activeVoiceIds)
+  return timeline.flatMap((step) => {
+    const originPlaybackIds = step.originPlaybackIds.filter((_, index) => {
+      const voiceId = step.originVoiceIds[index]
+      return voiceId !== undefined && allowedVoiceIds.has(voiceId)
+    })
+    const originVoiceIds = [...new Set(
+      originPlaybackIds
+        .map((playbackId) => playbackId.split('::')[0])
+        .filter((voiceId): voiceId is string => voiceId !== undefined && voiceId !== ''),
+    )]
+    const originZnIds = [...new Set(
+      originPlaybackIds.map((playbackId) => playbackId.split('::').slice(1).join('::')),
+    )]
+    const activeNotes = step.activeNotes.filter((note) => allowedVoiceIds.has(note.originVoiceId))
+    const activePlaybackTextRanges = (step.activePlaybackTextRanges ?? [])
+      .filter((entry) => allowedVoiceIds.has(entry.voiceId))
+    const activeTextRanges = [...new Map(
+      activePlaybackTextRanges.map((entry) => [textRangeKey(entry.textRange), entry.textRange]),
+    ).values()]
+
+    if (originPlaybackIds.length === 0 && activeNotes.length === 0 && activeTextRanges.length === 0) {
+      return []
+    }
+
+    return [{
+      ...step,
+      originVoiceIds,
+      originPlaybackIds,
+      originZnIds,
+      activeNotes,
+      activeTextRanges,
+      activePlaybackTextRanges,
+    }]
+  })
+}

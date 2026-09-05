@@ -157,3 +157,11 @@ export interface PlaybackStep {
   passIndex: number
   voltaNumber?: number
 }
+
+/** Bis zum tatsächlichen Note-off aktive Markierung eines ABC-Quellbereichs. */
+export interface ActivePlaybackRangeState {
+  /** Zu markierender Bereich im ABC-Quelltext. */
+  textRange: SelectionTextRange
+  /** Absoluter Endzeitpunkt innerhalb der Playback-Timeline in Millisekunden. */
+  endTimeMs: number
+}
