@@ -122,12 +122,18 @@ importers:
       '@zupfnoter/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@zupfnoter/design-system':
+        specifier: workspace:*
+        version: link:../../packages/design-system
       '@zupfnoter/playback':
         specifier: workspace:*
         version: link:../../packages/playback
       '@zupfnoter/playback-audio':
         specifier: workspace:*
         version: link:../../packages/playback-audio
+      '@zupfnoter/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
       '@zupfnoter/types':
         specifier: workspace:*
         version: link:../../packages/types

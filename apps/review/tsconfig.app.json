@@ -7,8 +7,10 @@
     "paths": {
       "@/*": ["./src/*"],
       "@zupfnoter/core": ["../../packages/core/src/index.ts"],
+      "@zupfnoter/design-system": ["../../packages/design-system/src/index.ts"],
       "@zupfnoter/playback": ["../../packages/playback/src/index.ts"],
       "@zupfnoter/playback-audio": ["../../packages/playback-audio/src/index.ts"],
+      "@zupfnoter/storage": ["../../packages/storage/src/index.ts"],
       "@zupfnoter/types": ["../../packages/types/src/index.ts"]
     },
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo"

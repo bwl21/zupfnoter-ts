@@ -14,8 +14,10 @@ export default defineConfig({
   optimizeDeps: {
     exclude: [
       '@zupfnoter/core',
+      '@zupfnoter/design-system',
       '@zupfnoter/playback',
       '@zupfnoter/playback-audio',
+      '@zupfnoter/storage',
       '@zupfnoter/types',
     ],
   },
