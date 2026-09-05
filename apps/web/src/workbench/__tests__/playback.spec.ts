@@ -188,6 +188,49 @@ describe('resolvePlaybackSteps', () => {
     expect(steps[0]?.playbackStartMs).toBe(0)
   })
 
+  it('continues after one harp note when its SVG object is selected as well', () => {
+    const harpIndex: SheetObjectIndex = {
+      ...sheetObjectIndex,
+      byZnId: { 'note-b-1': [0, 1] },
+      byTextRange: { '2:3': [0] },
+      byMusicTime: { '1': [0] },
+      entries: [
+        {
+          kind: 'music-entity',
+          znId: 'note-b-1',
+          voiceId: '1',
+          musicTime: 1,
+          textRange: { startpos: 2, endpos: 3 },
+          addressableIn: { editor: true, score: true, svg: true },
+        },
+        {
+          kind: 'sheet-object',
+          znId: 'note-b-1',
+          addressableIn: { editor: false, score: false, svg: true },
+        },
+      ],
+    }
+    const selection: SelectionState = {
+      selectedIndexes: [0, 1],
+      originSelectedIndexes: [0, 1],
+      source: 'harp-preview',
+      voiceScope: 'single-voice',
+    }
+
+    const steps = resolvePlaybackSteps(selection, harpIndex, timeline, 'range-harp', {
+      activeVoiceIds: ['1'],
+    })
+
+    expect(steps.map((step) => step.originZnIds[0])).toEqual([
+      'note-b-1',
+      'note-c',
+      'note-a-2',
+      'note-b-2',
+      'note-d',
+    ])
+    expect(steps[0]?.playbackStartMs).toBe(0)
+  })
+
   it('keeps overlapping voice highlights until each note duration ends', () => {
     const firstVoiceRange = { startpos: 10, endpos: 12 }
     const secondVoiceRange = { startpos: 20, endpos: 22 }

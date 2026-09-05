@@ -150,6 +150,7 @@ export function resolvePlaybackSteps(
   const activeVoiceIdSet = new Set(activeVoiceIds)
   const selectedPlaybackIds = resolveSelectedPlaybackIds(index, selection)
   const selectedEntries = projectIndexesToEntries(index, selection.selectedIndexes)
+  const selectedMusicEntries = selectedEntries.filter((entry) => entry.kind === 'music-entity')
   const selectedVoiceIds = [...new Set(
     selectedEntries
       .map((entry) => entry.voiceId)
@@ -215,10 +216,9 @@ export function resolvePlaybackSteps(
     }
   }
 
-  const selectedSingleNoteTime = selectedEntries.length === 1
-    && selectedEntries[0]?.kind === 'music-entity'
-    && typeof selectedEntries[0].musicTime === 'number'
-    ? selectedEntries[0].musicTime
+  const selectedSingleNoteTime = selectedMusicEntries.length === 1
+    && typeof selectedMusicEntries[0]?.musicTime === 'number'
+    ? selectedMusicEntries[0].musicTime
     : undefined
 
   if (selectedSingleNoteTime !== undefined && activeVoiceIdSet.size > 0) {
