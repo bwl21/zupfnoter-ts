@@ -66,6 +66,7 @@ interface ConfigTreeRow {
   effectivePath?: string
   localValue?: unknown
   effectiveValue?: unknown
+  effectiveSource?: string
   canFill: boolean
   canDelete: boolean
   canSelect: boolean
@@ -518,6 +519,7 @@ function createRow(
     effectivePath,
     localValue,
     effectiveValue,
+    effectiveSource: resolved?.source,
     canFill: actionProfile.canFill,
     canDelete: actionProfile.canDelete,
     canSelect: actionProfile.canSelect,
@@ -806,6 +808,15 @@ function isInheritedBoolean(row: ConfigTreeRow): boolean {
 function getBooleanValueLabel(row: ConfigTreeRow): string {
   const value = getBooleanValue(row) ? 'Ja' : 'Nein'
   return isInheritedBoolean(row) ? `Geerbt: ${value}` : value
+}
+
+function getEffectiveSourceLabel(row: ConfigTreeRow): string | undefined {
+  if (row.effectiveSource === undefined) return undefined
+  if (row.effectiveSource === 'built-in') return 'Built-in'
+  if (row.effectiveSource === 'global') return 'global'
+  if (row.effectiveSource === 'extract.0') return 'Auszug 0'
+  if (row.effectiveSource === 'active') return `aktiver Auszug ${props.currentExtract}`
+  return row.effectiveSource
 }
 
 function commitBooleanValue(row: ConfigTreeRow, value: boolean): void {
@@ -1581,9 +1592,6 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
               <span :class="{ 'config-row__boolean-value--inherited': isInheritedBoolean(row) }">
                 {{ getBooleanValueLabel(row) }}
               </span>
-              <span v-if="isInheritedBoolean(row)" class="config-row__boolean-origin">
-                wirksam · lokal nicht gesetzt
-              </span>
             </div>
             <textarea
               v-else-if="row.isLeaf && isTextareaValue(row)"
@@ -1613,6 +1621,12 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
               @blur="commitDraftValue(row)"
               @keydown.enter.prevent="commitDraftValue(row)"
             >
+            <span
+              v-if="row.isLeaf && getEffectiveSourceLabel(row) !== undefined"
+              class="config-row__origin"
+            >
+              Herkunft: {{ getEffectiveSourceLabel(row) }}
+            </span>
             <span
               v-if="row.isLeaf && inputErrors[row.path] !== undefined"
               :id="`config-error-${row.key}`"
@@ -2307,9 +2321,11 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
   font-style: italic;
 }
 
-.config-row__boolean-origin {
+.config-row__origin {
+  flex: 0 0 auto;
   color: var(--zn-text-muted, #7a8797);
   font-size: 0.72rem;
+  white-space: nowrap;
 }
 
 .config-row__switch {

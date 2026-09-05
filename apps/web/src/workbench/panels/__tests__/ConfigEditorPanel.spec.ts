@@ -189,7 +189,51 @@ describe('ConfigEditorPanel', () => {
     const showRow = wrapper.findAll('.config-row').find((row) => row.find('[data-help-key="extract.0.notebound.annotation.v_1.0.show"]').exists())
     expect(showRow).toBeDefined()
     expect(showRow?.find('.config-row__boolean').text()).toContain('Ja')
-    expect(showRow?.find('.config-row__boolean-origin').text()).toContain('lokal nicht gesetzt')
+    expect(showRow?.find('.config-row__origin').text()).toBe('Herkunft: Built-in')
+  })
+
+  it('shows the contributing configuration layer for effective values', () => {
+    const wrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"produce":1,"extract":{"3":{"title":"Lokal"}}}',
+        ].join('\n'),
+        currentExtract: 3,
+        activeSection: 'basic_settings',
+      },
+    })
+
+    const rows = wrapper.findAll('.config-row')
+    const produceRow = rows.find((row) => row.text().includes('PDF für Auszüge'))
+    const titleRow = rows.find((row) => row.text().includes('Titel'))
+
+    expect(produceRow?.find('.config-row__origin').text()).toBe('Herkunft: global')
+    expect(titleRow?.find('.config-row__origin').text()).toBe('Herkunft: aktiver Auszug 3')
+
+    const inheritedWrapper = mount(ConfigEditorPanel, {
+      props: {
+        abcText: [
+          'X:1',
+          'T:Config Demo',
+          'K:C',
+          'C |]',
+          '',
+          '%%%%zupfnoter.config',
+          '{"extract":{"0":{"notes":{"T01_number_extract":{"pos":[320,6],"text":"Basis","style":"large"}}},"3":{}}}',
+        ].join('\n'),
+        currentExtract: 3,
+        activeSection: 'notes',
+      },
+    })
+    const inheritedTextRow = inheritedWrapper.findAll('.config-row')
+      .find((row) => row.find('[data-help-key="extract.3.notes.T01_number_extract.text"]').exists())
+    expect(inheritedTextRow?.find('.config-row__origin').text()).toBe('Herkunft: Auszug 0')
   })
 
   it('explains that deleting a local value recalculates the effective value', () => {
