@@ -225,13 +225,17 @@ export function resolvePlaybackSteps(
     ? selectedMusicTimes[0]
     : undefined
 
-  if (selectedSingleBeatTime !== undefined && activeVoiceIdSet.size > 0) {
+  const singleBeatVoiceIds = selection.voiceScope === 'single-voice' && selectedVoiceIdSet.size > 0
+    ? selectedVoiceIdSet
+    : activeVoiceIdSet
+
+  if (selectedSingleBeatTime !== undefined && singleBeatVoiceIds.size > 0) {
     const startIndex = timeline.findIndex((step) => step.sourceTime >= selectedSingleBeatTime)
     if (startIndex < 0) return []
 
     const anchoredSteps = timeline
       .slice(startIndex)
-      .map((step) => filterStepToAllowedVoices(step, activeVoiceIdSet))
+      .map((step) => filterStepToAllowedVoices(step, singleBeatVoiceIds))
       .filter((step): step is PlaybackStep => step !== undefined)
     const firstStartMs = anchoredSteps[0]?.playbackStartMs ?? 0
 

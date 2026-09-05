@@ -123,7 +123,7 @@ const sheetObjectIndex: SheetObjectIndex = {
 }
 
 describe('resolvePlaybackSteps', () => {
-  it('starts single-note extract playback at the selected note and keeps all voices', () => {
+  it('starts single-note playback at the selected note and keeps only its voice', () => {
     const extractIndex: SheetObjectIndex = {
       ...sheetObjectIndex,
       byZnId: { 'note-b-1': [2] },
@@ -181,10 +181,11 @@ describe('resolvePlaybackSteps', () => {
     })
 
     expect(steps.map((step) => step.originZnIds)).toEqual([
-      ['note-b-1', 'note-b-2'],
+      ['note-b-1'],
       ['note-c'],
     ])
-    expect(steps[0]?.originVoiceIds).toEqual(['1', '2'])
+    expect(steps[0]?.originVoiceIds).toEqual(['1'])
+    expect(steps[0]?.originPlaybackIds).toEqual(['1::note-b-1'])
     expect(steps[0]?.playbackStartMs).toBe(0)
   })
 
