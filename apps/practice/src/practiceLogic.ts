@@ -94,3 +94,21 @@ export function resolveRange(
   if (startIndex < 0) return undefined
   return { range: [startIndex, events.length - 1], startMs: marker.timeMs }
 }
+
+/**
+ * Entscheidet, ob ein Harfenereignis in einem rollenden Planungsfenster
+ * gestartet werden muss. Im ersten Fenster nach einer Startposition oder
+ * Pause werden auch bereits begonnene, noch klingende Ereignisse angesetzt.
+ */
+export function playbackEventInScheduleWindow(
+  eventStartMs: number,
+  eventDurationMs: number,
+  windowStartMs: number,
+  windowEndMs: number,
+  includeOverlappingEvents: boolean,
+): boolean {
+  if (eventStartMs >= windowStartMs && eventStartMs < windowEndMs) return true
+  return includeOverlappingEvents
+    && eventStartMs < windowStartMs
+    && eventStartMs + eventDurationMs > windowStartMs
+}

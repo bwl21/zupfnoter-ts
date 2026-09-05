@@ -21,6 +21,7 @@ import {
   findPositionMarker,
   partNameAtTime,
   parsePosition,
+  playbackEventInScheduleWindow,
   positionAtTime,
   resolveRange,
   tempoBpmAtTime,
@@ -32,7 +33,7 @@ import {
   ViewfinderQRCodeReader,
 } from './qrScanner'
 
-const PRACTICE_VERSION = '0.3.16'
+const PRACTICE_VERSION = '0.3.17'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -452,7 +453,11 @@ function renderPractice(
     metronomeEnabled,
     metronomeMode: selectedMetronomeMode,
     callbacks: {
-      onRangeChange: (position) => { readRange(position) },
+      onRangeChange: (position) => {
+        if (readRange(position) === undefined) return
+        playbackOffsetMs = 0
+        updatePosition(0)
+      },
       onReset: () => {
         stopPlayback()
         ui.setRangePosition(firstPosition)
@@ -750,18 +755,16 @@ function renderPractice(
     }
     const scheduledNotes = selectedEvents.map((event) => {
       const eventOffset = event.startMs - base
-      const skippedMs = Math.max(0, playbackOffsetMs - eventOffset)
       const chordGain = Math.min(0.9, 0.9 / Math.sqrt(chordSizes.get(event.startMs) ?? 1))
       return {
         eventOffset,
         eventDuration: event.durationMs,
         ...resolveSoundfontPitch(event.pitch),
-        skippedMs,
-        duration: Math.max(0.02, (event.durationMs - skippedMs) / 1000 / speedFactor),
         gain: (event.velocity ?? 127) / 127 * chordGain,
       }
     })
     let nextWindowStartMs = playbackOffsetMs
+    let includeOverlappingEvents = true
     const scheduleWindow = () => {
       if (audioContext !== playerContext || nextWindowStartMs >= durationMs) return
       // Keep a rolling audio-context lookahead. Android can delay timers while
@@ -778,12 +781,21 @@ function renderPractice(
       const windowAudioStart = audioStartAt
         + (nextWindowStartMs - playbackOffsetMs) / 1000 / speedFactor
       const windowNotes = scheduledNotes
-        .filter((event) => event.eventOffset >= nextWindowStartMs && event.eventOffset < windowEndMs)
+        .filter((event) => playbackEventInScheduleWindow(
+          event.eventOffset,
+          event.eventDuration,
+          nextWindowStartMs,
+          windowEndMs,
+          includeOverlappingEvents,
+        ))
         .map((event) => ({
           note: event.note,
           cents: event.cents,
-          time: (event.eventOffset - nextWindowStartMs) / 1000 / speedFactor,
-          duration: Math.max(0.02, (event.eventDuration - (event.eventOffset < playbackOffsetMs ? event.skippedMs : 0)) / 1000 / speedFactor),
+          time: Math.max(0, event.eventOffset - nextWindowStartMs) / 1000 / speedFactor,
+          duration: Math.max(
+            0.02,
+            (event.eventDuration - Math.max(0, nextWindowStartMs - event.eventOffset)) / 1000 / speedFactor,
+          ),
           gain: event.gain,
         }))
       if (windowNotes.length > 0) harpPlayer.schedule(windowAudioStart, windowNotes)
@@ -795,6 +807,7 @@ function renderPractice(
         nextWindowStartMs,
         windowEndMs,
       )
+      includeOverlappingEvents = false
       nextWindowStartMs = windowEndMs
       if (nextWindowStartMs < durationMs) {
         const timer = window.setTimeout(scheduleWindow, AUDIO_SCHEDULE_REFILL_MS)

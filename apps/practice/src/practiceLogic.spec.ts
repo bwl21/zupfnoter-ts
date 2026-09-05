@@ -6,6 +6,7 @@ import {
   nextPositionBoundaryMarker,
   partNameAtTime,
   parsePosition,
+  playbackEventInScheduleWindow,
   positionAtTime,
   resolveRange,
   tempoBpmAtTime,
@@ -60,5 +61,12 @@ describe('practice logic', () => {
     expect(partNameAtTime(partMarkers, 0)).toBe('Teil A')
     expect(partNameAtTime(partMarkers, 2500)).toBe('Teil A')
     expect(partNameAtTime(partMarkers, 3000)).toBe('Teil B')
+  })
+
+  it('restarts a still sounding harp note in the first window after a pause', () => {
+    expect(playbackEventInScheduleWindow(1_000, 2_000, 2_000, 2_750, true)).toBe(true)
+    expect(playbackEventInScheduleWindow(1_000, 2_000, 2_000, 2_750, false)).toBe(false)
+    expect(playbackEventInScheduleWindow(2_500, 500, 2_000, 2_750, false)).toBe(true)
+    expect(playbackEventInScheduleWindow(1_000, 1_000, 2_000, 2_750, true)).toBe(false)
   })
 })
