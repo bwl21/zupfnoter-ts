@@ -675,6 +675,41 @@ button {
   }
 }
 
+@media (max-width: 22rem) and (orientation: portrait) {
+  .review-player .review-player__settings {
+    width: 100%;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+
+  .review-player__settings .footer-bar__metronome-field {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .review-player__settings .footer-bar__metronome-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .review-player__settings .footer-bar__speed-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .review-player__settings .footer-bar__speed-button {
+    min-width: 1.55rem;
+    padding-inline: 0.25rem;
+  }
+
+  .review-player__settings .footer-bar__speed-value {
+    width: 3.2rem;
+  }
+}
+
 @media (orientation: landscape) and (max-height: 32rem) {
   .review-player {
     gap: 0.35rem 0.65rem;
