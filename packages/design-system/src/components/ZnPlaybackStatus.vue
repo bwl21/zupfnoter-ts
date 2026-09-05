@@ -16,28 +16,30 @@ const props = defineProps<{
 const trimmedPartName = computed(() => props.partName?.trim() || undefined)
 const partCharacters = computed(() => Array.from(trimmedPartName.value ?? ''))
 const shortenedPartName = computed(() => partCharacters.value.length > 18)
-const partStart = computed(() => shortenedPartName.value
-  ? partCharacters.value.slice(0, 9).join('')
-  : trimmedPartName.value)
-const partEnd = computed(() => shortenedPartName.value
-  ? partCharacters.value.slice(-9).join('')
-  : undefined)
-const accessibleLabel = computed(() => [
-  ...(trimmedPartName.value === undefined ? [] : [`Abschnitt ${trimmedPartName.value}`]),
-  `Takt ${props.measureNumber}`,
-  `Durchlauf ${props.passIndex}`,
-].join(' · '))
+const partStart = computed(() =>
+  shortenedPartName.value ? partCharacters.value.slice(0, 9).join('') : trimmedPartName.value,
+)
+const partEnd = computed(() =>
+  shortenedPartName.value ? partCharacters.value.slice(-9).join('') : undefined,
+)
+const accessibleLabel = computed(() =>
+  [
+    ...(trimmedPartName.value === undefined ? [] : [`Abschnitt ${trimmedPartName.value}`]),
+    `Takt ${props.measureNumber}`,
+    `Durchlauf ${props.passIndex}`,
+  ].join(' · '),
+)
 </script>
 
 <template>
-  <div
-    class="playback-status-overlay"
-    :aria-label="accessibleLabel"
-    aria-live="polite"
-  >
+  <div class="playback-status-overlay" :aria-label="accessibleLabel" aria-live="polite">
     <span class="playback-status-overlay__position">
       <span class="playback-status-overlay__label" aria-hidden="true">
-        {{ trimmedPartName === undefined ? 'Takt · Durchlauf' : 'Abschnitt · Takt · Durchlauf' }}
+        {{
+          trimmedPartName === undefined
+            ? 'Takt · Durchlauf'
+            : 'Abschnitt · Takt · Durchlauf'
+        }}
       </span>
       <span class="playback-status-overlay__values">
         <span
@@ -52,8 +54,15 @@ const accessibleLabel = computed(() => [
             <span class="playback-status-overlay__part-end">{{ partEnd }}</span>
           </template>
         </span>
-        <span v-if="trimmedPartName !== undefined" class="playback-status-overlay__separator" aria-hidden="true">·</span>
-        <span class="playback-status-overlay__measure" aria-hidden="true">| {{ measureNumber }} |</span>
+        <span
+          v-if="trimmedPartName !== undefined"
+          class="playback-status-overlay__separator"
+          aria-hidden="true"
+          >·</span
+        >
+        <span class="playback-status-overlay__measure" aria-hidden="true"
+          >| {{ measureNumber }} |</span
+        >
         <span class="playback-status-overlay__separator" aria-hidden="true">·</span>
         <span class="playback-status-overlay__pass" aria-hidden="true">#{{ passIndex }}</span>
       </span>
@@ -70,7 +79,8 @@ const accessibleLabel = computed(() => [
         class="playback-status-overlay__beat"
         :class="{
           'playback-status-overlay__beat--active': beat === metronomeBeat.beat,
-          'playback-status-overlay__beat--accent': beat === metronomeBeat.beat && metronomeBeat.accent,
+          'playback-status-overlay__beat--accent':
+            beat === metronomeBeat.beat && metronomeBeat.accent,
         }"
         aria-hidden="true"
       />
@@ -83,25 +93,28 @@ const accessibleLabel = computed(() => [
   position: absolute;
   left: 50%;
   bottom: calc(100% - 0.5rem);
-  transform: translateX(-50%);
   z-index: 2;
   display: inline-flex;
+  max-width: min(34rem, calc(100vw - 2rem));
   align-items: center;
   padding: 0.55rem 0.9rem;
   border: 1px solid color-mix(in srgb, var(--zn-accent) 26%, var(--zn-border));
   border-radius: 999px;
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--zn-accent) 14%, var(--zn-bg-elevated)) 0%, var(--zn-bg-elevated) 100%);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--zn-accent) 14%, var(--zn-bg-elevated)) 0%,
+    var(--zn-bg-elevated) 100%
+  );
   box-shadow:
     0 10px 22px color-mix(in srgb, var(--zn-accent) 18%, transparent),
-    0 2px 6px rgb(15 23 42 / 0.16);
+    0 2px 6px rgb(15 23 42 / 16%);
   color: var(--zn-text);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   pointer-events: none;
+  transform: translateX(-50%);
   white-space: nowrap;
-  max-width: min(34rem, calc(100vw - 2rem));
 }
 
 .playback-status-overlay__position {
@@ -188,7 +201,12 @@ const accessibleLabel = computed(() => [
 }
 
 @keyframes playback-metronome-pulse {
-  from { transform: scale(1.45); }
-  to { transform: scale(1); }
+  from {
+    transform: scale(1.45);
+  }
+
+  to {
+    transform: scale(1);
+  }
 }
 </style>

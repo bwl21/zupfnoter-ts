@@ -10,6 +10,10 @@
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@zupfnoter/types": ["../../packages/types/src/index.ts"]
+    },
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo"
   }
 }

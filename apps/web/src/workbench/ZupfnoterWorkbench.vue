@@ -18,7 +18,7 @@ import AbcEditorPanel from './panels/AbcEditorPanel.vue'
 import ConfigEditorPanel from './panels/ConfigEditorPanel.vue'
 import ConsolePanel from './panels/ConsolePanel.vue'
 import FooterBar from './FooterBar.vue'
-import PlaybackStatusOverlay from './PlaybackStatusOverlay.vue'
+import { ZnPlaybackStatus } from '@zupfnoter/design-system'
 import AboutDialog from './AboutDialog.vue'
 import HarpPreviewPanel from './panels/HarpPreviewPanel.vue'
 import LyricsPanel from './panels/LyricsPanel.vue'
@@ -2936,7 +2936,7 @@ function handleMirrorMessage(event: MessageEvent): void {
           @storage-connections="handleFileToolbarAction('storage-connections')"
           @selection-voice-scope-change="handleSelectionVoiceScopeChange"
         />
-        <PlaybackStatusOverlay
+        <ZnPlaybackStatus
           v-if="playbackStatusOverlay !== undefined"
           :measure-number="playbackStatusOverlay.measureNumber"
           :part-name="playbackStatusOverlay.partName"

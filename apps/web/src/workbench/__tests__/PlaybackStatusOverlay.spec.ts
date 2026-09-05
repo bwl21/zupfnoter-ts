@@ -1,11 +1,11 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import PlaybackStatusOverlay from '../PlaybackStatusOverlay.vue'
+import { ZnPlaybackStatus } from '@zupfnoter/design-system'
 
 describe('PlaybackStatusOverlay', () => {
   it('matches the player position format and shows the active metronome beat', () => {
-    const wrapper = mount(PlaybackStatusOverlay, {
+    const wrapper = mount(ZnPlaybackStatus, {
       props: {
         partName: 'Teil A mit einem sehr langen Abschnittsnamen',
         measureNumber: 15,

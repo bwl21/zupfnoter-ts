@@ -9,6 +9,9 @@
     "allowJs": false,
     "noEmit": true,
     "allowImportingTsExtensions": true,
+    "paths": {
+      "@zupfnoter/types": ["../types/src/index.ts"]
+    },
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo"
   }
 }

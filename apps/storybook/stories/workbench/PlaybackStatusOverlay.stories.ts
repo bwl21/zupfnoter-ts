@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import PlaybackStatusOverlay from '../../../web/src/workbench/PlaybackStatusOverlay.vue'
+import { ZnPlaybackStatus } from '@zupfnoter/design-system'
 
 const meta = {
   title: 'Workbench/PlaybackStatusOverlay',
-  component: PlaybackStatusOverlay,
+  component: ZnPlaybackStatus,
   tags: ['autodocs'],
   decorators: [() => ({ template: '<div style="position:relative;height:8rem;margin-top:3rem"><story /></div>' })],
-} satisfies Meta<typeof PlaybackStatusOverlay>
+} satisfies Meta<typeof ZnPlaybackStatus>
 
 export default meta
 type Story = StoryObj<typeof meta>

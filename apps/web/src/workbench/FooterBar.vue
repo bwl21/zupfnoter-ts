@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import tippy, { type Instance as TippyInstance } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 
-import { ZnBadge, ZnButton, ZnIcon, ZnStatusBar } from '@zupfnoter/design-system'
+import { ZnBadge, ZnPlaybackControls, ZnStatusBar } from '@zupfnoter/design-system'
 
 const props = withDefaults(defineProps<{
   extractLabel: string
@@ -62,33 +62,6 @@ function handleSelectionVoiceScopeChange(event: Event): void {
   emit('selection-voice-scope-change', target.value)
 }
 
-function handleMetronomeModeChange(event: Event): void {
-  const target = event.target
-  if (!(target instanceof HTMLSelectElement)) return
-  if (target.value !== 'off'
-    && target.value !== 'countIn'
-    && target.value !== 'playback'
-    && target.value !== 'always') return
-  emit('metronome-mode-change', target.value)
-}
-
-function handleSpeedChange(event: Event): void {
-  const target = event.target
-  if (!(target instanceof HTMLInputElement)) return
-  const value = Number(target.value)
-  if (!Number.isFinite(value) || value <= 0) {
-    target.value = String(props.speedBpm)
-    return
-  }
-  emit('speed-change', Math.round(value))
-}
-
-function metronomeOptionLabel(
-  mode: 'off' | 'countIn' | 'playback' | 'always',
-  label: string,
-): string {
-  return props.configuredMetronomeMode === mode ? `${label} (Blattvorgabe)` : label
-}
 </script>
 
 <template>
@@ -140,49 +113,16 @@ function metronomeOptionLabel(
           </select>
         </label>
       </div>
-      <div class="footer-bar__playback">
-        <span class="footer-bar__meta">Metronom:</span>
-        <label class="footer-bar__metronome-field">
-          <select
-            class="footer-bar__metronome-select"
-            :value="metronomeMode"
-            aria-label="Metronom-Modus"
-            @change="handleMetronomeModeChange"
-          >
-            <option value="off">{{ metronomeOptionLabel('off', 'Aus') }}</option>
-            <option value="countIn">{{ metronomeOptionLabel('countIn', 'Einzählen') }}</option>
-            <option value="playback">{{ metronomeOptionLabel('playback', 'Während der Wiedergabe') }}</option>
-            <option value="always">{{ metronomeOptionLabel('always', 'Immer') }}</option>
-          </select>
-        </label>
-        <button
-          class="footer-bar__playback-config"
-          type="button"
-          title="Wiedergabe für diesen Auszug konfigurieren"
-          aria-label="Wiedergabe konfigurieren"
-          @click="emit('playback-config')"
-        >
-          <ZnIcon name="settings" />
-        </button>
-        <span class="footer-bar__speed-label">BPM:</span>
-        <ZnButton class="footer-bar__speed-button" variant="ghost" @click="emit('speed-down')">
-          -
-        </ZnButton>
-        <input
-          class="footer-bar__speed-value"
-          type="number"
-          min="1"
-          step="5"
-          inputmode="numeric"
-          aria-label="Wiedergabegeschwindigkeit in BPM"
-          :value="speedBpm"
-          @change="handleSpeedChange"
-          @wheel.prevent
-        >
-        <ZnButton class="footer-bar__speed-button" variant="ghost" @click="emit('speed-up')">
-          +
-        </ZnButton>
-      </div>
+      <ZnPlaybackControls
+        :speed-bpm="speedBpm"
+        :metronome-mode="metronomeMode"
+        :configured-metronome-mode="configuredMetronomeMode"
+        @speed-change="emit('speed-change', $event)"
+        @speed-down="emit('speed-down')"
+        @speed-up="emit('speed-up')"
+        @metronome-mode-change="emit('metronome-mode-change', $event)"
+        @playback-config="emit('playback-config')"
+      />
     </template>
   </ZnStatusBar>
 </template>
@@ -274,12 +214,6 @@ function metronomeOptionLabel(
   outline-offset: 2px;
 }
 
-.footer-bar__playback {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .footer-bar__selection {
   display: inline-flex;
   align-items: center;
@@ -292,8 +226,7 @@ function metronomeOptionLabel(
   align-items: center;
 }
 
-.footer-bar__scope-select,
-.footer-bar__metronome-select {
+.footer-bar__scope-select {
   min-width: 5.5rem;
   height: 1.55rem;
   min-height: 1.55rem;
@@ -316,63 +249,9 @@ function metronomeOptionLabel(
   background-repeat: no-repeat;
 }
 
-.footer-bar__scope-select:focus-visible,
-.footer-bar__metronome-select:focus-visible {
+.footer-bar__scope-select:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--zn-accent) 65%, white);
   outline-offset: 2px;
 }
 
-.footer-bar__speed-button,
-.footer-bar__speed-value,
-.footer-bar__playback-config {
-  min-width: 1.8rem;
-  height: 1.55rem;
-  min-height: 1.55rem;
-  padding-inline: 0.4rem;
-  border-radius: 999px;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum' 1;
-}
-
-.footer-bar__playback-config {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--zn-border);
-  background: var(--zn-bg-surface);
-  color: var(--zn-text);
-  font: inherit;
-  cursor: pointer;
-}
-
-.footer-bar__metronome-field {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-
-.footer-bar__metronome-select {
-  min-width: 9.2rem;
-}
-
-.footer-bar__speed-label {
-  margin-inline-start: 0.15rem;
-  color: var(--zn-text-muted);
-  font-size: 0.75rem;
-}
-
-.footer-bar__speed-value {
-  width: 4.5rem;
-  border: 1px solid var(--zn-border);
-  background: var(--zn-bg-surface);
-  color: var(--zn-text);
-  font: inherit;
-  text-align: center;
-}
-
-:deep(.footer-bar__speed-button.zn-button) {
-  height: 1.55rem;
-  min-height: 1.55rem;
-  padding: 0 0.4rem;
-}
 </style>
