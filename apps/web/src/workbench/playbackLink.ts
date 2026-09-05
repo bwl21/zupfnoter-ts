@@ -3,13 +3,12 @@ import {
   type PlaybackCompressionCodec,
   type PlaybackEvent,
   type PlaybackPositionMarker,
-  type PlaybackLinkOptions,
-  type PlaybackMetronomeConfig,
 } from '@zupfnoter/playback'
 import { deflateSync, inflateSync } from 'fflate'
 import {
   buildPlaybackExportDataFromTimeline,
   practiceQrJpegDataUrl,
+  preparePlaybackLinkOptions,
 } from '@zupfnoter/core'
 import type { PlaybackExportData } from '@zupfnoter/core'
 
@@ -57,17 +56,6 @@ export function playbackPositionsFromTimeline(
   }))
 }
 
-function toPlaybackMetronomeConfig(config: PlaybackConfig | undefined): PlaybackMetronomeConfig | undefined {
-  if (config === undefined || config.metronomeMode === undefined) return undefined
-  return {
-    mode: config.metronomeMode,
-    minLeadIn: config.minLeadIn,
-    bandPreCount: config.bandPreCount,
-    division: config.division,
-    subdivision: config.subdivision,
-  }
-}
-
 /** Creates one compressed playback link from the existing workbench timeline. */
 export async function createPlaybackLinkFromTimeline(
   timeline: readonly PlaybackStep[],
@@ -80,14 +68,8 @@ export async function createPlaybackLinkFromTimeline(
 ) {
   return exportPlaybackLink(
     playbackEventsFromTimeline(timeline, activeVoiceIds),
-    {
-      playerUrl: practiceUrl,
-      timeResolutionMs,
-      positionMarkers: playbackPositionsFromTimeline(timeline),
-      tempoBpm,
-      tempoUnit,
-      metronome: toPlaybackMetronomeConfig(playbackConfig),
-    } satisfies PlaybackLinkOptions,
+    preparePlaybackLinkOptions(practiceUrl, playbackPositionsFromTimeline(timeline),
+      tempoBpm, tempoUnit, playbackConfig, timeResolutionMs),
     browserPlaybackCodec,
   )
 }
@@ -109,14 +91,8 @@ export async function createPlaybackLinkFromExportData(
       velocity: event.velocity,
       position: event.position,
     })),
-    {
-      playerUrl: practiceUrl,
-      timeResolutionMs,
-      positionMarkers: exportData.positionMarkers,
-      tempoBpm,
-      tempoUnit,
-      metronome: toPlaybackMetronomeConfig(playbackConfig),
-    } satisfies PlaybackLinkOptions,
+    preparePlaybackLinkOptions(practiceUrl, exportData.positionMarkers,
+      tempoBpm, tempoUnit, playbackConfig, timeResolutionMs),
     browserPlaybackCodec,
   )
 }

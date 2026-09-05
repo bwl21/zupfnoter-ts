@@ -1,12 +1,8 @@
-import type { PlaybackConfig, ReviewDocument, ReviewExtract, SongResources } from '@zupfnoter/types'
+import { prepareDocumentConfig, parseDocumentSong, layoutDocumentExtract, resolveDocumentPlaybackConfig } from './DocumentPipeline.js'
+import type { ReviewDocument, ReviewExtract, SongResources } from '@zupfnoter/types'
 
 import { AbcParser } from './AbcParser.js'
-import { AbcToSong } from './AbcToSong.js'
-import { buildConfstack } from './buildConfstack.js'
-import { Confstack } from './Confstack.js'
-import { extractSongConfig, extractSongResources, mergeSongConfig } from './extractSongConfig.js'
-import { HarpnotesLayout } from './HarpnotesLayout.js'
-import { initConf } from './initConf.js'
+import { extractSongResources } from './extractSongConfig.js'
 import {
   buildPlaybackTimeline,
   filterPlaybackTimelineToVoices,
@@ -14,7 +10,6 @@ import {
   resolveTempoUnitFromSong,
 } from './PlaybackTimeline.js'
 import { SvgEngine } from './SvgEngine.js'
-import { createDefaultAnnotationTextMetrics } from './TextMetrics.js'
 
 function resourceUrl(resources: SongResources, imageName: string): string | undefined {
   const parts = resources[imageName]
@@ -27,14 +22,13 @@ function previewSvg(svg: string): string {
 
 /** Rendert genau die Daten, die ein schreibgeschützter Review-Client benötigt. */
 export function renderReviewDocument(abcText: string, extractNumber = 0): ReviewDocument {
-  const config = mergeSongConfig(initConf(new Confstack()), extractSongConfig(abcText))
+  const config = prepareDocumentConfig(abcText)
   const resources = extractSongResources(abcText)
-  const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
-  const sheet = new HarpnotesLayout(config, {
-    annotationTextMetrics: createDefaultAnnotationTextMetrics(),
+  const song = parseDocumentSong(abcText, config)
+  const sheet = layoutDocumentExtract(song, config, extractNumber, 'A3', {
     imageResolver: (imageName) => resourceUrl(resources, imageName),
     interactive: true,
-  }).layout(song, extractNumber, 'A3')
+  })
   const configuredExtracts =
     config.produce !== undefined && config.produce.length > 0 ? config.produce : [extractNumber]
   const extractNumbers = [...new Set([extractNumber, ...configuredExtracts])]
@@ -44,9 +38,7 @@ export function renderReviewDocument(abcText: string, extractNumber = 0): Review
       config.extract[String(number)]?.title?.trim() ||
       (number === 0 ? 'Alle Stimmen' : `Auszug ${number}`),
   }))
-  const playbackConfig = buildConfstack(config, extractNumber).get(
-    `extract.${extractNumber}.playback`,
-  ) as PlaybackConfig | undefined
+  const playbackConfig = resolveDocumentPlaybackConfig(config, extractNumber)
 
   return {
     title: song.metaData.title?.trim() || 'Unbenanntes Stück',

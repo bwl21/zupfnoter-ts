@@ -10,19 +10,20 @@ import { promisify } from 'node:util'
 import { createLegacyCommandStack, type WorkbenchCommandRuntime } from '@zupfnoter/core/legacyCommands'
 import type { CommandArgumentValue } from '@zupfnoter/core/commands'
 import {
-  AbcParser,
-  AbcToSong,
-  Confstack,
-  HarpnotesLayout,
+  prepareDocumentConfig,
+  parseDocumentSong,
+  layoutDocumentExtract,
+  resolveDocumentPlaybackConfig,
+  preparePlaybackLinkOptions,
+  resolveBaseTempoFromSong,
+  resolveTempoUnitFromSong,
   PdfEngine,
   SvgEngine,
   PRACTICE_QR_IMAGE_NAME,
   buildPlaybackExportData,
   createPracticeQrJpeg,
-  extractSongConfig,
   extractSongFilebase,
   extractSongResources,
-  initConf,
   mergeSongConfig,
   pdfOutputFilename,
   replaceSongDocumentResources,
@@ -313,17 +314,16 @@ async function renderBatchFile(
   format: 'A3' | 'A4' | 'A3-A4',
 ): Promise<void> {
   const abcText = await readFile(inputFile, 'utf8')
-  const conf = new Confstack()
-  const config = mergeSongConfig(initConf(conf), extractSongConfig(abcText))
+  const config = prepareDocumentConfig(abcText)
   const resources = extractSongResources(abcText)
-  const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
+  const song = parseDocumentSong(abcText, config)
   const filebase = extractSongFilebase(abcText) ?? basename(inputFile, extname(inputFile))
   const formats: Array<'A3' | 'A4'> = format === 'A3-A4' ? ['A3', 'A4'] : [format]
   await mkdir(targetFolder, { recursive: true })
 
   for (const extractNr of resolveBatchExtracts(config)) {
     const filenamePart = extractFilenamePart(config, extractNr)
-    let sheet = new HarpnotesLayout(config).layout(song, extractNr, formats[0] ?? 'A3')
+    let sheet = layoutDocumentExtract(song, config, extractNr, formats[0] ?? 'A3')
     let practiceLink: string | undefined
 
     if (containsPracticeQr(config) && practiceUrl !== undefined) {
@@ -335,10 +335,11 @@ async function renderBatchFile(
         velocity: event.velocity,
         position: event.position,
       }))
-      const link = await exportPlaybackLink(events, {
-        playerUrl: practiceUrl,
-        positionMarkers: exportData.positionMarkers,
-      }, nodePlaybackCodec)
+      const link = await exportPlaybackLink(events, preparePlaybackLinkOptions(
+        practiceUrl, exportData.positionMarkers,
+        resolveBaseTempoFromSong(song), resolveTempoUnitFromSong(song),
+        resolveDocumentPlaybackConfig(config, extractNr),
+      ), nodePlaybackCodec)
       practiceLink = link.url
     } else if (containsPracticeQr(config)) {
       log(`${inputFile}: $player_qr übersprungen, --practice-url fehlt`)
@@ -349,7 +350,7 @@ async function renderBatchFile(
         if (imageName === PRACTICE_QR_IMAGE_NAME && practiceLink !== undefined) return dataUrlFromJpeg(createPracticeQrJpeg(practiceLink))
         return resources[imageName]?.join('')
       }
-      sheet = new HarpnotesLayout(config, { imageResolver }).layout(song, extractNr, pageFormat)
+      sheet = layoutDocumentExtract(song, config, extractNr, pageFormat, { imageResolver })
       const svgName = `${filebase}_${filenamePart}_${pageFormat.toLowerCase()}.svg`
       await writeFile(join(targetFolder, svgName), new SvgEngine().draw(sheet), 'utf8')
       const pdf = pageFormat === 'A3'

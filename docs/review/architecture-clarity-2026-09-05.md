@@ -14,7 +14,7 @@ Aktualisierung dieser Checkliste. Die Reihenfolge darf Abhängigkeiten folgen.
 - [x] B1 – Lockdatei reparieren und reproduzierbare Workspace-Auflösung prüfen.
 - [x] B2 – Musikalische Startposition zentral auflösen; Durchlauf berücksichtigen.
 - [ ] B3 – Konfigurationsfelder und wirksame Werte generisch aus Schema/Confstack beziehen.
-- [ ] B4 – Gemeinsame Dokument-/Exportvorbereitung; identische Playback-Link-Metadaten.
+- [x] B4 – Gemeinsame Dokument-/Exportvorbereitung; identische Playback-Link-Metadaten.
 - [ ] B5 – Gemeinsamer Audio-Lebenszyklus und Scheduling für Practice sowie Web/Review.
 - [x] B6 – Gemeinsame fachliche Typen eindeutig in `packages/types` besitzen.
 - [x] B7 – Design-System-Paketvertrag und Build/Typecheck konsistent machen.
@@ -162,3 +162,15 @@ einschließlich der Vue-Templates, statt ein nicht erzeugtes `dist` anzubieten.
 Frozen-Workspace-Installation, Design-System-Build, Storybook-Typecheck,
 4 Web-Komponententests und Review-Build inklusive Typecheck erfolgreich.
 Bekannte Vendor-eval-/Chunkgrößenwarnungen bleiben; keine visuelle Änderung.
+
+### B4 – Ergebnis
+
+`DocumentPipeline` bündelt Konfigurationsaufbau, Song-Transformation,
+Layout-Textmetriken und Playback-Link-Optionen. Web, Review, CLI, QR-Generator
+und Demo nutzen diese Einstiege; Ressourcenauflösung und Kompression bleiben
+bei den Plattformadaptern. CLI-Links enthalten jetzt ebenfalls BPM,
+Tempoeinheit und die über Confstack geerbten Metronomvorgaben.
+4 Core-, 22 Web- und 2 Review-Tests sowie alle Workspace-Typechecks erfolgreich.
+Die Konsistenztests vergleichen Song- und Timeline-Export und prüfen
+Tempoeinheit und Metronomvererbung. Keine vollständige Druck-/Legacy-Parität
+oder Geräteprüfung behauptet.

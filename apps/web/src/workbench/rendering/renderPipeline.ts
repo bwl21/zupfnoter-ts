@@ -1,16 +1,14 @@
 import {
+  prepareDocumentConfig,
+  parseDocumentSong,
+  layoutDocumentExtract,
+  resolveDocumentPlaybackConfig,
   AbcParser,
   AbcToSong,
-  Confstack,
   HarpnotesLayout,
   PdfEngine,
   SvgEngine,
-  createDefaultAnnotationTextMetrics,
-  extractSongConfig,
   extractSongResources,
-  buildConfstack,
-  initConf,
-  mergeSongConfig,
   PRACTICE_QR_IMAGE_NAME,
 } from '@zupfnoter/core'
 import type { AbcParseError } from '@zupfnoter/core'
@@ -96,14 +94,13 @@ export async function renderPdfExport(
 ): Promise<Blob> {
   const config = buildConfig(abcText)
   const resources = options.resources ?? extractSongResources(abcText)
-  const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
-  let sheet = new HarpnotesLayout(config, {
-    annotationTextMetrics: createDefaultAnnotationTextMetrics(),
+  const song = parseDocumentSong(abcText, config)
+  let sheet = layoutDocumentExtract(song, config, extractNr, pageFormat, {
     imageResolver: (imageName) => imageName === PRACTICE_QR_IMAGE_NAME
       ? options.practiceQrJpegUrl
       : resolveResourceUrl(resources, imageName),
     flowconf: false,
-  }).layout(song, extractNr, pageFormat)
+  })
   let practiceQrJpegUrl = options.practiceQrJpegUrl
   if (practiceQrJpegUrl === undefined && options.practiceUrl !== undefined && abcText.includes(PRACTICE_QR_IMAGE_NAME)) {
     // Use the same web timeline as the Share/Playback-Link command. A second
@@ -119,13 +116,12 @@ export async function renderPdfExport(
       resolvePlaybackConfig(config, extractNr),
     )
     practiceQrJpegUrl = await createPracticeQrJpeg(playbackLink.url)
-    sheet = new HarpnotesLayout(config, {
-      annotationTextMetrics: createDefaultAnnotationTextMetrics(),
+    sheet = layoutDocumentExtract(song, config, extractNr, pageFormat, {
       imageResolver: (imageName) => imageName === PRACTICE_QR_IMAGE_NAME
         ? practiceQrJpegUrl
         : resolveResourceUrl(resources, imageName),
       flowconf: false,
-    }).layout(song, extractNr, pageFormat)
+    })
   }
   const engine = new PdfEngine()
   return pageFormat === 'A3'
@@ -171,13 +167,11 @@ function scaleHarpSvgForPreview(svg: string): string {
 }
 
 function buildConfig(abcText: string) {
-  const conf = new Confstack()
-  const defaults = initConf(conf)
-  return mergeSongConfig(defaults, extractSongConfig(abcText))
+  return prepareDocumentConfig(abcText)
 }
 
 function resolvePlaybackConfig(config: ReturnType<typeof buildConfig>, extractNr: number): PlaybackConfig | undefined {
-  return buildConfstack(config, extractNr).get(`extract.${extractNr}.playback`) as PlaybackConfig | undefined
+  return resolveDocumentPlaybackConfig(config, extractNr)
 }
 
 /** Meldet eine fehlende oder leere anfängliche Tonartzeile vor dem Konfigurationsblock. */
@@ -239,19 +233,17 @@ export function renderWorkbenchPreviews(
   let modelError: string | undefined
   let sheetObjectIndex: SheetObjectIndex | undefined
   try {
-    const parsedModel = modelParser.parse(abcText)
-    const transformedSong = new AbcToSong().transform(parsedModel, config)
+    const transformedSong = parseDocumentSong(abcText, config, modelParser)
     song = transformedSong
     allVoiceIds = resolveUserVisibleVoiceIds(transformedSong)
     const layoutOptions: ConstructorParameters<typeof HarpnotesLayout>[1] = {
-      annotationTextMetrics: createDefaultAnnotationTextMetrics(),
       imageResolver: (imageName) => imageName === PRACTICE_QR_IMAGE_NAME
         ? options.practiceQrJpegUrl
         : resolveResourceUrl(resources, imageName),
       flowconf: options.flowconf ?? DEFAULT_WORKBENCH_CONFIG.flowconf,
       interactive: true,
     }
-    const sheet = new HarpnotesLayout(config, layoutOptions).layout(transformedSong, extractNr, 'A3')
+    const sheet = layoutDocumentExtract(transformedSong, config, extractNr, 'A3', layoutOptions)
     activeVoiceIds = resolveActiveVoiceIdsFromSheet(sheet)
     sheetObjectIndex = buildSheetObjectIndex(transformedSong, sheet as Sheet, abcText, scoreSvg)
     sheetChildCount = sheet.children.length

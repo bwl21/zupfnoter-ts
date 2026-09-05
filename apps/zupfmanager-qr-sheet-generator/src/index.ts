@@ -9,14 +9,14 @@ import { dirname, resolve } from 'node:path'
 import { promisify } from 'node:util'
 
 import {
-  AbcParser,
-  AbcToSong,
-  buildConfstack,
-  Confstack,
-  HarpnotesLayout,
+  prepareDocumentConfig,
+  parseDocumentSong,
+  layoutDocumentExtract,
+  resolveDocumentPlaybackConfig,
+  preparePlaybackLinkOptions,
+  resolveBaseTempoFromSong,
+  resolveTempoUnitFromSong,
   buildPlaybackExportData,
-  extractSongConfig,
-  initConf,
   mergeSongConfig,
   practiceQrJpegDataUrl,
 } from '@zupfnoter/core'
@@ -195,14 +195,14 @@ async function makeQrEntries(
   includeExtract0: boolean,
 ): Promise<QrEntry[]> {
   const abcText = await readFile(abcFile, 'utf8')
-  const config = mergeSongConfig(initConf(new Confstack()), extractSongConfig(abcText))
-  const song = new AbcToSong().transform(new AbcParser().parse(abcText), config)
+  const config = prepareDocumentConfig(abcText)
+  const song = parseDocumentSong(abcText, config)
   const configuredProduce = config.produce ?? []
   const producedExtracts = configuredProduce.length > 0 ? configuredProduce : [0]
   const extractNumbers = [...new Set(includeExtract0 ? [0, ...producedExtracts] : producedExtracts)]
   const entries: QrEntry[] = []
   for (const extractNr of extractNumbers) {
-    const sheet = new HarpnotesLayout(config).layout(song, extractNr, 'A3')
+    const sheet = layoutDocumentExtract(song, config, extractNr, 'A3')
     const exportData = buildPlaybackExportData(song, sheet.activeVoices)
     const events: PlaybackEvent[] = exportData.events.map((event) => ({
       startMs: event.startMs,
@@ -211,29 +211,11 @@ async function makeQrEntries(
       velocity: event.velocity,
       position: event.position,
     }))
-    const tempo = song.metaData.tempo
-    const tempoBpm = typeof tempo === 'number' ? tempo : tempo?.bpm
-    const tempoUnit = typeof tempo === 'number' ? 0.25 : tempo?.duration[0]
-    const playbackConfig = buildConfstack(config, extractNr).get(`extract.${extractNr}.playback`) as {
-      metronomeMode?: 'off' | 'countIn' | 'playback' | 'always'
-      minLeadIn?: number
-      bandPreCount?: boolean
-      division?: number
-      subdivision?: number
-    } | undefined
-    const link = await exportPlaybackLink(events, {
-      playerUrl: practiceUrl,
-      positionMarkers: exportData.positionMarkers,
-      tempoBpm,
-      tempoUnit,
-      metronome: playbackConfig?.metronomeMode === undefined ? undefined : {
-        mode: playbackConfig.metronomeMode,
-        minLeadIn: playbackConfig.minLeadIn,
-        bandPreCount: playbackConfig.bandPreCount,
-        division: playbackConfig.division,
-        subdivision: playbackConfig.subdivision,
-      },
-    }, nodePlaybackCodec)
+    const link = await exportPlaybackLink(events, preparePlaybackLinkOptions(
+      practiceUrl, exportData.positionMarkers,
+      resolveBaseTempoFromSong(song), resolveTempoUnitFromSong(song),
+      resolveDocumentPlaybackConfig(config, extractNr),
+    ), nodePlaybackCodec)
     const label = String(number).padStart(3, '0') + '-' + extractLabel(config, extractNr)
     const practiceLink = new URL(link.url)
     practiceLink.searchParams.set('id', label)
