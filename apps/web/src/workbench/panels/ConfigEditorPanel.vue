@@ -812,10 +812,10 @@ function getBooleanValueLabel(row: ConfigTreeRow): string {
 
 function getEffectiveSourceLabel(row: ConfigTreeRow): string | undefined {
   if (row.effectiveSource === undefined) return undefined
-  if (row.effectiveSource === 'built-in') return 'Built-in'
+  if (row.effectiveSource === 'built-in') return 'builtin'
   if (row.effectiveSource === 'global') return 'global'
-  if (row.effectiveSource === 'extract.0') return 'Auszug 0'
-  if (row.effectiveSource === 'active') return `aktiver Auszug ${props.currentExtract}`
+  if (row.effectiveSource === 'extract.0') return '0'
+  if (row.effectiveSource === 'active') return String(props.currentExtract)
   return row.effectiveSource
 }
 
@@ -1625,7 +1625,7 @@ function selectQuickSetting(item: QuickSettingMenuItem): void {
               v-if="row.isLeaf && getEffectiveSourceLabel(row) !== undefined"
               class="config-row__origin"
             >
-              Herkunft: {{ getEffectiveSourceLabel(row) }}
+              {{ getEffectiveSourceLabel(row) }}
             </span>
             <span
               v-if="row.isLeaf && inputErrors[row.path] !== undefined"

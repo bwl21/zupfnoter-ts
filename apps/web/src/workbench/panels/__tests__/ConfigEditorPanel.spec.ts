@@ -189,7 +189,7 @@ describe('ConfigEditorPanel', () => {
     const showRow = wrapper.findAll('.config-row').find((row) => row.find('[data-help-key="extract.0.notebound.annotation.v_1.0.show"]').exists())
     expect(showRow).toBeDefined()
     expect(showRow?.find('.config-row__boolean').text()).toContain('Ja')
-    expect(showRow?.find('.config-row__origin').text()).toBe('Herkunft: Built-in')
+    expect(showRow?.find('.config-row__origin').text()).toBe('builtin')
   })
 
   it('shows the contributing configuration layer for effective values', () => {
@@ -213,8 +213,8 @@ describe('ConfigEditorPanel', () => {
     const produceRow = rows.find((row) => row.text().includes('PDF für Auszüge'))
     const titleRow = rows.find((row) => row.text().includes('Titel'))
 
-    expect(produceRow?.find('.config-row__origin').text()).toBe('Herkunft: global')
-    expect(titleRow?.find('.config-row__origin').text()).toBe('Herkunft: aktiver Auszug 3')
+    expect(produceRow?.find('.config-row__origin').text()).toBe('global')
+    expect(titleRow?.find('.config-row__origin').text()).toBe('3')
 
     const inheritedWrapper = mount(ConfigEditorPanel, {
       props: {
@@ -233,7 +233,7 @@ describe('ConfigEditorPanel', () => {
     })
     const inheritedTextRow = inheritedWrapper.findAll('.config-row')
       .find((row) => row.find('[data-help-key="extract.3.notes.T01_number_extract.text"]').exists())
-    expect(inheritedTextRow?.find('.config-row__origin').text()).toBe('Herkunft: Auszug 0')
+    expect(inheritedTextRow?.find('.config-row__origin').text()).toBe('0')
   })
 
   it('explains that deleting a local value recalculates the effective value', () => {
