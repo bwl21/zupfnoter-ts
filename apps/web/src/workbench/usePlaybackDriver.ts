@@ -4,6 +4,7 @@ import type { SelectionState, SelectionTextRange, SheetObjectIndex } from '@zupf
 
 import { usePlaybackStore } from '../stores/playback'
 import {
+  expireActivePlaybackRanges,
   resolvePlaybackSteps,
   resolveEffectivePlaybackPartNames,
   updateActivePlaybackRanges,
@@ -107,7 +108,29 @@ export function usePlaybackDriver(
         })
       },
       onStepEnd: (step) => {
-        if (lastStep !== undefined && step !== lastStep) return
+        activePlaybackRanges = expireActivePlaybackRanges(
+          activePlaybackRanges,
+          step.playbackStartMs + step.durationMs,
+        )
+        if (lastStep !== undefined && step !== lastStep) {
+          const activeTextRanges = [...new Map(
+            [...activePlaybackRanges.values()].map((range) => [
+              textRangeKey(range.textRange),
+              range.textRange,
+            ] as const),
+          ).values()]
+          playbackStore.handlePlayerEvent({
+            kind: 'current-notes',
+            activeTextRanges,
+            activeStartChar: step.activeStartChar,
+            activeTime: step.activeTime,
+            measureNumber: step.position?.measureNumber,
+            partName: partNames.get(step.flowIndex),
+            passIndex: step.passIndex,
+            voltaNumber: step.voltaNumber,
+          })
+          return
+        }
         clearTimer()
         playbackStore.handlePlayerEvent({ kind: 'stop' })
         audioPlayer?.stop()

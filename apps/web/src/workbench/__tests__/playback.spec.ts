@@ -4,6 +4,7 @@ import type { SelectionState, SheetObjectIndex } from '@zupfnoter/types'
 
 import {
   buildPlaybackTimeline,
+  expireActivePlaybackRanges,
   resolveEffectivePlaybackPartNames,
   resolvePlaybackSteps,
   type PlaybackStep,
@@ -221,6 +222,28 @@ describe('resolvePlaybackSteps', () => {
     ])
   })
 
+  it('expires a highlight at note end before a later repeated occurrence starts', () => {
+    const repeatedRange = { startpos: 10, endpos: 12 }
+    const firstPassTemplate = timeline.find((step) => step.passIndex === 1)
+    if (firstPassTemplate === undefined) {
+      throw new Error('Playback test timeline has no first pass')
+    }
+    const firstPassStep: PlaybackStep = {
+      ...firstPassTemplate,
+      activeTextRanges: [repeatedRange],
+      activePlaybackTextRanges: [{ playbackId: '1::repeated', voiceId: '1', textRange: repeatedRange }],
+      activeNotes: [{ originVoiceId: '1', originPlaybackId: '1::repeated', originZnId: 'repeated', pitch: 60, durationMs: 120, attack: true, pan: 'left' }],
+      playbackStartMs: 0,
+      durationMs: 120,
+      passIndex: 1,
+    }
+
+    const activeDuringFirstPass = updateActivePlaybackRanges(new Map(), firstPassStep)
+    const afterFirstPassNote = expireActivePlaybackRanges(activeDuringFirstPass, 120)
+
+    expect([...afterFirstPassNote.values()]).toEqual([])
+  })
+
   it('limits the playback timeline to the active extract voices', () => {
     const song = {
       metaData: {},
@@ -322,8 +345,7 @@ describe('resolvePlaybackSteps', () => {
       'note-a-2',
       'note-b-2',
     ])
-    expect(steps[0]?.playbackStartMs).toBe(0)
-    expect(steps[1]?.playbackStartMs).toBe(120)
+    expect(steps.map((step) => step.playbackStartMs)).toEqual([0, 120, 240, 360])
   })
 
   it('keeps only the selected notes inside a shared playback step', () => {

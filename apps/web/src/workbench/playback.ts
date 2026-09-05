@@ -16,6 +16,17 @@ interface ActivePlaybackRangeState {
   endTimeMs: number
 }
 
+export function expireActivePlaybackRanges(
+  activeRanges: ReadonlyMap<string, ActivePlaybackRangeState>,
+  playbackTimeMs: number,
+): Map<string, ActivePlaybackRangeState> {
+  const nextRanges = new Map(activeRanges)
+  for (const [key, range] of nextRanges) {
+    if (range.endTimeMs <= playbackTimeMs) nextRanges.delete(key)
+  }
+  return nextRanges
+}
+
 /**
  * Carries note highlights across shared timeline steps when voices overlap.
  * A timeline step ends at the next global event, not necessarily when every
@@ -25,10 +36,7 @@ export function updateActivePlaybackRanges(
   activeRanges: ReadonlyMap<string, ActivePlaybackRangeState>,
   step: PlaybackStep,
 ): Map<string, ActivePlaybackRangeState> {
-  const nextRanges = new Map(activeRanges)
-  for (const [key, range] of nextRanges) {
-    if (range.endTimeMs <= step.playbackStartMs) nextRanges.delete(key)
-  }
+  const nextRanges = expireActivePlaybackRanges(activeRanges, step.playbackStartMs)
   for (const playbackId of step.endedPlaybackIds ?? []) {
     for (const key of nextRanges.keys()) {
       if (key.startsWith(`${playbackId}:`)) nextRanges.delete(key)
@@ -66,6 +74,21 @@ export function updateActivePlaybackRanges(
 
 export interface PlaybackResolutionOptions {
   activeVoiceIds?: string[]
+}
+
+function closePlaybackPassGaps(steps: readonly PlaybackStep[]): PlaybackStep[] {
+  let timeShiftMs = 0
+  return steps.map((step, index) => {
+    const previousStep = steps[index - 1]
+    if (previousStep !== undefined && previousStep.passIndex !== step.passIndex) {
+      const previousEndMs = previousStep.playbackStartMs + previousStep.durationMs
+      timeShiftMs += Math.max(0, step.playbackStartMs - previousEndMs)
+    }
+    return {
+      ...step,
+      playbackStartMs: step.playbackStartMs - timeShiftMs,
+    }
+  })
 }
 
 /**
@@ -292,7 +315,7 @@ export function resolvePlaybackSteps(
 
   const firstStartMs = filteredSteps[0]?.playbackStartMs ?? 0
 
-  return filteredSteps.map((step) => ({
+  return closePlaybackPassGaps(filteredSteps).map((step) => ({
     ...step,
     playbackStartMs: step.playbackStartMs - firstStartMs,
   }))
