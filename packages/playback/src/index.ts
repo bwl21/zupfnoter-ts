@@ -199,7 +199,7 @@ export function createPlaybackCountInPlan(
     pickupBeats = Math.max(0, division - soundingPickupBeats)
   }
   const selectionStartMs = openingMarker?.timeMs ?? entryTimeMs
-  const actualClicks = isPickupEntry
+  const availableActualClicks = isPickupEntry
     ? []
     : createPlaybackMetronomeClicks(
       markers,
@@ -210,6 +210,18 @@ export function createPlaybackCountInPlan(
       tempoUnit,
     )
       .filter((click) => click.timeMs >= selectionStartMs && click.timeMs < entryTimeMs)
+  let actualClickStartIndex = 0
+  let mainBeatsFromCandidate = 0
+  for (let index = availableActualClicks.length - 1; index >= 0; index -= 1) {
+    const click = availableActualClicks[index]
+    if (click === undefined) continue
+    if (click.subdivision === 0) mainBeatsFromCandidate += 1
+    if (click.kind === 'BAR_START' && mainBeatsFromCandidate >= minLeadIn) {
+      actualClickStartIndex = index
+      break
+    }
+  }
+  const actualClicks = availableActualClicks.slice(actualClickStartIndex)
   const actualMainBeatCount = actualClicks.filter((click) => click.subdivision === 0).length
   const availableBeatCount = pickupBeats + actualMainBeatCount
   const precedingFullBeats = availableBeatCount >= minLeadIn
@@ -217,7 +229,8 @@ export function createPlaybackCountInPlan(
     : Math.ceil((minLeadIn - availableBeatCount) / division) * division
   const virtualBeatCount = precedingFullBeats + pickupBeats
   const virtualDurationMs = virtualBeatCount * beatDurationMs
-  const actualDurationMs = isPickupEntry ? 0 : Math.max(0, entryTimeMs - selectionStartMs)
+  const actualStartMs = actualClicks[0]?.timeMs ?? entryTimeMs
+  const actualDurationMs = isPickupEntry ? 0 : Math.max(0, entryTimeMs - actualStartMs)
   const normalDurationMs = virtualDurationMs + actualDurationMs
   const bandDurationMs = settings.bandPreCount === true ? 4 * beatDurationMs : 0
   const events: PlaybackCountEvent[] = []
@@ -243,7 +256,7 @@ export function createPlaybackCountInPlan(
   }
   for (const click of actualClicks) {
     events.push({
-      offsetMs: bandDurationMs + virtualDurationMs + click.timeMs - selectionStartMs,
+      offsetMs: bandDurationMs + virtualDurationMs + click.timeMs - actualStartMs,
       kind: click.kind,
       beat: click.beat - 1,
       isLastBeforeEntry: false,

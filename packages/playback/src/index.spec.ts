@@ -89,6 +89,24 @@ describe('shared metronome sound profile', () => {
     expect(countIn?.events.map((event) => event.beat)).toEqual([0, 1, 2])
   })
 
+  it('counts only the required complete measure before a later range start', () => {
+    const markers = Array.from({ length: 16 }, (_value, index) => ({
+      timeMs: index * 4000,
+      position: { measureNumber: index + 1, passIndex: 1 },
+      meter: { numerator: 4, denominator: 4 },
+    }))
+
+    const countIn = createPlaybackCountInPlan(markers, 56_000, {
+      minLeadIn: 4,
+      bandPreCount: false,
+      division: 4,
+      subdivision: 1,
+    })
+
+    expect(countIn?.durationMs).toBe(4_000)
+    expect(countIn?.events.map((event) => event.offsetMs)).toEqual([0, 1_000, 2_000, 3_000])
+  })
+
   it('changes click division and duration with each ABC meter', () => {
     const markers = [
       { timeMs: 0, position: { measureNumber: 1, passIndex: 1 }, meter: { numerator: 4, denominator: 4 } },

@@ -33,7 +33,7 @@ import {
   ViewfinderQRCodeReader,
 } from './qrScanner'
 
-const PRACTICE_VERSION = '0.3.17'
+const PRACTICE_VERSION = '0.3.18'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
