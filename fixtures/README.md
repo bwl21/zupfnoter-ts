@@ -39,6 +39,11 @@ fixtures/
 ausgeschlossen. Beide Bereiche werden lokal gleich behandelt. Ein Fallname darf nur in
 einem der beiden Bereiche vorkommen.
 
+SVG-Ausgaben heißen immer `output.extract-<nr>.svg`, auch ohne vorhandene
+Referenzauszüge (`output.extract-0.svg`). Der frühere Name `output.svg` wird
+weder vom Fixture-Loader noch von `test:view` berücksichtigt. TS-Ausgaben
+werden mit `pnpm test:dump:svg` in `_ts_output/` neu erzeugt.
+
 ### Fallbezogene Paritätsregeln
 
 Ein Fixture kann optional eine `parity.ts` enthalten. Sie wird automatisch anhand

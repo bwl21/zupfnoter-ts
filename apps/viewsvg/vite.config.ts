@@ -39,7 +39,6 @@ function listExtractNumbers(dir: string, prefix: string): number[] {
   if (!existsSync(dir)) return []
   const values = readdirSync(dir)
     .map((name) => {
-      if (name === `${prefix}.svg`) return 0
       const match = name.match(new RegExp(`^${prefix}\\.extract-(\\d+)\\.svg$`))
       return match?.[1] !== undefined ? Number.parseInt(match[1], 10) : Number.NaN
     })
@@ -116,9 +115,7 @@ function readSvg(caseId: string, source: ViewSvgSource, extractNr: number): stri
 
   const baseDir = fixtureCase.dir
   const targetDir = source === 'legacy' ? baseDir : resolve(baseDir, '_ts_output')
-  const preferredNames = extractNr === 0
-    ? ['output.svg', 'output.extract-0.svg']
-    : [`output.extract-${extractNr}.svg`]
+  const preferredNames = [`output.extract-${extractNr}.svg`]
 
   for (const filename of preferredNames) {
     const path = resolve(targetDir, filename)

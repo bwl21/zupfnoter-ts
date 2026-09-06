@@ -235,16 +235,12 @@ function loadSheetExtractFixtures(dir: string): Record<string, SheetFixture> {
 
 function listOutputSvgFiles(dir: string): string[] {
   return readdirSync(dir)
-    .filter((name) => name === 'output.svg' || /^output\.extract-\d+\.svg$/.test(name))
+    .filter((name) => /^output\.extract-\d+\.svg$/.test(name))
     .sort((a, b) => a.localeCompare(b))
 }
 
 function loadOutputSvgFixtures(dir: string): Record<string, string> {
   const svgFiles = listOutputSvgFiles(dir)
-  if (svgFiles.includes('output.svg')) {
-    return { '0': loadText(resolve(dir, 'output.svg')) }
-  }
-
   return Object.fromEntries(
     svgFiles.map((filename) => {
       const match = filename.match(/^output\.extract-(\d+)\.svg$/)
@@ -420,7 +416,7 @@ function fixtureImageResolver(abcText: string): (imageName: string) => string | 
 
 export function saveFixtureOutput(fixture: PipelineFixture, stage: FixtureStage, data: unknown): void {
   const dir = resolve(fixture.dir, '_ts_output')
-  const filename = stage === 'output_svg' ? 'output.svg' : `${stage}.json`
+  const filename = stage === 'output_svg' ? 'output.extract-0.svg' : `${stage}.json`
   const content = typeof data === 'string' ? data : `${JSON.stringify(data, null, 2)}\n`
 
   mkdirSync(dir, { recursive: true })

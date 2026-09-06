@@ -1,4 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import { mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { extractSongConfig, extractSongFilebase, extractSongResources, inspectSongConfig, replaceSongDocumentAbc, replaceSongDocumentConfigText, replaceSongDocumentResources, splitSongDocument } from '../../extractSongConfig.js'
 import {
   fixtureConfigFromAbc,
@@ -14,6 +17,7 @@ import {
   songToFixture,
   resolveFixtureSheetRenderTarget,
   scanFixtureCases,
+  saveFixtureOutput,
   transformFixtureToSong,
   transformFixtureToSheet,
   validateFixtureAbcPreconditions,
@@ -23,6 +27,18 @@ import { defaultTestConfig } from '../defaultConfig.js'
 import { formatOpenImplementations, getOpenImplementations } from '../openImplementations.js'
 
 describe('fixtureLoader', () => {
+  it('names default SVG output explicitly as extract 0', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'zupfnoter-svg-name-'))
+    try {
+      const fixture = { ...loadFixture('single_note'), dir }
+      saveFixtureOutput(fixture, 'output_svg', '<svg/>')
+      expect(readdirSync(join(dir, '_ts_output'))).toEqual(['output.extract-0.svg'])
+      expect(readFileSync(join(dir, '_ts_output/output.extract-0.svg'), 'utf8')).toBe('<svg/>')
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
   it('resolves fixture ABC paths by test case name', () => {
     expect(fixtureAbcPath('single_note')).toBe('fixtures/cases/public/single_note/input.abc')
   })

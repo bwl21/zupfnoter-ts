@@ -23,7 +23,7 @@ function dump(testCase: FixtureCase) {
 
   if (effectiveTargets.length === 0) {
     saveFixtureOutput(fixture, 'output_svg', transformFixtureToSvg(fixture))
-    console.log(`Written: ${testCase.id}/_ts_output/output.svg`)
+    console.log(`Written: ${testCase.id}/_ts_output/output.extract-0.svg`)
     return
   }
 
