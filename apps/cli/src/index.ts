@@ -13,7 +13,7 @@ import {
   prepareDocumentConfig,
   parseDocumentSong,
   layoutDocumentExtract,
-  resolveDocumentPlaybackConfig,
+  resolveDocumentPlaybackLinkConfig,
   preparePlaybackLinkOptions,
   resolveBaseTempoFromSong,
   resolveTempoUnitFromSong,
@@ -338,7 +338,7 @@ async function renderBatchFile(
       const link = await exportPlaybackLink(events, preparePlaybackLinkOptions(
         practiceUrl, exportData.positionMarkers,
         resolveBaseTempoFromSong(song), resolveTempoUnitFromSong(song),
-        resolveDocumentPlaybackConfig(config, extractNr),
+        resolveDocumentPlaybackLinkConfig(abcText, extractNr),
       ), nodePlaybackCodec)
       practiceLink = link.url
     } else if (containsPracticeQr(config)) {

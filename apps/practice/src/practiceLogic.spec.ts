@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest'
 import type { PlaybackEvent, PlaybackPositionMarker } from '@zupfnoter/playback'
 
 import {
+  defaultPracticeMinLeadIn,
+  resolvePracticeMetronomeConfig,
   nextPositionBoundaryMarker,
   partNameAtTime,
   parsePosition,
@@ -24,6 +26,28 @@ const events: PlaybackEvent[] = [
 ]
 
 describe('practice logic', () => {
+  it('uses practice defaults only for missing QR fields', () => {
+    expect(resolvePracticeMetronomeConfig(markers)).toEqual({
+      mode: 'always', bandPreCount: true, minLeadIn: 3, division: undefined, subdivision: 1,
+    })
+    expect(resolvePracticeMetronomeConfig(markers, { minLeadIn: 2 })).toMatchObject({
+      mode: 'always', bandPreCount: true, minLeadIn: 2,
+    })
+    expect(resolvePracticeMetronomeConfig(markers, { mode: 'off', bandPreCount: false, minLeadIn: 0 })).toMatchObject({
+      mode: 'off', bandPreCount: false, minLeadIn: 0,
+    })
+  })
+  it.each([[4, 3], [3, 2], [6, 5], [2, 2], [1, 2]])('defaults minimum lead-in to numerator %i minus one, bounded at two', (numerator, expected) => {
+    expect(defaultPracticeMinLeadIn([{
+      timeMs: 0, position: { measureNumber: 1, passIndex: 1 },
+      meter: { numerator, denominator: 4 },
+    }])).toBe(expected)
+  })
+
+  it('defaults minimum lead-in to three without meter information', () => {
+    expect(defaultPracticeMinLeadIn([])).toBe(3)
+  })
+
   it('resolves the selected start position instead of resetting to the first measure', () => {
     expect(resolveRange(events, markers, '2.1')).toEqual({ range: [1, 1], startMs: 4000 })
   })

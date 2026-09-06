@@ -1,4 +1,22 @@
-import type { PlaybackEvent, PlaybackPosition, PlaybackPositionMarker } from '@zupfnoter/playback'
+import type { PlaybackEvent, PlaybackPosition, PlaybackPositionMarker, PlaybackMetronomeConfig, PlaybackMetronomeOverrides } from '@zupfnoter/playback'
+
+export function resolvePracticeMetronomeConfig(
+  markers: readonly PlaybackPositionMarker[],
+  config?: PlaybackMetronomeOverrides,
+) {
+  return {
+    mode: config?.mode ?? 'always',
+    bandPreCount: config?.bandPreCount ?? true,
+    minLeadIn: config?.minLeadIn ?? defaultPracticeMinLeadIn(markers),
+    division: config?.division,
+    subdivision: config?.subdivision ?? 1,
+  } satisfies PlaybackMetronomeConfig
+}
+
+export function defaultPracticeMinLeadIn(markers: readonly PlaybackPositionMarker[]): number {
+  const numerator = markers.find((marker) => marker.meter !== undefined)?.meter?.numerator ?? 4
+  return Math.max(2, numerator - 1)
+}
 
 export function parsePosition(value: string): PlaybackPosition | undefined {
   const match = value.trim().match(/^(\d+)\.(\d+)$/)

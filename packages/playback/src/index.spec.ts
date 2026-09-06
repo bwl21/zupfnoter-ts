@@ -465,6 +465,34 @@ describe('playback link format', () => {
     }, identityCodec)).rejects.toThrow('Invalid playback count settings')
   })
 
+  it.each([
+    { minLeadIn: 2 },
+    { mode: 'off' as const, bandPreCount: false },
+    { bandPreCount: false },
+    { minLeadIn: 0, subdivision: 2 },
+  ])('preserves only explicitly provided metronome fields: %j', async (metronome) => {
+    const result = await exportPlaybackLink(events, {
+      playerUrl: 'https://practice.example/', metronome,
+    }, identityCodec)
+    expect(result.payload[3]).toBe(9)
+    expect((await decodePlaybackFragment(new URL(result.url).hash.slice(3), identityCodec)).metronome).toStrictEqual(metronome)
+  })
+
+  it('does not add metronome metadata to a link without recommendations', async () => {
+    const result = await exportPlaybackLink(events, { playerUrl: 'https://practice.example/' }, identityCodec)
+    expect(decodePlaybackPayload(result.payload).metronome).toBeUndefined()
+  })
+
+  it.each([7, 8])('keeps explicit off/false settings in version %i links', (version) => {
+    const payload = new Uint8Array([
+      0x5a, 0x4e, 0x50, version, 137, 10, 0, 0,
+      0, 0, 0, 4, 1,
+    ])
+    expect(decodePlaybackPayload(payload).metronome).toEqual({
+      mode: 'off', minLeadIn: undefined, bandPreCount: false, division: 4, subdivision: 1,
+    })
+  })
+
   it('preserves a terminal marker for the final measure', async () => {
     const result = await exportPlaybackLink(events, {
       playerUrl: 'https://play.zupfnoter.de/',

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { prepareDocumentConfig, parseDocumentSong, layoutDocumentExtract, resolveDocumentPlaybackConfig, preparePlaybackLinkOptions } from '../../DocumentPipeline.js'
+import { prepareDocumentConfig, parseDocumentSong, layoutDocumentExtract, resolveDocumentPlaybackConfig, resolveDocumentPlaybackLinkConfig, preparePlaybackLinkOptions } from '../../DocumentPipeline.js'
 import { buildPlaybackExportData, buildPlaybackExportDataFromTimeline } from '../../PlaybackExport.js'
 import { buildPlaybackTimeline, resolveBaseTempoFromSong, resolveTempoUnitFromSong } from '../../PlaybackTimeline.js'
 
@@ -16,6 +16,35 @@ C D E|
 `
 
 describe('gemeinsame Dokument-/Exportvorbereitung', () => {
+  it('omits built-in metronome defaults from links without changing live playback defaults', () => {
+    const document = 'X:1\nM:4/4\nK:C\nC D E F|'
+    expect(resolveDocumentPlaybackConfig(prepareDocumentConfig(document), 0)?.metronomeMode).toBe('off')
+    for (const extract of [0, 1]) {
+      const config = resolveDocumentPlaybackLinkConfig(document, extract)
+      expect(config).toBeUndefined()
+      expect(preparePlaybackLinkOptions('https://practice.example/', [], undefined, undefined, config).metronome).toBeUndefined()
+    }
+  })
+
+  it('inherits explicit values, including off and false, and preserves partial settings', () => {
+    const document = `X:1\nK:C\nC|\n%%%%zupfnoter.config\n${JSON.stringify({
+      extract: {
+        '0': { playback: { bandPreCount: false, minLeadIn: 2 } },
+        '1': { playback: { metronomeMode: 'off', minLeadIn: 3 } },
+      },
+    })}`
+    expect(resolveDocumentPlaybackLinkConfig(document, 0)).toEqual({ bandPreCount: false, minLeadIn: 2 })
+    expect(resolveDocumentPlaybackLinkConfig(document, 1)).toEqual({ bandPreCount: false, minLeadIn: 3, metronomeMode: 'off' })
+    const options = preparePlaybackLinkOptions('https://practice.example/', [], undefined, undefined,
+      resolveDocumentPlaybackLinkConfig(document, 2))
+    expect(options.metronome).toEqual({ mode: undefined, bandPreCount: false, minLeadIn: 2, division: undefined, subdivision: undefined })
+  })
+
+  it('does not create metronome metadata for part labels alone', () => {
+    expect(preparePlaybackLinkOptions('https://practice.example/', [], undefined, undefined,
+      { parts: { A: 'Refrain' } }).metronome).toBeUndefined()
+  })
+
   it('preserves inherited metronome and non-quarter tempo metadata for all exporters', () => {
     const config = prepareDocumentConfig(abc)
     const song = parseDocumentSong(abc, config)

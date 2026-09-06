@@ -61,7 +61,7 @@ export { buildPlaybackExportData, buildPlaybackExportDataFromTimeline } from './
 export type { PlaybackExportData, PlaybackExportEvent, PlaybackExportMarker } from './PlaybackExport.js'
 export { expireActivePlaybackRanges, updateActivePlaybackRanges } from './PlaybackHighlight.js'
 export { renderReviewDocument } from './ReviewDocument.js'
-export { prepareDocumentConfig, parseDocumentSong, layoutDocumentExtract, resolveDocumentPlaybackConfig, preparePlaybackLinkOptions } from './DocumentPipeline.js'
+export { prepareDocumentConfig, parseDocumentSong, layoutDocumentExtract, resolveDocumentPlaybackConfig, resolveDocumentPlaybackLinkConfig, preparePlaybackLinkOptions } from './DocumentPipeline.js'
 
 export { GLYPHS } from './glyphs.js'
 export type { GlyphDef } from './glyphs.js'

@@ -12,7 +12,7 @@ import {
   prepareDocumentConfig,
   parseDocumentSong,
   layoutDocumentExtract,
-  resolveDocumentPlaybackConfig,
+  resolveDocumentPlaybackLinkConfig,
   preparePlaybackLinkOptions,
   resolveBaseTempoFromSong,
   resolveTempoUnitFromSong,
@@ -214,7 +214,7 @@ async function makeQrEntries(
     const link = await exportPlaybackLink(events, preparePlaybackLinkOptions(
       practiceUrl, exportData.positionMarkers,
       resolveBaseTempoFromSong(song), resolveTempoUnitFromSong(song),
-      resolveDocumentPlaybackConfig(config, extractNr),
+      resolveDocumentPlaybackLinkConfig(abcText, extractNr),
     ), nodePlaybackCodec)
     const label = String(number).padStart(3, '0') + '-' + extractLabel(config, extractNr)
     const practiceLink = new URL(link.url)

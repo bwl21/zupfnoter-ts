@@ -37,7 +37,7 @@ export interface PlaybackLinkOptions {
   /** Dauer der Tempoeinheit als Bruchteil einer ganzen Note. */
   tempoUnit?: number
   /** Metronom-Empfehlung für den Empfänger. */
-  metronome?: PlaybackMetronomeConfig
+  metronome?: PlaybackMetronomeOverrides
 }
 
 /** Metrum eines Playback-Taktes. */
@@ -75,6 +75,9 @@ export interface PlaybackMetronomeConfig {
   /** Unterteilungen je Hauptschlag. */
   subdivision?: number
 }
+
+/** Explizite Link-Vorgaben; fehlende Felder überlassen die Entscheidung dem Empfänger. */
+export type PlaybackMetronomeOverrides = Partial<PlaybackMetronomeConfig>
 
 /** Ergebnis des Binary- und URL-Exports. */
 export interface PlaybackLinkResult {

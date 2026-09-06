@@ -6,6 +6,7 @@ import {
   type PlaybackPosition,
   type PlaybackPositionMarker,
   type PlaybackMetronomeConfig,
+  type PlaybackMetronomeOverrides,
   type PlaybackMetronomeClick,
   createPlaybackCountInPlan,
   createPlaybackMetronomeClicks,
@@ -19,6 +20,7 @@ import { DecodeHintType, type ResultPointCallback } from '@zxing/library'
 import { deflateSync, inflateSync } from 'fflate'
 import '@zupfnoter/practice-ui/style.css'
 import {
+  resolvePracticeMetronomeConfig,
   findPositionMarker,
   partNameAtTime,
   parsePosition,
@@ -34,7 +36,7 @@ import {
   ViewfinderQRCodeReader,
 } from './qrScanner'
 
-const PRACTICE_VERSION = '0.3.18'
+const PRACTICE_VERSION = '0.3.21'
 const AUDIO_SCHEDULE_WINDOW_MS = 750
 const AUDIO_SCHEDULE_LOOKAHEAD_MS = 2500
 const AUDIO_SCHEDULE_REFILL_MS = 150
@@ -370,7 +372,7 @@ function renderPractice(
   identification?: string,
   tempoBpm?: number,
   tempoUnit = 0.25,
-  metronomeConfig?: PlaybackMetronomeConfig,
+  metronomeConfig?: PlaybackMetronomeOverrides,
 ): void {
   destroyCurrentPractice()
   const firstPosition = positionMarkers[0]?.position ?? eventPosition(events[0])
@@ -379,18 +381,14 @@ function renderPractice(
   let selectedEvents = events
   let selectedStartMs = positionMarkers[0]?.timeMs ?? events[0]?.startMs ?? 0
   let selectedRangePosition = firstPosition
-  const defaultMinLeadIn = positionMarkers.find((marker) => marker.meter !== undefined)?.meter?.numerator ?? 4
-  let minLeadIn = metronomeConfig?.minLeadIn ?? defaultMinLeadIn
-  let bandPreCount = metronomeConfig?.bandPreCount ?? false
-  let metronomeDivision = metronomeConfig?.division
-  let metronomeSubdivision = metronomeConfig?.subdivision ?? 1
-  let metronomeVolume = 1
-  let selectedMetronomeMode: Exclude<PlaybackMetronomeConfig['mode'], 'off'> = metronomeConfig?.mode === 'countIn'
-    || metronomeConfig?.mode === 'playback'
-    || metronomeConfig?.mode === 'always'
-    ? metronomeConfig.mode
-    : 'always'
-  let metronomeEnabled = metronomeConfig?.mode !== undefined && metronomeConfig.mode !== 'off'
+  const initialMetronome = resolvePracticeMetronomeConfig(positionMarkers, metronomeConfig)
+  let minLeadIn = initialMetronome.minLeadIn
+  let bandPreCount = initialMetronome.bandPreCount
+  let metronomeDivision = initialMetronome.division
+  let metronomeSubdivision = initialMetronome.subdivision
+  let metronomeVolume = 1.5
+  let selectedMetronomeMode: Exclude<PlaybackMetronomeConfig['mode'], 'off'> = initialMetronome.mode === 'off' ? 'always' : initialMetronome.mode
+  let metronomeEnabled = initialMetronome.mode !== 'off'
   let metronomeMode: PlaybackMetronomeConfig['mode'] = metronomeEnabled ? selectedMetronomeMode : 'off'
 
   function divisionForMeter(meter?: { numerator: number }): number {
@@ -433,6 +431,7 @@ function renderPractice(
     hasMetronomeData: positionMarkers.some((marker) => marker.meter !== undefined),
     minLeadIn,
     bandPreCount,
+    metronomeVolume: metronomeVolume * 100,
     division: divisionForMeter(meterAtTime(selectedStartMs)),
     subdivision: metronomeSubdivision,
     baseTempoBpm: tempoBpmAtTime(positionMarkers, selectedStartMs, tempoBpm),

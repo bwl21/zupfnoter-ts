@@ -172,10 +172,35 @@ Metronom-Konfiguration mit `metronomeMode` (`off`, `countIn`, `playback`,
 bleibt die Blattvorgabe in Practice reproduzierbar, während lokale
 Practice-Overrides sie nicht verändern.
 
-Version 1 bis Version 5 werden weiterhin gelesen; neue Links werden in Version
-7 geschrieben. Die fehlerhafte, nie fachlich freigegebene Version 6 wird nicht
+Version 1 bis Version 5 sowie Version 7 und 8 werden weiterhin gelesen.
+Die fehlerhafte, nie fachlich freigegebene Version 6 wird nicht
 unterstützt. In Version 2 werden Takt und Durchlauf noch als Zustand an den
 Audioereignissen fortgeschrieben.
+
+### Explizite Metronom-Vorgaben (Version 9)
+
+QR-Exporte übernehmen nur im Dokument konfigurierte Playback-Werte. Die
+gemeinsame Auflösung verwendet den Confstack einschließlich Vererbung aus
+Auszug 0 und Quell-Ebene; Built-in-Defaults werden nicht in den Link kopiert.
+Explizites `off` und `false` bleiben erhalten, auch wenn sie Built-in-Werten
+entsprechen. Die Vorgaben für die lokale Web-Wiedergabe bleiben unverändert.
+
+Version 8 erlaubt `division = 0` für ein metrumabhängiges Schlagraster.
+Version 9 ergänzt vor den fünf bisherigen Metronom-Feldern ein Präsenzbyte:
+Bit 0 = Modus, Bit 1 = Mindestschläge, Bit 2 = Ensemble-Vorzählen,
+Bit 3 = Hauptschläge, Bit 4 = Unterteilungen. Alle fünf Felder werden weiterhin
+geschrieben; Werte ohne Präsenzbit sind nur Platzhalter und werden beim Lesen
+weggelassen. Explizite Mindestschläge `0` bleiben in Version 9 erhalten;
+in alten Versionen bedeutet dieser Wert weiterhin „nicht angegeben“.
+Ohne Metronom-Metadaten wird weiterhin Version 8 geschrieben.
+
+Practice verwendet bei fehlenden Vorgaben: Metronom `always`, Vorzählen an,
+Mindestschläge `max(2, erster Metrumzähler - 1)` (ohne Metrum: 3).
+Die lokale Metronomlautstärke startet bei 150 % und ist kein QR-Metadatum.
+Alte Codes behalten ihre expliziten Vorgaben und müssen neu erzeugt werden,
+wenn sie zuvor ungewollt Built-in-Defaults enthielten. Codes mit Version 9
+benötigen Practice ab 0.3.21; vor ihrer Verteilung muss diese Version deployt
+sein.
 
 Das Format enthält außer der reproduzierbaren Metronom-Blattvorgabe keine ABC-Daten, Zupfnoter-IDs, Stimmen, weitere Konfiguration, Layoutdaten, Wiederholungsobjekte, Bindungen, Annotationen oder Editorpositionen.
 

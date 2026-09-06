@@ -77,6 +77,7 @@ export type {
   PlaybackMeter,
   PlaybackPositionMarker,
   PlaybackMetronomeConfig,
+  PlaybackMetronomeOverrides,
   PlaybackEvent,
   PlaybackLinkOptions,
   PlaybackLinkResult,

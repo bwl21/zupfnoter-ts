@@ -3,6 +3,7 @@ import {
   parseDocumentSong,
   layoutDocumentExtract,
   resolveDocumentPlaybackConfig,
+  resolveDocumentPlaybackLinkConfig,
   AbcParser,
   AbcToSong,
   HarpnotesLayout,
@@ -113,7 +114,7 @@ export async function renderPdfExport(
       10,
       resolveBaseTempoFromSong(song),
       resolveTempoUnitFromSong(song),
-      resolvePlaybackConfig(config, extractNr),
+      resolveDocumentPlaybackLinkConfig(abcText, extractNr),
     )
     practiceQrJpegUrl = await createPracticeQrJpeg(playbackLink.url)
     sheet = layoutDocumentExtract(song, config, extractNr, pageFormat, {

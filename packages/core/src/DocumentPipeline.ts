@@ -3,6 +3,7 @@ import { AbcParser } from './AbcParser.js'
 import { AbcToSong } from './AbcToSong.js'
 import { Confstack } from './Confstack.js'
 import { buildConfstack } from './buildConfstack.js'
+import { createConfigEditorContext } from './ConfigEditorContext.js'
 import { extractSongConfig, mergeSongConfig } from './extractSongConfig.js'
 import { initConf } from './initConf.js'
 import { HarpnotesLayout } from './HarpnotesLayout.js'
@@ -31,6 +32,19 @@ export function resolveDocumentPlaybackConfig(config: ZupfnoterConfig, extract: 
   return buildConfstack(config, extract).get(`extract.${extract}.playback`) as PlaybackConfig | undefined
 }
 
+/** Nur explizite Dokumentvorgaben exportieren, ohne Built-in-Defaults festzuschreiben. */
+export function resolveDocumentPlaybackLinkConfig(abcText: string, extract: number): PlaybackConfig | undefined {
+  const { stack } = createConfigEditorContext(extractSongConfig(abcText) ?? {}, extract)
+  const path = `extract.${extract}.playback`
+  const config = stack.get(path) as PlaybackConfig | undefined
+  if (config === undefined) return undefined
+  const entries = Object.entries(config).filter(([key]) => {
+    const source = stack.getSource(`${path}.${key}`)
+    return source !== undefined && source !== 'built-in'
+  })
+  return entries.length === 0 ? undefined : Object.fromEntries(entries) as PlaybackConfig
+}
+
 /** Plattformunabhängige Link-Metadaten; Kompression verbleibt beim Adapter. */
 export function preparePlaybackLinkOptions(
   playerUrl: string,
@@ -40,14 +54,15 @@ export function preparePlaybackLinkOptions(
   config?: PlaybackConfig,
   timeResolutionMs = 10,
 ): PlaybackLinkOptions {
+  const metronome = {
+    mode: config?.metronomeMode,
+    minLeadIn: config?.minLeadIn,
+    bandPreCount: config?.bandPreCount,
+    division: config?.division,
+    subdivision: config?.subdivision,
+  }
   return {
     playerUrl, positionMarkers, tempoBpm, tempoUnit, timeResolutionMs,
-    metronome: config?.metronomeMode === undefined ? undefined : {
-      mode: config.metronomeMode,
-      minLeadIn: config.minLeadIn,
-      bandPreCount: config.bandPreCount,
-      division: config.division,
-      subdivision: config.subdivision,
-    },
+    metronome: Object.values(metronome).some((value) => value !== undefined) ? metronome : undefined,
   }
 }

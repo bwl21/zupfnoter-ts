@@ -35,6 +35,7 @@ import {
 import {
   extractSongFilebase,
   extractSongResources,
+  resolveDocumentPlaybackLinkConfig,
   inspectSongConfig,
   pdfOutputFilename,
   PRACTICE_QR_IMAGE_NAME,
@@ -903,7 +904,7 @@ async function ensurePracticeQrForRenderedExtract(result: WorkbenchRenderResult)
       10,
       result.baseTempoFromQ,
       result.tempoUnitFromQ,
-      result.playbackConfig,
+      resolveDocumentPlaybackLinkConfig(sourceDocument, sourceExtract),
     )
     const qrJpegUrl = await createPracticeQrJpeg(playbackLink.url)
     if (documentText.value !== sourceDocument || currentExtract.value !== sourceExtract) return
@@ -1741,7 +1742,7 @@ async function exportPlaybackLinkCommand(): Promise<void> {
     10,
     baseTempoFromQ.value,
     tempoUnitFromQ.value,
-    playbackConfig.value,
+    resolveDocumentPlaybackLinkConfig(documentText.value, currentExtract.value),
   )
   const qrCodeDataUrl = await QRCode.toDataURL(result.url, {
     errorCorrectionLevel: 'L',

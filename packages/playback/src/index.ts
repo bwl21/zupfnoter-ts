@@ -1,5 +1,5 @@
-import type { PlaybackPosition, PlaybackEvent, PlaybackPositionMarker, PlaybackMeter, PlaybackLinkOptions, PlaybackMetronomeMode, PlaybackMetronomeConfig } from "@zupfnoter/types"
-export type { PlaybackPosition, PlaybackEvent, PlaybackPositionMarker, PlaybackMeter, PlaybackLinkOptions, PlaybackMetronomeMode, PlaybackMetronomeConfig } from "@zupfnoter/types"
+import type { PlaybackPosition, PlaybackEvent, PlaybackPositionMarker, PlaybackMeter, PlaybackLinkOptions, PlaybackMetronomeMode, PlaybackMetronomeConfig, PlaybackMetronomeOverrides } from "@zupfnoter/types"
+export type { PlaybackPosition, PlaybackEvent, PlaybackPositionMarker, PlaybackMeter, PlaybackLinkOptions, PlaybackMetronomeMode, PlaybackMetronomeConfig, PlaybackMetronomeOverrides } from "@zupfnoter/types"
 
 export interface PlaybackMetronomeClick {
   timeMs: number
@@ -314,7 +314,8 @@ const POSITION_FORMAT_VERSION = 3
 const TEMPO_FORMAT_VERSION = 4
 const PART_FORMAT_VERSION = 5
 const METRONOME_FORMAT_VERSION = 7
-const FORMAT_VERSION = 8
+const DYNAMIC_DIVISION_FORMAT_VERSION = 8
+const FORMAT_VERSION = 9
 const FLAG_DEFLATE_RAW = 1
 const FLAG_EVENTS_HAVE_VELOCITY = 2
 const FLAG_EVENTS_HAVE_PASS = 4
@@ -338,7 +339,7 @@ export interface PlaybackDecodedData {
   positionMarkers: PlaybackPositionMarker[]
   tempoBpm?: number
   tempoUnit?: number
-  metronome?: PlaybackMetronomeConfig
+  metronome?: PlaybackMetronomeOverrides
 }
 
 function writeVarUInt(target: number[], value: number): void {
@@ -403,7 +404,8 @@ function normalizeEvents(events: readonly PlaybackEvent[], resolutionMs: number)
 }
 
 function encodeHeader(eventCount: number, markerCount: number, resolutionMs: number, formatFlags: number): Uint8Array {
-  const output: number[] = [...MAGIC, FORMAT_VERSION, formatFlags]
+  const version = (formatFlags & FLAG_HAS_METRONOME_CONFIG) !== 0 ? FORMAT_VERSION : DYNAMIC_DIVISION_FORMAT_VERSION
+  const output: number[] = [...MAGIC, version, formatFlags]
   writeVarUInt(output, resolutionMs)
   writeVarUInt(output, eventCount)
   writeVarUInt(output, markerCount)
@@ -595,9 +597,9 @@ async function encodePayloadParts(
     const metronome = options.metronome
     if (metronome === undefined) throw new Error('Missing playback metronome config')
     const modes: PlaybackMetronomeMode[] = ['off', 'countIn', 'playback', 'always']
-    const mode = modes.indexOf(metronome.mode)
+    const mode = modes.indexOf(metronome.mode ?? 'off')
     if (mode < 0) throw new Error(`Invalid playback metronome mode: ${metronome.mode}`)
-    // Zero encodes the dynamic default (the current meter numerator).
+    // Missing fields use placeholders; the presence mask preserves absence.
     const minLeadIn = metronome.minLeadIn ?? 0
     const division = metronome.division ?? 0
     const subdivision = metronome.subdivision ?? 1
@@ -606,7 +608,12 @@ async function encodePayloadParts(
       || !Number.isSafeInteger(subdivision) || subdivision < 1) {
       throw new Error('Invalid playback count settings')
     }
-    metadata.push(mode)
+    const presence = (metronome.mode === undefined ? 0 : 1)
+      | (metronome.minLeadIn === undefined ? 0 : 2)
+      | (metronome.bandPreCount === undefined ? 0 : 4)
+      | (metronome.division === undefined ? 0 : 8)
+      | (metronome.subdivision === undefined ? 0 : 16)
+    metadata.push(presence, mode)
     writeVarUInt(metadata, minLeadIn)
     writeVarUInt(metadata, metronome.bandPreCount === true ? 1 : 0)
     writeVarUInt(metadata, division)
@@ -727,7 +734,8 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
   const version = payload[3]
   if (version !== LEGACY_FORMAT_VERSION && version !== COMPACT_FORMAT_VERSION
     && version !== POSITION_FORMAT_VERSION && version !== TEMPO_FORMAT_VERSION
-    && version !== PART_FORMAT_VERSION && version !== METRONOME_FORMAT_VERSION && version !== FORMAT_VERSION) {
+    && version !== PART_FORMAT_VERSION && version !== METRONOME_FORMAT_VERSION
+    && version !== DYNAMIC_DIVISION_FORMAT_VERSION && version !== FORMAT_VERSION) {
     throw new Error(`Unsupported playback format version: ${version}`)
   }
   const formatFlags = payload[4] ?? 0
@@ -751,13 +759,15 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
   if (eventCount > 1_000_000) throw new Error('Playback event count is too large')
   let tempoBpm: number | undefined
   let tempoUnit: number | undefined
-  let metronome: PlaybackMetronomeConfig | undefined
+  let metronome: PlaybackMetronomeOverrides | undefined
   if (version >= TEMPO_FORMAT_VERSION && (formatFlags & FLAG_HAS_TEMPO) !== 0) {
     tempoBpm = readVarUInt(payload, offset) / 100
     tempoUnit = readVarUInt(payload, offset) / 100000
     if (!(tempoBpm > 0) || !(tempoUnit > 0)) throw new Error('Invalid playback tempo metadata')
   }
   if (version >= METRONOME_FORMAT_VERSION && (formatFlags & FLAG_HAS_METRONOME_CONFIG) !== 0) {
+    const presence = version >= FORMAT_VERSION ? payload[offset.value++] : 31
+    if (presence === undefined || presence > 31) throw new Error('Invalid playback metronome presence mask')
     const modeValue = payload[offset.value]
     if (modeValue === undefined || modeValue > 3) throw new Error('Invalid playback metronome mode')
     offset.value += 1
@@ -770,11 +780,11 @@ export function decodePlaybackPayload(payload: Uint8Array): PlaybackDecodedData 
       || (version === METRONOME_FORMAT_VERSION ? division < 1 : division < 0)
       || subdivision < 1) throw new Error('Invalid playback count settings')
     metronome = {
-      mode: modes[modeValue] ?? 'off',
-      minLeadIn: encodedMinLeadIn === 0 ? undefined : encodedMinLeadIn,
-      bandPreCount: bandPreCount === 1,
-      division: division === 0 ? undefined : division,
-      subdivision,
+      ...((presence & 1) === 0 ? {} : { mode: modes[modeValue] ?? 'off' }),
+      ...((presence & 2) === 0 ? {} : { minLeadIn: version < FORMAT_VERSION && encodedMinLeadIn === 0 ? undefined : encodedMinLeadIn }),
+      ...((presence & 4) === 0 ? {} : { bandPreCount: bandPreCount === 1 }),
+      ...((presence & 8) === 0 ? {} : { division: division === 0 ? undefined : division }),
+      ...((presence & 16) === 0 ? {} : { subdivision }),
     }
   }
   const events: PlaybackEvent[] = []
