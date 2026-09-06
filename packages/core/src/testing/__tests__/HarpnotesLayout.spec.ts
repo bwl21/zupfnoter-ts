@@ -781,6 +781,19 @@ V:V1 clef=treble-8
   })
 
   describe('legend', () => {
+    it('keeps the secondary legend left-aligned when the title is right-aligned in krippen-demo', () => {
+      const fixture = loadFixture('krippen-demo')
+      const { sheet } = pipelineWithConfig(fixture.input.abc, fixture.config)
+      const title = sheet.children.find((child): child is Annotation =>
+        child.type === 'Annotation' && child.confKey === 'extract.0.legend.pos')
+      const secondary = sheet.children.find((child): child is Annotation =>
+        child.type === 'Annotation' && child.confKey === 'extract.0.legend.spos')
+      expect(title?.align).toBe('right')
+      expect(secondary).toBeDefined()
+      expect(secondary?.center).toEqual([338, 30])
+      expect(secondary?.align ?? 'left').toBe('left')
+    })
+
     it('produces an Annotation with title and composer', () => {
       const { sheet } = pipeline(ABC_LEGEND)
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')

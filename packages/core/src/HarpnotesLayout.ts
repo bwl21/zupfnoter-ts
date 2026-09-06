@@ -2066,7 +2066,6 @@ export class HarpnotesLayout {
         center: secondaryPos,
         text: secondaryText,
         style: secondaryStyle,
-        align,
         confKey: `extract.${extractNr}.legend.spos`,
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,
