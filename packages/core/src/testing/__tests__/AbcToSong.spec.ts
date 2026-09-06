@@ -19,6 +19,19 @@ function transform(abcText: string) {
   return transformer.transform(model, defaultTestConfig)
 }
 
+describe('tempo display formatting', () => {
+  it.each([
+    ['80.00', 80, '1/4=80'],
+    ['80', 80, '1/4=80'],
+    ['80.50', 80.5, '1/4=80.5'],
+  ])('normalizes %s without changing playback tempo', (written, bpm, display) => {
+    const song = transform(`X:1\nT:Tempo\nM:4/4\nQ:1/4=${written}\nK:C\nC |]`)
+    expect(song.metaData.tempoDisplay).toBe(display)
+    expect(song.metaData.tempo_display).toBe(display)
+    expect(song.metaData.tempo.bpm).toBe(bpm)
+  })
+})
+
 function transformWithConfig(abcText: string, config: typeof defaultTestConfig) {
   const parser = new AbcParser()
   const model = parser.parse(abcText)

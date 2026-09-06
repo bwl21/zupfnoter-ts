@@ -1348,7 +1348,7 @@ export class AbcToSong {
     const rawQ = info['Q']?.split('\n')[0]
     const tempo = rawQ ? this._parseTempo(rawQ) : { duration: [0.25], bpm: 120 }
     const parsedBpm = rawQ ? /^(\d+\/\d+)=(\d+(?:\.\d+)?)$/.exec(rawQ) : null
-    const tempoDisplay = parsedBpm ? rawQ : (rawQ ? `${rawQ}=${tempo.bpm}` : '1/4=120')
+    const tempoDisplay = parsedBpm ? `${parsedBpm[1]}=${tempo.bpm}` : (rawQ ? `${rawQ}=${tempo.bpm}` : '1/4=120')
 
     return {
       title: info['T']?.split('\n').join('\n') ?? '',
