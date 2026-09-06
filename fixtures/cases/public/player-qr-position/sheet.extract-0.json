@@ -1,6 +1,12 @@
 {
   "children":[
     {
+      "type"    :"Image",
+      "draginfo":{"handler":"annotation"},
+      "url"     :"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQABLAEsAAD/4QB0RXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAABAAAARgEoAAMAAAABAAIAAIdpAAQAAAABAAAATgAAAAAAAAEsAAAAAQAAASwAAAABAAKgAgAEAAAAAQAAACCgAwAEAAAAAQAAAB8AAAAA/+0AOFBob3Rvc2hvcCAzLjAAOEJJTQQEAAAAAAAAOEJJTQQlAAAAAAAQ1B2M2Y8AsgTpgAmY7PhCfv/iAkBJQ0NfUFJPRklMRQABAQAAAjBBREJFAhAAAG1udHJSR0IgWFlaIAfQAAgACwATADMAO2Fjc3BBUFBMAAAAAG5vbmUAAAAAAAAAAAAAAAAAAAAAAAD21gABAAAAANMtQURCRQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACmNwcnQAAAD8AAAAMmRlc2MAAAEwAAAAa3d0cHQAAAGcAAAAFGJrcHQAAAGwAAAAFHJUUkMAAAHEAAAADmdUUkMAAAHUAAAADmJUUkMAAAHkAAAADnJYWVoAAAH0AAAAFGdYWVoAAAIIAAAAFGJYWVoAAAIcAAAAFHRleHQAAAAAQ29weXJpZ2h0IDIwMDAgQWRvYmUgU3lzdGVtcyBJbmNvcnBvcmF0ZWQAAABkZXNjAAAAAAAAABFBZG9iZSBSR0IgKDE5OTgpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYWVogAAAAAAAA81EAAQAAAAEWzFhZWiAAAAAAAAAAAAAAAAAAAAAAY3VydgAAAAAAAAABAjMAAGN1cnYAAAAAAAAAAQIzAABjdXJ2AAAAAAAAAAECMwAAWFlaIAAAAAAAAJwYAABPpQAABPxYWVogAAAAAAAANI0AAKAsAAAPlVhZWiAAAAAAAAAmMQAAEC8AAL6c/8AAEQgAHwAgAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/bAEMAAgICAgICAwICAwUDAwMFBgUFBQUGCAYGBgYGCAoICAgICAgKCgoKCgoKCgwMDAwMDA4ODg4ODw8PDw8PDw8PD//bAEMBAgICBAQEBwQEBxALCQsQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEP/dAAQAAv/aAAwDAQACEQMRAD8A/V7UNQeO+vGjmmQpNIwKkEblLD+6eBxW5BPeTutvZv5rRBe5JIyPm+73/CsXUYLW61C7jhulT9/KWBd0wRnIHNaen3VxZ7ZbK5SF1Hls6u2MleQMnoMA0AekWt7qkYiuWvzJkDckiNjcVwR8qfj1611OlXd3eeZJM8bRrwNqspz153AdsVwWnaj4mjjWb7bbSCZFOJWZiMjI/wDr/wD1q6bRb/Wbu88u9ubV0C52whtx5x3oA//Q/V7VYCNTvNpP/Hw5Ub0GGLdPu9M1u6TbQ+YbfUIowiso3u4A4ABHyjk/0qjqOk6q+pXSLbkpLO5ztgIwzZHU5/rXZ+HvDt1Fp0M5hIebcXBMIz2BICsM8Z4NAG/plpMDC9mY5IlC7FMuflHy/dx2HP1rsLOJ1jD3EMcU3IPljjGeOfpXFR2GsQsJIYjHJtPzK0IIP18vv/Wu4sopordVnlaVzkktjIzzj5QBx0oA/9k=",
+      "height"  :32
+    },
+    {
       "type"          :"FlowLine",
       "lineWidth"     :0.3,
       "more_conf_keys":[],
@@ -56,7 +62,7 @@
           "value"   :-0.5
         }
       ],
-      "center"        :[60.3,18.75],
+      "center"        :[198.3,18.75],
       "size"          :[2.625,1.275],
       "fill"          :"filled",
       "color"         :"black",
@@ -66,7 +72,7 @@
       "type"          :"Ellipse",
       "lineWidth"     :0.1,
       "more_conf_keys":[],
-      "center"        :[60.3,16.975],
+      "center"        :[198.3,16.975],
       "size"          :[2.625,0.25],
       "fill"          :"filled",
       "color"         :"black",
@@ -107,7 +113,7 @@
           "value"   :-0.5
         }
       ],
-      "center"        :[83.3,24.75],
+      "center"        :[221.3,24.75],
       "size"          :[2.625,1.275],
       "fill"          :"filled",
       "color"         :"black",
@@ -148,7 +154,7 @@
           "value"   :-0.5
         }
       ],
-      "center"        :[106.3,30.75],
+      "center"        :[244.3,30.75],
       "size"          :[2.625,1.275],
       "fill"          :"filled",
       "color"         :"black",
@@ -189,61 +195,11 @@
           "value"   :-0.5
         }
       ],
-      "center"        :[117.8,36.75],
+      "center"        :[255.8,36.75],
       "size"          :[2.625,1.275],
       "fill"          :"filled",
       "color"         :"black",
       "rect"          :false
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[109.7445,29.2375],
-      "size"          :[0.6445,1.2512],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Ellipse",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "center"        :[121.6731,35.3375],
-      "size"          :[1.0731,1.7875],
-      "fill"          :"filled",
-      "color"         :"white",
-      "rect"          :true
-    },
-    {
-      "type"          :"Glyph",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[60.3,14.75],
-      "size"          :[2.1,1.02],
-      "glyphName"     :"fermata",
-      "color"         :"black"
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[109.3,27.75],
-      "text"          :"f",
-      "style"         :"small_italic",
-      "color"         :"black"
-    },
-    {
-      "type"          :"Annotation",
-      "lineWidth"     :0.1,
-      "more_conf_keys":[],
-      "draginfo"      :{"handler":"annotation"},
-      "center"        :[120.8,33.75],
-      "text"          :"p",
-      "style"         :"small_italic",
-      "color"         :"black"
     },
     {
       "type"          :"Annotation",
@@ -251,7 +207,7 @@
       "more_conf_keys":[],
       "draginfo"      :{"handler":"annotation"},
       "center"        :[320,7],
-      "text"          :"Decoration Test",
+      "text"          :"Player QR position test",
       "style"         :"large",
       "color"         :"black"
     },
@@ -261,7 +217,7 @@
       "more_conf_keys":[],
       "draginfo"      :{"handler":"annotation"},
       "center"        :[320,27],
-      "text"          :"alle Stimmen\nZupfnoter TS Tests\nTakt: 4/4 (1/4=120)\nTonart: C",
+      "text"          :"alle Stimmen\n\nTakt: 4/4 (1/4=120)\nTonart: C",
       "style"         :"regular",
       "color"         :"black"
     },
@@ -270,7 +226,7 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[],
       "center"        :[150,289],
-      "text"          :" - created 2026-09-06 09:25:29 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]",
+      "text"          :" - created 2026-09-06 09:25:33 by Zupfnoter v1.17.1-15-gf0658c99 [zupfnoter-cli]",
       "style"         :"smaller",
       "color"         :"black"
     },
@@ -288,7 +244,7 @@
       "lineWidth"     :0.1,
       "more_conf_keys":[],
       "center"        :[380,289],
-      "text"          :"306 046 766",
+      "text"          :"305 524 500",
       "style"         :"smaller",
       "color"         :"black"
     },
