@@ -12,7 +12,7 @@ import { extractSongConfig, mergeSongConfig } from '../../extractSongConfig.js'
 import { HarpnotesLayout } from '../../HarpnotesLayout.js'
 import type { AnnotationTextMetrics } from '../../TextMetrics.js'
 import { defaultTestConfig } from '../defaultConfig.js'
-import type { Ellipse, Glyph, FlowLine, Path, Annotation } from '@zupfnoter/types'
+import type { Ellipse, Glyph, FlowLine, Path, Annotation, Sheet } from '@zupfnoter/types'
 import type { ZupfnoterConfig } from '@zupfnoter/types'
 import { loadFixture, transformFixtureToSheet } from '../fixtureLoader.js'
 
@@ -1061,6 +1061,51 @@ V:V1 clef=treble-8
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
       const repeats = annotations.filter((a) => a.style === 'repeat_probe')
       expect(repeats.map((entry) => entry.text).sort()).toEqual([':|', '|:'])
+    })
+
+    it('matches legacy repeat-sign positions in krippen-demo extract 0', () => {
+      const fixture = loadFixture('krippen-demo')
+      const reference = fixture.sheetExtracts['0']
+      if (reference === undefined) throw new Error('Missing legacy extract 0')
+      const sheet = transformFixtureToSheet(fixture, 0)
+      const actual = sheet.children.filter((child): child is Annotation =>
+        child.type === 'Annotation' && (child.text === '|:' || child.text === ':|'))
+      const expected = reference.children.filter((child) =>
+        child.type === 'Annotation' && (child.text === '|:' || child.text === ':|'))
+      expect(actual).toHaveLength(4)
+      expect(expected).toHaveLength(4)
+      for (const annotation of actual) {
+        expect(expected.some((entry) => entry.text === annotation.text
+          && entry.center !== undefined
+          && Math.abs(entry.center[0] - annotation.center[0]) < 0.001
+          && Math.abs(entry.center[1] - annotation.center[1]) < 0.001)).toBe(true)
+      }
+      expect(actual.some((entry) => entry.confKey === 'extract.0.notebound.repeat_begin.v_3.0.pos')).toBe(true)
+    })
+
+    it('applies note-bound repeat positions without moving other annotations', () => {
+      const config = clonedDefaultConfig()
+      const extract0 = config.extract['0']
+      if (!extract0) throw new Error('Missing extract 0 in default test config')
+      extract0.repeatsigns = {
+        voices: [1],
+        left: { pos: [-7, -2], text: '|:', style: 'repeat_probe' },
+        right: { pos: [5, -2], text: ':|', style: 'repeat_probe' },
+      }
+      const before = pipelineWithConfig(ABC_REPEAT, config).sheet
+      extract0.notebound = { repeat_begin: { v_1: { 0: { pos: [-10, -8] } } } }
+      const after = pipelineWithConfig(ABC_REPEAT, config).sheet
+      const annotations = (sheet: Sheet) => sheet.children.filter(
+        (child): child is Annotation => child.type === 'Annotation',
+      )
+      const key = 'extract.0.notebound.repeat_begin.v_1.0.pos'
+      const original = annotations(before).find((child) => child.confKey === key)
+      const moved = annotations(after).find((child) => child.confKey === key)
+      if (original === undefined || moved === undefined) throw new Error('Missing repeat begin annotation')
+      expect(moved.center[0]).toBeCloseTo(original.center[0] - 3)
+      expect(moved.center[1]).toBeCloseTo(original.center[1] - 6)
+      expect(annotations(after).filter((child) => child.confKey !== key))
+        .toEqual(annotations(before).filter((child) => child.confKey !== key))
     })
 
     it('applies extract.notebound.annotation overrides to note-bound annotations', () => {

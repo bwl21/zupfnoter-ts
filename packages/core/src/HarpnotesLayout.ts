@@ -2731,6 +2731,8 @@ export class HarpnotesLayout {
     const companion = pointRole === 'begin' ? goto.to : goto.from
     const attachSide = this._repeatSignAttachSide(goto, pointRole)
     const pos = (
+      conf.get(`notebound.repeat_${pointRole}.v_${voiceNr}.${companion.znId}.pos`) as [number, number] | undefined
+    ) ?? (
       conf.get(`repeatsigns.${attachSide}.pos`) as [number, number] | undefined
     ) ?? (attachSide === 'left' ? [-7, -2] : [5, -2])
     const text = (
