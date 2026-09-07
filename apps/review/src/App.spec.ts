@@ -118,7 +118,7 @@ describe('Review App', () => {
     expect(wrapper.get('.extract-picker__menu').text()).toContain('1 Melodie')
     await wrapper.get('.extract-picker__item:nth-child(2)').trigger('click')
     await nextTick()
-    expect(vi.mocked(renderReviewDocument)).toHaveBeenLastCalledWith(expect.any(String), 1)
+    expect(vi.mocked(renderReviewDocument)).toHaveBeenLastCalledWith(expect.any(String), 1, undefined)
 
     await wrapper.get('[data-testid="score-view"]').trigger('click')
 

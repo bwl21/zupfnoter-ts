@@ -71,6 +71,18 @@ export interface WorkbenchRenderOptions {
   practiceUrl?: string
   /** Aktiviert editierbare Bézier-Handles an nicht konfigurierten Flusslinien. */
   flowconf?: boolean
+  /** Vom Web-Build injizierte, beschreibende Versionskennung. */
+  buildInfo?: { buildIdentifier: string; buildTime: string }
+}
+
+const defaultBuildInfo = (globalThis as typeof globalThis & {
+  __ZUPFNOTER_BUILD_INFO__?: { buildIdentifier: string; buildTime: string }
+}).__ZUPFNOTER_BUILD_INFO__
+
+function buildMetadata(buildInfo: { buildIdentifier: string; buildTime: string } | undefined) {
+  return buildInfo === undefined
+    ? undefined
+    : { identifier: buildInfo.buildIdentifier, builtAt: buildInfo.buildTime }
 }
 
 function resolveResourceUrl(resources: SongResources | undefined, imageName: string): string | undefined {
@@ -101,6 +113,7 @@ export async function renderPdfExport(
       ? options.practiceQrJpegUrl
       : resolveResourceUrl(resources, imageName),
     flowconf: false,
+    buildMetadata: buildMetadata(options.buildInfo ?? defaultBuildInfo),
   })
   let practiceQrJpegUrl = options.practiceQrJpegUrl
   if (practiceQrJpegUrl === undefined && options.practiceUrl !== undefined && abcText.includes(PRACTICE_QR_IMAGE_NAME)) {
@@ -122,6 +135,7 @@ export async function renderPdfExport(
         ? practiceQrJpegUrl
         : resolveResourceUrl(resources, imageName),
       flowconf: false,
+      buildMetadata: buildMetadata(options.buildInfo ?? defaultBuildInfo),
     })
   }
   const engine = new PdfEngine()
@@ -243,6 +257,7 @@ export function renderWorkbenchPreviews(
         : resolveResourceUrl(resources, imageName),
       flowconf: options.flowconf ?? DEFAULT_WORKBENCH_CONFIG.flowconf,
       interactive: true,
+      buildMetadata: buildMetadata(options.buildInfo ?? defaultBuildInfo),
     }
     const sheet = layoutDocumentExtract(transformedSong, config, extractNr, 'A3', layoutOptions)
     activeVoiceIds = resolveActiveVoiceIdsFromSheet(sheet)

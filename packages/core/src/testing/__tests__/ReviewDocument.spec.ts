@@ -30,6 +30,15 @@ describe('renderReviewDocument', () => {
     expect(result.baseTempoBpm).toBe(80)
   })
 
+  it('passes deterministic build metadata into the shared sheet output', () => {
+    const result = renderReviewDocument(ABC, 0, {
+      buildIdentifier: 'V_2.1.0-4-gabc123-dirty; abc123def456',
+      buildTime: '2026-07-16T08:09:10.000Z',
+    })
+
+    expect(result.harpSvg).toContain('Zupfnoter-TS V_2.1.0-4-gabc123-dirty; abc123def456 - built 2026-07-16 08:09:10 UTC')
+  })
+
   it('uses the same complete playback timeline as Web for a voice-limited extract', () => {
     const result = renderReviewDocument(
       `X:1

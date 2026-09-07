@@ -33,6 +33,27 @@ import { exportPlaybackLink, type PlaybackCompressionCodec, type PlaybackEvent }
 const deflateRawAsync = promisify(deflateRaw)
 const inflateRawAsync = promisify(inflateRaw)
 
+interface CliBuildInfo {
+  buildIdentifier: string
+  buildTime: string
+}
+
+async function readCliBuildInfo(): Promise<CliBuildInfo | undefined> {
+  try {
+    const value = JSON.parse(await readFile(new URL('./build-info.json', import.meta.url), 'utf8')) as Partial<CliBuildInfo>
+    return typeof value.buildIdentifier === 'string' && typeof value.buildTime === 'string'
+      ? { buildIdentifier: value.buildIdentifier, buildTime: value.buildTime }
+      : undefined
+  } catch {
+    return undefined
+  }
+}
+
+const cliBuildInfo = await readCliBuildInfo()
+const cliLayoutMetadata = cliBuildInfo === undefined
+  ? undefined
+  : { identifier: cliBuildInfo.buildIdentifier, builtAt: cliBuildInfo.buildTime }
+
 const nodePlaybackCodec: PlaybackCompressionCodec = {
   async compress(value) {
     return new Uint8Array(await deflateRawAsync(Buffer.from(value)))
@@ -323,7 +344,7 @@ async function renderBatchFile(
 
   for (const extractNr of resolveBatchExtracts(config)) {
     const filenamePart = extractFilenamePart(config, extractNr)
-    let sheet = layoutDocumentExtract(song, config, extractNr, formats[0] ?? 'A3')
+    let sheet = layoutDocumentExtract(song, config, extractNr, formats[0] ?? 'A3', { buildMetadata: cliLayoutMetadata })
     let practiceLink: string | undefined
 
     if (containsPracticeQr(config) && practiceUrl !== undefined) {
@@ -350,7 +371,7 @@ async function renderBatchFile(
         if (imageName === PRACTICE_QR_IMAGE_NAME && practiceLink !== undefined) return dataUrlFromJpeg(createPracticeQrJpeg(practiceLink))
         return resources[imageName]?.join('')
       }
-      sheet = layoutDocumentExtract(song, config, extractNr, pageFormat, { imageResolver })
+      sheet = layoutDocumentExtract(song, config, extractNr, pageFormat, { imageResolver, buildMetadata: cliLayoutMetadata })
       const svgName = `${filebase}_${filenamePart}_${pageFormat.toLowerCase()}.svg`
       await writeFile(join(targetFolder, svgName), new SvgEngine().draw(sheet), 'utf8')
       const pdf = pageFormat === 'A3'

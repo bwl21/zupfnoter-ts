@@ -7,7 +7,7 @@
     "zupfnoter": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "node ../../tools/build-metadata.mjs dist/build-info.json package.json ../.. && tsc",
     "type-check": "tsc --noEmit",
     "start": "node dist/index.js"
   },
