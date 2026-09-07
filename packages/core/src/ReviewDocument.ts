@@ -21,13 +21,14 @@ function previewSvg(svg: string): string {
 }
 
 /** Rendert genau die Daten, die ein schreibgeschützter Review-Client benötigt. */
-export function renderReviewDocument(abcText: string, extractNumber = 0): ReviewDocument {
+export function renderReviewDocument(abcText: string, extractNumber = 0, buildInfo?: { buildIdentifier: string; buildTime: string }): ReviewDocument {
   const config = prepareDocumentConfig(abcText)
   const resources = extractSongResources(abcText)
   const song = parseDocumentSong(abcText, config)
   const sheet = layoutDocumentExtract(song, config, extractNumber, 'A3', {
     imageResolver: (imageName) => resourceUrl(resources, imageName),
     interactive: true,
+    buildMetadata: buildInfo === undefined ? undefined : { identifier: buildInfo.buildIdentifier, builtAt: buildInfo.buildTime },
   })
   const configuredExtracts =
     config.produce !== undefined && config.produce.length > 0 ? config.produce : [extractNumber]

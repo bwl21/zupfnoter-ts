@@ -211,9 +211,15 @@ C, D, | E, F, |`
   })
 
   it('writes the TypeScript implementation marker into the sheet footer', () => {
-    const result = renderWorkbenchPreviews('X:1\nF:demo\nT:Demo\nK:C\nC')
+    const result = renderWorkbenchPreviews('X:1\nF:demo\nT:Demo\nK:C\nC', 0, {
+      buildInfo: {
+        buildIdentifier: 'V_2.1.0-4-gabc123-dirty; abc123def456',
+        buildTime: '2026-07-16T08:09:10.000Z',
+      },
+    })
 
-    expect(result.harpSvg).toMatch(/created \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} by Zupfnoter-TS/)
+    expect(result.harpSvg).toMatch(/created \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
+    expect(result.harpSvg).toContain('Zupfnoter-TS V_2.1.0-4-gabc123-dirty; abc123def456 - built 2026-07-16 08:09:10 UTC')
   })
 
   it('resolves the reserved practice QR image through the normal image configuration', () => {

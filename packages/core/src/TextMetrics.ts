@@ -21,6 +21,8 @@ export interface HarpnotesLayoutOptions {
   annotationTextMetrics?: AnnotationTextMetrics
   /** Zeitpunkt der Blatterzeugung für die Blattfußzeile. */
   createdAt?: Date
+  /** Vom Plattformadapter ermittelte, beschreibende Build-Kennung. */
+  buildMetadata?: { identifier: string; builtAt: string }
   /** Löst einen fachlichen Bildnamen in eine exportierbare Daten-URL auf. */
   imageResolver?: (imageName: string) => string | undefined
   /** Erzeugt nicht konfigurierte Flusslinien als editierbare Bézier-Pfade. */

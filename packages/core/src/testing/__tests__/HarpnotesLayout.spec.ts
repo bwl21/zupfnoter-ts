@@ -830,12 +830,15 @@ V:V1 clef=treble-8
     it('renders the legacy sheet footer annotations', () => {
       const { song, sheet } = pipelineWithLayout(
         ABC_SINGLE_NOTE,
-        new HarpnotesLayout(defaultTestConfig, { createdAt: new Date(2026, 6, 17, 11, 22, 33) }),
+        new HarpnotesLayout(defaultTestConfig, {
+          createdAt: new Date(2026, 6, 17, 11, 22, 33),
+          buildMetadata: { identifier: 'V_2.1.0-4-gabc123-dirty; abc123def456', builtAt: '2026-07-16T08:09:10.000Z' },
+        }),
       )
       const annotations = sheet.children.filter((c): c is Annotation => c.type === 'Annotation')
 
       expect(
-        annotations.some((a) => a.center[0] === 150 && a.center[1] === 289 && a.text === ' - created 2026-07-17 11:22:33 by Zupfnoter-TS'),
+        annotations.some((a) => a.center[0] === 150 && a.center[1] === 289 && a.text === ' - created 2026-07-17 11:22:33 by Zupfnoter-TS V_2.1.0-4-gabc123-dirty; abc123def456 - built 2026-07-16 08:09:10 UTC'),
       ).toBe(true)
       expect(
         annotations.some((a) => a.center[0] === 325 && a.center[1] === 289 && a.text === 'Zupfnoter: https://www.zupfnoter.de'),

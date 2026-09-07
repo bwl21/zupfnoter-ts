@@ -117,6 +117,11 @@ function formatCreationTimestamp(value: Date): string {
   return `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())} ${pad(value.getHours())}:${pad(value.getMinutes())}:${pad(value.getSeconds())}`
 }
 
+function formatBuildTimestamp(value: string): string {
+  const parsed = new Date(value)
+  return Number.isNaN(parsed.getTime()) ? value : `${parsed.toISOString().slice(0, 19).replace('T', ' ')} UTC`
+}
+
 /** Variant number → color string */
 function variantToColor(variant: 0 | 1 | 2, layout: LayoutConfig): string {
   if (variant === 1) return layout.color.color_variant1
@@ -520,6 +525,7 @@ export class HarpnotesLayout {
   private _config: ZupfnoterConfig
   private _annotationTextMetrics: AnnotationTextMetrics
   private _createdAt: Date
+  private readonly _buildMetadata: HarpnotesLayoutOptions['buildMetadata']
 
   constructor(config: ZupfnoterConfig, options: HarpnotesLayoutOptions = {}) {
     this._imageResolver = options.imageResolver
@@ -528,6 +534,7 @@ export class HarpnotesLayout {
     this._config = config
     this._annotationTextMetrics = options.annotationTextMetrics ?? createDefaultAnnotationTextMetrics()
     this._createdAt = options.createdAt ?? new Date()
+    this._buildMetadata = options.buildMetadata
   }
 
   /**
@@ -2087,7 +2094,9 @@ export class HarpnotesLayout {
       {
         type: 'Annotation',
         center: [150, 289],
-        text: `${filename} - created ${formatCreationTimestamp(this._createdAt)} by Zupfnoter-TS`,
+        text: this._buildMetadata === undefined
+          ? `${filename} - created ${formatCreationTimestamp(this._createdAt)} by Zupfnoter-TS`
+          : `${filename} - created ${formatCreationTimestamp(this._createdAt)} by Zupfnoter-TS ${this._buildMetadata.identifier} - built ${formatBuildTimestamp(this._buildMetadata.builtAt)}`,
         style: 'smaller',
         color: layout.color.color_default,
         lineWidth: layout.LINE_THIN,

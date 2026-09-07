@@ -1,6 +1,7 @@
 interface ZupfnoterBuildInfo {
   appVersion: string
   commitHash: string
+  buildIdentifier: string
   buildTime: string
 }
 

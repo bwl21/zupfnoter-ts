@@ -29,7 +29,7 @@ type ReviewView = 'score' | 'harp'
 type PlaybackStatus = 'idle' | 'loading' | 'playing' | 'paused'
 
 const abcText = ref(defaultAbc)
-const document = ref<ReviewDocument>(renderReviewDocument(defaultAbc))
+const document = ref<ReviewDocument>(renderReviewDocument(defaultAbc, 0, globalThis.__ZUPFNOTER_BUILD_INFO__))
 const activeView = ref<ReviewView>('harp')
 const fileInput = ref<HTMLInputElement | null>(null)
 const viewer = ref<HTMLElement | null>(null)
@@ -203,7 +203,7 @@ async function togglePlayback(): Promise<void> {
 function renderDocument(nextAbc: string, extractNumber = 0): void {
   stopPlayback()
   try {
-    const nextDocument = renderReviewDocument(nextAbc, extractNumber)
+    const nextDocument = renderReviewDocument(nextAbc, extractNumber, globalThis.__ZUPFNOTER_BUILD_INFO__)
     abcText.value = nextAbc
     document.value = nextDocument
     tempoBpm.value = nextDocument.baseTempoBpm
